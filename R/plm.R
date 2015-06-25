@@ -1,8 +1,66 @@
+#-------------------------------------
+# vcovCR with defaults
+#-------------------------------------
+
+#' Cluster-robust variance-covariance matrix for a plm object.
+#' 
+#' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
+#' of a set of regression coefficient estimates from a \code{\link[plm]{plm}} 
+#' object.
+#' 
+#' @param cluster Optional character string, expression, or vector indicating 
+#'   which observations belong to the same cluster. For fixed-effect models that
+#'   include individual effects or time effects (but not both), the cluster will
+#'   be taken equal to the included fixed effects if not otherwise specified. 
+#'   Clustering on individuals can also be obtained by taking \code{cluster = 
+#'   "individual"} and clustering on time periods can be obtained with 
+#'   \code{cluster = "time"}. For random-effects models, the cluster will be 
+#'   taken equal to the included random effect identifier if not otherwise 
+#'   specified.
+#' @param target Optional matrix or vector describing the working 
+#'   variance-covariance model used to calculate the \code{CR2} and \code{CR4} 
+#'   adjustment matrices. By default, the target is taken to be an identity
+#'   matrix for fixed effect models or the estimated compound-symmetric covariance matrix for random effects models. 
+#' @inheritParams vcovCR
+#'   
+#' @return An object of class \code{c("vcovCR","clubSandwich")}, which consists 
+#'   of a matrix of the estimated variance of and covariances between the 
+#'   regression coefficient estimates.
+#'   
+#' @seealso \code{\link{vcovCR}}
+#'   
+#' @export
+
+vcovCR.plm <- function(obj, cluster, type, target, inverse_var) {
+  
+  if (obj$args$model=="random" & obj$args$effect=="twoway") stop("Variance matrix is not block diagonal.")
+  
+  if (missing(cluster)) {
+    if (obj$args$effect=="twoway") stop("You must specify a clustering variable.")
+    index <- attr(model.frame(obj),"index")
+    cluster <- switch(obj$args$effect,
+                      individual = index[[1]],
+                      time = index[[2]])
+  } else if (is.character(cluster)) {
+    if (cluster %in% c("individual","time")) {
+      index <- attr(model.frame(obj),"index")
+      cluster <- switch(cluster,
+                        individual = index[[1]],
+                        time = index[[2]])
+    }
+  }
+  
+  if (missing(target)) target <- NULL
+  if (missing(inverse_var) ) inverse_var <- is.null(target)
+  vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
+}
+
 # coef()
 
 #-----------------------------------------------
 # Model matrix
 #-----------------------------------------------
+
 model_matrix.plm <- function(obj) {
   if (obj$args$model=="random") {
     model.matrix(Formula::as.Formula(formula(obj)), model.frame(obj))  
@@ -72,32 +130,4 @@ weightMatrix.plm <- function(obj) {
     W <- rep(1, nobs(obj))
   }
   W
-}
-
-#-------------------------------------
-# vcovCR with defaults
-#-------------------------------------
-
-vcovCR.plm <- function(obj, cluster, type, target, inverse_var) {
-  
-  if (obj$args$model=="random" & obj$args$effect=="twoway") stop("Variance matrix is not block diagonal.")
-  
-  if (missing(cluster)) {
-    if (obj$args$effect=="twoway") stop("You must specify a clustering variable.")
-    index <- attr(model.frame(obj),"index")
-    cluster <- switch(obj$args$effect,
-                      individual = index[[1]],
-                      time = index[[2]])
-  } else if (is.character(cluster)) {
-    if (cluster %in% c("individual","time")) {
-      index <- attr(model.frame(obj),"index")
-      cluster <- switch(cluster,
-                        individual = index[[1]],
-                        time = index[[2]])
-    }
-  }
-
-  if (missing(target)) target <- NULL
-  if (missing(inverse_var) ) inverse_var <- is.null(target)
-  vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
 }

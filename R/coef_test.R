@@ -43,7 +43,37 @@ saddlepoint <- function(t_stats, S_array) {
 # coeftest for all model coefficients
 #---------------------------------------------
 
-# uses methods coef_CR(), residuals_CR(), model_matrix(), weightMatrix(), targetVariance()
+#' Test all regression coefficients in a fitted model
+#' 
+#' \code{coef_test} reports t-tests for each coefficient estimate in a fitted
+#' linear regression model, using a sandwich estimator for the standard errors
+#' and a small sample correction for the p-value. The small-sample correction is
+#' based on a Satterthwaite approximation or a saddlepoint approximation.
+#' 
+#' @param obj Fitted model for which to calculate t-tests.
+#' @param vcov Variance covariance matrix estimated using \code{vcovCR} or a 
+#'   character string specifying which small-sample adjustment should be used to
+#'   calculate the variance-covariance.
+#' @param test Character vector specifying which small-sample corrections to 
+#'   calculate. \code{"Satterthwaite"} returns a Satterthwaite correction. 
+#'   \code{"saddlepoint"} returns a saddlepoint correction. Default is 
+#'   \code{"Satterthwaite"}.
+#' @param Ex_method Character string that controls how the expectation of the 
+#'   sandwich estimator is determined for use in the Satterthwaite 
+#'   approximation. The default, \code{"model"}, estimates the expectation based
+#'   on a working model. The other option, \code{"empirical"} uses the sandwich 
+#'   estimate itself.
+#' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only 
+#'   needed if \code{vcov} is a character string.
+#'   
+#' @return A data frame containing estimated regression coefficients, standard 
+#'   errors, and test results. For the Satterthwaite approximation, degrees of 
+#'   freedom and a p-value are reported. For the saddlepoint approximation, the 
+#'   saddlepoint and a p-value are reported.
+#'   
+#' @seealso \code{\link{vcovCR}}
+#'   
+#' @export
 
 coef_test <- function(obj, vcov, test = "Satterthwaite", Ex_method = "model", ...) {
 
@@ -51,7 +81,11 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", Ex_method = "model", ..
   beta_NA <- is.na(beta)
     
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
+  if (!("clubSandwich" %in% class(vcov))) stop("Variance-covariance matrix must be a clubSandwich.")
 
+  test <- match.arg(test, c("Satterthwaite","saddlepoint"), several.ok = TRUE)
+  Ex_method <- match.arg(Ex_method, c("model","empirical"), several.ok = TRUE)
+  
   SE <- sqrt(diag(vcov))
   cluster <- attr(vcov, "cluster")
   E_list <- attr(vcov, "estmats")

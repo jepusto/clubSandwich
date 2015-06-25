@@ -100,17 +100,45 @@ Hotelling_Tsq <- function(Q, q, nu) {
 # Wald-type tests
 #---------------------------------------------
 
-# uses methods coef_CR(), residuals_CR(), model_matrix(), weightMatrix(), targetVariance()
+#' Test all regression coefficients in a fitted model
+#' 
+#' \code{Wald_test} reports Wald-type tests of linear contrasts from a fitted 
+#' linear regression model, using a sandwich estimator for the 
+#' variance-covariance matrix and a small sample correction for the p-value. 
+#' Several different small-sample corrections are available.
+#' 
+#' @param obj Fitted model for which to calculate Wald tests.
+#' @param constraints List of one or more constraints to test. See details
+#'   below.
+#' @param vcov Variance covariance matrix estimated using \code{vcovCR} or a 
+#'   character string specifying which small-sample adjustment should be used to
+#'   calculate the variance-covariance.
+#' @param test Character vector specifying which small-sample correction(s) to 
+#'   calculate. The following corrections are available: \code{"chi-sq"}, 
+#'   \code{"Naive-F"}, \code{"HTA"}, \code{"HTB"}, \code{"HTZ"}, \code{"EDF"}, 
+#'   \code{"EDT"}. Default is \code{"HTZ"}.
+#' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only 
+#'   needed if \code{vcov} is a character string.
+#'   
+#' @details Constraints can be specified as character vectors, integer vectors,
+#' logical vectors, or matrices.
+#' 
+#' @return A list of test results.
+#'   
+#' @seealso \code{\link{vcovCR}}
+#'   
+#' @export
 
 Wald_test <- function(obj, constraints, vcov, test = "HTZ", ...) {
   
+  if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
+  if (!("clubSandwich" %in% class(vcov))) stop("Variance-covariance matrix must be a clubSandwich.")
+
   if (all(test == "All")) test <- c("chi-sq","Naive-F","HTA","HTB","HTZ","EDF","EDT")
   
   beta <- na.omit(coef_CR(obj))
   
   p <- length(beta)
-  
-  if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   
   cluster <- attr(vcov, "cluster")
   E_list <- attr(vcov, "estmats")

@@ -1,3 +1,128 @@
+#----------------------------------------------
+# user-facing vcovCR function
+#----------------------------------------------
+
+#' Cluster-robust variance-covariance matrix
+#' 
+#' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
+#' of a set of regression coefficient estimates.
+#' 
+#' @param obj Fitted model for which to calcualte the variance-covariance matrix
+#' @param cluster Expression or vector indicating which observations belong to 
+#'   the same cluster. For some classes, the cluster will be detected 
+#'   automatically if not specified.
+#' @param type Character string specifying which small-sample adjustment should 
+#'   be used.
+#' @param target Optional matrix or vector describing the working 
+#'   variance-covariance model used to calculate the \code{CR2} and \code{CR4} 
+#'   adjustment matrices. If a vector, the target matrix is assumed to be 
+#'   diagonal. If not specified, \code{vcovCR} will attempt to infer a value.
+#' @param inverse_var Optional logical indicating whether the weights used in 
+#'   fitting the model are inverse-variance. If not specified, \code{vcovCR} 
+#'   will attempt to infer a value.
+#'   
+#' @description This is a generic function, with specific methods defined for 
+#' \code{\link[stats]{lm}}, \code{\link[plm]{plm}}, \code{\link[nlme]{gls}},
+#' \code{\link[nlme]{lme}}, \code{\link[robumeta]{robu}}, \code{\link[metafor]{rma.uni}}, and \code{\link[metafor]{rma.mv}} objects.
+#' 
+#' @return An object of class \code{c("vcovCR","clubSandwich")}, which consists 
+#'   of a matrix of the estimated variance of and covariances between the 
+#'   regression coefficient estimates. The matrix has several attributes: 
+#'   \describe{ \item{type}{indicates which small-sample adjustment was used} 
+#'   \item{cluster}{contains the factor vector that defines independent 
+#'   clusters} \item{estmats}{contains a list of adjustment matrices used to 
+#'   calculate the sandwich estimator, which are needed for calculating 
+#'   small-sample corrections for Wald tests} \item{target}{contains the working
+#'   variance-covariance model used to calculate the adjustment matrices. This 
+#'   is also needed for calculating small-sample corrections for Wald tests.} }
+#'   
+#' @seealso \code{\link{vcovCR.lm}}, \code{\link{vcovCR.plm}}, 
+#'   \code{\link{vcovCR.gls}}, \code{\link{vcovCR.lme}}, 
+#'   \code{\link{vcovCR.robu}}, \code{\link{vcovCR.rma.uni}}, 
+#'   \code{\link{vcovCR.rma.mv}}
+#'   
+#' @export
+
+vcovCR <- function(obj, cluster, type, target, inverse_var) UseMethod("vcovCR")
+
+#---------------------------------------------
+# Cluster-robust variance estimator
+#---------------------------------------------
+
+# uses methods residuals_CR(), model_matrix(), weightMatrix(), targetVariance()
+
+vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
+  
+  cluster <- droplevels(as.factor(cluster))
+  
+  X <- model_matrix(obj)
+  alias <- is.na(coef_CR(obj))
+  if (any(alias)) X <- X[, !alias, drop = FALSE]
+  
+  p <- NCOL(X)
+  N <- NROW(X)
+  
+  if (length(cluster) != N) {
+    if (class(na.action(obj)) == "omit") {
+      cluster <- droplevels(cluster[-na.action(obj)])
+    } else {
+      stop("Clustering variable must have length equal to nrow(model_matrix(obj)).")
+    }
+  } 
+  J <- nlevels(cluster)
+  
+  X_list <- matrix_list(X, cluster, "row")
+  
+  resid <- residuals_CR(obj)
+  W <- weightMatrix(obj)
+  W_list <- matrix_list(W, cluster, "both")
+  
+  if (is.null(target)) {
+    Theta <- targetVariance(obj)
+  } else {
+    Theta <- target
+  }
+  
+  XW_list <- mapply(function(x, w) as.matrix(t(x) %*% w), 
+                    x = X_list, w = W_list, SIMPLIFY = FALSE)
+  XW <- matrix(unlist(XW_list), p, N)[,order(order(cluster))]
+  M <- chol2inv(chol(XW %*% X))
+  IH <- diag(nrow = N) - X %*% M %*% XW 
+  
+  E_list <- switch(type,
+                   "CR0" = lapply(XW_list, function(x) M %*% x),
+                   "CR1" = lapply(XW_list, function(x) (M %*% x) * J / (J - 1)),
+                   "CR2" = CR2(M, XW_list, IH, Theta, cluster, inverse_var),
+                   "CR3" = CR3(M, XW_list, IH_jj = matrix_list(IH, cluster, "both")),
+                   "CR4" = CR4(M, X_list, XW_list, IH, Theta, cluster, inverse_var))
+  res_list <- split(resid, cluster)
+  
+  components <- mapply(function(e, r) e %*% r, e = E_list, r = res_list, SIMPLIFY = TRUE)
+  
+  vcov <- tcrossprod(components)
+  rownames(vcov) <- colnames(vcov) <- colnames(X)
+  attr(vcov, "type") <- type
+  attr(vcov, "cluster") <- cluster
+  attr(vcov, "estmats") <- E_list
+  attr(vcov, "target") <- Theta 
+  class(vcov) <- c("vcovCR","clubSandwich")
+  return(vcov)
+}
+
+#---------------------------------------------
+# print method for vcovCR
+#---------------------------------------------
+
+print.clubSandwich <- function(x, ...) {
+  attr(x, "type") <- NULL
+  attr(x, "cluster") <- NULL
+  attr(x, "estmats") <- NULL
+  attr(x, "target") <- NULL
+  class(x) <- "matrix"
+  print(x)
+}
+
+
 #---------------------------------------------
 # matrix manipulation functions
 #---------------------------------------------
@@ -118,131 +243,3 @@ get_S_array <- function(obj, cluster, target, E_list) {
   
   array(unlist(S_list), dim = c(ncol(X), N, J))
 }
-
-
-#----------------------------------------------
-# user-facing vcovCR function
-#----------------------------------------------
-
-#' Cluster-robust variance-covariance matrix
-#' 
-#' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
-#' of a set of regression coefficient estimates.
-#' 
-#' This is a generic function, with specific methods defined for 
-#' \code{\link[stats]{lm}}, \code{\link[plm]{plm}}, gls, lme, robu, rma.uni, and rma.mv
-#' objects.
-#' 
-#' @param obj Fitted model for which to calcualte the variance-covariance 
-#'   matrix
-#' @param cluster Expression or vector indicating which observations belong 
-#'   to the same cluster. For some classes, the cluster will be detected 
-#'   automatically if not specified.
-#' @param type Character string specifying which small-sample adjustment 
-#'   should be used.
-#' @param target Matrix or vector describing the working variance-covariance model used to calculate 
-#'   the \code{CR2} and \code{CR4} adjustment matrices. If a vector, the target matrix is assumed to be diagonal. 
-#'   If not specified, \code{vcovCR} will attempt to infer a value.
-#' @param inverse_var Logical indicating whether the weights used in fitting the
-#'   model are inverse-variance. If not specified, \code{vcovCR} will attempt to
-#'   infer a value.
-#'   
-#' @return An object of class \code{c("vcovCR","clubSandwich")}, which consists of 
-#' a matrix of the estimated variance of and covariances between the regression coefficient
-#' estimates. The matrix has several attributes:
-#' \describe{
-#'   \item{type}{indicates which small-sample adjustment was used}
-#'   \item{cluster}{contains the factor vector that defines independent clusters}
-#'   \item{estmats}{contains a list of adjustment matrices used to calculate the 
-#'   sandwich estimator, which are needed for calculating small-sample corrections for Wald tests}
-#'   \item{target}{contains the working variance-covariance model used to calculate 
-#'   the adjustment matrices. This is also needed for calculating small-sample corrections 
-#'   for Wald tests.}
-#' } 
-#' 
-#' @seealso \code{\link{vcovCR.lm}}, \code{\link{vcovCR.plm}}, 
-#'   \code{\link{vcovCR.gls}}, \code{\link{vcovCR.lme}}, 
-#'   \code{\link{vcovCR.robu}}, \code{\link{vcovCR.rma.uni}}, 
-#'   \code{\link{vcovCR.rma.mv}}
-#'   
-#' @export
-
-vcovCR <- function(obj, cluster, type, target, inverse_var) UseMethod("vcovCR")
-
-#---------------------------------------------
-# Cluster-robust variance estimator
-#---------------------------------------------
-
-# uses methods residuals_CR(), model_matrix(), weightMatrix(), targetVariance()
-
-vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
-  
-  cluster <- droplevels(as.factor(cluster))
-  
-  X <- model_matrix(obj)
-  alias <- is.na(coef_CR(obj))
-  if (any(alias)) X <- X[, !alias, drop = FALSE]
-
-  p <- NCOL(X)
-  N <- NROW(X)
-  
-  if (length(cluster) != N) {
-    if (class(na.action(obj)) == "omit") {
-      cluster <- droplevels(cluster[-na.action(obj)])
-    } else {
-      stop("Clustering variable must have length equal to nrow(model_matrix(obj)).")
-    }
-  } 
-  J <- nlevels(cluster)
-  
-  X_list <- matrix_list(X, cluster, "row")
-  
-  resid <- residuals_CR(obj)
-  W <- weightMatrix(obj)
-  W_list <- matrix_list(W, cluster, "both")
-  
-  if (is.null(target)) {
-    Theta <- targetVariance(obj)
-  } else {
-    Theta <- target
-  }
-
-  XW_list <- mapply(function(x, w) as.matrix(t(x) %*% w), 
-                    x = X_list, w = W_list, SIMPLIFY = FALSE)
-  XW <- matrix(unlist(XW_list), p, N)[,order(order(cluster))]
-  M <- chol2inv(chol(XW %*% X))
-  IH <- diag(nrow = N) - X %*% M %*% XW 
-  
-  E_list <- switch(type,
-                   "CR0" = lapply(XW_list, function(x) M %*% x),
-                   "CR1" = lapply(XW_list, function(x) (M %*% x) * J / (J - 1)),
-                   "CR2" = CR2(M, XW_list, IH, Theta, cluster, inverse_var),
-                   "CR3" = CR3(M, XW_list, IH_jj = matrix_list(IH, cluster, "both")),
-                   "CR4" = CR4(M, X_list, XW_list, IH, Theta, cluster, inverse_var))
-  res_list <- split(resid, cluster)
-  
-  components <- mapply(function(e, r) e %*% r, e = E_list, r = res_list, SIMPLIFY = TRUE)
-  
-  vcov <- tcrossprod(components)
-  rownames(vcov) <- colnames(vcov) <- colnames(X)
-  attr(vcov, "type") <- type
-  attr(vcov, "cluster") <- cluster
-  attr(vcov, "estmats") <- E_list
-  attr(vcov, "target") <- Theta 
-  class(vcov) <- c("vcovCR","clubSandwich")
-  return(vcov)
-}
-
-#---------------------------------------------
-# print method for vcovCR
-#---------------------------------------------
-
-print.clubSandwich <- function(x, ...) {
-  attr(x, "type") <- NULL
-  attr(x, "cluster") <- NULL
-  attr(x, "estmats") <- NULL
-  attr(x, "target") <- NULL
-  class(x) <- "matrix"
-  print(x)
-}
-

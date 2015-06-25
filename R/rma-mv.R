@@ -4,6 +4,45 @@
 # model_matrix
 
 #-------------------------------------
+# vcovCR with defaults
+#-------------------------------------
+
+#' Cluster-robust variance-covariance matrix for a robu object.
+#' 
+#' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
+#' of a set of regression coefficient estimates from a 
+#' \code{\link[metafor]{rma.mv}} object.
+#' 
+#' @param cluster Optional expression or vector indicating which observations 
+#'   belong to the same cluster. If not specified, will be set to the factor in
+#'   the random-effects structure with the fewest distinct levels. Caveat
+#'   emptor: the function does not check that the random effects are nested.
+#' @param target Optional matrix or vector describing the working 
+#'   variance-covariance model used to calculate the \code{CR2} and \code{CR4} 
+#'   adjustment matrices. If not specified, the target is taken to be the 
+#'   estimated variance-covariance structure of the \code{rma.mv} object.
+#' @inheritParams vcovCR
+#'   
+#' @return An object of class \code{c("vcovCR","clubSandwich")}, which consists 
+#'   of a matrix of the estimated variance of and covariances between the 
+#'   regression coefficient estimates.
+#'   
+#' @seealso \code{\link{vcovCR}}
+#'   
+#' @export
+
+vcovCR.rma.mv <- function(obj, cluster, type, target, inverse_var) {
+  if (missing(cluster)) cluster <- findCluster.rma.mv(obj)
+  if (missing(target)) {
+    target <- NULL
+    inverse_var <- is.null(obj$W)
+  } else {
+    if (missing(inverse_var)) inverse_var <- FALSE
+  }
+  vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
+}
+
+#-------------------------------------
 # Get (model-based) working variance matrix 
 #-------------------------------------
 
@@ -37,19 +76,4 @@ findCluster.rma.mv <- function(obj) {
     stop("No clustering variable specified.")
   }
   droplevels(as.factor(cluster))
-}
-
-#-------------------------------------
-# vcovCR with defaults
-#-------------------------------------
-
-vcovCR.rma.mv <- function(obj, cluster, type, target, inverse_var) {
-  if (missing(cluster)) cluster <- findCluster.rma.mv(obj)
-  if (missing(target)) {
-    target <- NULL
-    inverse_var <- is.null(obj$W)
-  } else {
-    if (missing(inverse_var)) inverse_var <- FALSE
-  }
-  vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
 }

@@ -1,3 +1,40 @@
+#-------------------------------------
+# vcovCR with defaults
+#-------------------------------------
+
+#' Cluster-robust variance-covariance matrix for a rma.uni object.
+#' 
+#' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
+#' of a set of regression coefficient estimates from a 
+#' \code{\link[metafor]{rma.uni}} object.
+#' 
+#' @param cluster Expression or vector indicating which observations 
+#'   belong to the same cluster. Required for \code{rma.uni} objects.
+#' @param target Optional matrix or vector describing the working 
+#'   variance-covariance model used to calculate the \code{CR2} and \code{CR4} 
+#'   adjustment matrices. If not specified, the target is taken to be diagonal
+#'   with entries equal to the estimated marginal variance of the effect sizes. 
+#' @inheritParams vcovCR
+#'   
+#' @return An object of class \code{c("vcovCR","clubSandwich")}, which consists 
+#'   of a matrix of the estimated variance of and covariances between the 
+#'   regression coefficient estimates.
+#'   
+#' @seealso \code{\link{vcovCR}}
+#'   
+#' @export
+
+vcovCR.rma.uni <- function(obj, cluster, type, target, inverse_var) {
+  if (missing(cluster)) stop("You must specify a clustering variable.")
+  if (missing(target)) {
+    target <- NULL
+    inverse_var <- is.null(obj$weights) & obj$weighted
+  } else {
+    if (missing(inverse_var)) inverse_var <- FALSE
+  }
+  vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
+}
+
 # coef()
 # residuals_CR()
 # vcov()
@@ -26,19 +63,4 @@ weightMatrix.rma.uni <- function(obj) {
     wi <- rep(1, obj$k)
   }
   wi
-}
-
-#-------------------------------------
-# vcovCR with defaults
-#-------------------------------------
-
-vcovCR.rma.uni <- function(obj, cluster, type, target, inverse_var) {
-  if (missing(cluster)) stop("You must specify a clustering variable.")
-  if (missing(target)) {
-    target <- NULL
-    inverse_var <- is.null(obj$weights) & obj$weighted
-  } else {
-    if (missing(inverse_var)) inverse_var <- FALSE
-  }
-  vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
 }

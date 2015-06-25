@@ -7,46 +7,44 @@
 vcovCR(obj, cluster, type, target, inverse_var)
 }
 \arguments{
-\item{obj}{Fitted model for which to calcualte the variance-covariance
-matrix}
+\item{obj}{Fitted model for which to calcualte the variance-covariance matrix}
 
-\item{cluster}{Expression or vector indicating which observations belong
-to the same cluster. For some classes, the cluster will be detected
+\item{cluster}{Expression or vector indicating which observations belong to
+the same cluster. For some classes, the cluster will be detected
 automatically if not specified.}
 
-\item{type}{Character string specifying which small-sample adjustment
-should be used.}
+\item{type}{Character string specifying which small-sample adjustment should
+be used.}
 
-\item{target}{Matrix or vector describing the working variance-covariance model used to calculate
-the \code{CR2} and \code{CR4} adjustment matrices. If a vector, the target matrix is assumed to be diagonal.
-If not specified, \code{vcovCR} will attempt to infer a value.}
+\item{target}{Optional matrix or vector describing the working
+variance-covariance model used to calculate the \code{CR2} and \code{CR4}
+adjustment matrices. If a vector, the target matrix is assumed to be
+diagonal. If not specified, \code{vcovCR} will attempt to infer a value.}
 
-\item{inverse_var}{Logical indicating whether the weights used in fitting the
-  model are inverse-variance. If not specified, \code{vcovCR} will attempt to
-  infer a value.}
+\item{inverse_var}{Optional logical indicating whether the weights used in
+  fitting the model are inverse-variance. If not specified, \code{vcovCR}
+  will attempt to infer a value.}
 }
 \value{
-An object of class \code{c("vcovCR","clubSandwich")}, which consists of
-a matrix of the estimated variance of and covariances between the regression coefficient
-estimates. The matrix has several attributes:
-\describe{
-  \item{type}{indicates which small-sample adjustment was used}
-  \item{cluster}{contains the factor vector that defines independent clusters}
-  \item{estmats}{contains a list of adjustment matrices used to calculate the
-  sandwich estimator, which are needed for calculating small-sample corrections for Wald tests}
-  \item{target}{contains the working variance-covariance model used to calculate
-  the adjustment matrices. This is also needed for calculating small-sample corrections
-  for Wald tests.}
-}
+An object of class \code{c("vcovCR","clubSandwich")}, which consists
+  of a matrix of the estimated variance of and covariances between the
+  regression coefficient estimates. The matrix has several attributes:
+  \describe{ \item{type}{indicates which small-sample adjustment was used}
+  \item{cluster}{contains the factor vector that defines independent
+  clusters} \item{estmats}{contains a list of adjustment matrices used to
+  calculate the sandwich estimator, which are needed for calculating
+  small-sample corrections for Wald tests} \item{target}{contains the working
+  variance-covariance model used to calculate the adjustment matrices. This
+  is also needed for calculating small-sample corrections for Wald tests.} }
 }
 \description{
-\code{vcovCR} returns a sandwich estimate of the variance-covariance matrix
-of a set of regression coefficient estimates.
+This is a generic function, with specific methods defined for
+\code{\link[stats]{lm}}, \code{\link[plm]{plm}}, \code{\link[nlme]{gls}},
+\code{\link[nlme]{lme}}, \code{\link[robumeta]{robu}}, \code{\link[metafor]{rma.uni}}, and \code{\link[metafor]{rma.mv}} objects.
 }
 \details{
-This is a generic function, with specific methods defined for
-\code{\link[stats]{lm}}, \code{\link[plm]{plm}}, gls, lme, robu, rma.uni, and rma.mv
-objects.
+\code{vcovCR} returns a sandwich estimate of the variance-covariance matrix
+of a set of regression coefficient estimates.
 }
 \seealso{
 \code{\link{vcovCR.lm}}, \code{\link{vcovCR.plm}},
