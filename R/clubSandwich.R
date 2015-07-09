@@ -45,6 +45,9 @@
 
 vcovCR <- function(obj, cluster, type, target, inverse_var) UseMethod("vcovCR")
 
+vcovCR.default <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) 
+  vcov_CR(obj, cluster, type, target, inverse_var)
+
 #---------------------------------------------
 # Cluster-robust variance estimator
 #---------------------------------------------
