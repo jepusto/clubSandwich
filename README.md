@@ -10,3 +10,12 @@ Tests of multiple-contrast hypotheses use adjustments based on a Hotelling's T-s
 approximation. Methods are provided for a variety of fitted models, including 
 `lm`, `plm` (from package `plm`), `gls` and `lme` (from `nlme`), `robu` (from `robumeta`), and 
 `rma.uni` and `rma.mv` (from `metafor`). 
+
+# Installing clubSandwich
+
+Currently, the package is only available here on Github. To install it, type the following commands in the R console:
+```{r}
+install.packages("devtools")
+library(devtools)
+install_github("jepusto/clubSandwich")
+```
