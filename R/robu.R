@@ -37,9 +37,9 @@ vcovCR.robu <- function(obj, cluster, type, target, inverse_var) {
 # coefficients
 #-----------------------------------------------
 
-coef.robu <- function(object, ...) {
-  beta <- as.vector(object$b.r)
-  labs <- object$reg_table$labels
+coef_CR.robu <- function(obj) {
+  beta <- as.vector(obj$b.r)
+  labs <- obj$reg_table$labels
   names(beta) <- levels(labs)[labs]
   beta
 }
@@ -48,9 +48,9 @@ coef.robu <- function(object, ...) {
 # residuals
 #-----------------------------------------------
 
-residuals.robu <- function(object, ...) {
-  ord <- order(order(object$study_orig_id))
-  object$data.full$e.r[ord]
+residuals_CR.robu <- function(obj) {
+  ord <- order(order(obj$study_orig_id))
+  obj$data.full$e.r[ord]
 }
 
 
@@ -58,9 +58,9 @@ residuals.robu <- function(object, ...) {
 # Model matrix
 #-----------------------------------------------
 
-model.matrix.robu <- function(object, ...) {
-  ord <- order(order(object$study_orig_id))
-  object$Xreg[ord,]
+model_matrix.robu <- function(obj) {
+  ord <- order(order(obj$study_orig_id))
+  obj$Xreg[ord,]
 }
 
 #-------------------------------------
