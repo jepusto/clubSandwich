@@ -17,6 +17,11 @@ get_constraint_mat <- function(obj, constraints) {
           if (sum(constraints) == 0) stop("You must specify at least one constraint.")
           diag(1L, nrow = p)[constraints,,drop=FALSE]              
         },
+        numeric = {
+          if (any(!(constraints %in% 1:p))) stop(paste0("Constraint indices must be less than or equal to ",p,"."))
+          if (length(constraints) == 0) stop("You must specify at least one constraint.")
+          diag(1L, nrow = p)[constraints,,drop=FALSE]              
+        },
         integer = {
           if (any(!(constraints %in% 1:p))) stop(paste0("Constraint indices must be less than or equal to ",p,"."))
           if (length(constraints) == 0) stop("You must specify at least one constraint.")
@@ -253,6 +258,8 @@ Wald_testing <- function(C_mat, beta, vcov, test, S_array) {
 #---------------------------------------------
 # print method for Wald_test
 #---------------------------------------------
+
+#' @export
 
 print.Wald_test_clubSandwich <- function(x, digits = 3, ...) {
   p_val <- format.pval(x$p_val, digits = digits, eps = 10^-digits)

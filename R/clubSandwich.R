@@ -116,6 +116,8 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
 # print method for vcovCR
 #---------------------------------------------
 
+#' @export
+
 print.clubSandwich <- function(x, ...) {
   attr(x, "type") <- NULL
   attr(x, "cluster") <- NULL

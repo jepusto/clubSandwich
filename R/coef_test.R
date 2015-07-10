@@ -116,6 +116,8 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", Ex_method = "model", ..
 # print method for coef_test
 #---------------------------------------------
 
+#' @export
+
 print.coef_test_clubSandwich <- function(x, digits = 3, ...) {
   res <- data.frame("Coef" = rownames(x), "Estimate" = x$beta, "Std. Error" = x$SE)
   if ("df" %in% names(x)) {
