@@ -23,7 +23,7 @@ Satterthwaite <- function(beta, SE, S_array, Ex_method = "model") {
 #---------------------------------------------
 
 saddlepoint_pval <- function(t, Q) {
-  eig <- eigen(Q)$values
+  eig <- eigen(Q, symmetric = TRUE, only.value=TRUE)$values
   g <- c(1, -t^2 * eig / sum(eig))
   s_eq <- function(s) sum(g / (1 - 2 * g * s))
   s_range <- if (s_eq(0) > 0) c(1 / (2 * min(g)), 0) else c(0, 1 / (2 * max(g)))
