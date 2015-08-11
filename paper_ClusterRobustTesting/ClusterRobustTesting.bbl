@@ -1,0 +1,68 @@
+\begin{thebibliography}{xx}
+
+\harvarditem{Angrist \harvardand\ Pischke}{2009}{Angrist2009mostly}
+Angrist, J.~D. \harvardand\ Pischke, J.  \harvardyearleft 2009\harvardyearright
+  , {\em {Mostly harmless econometrics: An empiricist's companion}}, Princeton
+  University Press, Princeton, NJ.
+
+\harvarditem[Brewer et~al.]{Brewer, Crossley \harvardand\
+  Joyce}{2013}{Brewer2013inference}
+Brewer, M., Crossley, T.~F. \harvardand\ Joyce, R.  \harvardyearleft
+  2013\harvardyearright , {Inference with difference-in-differences revisited}.
+
+\harvarditem[Cameron et~al.]{Cameron, Gelbach \harvardand\
+  Miller}{2008}{Cameron2008bootstrap}
+Cameron, A.~C., Gelbach, J.~B. \harvardand\ Miller, D.  \harvardyearleft
+  2008\harvardyearright , `{Bootstrap-based improvements for inference with
+  clustered errors}', {\em The Review of Economics and Statistics} {\bf
+  90}(3),~414--427.
+
+\harvarditem{Cameron \harvardand\ Miller}{2015}{Cameron2015practitioners}
+Cameron, A.~C. \harvardand\ Miller, D.~L.  \harvardyearleft
+  2015\harvardyearright , {A practitioner's guide to cluster-robust inference}.
+
+\harvarditem[Carter et~al.]{Carter, Schnepel \harvardand\
+  Steigerwald}{2013}{Carter2013asymptotic}
+Carter, A.~V., Schnepel, K.~T. \harvardand\ Steigerwald, D.~G.
+  \harvardyearleft 2013\harvardyearright , `{Asymptotic Behavior of a t Test
+  Robust to Cluster Heterogeneity}',  pp.~1--32.
+
+\harvarditem{Ibragimov \harvardand\ M\"{u}ller}{2010}{Ibragimov2010tstatistic}
+Ibragimov, R. \harvardand\ M\"{u}ller, U.~K.  \harvardyearleft
+  2010\harvardyearright , `{t-Statistic based correlation and heterogeneity
+  robust inference}', {\em Journal of Business \& Economic Statistics} {\bf
+  28}(4),~453--468.
+
+\harvarditem{Imbens \harvardand\ Kolesar}{2012}{Imbens2012robust}
+Imbens, G.~W. \harvardand\ Kolesar, M.  \harvardyearleft 2012\harvardyearright
+  , {Robust standard errors in small samples: some practical advice}.
+\newline\harvardurl{http://www.nber.org/papers/w18478}
+
+\harvarditem{Kezdi}{2004}{Kezdi2004robust}
+Kezdi, G.  \harvardyearleft 2004\harvardyearright , {Robust standard error
+  estimation in fixed-effects panel models}.
+\newline\harvardurl{http://papers.ssrn.com/sol3/Delivery.cfm?abstractid=596988}
+
+\harvarditem{Kline \harvardand\ Santos}{2012}{Kline2012score}
+Kline, P. \harvardand\ Santos, A.  \harvardyearleft 2012\harvardyearright , `{A
+  score based approach to wild bootstrap inference}', {\em Journal of
+  Econometric Methods} {\bf 1}(1).
+
+\harvarditem{McCaffrey \harvardand\ Bell}{2006}{McCaffrey2006improved}
+McCaffrey, D.~F. \harvardand\ Bell, R.~M.  \harvardyearleft
+  2006\harvardyearright , `{Improved hypothesis testing for coefficients in
+  generalized estimating equations with small samples of clusters.}', {\em
+  Statistics in medicine} {\bf 25}(23),~4081--98.
+
+\harvarditem[McCaffrey et~al.]{McCaffrey, Bell \harvardand\
+  Botts}{2001}{McCaffrey2001generalizations}
+McCaffrey, D.~F., Bell, R.~M. \harvardand\ Botts, C.~H.  \harvardyearleft
+  2001\harvardyearright , {Generalizations of biased reduced linearization},
+  {\em in} `Proceedings of the Annual Meeting of the American Statistical
+  Association', number 1994.
+
+\harvarditem{Webb \harvardand\ MacKinnon}{2013}{Webb2013wild}
+Webb, M. \harvardand\ MacKinnon, J.~G.  \harvardyearleft 2013\harvardyearright
+  , {Wild Bootstrap Inference for Wildly Different Cluster Sizes}.
+
+\end{thebibliography}
