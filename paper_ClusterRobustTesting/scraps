@@ -1,0 +1,1 @@
+(However, \citet{Cameron2015practitioners} note that the correction factor used in Stata is sensitive to how the model is estimated, because it is a function of the dimension of the covariate matrix.)

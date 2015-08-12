@@ -5,6 +5,12 @@ Angrist, J.~D. \harvardand\ Pischke, J.  \harvardyearleft 2009\harvardyearright
   , {\em {Mostly harmless econometrics: An empiricist's companion}}, Princeton
   University Press, Princeton, NJ.
 
+\harvarditem{Bell \harvardand\ McCaffrey}{2002}{Bell2002bias}
+Bell, R.~M. \harvardand\ McCaffrey, D.~F.  \harvardyearleft
+  2002\harvardyearright , `{Bias reduction in standard errors for linear
+  regression with multi-stage samples}', {\em Survey Methodology} {\bf
+  28}(2),~169--181.
+
 \harvarditem[Brewer et~al.]{Brewer, Crossley \harvardand\
   Joyce}{2013}{Brewer2013inference}
 Brewer, M., Crossley, T.~F. \harvardand\ Joyce, R.  \harvardyearleft
@@ -47,6 +53,12 @@ Kezdi, G.  \harvardyearleft 2004\harvardyearright , {Robust standard error
 Kline, P. \harvardand\ Santos, A.  \harvardyearleft 2012\harvardyearright , `{A
   score based approach to wild bootstrap inference}', {\em Journal of
   Econometric Methods} {\bf 1}(1).
+
+\harvarditem{MacKinnon \harvardand\ White}{1985}{MacKinnon1985some}
+MacKinnon, J.~G. \harvardand\ White, H.  \harvardyearleft 1985\harvardyearright
+  , `{Some heteroskedasticity-consistent covariance matrix estimators with
+  improved finite sample properties}', {\em Journal of Econometrics} {\bf
+  29},~305--325.
 
 \harvarditem{McCaffrey \harvardand\ Bell}{2006}{McCaffrey2006improved}
 McCaffrey, D.~F. \harvardand\ Bell, R.~M.  \harvardyearleft
