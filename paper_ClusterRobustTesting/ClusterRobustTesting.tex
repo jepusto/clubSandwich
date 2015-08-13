@@ -345,6 +345,33 @@ If the fixed effects specification includes terms that are not strictly nested w
 \section{Hypothesis testing}
 \label{sec:testing}
 
+Wald-type test statistics based on CRVEs are often used to test hypotheses regarding and construct confidence intervals for the coefficients in the regression specification. 
+Such procedures are justified based on the asymptotic behavior of robust Wald statistics as the number of clusters grows large (i.e., $m \to \infty$). 
+However, evidence from a wide variety of contexts indicates that the asymptotic results can be a very poor approximation when the number of clusters is small, even when small-sample corrections such as CR2a or CR3 are used \citep{Bell2002bias, Bertrand2004how, Cameron2008bootstrap}. 
+Furthermore, the accuracy of asymptotic approximations depends on design features such as the degree of imbalance in the covariates, skewness of the covariates, and similarity of cluster sizes \citep{McCaffrey2001generalizations, Tipton2015small, Webb2013wild}. 
+Consequently, no simple rule-of-thumb exists for what constitutes an adequate sample size to use an asymptotic test. 
+
+In this section, we consider methods for obtaining hypothesis tests with more accurate rejection rates. 
+We first review extant procedures for single-constraint hypotheses (i.e., t-tests) and then propose a method for testing multiple-constraint hypotheses (i.e., F-tests). 
+For both types of tests, small-sample approximations involve the distribution of the entries of $\bm{V}^{CR}$. 
+The following results will be used in the remainder. 
+
+First, note that any of the CRVEs described in the previous section can be written in the form $\bm{V}^{CR} = \sum_{j=1}^M \bm{T}_j \bm{e}_j \bm{e}_j' \bm{T}_j'$ for some $p \times n_j$ matrices $\bm{T}_j$. 
+The form of the $\bm{T}_j$ matrices depends on which variance estimator is used: $\bm{T}_j = \bm{M}\bm{X}_j' \bm{W}_j$ for CR0, $\bm{T}_j = \bm{M} \bm{X}_j' \bm{W}_j \bm{A}_j$ for CR2a, $\bm{T}_j = \bm{M} \bm{D}_j \bm{X}_j' \bm{W}_j$ for CR2b, and $\bm{T}_j = \bm{M} \bm{X}_j' \bm{W}_j \left(\bm{I}_j - \bm{H}_{jj}\right)^{-1}$ for CR3.
+
+Next, let $\bm{u}_1,\bm{u}_2,\bm{u}_3,\bm{u}_4$ be fixed, $p \times 1$ vectors and consider the linear combination $\bm{u}_1' \bm{V}^{CR} \bm{u}_2$. 
+\citet[Theorem 4]{Bell2002bias} show that the linear combination is a quadratic form in $\bm{Y}$: \[
+\bm{u}_1' \bm{V}^{CR} \bm{u}_2 = \bm{Y}'\left(\sum_{j=1}^m \bm{t}_{2j} \bm{t}_{1j}'\right) \bm{Y}, \]
+for $N \times 1$ vectors $\bm{t}_{xj} = \left(\bm{I} - \bm{H}\right)_j' \bm{T}_j' \bm{u}_x$, $x = 1,...,4$, and $j = 1,...,m$. 
+
+Standard results regarding quadratic forms can be used to derive the moments of the linear combination. We now assume that $\bs\epsilon_1,...,\bs\epsilon_m$ are multivariate normal with zero mean and variance $\bs\Sigma$. It follows that 
+\begin{align}
+\E\left(\bm{u}_1' \bm{V}^{CR} \bm{u}_2\right) &= \sum_{j=1}^m \bm{t}_{1j}' \bs\Sigma \bm{t}_{2j} \\
+\Var\left(\bm{u}_1' \bm{V}^{CR} \bm{u}_2\right) &= \sum_{i=1}^m \sum_{j=1}^m \left(\bm{t}_{1i}' \bs\Sigma \bm{t}_{2j}\right)^2 + \bm{t}_{1i}' \bs\Sigma \bm{1}_{1j} \bm{t}_{2i}' \bs\Sigma \bm{t}_{2j} \\
+\Cov\left(\bm{u}_1' \bm{V}^{CR} \bm{u}_2, \bm{u}_3' \bm{V}^{CR} \bm{u}_4\right) &= \sum_{i=1}^m \sum_{j=1}^m \bm{t}_{1i}' \bs\Sigma \bm{t}_{4j} \bm{t}_{2i}' \bs\Sigma \bm{t}_{3j} + \bm{t}_{1i}' \bs\Sigma \bm{t}_{3j} \bm{t}_{2i}' \bs\Sigma \bm{t}_{4j}.
+\end{align}
+
+
 \subsection{Single-constraint tests}
 
 \subsection{Multiple-constraint tests}
