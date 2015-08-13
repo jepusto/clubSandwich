@@ -1,308 +1,80 @@
-\begin{thebibliography}{}
+\begin{thebibliography}{xx}
 
-\bibitem [\protect \citeauthoryear {%
-Brewer%
-, Crossley%
-\BCBL {}\ \BBA {} Joyce%
-}{%
-Brewer%
-\ \protect \BOthers {.}}{%
-{\protect \APACyear {2013}}%
-}]{%
-Brewer2013inference}
-\APACinsertmetastar {%
-Brewer2013inference}%
-\begin{APACrefauthors}%
-Brewer, M.%
-, Crossley, T\BPBI F.%
-\BCBL {}\ \BBA {} Joyce, R.%
-\end{APACrefauthors}%
-\unskip\
-\newblock
-\APACrefYearMonthDay{2013}{}{}.
-\newblock
-\APACrefbtitle {{Inference with difference-in-differences revisited}}
-  {{Inference with difference-in-differences revisited}}\ (\BNUM\ 7742).
-\newblock
-Bonn, Germany.
-\PrintBackRefs{\CurrentBib}
+\harvarditem{Angrist \harvardand\ Pischke}{2009}{Angrist2009mostly}
+Angrist, J.~D. \harvardand\ Pischke, J.  \harvardyearleft 2009\harvardyearright
+  , {\em {Mostly harmless econometrics: An empiricist's companion}}, Princeton
+  University Press, Princeton, NJ.
 
-\bibitem [\protect \citeauthoryear {%
-Cameron%
-, Gelbach%
-\BCBL {}\ \BBA {} Miller%
-}{%
-Cameron%
-\ \protect \BOthers {.}}{%
-{\protect \APACyear {2008}}%
-}]{%
-Cameron2008bootstrap}
-\APACinsertmetastar {%
-Cameron2008bootstrap}%
-\begin{APACrefauthors}%
-Cameron, A\BPBI C.%
-, Gelbach, J\BPBI B.%
-\BCBL {}\ \BBA {} Miller, D.%
-\end{APACrefauthors}%
-\unskip\
-\newblock
-\APACrefYearMonthDay{2008}{}{}.
-\newblock
-{\BBOQ}\APACrefatitle {{Bootstrap-based improvements for inference with
-  clustered errors}} {{Bootstrap-based improvements for inference with
-  clustered errors}}.{\BBCQ}
-\newblock
-\APACjournalVolNumPages{The Review of Economics and
-  Statistics}{90}{3}{414--427}.
-\PrintBackRefs{\CurrentBib}
+\harvarditem{Bell \harvardand\ McCaffrey}{2002}{Bell2002bias}
+Bell, R.~M. \harvardand\ McCaffrey, D.~F.  \harvardyearleft
+  2002\harvardyearright , `{Bias reduction in standard errors for linear
+  regression with multi-stage samples}', {\em Survey Methodology} {\bf
+  28}(2),~169--181.
 
-\bibitem [\protect \citeauthoryear {%
-Cameron%
-\ \BBA {} Miller%
-}{%
-Cameron%
-\ \BBA {} Miller%
-}{%
-{\protect \APACyear {2015}}%
-}]{%
-Cameron2015practitioners}
-\APACinsertmetastar {%
-Cameron2015practitioners}%
-\begin{APACrefauthors}%
-Cameron, A\BPBI C.%
-\BCBT {}\ \BBA {} Miller, D\BPBI L.%
-\end{APACrefauthors}%
-\unskip\
-\newblock
-\APACrefYearMonthDay{2015}{}{}.
-\newblock
-\APACrefbtitle {{A practitioner's guide to cluster-robust inference}.} {{A
-  practitioner's guide to cluster-robust inference}.}
-\PrintBackRefs{\CurrentBib}
+\harvarditem[Brewer et~al.]{Brewer, Crossley \harvardand\
+  Joyce}{2013}{Brewer2013inference}
+Brewer, M., Crossley, T.~F. \harvardand\ Joyce, R.  \harvardyearleft
+  2013\harvardyearright , {Inference with difference-in-differences revisited}.
 
-\bibitem [\protect \citeauthoryear {%
-Carter%
-, Schnepel%
-\BCBL {}\ \BBA {} Steigerwald%
-}{%
-Carter%
-\ \protect \BOthers {.}}{%
-{\protect \APACyear {2013}}%
-}]{%
-Carter2013asymptotic}
-\APACinsertmetastar {%
-Carter2013asymptotic}%
-\begin{APACrefauthors}%
-Carter, A\BPBI V.%
-, Schnepel, K\BPBI T.%
-\BCBL {}\ \BBA {} Steigerwald, D\BPBI G.%
-\end{APACrefauthors}%
-\unskip\
-\newblock
-\APACrefYearMonthDay{2013}{}{}.
-\newblock
-{\BBOQ}\APACrefatitle {{Asymptotic Behavior of a t Test Robust to Cluster
-  Heterogeneity}} {{Asymptotic Behavior of a t Test Robust to Cluster
-  Heterogeneity}}.{\BBCQ}
-\newblock
-\APACjournalVolNumPages{}{}{}{1--32}.
-\PrintBackRefs{\CurrentBib}
+\harvarditem[Cameron et~al.]{Cameron, Gelbach \harvardand\
+  Miller}{2008}{Cameron2008bootstrap}
+Cameron, A.~C., Gelbach, J.~B. \harvardand\ Miller, D.  \harvardyearleft
+  2008\harvardyearright , `{Bootstrap-based improvements for inference with
+  clustered errors}', {\em The Review of Economics and Statistics} {\bf
+  90}(3),~414--427.
 
-\bibitem [\protect \citeauthoryear {%
-Ibragimov%
-\ \BBA {} M\"{u}ller%
-}{%
-Ibragimov%
-\ \BBA {} M\"{u}ller%
-}{%
-{\protect \APACyear {2010}}%
-}]{%
-Ibragimov2010tstatistic}
-\APACinsertmetastar {%
-Ibragimov2010tstatistic}%
-\begin{APACrefauthors}%
-Ibragimov, R.%
-\BCBT {}\ \BBA {} M\"{u}ller, U\BPBI K.%
-\end{APACrefauthors}%
-\unskip\
-\newblock
-\APACrefYearMonthDay{2010}{}{}.
-\newblock
-{\BBOQ}\APACrefatitle {{t-Statistic based correlation and heterogeneity robust
-  inference}} {{t-Statistic based correlation and heterogeneity robust
-  inference}}.{\BBCQ}
-\newblock
-\APACjournalVolNumPages{Journal of Business \& Economic
-  Statistics}{28}{4}{453--468}.
-\newblock
-\begin{APACrefDOI} \doi{10.1198/jbes.2009.08046} \end{APACrefDOI}
-\PrintBackRefs{\CurrentBib}
+\harvarditem{Cameron \harvardand\ Miller}{2015}{Cameron2015practitioners}
+Cameron, A.~C. \harvardand\ Miller, D.~L.  \harvardyearleft
+  2015\harvardyearright , {A practitioner's guide to cluster-robust inference}.
 
-\bibitem [\protect \citeauthoryear {%
-Imbens%
-\ \BBA {} Kolesar%
-}{%
-Imbens%
-\ \BBA {} Kolesar%
-}{%
-{\protect \APACyear {2012}}%
-}]{%
-Imbens2012robust}
-\APACinsertmetastar {%
-Imbens2012robust}%
-\begin{APACrefauthors}%
-Imbens, G\BPBI W.%
-\BCBT {}\ \BBA {} Kolesar, M.%
-\end{APACrefauthors}%
-\unskip\
-\newblock
-\APACrefYearMonthDay{2012}{}{}.
-\newblock
-\APACrefbtitle {{Robust standard errors in small samples: some practical
-  advice}.} {{Robust standard errors in small samples: some practical advice}.}
-\newblock
-Cambridge, MA.
-\newblock
-\begin{APACrefURL} \url{http://www.nber.org/papers/w18478} \end{APACrefURL}
-\PrintBackRefs{\CurrentBib}
+\harvarditem[Carter et~al.]{Carter, Schnepel \harvardand\
+  Steigerwald}{2013}{Carter2013asymptotic}
+Carter, A.~V., Schnepel, K.~T. \harvardand\ Steigerwald, D.~G.
+  \harvardyearleft 2013\harvardyearright , `{Asymptotic Behavior of a t Test
+  Robust to Cluster Heterogeneity}',  pp.~1--32.
 
-\bibitem [\protect \citeauthoryear {%
-Kezdi%
-}{%
-Kezdi%
-}{%
-{\protect \APACyear {2004}}%
-}]{%
-Kezdi2004robust}
-\APACinsertmetastar {%
-Kezdi2004robust}%
-\begin{APACrefauthors}%
-Kezdi, G.%
-\end{APACrefauthors}%
-\unskip\
-\newblock
-\APACrefYearMonthDay{2004}{}{}.
-\newblock
-\APACrefbtitle {{Robust standard error estimation in fixed-effects panel
-  models}.} {{Robust standard error estimation in fixed-effects panel models}.}
-\newblock
-\begin{APACrefURL}
-  \url{http://papers.ssrn.com/sol3/Delivery.cfm?abstractid=596988}
-  \end{APACrefURL}
-\PrintBackRefs{\CurrentBib}
+\harvarditem{Ibragimov \harvardand\ M\"{u}ller}{2010}{Ibragimov2010tstatistic}
+Ibragimov, R. \harvardand\ M\"{u}ller, U.~K.  \harvardyearleft
+  2010\harvardyearright , `{t-Statistic based correlation and heterogeneity
+  robust inference}', {\em Journal of Business \& Economic Statistics} {\bf
+  28}(4),~453--468.
 
-\bibitem [\protect \citeauthoryear {%
-Kline%
-\ \BBA {} Santos%
-}{%
-Kline%
-\ \BBA {} Santos%
-}{%
-{\protect \APACyear {2012}}%
-}]{%
-Kline2012score}
-\APACinsertmetastar {%
-Kline2012score}%
-\begin{APACrefauthors}%
-Kline, P.%
-\BCBT {}\ \BBA {} Santos, A.%
-\end{APACrefauthors}%
-\unskip\
-\newblock
-\APACrefYearMonthDay{2012}{}{}.
-\newblock
-{\BBOQ}\APACrefatitle {{A score based approach to wild bootstrap inference}}
-  {{A score based approach to wild bootstrap inference}}.{\BBCQ}
-\newblock
-\APACjournalVolNumPages{Journal of Econometric Methods}{1}{1}{}.
-\newblock
-\begin{APACrefDOI} \doi{10.1515/2156-6674.1006} \end{APACrefDOI}
-\PrintBackRefs{\CurrentBib}
+\harvarditem{Imbens \harvardand\ Kolesar}{2012}{Imbens2012robust}
+Imbens, G.~W. \harvardand\ Kolesar, M.  \harvardyearleft 2012\harvardyearright
+  , {Robust standard errors in small samples: some practical advice}.
+\newline\harvardurl{http://www.nber.org/papers/w18478}
 
-\bibitem [\protect \citeauthoryear {%
-McCaffrey%
-\ \BBA {} Bell%
-}{%
-McCaffrey%
-\ \BBA {} Bell%
-}{%
-{\protect \APACyear {2006}}%
-}]{%
-McCaffrey2006improved}
-\APACinsertmetastar {%
-McCaffrey2006improved}%
-\begin{APACrefauthors}%
-McCaffrey, D\BPBI F.%
-\BCBT {}\ \BBA {} Bell, R\BPBI M.%
-\end{APACrefauthors}%
-\unskip\
-\newblock
-\APACrefYearMonthDay{2006}{}{}.
-\newblock
-{\BBOQ}\APACrefatitle {{Improved hypothesis testing for coefficients in
-  generalized estimating equations with small samples of clusters.}} {{Improved
-  hypothesis testing for coefficients in generalized estimating equations with
-  small samples of clusters.}}{\BBCQ}
-\newblock
-\APACjournalVolNumPages{Statistics in medicine}{25}{23}{4081--98}.
-\newblock
-\begin{APACrefDOI} \doi{10.1002/sim.2502} \end{APACrefDOI}
-\PrintBackRefs{\CurrentBib}
+\harvarditem{Kezdi}{2004}{Kezdi2004robust}
+Kezdi, G.  \harvardyearleft 2004\harvardyearright , {Robust standard error
+  estimation in fixed-effects panel models}.
+\newline\harvardurl{http://papers.ssrn.com/sol3/Delivery.cfm?abstractid=596988}
 
-\bibitem [\protect \citeauthoryear {%
-McCaffrey%
-, Bell%
-\BCBL {}\ \BBA {} Botts%
-}{%
-McCaffrey%
-\ \protect \BOthers {.}}{%
-{\protect \APACyear {2001}}%
-}]{%
-McCaffrey2001generalizations}
-\APACinsertmetastar {%
-McCaffrey2001generalizations}%
-\begin{APACrefauthors}%
-McCaffrey, D\BPBI F.%
-, Bell, R\BPBI M.%
-\BCBL {}\ \BBA {} Botts, C\BPBI H.%
-\end{APACrefauthors}%
-\unskip\
-\newblock
-\APACrefYearMonthDay{2001}{}{}.
-\newblock
-{\BBOQ}\APACrefatitle {{Generalizations of biased reduced linearization}}
-  {{Generalizations of biased reduced linearization}}.{\BBCQ}
-\newblock
-\BIn{} \APACrefbtitle {Proceedings of the Annual Meeting of the American
-  Statistical Association.} {Proceedings of the annual meeting of the american
-  statistical association.}
-\PrintBackRefs{\CurrentBib}
+\harvarditem{Kline \harvardand\ Santos}{2012}{Kline2012score}
+Kline, P. \harvardand\ Santos, A.  \harvardyearleft 2012\harvardyearright , `{A
+  score based approach to wild bootstrap inference}', {\em Journal of
+  Econometric Methods} {\bf 1}(1).
 
-\bibitem [\protect \citeauthoryear {%
-Webb%
-\ \BBA {} MacKinnon%
-}{%
-Webb%
-\ \BBA {} MacKinnon%
-}{%
-{\protect \APACyear {2013}}%
-}]{%
-Webb2013wild}
-\APACinsertmetastar {%
-Webb2013wild}%
-\begin{APACrefauthors}%
-Webb, M.%
-\BCBT {}\ \BBA {} MacKinnon, J\BPBI G.%
-\end{APACrefauthors}%
-\unskip\
-\newblock
-\APACrefYearMonthDay{2013}{}{}.
-\newblock
-\APACrefbtitle {{Wild Bootstrap Inference for Wildly Different Cluster Sizes}}
-  {{Wild Bootstrap Inference for Wildly Different Cluster Sizes}}\ (\BNUM\
-  1314).
-\newblock
-Kingston, Ontario, Canada.
-\PrintBackRefs{\CurrentBib}
+\harvarditem{MacKinnon \harvardand\ White}{1985}{MacKinnon1985some}
+MacKinnon, J.~G. \harvardand\ White, H.  \harvardyearleft 1985\harvardyearright
+  , `{Some heteroskedasticity-consistent covariance matrix estimators with
+  improved finite sample properties}', {\em Journal of Econometrics} {\bf
+  29},~305--325.
+
+\harvarditem{McCaffrey \harvardand\ Bell}{2006}{McCaffrey2006improved}
+McCaffrey, D.~F. \harvardand\ Bell, R.~M.  \harvardyearleft
+  2006\harvardyearright , `{Improved hypothesis testing for coefficients in
+  generalized estimating equations with small samples of clusters.}', {\em
+  Statistics in medicine} {\bf 25}(23),~4081--98.
+
+\harvarditem[McCaffrey et~al.]{McCaffrey, Bell \harvardand\
+  Botts}{2001}{McCaffrey2001generalizations}
+McCaffrey, D.~F., Bell, R.~M. \harvardand\ Botts, C.~H.  \harvardyearleft
+  2001\harvardyearright , {Generalizations of biased reduced linearization},
+  {\em in} `Proceedings of the Annual Meeting of the American Statistical
+  Association', number 1994.
+
+\harvarditem{Webb \harvardand\ MacKinnon}{2013}{Webb2013wild}
+Webb, M. \harvardand\ MacKinnon, J.~G.  \harvardyearleft 2013\harvardyearright
+  , {Wild Bootstrap Inference for Wildly Different Cluster Sizes}.
 
 \end{thebibliography}

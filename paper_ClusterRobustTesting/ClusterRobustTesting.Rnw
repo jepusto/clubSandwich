@@ -1,27 +1,22 @@
-\documentclass[man, noextraspace, floatsintext]{apa6}
-\newcommand{\bibfile}{bibliography}
-
-\usepackage[natbibapa]{apacite}
-
-\raggedbottom
-
-\usepackage{amssymb}
+\documentclass[12pt]{article}
 \usepackage{amsmath}
-\usepackage{amsthm}
+\usepackage{graphicx,psfrag,epsf}
+\usepackage{enumerate}
+\usepackage{natbib}
 
-\usepackage{graphicx}
+%\pdfminorversion=4
+% NOTE: To produce blinded version, replace "0" with "1" below.
+\newcommand{\blind}{0}
 
-\usepackage{fixltx2e}
-\usepackage{subcaption}
-\usepackage{float}
+% DON'T change margins - should be 1 inch all around.
+\addtolength{\oddsidemargin}{-.7in}%
+\addtolength{\evensidemargin}{-.5in}%
+\addtolength{\textwidth}{1in}%
+\addtolength{\textheight}{1.3in}%
+\addtolength{\topmargin}{-.8in}%
 
-%\usepackage{array}
-%\usepackage{multirow}
-%\usepackage{rotating}
-%\setlength{\rotFPtop}{0pt plus 1fil}
-%\usepackage[draft]{changes}
-%\geometry{twoside=false, top=1in, bottom=1in, left=1in, right=1in}
-%\usepackage[textwidth=1in, textsize=tiny]{todonotes}
+\usepackage[textwidth=1in, textsize=tiny]{todonotes}
+%\usepackage[disable]{todonotes}
 
 \newcommand{\Prob}{\text{Pr}}
 \newcommand{\E}{\text{E}}
@@ -30,24 +25,57 @@
 \newcommand{\Var}{\text{Var}}
 \newcommand{\iid}{\stackrel{\text{iid}}{\sim}}
 \newcommand{\tr}{\text{tr}}
-\newcommand{\bM}{\mathbf}
-\newcommand{\bS}{\boldsymbol}
-
-
-\title{Small sample correction methods for cluster-robust variance estimators and hypothesis tests}
-\shorttitle{SMALL SAMPLE CLUSTER-ROBUST METHODS}
-\twoauthors{James E. Pustejovsky}{Elizabeth Tipton}
-\twoaffiliations{The University of Texas at Austin}{Columbia University}
-\leftheader{}
-
-\abstract{}
-
-\keywords{}
-
-\authornote{}
-
+\newcommand{\bm}{\mathbf}
+\newcommand{\bs}{\boldsymbol}
 
 \begin{document}
+
+\def\spacingset#1{\renewcommand{\baselinestretch}%
+{#1}\small\normalsize} \spacingset{1}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\if0\blind
+{
+  \title{\bf Small sample correction methods for cluster-robust variance estimators and hypothesis tests}
+  \author{\\James E. Pustejovsky\thanks{
+    The authors gratefully acknowledge \textit{please remember to list all relevant funding sources in the unblinded version}}\hspace{.2cm}\\
+    Department of Educational Psychology \\ 
+    University of Texas at Austin\\ \\
+    and \\ \\
+    Elizabeth Tipton \\
+    Department of Human Development \\ 
+    Teachers College, Columbia University}
+  \maketitle
+} \fi
+
+\if1\blind
+{
+  \bigskip
+  \bigskip
+  \bigskip
+  \begin{center}
+    {\LARGE\bf Small sample correction methods for cluster-robust variance estimators and hypothesis tests}
+\end{center}
+  \medskip
+} \fi
+
+\bigskip
+\begin{abstract}
+The text of your abstract.  200 or fewer words.
+\end{abstract}
+
+\noindent%
+{\it Keywords:}  3 to 6 keywords, that do not appear in the title
+\vfill
+
+\newpage
+\spacingset{1.45} % DON'T change the spacing!
+
+\section{Introduction}
+\label{sec:intro}
+
 <<setup, include=FALSE, warning=FALSE, cache=FALSE>>=
 library(knitr)
 library(xtable)
@@ -56,9 +84,7 @@ library(xtable)
 opts_chunk$set(echo = FALSE, cache = FALSE, fig.path='CR_fig/', fig.align='center', fig.show='hold')
 @
 
-\maketitle
-
-Cluster-robust variance estimators (CRVE) and hypothesis tests based upon such estimators are ubiquitous in applied econometric work. Nearly every respectable paper in the past 15 years uses cluster-robust variance estimators because to do otherwise would be to risk being seen as insufficiently rigorous (or worse, anti-conservative....ughh....how gauche!).
+Cluster-robust variance estimators (CRVE) and hypothesis tests based upon such estimators are ubiquitous in applied econometric work. Nearly every respectable paper in the past 15 years uses cluster-robust variance estimators because to do otherwise would be to risk being seen as insufficiently rigorous (or anti-conservative....ughh....how gauche!).
 
 There's been a lot of fretting recently that even CRVE may actually not be rigorous enough. Cite the following people so as not to get their ire up:
 \begin{itemize}
@@ -69,7 +95,7 @@ There's been a lot of fretting recently that even CRVE may actually not be rigor
 \item \citet{Ibragimov2010tstatistic}
 \item \citet{Imbens2012robust}
 \item \citet{Kezdi2004robust}
-\item \citet{McCaffrey2001generalizations}
+\item \citet{McCaffrey2001generalizations, Bell2002bias}
 \item \citet{McCaffrey2006improved}
 \item \citet{Webb2013wild}
 \item \citet{Kline2012score}
@@ -77,42 +103,207 @@ There's been a lot of fretting recently that even CRVE may actually not be rigor
 
 \subsection{Econometric framework}
 
-We will consider linear regression models in which the errors within a cluster have an unknown variance structure. The model is
+We will consider linear regression models in which the errors within a cluster have an unknown variance structure. 
+The model is
 \begin{equation}
 \label{eq:model_vector}
-\bM{Y}_j = \bM{X}_j \bS\beta + \bM{e}_j,
+\bm{Y}_j = \bm{X}_j \bs\beta + \bs\epsilon_j,
 \end{equation}
-for $j=1,...,m$, where $\bM{Y}_j$ is $n_j \times 1$, $\bM{X}_j$ is an $n_j \times p$ matrix of regressors for cluster $j$, $\bS\beta$ is a $p \times 1$ vector, and $\bM{e}_j$ is an $n_j \times 1$ vector of errors. Assume that $\E\left(\bM{e}_j\left|\bM{X}_j\right.\right) = \bM{0}$ and $\Var\left(\bM{e}_j\left|\bM{X}_j\right.\right) = \bS\Sigma_j$, for $j = 1,...,m$, where $\bS\Sigma_1,...,\bS\Sigma_m$ may be unknown. Let $\bS\Sigma = \bigoplus_{j=1}^m \bS\Sigma_j$.
+for $j=1,...,m$, where $\bm{Y}_j$ is $n_j \times 1$, $\bm{X}_j$ is an $n_j \times p$ matrix of regressors for cluster $j$, $\bs\beta$ is a $p \times 1$ vector, and $\bs\epsilon_j$ is an $n_j \times 1$ vector of errors. 
+Assume that $\E\left(\bs\epsilon_j\left|\bm{X}_j\right.\right) = \bm{0}$ and $\Var\left(\bs\epsilon_j\left|\bm{X}_j\right.\right) = \bs\Sigma_j$, for $j = 1,...,m$, where $\bs\Sigma_1,...,\bs\Sigma_m$ may be unknown, and the errors are independent across clusters. 
+Let $\bm{X} = \left(\bm{X}_1',\bm{X}_2',...,\bm{X}_m'\right)'$ and $\bs\Sigma = \bigoplus_{j=1}^m \bs\Sigma_j$. Additionally, let $N = \sum_{j=1}^m n_j$, let $\bm{I}$ denote an $N \times N$ identity matrix, and let $\bm{I}_j$ denote an $n_j \times n_j$ identity matrix.
 
-The vector of regression coefficients is estimated by weighted least squares (WLS). Given a set of $m$ weighting matrices $\bM{W}_1,...,\bM{W}_m$, the WLS estimator is 
+The vector of regression coefficients is estimated by weighted least squares (WLS). 
+Given a set of $m$ symmetric weighting matrices $\bm{W}_1,...,\bm{W}_m$, the WLS estimator is 
 \begin{equation}
 \label{eq:WLS}
-\bS{\hat\beta} = \bM{M} \sum_{j=1}^m \bM{X}_j' \bM{W}_j \bM{Y}_j, 
+\bs{\hat\beta} = \bm{M} \sum_{j=1}^m \bm{X}_j' \bm{W}_j \bm{Y}_j, 
 \end{equation}
-where $\bM{M} = \left(\sum_{j=1}^m \bM{X}_j' \bM{W}_j \bm{X}_j\right)^{-1}$.
+where $\bm{M} = \left(\sum_{j=1}^m \bm{X}_j' \bm{W}_j \bm{X}_j\right)^{-1}$. Let $\bm{W} = \bigoplus_{j=1}^m \bm{W}_j$. 
 
-Common choices for weighting include the unweighted case, in which $\bM{W}_j$ is an identity matrix of dimension $n_j \times n_j$, and inverse-variance weighting under a working model. In the latter case, the errors are assumed to follow some known structure, $\Var\left(\bM{e}_j\left|\bM{X}_j\right.\right) = \bS\Phi_j$, where $\bS\Phi_j$ is either known or a function of a low-dimensional parameter. The weighting matrices are then taken to be $\bM{W}_j = \bS\Phi_j^{-1}$, possibly based on estimates of the variance parameters. 
+Common choices for weighting include the unweighted case, in which $\bm{W}_j$ is an identity matrix of dimension $n_j \times n_j$, and inverse-variance weighting under a working model. 
+In the latter case, the errors are assumed to follow some known structure, $\Var\left(\bm{e}_j\left|\bm{X}_j\right.\right) = \bs\Phi_j$, where $\bs\Phi_j$ is a known function of a low-dimensional parameter and $\bs\Phi = \bigoplus_{j=1}^m \bs\Phi_j$. 
+The weighting matrices are then taken to be $\bm{W}_j = \hat{\bs\Phi}_j^{-1}$, where the $\hat{\bs\Phi}_j$ are constructed from estimates of the variance parameters.
 
-The WLS estimator also encompasses the estimator proposed by \citet{Ibragimov2010tstatistic} for clustered data. Assuming that $\bM{X}_j$ has rank $p$, their proposed approach involves estimating $\bS\beta$ separately within each cluster and taking the simple average of these estimates. The resulting average is equivalent to the WLS estimator with weights $\bM{W}_j = \bM{X}_j \left(\bM{X}_j'\bM{X}_j\right)^{-2} \bM{X}_j$.
+The WLS estimator also encompasses the estimator proposed by \citet{Ibragimov2010tstatistic} for clustered data. 
+Assuming that $\bm{X}_j$ has rank $p$ for $j = 1,...,m$, their proposed approach involves estimating $\bs\beta$ separately within each cluster and taking the simple average of these estimates. 
+The resulting average is equivalent to the WLS estimator with weights $\bm{W}_j = \bm{X}_j \left(\bm{X}_j'\bm{X}_j\right)^{-2} \bm{X}_j$.
 
 \section{Cluster-robust variance estimators}
+\label{sec:CRVE}
+
+The variance of the WLS estimator is 
+\begin{equation}
+\label{eq:var_WLS}
+\Var\left(\bs{\hat\beta}\right) = \bm{M}\left(\sum_{j=1}^m \bm{X}_j' \bm{W}_j \bs\Sigma_j \bm{W}_j\bm{X}_j\right) \bm{M},
+\end{equation}
+which includes the unknown variance matrices. 
+One approach to estimating this variance would be to posit a working model--typically the same working model used to construct weights--and substitute estimates of the working variance structure in place of $\bs\Sigma$. 
+Under a working model $\bs\Phi$, denote this "model-based" variance estimator as
+\begin{equation}
+\label{eq:V_model}
+\bm{V}^M = \bm{M}\left(\sum_{j=1}^m \bm{X}_j' \bm{W}_j \hat{\bs\Phi}_j \bm{W}_j\bm{X}_j\right) \bm{M}.
+\end{equation}
+If $\bs\beta$ is estimated using inverse-variance weights defined under the same working model, then $\bm{W} = \hat{\bs\Phi}^{-1}$ and the model-based variance estimator simplifies to $\bm{V}^M = \bm{M}$. 
+
+Cluster-robust variance estimators provide a means of estimating $\Var\left(\bs{\hat\beta}\right)$ and testing hypotheses regarding $\hat{\bs\beta}$ in the absence of a valid working model for the error structure, or when the working variance model used to develop weights is mis-specified. 
+They are thus a generalization of heteroskedasticity-consistent (HC) variance estimators \citep{MacKinnon1985some}. 
+Like the HC estimators, several different variants have been proposed, with different rationales and different finite-sample properties. 
+
+The most widely used estimator is 
+\begin{equation}
+\label{eq:V_CR0}
+\bm{V}^{CR0} = \bm{M}\left(\sum_{j=1}^m \bm{X}_j'\bm{W}_j \bm{e}_j \bm{e}_j'\bm{W}_j \bm{X}_j\right) \bm{M},
+\end{equation}
+where $\bm{e}_j = \bm{Y}_j - \bm{X}_j \bs{\hat\beta}$. Following the naming conventions used by \citet{Cameron2015practitioners}, we will refer to this estimator as CR0. 
+Note that CR0 is constructed by substituting $\bm{e}_j \bm{e}_j'$ in place of $\bs\Sigma_j$ in (\ref{eq:var_WLS}). 
+Although the individual squared residuals provide only very crude estimates of the unknown variance matrices, the resulting estimator is asymptotically consistent for the variance of $\bs{\hat\beta}$ as $m$ increases (CITE). 
+However, CR0 is known to have a downward bias when the number of independent clusters is small (CITE).
+
+The small-sample bias in CR0 can be seen as analogous to that arising by estimating the variance of a sample of $m$ observations using a denominator of $m$ rather than $m - 1$. 
+One approach to correcting this bias is to scale CR0 by a factor of $m / (m - 1)$. Thus, define the CR1 estimator as $\bm{V}^{CR1} = [m / (m - 1)] \bm{V}^{CR0}$.
+Some software implementations use a slightly different correction factor. 
+For example, the Stata command \texttt{regress} scales CR0 by the factor $m (N - 1) / [(m - 1) (N - p)]$. 
+
+\subsection{Correction based on a working-model}
+
+\citet[see also \citealp{Bell2002bias}]{McCaffrey2001generalizations} proposed to correct the small-sample bias of CR0 so that it is exactly unbiased under a specified working model for the variance structure. 
+In their implementation, the residuals from each cluster are multiplied by adjustment matrices $\bm{A}_1,...,\bm{A}_m$ that creates the unbiasedness property. 
+The variance estimator, which we will call CR2a, is then 
+\begin{equation}
+\label{eq:V_CR2a}
+\bm{V}^{CR2a} = \bm{M}\left(\sum_{j=1}^m \bm{X}_j'\bm{W}_j \bm{A}_j \bm{e}_j \bm{e}_j' \bm{A}_j' \bm{W}_j \bm{X}_j\right) \bm{M},
+\end{equation}
+The adjustment matrix $\bm{A}_j$ is of dimension $n_j \times n_j$ and is chosen to satisfy
+\begin{equation}
+\label{eq:CR2a_criterion}
+\bm{X}_j' \bm{W}_j \bm{A}_j' \left(\bm{I} - \bm{H}\right)_j \bs\Phi \left(\bm{I} - \bm{H}\right)_j' \bm{A}_j \bm{W}_j \bm{X}_j = \bm{X}_j' \bm{W}_j \bs\Phi_j \bm{W}_j \bm{X}_j,
+\end{equation}
+where $\bm{H} = \bm{X}\bm{M}\bm{X}'\bm{W}$, and $\left(\bm{I} - \bm{H}\right)_j$ denotes the rows of $\bm{I} - \bm{H}$ corresponding to cluster $j$. 
+However, this criterion does not uniquely define $\bm{A}_j$. 
+Based on extensive simulations, \citet{McCaffrey2001generalizations} found that a symmetric solution worked well, with 
+\begin{equation}
+\label{eq:CR2a_adjustment}
+\bm{A}_j = \left(\bs\Phi_j^C\right)' \bm{B}_j^{-1/2}\bs\Phi_j^C,
+\end{equation}
+where $\bs\Phi_j^C$ is the upper triangular Cholesky factorization of $\bs\Phi_j$, 
+\begin{equation}
+\label{eq:CR2a_Bmatrix}
+\bm{B}_j = \bs\Phi_j^C\left(\bm{I} - \bm{H}\right)_j \bs\Phi \left(\bm{I} - \bm{H}\right)_j' \left(\bs\Phi_j^C\right)',
+\end{equation}
+and $\bm{B}_j^{-1/2}$ is the inverse of the symmetric square root of $\bm{B}_j $. 
+If ordinary (unweighted) least squares is used to estimate $\bs{\hat\beta}$ and the working variance model posits that the errors are all independent and homoskedastic, then $\bm{W} = \bs\Phi = \bm{I}$ and $\bm{A}_j = \left(\bm{I}_j - \bm{X}_j\left(\bm{X}'\bm{X}\right)^{-1}\bm{X}_j'\right)^{-1/2}$.
+
+Two difficulties arise in the implementation of CR2a.
+First, the matrices $\bm{B}_1,...,\bm{B}_m$ may not be positive definite, so that $\bm{B}_j^{-1/2}$ cannot be calculated for every cluster. 
+This occurs, for instance, in balanced panel models when the specification includes fixed effects for each unit and each timepoint and clustering is over the units \citep[p. ??]{Angrist2009mostly}. 
+However, this problem can be overcome by using a generalized inverse of $\bm{B}_j$. 
+A second, computational difficulty with CR2a is that it requires the inversion (or pseudo-inversion) of $m$ matrices, each of dimension $n_j \times n_j$. 
+Consequently, computation of CR2a will be slow if some clusters contain a large number of of individual units. 
+
+\subsection{Another working-model correction}
+
+The criterion (\ref{eq:CR2a_criterion}) is not the only way to obtain a variance estimator that is precisely unbiased under a working model. An alternative approach, which to our knowledge is novel, is to use
+\begin{equation}
+\label{eq:V_CR2b}
+\bm{V}^{CR2b} = \bm{M} \left(\sum_{j=1}^m \bm{D}_j \bm{X}_j' \bm{W}_j \bm{e}_j \bm{e}_j' \bm{W}_j \bm{X}_j \bm{D}_j'\right) \bm{M},
+\end{equation}
+where the adjustment matrices $\bm{D}_1,...,\bm{D}_m$ are chosen so that
+\begin{equation}
+\label{eq:CR2b_criterion}
+\bm{D}_j \bm{X}_j' \bm{W}_j \left(\bm{I} - \bm{H}\right)_j \bs\Phi \left(\bm{I} - \bm{H}\right)_j' \bm{W}_j \bm{X}_j \bm{D}_j' = \bm{X}_j' \bm{W}_j \bs\Phi_j \bm{W}_j \bm{X}_j.
+\end{equation}
+Just as with CR2a, there are several different forms of adjustment matrices that satisfy (\ref{eq:CR2b_criterion}). 
+A symmetric solution is to take
+\begin{equation}
+\bm{D}_j = \left(\bm{F}_j^C\right)'\left[\bm{F}_j^C \bm{G}_j \left(\bm{F}_j^C\right)'\right]^{-1/2}\bm{F}_j^C
+\end{equation}
+where $\bm{F}_j = \bm{X}_j' \bm{W}_j \bs\Phi_j \bm{W}_j \bm{X}_j$ and $\bm{G}_j = \bm{X}_j' \bm{W}_j \left(\bm{I} - \bm{H}\right)_j \bs\Phi \left(\bm{I} - \bm{H}\right)_j' \bm{W}_j \bm{X}_j$. Note that $\bm{F}_j$ and $\bm{G}_j$ might not be positive definite, and so generalized forms of the Cholesky decomposition and symmetric inverse-square root must be used. In datasets where clusters have a large number of individual units, CR2b will be less computationally intensive than CR2a because the adjustment matrices are all of dimension $p \times p$.
+
+\subsection{Jackknife correction}
+
+The Jackknife is an alternative, general-purpose approach to estimating $\Var\left(\bs{\hat\beta}\right)$ under unknown variance structures (CITE). 
+The jackknife variance estimator involves re-estimating the vector of regression coefficients $m$ times, each time omitting a single cluster of data. 
+Let $\bs{\hat\beta}_{(j)}$ denote the WLS estimator of $\bs\beta$ based on omitting cluster $j$. 
+One form of the jackknife estimator is then 
+\begin{equation}
+\label{eq:V_JK}
+\bm{V}^{JK} = \frac{m - 1}{m} \sum_{j=1}^m \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right) \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right)'.
+\end{equation}
+This estimator can be expressed in the form of a sandwich estimator with adjusted residuals, and therefore generalizes the HC3 estimator in the heteroskedastic case. 
+For simplicity, we omit the correction factor $(m - 1) / m$ and define the CR3 estimator as \[
+\bm{V}^{CR3} = \bm{M}\left(\sum_{j=1}^m \bm{X}_j'\bm{W}_j \left(\bm{I}_j - \bm{H}_{jj}\right)\bm{e}_j \bm{e}_j' \left(\bm{I}_j - \bm{H}_{jj}\right) \bm{W}_j \bm{X}_j\right) \bm{M}. \]
+\citet{Bell2002bias} show that when $\left(\bm{I}_j - \bm{H}_{jj}\right)^{-1}$ exists for each $j = 1,...,m$, then $\bm{V}^{JK} = [(m - 1) / m] \bm{V}^{CR3}$.  
 
 \subsection{Considerations with panel models}
 
+CRVEs are often used in connection with fixed effects panel data models. 
+In such models, clusters correspond to repeated measures on individual units (e.g., yearly data describing each of the states in the U.S.), and the regression specification includes separate intercepts for each unit.
+One common model is 
+\[
+y_{jt} = \bm{r}_{jt} \bs\alpha + \gamma_j + \epsilon_{jt} \]
+for $j=1,...m$ and $t = 1,...,n_j$, where $\bm{r}_{ij}$ is an $r \times 1$ row vector of covariates. If the number and timing of the measurements is identical across cases, then the panel is balanced. Another common specification for balanced panels includes additional effects for each unique measurement equation:
+\[
+y_{jt} = \bm{r}_{jt} \bs\alpha + \gamma_j + \nu_t + \epsilon_{jt} \]
+for $j=1,...,m$ and $t = 1,...,n$. 
+In what follows, we consider a generic fixed effects model in which
+\begin{equation}
+\label{eq:fixed_effects}
+\bm{y}_j = \bm{R}_j \bs\alpha + \bm{S}_j \bs\gamma + \bs\epsilon_j,
+\end{equation}
+where $\bm{R}_j$ is an $n_j \times r$ matrix of covariates, $\bm{S}_j$ is an $n_j \times s$ matrix describing the fixed effects specification, $\bm{X}_j = \left[\bm{R}_j \ \bm{S}_j\right]$, $\bs\beta = \left(\bs\alpha', \bs\gamma'\right)'$, and $p = r + s$. 
+
+In fixed effects panel models, inferential interest is typically confined to $\bs\alpha$ and the fixed effects are treated as nuisance parameters. 
+If the dimension of the fixed effects specification, it is computationally inefficient to estimate $\bs\beta$ by ordinary or weighted least squares. 
+Instead, it is useful to first absorb the fixed effects and then estimate $\bs\alpha$ on the reduced covariate vector.
+Although both approaches yield algebraically equivalent estimators of $\bs\alpha$, the small-sample adjustments to the CRVEs can differ depending on whether they are calculated based on the full covariate matrix or after absorbing the fixed effects. 
+We view absorption is a computational device, rather than a distinct approach to estimation, and so it is useful to describe how to calculate the CRVEs so that they are invariant to how the regression estimates are calculated.
+
+Let $\bm{H_S} = \bm{S}\left(\bm{S}'\bm{W}\bm{S}\right)^{-1} \bm{S}'\bm{W}$, $\bm{\ddot{Y}} = \left(\bm{I} - \bm{H_S}\right)\bm{Y}$, $\bm{\ddot{R}} = \left(\bm{I} - \bm{H_S}\right)\bm{R}$, $\bm{M_{\ddot{R}}} = \left(\bm{\ddot{R}}' \bm{W} \bm{\ddot{R}}\right)^{-1}$, and $\bm{H_{\ddot{R}}} = \bm{\ddot{R}}\bm{M_{\ddot{R}}} \bm{\ddot{R}}' \bm{W}$. 
+Using absorption, the WLS estimator of $\bs\alpha$ can be calculated as \[
+\bs{\hat\alpha} = \bm{M_{\ddot{R}}} \bm{\ddot{R}}' \bm{W} \bm{\ddot{Y}}. \]
+This estimator is algebraically equivalent to the corresponding sub-vector of $\bs{\hat\beta}$  calculated as in (\ref{eq:WLS}), based on the full covariate matrix $\bm{X}$. 
+Furthermore, the residuals can be calculated from the absorbed model using $\bm{e} = \bm{\ddot{y}} - \bm{\ddot{R}} \bs{\hat\alpha}$.
+Let $\bm{\ddot{V}}^{CR0}$ denote the CR0 estimator calculated using $\bm{\ddot{R}}$ in place of $\bm{X}$, $\bm{M_{\ddot{R}}}$ in place of $\bm{M}$, and $\bm{\ddot{e}} = $ in place of $\bm{e}$. It can be shown that $\bm{\ddot{V}}^{CR0}$ is algebraically equivalent to $\bm{V}^{CR0}$ calculated based on the full covariate matrix, as in (\ref{eq:V_CR0}). 
+Because CR1 differs from CR0 by the constant factor $m / (m - 1)$, it too is invariant to how $\bs{\hat\alpha}$ is calculated. 
+
+In contrast to CR0 and CR1, the CR2a estimator will differ depending on whether it is calculated based on the quantities from the absorbed model or those from the full WLS model. 
+It is thus useful to define CR2a in such a way that the calculations based on the absorbed model yield algrebraically identical results to the calculations from the full WLS model. 
+This can be accomplished by ensuring that the adjustment matrices given in Equation (\ref{eq:CR2a_adjustment}) are calculated based on the full covariate matrix $\bm{X}$. Specifically, in models with fixed effects, the adjustment matrices are calculated as \[
+\bm{A}_j = \left(\bs\Phi_j^C\right)' \left[\bs\Phi_j^C\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \left(\bm{I} - \bm{H_S}\right) \bs\Phi \left(\bm{I} - \bm{H_S}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' \left(\bs\Phi_j^C\right)' \right]^{-1/2}\bs\Phi_j^C.
+\]
+This formula avoids the need to calculate $\bm{H}$, which would involve inverting a $p \times p$ matrix.\todo{Comment on whether this matters when fixed effects include only cluster indicators.}
+
+Like CR2a, the CR2b estimator is affected by whether it is calculated based on the absorbed model or the full WLS model. However, the structure of the adjustment matrices is such that their dimension can be reduced by focusing on the subset of covariates that are of inferential interest: instead of using $p \times p$ adjustment matrices, one can reduce their dimension to $r \times r$. Thus, in models with fixed effects, we propose to calculate CR2b as 
+\begin{equation}
+\label{eq:V_CR2b_FE}
+\bm{\ddot{V}}^{CR2b} = \bm{M_{\ddot{R}}} \left(\sum_{j=1}^m \bm{\ddot{D}}_j \bm{\ddot{R}}_j' \bm{W}_j \bm{e}_j \bm{e}_j' \bm{W}_j \bm{\ddot{R}}_j \bm{\ddot{D}}_j'\right) \bm{M_{\ddot{R}}},
+\end{equation}
+where the adjustment matrices are given by 
+\begin{equation}
+\bm{\ddot{D}}_j = \left(\bm{\ddot{F}}_j^C\right)'\left[\bm{\ddot{F}}_j^C \bm{\ddot{G}}_j \left(\bm{\ddot{F}}_j^C\right)'\right]^{-1/2}\bm{\ddot{F}}_j^C,
+\end{equation}
+$\bm{\ddot{F}}_j = \bm{\ddot{R}}_j' \bm{W}_j \bs\Phi_j \bm{W}_j \bm{\ddot{R}}_j$ and $\bm{\ddot{G}}_j = \bm{\ddot{R}}_j' \bm{W}_j \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j  \left(\bm{I} - \bm{H_s}\right) \bs\Phi \left(\bm{I} - \bm{H_s}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' \bm{W}_j \bm{\ddot{R}}_j$. The CR2b estimator then has the property that $\E\left(\bm{\ddot{V}}^{CR2b}\right) = \Var\left(\bs{\hat\alpha}\right)$ when the working model is correct.
+
+\todo[inline]{Any comments on CR3 for panel models?}
+
 \section{Hypothesis testing}
+\label{sec:testing}
 
 \subsection{Single-constraint tests}
 
 \subsection{Multiple-constraint tests}
 
 \section{Examples}
+\label{sec:examples}
 
 \section{Simulation evidence}
+\label{sec:simulations}
 
 \section{Discussion}
+\label{sec:discussion}
 
-\bibliographystyle{apacite}
-\bibliography{\bibfile}
-
+\bibliographystyle{agsm}
+\bibliography{bibliography}
 
 \end{document}
