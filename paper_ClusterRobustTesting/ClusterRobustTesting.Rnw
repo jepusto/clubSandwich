@@ -196,7 +196,7 @@ If ordinary (unweighted) least squares is used to estimate $\bs{\hat\beta}$ and 
 
 Two difficulties arise in the implementation of CR2a.
 First, the matrices $\bm{B}_1,...,\bm{B}_m$ may not be positive definite, so that $\bm{B}_j^{-1/2}$ cannot be calculated for every cluster. 
-This occurs, for instance, in balanced panel models when the specification includes fixed effects for each unit and each timepoint and clustering is over the units \citep[p. ??]{Angrist2009mostly}. 
+This occurs, for instance, in balanced panel models when the specification includes fixed effects for each unit and each timepoint and clustering is over the units \citep[p. 320]{Angrist2009mostly}. 
 However, this problem can be overcome by using a generalized inverse of $\bm{B}_j$. 
 A second, computational difficulty with CR2a is that it requires the inversion (or pseudo-inversion) of $m$ matrices, each of dimension $n_j \times n_j$. 
 Consequently, computation of CR2a will be slow if some clusters contain a large number of of individual units. 
@@ -232,7 +232,7 @@ One form of the jackknife estimator is then
 \end{equation}
 This estimator can be expressed in the form of a sandwich estimator with adjusted residuals, and therefore generalizes the HC3 estimator in the heteroskedastic case. 
 For simplicity, we omit the correction factor $(m - 1) / m$ and define the CR3 estimator as \[
-\bm{V}^{CR3} = \bm{M}\left(\sum_{j=1}^m \bm{X}_j'\bm{W}_j \left(\bm{I}_j - \bm{H}_{jj}\right)\bm{e}_j \bm{e}_j' \left(\bm{I}_j - \bm{H}_{jj}\right) \bm{W}_j \bm{X}_j\right) \bm{M}. \]
+\bm{V}^{CR3} = \bm{M}\left(\sum_{j=1}^m \bm{X}_j'\bm{W}_j \left(\bm{I}_j - \bm{H}_{jj}\right)\bm{e}_j \bm{e}_j' \left(\bm{I}_j - \bm{H}_{jj}'\right) \bm{W}_j \bm{X}_j\right) \bm{M}. \]
 \citet{Bell2002bias} show that when $\left(\bm{I}_j - \bm{H}_{jj}\right)^{-1}$ exists for each $j = 1,...,m$, then $\bm{V}^{JK} = [(m - 1) / m] \bm{V}^{CR3}$.  
 
 \subsection{Considerations with panel models}
@@ -285,7 +285,19 @@ where the adjustment matrices are given by
 \end{equation}
 $\bm{\ddot{F}}_j = \bm{\ddot{R}}_j' \bm{W}_j \bs\Phi_j \bm{W}_j \bm{\ddot{R}}_j$ and $\bm{\ddot{G}}_j = \bm{\ddot{R}}_j' \bm{W}_j \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j  \left(\bm{I} - \bm{H_s}\right) \bs\Phi \left(\bm{I} - \bm{H_s}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' \bm{W}_j \bm{\ddot{R}}_j$. The CR2b estimator then has the property that $\E\left(\bm{\ddot{V}}^{CR2b}\right) = \Var\left(\bs{\hat\alpha}\right)$ when the working model is correct.
 
-\todo[inline]{Any comments on CR3 for panel models?}
+In panel models that include fixed effects for each cluster, the CR3 variance estimator does not work when the model is estimated by WLS because $\bm{I}_j - \bm{H}_{jj}$ is not of full rank. 
+However, the jackknife estimator of $\Var\left(\bs{\hat\alpha}\right)$ remains well-defined, as 
+\begin{equation}
+\bm{V}^{JK} = \frac{m - 1}{m} \sum_{j=1}^m \left(\bs{\hat\alpha}_{(j)} - \bs{\hat\alpha}\right) \left(\bs{\hat\alpha}_{(j)} - \bs{\hat\alpha}\right)',
+\end{equation}
+where $\bs{\hat\alpha}_{(j)}$ is calculated by omitting cluster $j$. 
+If the fixed effects specification consists entirely of cluster-level effects, or more generally, if $\bm{S}_j'\bm{S}_k = \bm{0}$ when $j \neq k$ for all $j,k=1,...,m$, then $\bm{V}^{JK} = [(m - 1) / m] \bm{\ddot{V}^{CR3}}$, where 
+\begin{equation}
+\label{eq:V_CR3_FE}
+\bm{\ddot{V}}^{CR3} = \bm{M_{\ddot{R}}} \left(\sum_{j=1}^m \bm{\ddot{R}}_j' \bm{W}_j \left(\bm{I}_j - \bm{H_{\ddot{R}}}_{jj}\right)^{-1}\bm{e}_j \bm{e}_j' \left(\bm{I}_j - \bm{H_{\ddot{R}}}_{jj}'\right)^{-1}\bm{W}_j \bm{\ddot{R}}_j\right) \bm{M_{\ddot{R}}}
+\end{equation}
+and $\bm{H_{\ddot{R}}}_{jj} = \bm{\ddot{R}}_j \bm{M_{\ddot{R}}} \bm{\ddot{R}}_j\bm{W}_j$. 
+If the fixed effects specification includes terms that are not strictly nested within clusters, then $\bm{\ddot{V}}^{CR3}$ will not be exactly equivalent to $\bm{V}^{JK}$, and the former will depend to some extent on which terms are absorbed.\todo{So we would recommend what?}
 
 \section{Hypothesis testing}
 \label{sec:testing}
