@@ -353,10 +353,67 @@ Consequently, no simple rule-of-thumb exists for what constitutes an adequate sa
 
 In this section, we consider methods for obtaining hypothesis tests with more accurate rejection rates. 
 We first review extant procedures for single-constraint hypotheses (i.e., t-tests) and then propose a method for testing multiple-constraint hypotheses (i.e., F-tests). 
-For both types of tests, small-sample approximations involve the distribution of the entries of $\bm{V}^{CR}$. 
-The following results will be used in the remainder. 
 
-First, note that any of the CRVEs described in the previous section can be written in the form $\bm{V}^{CR} = \sum_{j=1}^M \bm{T}_j \bm{e}_j \bm{e}_j' \bm{T}_j'$ for some $p \times n_j$ matrices $\bm{T}_j$. 
+\subsection{Single-constraint tests}
+
+We first consider testing single linear constraints on the parameter $\bs\beta$, in which the null hypothesis has the form $H_0: \bm{c}'\bs\beta = c$ for $p \times 1$ vector $\bm{c}$ and scalar constant $c$. 
+The Wald test statistic is then of the form 
+\begin{equation}
+\label{eq:Wald_z}
+Z = \left(\bm{c}'\bs{\hat\beta} - c\right) / \sqrt{\bm{c}'\bm{V}^{CR}\bm{c}},
+\end{equation}
+where $\bm{V}^{CR}$ is one of the CRVEs described in the previous section. 
+An asymptotically valid test rejects $H_0$ at level $\alpha$ if $|Z|$ exceeds the $\alpha / 2$ critical value of a standard normal distribution. 
+However, this test tends to have rejection rates higher than $\alpha$ when $m$ is not large. 
+Four approaches to small-sample correction have been proposed for this test. 
+
+The first and surely most common approach is to compare $|Z|$ to the appropriate critical value from a $t$ distribution with $m - 1$ degrees of freedom. 
+\citet{Hansen2007asymptotic} provided one justification for the use of a $t(m-1)$ reference distribution by identifying conditions under which $Z$ converges in distribution to $t(m-1)$ as the within-cluster sample sizes grow large, with $m$ fixed \citep[see also][]{Donald2007inference}. 
+\citet{Ibragimov2010tstatistic} proposed a weighting technique derived so that that $t(m-1)$ critical values would be conservative (leading to rejection rates less than or equal to $\alpha$).
+However, both of these arguments require that $\bm{c}'\bs\beta$ be separately identified within each cluster. 
+Outside of these circumstances, using $t(m-1)$ critical values can still lead to over-rejection \citep{Cameron2015practitioners}. 
+Furthermore, this correction does not take into account that the distribution of $\bm{V}^{CR}$ is affected by the structure of the covariate matrix. 
+
+A second approach, proposed by \citet{McCaffrey2001generalizations}, is to use a Satterthwaite approximation \citep{Satterthwaite1946approximate} to the distribution of $Z$.
+This approach compares $Z$ to a $t$ reference distribution, with degrees of freedom $\nu$ that are estimated from the data. 
+Theoretically, the degrees of freedom should be, \[
+\nu = \frac{2\left[\E\left(\bm{c}'\bm{V}^{CR}\bm{c}\right)\right]^2}{\Var\left(\bm{c}'\bm{V}^{CR}\bm{c}\right)}.
+\]
+Expressions for the first two moments of $\bm{c}'\bm{V}^{CR}\bm{c}$ can be derived under the assumption that the errors $\bs\epsilon_1,...,\bs\epsilon_m$ are normally distributed; see Appendix \ref{app:VCR_dist}. 
+In practice, both moments involve the variance structure $\bs\Sigma$, which is unknown. 
+\citet{McCaffrey2001generalizations} proposed to estimate the moments based on a working variance model; for the CR2a and CR2b estimators, the same working model, $\bs\Phi$, is used to derive the adjustment matrices for the CRVE and to estimate the moments of that estimator. 
+A ``model-based'' estimate of the degrees of freedom is then calculated as 
+\begin{equation}
+\nu_{M} = \frac{\left(\sum_{j=1}^m \bm{t}_j' \bs\Phi \bm{t}_j\right)^2}{\sum_{i=1}^m \sum_{j=1}^m \left(\bm{t}_i' \bs\Phi \bm{t}_j\right)^2},
+\end{equation}
+where $\bm{t}_j = \left(\bm{I} - \bm{H}\right)_j'\bm{A}_j'\bm{W}_j\bm{X}_j\bm{M}\bm{c}$ for CR2a or $\bm{t}_j = \left(\bm{I} - \bm{H}\right)_j'\bm{W}_j\bm{X}_j\bm{D}_j'\bm{M}\bm{c}$ for CR2b. Alternately, for any of the CRVEs one could instead use an empirical, ``plug-in'' estimate of the degrees of freedom, constructed by substituting $\bm{e}_j \bm{e}_j'$ in place of $\bs\Sigma_j$. (This is similar to the Welch-Satterthwaite degrees of freedom estimate typically used for the two-sample t-test with unequal variances \citep{Satterthwaite1946approximate}.) However, \citet{Bell2002bias} found using simulation that the plug-in degrees of freedom estimate produced very conservative rejection rates. As a more refined empirical degrees of freedom estimate, we consider using $\bm{c}'\bm{V}^{CR}\bm{c}$ as an estimate of its own expectation and estimating its variance by scaling the squares of the residual cross-products to account for their kurtosis. Specifically, we propose to use 
+\begin{equation}
+\nu_{E} = \frac{\left(\bm{c}'\bm{V}^{CR}\bm{c}\right)^2}{\sum_{h,i,j,k=1}^m a_{jk}\bm{t}_{hj}' \bm{e}_j \bm{e}_j' \bm{t}_{ij} \bm{t}_{hk} \bm{e}_k \bm{e}_k' \bm{t}_{ik}} - 2,
+\end{equation}
+where $a_{jk} = \left(1 + 2(j=k)\right)^{-1}$ and $\bm{t}_{hj}$ is the $n_j \times 1$ sub-vector of $\bm{t}_h$ corresponding to cluster $j$. 
+
+\citet{McCaffrey2006improved} proposed to use a saddlepoint approximation to the distribution of $Z$. Like the Satterthwaite approximation, the saddlepoint approximation is derived under the assumption that the errors are normally distributed. Rather than using the moments of $\bm{c}'\bm{V}^{CR}\bm{c}$, the saddlepoint instead uses the fact that it is distributed as a weighted sum of $\chi^2_1$ random variables. The weights depend on $\bs\Sigma$, and so must be estimated. \citet{McCaffrey2006improved} did so based on a working model for the variance, in which case the weights are given by the eigen-values of the $m \times m$ matrix with $(i,j)^{th}$ entry $\bm{t}_i'\bs\Phi \bm{t}_j$. An empirical approach could also be considered, in which case the weights are given by the eigen-values of the $m \times m$ matrix with $(i,j)^{th}$ entry $\sum_{k=1}^m \bm{t}_{ik}'\bm{e}_k \bm{e}_k' \bm{t}_{ij}$.
+
+A final approach is to use a bootstrap re-sampling technique that leads to small-sample refinements in the test rejection rates. Not all bootstrap re-sampling methods work well in small samples. Among the alternatives, \citet{Webb2013wild} describe a wild boostrap procedure that performs well even when $m$ is very small and when clusters are of unequal size. 
+
+\subsection{Multiple-constraint tests}
+
+\section{Simulation evidence}
+\label{sec:simulations}
+
+\section{Examples}
+\label{sec:examples}
+
+\section{Discussion}
+\label{sec:discussion}
+
+\appendix
+\section{Distribution theory for $\bm{V}^{CR}$}
+\label{app:VCR_dist}
+
+The small-sample approximations for t-tests and F-tests both involve the distribution of the entries of $\bm{V}^{CR}$. This section explains the relevant distribution theory.
+
+First, note that any of the CRVEs can be written in the form $\bm{V}^{CR} = \sum_{j=1}^M \bm{T}_j \bm{e}_j \bm{e}_j' \bm{T}_j'$ for some $p \times n_j$ matrices $\bm{T}_j$. 
 The form of the $\bm{T}_j$ matrices depends on which variance estimator is used: $\bm{T}_j = \bm{M}\bm{X}_j' \bm{W}_j$ for CR0, $\bm{T}_j = \bm{M} \bm{X}_j' \bm{W}_j \bm{A}_j$ for CR2a, $\bm{T}_j = \bm{M} \bm{D}_j \bm{X}_j' \bm{W}_j$ for CR2b, and $\bm{T}_j = \bm{M} \bm{X}_j' \bm{W}_j \left(\bm{I}_j - \bm{H}_{jj}\right)^{-1}$ for CR3.
 
 Next, let $\bm{u}_1,\bm{u}_2,\bm{u}_3,\bm{u}_4$ be fixed, $p \times 1$ vectors and consider the linear combination $\bm{u}_1' \bm{V}^{CR} \bm{u}_2$. 
@@ -370,20 +427,8 @@ Standard results regarding quadratic forms can be used to derive the moments of 
 \Var\left(\bm{u}_1' \bm{V}^{CR} \bm{u}_2\right) &= \sum_{i=1}^m \sum_{j=1}^m \left(\bm{t}_{1i}' \bs\Sigma \bm{t}_{2j}\right)^2 + \bm{t}_{1i}' \bs\Sigma \bm{1}_{1j} \bm{t}_{2i}' \bs\Sigma \bm{t}_{2j} \\
 \Cov\left(\bm{u}_1' \bm{V}^{CR} \bm{u}_2, \bm{u}_3' \bm{V}^{CR} \bm{u}_4\right) &= \sum_{i=1}^m \sum_{j=1}^m \bm{t}_{1i}' \bs\Sigma \bm{t}_{4j} \bm{t}_{2i}' \bs\Sigma \bm{t}_{3j} + \bm{t}_{1i}' \bs\Sigma \bm{t}_{3j} \bm{t}_{2i}' \bs\Sigma \bm{t}_{4j}.
 \end{align}
+Furthermore, the distribution of $\bm{u}_1' \bm{V}^{CR} \bm{u}_2$ can be expressed as a weighted sum of $\chi^2_1$ distributions, with weights given by the eigen-values of the $m \times m$ matrix with $\left(i,j\right)^{th}$ entry $\bm{t}_{1i}' \bs\Sigma \bm{t}_{2j}$, $i,j=1,...,m$.
 
-
-\subsection{Single-constraint tests}
-
-\subsection{Multiple-constraint tests}
-
-\section{Examples}
-\label{sec:examples}
-
-\section{Simulation evidence}
-\label{sec:simulations}
-
-\section{Discussion}
-\label{sec:discussion}
 
 \bibliographystyle{agsm}
 \bibliography{bibliography}

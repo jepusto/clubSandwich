@@ -39,6 +39,16 @@ Carter, A.~V., Schnepel, K.~T. \harvardand\ Steigerwald, D.~G.
   \harvardyearleft 2013\harvardyearright , `{Asymptotic Behavior of a t Test
   Robust to Cluster Heterogeneity}',  pp.~1--32.
 
+\harvarditem{Donald \harvardand\ Lang}{2007}{Donald2007inference}
+Donald, S.~G. \harvardand\ Lang, K.  \harvardyearleft 2007\harvardyearright ,
+  `{Inference with difference-in-differences and other panel data}', {\em
+  Review of Economics and Statistics} {\bf 89}(2),~221--233.
+
+\harvarditem{Hansen}{2007}{Hansen2007asymptotic}
+Hansen, C.~B.  \harvardyearleft 2007\harvardyearright , `{Asymptotic properties
+  of a robust variance matrix estimator for panel data when T is large}', {\em
+  Journal of Econometrics} {\bf 141},~597--620.
+
 \harvarditem{Ibragimov \harvardand\ M\"{u}ller}{2010}{Ibragimov2010tstatistic}
 Ibragimov, R. \harvardand\ M\"{u}ller, U.~K.  \harvardyearleft
   2010\harvardyearright , `{t-Statistic based correlation and heterogeneity
@@ -78,6 +88,11 @@ McCaffrey, D.~F., Bell, R.~M. \harvardand\ Botts, C.~H.  \harvardyearleft
   2001\harvardyearright , {Generalizations of biased reduced linearization},
   {\em in} `Proceedings of the Annual Meeting of the American Statistical
   Association', number 1994.
+
+\harvarditem{Satterthwaite}{1946}{Satterthwaite1946approximate}
+Satterthwaite, F.~E.  \harvardyearleft 1946\harvardyearright , `{An approximate
+  distribution of estimates of variance components}', {\em Biometrics bulletin}
+  {\bf 2}(6),~110--114.
 
 \harvarditem{Tipton \harvardand\ Pustejovsky}{forthcoming}{Tipton2015small}
 Tipton, E. \harvardand\ Pustejovsky, J.~E.  \harvardyearleft
