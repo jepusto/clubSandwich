@@ -5,6 +5,11 @@ Angrist, J.~D. \harvardand\ Pischke, J.  \harvardyearleft 2009\harvardyearright
   , {\em {Mostly harmless econometrics: An empiricist's companion}}, Princeton
   University Press, Princeton, NJ.
 
+\harvarditem{Arellano}{1993}{Arellano1993on}
+Arellano, M.  \harvardyearleft 1993\harvardyearright , `{On the testing of
+  correlated effects with panel data}', {\em Journal of Econometrics} {\bf
+  59}(1-2),~87--97.
+
 \harvarditem{Bell \harvardand\ McCaffrey}{2002}{Bell2002bias}
 Bell, R.~M. \harvardand\ McCaffrey, D.~F.  \harvardyearleft
   2002\harvardyearright , `{Bias reduction in standard errors for linear
@@ -89,6 +94,12 @@ McCaffrey, D.~F., Bell, R.~M. \harvardand\ Botts, C.~H.  \harvardyearleft
   {\em in} `Proceedings of the Annual Meeting of the American Statistical
   Association', number 1994.
 
+\harvarditem{Pan \harvardand\ Wall}{2002}{Pan2002small}
+Pan, W. \harvardand\ Wall, M.~M.  \harvardyearleft 2002\harvardyearright ,
+  `{Small-sample adjustments in using the sandwich variance estimator in
+  generalized estimating equations.}', {\em Statistics in medicine} {\bf
+  21}(10),~1429--41.
+
 \harvarditem{Satterthwaite}{1946}{Satterthwaite1946approximate}
 Satterthwaite, F.~E.  \harvardyearleft 1946\harvardyearright , `{An approximate
   distribution of estimates of variance components}', {\em Biometrics bulletin}
@@ -103,5 +114,20 @@ Tipton, E. \harvardand\ Pustejovsky, J.~E.  \harvardyearleft
 \harvarditem{Webb \harvardand\ MacKinnon}{2013}{Webb2013wild}
 Webb, M. \harvardand\ MacKinnon, J.~G.  \harvardyearleft 2013\harvardyearright
   , {Wild Bootstrap Inference for Wildly Different Cluster Sizes}.
+
+\harvarditem{Zhang}{2012{\em a}}{Zhang2012two-wayANOVA}
+Zhang, J.-T.  \harvardyearleft 2012{\em a}\harvardyearright , `{An approximate
+  degrees of freedom test for heteroscedastic two-way ANOVA}', {\em Journal of
+  Statistical Planning and Inference} {\bf 142}(1),~336--346.
+
+\harvarditem{Zhang}{2012{\em b}}{Zhang2012MANOVA}
+Zhang, J.-T.  \harvardyearleft 2012{\em b}\harvardyearright , `{An approximate
+  Hotelling T2 -test for heteroscedastic one-way MANOVA}', {\em Open Journal of
+  Statistics} {\bf 2},~1--11.
+
+\harvarditem{Zhang}{2013}{Zhang2013tests}
+Zhang, J.-T.  \harvardyearleft 2013\harvardyearright , `{Tests of linear
+  hypotheses in the ANOVA under heteroscedasticity}', {\em International
+  Journal of Advanced Statistics and Probability} {\bf 1}(2),~9--24.
 
 \end{thebibliography}

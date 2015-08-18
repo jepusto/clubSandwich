@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  14 AUG 2015 15:47
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  18 AUG 2015 15:46
 entering extended mode
 **ClusterRobustTesting.tex
 
@@ -563,19 +563,59 @@ Overfull \hbox (27.76999pt too wide) in paragraph at lines 343--343
 [][][] 
  []
 
-[9] [10] [11] [12]
+[9] [10]
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 397--397
+[][][] 
+ []
+
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 397--397
+[][][] 
+ []
+
+[11]
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 414--414
+[][][] 
+ []
+
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 414--414
+[][][] 
+ []
+
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 419--419
+[][][] 
+ []
+
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 419--419
+[][][] 
+ []
+
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 426--426
+[][][] 
+ []
+
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 426--426
+[][][] 
+ []
+
+[12] [13]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
-bustTesting.bbl [13]) [14]
+bustTesting.bbl [14] [15] [16]) [17]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting.aux) ) 
 Here is how much of TeX's memory you used:
- 12844 strings out of 493921
- 253466 string characters out of 3144871
- 290682 words of memory out of 3000000
- 15886 multiletter control sequences out of 15000+200000
+ 12884 strings out of 493921
+ 254467 string characters out of 3144871
+ 305527 words of memory out of 3000000
+ 15926 multiletter control sequences out of 15000+200000
  15546 words of font info for 55 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 62i,13n,76p,1045b,695s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 62i,13n,76p,606b,695s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfont
 s/cm/cmbx10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/
 cm/cmbx12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
@@ -593,9 +633,9 @@ s (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files (
 x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files (x8
 6)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Program Files (x86)
 /MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on ClusterRobustTesting.pdf (14 pages, 245110 bytes).
+Output written on ClusterRobustTesting.pdf (17 pages, 260019 bytes).
 PDF statistics:
- 119 PDF objects out of 1000 (max. 8388607)
+ 128 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  13 words of extra memory for PDF output out of 10000 (max. 10000000)
 
