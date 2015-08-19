@@ -122,7 +122,7 @@ The text of your abstract.  200 or fewer words.
 \newpage
 \spacingset{1.45} % DON'T change the spacing!
 
-\section{Introduction}
+\section{INTRODUCTION}
 \label{sec:intro}
 
 
@@ -172,7 +172,7 @@ The WLS estimator also encompasses the estimator proposed by \citet{Ibragimov201
 Assuming that $\bm{X}_j$ has rank $p$ for $j = 1,...,m$, their proposed approach involves estimating $\bs\beta$ separately within each cluster and taking the simple average of these estimates. 
 The resulting average is equivalent to the WLS estimator with weights $\bm{W}_j = \bm{X}_j \left(\bm{X}_j'\bm{X}_j\right)^{-2} \bm{X}_j$.
 
-\section{Cluster-robust variance estimators}
+\section{CLUSTER-ROBUST VARIANCE ESTIMATORS}
 \label{sec:CRVE}
 
 The variance of the WLS estimator is 
@@ -342,7 +342,7 @@ If the fixed effects specification consists entirely of cluster-level effects, o
 and $\bm{H_{\ddot{R}}}_{jj} = \bm{\ddot{R}}_j \bm{M_{\ddot{R}}} \bm{\ddot{R}}_j\bm{W}_j$. 
 If the fixed effects specification includes terms that are not strictly nested within clusters, then $\bm{\ddot{V}}^{CR3}$ will not be exactly equivalent to $\bm{V}^{JK}$, and the former will depend to some extent on which terms are absorbed.\todo{So we would recommend what?}
 
-\section{Single-constraint hypothesis tests}
+\section{SINGLE-CONSTRAINT TESTS}
 \label{sec:testing}
 
 Wald-type test statistics based on CRVEs are often used to test hypotheses regarding and construct confidence intervals for the coefficients in the regression specification. 
@@ -383,35 +383,39 @@ In practice, both moments involve the variance structure $\bs\Sigma$, which is u
 \citet{McCaffrey2001generalizations} proposed to estimate the moments based on a working variance model; for the CR2a and CR2b estimators, the same working model, $\bs\Phi$, is used to derive the adjustment matrices for the CRVE and to estimate the moments of that estimator. 
 A ``model-based'' estimate of the degrees of freedom is then calculated as 
 \begin{equation}
-\nu_{M} = \frac{\left(\sum_{j=1}^m \bm{t}_j' \hat{\bs\Phi} \bm{t}_j\right)^2}{\sum_{i=1}^m \sum_{j=1}^m \left(\bm{t}_i' \hat{\bs\Phi} \bm{t}_j\right)^2},
+\nu_{M} = \frac{\left(\sum_{j=1}^m \bm{s}_j' \hat{\bs\Phi} \bm{s}_j\right)^2}{\sum_{i=1}^m \sum_{j=1}^m \left(\bm{s}_i' \hat{\bs\Phi} \bm{s}_j\right)^2},
 \end{equation}
-where $\bm{t}_j = \left(\bm{I} - \bm{H}\right)_j'\bm{A}_j'\bm{W}_j\bm{X}_j\bm{M}\bm{c}$ for CR2a or $\bm{t}_j = \left(\bm{I} - \bm{H}\right)_j'\bm{W}_j\bm{X}_j\bm{D}_j'\bm{M}\bm{c}$ for CR2b. 
+where $\bm{s}_j = \left(\bm{I} - \bm{H}\right)_j'\bm{A}_j'\bm{W}_j\bm{X}_j\bm{M}\bm{c}$ for CR2a or $\bm{s}_j = \left(\bm{I} - \bm{H}\right)_j'\bm{W}_j\bm{X}_j\bm{D}_j'\bm{M}\bm{c}$ for CR2b. 
 Alternately, for any of the CRVEs one could instead use an empirical, ``plug-in'' estimate of the degrees of freedom, constructed by substituting $\bm{e}_j \bm{e}_j'$ in place of $\bs\Sigma_j$. 
 (This is similar to the Welch-Satterthwaite degrees of freedom estimate typically used for the two-sample t-test with unequal variances \citep{Satterthwaite1946approximate}.) 
 However, \citet{Bell2002bias} found using simulation that the plug-in degrees of freedom estimate produced very conservative rejection rates. 
 As a more refined empirical degrees of freedom estimate, we consider using $\bm{c}'\bm{V}^{CR}\bm{c}$ as an estimate of its own expectation and estimating its variance by scaling the squares of the residual cross-products to account for their kurtosis. 
 Specifically, we propose to use 
 \begin{equation}
-\nu_{E} = \frac{\left(\bm{c}'\bm{V}^{CR}\bm{c}\right)^2}{\sum_{h,i,j,k=1}^m a_{jk}\bm{t}_{hj}' \bm{e}_j \bm{e}_j' \bm{t}_{ij} \bm{t}_{hk} \bm{e}_k \bm{e}_k' \bm{t}_{ik}} - 2,
+\nu_{E} = \frac{\left(\bm{c}'\bm{V}^{CR}\bm{c}\right)^2}{\sum_{h,i,j,k=1}^m a_{jk}\bm{s}_{hj}' \bm{e}_j \bm{e}_j' \bm{s}_{ij} \bm{s}_{hk} \bm{e}_k \bm{e}_k' \bm{s}_{ik}} - 2,
 \end{equation}
-where $a_{jk} = \left(1 + 2(j=k)\right)^{-1}$ and $\bm{t}_{hj}$ is the $n_j \times 1$ sub-vector of $\bm{t}_h$ corresponding to cluster $j$.\todo{Note that Pan and Wall use a different degrees-of-freedom estimator, based on the sample variance of the variance contribution from each cluster. This makes sense in the GEE context because it avoids relying on normality of the errors.} 
+where $a_{jk} = \left(1 + 2(j=k)\right)^{-1}$ and $\bm{s}_{hj}$ is the $n_j \times 1$ sub-vector of $\bm{s}_h$ corresponding to cluster $j$.\todo{Note that Pan and Wall use a different degrees-of-freedom estimator, based on the sample variance of the variance contribution from each cluster. This makes sense in the GEE context because it avoids relying on normality of the errors.} 
 
 Third, \citet{McCaffrey2006improved} proposed to use a saddlepoint approximation to the distribution of $Z$. 
 Like the Satterthwaite approximation, the saddlepoint approximation is derived under the assumption that the errors are normally distributed. 
 Rather than using the moments of $\bm{c}'\bm{V}^{CR}\bm{c}$, the saddlepoint instead uses the fact that it is distributed as a weighted sum of $\chi^2_1$ random variables. 
-The weights depend on $\bs\Sigma$, and so must be estimated. \citet{McCaffrey2006improved} did so based on a working model for the variance, in which case the weights are given by the eigen-values of the $m \times m$ matrix with $(i,j)^{th}$ entry $\bm{t}_i'\hat{\bs\Phi} \bm{t}_j$. 
-An empirical approach could also be considered, in which case the weights are given by the eigen-values of the $m \times m$ matrix with $(i,j)^{th}$ entry $\sum_{k=1}^m \bm{t}_{ik}'\bm{e}_k \bm{e}_k' \bm{t}_{ij}$.
+The weights depend on $\bs\Sigma$, and so must be estimated. \citet{McCaffrey2006improved} did so based on a working model for the variance, in which case the weights are given by the eigen-values of the $m \times m$ matrix with $(i,j)^{th}$ entry $\bm{s}_i'\hat{\bs\Phi} \bm{s}_j$. 
+An empirical approach could also be considered, in which case the weights are given by the eigen-values of the $m \times m$ matrix with $(i,j)^{th}$ entry $\sum_{k=1}^m \bm{s}_{ik}'\bm{e}_k \bm{e}_k' \bm{s}_{ij}$.
 
 A final approach is to use a bootstrap re-sampling technique that leads to small-sample refinements in the test rejection rates. 
 Not all bootstrap re-sampling methods work well in small samples. 
 Among the alternatives, \citet{Webb2013wild} describe a wild boostrap procedure that performs well even when $m$ is very small and when clusters are of unequal size.  
 
-\subsection{Simulation evidence}
+\subsection{Examples}
+\label{subsec:examples_t}
 
-\section{Multiple-constraint hypothesis tests}
+\subsection{Simulation evidence}
+\label{subsec:simulation_t}
+
+\section{MULTIPLE-CONSTRAINT TESTS}
 
 While t-tests of single coefficients are surely more common, tests of multiple constraints are also of interest for empirical data analysis. 
-Examples of such tests include robust Hausmann-type endogeneity tests \citep{Arellano1993on}.\todo{Expand} 
+Examples of such tests include robust Hausmann-type endogeneity tests \citep{Arellano1993on}, tests for non-linearities in exogeneous variables in OLS models, tests for pre-treatment balance on covariates in randomized experiments, and tests of parameter restrictions in seemingly unrelated regression.
 We will consider linear constraints on $\bs\beta$, where the null hypothesis has the form $H_0: \bm{C}\bs\beta = \bm{d}$ for fixed $q \times p$ matrix $\bm{C}$ and $q \times 1$ vector $\bm{d}$. 
 The Wald statistic is then \[
 Q = \left(\bm{C}\bs{\hat\beta} - \bm{d}\right)'\left(\bm{C} \bm{V}^{CR} \bm{C}'\right)^{-1}\left(\bm{C}\bs{\hat\beta} - \bm{d}\right),
@@ -451,19 +455,40 @@ which reduces to (\ref{eq:nu_Satterthwaite}) if $q = 1$.
 
 In practice, the moments of $v_{st}$ must be estimated. 
 As with single-case tests, both model-based and empirical estimates can be considered.
-Assuming that the errors $\bs\epsilon_1,...,\bs\epsilon_m$ are normally distributed with variance $\bs\Phi_j$, the model-based degrees of freedom are given by substituting $\bm{c}_s'\bm{V}^M\bm{c}_t$ for $\E\left(v_{st}\right)$ and evaluating $\Var\left(v_{st}\right)$ using Equation (\ref{eq:CRVE_variance}) with $\bm{u}_1 = \bm{c}_s$, $\bm{u}_2 = \bm{c}_t$, and $\bs\Sigma = \hat{\bs\Phi}$.
-Still assuming normality of the errors, an empirical degrees of freedom estimate is given by using $v_{st}$ as an estimate of $\E\left(v_{st}\right)$ and estimating $\Var\left(v_{st}\right)$ as \[
-\sum_{h,i,j,k=1}^m a_{jk}\bm{t}_{hj}' \bm{e}_j \bm{e}_j' \bm{t}_{ij} \bm{t}_{hk} \bm{e}_k \bm{e}_k' \bm{t}_{ik}
-\]
+Let $\bm{t}_{sh} = \left(\bm{I} - \bm{H}\right)_h'\bm{A}_h'\bm{W}_h\bm{X}_h\bm{M}\bm{c}_s$ for CR2a or $\bm{t}_{sh} = \left(\bm{I} - \bm{H}\right)_h'\bm{W}_h\bm{X}_h\bm{D}_h'\bm{M}\bm{c}_s$ for CR2b, for $s = 1,...,q$ and $h = 1,...,m$. 
+Let $\bm{t}_{shj}$ be the $n_j \times 1$ sub-vector of $\bm{t}_{sh}$ corresponding to cluster $j$, for $j = 1,...,m$. Assuming that the errors $\bs\epsilon_1,...,\bs\epsilon_m$ are normally distributed with variance $\bs\Phi_j$, the model-based degrees of freedom are then given by
+\begin{equation}
+\label{eq:eta_model}
+\eta_M = \frac{\sum_{s,t=1}^q \sum_{h,i=1}^m b_{st} \bm{t}_{sh}'\hat{\bs\Omega}\bm{t}_{th} \bm{t}_{si}'\hat{\bs\Omega}\bm{t}_{ti}}{\sum_{s,t=1}^q \sum_{h,i=1}^m \bm{t}_{sh}'\hat{\bs\Omega}\bm{t}_{ti} \bm{t}_{sh}'\hat{\bs\Omega}\bm{t}_{ti} + \bm{t}_{sh}'\hat{\bs\Omega}\bm{t}_{si} \bm{t}_{th}'\hat{\bs\Omega}\bm{t}_{ti}},
+\end{equation}
+where $b_{st} = 1 + (s=t)$ for $s,t=1,..,q$.
+Still assuming normality of the errors, an empirical degrees of freedom estimate is given by using $v_{st}$ as an estimate of $\E\left(v_{st}\right)$ and estimating $\bs\Sigma$ using the residuals: 
+\begin{equation}
+\label{eq:eta_empirical}
+\eta_E = \frac{\sum_{s,t=1}^q b_{st} v_{st}^2}{\sum_{s,t=1}^q \sum_{h,i,j,k=1}^m a_{jk}\left(\bm{t}_{shj}'\bm{e}_j \bm{e}_j'\bm{t}_{tij} \bm{t}_{shk}' \bm{e}_k \bm{e}_k' \bm{t}_{tik} + \bm{t}_{shj}'\bm{e}_j \bm{e}_j'\bm{t}_{sij} \bm{t}_{thk}' \bm{e}_k \bm{e}_k' \bm{t}_{tik}\right)},
+\end{equation}
+with $a_{jk} = \left(1 + 2(j=k)\right)^{-1}$.
+\cite{Pan2002small} use a different method for estimating $\Var(v_{st})$, based on the sample variance of the contribution of each individual cluster to $v_{st}$; this method thus avoids relying on the assumption that the errors are normally distributed.\todo{Which makes sense in the GEE context.} 
+Following their approach to estimating the total variance, a final degrees of freedom estimate is
+\begin{equation}
+\label{eq:eta_sample}
+\eta_S = \frac{\sum_{s,t=1}^q b_{st} v_{st}^2}{\frac{m}{m-1}\sum_{s,t=1}^q \sum_{j=1}^m \left(\bm{u}_{sj}'\bm{e}_j \bm{e}_j'\bm{u}_{tj} - v_{st} / m\right)^2},
+\end{equation}
+where $\bm{u}_{sj} = \bm{W}_j \bm{X}_j \bm{M}\bm{c}_s$ for CR0, $\bm{u}_{sj} = \bm{A}_j'\bm{W}_j \bm{X}_j \bm{M}\bm{c}_s$ for CR2a, $\bm{u}_{sj} = \bm{W}_j \bm{X}_j \bm{D}_j \bm{M}\bm{c}_s$ for CR2b, or $\bm{u}_{sj} = \left(\bm{I}_j - \bm{H}_{jj}\right)^{-1} \bm{W}_j \bm{X}_j \bm{M}\bm{c}_s$ for CR3.
 
+\subsection{Examples}
+\label{subsec:examples_F}
+
+In this section we examine three short examples of F-tests, spanning a variety of applied contexts. In each example, we illustrate how the proposed small-sample tests can be used and how they can differ from the conventional asymptotic Wald tests. R code and data files are available for each analysis as an online supplement.
+
+\subsubsection{Tennessee STAR class-size experiment.} 
+
+The Tennessee STAR class size experiment is one of the most well studied interventions in education.  In the experiment, K – 3 students and teachers were randomized within each of 79 schools to one of three conditions: small class-size (targetted to have 13-17 students), regular class-size, or regular class-size with an aide (see Schazenbach, 2006 for a review). Analyses of the original study and follow up waves have found that being in a small class improves a variety of outcomes, including higher test scores (e.g., Krueger, 1999), increased likelihood of taking college entrance exams \citep{Krueger2001effect}, and increased rates of home ownership and earnings (e.g., Chetty et al, 2010). 
 
 \subsection{Simulation evidence}
+\label{subsec:simulation_t}
 
-
-\section{Examples}
-\label{sec:examples}
-
-\section{Discussion}
+\section{DISCUSSION}
 \label{sec:discussion}
 
 \appendix
