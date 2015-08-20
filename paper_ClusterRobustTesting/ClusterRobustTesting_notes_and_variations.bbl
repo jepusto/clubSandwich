@@ -1,10 +1,5 @@
 \begin{thebibliography}{xx}
 
-\harvarditem{Angrist \harvardand\ Lavy}{2009}{Angrist2009effects}
-Angrist, J.~D. \harvardand\ Lavy, V.  \harvardyearleft 2009\harvardyearright ,
-  `{The effects of high stakes high school achievement awards : Evidence from a
-  randomized trial}', {\em American Economic Review} {\bf 99}(4),~1384--1414.
-
 \harvarditem{Angrist \harvardand\ Pischke}{2009}{Angrist2009mostly}
 Angrist, J.~D. \harvardand\ Pischke, J.  \harvardyearleft 2009\harvardyearright
   , {\em {Mostly harmless econometrics: An empiricist's companion}}, Princeton
@@ -48,13 +43,6 @@ Cameron, A.~C. \harvardand\ Miller, D.~L.  \harvardyearleft
 Carter, A.~V., Schnepel, K.~T. \harvardand\ Steigerwald, D.~G.
   \harvardyearleft 2013\harvardyearright , `{Asymptotic Behavior of a t Test
   Robust to Cluster Heterogeneity}',  pp.~1--32.
-
-\harvarditem[Chetty et~al.]{Chetty, Friedman, Hilger, Saez, Schanzenbach
-  \harvardand\ Yagan}{2011}{Chetty2011how}
-Chetty, R., Friedman, J.~N., Hilger, N., Saez, E., Schanzenbach, D.~W.
-  \harvardand\ Yagan, D.  \harvardyearleft 2011\harvardyearright , `{How does
-  your kindergarten classroom affect your earnings? Evidence from Project
-  STAR}', {\em The Quarterly Journal of Economics} {\bf 126}(4),~1593--1660.
 
 \harvarditem{Donald \harvardand\ Lang}{2007}{Donald2007inference}
 Donald, S.~G. \harvardand\ Lang, K.  \harvardyearleft 2007\harvardyearright ,
@@ -123,11 +111,6 @@ Satterthwaite, F.~E.  \harvardyearleft 1946\harvardyearright , `{An approximate
   distribution of estimates of variance components}', {\em Biometrics bulletin}
   {\bf 2}(6),~110--114.
 
-\harvarditem{Schanzenbach}{2006}{Schanzenbach2006what}
-Schanzenbach, D.~W.  \harvardyearleft 2006\harvardyearright , `{What have
-  researchers learned from Project STAR?}', {\em Brookings Papers on Education
-  Policy} {\bf 2006}(1),~205--228.
-
 \harvarditem{Tipton \harvardand\ Pustejovsky}{forthcoming}{Tipton2015small}
 Tipton, E. \harvardand\ Pustejovsky, J.~E.  \harvardyearleft
   forthcoming\harvardyearright , `{Small-sample adjustments for tests of
@@ -137,10 +120,6 @@ Tipton, E. \harvardand\ Pustejovsky, J.~E.  \harvardyearleft
 \harvarditem{Webb \harvardand\ MacKinnon}{2013}{Webb2013wild}
 Webb, M. \harvardand\ MacKinnon, J.~G.  \harvardyearleft 2013\harvardyearright
   , {Wild Bootstrap Inference for Wildly Different Cluster Sizes}.
-
-\harvarditem{Wooldridge}{2002}{Wooldridge2002econometric}
-Wooldridge, J.~M.  \harvardyearleft 2002\harvardyearright , {\em {Econometric
-  Analysis of Cross Section and Panel Data}}, MIT Press, Cambridge, MA.
 
 \harvarditem{Zhang}{2012{\em a}}{Zhang2012two-wayANOVA}
 Zhang, J.-T.  \harvardyearleft 2012{\em a}\harvardyearright , `{An approximate
