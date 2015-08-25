@@ -148,9 +148,9 @@ matrix_list <- function(x, fac, dim) {
   }
 }
 
-Sym_power <- function(x, p) {
+Sym_power <- function(x, p, tol = -12) {
   eig <- eigen(x, symmetric = TRUE)
-  val_p <- with(eig, ifelse(values > 0, values^p, 0))
+  val_p <- with(eig, ifelse(values > 10^tol, values^p, 0))
   with(eig, vectors %*% (val_p * t(vectors)))
 }
 
@@ -171,8 +171,13 @@ CR2 <- function(M, XW_list, IH, Theta, cluster, inverse_var = FALSE) {
                      a = Theta_chol, b = Theta_list, ih = IH_jj, SIMPLIFY = FALSE)
   } else {
     IH_list <- matrix_list(IH, cluster, "row")
-    G_list <- mapply(function(v, ih) as.matrix(v %*% ih %*% Theta %*% t(ih) %*% t(v)), 
-                     v = Theta_chol, ih = IH_list, SIMPLIFY = FALSE)
+    if (is.vector(Theta)) {
+      G_list <- mapply(function(v, ih) as.matrix(v %*% ih %*% (Theta * t(ih)) %*% t(v)),
+                       v = Theta_chol, ih = IH_list, SIMPLIFY = FALSE)
+    } else {
+      G_list <- mapply(function(v, ih) as.matrix(v %*% ih %*% Theta %*% t(ih) %*% t(v)), 
+                       v = Theta_chol, ih = IH_list, SIMPLIFY = FALSE)
+    }
   }
 
   A_list <- mapply(function(v, g) as.matrix(t(v) %*% Sym_power(g, -1/2) %*% v), 
@@ -202,8 +207,13 @@ CR4 <- function(M, X_list, XW_list, IH, Theta, cluster, inverse_var = FALSE) {
     IH_list <- matrix_list(IH, cluster, "row")
     XWIH_list <- mapply(function(xw, ih) as.matrix(xw %*% ih), 
                         xw = XW_list, ih = IH_list, SIMPLIFY = FALSE)
-    G_list <- mapply(function(f, xwih) as.matrix(f %*% xwih %*% Theta %*% t(xwih) %*% t(f)), 
-                     f = F_chol, xwih = XWIH_list, SIMPLIFY = FALSE)
+    if (is.vector(Theta)) {
+      G_list <- mapply(function(f, xwih) as.matrix(f %*% xwih %*% (Theta * t(xwih)) %*% t(f)), 
+                       f = F_chol, xwih = XWIH_list, SIMPLIFY = FALSE)
+    } else {
+      G_list <- mapply(function(f, xwih) as.matrix(f %*% xwih %*% Theta %*% t(xwih) %*% t(f)), 
+                       f = F_chol, xwih = XWIH_list, SIMPLIFY = FALSE)
+    }
   }
   
   D_list <- mapply(function(f, g) as.matrix(t(f) %*% Sym_power(g, -1/2) %*% f), 
