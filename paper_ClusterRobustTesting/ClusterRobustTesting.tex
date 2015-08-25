@@ -264,21 +264,23 @@ Instead, it is useful to first absorb the fixed effects and then estimate $\bs\a
 Although both approaches yield algebraically equivalent estimators of $\bs\alpha$, the small-sample adjustments to the CRVEs can differ depending on whether they are calculated based on the full covariate matrix or after absorbing the fixed effects. 
 We view absorption is a computational device, rather than a distinct approach to estimation, and so it is useful to describe how to calculate CR2 when $\bs\alpha$ is estimated using absorption.
 
-Let $\bm{H_S} = \bm{S}\left(\bm{S}'\bm{W}\bm{S}\right)^{-1} \bm{S}'\bm{W}$, $\bm{\ddot{Y}} = \left(\bm{I} - \bm{H_S}\right)\bm{Y}$, $\bm{\ddot{R}} = \left(\bm{I} - \bm{H_S}\right)\bm{R}$, $\bm{M_{\ddot{R}}} = \left(\bm{\ddot{R}}' \bm{W} \bm{\ddot{R}}\right)^{-1}$, and $\bm{H_{\ddot{R}}} = \bm{\ddot{R}}\bm{M_{\ddot{R}}} \bm{\ddot{R}}' \bm{W}$. 
+Let $\bm{M_S} = \left(\bm{S}'\bm{W}\bm{S}\right)^{-1}$, $\bm{H_S} = \bm{S} \bm{M_S} \bm{S}'\bm{W}$, $\bm{\ddot{Y}} = \left(\bm{I} - \bm{H_S}\right)\bm{Y}$, $\bm{\ddot{R}} = \left(\bm{I} - \bm{H_S}\right)\bm{R}$, $\bm{M_{\ddot{R}}} = \left(\bm{\ddot{R}}' \bm{W} \bm{\ddot{R}}\right)^{-1}$, and $\bm{H_{\ddot{R}}} = \bm{\ddot{R}}\bm{M_{\ddot{R}}} \bm{\ddot{R}}' \bm{W}$. 
 Using absorption, the WLS estimator of $\bs\alpha$ can be calculated as \[
 \bs{\hat\alpha} = \bm{M_{\ddot{R}}} \bm{\ddot{R}}' \bm{W} \bm{\ddot{Y}}. \]
 This estimator is algebraically equivalent to the corresponding sub-vector of $\bs{\hat\beta}$  calculated as in (\ref{eq:WLS}), based on the full covariate matrix $\bm{X}$. 
 Furthermore, the residuals can be calculated from the absorbed model using $\bm{e} = \bm{\ddot{y}} - \bm{\ddot{R}} \bs{\hat\alpha}$.
 Let $\bm{\ddot{V}}^{CR0}$ denote the CR0 estimator calculated using $\bm{\ddot{R}}$ in place of $\bm{X}$, $\bm{M_{\ddot{R}}}$ in place of $\bm{M}$, and $\bm{\ddot{e}} = $ in place of $\bm{e}$. It can be shown that $\bm{\ddot{V}}^{CR0}$ is algebraically equivalent to $\bm{V}^{CR0}$ calculated based on the full covariate matrix, as in (\ref{eq:V_CR0}). 
 
-In contrast to CR0, the CR2 estimator will differ depending on whether it is calculated based on the quantities from the absorbed model or those from the full WLS model. 
+In contrast to CR0, it is possible that the CR2 estimator will differ depending on whether it is calculated based on the quantities from the absorbed model or those from the full WLS model. 
 It is thus useful to define it in such a way that the calculations based on the absorbed model yield algrebraically identical results to the calculations from the full WLS model. 
-This can be accomplished by ensuring that the adjustment matrices given in Equation (\ref{eq:CR2_adjustment}) are calculated based on the full covariate matrix $\bm{X}$. Specifically, in models with fixed effects, the adjustment matrices are calculated as
+This can be accomplished by ensuring that the adjustment matrices given in Equation (\ref{eq:CR2_adjustment}) are calculated based on the full covariate matrix $\bm{X}$. Specifically, in models with fixed effects, the adjustment matrices are calculated as in (\ref{eq:CR2_adjustment}), but with 
 \begin{equation}
 \label{eq:CR2_panel_adjustment}
-\bm{A}_j = \left(\hat{\bs\Phi}_j^C\right)' \left[\hat{\bs\Phi}_j^C\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \left(\bm{I} - \bm{H_S}\right) \hat{\bs\Phi} \left(\bm{I} - \bm{H_S}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' \left(\hat{\bs\Phi}_j^C\right)' \right]^{-1/2}\hat{\bs\Phi}_j^C.
+\bm{B}_j = \hat{\bs\Phi}_j^C\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \left(\bm{I} - \bm{H_S}\right) \hat{\bs\Phi} \left(\bm{I} - \bm{H_S}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' \left(\hat{\bs\Phi}_j^C\right)'.
 \end{equation}
-This formula avoids the need to calculate $\bm{H}$, which would involve inverting a $p \times p$ matrix.\todo{Comment on whether this matters when fixed effects include only cluster indicators.}
+This formula avoids the need to calculate $\bm{H}$, which would involve inverting a $p \times p$ matrix. 
+
+It is unnecessary to account for absorption of fixed effects under certain commonly occurring circumstances. Specifically, if the model is estimated using weighted least-squares with working inverse-variance weights, and if absorption is performed only for fixed effects that are equivalent to or nested within the units on which clusters are defined, then the adjustment matrices can be calculated directly from Equations (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}), using $\bm{H_{\ddot{R}}}$ in place of $\bm{H}$. This result is formalized as a theorem in Appendix \ref{app:theorem1}. When the necessary conditions hold, this approach is preferable for reasons of numerical precision.
 
 \section{SINGLE-CONSTRAINT TESTS}
 \label{sec:testing}
@@ -443,11 +445,13 @@ Further investigation of
 \item computational issues with CR2 (especially when $n_j$'s are large)
 \item saddlepoint methods for $q > 1$
 \end{itemize}
+
 \appendix
+
 \section{Distribution theory for $\bm{V}^{CR}$}
 \label{app:VCR_dist}
 
-The small-sample approximations for t-tests and F-tests both involve the distribution of the entries of $\bm{V}^{CR2}$. This section explains the relevant distribution theory.
+The small-sample approximations for t-tests and F-tests both involve the distribution of the entries of $\bm{V}^{CR2}$. This appendix explains the relevant distribution theory.
 
 First, note that the CR2 estimator can be written in the form $\bm{V}^{CR2} = \sum_{j=1}^M \bm{T}_j \bm{e}_j \bm{e}_j' \bm{T}_j'$ for $p \times n_j$ matrices $\bm{T}_j = \bm{M} \bm{X}_j' \bm{W}_j \bm{A}_j$.
 Let $\bm{c}_1,\bm{c}_2,\bm{c}_3,\bm{c}_4$ be fixed, $p \times 1$ vectors and consider the linear combination $\bm{c}_1' \bm{V}^{CR2} \bm{c}_2$. 
@@ -466,6 +470,47 @@ Standard results regarding quadratic forms can be used to derive the moments of 
 \end{align}
 Furthermore, the distribution of $\bm{c}_1' \bm{V}^{CR2} \bm{c}_2$ can be expressed as a weighted sum of $\chi^2_1$ distributions, with weights given by the eigen-values of the $m \times m$ matrix with $\left(i,j\right)^{th}$ entry $\bm{t}_{1i}' \bs\Sigma \bm{t}_{2j}$, $i,j=1,...,m$.
 
+
+
+\section{CR2 invariance}
+\label{app:theorem1}
+
+This appendix provides a theorem that identifies circumstances under which it is unnecessary to account for fixed effect absorption when calculating the adjustment matrices used in $\bm{V}^{CR2}$. 
+
+\paragraph{Theorem.} Consider model (\ref{eq:fixed_effects}) and let $\bm{\ddot{V}}^{CR2}$ be the CR2 matrix calculated based on the absorbed model, i.e., 
+\[
+\bm{\ddot{V}}^{CR2} = \bm{M_{\ddot{R}}}\left(\sum_{j=1}^m \bm{\ddot{R}}_j'\bm{W}_j \bm{\ddot{A}}_j \bm{e}_j \bm{e}_j' \bm{\ddot{A}}_j' \bm{W}_j \bm{\ddot{R}}_j\right) \bm{M_{\ddot{R}}},
+\]
+where $\bm{\ddot{A}}_j = {\bs{\hat\Phi}_j^C}' \bm{\ddot{B}}_j^{-1/2}\hat{\bs\Phi}_j^C$ and $\bm{\ddot{B}}_j = \hat{\bs\Phi}_j^C\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \hat{\bs\Phi} \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' {\bs{\hat\Phi}_j^C}'$.
+Let $\bm{J}$ be the $p \times r$ matrix that selects the covariates of interest, i.e., $\bm{X}\bm{J} = \bm{R}$ and $\bm{J}'\bs\beta = \bs\alpha$. 
+Assume that $\bm{W}_j = \bs{\hat\Phi}_j^{-1}$ for $j = 1,...,m$ and that $\bm{S}_i \bm{M_S}\bm{S}_j'\bm{W}_j = \bm{0}$ for every $i \neq j$. Then $\bm{\ddot{V}}^{CR2} = \bm{J}'\bm{V}^{CR2}\bm{J}$.
+
+\paragraph{Proof.} Formulas for the inverse of a partitioned matrix can be used to demonstrate that $\bm{X}_j\bm{M}\bm{J} = \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}$. Thus, equivalence of $\bm{\ddot{V}}^{CR2}$ and $\bm{J}'\bm{V}^{CR2}\bm{J}$ follows if $\bm{A}_j = \bm{\ddot{A}}_j$ for $j = 1,...,m$.
+
+From the fact that $\bm{\ddot{R}}_j'\bm{W}_j\bm{S}_j = \bm{0}$ for $j = 1,...,m$, it follows that \begin{align*}
+\bm{B}_j &= \bs{\hat\Phi}_j^C \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \left(\bm{I} - \bm{H_S}\right) \hat{\bs\Phi} \left(\bm{I} - \bm{H_S}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' {\bs{\hat\Phi}_j^C}'\\
+&= \bs{\hat\Phi}_j^C\left(\bm{I} - \bm{H_{\ddot{R}}} - \bm{H_S}\right)_j \hat{\bs\Phi} \left(\bm{I} - \bm{H_{\ddot{R}}} - \bm{H_S}\right)_j' {\bs{\hat\Phi}_j^C}' \\
+&= \bs{\hat\Phi}_j^C \left(\bs\Phi_j - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j' - \bm{S}_j \bm{M_S}\bm{S}_j'\right){\bs{\hat\Phi}_j^C}'
+\end{align*}
+and 
+\begin{equation}
+\label{eq:B_j_inverse}
+\bm{B}_j^{-1} = \left({\bs{\hat\Phi}_j^C}'\right)^{-1} \left(\bs\Phi_j - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j' - \bm{S}_j \bm{M_S}\bm{S}_j'\right)^{-1}\left(\bs{\hat\Phi}_j^C\right)^{-1}.
+\end{equation}
+Let $\bm{U}_j = \left(\bs\Phi_j - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j'\right)^{-1}$.
+Using a generalized Woodbury identity \citep{Henderson1981on}, \[
+\bm{U}_j = \bm{W}_j - \bm{W}_j \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\left(\bm{M_{\ddot{R}}} - \bm{M_{\ddot{R}}} \bm{\ddot{R}}_j \bm{W}_j \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\right)^{-} \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j'\bm{W}_j, \]
+where ${M}^{-}$ is a generalized inverse of $\bm{M}$. 
+It follows that $\bm{U}_j \bm{S}_j = \bm{W}_j \bm{S}_j$. 
+Another application of the generalized Woodbury identity gives 
+\begin{align*}
+\left(\bs\Phi_j - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j' - \bm{S}_j \bm{M_S}\bm{S}_j'\right)^{-1} &= \bm{U}_j - \bm{U}_j \bm{S}_j \bm{M_S}\left(\bm{M_S} - \bm{M_S}\bm{S}_j' \bm{U}_j \bm{S}_j\bm{M_S}\right)^{-} \bm{M_S} \bm{S}_j' \bm{U}_j \\
+&= \bm{U}_j - \bm{W}_j \bm{S}_j \bm{M_S}\left(\bm{M_S} - \bm{M_S}\bm{S}_j' \bm{W}_j \bm{S}_j\bm{M_S}\right)^{-} \bm{M_S} \bm{S}_j' \bm{W}_j \\
+&= \bm{U}_j.
+\end{align*}
+The last equality follows from the fact that $\bm{S}_j \bm{M_S}\left(\bm{M_S}\bm{S}_j' \bm{W}_j \bm{S}_j\bm{M_S} - \bm{M_S}\right)^{-} \bm{M_S} \bm{S}_j' = \bm{0}$ because the fixed effects are nested within clusters. 
+Substituting into (\ref{eq:B_j_inverse}), we then have that $\bm{B}_j^{-1} = \left({\bs{\hat\Phi}_j^C}'\right)^{-1} \bm{U}_j \left(\bs{\hat\Phi}_j^C\right)^{-1}$. 
+Now, $\bm{\ddot{B}}_j = \hat{\bs\Phi}_j^C \bm{U}_j^{-1} {\bs{\hat\Phi}_j^C}'$ and so $\bm{\ddot{B}}_j^{-1} = \bm{B}_j^{1}$. It follows that $\bm{\ddot{A}}_j = \bm{A}_j$ for $j = 1,...,m$. 
 
 \bibliographystyle{agsm}
 \bibliography{bibliography}

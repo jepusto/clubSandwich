@@ -227,12 +227,12 @@ The criterion (\ref{eq:CR2a_criterion}) does not uniquely define $\bm{A}_j$.
 Based on extensive simulations, \citet{McCaffrey2001generalizations} found that a symmetric solution worked well, with 
 \begin{equation}
 \label{eq:CR2a_adjustment}
-\bm{A}_j = \left(\hat{\bs\Phi}_j^C\right)' \bm{B}_j^{-1/2}\hat{\bs\Phi}_j^C,
+\bm{A}_j = {\bs{\hat\Phi}_j^C}' \bm{B}_j^{-1/2}\hat{\bs\Phi}_j^C,
 \end{equation}
 where $\hat{\bs\Phi}_j^C$ is the upper triangular Cholesky factorization of $\hat{\bs\Phi}_j$, 
 \begin{equation}
 \label{eq:CR2a_Bmatrix}
-\bm{B}_j = \hat{\bs\Phi}_j^C\left(\bm{I} - \bm{H}\right)_j \hat{\bs\Phi} \left(\bm{I} - \bm{H}\right)_j' \left(\hat{\bs\Phi}_j^C\right)',
+\bm{B}_j = \hat{\bs\Phi}_j^C\left(\bm{I} - \bm{H}\right)_j \hat{\bs\Phi} \left(\bm{I} - \bm{H}\right)_j' {\bs{\hat\Phi}_j^C}',
 \end{equation}
 and $\bm{B}_j^{-1/2}$ is the inverse of the symmetric square root of $\bm{B}_j $. 
 If ordinary (unweighted) least squares is used to estimate $\bs\beta$ and the working variance model posits that the errors are all independent and homoskedastic, then $\bm{W} = \bs\Phi = \bm{I}$ and $\bm{A}_j = \left(\bm{I}_j - \bm{X}_j\left(\bm{X}'\bm{X}\right)^{-1}\bm{X}_j'\right)^{-1/2}$.
@@ -259,7 +259,7 @@ where the adjustment matrices $\bm{D}_1,...,\bm{D}_m$ are chosen so that
 Just as with CR2a, there are several different forms of adjustment matrices that satisfy (\ref{eq:CR2b_criterion}). 
 A symmetric solution is to take
 \begin{equation}
-\bm{D}_j = \left(\bm{F}_j^C\right)'\left[\bm{F}_j^C \bm{G}_j \left(\bm{F}_j^C\right)'\right]^{-1/2}\bm{F}_j^C
+\bm{D}_j = {\bm{F}_j^C}'\left[\bm{F}_j^C \bm{G}_j {\bm{F}_j^C}'\right]^{-1/2}\bm{F}_j^C
 \end{equation}
 where $\bm{F}_j = \bm{X}_j' \bm{W}_j \hat{\bs\Phi}_j \bm{W}_j \bm{X}_j$ and $\bm{G}_j = \bm{X}_j' \bm{W}_j \left(\bm{I} - \bm{H}\right)_j \hat{\bs\Phi} \left(\bm{I} - \bm{H}\right)_j' \bm{W}_j \bm{X}_j$. Note that $\bm{F}_j$ and $\bm{G}_j$ might not be positive definite, and so generalized forms of the Cholesky decomposition and symmetric inverse-square root must be used. In datasets where clusters have a large number of individual units, CR2b will be less computationally intensive than CR2a because the adjustment matrices are all of dimension $p \times p$.
 
@@ -315,7 +315,7 @@ It is thus useful to define CR2a in such a way that the calculations based on th
 This can be accomplished by ensuring that the adjustment matrices given in Equation (\ref{eq:CR2a_adjustment}) are calculated based on the full covariate matrix $\bm{X}$. Specifically, in models with fixed effects, the adjustment matrices are calculated as 
 \begin{equation}
 \label{eq:CR2_panel_adjustment}
-\bm{A}_j = \left(\hat{\bs\Phi}_j^C\right)' \left[\hat{\bs\Phi}_j^C\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \left(\bm{I} - \bm{H_S}\right) \hat{\bs\Phi} \left(\bm{I} - \bm{H_S}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' \left(\hat{\bs\Phi}_j^C\right)' \right]^{-1/2}\hat{\bs\Phi}_j^C.
+\bm{A}_j = {\bs{\hat\Phi}_j^C}' \left[\hat{\bs\Phi}_j^C\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \left(\bm{I} - \bm{H_S}\right) \hat{\bs\Phi} \left(\bm{I} - \bm{H_S}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' {\bs{\hat\Phi}_j^C}' \right]^{-1/2}\hat{\bs\Phi}_j^C.
 \end{equation}
 This formula avoids the need to calculate $\bm{H}$, which would involve inverting a $p \times p$ matrix.\todo{Comment on whether this matters when fixed effects include only cluster indicators.}
 
@@ -326,7 +326,7 @@ Like CR2a, the CR2b estimator is affected by whether it is calculated based on t
 \end{equation}
 where the adjustment matrices are given by 
 \begin{equation}
-\bm{\ddot{D}}_j = \left(\bm{\ddot{F}}_j^C\right)'\left[\bm{\ddot{F}}_j^C \bm{\ddot{G}}_j \left(\bm{\ddot{F}}_j^C\right)'\right]^{-1/2}\bm{\ddot{F}}_j^C,
+\bm{\ddot{D}}_j = \bm{\ddot{F}}_j^C{}'\left[\bm{\ddot{F}}_j^C \bm{\ddot{G}}_j \bm{\ddot{F}}_j^C{}'\right]^{-1/2}\bm{\ddot{F}}_j^C,
 \end{equation}
 $\bm{\ddot{F}}_j = \bm{\ddot{R}}_j' \bm{W}_j \hat{\bs\Phi}_j \bm{W}_j \bm{\ddot{R}}_j$ and $\bm{\ddot{G}}_j = \bm{\ddot{R}}_j' \bm{W}_j \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j  \left(\bm{I} - \bm{H_s}\right) \hat{\bs\Phi} \left(\bm{I} - \bm{H_s}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' \bm{W}_j \bm{\ddot{R}}_j$. The CR2b estimator then has the property that $\E\left(\bm{\ddot{V}}^{CR2b}\right) = \Var\left(\bs{\hat\alpha}\right)$ when the working model is correct.
 
@@ -525,19 +525,42 @@ Furthermore, the distribution of $\bm{u}_1' \bm{V}^{CR} \bm{u}_2$ can be express
 \section{CR2 invariance}
 \label{app:theorem1}
 
-Under certain circumstances, the use of (\ref{eq:CR2a_panel_adjustment}) is unnecessary and CR2 can be calculated based solely on the absorbed model. In models estimated by WLS with weights that are the inverse of the working model, if absorption is performed only for the fixed effects that are equivalent to (or nested within) the units on which clustering is defined, then the adjustment matrices can be calculated directly from Equations (\ref{eq:CR2a_adjustment}) and (\ref{eq:CR2a_Bmatrix}), using $\bm{H_{\ddot{R}}}$ in place of $\bm{H}$. This result is formalized in the following theorem.
+Under certain circumstances, the use of (\ref{eq:CR2_panel_adjustment}) is unnecessary and CR2 can be calculated based solely on the absorbed model. In models estimated by WLS with weights that are the inverse of the working model, if absorption is performed only for the fixed effects that are equivalent to (or nested within) the units on which clustering is defined, then the adjustment matrices can be calculated directly from Equations (\ref{eq:CR2a_adjustment}) and (\ref{eq:CR2a_Bmatrix}), using $\bm{H_{\ddot{R}}}$ in place of $\bm{H}$. This result is formalized in the following theorem.
 
 \paragraph{Theorem 1.} Consider model (\ref{eq:fixed_effects}) and assume that $\bm{W}_j = \bs{\hat\Phi}_j$ for $j = 1,...,m$. Let $\bm{\ddot{V}}^{CR2}$ be the CR2 matrix calculated based on the absorbed model, i.e., 
 \[
 \bm{\ddot{V}}^{CR2} = \bm{M_{\ddot{R}}}\left(\sum_{j=1}^m \bm{\ddot{R}}_j'\bm{W}_j \bm{\ddot{A}}_j \bm{e}_j \bm{e}_j' \bm{\ddot{A}}_j' \bm{W}_j \bm{\ddot{R}}_j\right) \bm{M_{\ddot{R}}},
 \]
 where \[
-\bm{\ddot{A}}_j = \left(\hat{\bs\Phi}_j^C\right)' \left[\hat{\bs\Phi}_j^C\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \hat{\bs\Phi} \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' \left(\hat{\bs\Phi}_j^C\right)' \right]^{-1/2}\hat{\bs\Phi}_j^C. \]
+\bm{\ddot{A}}_j = {\bs{\hat\Phi}_j^C}' \bm{\ddot{B}}_j^{-1/2}\hat{\bs\Phi}_j^C \]
+and $\bm{\ddot{B}}_j = \hat{\bs\Phi}_j^C\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \hat{\bs\Phi} \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' {\bs{\hat\Phi}_j^C}'$.
 Let $\bm{J}$ be the $p \times r$ matrix that selects the covariates of interest, i.e., $\bm{X}\bm{J} = \bm{R}$ and $\bm{J}'\bs\beta = \bs\alpha$. 
-For an arbitrary $s \times s$ matrix $\bm{K}$, assume that $\bm{S}_i \bm{K}\bm{S}_j' = \bm{0}$ for every $i \neq j$. Then $\bm{\ddot{V}}^{CR2} = \bm{J}'\bm{V}^{CR2}\bm{J}$.\todo{Is this even true?}
+Assume that $\bm{S}_i \bm{M_S}\bm{S}_j'\bm{W}_j = \bm{0}$ for every $i \neq j$. Then $\bm{\ddot{V}}^{CR2} = \bm{J}'\bm{V}^{CR2}\bm{J}$.\todo{Is this even true?}
 
 \paragraph{Proof.} Formulas for the inverse of a partitioned matrix can be used to demonstrate that $\bm{X}_j\bm{M}\bm{J} = \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}$. Thus, equivalence of $\bm{\ddot{V}}^{CR2}$ and $\bm{J}'\bm{V}^{CR2}\bm{J}$ follows if $\bm{A}_j = \bm{\ddot{A}}_j$ for $j = 1,...,m$.
 
+From the fact that $\bm{\ddot{R}}_j'\bm{W}_j\bm{S}_j = \bm{0}$ for $j = 1,...,m$, it follows that \begin{align*}
+\bm{B}_j &= \bs{\hat\Phi}_j^C \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \left(\bm{I} - \bm{H_S}\right) \hat{\bs\Phi} \left(\bm{I} - \bm{H_S}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' {\bs{\hat\Phi}_j^C}'\\
+&= \bs{\hat\Phi}_j^C\left(\bm{I} - \bm{H_{\ddot{R}}} - \bm{H_S}\right)_j \hat{\bs\Phi} \left(\bm{I} - \bm{H_{\ddot{R}}} - \bm{H_S}\right)_j' {\bs{\hat\Phi}_j^C}' \\
+&= \bs{\hat\Phi}_j^C \left(\bs\Phi_j - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j' - \bm{S}_j \bm{M_S}\bm{S}_j'\right){\bs{\hat\Phi}_j^C}'
+\end{align*}
+and 
+\begin{equation}
+\label{eq:B_j_inverse}
+\bm{B}_j^{-1} = \left({\bs{\hat\Phi}_j^C}'\right)^{-1} \left(\bs\Phi_j - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j' - \bm{S}_j \bm{M_S}\bm{S}_j'\right)^{-1}\left(\bs{\hat\Phi}_j^C\right)^{-1}.
+\end{equation}
+Let $\bm{U}_j = \left(\bs\Phi_j - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j'\right)^{-1}$.
+From the Sherman-Morrison-Woodbury identity, $\bm{U}_j = \bm{W}_j - \bm{W}_j \bm{\ddot{R}}_j\bm{M}_{\ddot{R}(j)}\bm{\ddot{R}}_j'\bm{W}_j$, where $\bm{M}_{\ddot{R}(j)} = \left(\bm{\ddot{R}}'\bm{W}\bm{\ddot{R}} - \bm{\ddot{R}}_j'\bm{W}_j\bm{\ddot{R}}_j\right)^{-1}$.\todo{Does this hold when $\bm{M}_{\ddot{R}(j)}$ is not of full rank?}
+It follows that $\bm{U}_j \bm{S}_j = \bm{W}_j \bm{S}_j$. 
+Another application of the Sherman-Morrison-Woodbury identity gives 
+\begin{align*}
+\left(\bs\Phi_j - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j' - \bm{S}_j \bm{M_S}\bm{S}_j'\right)^{-1} &= \bm{U}_j + \bm{U}_j \bm{S}_j\left(\bm{S}_j' \bm{U}_j \bm{S}_j - \bm{S}'\bm{W}\bm{S}\right)^{-1} \bm{S}_j\bm{U}_j \\
+&= \bm{U}_j - \bm{W}_j \bm{S}_j \bm{M_{S(j)}} \bm{S}_j'\bm{W}_j \\
+&= \bm{U}_j
+\end{align*}
+where $\bm{M_{S(j)}} = \left(\bm{S}'\bm{W}\bm{S} - \bm{S}_j' \bm{W}_j \bm{S}_j\right)^{-1}$. The last equality follows from the fact that $\bm{S}_j \bm{M_{S(j)}}\bm{S}_j' = \bm{0}$ because the fixed effects are nested within clusters. Substituting into (\ref{eq:B_j_inverse}), we then have that \[
+\bm{B}_j^{-1} = \left({\bs{\hat\Phi}_j^C}'\right)^{-1} \bm{U}_j \left(\bs{\hat\Phi}_j^C\right)^{-1}.\]
+Now, $\bm{\ddot{B}}_j = \hat{\bs\Phi}_j^C \bm{U}_j^{-1} {\bs{\hat\Phi}_j^C}'$ and so $\bm{\ddot{B}}_j^{-1} = \bm{B}_j^{1}$. It follows that $\bm{\ddot{A}}_j = \bm{A}_j$ for $j = 1,...,m$. 
 
 \bibliographystyle{agsm}
 \bibliography{bibliography}
