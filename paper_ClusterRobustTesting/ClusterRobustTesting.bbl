@@ -27,11 +27,6 @@ Bertrand, M., Duflo, E. \harvardand\ Mullainathan, S.  \harvardyearleft
   2004\harvardyearright , `{How much should we trust differences-in-differences
   estimates?}', {\em Quarterly Journal of Economics} {\bf 119}(1),~249--275.
 
-\harvarditem[Brewer et~al.]{Brewer, Crossley \harvardand\
-  Joyce}{2013}{Brewer2013inference}
-Brewer, M., Crossley, T.~F. \harvardand\ Joyce, R.  \harvardyearleft
-  2013\harvardyearright , {Inference with difference-in-differences revisited}.
-
 \harvarditem[Cameron et~al.]{Cameron, Gelbach \harvardand\
   Miller}{2008}{Cameron2008bootstrap}
 Cameron, A.~C., Gelbach, J.~B. \harvardand\ Miller, D.  \harvardyearleft
@@ -42,12 +37,6 @@ Cameron, A.~C., Gelbach, J.~B. \harvardand\ Miller, D.  \harvardyearleft
 \harvarditem{Cameron \harvardand\ Miller}{2015}{Cameron2015practitioners}
 Cameron, A.~C. \harvardand\ Miller, D.~L.  \harvardyearleft
   2015\harvardyearright , {A practitioner's guide to cluster-robust inference}.
-
-\harvarditem[Carter et~al.]{Carter, Schnepel \harvardand\
-  Steigerwald}{2013}{Carter2013asymptotic}
-Carter, A.~V., Schnepel, K.~T. \harvardand\ Steigerwald, D.~G.
-  \harvardyearleft 2013\harvardyearright , `{Asymptotic Behavior of a t Test
-  Robust to Cluster Heterogeneity}',  pp.~1--32.
 
 \harvarditem[Chetty et~al.]{Chetty, Friedman, Hilger, Saez, Schanzenbach
   \harvardand\ Yagan}{2011}{Chetty2011how}
@@ -60,6 +49,12 @@ Chetty, R., Friedman, J.~N., Hilger, N., Saez, E., Schanzenbach, D.~W.
 Donald, S.~G. \harvardand\ Lang, K.  \harvardyearleft 2007\harvardyearright ,
   `{Inference with difference-in-differences and other panel data}', {\em
   Review of Economics and Statistics} {\bf 89}(2),~221--233.
+
+\harvarditem{Eicker}{1967}{eicker1967limit}
+Eicker, F.  \harvardyearleft 1967\harvardyearright , {Limit theorems for
+  regressions with unequal and dependent errors}, {\em in} `Proceedings of the
+  Berkeley Symposium on Mathematical Statistics and Probability', Vol.~1,
+  pp.~59--82.
 
 \harvarditem{Hansen}{2007}{Hansen2007asymptotic}
 Hansen, C.~B.  \harvardyearleft 2007\harvardyearright , `{Asymptotic properties
@@ -81,16 +76,6 @@ Ibragimov, R. \harvardand\ M\"{u}ller, U.~K.  \harvardyearleft
 Imbens, G.~W. \harvardand\ Kolesar, M.  \harvardyearleft 2012\harvardyearright
   , {Robust standard errors in small samples: some practical advice}.
 \newline\harvardurl{http://www.nber.org/papers/w18478}
-
-\harvarditem{Kezdi}{2004}{Kezdi2004robust}
-Kezdi, G.  \harvardyearleft 2004\harvardyearright , {Robust standard error
-  estimation in fixed-effects panel models}.
-\newline\harvardurl{http://papers.ssrn.com/sol3/Delivery.cfm?abstractid=596988}
-
-\harvarditem{Kline \harvardand\ Santos}{2012}{Kline2012score}
-Kline, P. \harvardand\ Santos, A.  \harvardyearleft 2012\harvardyearright , `{A
-  score based approach to wild bootstrap inference}', {\em Journal of
-  Econometric Methods} {\bf 1}(1).
 
 \harvarditem{Krueger \harvardand\ Whitmore}{2001}{Krueger2001effect}
 Krueger, A. \harvardand\ Whitmore, D.  \harvardyearleft 2001\harvardyearright ,
@@ -143,9 +128,19 @@ Tipton, E. \harvardand\ Pustejovsky, J.~E.  \harvardyearleft
 Webb, M. \harvardand\ MacKinnon, J.~G.  \harvardyearleft 2013\harvardyearright
   , {Wild Bootstrap Inference for Wildly Different Cluster Sizes}.
 
+\harvarditem{White}{1980}{White1980heteroskedasticity}
+White, H.  \harvardyearleft 1980\harvardyearright , `{A
+  heteroskedasticity-consistent covariance matrix estimator and a direct test
+  for heteroskedasticity}', {\em Econometrica} {\bf 48}(4),~817--838.
+
 \harvarditem{Wooldridge}{2002}{Wooldridge2002econometric}
 Wooldridge, J.~M.  \harvardyearleft 2002\harvardyearright , {\em {Econometric
   Analysis of Cross Section and Panel Data}}, MIT Press, Cambridge, MA.
+
+\harvarditem{Wooldridge}{2003}{Wooldridge2003cluster}
+Wooldridge, J.~M.  \harvardyearleft 2003\harvardyearright , `{Cluster-sample
+  methods in applied econometrics}', {\em The American Economic Review} {\bf
+  93}(2),~133--138.
 
 \harvarditem{Zhang}{2012{\em a}}{Zhang2012two-wayANOVA}
 Zhang, J.-T.  \harvardyearleft 2012{\em a}\harvardyearright , `{An approximate
