@@ -1,0 +1,110 @@
+\begin{thebibliography}{xx}
+
+\harvarditem{Angrist \harvardand\ Lavy}{2009}{Angrist2009effects}
+Angrist, J.~D. \harvardand\ Lavy, V.  \harvardyearleft 2009\harvardyearright ,
+  `{The effects of high stakes high school achievement awards : Evidence from a
+  randomized trial}', {\em American Economic Review} {\bf 99}(4),~1384--1414.
+
+\harvarditem{Arellano}{1993}{Arellano1993on}
+Arellano, M.  \harvardyearleft 1993\harvardyearright , `{On the testing of
+  correlated effects with panel data}', {\em Journal of Econometrics} {\bf
+  59}(1-2),~87--97.
+
+\harvarditem{Bell \harvardand\ McCaffrey}{2002}{Bell2002bias}
+Bell, R.~M. \harvardand\ McCaffrey, D.~F.  \harvardyearleft
+  2002\harvardyearright , `{Bias reduction in standard errors for linear
+  regression with multi-stage samples}', {\em Survey Methodology} {\bf
+  28}(2),~169--181.
+
+\harvarditem[Bertrand et~al.]{Bertrand, Duflo \harvardand\
+  Mullainathan}{2004}{Bertrand2004how}
+Bertrand, M., Duflo, E. \harvardand\ Mullainathan, S.  \harvardyearleft
+  2004\harvardyearright , `{How much should we trust differences-in-differences
+  estimates?}', {\em Quarterly Journal of Economics} {\bf 119}(1),~249--275.
+
+\harvarditem{Cameron \harvardand\ Miller}{2015}{Cameron2015practitioners}
+Cameron, A.~C. \harvardand\ Miller, D.~L.  \harvardyearleft
+  2015\harvardyearright , {A practitioner's guide to cluster-robust inference}.
+
+\harvarditem[Chetty et~al.]{Chetty, Friedman, Hilger, Saez, Schanzenbach
+  \harvardand\ Yagan}{2011}{Chetty2011how}
+Chetty, R., Friedman, J.~N., Hilger, N., Saez, E., Schanzenbach, D.~W.
+  \harvardand\ Yagan, D.  \harvardyearleft 2011\harvardyearright , `{How does
+  your kindergarten classroom affect your earnings? Evidence from Project
+  STAR}', {\em The Quarterly Journal of Economics} {\bf 126}(4),~1593--1660.
+
+\harvarditem{Donald \harvardand\ Lang}{2007}{Donald2007inference}
+Donald, S.~G. \harvardand\ Lang, K.  \harvardyearleft 2007\harvardyearright ,
+  `{Inference with difference-in-differences and other panel data}', {\em
+  Review of Economics and Statistics} {\bf 89}(2),~221--233.
+
+\harvarditem{Hansen}{2007}{Hansen2007asymptotic}
+Hansen, C.~B.  \harvardyearleft 2007\harvardyearright , `{Asymptotic properties
+  of a robust variance matrix estimator for panel data when T is large}', {\em
+  Journal of Econometrics} {\bf 141},~597--620.
+
+\harvarditem{Henderson \harvardand\ Searle}{1981}{Henderson1981on}
+Henderson, H.~V. \harvardand\ Searle, S.~R.  \harvardyearleft
+  1981\harvardyearright , `{On deriving the inverse of a sum of matrices}',
+  {\em Siam Review} {\bf 23}(1),~53--60.
+
+\harvarditem{Ibragimov \harvardand\ M\"{u}ller}{2010}{Ibragimov2010tstatistic}
+Ibragimov, R. \harvardand\ M\"{u}ller, U.~K.  \harvardyearleft
+  2010\harvardyearright , `{t-Statistic based correlation and heterogeneity
+  robust inference}', {\em Journal of Business \& Economic Statistics} {\bf
+  28}(4),~453--468.
+
+\harvarditem{Imbens \harvardand\ Kolesar}{2012}{Imbens2012robust}
+Imbens, G.~W. \harvardand\ Kolesar, M.  \harvardyearleft 2012\harvardyearright
+  , {Robust standard errors in small samples: some practical advice}.
+\newline\harvardurl{http://www.nber.org/papers/w18478}
+
+\harvarditem{Krueger \harvardand\ Whitmore}{2001}{Krueger2001effect}
+Krueger, A. \harvardand\ Whitmore, D.  \harvardyearleft 2001\harvardyearright ,
+  `{The effect of attending a small class in the early grades on college-test
+  taking and middle school test results: Evidence from Project STAR}', {\em The
+  Economic Journal} {\bf 111}(468),~1--28.
+
+\harvarditem[McCaffrey et~al.]{McCaffrey, Bell \harvardand\
+  Botts}{2001}{McCaffrey2001generalizations}
+McCaffrey, D.~F., Bell, R.~M. \harvardand\ Botts, C.~H.  \harvardyearleft
+  2001\harvardyearright , {Generalizations of biased reduced linearization},
+  {\em in} `Proceedings of the Annual Meeting of the American Statistical
+  Association', number 1994.
+
+\harvarditem{Pan \harvardand\ Wall}{2002}{Pan2002small}
+Pan, W. \harvardand\ Wall, M.~M.  \harvardyearleft 2002\harvardyearright ,
+  `{Small-sample adjustments in using the sandwich variance estimator in
+  generalized estimating equations.}', {\em Statistics in medicine} {\bf
+  21}(10),~1429--41.
+
+\harvarditem{Satterthwaite}{1946}{Satterthwaite1946approximate}
+Satterthwaite, F.~E.  \harvardyearleft 1946\harvardyearright , `{An approximate
+  distribution of estimates of variance components}', {\em Biometrics bulletin}
+  {\bf 2}(6),~110--114.
+
+\harvarditem{Schanzenbach}{2006}{Schanzenbach2006what}
+Schanzenbach, D.~W.  \harvardyearleft 2006\harvardyearright , `{What have
+  researchers learned from Project STAR?}', {\em Brookings Papers on Education
+  Policy} {\bf 2006}(1),~205--228.
+
+\harvarditem{Wooldridge}{2002}{Wooldridge2002econometric}
+Wooldridge, J.~M.  \harvardyearleft 2002\harvardyearright , {\em {Econometric
+  Analysis of Cross Section and Panel Data}}, MIT Press, Cambridge, MA.
+
+\harvarditem{Zhang}{2012{\em a}}{Zhang2012two-wayANOVA}
+Zhang, J.-T.  \harvardyearleft 2012{\em a}\harvardyearright , `{An approximate
+  degrees of freedom test for heteroscedastic two-way ANOVA}', {\em Journal of
+  Statistical Planning and Inference} {\bf 142}(1),~336--346.
+
+\harvarditem{Zhang}{2012{\em b}}{Zhang2012MANOVA}
+Zhang, J.-T.  \harvardyearleft 2012{\em b}\harvardyearright , `{An approximate
+  Hotelling T2 -test for heteroscedastic one-way MANOVA}', {\em Open Journal of
+  Statistics} {\bf 2},~1--11.
+
+\harvarditem{Zhang}{2013}{Zhang2013tests}
+Zhang, J.-T.  \harvardyearleft 2013\harvardyearright , `{Tests of linear
+  hypotheses in the ANOVA under heteroscedasticity}', {\em International
+  Journal of Advanced Statistics and Probability} {\bf 1}(2),~9--24.
+
+\end{thebibliography}
