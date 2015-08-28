@@ -129,29 +129,34 @@ The text of your abstract.  200 or fewer words.
 
 
 While the focus of much economics research is on understanding the causes and correlates of the behaviors of individuals, the data encountered in empirical applications is often clustered. 
-For example, individuals are often clustered by countries, regions, or states; by firms, organizations, or schools; or by time-periods or follow-up waves. 
+For example, individuals are often clustered by countries, regions, or states; by firms, organizations, or schools; or by time-periods or follow-up waves.\todo{Are we trying to reference the panel data case here? Clustering by time period doesn't seem quite right.} 
 This clustering is typically accounted for in analyses through the use of cluster robust variance estimation (CRVE), an analog to the heteroscedasticity robust standard errors developed by Huber (1967)\todo{Add citation}, \citet{eicker1967limit}, and \citet{White1980heteroskedasticity} to account for non-constant variance in ordinary least squares. 
 The use of CRVE is widespread, as evidenced by the large number of citations to key articles in the field (e.g., 849 cites for \citealp{Wooldridge2003cluster}), the large number of citations overall (i.e., over 11,000 for "clustered standard errors" in Google Scholar), and the large number of articles employing the methods in economics journals (i.e., over 500 citations). 
 
-CRVE is routinely used in order to test both individual coefficient and multi-parameter hypotheses. 
+CRVE is routinely used in order to test hypotheses involving either individual coefficients or sets of multiple constraints on the regression specification. 
 The theory behind CRVE is asymptotic in the number of clusters, and recently, researchers have turned attention to the performance of these tests in small and moderate samples. 
 \citet{Cameron2015practitioners} provide a thorough review of this literature, including a discussion of current practice, possible solutions, and open problems. 
-Among other findings, they argue that the small-sample corrections for t-tests typically found in software (e.g., Stata, SAS) are inadequate, and that one avenue of research---the bias-reduced linearization method (BRL) provided by \citet{Bell2002bias} and \citet{McCaffrey2001generalizations}---holds promise. 
-This approach, which we develop further here, corrects the downward bias found in the CRVE estimator and estimates the degrees of freedom of the resulting hypothesis tests empirically. 
-\citet{Imbens2012robust} similarly draw attention to this BRL approach, arguing that the method should become standard in all empirical analyses.
+Among their principle conclusions are that conventional CRVE have downward bias in small samples and that hypothesis tests based on CRVEs can have Type-I error rates that are far from the nominal level of the test.
+Moreover, they argue that the small-sample corrections for t-tests typically found in software such as Stata and SAS are inadequate. 
+In the course of reviewing a variety of recent proposals for addressing these problems, Cameron and Miller highlight a potentially promising method called bias-reduced linearization method (BRL), introduced by \citet{McCaffrey2001generalizations} and \citet{Bell2002bias}. 
+BRL entails correcting the downward bias of the most common CRVE so that it is exactly unbiased under a working model specified by the analyst, while also remaining asymptotically consistent under arbitrary true variance structures. 
+Simulations reported \citet{Bell2002bias} demonstrate that the BRL correction serves to reduce the bias of the CRVE even when the working model is mis-specified. 
+The same authors also proposed and studied small-sample corrections to t-tests based on the BRL variance estimator, based on Satterthwaite \citet{Bell2002bias} or saddlepoint approximations \citep{McCaffrey2006improved}.
 
-In this paper, we begin by reviewing the small-sample problem found in CRVE, including possible adjustments. 
-One approach, which we develop here, is the BRL approach developed by \citet{Bell2002bias}. 
-This approach involves both small-sample corrections to the CRVE estimator and to the referecen distribution, which we review in detail. 
-After reviewing the BRL adjustments to t-tests, we then extend this approach to include an F-test that allows for multi-parameter hypothesis testing. 
-These tests are commonly used in the analysis of experiments---for example, for testing baseline equivalence, when testing multiple outcomes by seemingly unrelated regression (SUR), and when there are multiple treatment groups---as well as in panel data more generally (e.g., Hausman tests). 
-Finally, we address an important problem found in panel data, wherein clusters are also included as fixed effects in ths model. 
-In this section we show that the BRL approach solves an important small-sample problem that until now has led to inconsistencies in analytic methods. 
-Our focus is on developing a more general BRL framework that, we argue, should be used with all CRVE analyses.
+Despite promising simulation evidence that BRL performs well \citep[e.g.,][]{Imbens2012robust}, several problems arise in implementing the method in practice. 
+First, the BRL adjustment breaks down for some common use-cases that arise in analysis of panel data \citep{Angrist2009mostly}. 
+\todo{Specifically....}
+Second, casual application of BRL for analysis of panel data can b 
+\todo{Explain Angrist and Pischke problem, panel data problem, F-tests}
 
-In order to illustrate and evaluate the use of BRL in practice, for each test we include a brief simulation study. 
-The simulation studies compare the BRL t-test and F-tests to the "typical" small-sample t-tests and F-tests employed with CRVE, as well to those based on the Wild bootstrap described by \citet{Cameron2008bootstrap} and \citet{Webb2013wild}. 
-To date, the Wild bootstrap (and other resampling methods) are the 'best practice' with small samples, and we show that the BRL method performs just as well statistically.\todo{Does it?}
+The goal of this paper is to fully articulate\todo{"flesh out?"} the BRL methodology so that it is suitable for everyday econometric practice. We make three principle contributions. 
+First, we demonstrate that using generalized inverses to calculate the BRL adjustment matrices address the rank-deficiency problem, while retaining the property that CRVEs based on the adjustment matrices are unbiased under a working model. 
+Second, we describe how to apply BRL when fitting models that include fixed effects, which are absorbed prior to parameter estimation. 
+Third, we propose a method of testing multiple-constraint hypotheses (i.e., F-tests) based on CRVE with the BRL adjustments. 
+Such tests are commonly used in the analysis of experiments---for example, for testing baseline equivalence, when testing multiple outcomes by seemingly unrelated regression (SUR), and when there are multiple treatment groups---as well as in analysis of panel data (e.g., Hausman tests). 
+In support of this third aim, we provide simulation evidence that the proposed small-sample F-test offers drastic improvements over commonly implemented alternatives and performs comparably with current state-of-the-art methods such as the cluster-wild bootstrap procedure described by \citet{Cameron2008bootstrap} and \citet{Webb2013wild}. To date, the Wild bootstrap (and other resampling methods) are the 'best practice' with small samples, and we show that the BRL method performs just as well statistically.\todo{Does it?}
+
+The organization of the paper is as follows....
 We conclude the paper with a set of three examples comparing results from these three approaches to illustrate the breadth of application, and a discussion of important considerations for practice.  
 
 %\begin{itemize}
@@ -159,7 +164,6 @@ We conclude the paper with a set of three examples comparing results from these 
 %\item \citet{Carter2013asymptotic}
 %\item \citet{Ibragimov2010tstatistic}
 %\item \citet{Kezdi2004robust}
-%\item \citet{McCaffrey2006improved}
 %\item \citet{Kline2012score}
 %\end{itemize}
 
