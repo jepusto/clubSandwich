@@ -1,5 +1,6 @@
 \documentclass{article}
 \usepackage{amsmath}
+\usepackage{amsthm}
 \usepackage{graphicx,psfrag,epsf}
 \usepackage{enumerate}
 
@@ -12,15 +13,28 @@
 \newcommand{\bm}{\mathbf}
 \newcommand{\bs}{\boldsymbol}
 
+\newtheorem*{lem}{Lemma}
+
 \begin{document}
 \def\spacingset#1{\renewcommand{\baselinestretch}%
 {#1}\small\normalsize} \spacingset{1}
 
-Consider the matrices $\bm{X}_1,...,\bm{X}_m$, where $\bm{X}_j$ is an $n_j \times p$ matrix of rank $q_j$. Let $\bm{X} = \left(\bm{X}_1', \bm{X}_2',...,\bm{X}_m'\right)'$ and assume that $\bm{X}$ has full column rank $p$. Denote $N = \sum_{j=1}^m n_j$. Let $\bm{W}_1,...,\bm{W}_m$ be symmetric matrices of full rank, with $\bm{W}_j$ having dimension $n_j \times n_j$. Let $\bm{W}$ be the block-diagonal matrix with components $\bm{W}_1,...,\bm{W}_m$, i.e., $\bm{W}  = \bigoplus_{j=1}^m \bm{W}_j$. Let $\bm{J}_j$ be an $n_j \times N$ matrix consisting of the rows of the identity matrix that correspond to $\bm{X}_j$, so that $\bm{J}_j\bm{X} = \bm{X}_j$. Define the $n_j \times N$ matrix \[
-\bm{K}_j = \bm{J}_j \left(\bm{I}_N - \bm{X}\left(\bm{X}'\bm{W}\bm{X}\right)^{-1}\bm{X}'\bm{W}\right). \]
+Consider the matrices $\bm{X}_1,...,\bm{X}_m$, where $\bm{X}_j$ is an $n_j \times p$ matrix of rank $q_j$. Let $\bm{X} = \left(\bm{X}_1', \bm{X}_2',...,\bm{X}_m'\right)'$ and assume that $\bm{X}$ has full column rank $p$. Denote $N = \sum_{j=1}^m n_j$. Let $\bm{W}_1,...,\bm{W}_m$ be symmetric matrices of full rank, with $\bm{W}_j$ having dimension $n_j \times n_j$. Let $\bm{W}$ be the block-diagonal matrix with components $\bm{W}_1,...,\bm{W}_m$, i.e., $\bm{W}  = \bigoplus_{j=1}^m \bm{W}_j$. Let $\bm{M} = \left(\bm{X}'\bm{W}\bm{X}\right)^{-1}$. Let $\bm{J}_j$ be an $n_j \times N$ matrix consisting of the rows of the identity matrix that correspond to $\bm{X}_j$, so that $\bm{J}_j\bm{X} = \bm{X}_j$. 
 
-\textbf{Question:} Under what conditions is $\bm{X}_j$ in the span of $\bm{K}_j$, i.e., when does there exist a $N \times p$ matrix $\bm{Z}$ such that $\bm{K}_j \bm{Z} = \bm{X}_j$? 
+\begin{lem}
+Let $\bm{L} = \left(\bm{X}'\bm{W}\bm{X} - \bm{X}_j \bm{W}_j \bm{X}_j\right)$ and assume that $\bm{L}$ has full rank $p$. Then \[
+\bm{X}_j \subset \text{span}\left[\bm{J}_j \left(\bm{I}_N - \bm{X}\bm{M}\bm{X}'\bm{W}\right)\right].\]
+\end{lem}
 
-My conjecture (or perhaps its more accurate to call it wishful thinking...) is that it is sufficient for $\bm{X}_{(j)}$ to have full rank, where $\bm{X}_{(j)}$ is the $\left(N - n_j\right) \times p$ matrix formed by stacking all of the $\bm{X}_k$ where $k \neq j$, i.e., $\bm{X}_{(j)} = \left(\bm{X}_1',...\bm{X}_{j-1}',\bm{X}_{j+1}',...,\bm{X}_m\right)'$.
+\begin{proof}
+Let $\bm{Z}_j = \bm{0}$ be a $n_j \times p$ matrix of zeros. Define the $n_k \times p$ matrices $\bm{Z}_k = - \bm{X}_k \bm{L}^{-1}\bm{X}'\bm{W}\bm{X}$, for $k \neq j$. Set $\bm{Z} = \left(\bm{Z}_1',...,\bm{Z}_m'\right)'$. Then 
+\begin{align*}
+\bm{J}_j\left(\bm{I}_N - \bm{X}\bm{M}\bm{X}'\bm{W}\right) \bm{Z} &= \bm{Z}_j - \bm{X}_j\bm{M}\sum_{k=1}^m \bm{X}_k'\bm{W}_k\bm{Z}_k \\
+&= \bm{X}_j \bm{M} \left(\sum_{k \neq j} \bm{X}_k'\bm{W}_k \bm{X}_k\right) \bm{L}^{-1}\bm{X}'\bm{W}\bm{X} \\
+&= \bm{X}_j \bm{M} \bm{L} \bm{L}^{-1} \bm{M}^{-1} \\
+&= \bm{X}_j.
+\end{align*}
+Thus, there exists an $N \times p$ matrix $\bm{Z}$ such that $\bm{J}_j \left(\bm{I}_N - \bm{X}\bm{M}\bm{X}'\bm{W}\right)\bm{Z} = \bm{X}_j$.
 
+\end{proof}
 \end{document}
