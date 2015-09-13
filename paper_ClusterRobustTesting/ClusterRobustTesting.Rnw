@@ -29,7 +29,6 @@
 \newcommand{\bs}{\boldsymbol}
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
 %\SweaveOpts{concordance=TRUE}
 
 \def\spacingset#1{\renewcommand{\baselinestretch}%
@@ -42,7 +41,7 @@
 {
   \title{\bf Small sample hypothesis testing using cluster-robust variance estimation}
   \author{\\James E. Pustejovsky\thanks{
-    The authors gratefully acknowledge \textit{please remember to list all relevant funding sources in the unblinded version}}\hspace{.2cm}\\
+    The authors thank Dan Knopf for helpful discussions about the linear algebra behind the cluster-robust variance estimator. Coady Wing,...}\hspace{.2cm}\\
     Department of Educational Psychology \\ 
     University of Texas at Austin\\ \\
     and \\ \\
@@ -86,9 +85,11 @@ library(xtable)
 opts_chunk$set(echo = FALSE, cache = FALSE, fig.path='CR_fig/', fig.align='center', fig.show='hold')
 @
 
-While the focus of much economics research is on understanding the causes and correlates of the behaviors of individuals, the data encountered in empirical applications is often clustered. 
+\todo{Introduce fixed-effect models right at the start. Cite Bertrand et al. as rationale for using CRVE.}
+
+Data encountered in empirical economic research often involves clusters of dependent observations. 
 For example, individuals are often clustered by countries, regions, or states; by firms, organizations, or schools; or by time-periods or follow-up waves.\todo{Are we trying to reference the panel data case here? Clustering by time period doesn't seem quite right.} 
-This clustering is typically accounted for in analyses through the use of cluster robust variance estimation (CRVE), an analog to the heteroscedasticity robust standard errors developed by Huber (1967)\todo{Add citation}, \citet{eicker1967limit}, and \citet{White1980heteroskedasticity} to account for non-constant variance in ordinary least squares. 
+This clustering is typically accounted for in analyses through the use of cluster-robust variance estimation (CRVE), an analog to the heteroscedasticity-robust standard errors developed by Huber (1967)\todo{Add citation}, \citet{eicker1967limit}, and \citet{White1980heteroskedasticity} to account for non-constant variance in ordinary least squares. 
 The use of CRVE is widespread, as evidenced by the large number of citations to key articles in the field (e.g., 849 cites for \citet{Wooldridge2003cluster}), 
 the large number of citations overall (i.e., over 11,000 for "clustered standard errors" in Google Scholar), and the large number of articles employing the methods in economics journals (i.e., over 500 citations). 
 
@@ -100,7 +101,7 @@ Moreover, they review recent research showing that the small-sample corrections 
 In the course of reviewing a variety of recent proposals for addressing these problems, Cameron and Miller highlight a potentially promising method called bias-reduced linearization method (BRL), introduced by \citet{McCaffrey2001generalizations} and \citet{Bell2002bias}. 
 BRL entails correcting the downward bias of the most common CRVE so that it is exactly unbiased under a working model specified by the analyst, while also remaining asymptotically consistent under arbitrary true variance structures. 
 Simulations reported \citet{Bell2002bias} demonstrate that the BRL correction serves to reduce the bias of the CRVE even when the working model is mis-specified. 
-The same authors also proposed and studied small-sample corrections to t-tests based on the BRL variance estimator, based on Satterthwaite \citet{Bell2002bias} or saddlepoint approximations \citep{McCaffrey2006improved}.
+The same authors also proposed and studied small-sample corrections to t-tests based on the BRL variance estimator, based on Satterthwaite \citep{Bell2002bias} or saddlepoint approximations \citep{McCaffrey2006improved}.
 
 Despite promising simulation evidence that BRL performs well \citep[e.g.,][]{Imbens2012robust}, several problems arise in implementing the method in practice. 
 Two of these problems arise in the analysis of panel data, where, following Bertrand et al (2004), it is considered best practice to account for clustering both as a fixed effect and a random effect (through CRVE) in analyses. 

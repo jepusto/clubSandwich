@@ -1,0 +1,392 @@
+\documentclass[12pt]{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx,psfrag,epsf}
+\usepackage{enumerate}
+%\usepackage{natbib}
+\RequirePackage[natbibapa]{apacite}
+
+%\pdfminorversion=4
+% NOTE: To produce blinded version, replace "0" with "1" below.
+\newcommand{\blind}{0}
+
+% DON'T change margins - should be 1 inch all around.
+\addtolength{\oddsidemargin}{-.7in}%
+\addtolength{\evensidemargin}{-.5in}%
+\addtolength{\textwidth}{1in}%
+\addtolength{\textheight}{1.3in}%
+\addtolength{\topmargin}{-.8in}%
+
+\usepackage[textwidth=1in, textsize=tiny]{todonotes}
+%\usepackage[disable]{todonotes}
+
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}{Lemma}
+
+\newcommand{\Prob}{\text{Pr}}
+\newcommand{\E}{\text{E}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\corr}{\text{corr}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\iid}{\stackrel{\text{iid}}{\sim}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\bm}{\mathbf}
+\newcommand{\bs}{\boldsymbol}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+%\SweaveOpts{concordance=TRUE}
+
+\def\spacingset#1{\renewcommand{\baselinestretch}%
+{#1}\small\normalsize} \spacingset{1}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\if0\blind
+{
+  \title{\bf Small sample methods for cluster-robust variance estimation and hypothesis testing in fixed effect models}
+  \author{\\James E. Pustejovsky\thanks{
+    The authors thank Dan Knopf for helpful discussions about the linear algebra behind the cluster-robust variance estimator. Coady Wing,...}\hspace{.2cm}\\
+    Department of Educational Psychology \\ 
+    University of Texas at Austin\\ \\
+    and \\ \\
+    Elizabeth Tipton \\
+    Department of Human Development \\ 
+    Teachers College, Columbia University}
+  \maketitle
+} \fi
+
+\if1\blind
+{
+  \bigskip
+  \bigskip
+  \bigskip
+  \begin{center}
+    {\LARGE\bf Small sample methods for cluster-robust variance estimation and hypothesis testing in fixed effect models}
+\end{center}
+  \medskip
+} \fi
+
+\bigskip
+\begin{abstract}
+The text of your abstract.  200 or fewer words.
+\end{abstract}
+
+\noindent%
+{\it Keywords:}  3 to 6 keywords, that do not appear in the title
+\vfill
+
+\newpage
+\spacingset{1.45} % DON'T change the spacing!
+
+\section{INTRODUCTION}
+\label{sec:intro}
+
+
+
+
+\section{STANDARD CLUSTER-ROBUST VARIANCE ESTIMATION}
+\label{sec:CRVE}
+
+\subsection{Econometric framework}
+
+We consider a generic fixed effects model in which
+\begin{equation}
+\label{eq:fixed_effects}
+\bm{y}_j = \bm{R}_j \bs\beta + \bm{S}_j \bs\gamma + \bm{T}_j \bs\delta + \bs\epsilon_j,
+\end{equation}
+where $\bm{R}_j$ is an $n_j \times r$ matrix of covariates, $\bm{S}_j$ is an $n_j \times s$ matrix describing fixed effects that vary across clusters, and $\bm{T}_j$ is an $n_j \times t$ matrix describing fixed effects that are identified only within clusters. 
+We assume that $\E\left(\bs\epsilon_j\left|\bm{R}_j,\bm{S}_j, \bm{T}_j\right.\right) = \bm{0}$ and $\Var\left(\bs\epsilon_j\left|\bm{R}_j,\bm{S}_j,\bm{T}_j\right.\right) = \bs\Sigma_j$, for $j = 1,...,m$, where the form of $\bs\Sigma_1,...,\bs\Sigma_m$ may be unknown but the errors are independent across clusters. 
+For notational convenience, let $\bm{U}_j = \left[\bm{R}_j \ \bm{S}_j \right]$, $\bm{X}_j = \left[\bm{U}_j \ \bm{T}_j \right]$, $\bs\alpha = \left(\bs\beta', \bs\gamma', \bs\delta' \right)'$, and $x = r + s + t$.
+Denote the total number of individual observations by $N = \sum_{j=1}^m n_j$.
+Let $\bm{R}$, $\bm{S}$, $\bm{T}$, $\bm{U}$, and $\bm{X}$ denote the matrices obtained by stacking their corresponding components, as in $\bm{R} = \left(\bm{R}_1' \ \bm{R}_2' \ \cdots \ \bm{R}_m'\right)'$. 
+
+In this model, inferential interest is confined to $\bs\beta$ and the fixed effects $\bs\gamma$ and $\bs\delta$ are treated as nuisance parameters. The distinction between the covariates $\bm{R}_j$ versus the fixed effects $\left[\bm{S}_j \ \bm{T}_j\right]$ thus depends on context and the analyst's inferential goals. The distinction between the two fixed effect matrices $\bm{S}_j$ and $\bm{T}_j$ is less ambiguous, in that the within-cluster fixed effects satisfy $\bm{T}_j \bm{T}_k' = \bm{0}$ for $j \neq k$. We further assume that $\left(\bm{U}'\bm{U} - \bm{U}_j'\bm{U}_j\right)$ is of full rank for $j = 1,...,m$.
+
+We shall consider weighted least-squares (WLS) estimation of $\bs\beta$. 
+For each cluster $j$, let $\bm{W}_j$ be a symmetric, $n_j \times n_j$ weighting matrix of full rank. This WLS framework includes the unweighted case (where $\bm{W}_j = \bm{I}_j$, the identity matrix), as well as feasible GLS. In the latter case, the weighting matrices are then taken to be $\bm{W}_j = \hat{\bs\Phi}_j^{-1}$, where the $\hat{\bs\Phi}_j$ are constructed from estimates of the variance parameter.\footnote{
+The WLS estimator also encompasses the estimator proposed by \citet{Ibragimov2010tstatistic} for clustered data. 
+Assuming that $\bm{X}_j$ has rank $p$ for $j = 1,...,m$, their proposed approach involves estimating $\bs\beta$ separately within each cluster and taking the simple average of these estimates. 
+The resulting average is equivalent to the WLS estimator with weights $\bm{W}_j = \bm{X}_j \left(\bm{X}_j'\bm{X}_j\right)^{-2} \bm{X}_j$.}
+
+Several approaches computing the WLS estimator are possible. One possibility is to calculate WLS estimates of the full parameter vector $\bs\alpha$ directly. However, this method can be computationally intensive and numerically inaccurate if the fixed effects specification is large (i.e., $s + t$ large). An alternative is to first absorb the fixed effect specification. We shall describe the latter approach because it is more efficient and numerically accurate.
+
+Denote the full block-diagonal weighting matrix as $\bm{W} = \text{diag}\left(\bm{W}_1,...,\bm{W}_m\right)$.
+Let $\bm{K}$ be the $x \times r$ matrix that selects the covariates of interest, so that $\bm{X} \bm{K} = \bm{R}$ and $\bm{K}'\bs\alpha = \bs\beta$.
+For a generic matrix $\bm{Z}$ of full column rank, let $\bm{M_Z} = \left(\bm{Z}'\bm{W}\bm{Z}\right)^{-1}$ and $\bm{H_Z} = \bm{Z}\bm{M_Z}\bm{Z}'\bm{W}$. 
+
+The absorption technique involves obtaining the residuals from the regression of $\bm{y}$ on $\bm{T}$ and from the multivariate regressions of $\bm{U} = [\bm{R}\ \bm{S}]$ on $\bm{T}$. The $\bm{y}$ residuals and $\bm{R}$ residuals are then regressed on the $\bm{S}$ residuals. Finally, these twice-regressed $\bm{y}$ residuals are regressed on the twice-regressed $\bm{R}$ residuals to obtain the WLS estimates of $\bs\beta$. Let $\bm{\ddot{S}} = \left(\bm{I} - \bm{H_T}\right)\bm{S}$, $\bm{\ddot{R}} = \left(\bm{I} - \bm{H_{\ddot{S}}}\right)\left(\bm{I} - \bm{H_T}\right)\bm{R}$, and $\bm{\ddot{y}} = \left(\bm{I} - \bm{H_{\ddot{S}}}\right)\left(\bm{I} - \bm{H_T}\right)\bm{y}$. In what follows, subscripts on $\bm{\ddot{R}}$, $\bm{\ddot{S}}$,  $\bm{\ddot{U}}$, and $\bm{\ddot{y}}$ refer to the rows of these matrices corresponding to a specific cluster. The WLS estimator of $\bs\beta$ can then be written as
+\begin{equation}
+\label{eq:WLS}
+\bs{\hat\beta} = \bm{M_{\ddot{R}}} \sum_{j=1}^m \bm{\ddot{R}}_j' \bm{W}_j \bm{\ddot{y}}_j. 
+\end{equation}
+This estimator is algebraically identical to the direct WLS estimator based on the full set of predictors, \[
+\bs{\hat\beta} = \bm{K}'\bm{M_X} \sum_{j=1}^m \bm{X}_j' \bm{W}_j \bm{y}_j,
+\]
+but avoids the need to solve a system of $x$ linear equations.
+
+The variance of the WLS estimator is 
+\begin{equation}
+\label{eq:var_WLS}
+\Var\left(\bs{\hat\beta}\right) = \bm{M_{\ddot{R}}}\left(\sum_{j=1}^m \bm{\ddot{R}}_j' \bm{W}_j \bs\Sigma_j \bm{W}_j\bm{\ddot{R}}_j\right) \bm{M_{\ddot{R}}},
+\end{equation}
+which depends upon the unknown variance matrices $\bm\Sigma_j$. 
+One approach to estimating this variance is based on a parametric model for the error structure. 
+In this approach, it is assumed that $\Var\left(\bm{e}_j\left|\bm{X}_j\right.\right) = \bs\Phi_j$, where $\bs\Phi_j$ is a known function of a low-dimensional parameter. 
+For example, an auto-regressive error structure might be posited to describe repeated measures on an individual over time. 
+If this approach is used, each $\bs\Sigma_j$ is substituted with an estimate $\bs{\hat\Phi}_j$, producing the model-based variance estimator
+\begin{equation}
+\label{eq:V_model}
+\bm{V}^M = \bm{M_{\ddot{R}}}\left(\sum_{j=1}^m \bm{\ddot{R}}_j' \bm{W}_j \bs{\hat\Phi}_j \bm{W}_j\bm{\ddot{R}}_j\right) \bm{M_{\ddot{R}}},.
+\end{equation}
+However, if the working model is mis-specified, the model-based variance estimator will be inconsistent and inferences based upon it will be invalid.
+
+\subsection{Standard CRVE}
+
+Cluster-robust variance estimators provide a means of estimating $\Var\left(\bs{\hat\beta}\right)$ and testing hypotheses regarding $\bs\beta$ in the absence of a valid parametric model for the error structure, or when the parametric variance model used to develop weights may be mis-specified. 
+They are thus a generalization of heteroskedasticity-consistent (HC) variance estimators. 
+Like the HC estimators, several different variants have been proposed, with different rationales and different finite-sample properties. 
+Each of these are of the form
+\begin{equation}
+\label{eq:V_small}
+\bm{V}^{CR} = \bm{M_{\ddot{R}}}\left(\sum_{j=1}^m \bm{\ddot{R}}_j'\bm{W}_j \bm{A}_j \bm{e}_j \bm{e}_j' \bm{A}_j' \bm{W}_j \bm{\ddot{R}}_j\right) \bm{M_{\ddot{R}}},
+\end{equation}
+for some $n_j$ by $n_j$ adjustment matrix $\bm{A}_j$. 
+The form of these adjustments parallels those of the heteroscedastity-consistent (HC) variance estimators proposed by \citet*{MacKinnon1985some}. 
+Setting $\bm{A}_j = \bm{I}_j$, an $n_j \times n_j$ identity matrix, results in the original CRVE estimator. Following Cameron and Miller (2015), we refer to this estimator as $\bm{V}^{CR0}$. 
+Setting $\bm{A}_j = c\bm{I}_j$, where $c = \sqrt{(m/(m-1))(N/(N - p))}$, results in the CRV1 estimator, denoted $\bm{V}^{CR1}$.
+Note that when $N >> p$, $c \approx \sqrt{m/(m-1)}$, and some software uses the latter approximation. 
+Importantly, this correction does not depend on $\bm{X}_j$ and is the same for all hypotheses tested. Like the CR0 estimator, however, this estimator often under-estimates the true variance.
+
+There are several alternative small-sample corrections that are used with CRVE. The BRL approach will be described in the next section. Because it is an extension of the HC2 estimator for regressions with heteroskedastic but uncorrelated errors, we refer to it as CR2. Finally, a further alternative is to use a jack-knife resampling estimator; the CR3 estimator closely approximates the jack-knife approach, by taking $\bm{A}_j = \left(\bm{I} - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j'\bm{W}_j\right)^{-1}$. 
+
+\section{BIAS REDUCED LINEARIZATION}
+\label{sec:BRL}
+
+The BRL approach chooses adjustment matrices so that the variance estimator is exactly unbiased under a specific working model for the data. It is therefore directly analogous to the HC2 heteroskedasticity-robust estimator, which is exactly unbiased under homoskedasticity. 
+\citet{Bell2002bias} developed the BRL estimator for linear regression models with errors having unknown dependence structure within clusters. 
+However, their implementation is not applicable to many fixed effect models, where the adjustment matrices may be undefined. Furthermore, the form of their adjustment matrices varies depending on whether fixed effects are absorbed or estimated directly by WLS, which is undesirable. Our implementation of BRL addresses both of these issues and can be implemented in models with quite general fixed effects specifications. It reduces to Bell and McCaffrey's implementation for models without fixed effects. 
+
+Let $\bs\Phi_j$ be a working model for the covariance of the errors in cluster $j$, and denote $\bs\Phi = \text{diag}\left(\bs\Phi_1,...,\bs\Phi_m\right)$. Consider adjustment matrices satisfying the following criterion:
+\begin{equation}
+\label{eq:CR2_criterion}
+\bm{\ddot{R}}_j' \bm{W}_j \bm{A}_j \left(\bm{I} - \bm{H_X}\right)_j \bs\Phi \left(\bm{I} - \bm{H_X}\right)_j' \bm{A}_j' \bm{W}_j \bm{\ddot{R}}_j = \bm{\ddot{R}}_j' \bm{W}_j \bs\Phi_j \bm{W}_j \bm{\ddot{R}}_j,
+\end{equation}
+where $\left(\bm{I} - \bm{H_X}\right)_j$ denotes the rows of $\bm{I} - \bm{H_X}$ corresponding to cluster $j$. 
+A variance estimator that uses such adjustment matrices will be exactly unbiased when the working model is correctly specified.
+\footnote{Note that this criterion differs from the criterion used by \citet{Bell2002bias} in that it pre- and post-multiplies both sides by $\bm{W}_j\bm{\ddot{R}}_j$. 
+As will be seen, this modification permits the use of generalized matrix inverses in calculating the adjustment matrices, thus avoiding rank-deficiency problems that would otherwise leave them undefined.}
+When the working model deviates from the true covariance $\bs{\Sigma}_j$, the variance estimator remains biased. However, \citet{Bell2002bias} showed that the CR2 estimator still greatly reduces the bias compared to the more basic CR0 and CR1 estimators (thus the name "bias reduced linearization"). 
+Extensive simulation results indicate that the remaining bias is typically minimal, even for large deviations from the assumed structure (CITE).
+Furthermore, as the number of clusters increases, the reliance on the working model diminishes. 
+One way to understand this approach is that it provides necessary scaffolding in the small sample case, which falls away when there is sufficient data.
+
+Criterion (\ref{eq:CR2_criterion}) does not uniquely define $\bm{A}_j$. Following \citet{McCaffrey2001generalizations}, we propose to use a symmetric solution in which
+\begin{equation}
+\label{eq:CR2_adjustment}
+\bm{A}_j = \bm{D}_j' \bm{B}_j^{+1/2} \bm{D}_j,
+\end{equation}
+where $\bm{D}_j$ is the upper-right triangular Cholesky factorization of $\hat{\bs\Phi}_j$, 
+\begin{equation}
+\label{eq:CR2_Bmatrix}
+\bm{B}_j = \bm{D}_j\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \left(\bm{I} - \bm{H_T}\right) \bs\Phi \left(\bm{I} - \bm{H_T}\right)' \left(\bm{I} - \bm{H_{\ddot{S}}}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' \bm{D}_j',
+\end{equation}
+and $\bm{B}_j^{+1/2}$ is the symmetric square root of the Moore-Penrose inverse of $\bm{B}_j $. 
+The Moore-Penrose inverse is well-defined even when $\bm{B}_j$ is not of full rank. 
+Theorem \ref{thm:BRL_FE} in Appendix \ref{app:theorems} shows that the adjustment matrices given by (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) satisfy criterion (\ref{eq:CR2_criterion}) and are invariant to whether the model is estimated by direct WLS estimation or after absorbing some or all of the fixed effects. 
+
+In many applications, it will make sense to choose weighting matrices that are the inverses of the working covariance model, so that $\bm{W}_j = \bs\Phi_j^{-1}$. In this case, the adjustment matrices can be calculated using $\bm{\tilde{B}}_j$ in place of $\bm{B}_j$, where
+\begin{equation}
+\label{eq:CR2_B_tilde}
+\bm{\tilde{B}}_j = \bm{D}_j\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \bs\Phi \left(\bm{I} - \bm{H_{\ddot{S}}}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' \bm{D}_j'.
+\end{equation}
+See Theorem \ref{thm:absorb} in Appendix \ref{app:theorems}.
+In the simple case of ordinary (unweighted) least squares, in which the working variance model posits that the errors are all independent and homoskedastic and $\bm{W} = \bs\Phi = \bm{I}$, the adjustment matrices simplify further to \[
+\bm{A}_j = \left(\bm{I}_j - \bm{\ddot{U}}_j\left(\bm{\ddot{U}}'\bm{\ddot{U}}\right)^{-1}\bm{\ddot{U}}_j'\right)^{+1/2},\]
+where $\bm{\ddot{U}} = \left(\bm{I} - \bm{H_T}\right)\bm{U}$.
+
+In the remainder of this paper, we will focus on this BRL approach, using the $\bm{V}^{CR2}$ estimator throughout. 
+
+
+\section{HYPOTHESIS TESTING}
+\label{sec:testing}
+
+\subsection{Small-sample corrections for t-tests}
+
+\subsection{Small-sample corrections for F-tests}
+
+\section{SIMULATION EVIDENCE}
+\label{subsec:simulations}
+
+\section{EXAMPLES}
+\label{subsec:examples_F}
+
+\subsection{Tennessee STAR class-size experiment.} 
+
+\subsection{Heterogeneous treatment impacts} 
+
+\subsection{Robust Hausmann test} 
+
+\section{DISCUSSION}
+\label{sec:discussion}
+
+\appendix
+
+\section{BRL adjustment matrices}
+\label{app:theorems}
+
+This appendix states and provides proof of two theorems regarding the BRL adjustment matrices. 
+
+\begin{thm}
+\label{thm:BRL_FE}
+Let $\bm{L} = \left(\bm{\ddot{U}}'\bm{\ddot{U}} - \bm{\ddot{U}}_j'\bm{\ddot{U}}_j\right)$ and assume that $\bm{L}$ has full rank $r + s$, so that its inverse exists. Then the adjustment matrices $\bm{A}_j$ defined in (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) satisfy criterion (\ref{eq:CR2_criterion}) and $\bm{V}^{CR2}$ is exactly unbiased when the working covariance model $\bs\Phi$ is correctly specified.
+\end{thm}
+
+\begin{proof}
+The Moore-Penrose inverse of $\bm{B}_j$ can be computed from its eigen-decomposition. Let $b \leq n_j$ denote the rank of $\bm{B}_j$. 
+Let $\bs\Lambda$ be the $b \times b$ diagonal matrix of the positive eigenvalues of $\bm{B}_j$ and $\bm{V}$ be the $n_j \times b$ matrix of corresponding eigen-vectors, so that $\bm{B}_j = \bm{V}\bs\Lamnbda\bm{V}'$. 
+Then $\bm{B}_j^+ = \bm{V}\bs\Lambda^{-1}\bm{V}'$ and $\bm{B}_j^{+1/2} = \bm{V}\bs\Lambda^{-1/2}\bm{V}'$.
+
+Now, observe that $\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \left(\bm{I} - \bm{H_T}\right) = \left(\bm{I} - \bm{H_X}\right)_j$. Thus, 
+\begin{align}
+\label{eq:step1}
+\bm{\ddot{R}}_j' \bm{W}_j \bm{A}_j \left(\bm{I} - \bm{H_X}\right)_j \bs\Phi \left(\bm{I} - \bm{H_X}\right)_j' \bm{A}_j' \bm{W}_j \bm{\ddot{R}}_j &= \bm{\ddot{R}}_j' \bm{W}_j \bm{D}_j \bm{B}_j^{+1/2} \bm{B}_j \bm{B}_j^{+1/2} \bm{D}_j' \bm{W}_j \bm{\ddot{R}}_j \nonumber \\
+&= \bm{\ddot{R}}_j' \bm{W}_j \bm{D}_j \bm{V}\bm{V}' \bm{D}_j' \bm{W}_j \bm{\ddot{R}}_j. 
+\end{align}
+Because $\bm{D}_j$, and $\bs\Phi$ are positive definite and $\bm{B}_j$ is symmetric, the eigenvectors $\bm{V}$ define an orthogonal basis for the column span of $\left(\bm{I} - \bm{H_{\ddot{U}}}\right)_j$.\todo{Cite Bannerjee and Roy} 
+
+We now show that $\bm{\ddot{U}}_j$ is in the column space of $\left(\bm{I} - \bm{H_X}\right)_j$. 
+Let $\bm{Z}_j$ be an $n_j \times (r + s)$ matrix of zeros. 
+Let $\bm{Z}_k = - \bm{\ddot{U}}_k \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1}$, for $k \neq j$ and take $\bm{Z} = \left(\bm{Z}_1',...,\bm{Z}_m'\right)'$. 
+Now note that $\left(\bm{I} - \bm{H_T}\right) \bm{Z} = \bm{Z}$. 
+It follows that 
+\begin{align*}
+\left(\bm{I} - \bm{H_X}\right)_j \bm{Z} &= \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_j \left(\bm{I} - \bm{H_T}\right) \bm{Z} = \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_j \bm{Z} \\
+&= \bm{Z}_j - \bm{\ddot{U}}_j\bm{M_{\ddot{U}}}\sum_{k=1}^m \bm{\ddot{U}}_k'\bm{W}_k\bm{Z}_k = \bm{\ddot{U}}_j\bm{M_{\ddot{U}}} \left(\sum_{k \neq j} \bm{\ddot{U}}_k' \bm{W}_k \bm{\ddot{U}} \right) \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1} \\
+&= \bm{\ddot{U}}_j.
+\end{align*}
+Thus, there exists an $N \times (r + s)$ matrix $\bm{Z}$ such that $\left(\bm{I} - \bm{H_{\ddot{U}}}\right)_j \bm{Z} = \bm{\ddot{U}}_j$, i.e., $\bm{\ddot{U}}_j$ is in the column span of $\left(\bm{I} - \bm{H_X}\right)_j$. Because $\bm{D}_j \bm{W}_j$ is positive definite and $\bm{\ddot{R}}_j$ is a sub-matrix of $\bm{\ddot{U}}_j$, $\bm{D}_j\bm{W}_j\bm{\ddot{R}}_j$ is also in the column span of $\left(\bm{I} - \bm{H_X}\right)_j$. It follows that 
+\begin{equation}
+\label{eq:step2}
+\bm{\ddot{R}}_j' \bm{W}_j \bm{D}_j \bm{V}\bm{V}' \bm{D}_j' \bm{W}_j \bm{\ddot{R}}_j = \bm{\ddot{R}}_j' \bm{W}_j \bs\Phi_j \bm{W}_j \bm{\ddot{R}}_j.
+\end{equation}
+Substituting (\ref{eq:step2}) into (\ref{eq:step1}) demonstrates that $\bm{A}_j$ satisfies criterion (\ref{eq:CR2_criterion}).
+
+Under the working model, the residuals from cluster $j$ have mean $\bm{0}$ and variance \[
+\Var\left(\bm{\ddot{e}}_j\right) = \left(\bm{I} - \bm{H_X}\right)_j \bs\Phi \left(\bm{I} - \bm{H_X}\right)_j',\] 
+It follows that 
+\begin{align*}
+\E\left(\bm{V}^{CR2}\right) &= \bm{M_{\ddot{R}}}\left[\sum_{j=1}^m \bm{\ddot{R}}_j' \bm{W}_j \bm{A}_j \left(\bm{I} - \bm{H_X}\right)_j \bs\Phi \left(\bm{I} - \bm{H_X}\right)_j' \bm{A}_j \bm{W}_j \bm{\ddot{R}}_j \right] \bm{M_{\ddot{R}}} \\
+&= \bm{M_{\ddot{R}}}\left[\sum_{j=1}^m \bm{\ddot{R}}_j' \bm{W}_j \bs\Phi_j \bm{W}_j \bm{\ddot{R}}_j \right] \bm{M_{\ddot{R}}} \\
+&= \Var\left(\bs{\hat\beta}\right)
+\end{align*}
+\end{proof}
+
+\begin{thm}
+\label{thm:absorb}
+Let $\bm{\tilde{A}}_j = \bm{D}_j'\bm{\tilde{B}}_j^{+1/2} \bm{D}_j$, where $\bm{\tilde{B}}_j$ is given in (\ref{eq:CR2_B_tilde}). If $\bm{T}_j \bm{T}_k' = \bm{0}$ for $j \neq k$ and $\bm{W} = \bs\Phi$, then $\bm{A}_j = \bm{\tilde{A}}_j$. 
+\end{thm}
+
+\begin{proof}
+From the fact that $\bm{\ddot{U}}_j'\bm{W}_j\bm{T}_j = \bm{0}$ for $j = 1,...,m$, it follows that \begin{align*}
+\bm{B}_j &= \bs{\hat\Phi}_j^C \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \left(\bm{I} - \bm{H_S}\right) \hat{\bs\Phi} \left(\bm{I} - \bm{H_S}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' {\bs{\hat\Phi}_j^C}'\\
+&= \bs{\hat\Phi}_j^C\left(\bm{I} - \bm{H_{\ddot{R}}} - \bm{H_S}\right)_j \hat{\bs\Phi} \left(\bm{I} - \bm{H_{\ddot{R}}} - \bm{H_S}\right)_j' {\bs{\hat\Phi}_j^C}' \\
+&= \bs{\hat\Phi}_j^C \left(\bs\Phi_j - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j' - \bm{S}_j \bm{M_S}\bm{S}_j'\right){\bs{\hat\Phi}_j^C}'
+\end{align*}
+and 
+\begin{equation}
+\label{eq:B_j_inverse}
+\bm{B}_j^{-1} = \left({\bs{\hat\Phi}_j^C}'\right)^{-1} \left(\bs\Phi_j - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j' - \bm{S}_j \bm{M_S}\bm{S}_j'\right)^{-1}\left(\bs{\hat\Phi}_j^C\right)^{-1}.
+\end{equation}
+Let $\bm{U}_j = \left(\bs\Phi_j - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j'\right)^{-1}$.
+Using a generalized Woodbury identity \citep{Henderson1981on}, \[
+\bm{U}_j = \bm{W}_j - \bm{W}_j \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\left(\bm{M_{\ddot{R}}} - \bm{M_{\ddot{R}}} \bm{\ddot{R}}_j \bm{W}_j \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\right)^{-} \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j'\bm{W}_j, \]
+where ${M}^{-}$ is a generalized inverse of $\bm{M}$. 
+It follows that $\bm{U}_j \bm{S}_j = \bm{W}_j \bm{S}_j$. 
+Another application of the generalized Woodbury identity gives 
+\begin{align*}
+\left(\bs\Phi_j - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j' - \bm{S}_j \bm{M_S}\bm{S}_j'\right)^{-1} &= \bm{U}_j - \bm{U}_j \bm{S}_j \bm{M_S}\left(\bm{M_S} - \bm{M_S}\bm{S}_j' \bm{U}_j \bm{S}_j\bm{M_S}\right)^{-} \bm{M_S} \bm{S}_j' \bm{U}_j \\
+&= \bm{U}_j - \bm{W}_j \bm{S}_j \bm{M_S}\left(\bm{M_S} - \bm{M_S}\bm{S}_j' \bm{W}_j \bm{S}_j\bm{M_S}\right)^{-} \bm{M_S} \bm{S}_j' \bm{W}_j \\
+&= \bm{U}_j.
+\end{align*}
+The last equality follows from the fact that $\bm{S}_j \bm{M_S}\left(\bm{M_S}\bm{S}_j' \bm{W}_j \bm{S}_j\bm{M_S} - \bm{M_S}\right)^{-} \bm{M_S} \bm{S}_j' = \bm{0}$ because the fixed effects are nested within clusters. 
+Substituting into (\ref{eq:B_j_inverse}), we then have that $\bm{B}_j^{-1} = \left({\bs{\hat\Phi}_j^C}'\right)^{-1} \bm{U}_j \left(\bs{\hat\Phi}_j^C\right)^{-1}$. 
+Now, $\bm{\ddot{B}}_j = \hat{\bs\Phi}_j^C \bm{U}_j^{-1} {\bs{\hat\Phi}_j^C}'$ and so $\bm{\ddot{B}}_j^{-1} = \bm{B}_j^{1}$. It follows that $\bm{\ddot{A}}_j = \bm{A}_j$ for $j = 1,...,m$. 
+\end{proof}
+
+\section{DISTRIBUTION THEORY FOR $\bm{V}^{CR}$}
+\label{app:VCR_dist}
+
+The small-sample approximations for t-tests and F-tests both involve the distribution of the entries of $\bm{V}^{CR2}$. This section explains the relevant distribution theory.
+
+First, note that the CR2 estimator can be written in the form $\bm{V}^{CR2} = \sum_{j=1}^M \bm{T}_j \bm{e}_j \bm{e}_j' \bm{T}_j'$ for $p \times n_j$ matrices $\bm{T}_j = \bm{M} \bm{X}_j' \bm{W}_j \bm{A}_j$.
+Let $\bm{c}_1,\bm{c}_2,\bm{c}_3,\bm{c}_4$ be fixed, $p \times 1$ vectors and consider the linear combination $\bm{c}_1' \bm{V}^{CR2} \bm{c}_2$. 
+\citet[Theorem 4]{Bell2002bias} show that the linear combination is a quadratic form in $\bm{Y}$: \[
+\bm{c}_1' \bm{V}^{CR2} \bm{c}_2 = \bm{Y}'\left(\sum_{j=1}^m \bm{t}_{2j} \bm{t}_{1j}'\right) \bm{Y}, \]
+for $N \times 1$ vectors $\bm{t}_{sh} = \left(\bm{I} - \bm{H}\right)_h' \bm{T}_h' \bm{c}_s$, $s = 1,...,4$, and $h = 1,...,m$. 
+
+Standard results regarding quadratic forms can be used to derive the moments of the linear combination. We now assume that $\bs\epsilon_1,...,\bs\epsilon_m$ are multivariate normal with zero mean and variance $\bs\Sigma$. It follows that 
+\begin{align}
+\label{eq:CRVE_expectation}
+\E\left(\bm{c}_1' \bm{V}^{CR2} \bm{c}_2\right) &= \sum_{j=1}^m \bm{t}_{1j}' \bs\Sigma \bm{t}_{2j} \\
+\label{eq:CRVE_variance}
+\Var\left(\bm{c}_1' \bm{V}^{CR2} \bm{c}_2\right) &= \sum_{i=1}^m \sum_{j=1}^m \left(\bm{t}_{1i}' \bs\Sigma \bm{t}_{2j}\right)^2 + \bm{t}_{1i}' \bs\Sigma \bm{t}_{1j} \bm{t}_{2i}' \bs\Sigma \bm{t}_{2j} \\
+\label{eq:CRVE_covariance}
+\Cov\left(\bm{c}_1' \bm{V}^{CR2} \bm{c}_2, \bm{c}_3' \bm{V}^{CR} \bm{c}_4\right) &= \sum_{i=1}^m \sum_{j=1}^m \bm{t}_{1i}' \bs\Sigma \bm{t}_{4j} \bm{t}_{2i}' \bs\Sigma \bm{t}_{3j} + \bm{t}_{1i}' \bs\Sigma \bm{t}_{3j} \bm{t}_{2i}' \bs\Sigma \bm{t}_{4j}.
+\end{align}
+Furthermore, the distribution of $\bm{c}_1' \bm{V}^{CR2} \bm{c}_2$ can be expressed as a weighted sum of $\chi^2_1$ distributions, with weights given by the eigen-values of the $m \times m$ matrix with $\left(i,j\right)^{th}$ entry $\bm{t}_{1i}' \bs\Sigma \bm{t}_{2j}$, $i,j=1,...,m$.
+
+\bibliographystyle{agsm}
+\bibliography{bibliography}
+
+\end{document}
+

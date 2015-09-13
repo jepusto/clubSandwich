@@ -1,0 +1,33 @@
+\begin{thebibliography}{xx}
+
+\harvarditem{Bell \harvardand\ McCaffrey}{2002}{Bell2002bias}
+Bell, R.~M. \harvardand\ McCaffrey, D.~F.  \harvardyearleft
+  2002\harvardyearright , `{Bias reduction in standard errors for linear
+  regression with multi-stage samples}', {\em Survey Methodology} {\bf
+  28}(2),~169--181.
+
+\harvarditem{Henderson \harvardand\ Searle}{1981}{Henderson1981on}
+Henderson, H.~V. \harvardand\ Searle, S.~R.  \harvardyearleft
+  1981\harvardyearright , `{On deriving the inverse of a sum of matrices}',
+  {\em Siam Review} {\bf 23}(1),~53--60.
+
+\harvarditem{Ibragimov \harvardand\ M\"{u}ller}{2010}{Ibragimov2010tstatistic}
+Ibragimov, R. \harvardand\ M\"{u}ller, U.~K.  \harvardyearleft
+  2010\harvardyearright , `{t-Statistic based correlation and heterogeneity
+  robust inference}', {\em Journal of Business \& Economic Statistics} {\bf
+  28}(4),~453--468.
+
+\harvarditem{MacKinnon \harvardand\ White}{1985}{MacKinnon1985some}
+MacKinnon, J.~G. \harvardand\ White, H.  \harvardyearleft 1985\harvardyearright
+  , `{Some heteroskedasticity-consistent covariance matrix estimators with
+  improved finite sample properties}', {\em Journal of Econometrics} {\bf
+  29},~305--325.
+
+\harvarditem[McCaffrey et~al.]{McCaffrey, Bell \harvardand\
+  Botts}{2001}{McCaffrey2001generalizations}
+McCaffrey, D.~F., Bell, R.~M. \harvardand\ Botts, C.~H.  \harvardyearleft
+  2001\harvardyearright , {Generalizations of biased reduced linearization},
+  {\em in} `Proceedings of the Annual Meeting of the American Statistical
+  Association', number 1994.
+
+\end{thebibliography}
