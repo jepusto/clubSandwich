@@ -6,6 +6,33 @@ Bell, R.~M. \harvardand\ McCaffrey, D.~F.  \harvardyearleft
   regression with multi-stage samples}', {\em Survey Methodology} {\bf
   28}(2),~169--181.
 
+\harvarditem[Bertrand et~al.]{Bertrand, Duflo \harvardand\
+  Mullainathan}{2004}{Bertrand2004how}
+Bertrand, M., Duflo, E. \harvardand\ Mullainathan, S.  \harvardyearleft
+  2004\harvardyearright , `{How much should we trust differences-in-differences
+  estimates?}', {\em Quarterly Journal of Economics} {\bf 119}(1),~249--275.
+
+\harvarditem[Cameron et~al.]{Cameron, Gelbach \harvardand\
+  Miller}{2008}{Cameron2008bootstrap}
+Cameron, A.~C., Gelbach, J.~B. \harvardand\ Miller, D.  \harvardyearleft
+  2008\harvardyearright , `{Bootstrap-based improvements for inference with
+  clustered errors}', {\em The Review of Economics and Statistics} {\bf
+  90}(3),~414--427.
+
+\harvarditem{Cameron \harvardand\ Miller}{2015}{Cameron2015practitioners}
+Cameron, A.~C. \harvardand\ Miller, D.~L.  \harvardyearleft
+  2015\harvardyearright , {A practitioner's guide to cluster-robust inference}.
+
+\harvarditem{Donald \harvardand\ Lang}{2007}{Donald2007inference}
+Donald, S.~G. \harvardand\ Lang, K.  \harvardyearleft 2007\harvardyearright ,
+  `{Inference with difference-in-differences and other panel data}', {\em
+  Review of Economics and Statistics} {\bf 89}(2),~221--233.
+
+\harvarditem{Hansen}{2007}{Hansen2007asymptotic}
+Hansen, C.~B.  \harvardyearleft 2007\harvardyearright , `{Asymptotic properties
+  of a robust variance matrix estimator for panel data when T is large}', {\em
+  Journal of Econometrics} {\bf 141},~597--620.
+
 \harvarditem{Henderson \harvardand\ Searle}{1981}{Henderson1981on}
 Henderson, H.~V. \harvardand\ Searle, S.~R.  \harvardyearleft
   1981\harvardyearright , `{On deriving the inverse of a sum of matrices}',
@@ -29,5 +56,41 @@ McCaffrey, D.~F., Bell, R.~M. \harvardand\ Botts, C.~H.  \harvardyearleft
   2001\harvardyearright , {Generalizations of biased reduced linearization},
   {\em in} `Proceedings of the Annual Meeting of the American Statistical
   Association', number 1994.
+
+\harvarditem{Pan \harvardand\ Wall}{2002}{Pan2002small}
+Pan, W. \harvardand\ Wall, M.~M.  \harvardyearleft 2002\harvardyearright ,
+  `{Small-sample adjustments in using the sandwich variance estimator in
+  generalized estimating equations.}', {\em Statistics in medicine} {\bf
+  21}(10),~1429--41.
+
+\harvarditem{Satterthwaite}{1946}{Satterthwaite1946approximate}
+Satterthwaite, F.~E.  \harvardyearleft 1946\harvardyearright , `{An approximate
+  distribution of estimates of variance components}', {\em Biometrics bulletin}
+  {\bf 2}(6),~110--114.
+
+\harvarditem{Tipton \harvardand\ Pustejovsky}{forthcoming}{Tipton2015small}
+Tipton, E. \harvardand\ Pustejovsky, J.~E.  \harvardyearleft
+  forthcoming\harvardyearright , `{Small-sample adjustments for tests of
+  moderators and model fit using robust variance estimation in
+  meta-regression}', {\em Journal of Educational and Behavioral Statistics} .
+
+\harvarditem{Webb \harvardand\ MacKinnon}{2013}{Webb2013wild}
+Webb, M. \harvardand\ MacKinnon, J.~G.  \harvardyearleft 2013\harvardyearright
+  , {Wild Bootstrap Inference for Wildly Different Cluster Sizes}.
+
+\harvarditem{Zhang}{2012{\em a}}{Zhang2012two-wayANOVA}
+Zhang, J.-T.  \harvardyearleft 2012{\em a}\harvardyearright , `{An approximate
+  degrees of freedom test for heteroscedastic two-way ANOVA}', {\em Journal of
+  Statistical Planning and Inference} {\bf 142}(1),~336--346.
+
+\harvarditem{Zhang}{2012{\em b}}{Zhang2012MANOVA}
+Zhang, J.-T.  \harvardyearleft 2012{\em b}\harvardyearright , `{An approximate
+  Hotelling T2 -test for heteroscedastic one-way MANOVA}', {\em Open Journal of
+  Statistics} {\bf 2},~1--11.
+
+\harvarditem{Zhang}{2013}{Zhang2013tests}
+Zhang, J.-T.  \harvardyearleft 2013\harvardyearright , `{Tests of linear
+  hypotheses in the ANOVA under heteroscedasticity}', {\em International
+  Journal of Advanced Statistics and Probability} {\bf 1}(2),~9--24.
 
 \end{thebibliography}

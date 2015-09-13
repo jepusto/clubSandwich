@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  12 SEP 2015 22:18
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  13 SEP 2015 15:00
 entering extended mode
 **ClusterRobustTesting_FE_models.tex
 
@@ -573,95 +573,51 @@ Overfull \hbox (6.88351pt too wide) in paragraph at lines 137--137
  []
 
 [2] [3] [4] [5] [6]
-! Undefined control sequence.
-<recently read> \Lamnbda 
-                         
-l.296 ...rs, so that $\bm{B}_j = \bm{V}\bs\Lamnbda
-                                                  \bm{V}'$.
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<argument> \Lamnbda 
-                    
-l.296 ...rs, so that $\bm{B}_j = \bm{V}\bs\Lamnbda
-                                                  \bm{V}'$.
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<argument> ...hbox {$\m@th \displaystyle \Lamnbda 
-                                                  $}}{\hbox {$\m@th \textsty...
-l.296 ...rs, so that $\bm{B}_j = \bm{V}\bs\Lamnbda
-                                                  \bm{V}'$.
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<argument> ...}{\hbox {$\m@th \textstyle \Lamnbda 
-                                                  $}}{\hbox {$\m@th \scripts...
-l.296 ...rs, so that $\bm{B}_j = \bm{V}\bs\Lamnbda
-                                                  \bm{V}'$.
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<argument> ...\hbox {$\m@th \scriptstyle \Lamnbda 
-                                                  $}}{\hbox {$\m@th \scripts...
-l.296 ...rs, so that $\bm{B}_j = \bm{V}\bs\Lamnbda
-                                                  \bm{V}'$.
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-! Undefined control sequence.
-<argument> ...{$\m@th \scriptscriptstyle \Lamnbda 
-                                                  $}}
-l.296 ...rs, so that $\bm{B}_j = \bm{V}\bs\Lamnbda
-                                                  \bm{V}'$.
-The control sequence at the end of the top line
-of your error message was never \def'ed. If you have
-misspelled it (e.g., `\hobx'), type `I' and the correct
-spelling (e.g., `I\hbox'). Otherwise just continue,
-and I'll forget about whatever was undefined.
-
-[7]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 305--305
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 283--283
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 305--305
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 283--283
 [][][] 
  []
 
-[8] [9]
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 283--283
+[][][] 
+ []
+
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 283--283
+[][][] 
+ []
+
+
+LaTeX Warning: Marginpar on page 7 moved.
+
+[7] [8] [9] [10] [11]
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 398--398
+[][][] 
+ []
+
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 398--398
+[][][] 
+ []
+
+[12] [13] [14]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
-bustTesting_FE_models.bbl [10]) [11]
+bustTesting_FE_models.bbl [15]) [16]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting_FE_models.aux) ) 
 Here is how much of TeX's memory you used:
- 13297 strings out of 493921
- 258532 string characters out of 3144871
- 303545 words of memory out of 3000000
- 16326 multiletter control sequences out of 15000+200000
+ 13358 strings out of 493921
+ 260042 string characters out of 3144871
+ 303210 words of memory out of 3000000
+ 16387 multiletter control sequences out of 15000+200000
  17480 words of font info for 61 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 62i,14n,76p,962b,846s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 62i,14n,76p,1170b,836s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/publ
 ic/amsfonts/cm/cmbx10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public
 /amsfonts/cm/cmbx12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/a
@@ -680,9 +636,9 @@ m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program
 Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Fil
 es (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files 
 (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on ClusterRobustTesting_FE_models.pdf (11 pages, 245126 bytes).
+Output written on ClusterRobustTesting_FE_models.pdf (16 pages, 271428 bytes).
 PDF statistics:
- 113 PDF objects out of 1000 (max. 8388607)
+ 129 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  13 words of extra memory for PDF output out of 10000 (max. 10000000)
 

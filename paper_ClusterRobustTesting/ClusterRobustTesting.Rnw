@@ -358,16 +358,6 @@ However, \citet{Bell2002bias} found using simulation that the plug-in degrees of
 
 The \citet{McCaffrey2001generalizations} approach has been shown to perform well in a variety of conditions (CITE simulation studies). These studies encompass a variety of data generation processes and covariate types. Importantly, a key finding is that the degrees of freedom depend not only on the number of clusters $m$, but also on features of the covariates. When the covariate is balanced -- as occurs in balanced panels with a dichotomous covariate with the same proportion of ones in each cluster -- the degrees of freedom are $m - 1$ even in small samples. However, when the covariate exhibits large imbalances -- as occurs when the panel is not balanced or if the proportion of ones varies considerably from cluster to cluster -- these degrees of freedom can be tremendously smaller. Similarly, covariates with large leverage points can exhibit similar losses in terms of degrees of freedom. The result is that the small-sample corrections are required even when the number of clusters seems large, suggesting that this CR2 t-test be applied as a default in all CRVE based analyses. 
 
-%Not sure where to put this stuff that follows. Doesn't belong here:
-%Third, \citet{McCaffrey2006improved} proposed to use a saddlepoint approximation to the distribution of $Z$. 
-%Like the Satterthwaite approximation, the saddlepoint approximation is derived under the assumption that the errors are normally distributed. 
-%Rather than using the moments of $\bm{c}'\bm{V}^{CR}\bm{c}$, the saddlepoint instead uses the fact that it is distributed as a weighted sum of $\chi^2_1$ random variables. 
-%The weights depend on $\bs\Sigma$, and so must be estimated. \citet{McCaffrey2006improved} did so based on a working model for the variance, in which case the weights are given by the eigen-values of the $m \times m$ matrix with $(i,j)^{th}$ entry $\bm{s}_i'\hat{\bs\Phi} \bm{s}_j$. 
-
-%A final approach is to use a bootstrap re-sampling technique that leads to small-sample refinements in the test rejection rates. 
-%Not all bootstrap re-sampling methods work well in small samples. 
-%Among the alternatives, \citet{Webb2013wild} describe a wild boostrap procedure that performs well even when $m$ is very small and when clusters are of unequal size.\todo{Need to describe the bootstrap in more detail.}
-
 \subsection{Small-sample corrections for F-tests}
 
 %Compared to single-constraint tests involving $t$, fewer approaches to small-sample correction are available for multiple-constraint tests. 
