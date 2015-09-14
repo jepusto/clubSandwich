@@ -1,5 +1,10 @@
 \begin{thebibliography}{xx}
 
+\harvarditem{Angrist \harvardand\ Pischke}{2009}{Angrist2009mostly}
+Angrist, J.~D. \harvardand\ Pischke, J.  \harvardyearleft 2009\harvardyearright
+  , {\em {Mostly harmless econometrics: An empiricist's companion}}, Princeton
+  University Press, Princeton, NJ.
+
 \harvarditem{Bell \harvardand\ McCaffrey}{2002}{Bell2002bias}
 Bell, R.~M. \harvardand\ McCaffrey, D.~F.  \harvardyearleft
   2002\harvardyearright , `{Bias reduction in standard errors for linear
@@ -43,6 +48,12 @@ Ibragimov, R. \harvardand\ M\"{u}ller, U.~K.  \harvardyearleft
   2010\harvardyearright , `{t-Statistic based correlation and heterogeneity
   robust inference}', {\em Journal of Business \& Economic Statistics} {\bf
   28}(4),~453--468.
+
+\harvarditem{{\em {Longitudinal data analysis using generalized linear
+  models}}}{1986}{Liang1986longitudinal}
+{\em {Longitudinal data analysis using generalized linear models}}
+  \harvardyearleft 1986\harvardyearright , {\em Biometrika} {\bf
+  73}(1),~13--22.
 
 \harvarditem{MacKinnon \harvardand\ White}{1985}{MacKinnon1985some}
 MacKinnon, J.~G. \harvardand\ White, H.  \harvardyearleft 1985\harvardyearright

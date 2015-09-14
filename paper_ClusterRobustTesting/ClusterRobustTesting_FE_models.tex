@@ -139,6 +139,7 @@ The text of your abstract.  200 or fewer words.
 
 Fixed-effect models are an important tool for applied economic analysis. 
 Controlling for unobserved confounding factors.
+Leading cases: panel models for repeated measurements on a set of individuals, organizations, or other aggregate units; block-randomized experiments (or analogous observational studies). 
 Bertrand et al. highlight the need to use cluster-robust variance estimation.
 
 Problems with standard CRVE.
@@ -152,27 +153,41 @@ We consider a generic fixed effects model in which
 \label{eq:fixed_effects}
 \bm{y}_j = \bm{R}_j \bs\beta + \bm{S}_j \bs\gamma + \bm{T}_j \bs\delta + \bs\epsilon_j,
 \end{equation}
-where $\bm{R}_j$ is an $n_j \times r$ matrix of covariates, $\bm{S}_j$ is an $n_j \times s$ matrix describing fixed effects that vary across clusters, and $\bm{T}_j$ is an $n_j \times t$ matrix describing fixed effects that are identified only within clusters. 
+where $\bm{R}_j$ is an $n_j \times r$ matrix of covariates, $\bm{S}_j$ is an $n_j \times s$ matrix describing fixed effects that vary across clusters, and $\bm{T}_j$ is an $n_j \times t$ matrix describing fixed effects that are identified only within clusters. For example, in a balanced state-by-year panel model where the variance is estimated by clustering on states, $\bm{T}_j$ would consist of an indicator for state $j$, $\bm{S}_j$ might include indicators for each time period, and $\bm{R}_j$ might include a set of policy indicators.  
+
 We assume that $\E\left(\bs\epsilon_j\left|\bm{R}_j,\bm{S}_j, \bm{T}_j\right.\right) = \bm{0}$ and $\Var\left(\bs\epsilon_j\left|\bm{R}_j,\bm{S}_j,\bm{T}_j\right.\right) = \bs\Sigma_j$, for $j = 1,...,m$, where the form of $\bs\Sigma_1,...,\bs\Sigma_m$ may be unknown but the errors are independent across clusters. 
 For notational convenience, let $\bm{U}_j = \left[\bm{R}_j \ \bm{S}_j \right]$, $\bm{X}_j = \left[\bm{U}_j \ \bm{T}_j \right]$, $\bs\alpha = \left(\bs\beta', \bs\gamma', \bs\delta' \right)'$, and $x = r + s + t$.
 Denote the total number of individual observations by $N = \sum_{j=1}^m n_j$.
-Let $\bm{R}$, $\bm{S}$, $\bm{T}$, $\bm{U}$, and $\bm{X}$ denote the matrices obtained by stacking their corresponding components, as in $\bm{R} = \left(\bm{R}_1' \ \bm{R}_2' \ \cdots \ \bm{R}_m'\right)'$. 
+Let $\bm{y}$, $\bm{R}$, $\bm{S}$, $\bm{T}$, $\bm{U}$, and $\bm{X}$ denote the matrices obtained by stacking their corresponding components, as in $\bm{R} = \left(\bm{R}_1' \ \bm{R}_2' \ \cdots \ \bm{R}_m'\right)'$. 
 
 In this model, inferential interest is confined to $\bs\beta$ and the fixed effects $\bs\gamma$ and $\bs\delta$ are treated as nuisance parameters. The distinction between the covariates $\bm{R}_j$ versus the fixed effects $\left[\bm{S}_j \ \bm{T}_j\right]$ thus depends on context and the analyst's inferential goals. The distinction between the two fixed effect matrices $\bm{S}_j$ and $\bm{T}_j$ is less ambiguous, in that the within-cluster fixed effects satisfy $\bm{T}_j \bm{T}_k' = \bm{0}$ for $j \neq k$. We further assume that $\left(\bm{U}'\bm{U} - \bm{U}_j'\bm{U}_j\right)$ is of full rank for $j = 1,...,m$.
 
 We shall consider weighted least-squares (WLS) estimation of $\bs\beta$. 
-For each cluster $j$, let $\bm{W}_j$ be a symmetric, $n_j \times n_j$ weighting matrix of full rank. This WLS framework includes the unweighted case (where $\bm{W}_j = \bm{I}_j$, the identity matrix), as well as feasible GLS. In the latter case, the weighting matrices are then taken to be $\bm{W}_j = \hat{\bs\Phi}_j^{-1}$, where the $\hat{\bs\Phi}_j$ are constructed from estimates of the variance parameter.\footnote{
+For each cluster $j$, let $\bm{W}_j$ be a symmetric, $n_j \times n_j$ weighting matrix of full rank. 
+The WLS framework includes the unweighted case (where $\bm{W}_j = \bm{I}_j$, an identity matrix), as well as feasible GLS.\footnote{
 The WLS estimator also encompasses the estimator proposed by \citet{Ibragimov2010tstatistic} for clustered data. 
 Assuming that $\bm{X}_j$ has rank $p$ for $j = 1,...,m$, their proposed approach involves estimating $\bs\beta$ separately within each cluster and taking the simple average of these estimates. 
-The resulting average is equivalent to the WLS estimator with weights $\bm{W}_j = \bm{X}_j \left(\bm{X}_j'\bm{X}_j\right)^{-2} \bm{X}_j$.}
+The resulting average is equivalent to the WLS estimator with weights $\bm{W}_j = \bm{X}_j \left(\bm{X}_j'\bm{X}_j\right)^{-2} \bm{X}_j$.} 
+In the latter case, it is assumed that $\Var\left(\bm{e}_j\left|\bm{X}_j\right.\right) = \bs\Phi_j$, where $\bs\Phi_j$ is a known function of a low-dimensional parameter. 
+For example, an auto-regressive error structure might be posited to describe repeated measures on an individual over time. 
+The weighting matrices are then taken to be $\bm{W}_j = \hat{\bs\Phi}_j^{-1}$, where the $\hat{\bs\Phi}_j$ are constructed from estimates of the variance parameter.
+Finally, for analysis of data from complex survey designs, WLS may be used with sampling weights in order to recover design-unbiased estimates of population parameters.
 
-Several approaches computing the WLS estimator are possible. One possibility is to calculate WLS estimates of the full parameter vector $\bs\alpha$ directly. However, this method can be computationally intensive and numerically inaccurate if the fixed effects specification is large (i.e., $s + t$ large). An alternative is to first absorb the fixed effect specification. We shall describe the latter approach because it is more efficient and numerically accurate.
+Several approaches computing the WLS estimator are possible. 
+One possibility is to calculate WLS estimates of the full parameter vector $\bs\alpha$ directly. 
+However, this method can be computationally intensive and numerically inaccurate if the fixed effects specification is large (i.e., $s + t$ large). 
+An alternative is to first absorb the fixed effect specification. We shall describe the latter approach because it is more efficient and numerically accurate.
 
 Denote the full block-diagonal weighting matrix as $\bm{W} = \text{diag}\left(\bm{W}_1,...,\bm{W}_m\right)$.
 Let $\bm{K}$ be the $x \times r$ matrix that selects the covariates of interest, so that $\bm{X} \bm{K} = \bm{R}$ and $\bm{K}'\bs\alpha = \bs\beta$.
 For a generic matrix $\bm{Z}$ of full column rank, let $\bm{M_Z} = \left(\bm{Z}'\bm{W}\bm{Z}\right)^{-1}$ and $\bm{H_Z} = \bm{Z}\bm{M_Z}\bm{Z}'\bm{W}$. 
 
-The absorption technique involves obtaining the residuals from the regression of $\bm{y}$ on $\bm{T}$ and from the multivariate regressions of $\bm{U} = [\bm{R}\ \bm{S}]$ on $\bm{T}$. The $\bm{y}$ residuals and $\bm{R}$ residuals are then regressed on the $\bm{S}$ residuals. Finally, these twice-regressed $\bm{y}$ residuals are regressed on the twice-regressed $\bm{R}$ residuals to obtain the WLS estimates of $\bs\beta$. Let $\bm{\ddot{S}} = \left(\bm{I} - \bm{H_T}\right)\bm{S}$, $\bm{\ddot{R}} = \left(\bm{I} - \bm{H_{\ddot{S}}}\right)\left(\bm{I} - \bm{H_T}\right)\bm{R}$, and $\bm{\ddot{y}} = \left(\bm{I} - \bm{H_{\ddot{S}}}\right)\left(\bm{I} - \bm{H_T}\right)\bm{y}$. In what follows, subscripts on $\bm{\ddot{R}}$, $\bm{\ddot{S}}$,  $\bm{\ddot{U}}$, and $\bm{\ddot{y}}$ refer to the rows of these matrices corresponding to a specific cluster. The WLS estimator of $\bs\beta$ can then be written as
+The absorption technique involves obtaining the residuals from the regression of $\bm{y}$ on $\bm{T}$ and from the multivariate regressions of $\bm{U} = [\bm{R}\ \bm{S}]$ on $\bm{T}$. 
+The $\bm{y}$ residuals and $\bm{R}$ residuals are then regressed on the $\bm{S}$ residuals. 
+Finally, these twice-regressed $\bm{y}$ residuals are regressed on the twice-regressed $\bm{R}$ residuals to obtain the WLS estimates of $\bs\beta$. 
+Let $\bm{\ddot{S}} = \left(\bm{I} - \bm{H_T}\right)\bm{S}$, $\bm{\ddot{R}} = \left(\bm{I} - \bm{H_{\ddot{S}}}\right)\left(\bm{I} - \bm{H_T}\right)\bm{R}$, and $\bm{\ddot{y}} = \left(\bm{I} - \bm{H_{\ddot{S}}}\right)\left(\bm{I} - \bm{H_T}\right)\bm{y}$. 
+In what follows, subscripts on $\bm{\ddot{R}}$, $\bm{\ddot{S}}$,  $\bm{\ddot{U}}$, and $\bm{\ddot{y}}$ refer to the rows of these matrices corresponding to a specific cluster. 
+The WLS estimator of $\bs\beta$ can then be written as
 \begin{equation}
 \label{eq:WLS}
 \bs{\hat\beta} = \bm{M_{\ddot{R}}} \sum_{j=1}^m \bm{\ddot{R}}_j' \bm{W}_j \bm{\ddot{y}}_j. 
@@ -189,8 +204,6 @@ The variance of the WLS estimator is
 \end{equation}
 which depends upon the unknown variance matrices $\bm\Sigma_j$. 
 One approach to estimating this variance is based on a parametric model for the error structure. 
-In this approach, it is assumed that $\Var\left(\bm{e}_j\left|\bm{X}_j\right.\right) = \bs\Phi_j$, where $\bs\Phi_j$ is a known function of a low-dimensional parameter. 
-For example, an auto-regressive error structure might be posited to describe repeated measures on an individual over time. 
 If this approach is used, each $\bs\Sigma_j$ is substituted with an estimate $\bs{\hat\Phi}_j$, producing the model-based variance estimator
 \begin{equation}
 \label{eq:V_model}
@@ -200,8 +213,8 @@ However, if the working model is mis-specified, the model-based variance estimat
 
 \subsection{Standard CRVE}
 
-Cluster-robust variance estimators provide a means of estimating $\Var\left(\bs{\hat\beta}\right)$ and testing hypotheses regarding $\bs\beta$ in the absence of a valid parametric model for the error structure, or when the parametric variance model used to develop weights may be mis-specified. 
-They are thus a generalization of heteroskedasticity-consistent (HC) variance estimators. 
+Cluster-robust variance estimators provide a means of estimating $\Var\left(\bs{\hat\beta}\right)$ and testing hypotheses regarding $\bs\beta$ in the absence of a valid parametric model for the error structure.\todo{Citations on originators of CRVE? Would be a long list...} 
+They are thus a generalization of heteroskedasticity-consistent (HC) variance estimators.
 Like the HC estimators, several different variants have been proposed, with different rationales and different finite-sample properties. 
 Each of these are of the form
 \begin{equation}
@@ -210,19 +223,28 @@ Each of these are of the form
 \end{equation}
 for some $n_j$ by $n_j$ adjustment matrix $\bm{A}_j$. 
 The form of these adjustments parallels those of the heteroscedastity-consistent (HC) variance estimators proposed by \citet*{MacKinnon1985some}. 
-Setting $\bm{A}_j = \bm{I}_j$, an $n_j \times n_j$ identity matrix, results in the original CRVE estimator. Following Cameron and Miller (2015), we refer to this estimator as $\bm{V}^{CR0}$. 
-Setting $\bm{A}_j = c\bm{I}_j$, where $c = \sqrt{(m/(m-1))(N/(N - p))}$, results in the CRV1 estimator, denoted $\bm{V}^{CR1}$.
-Note that when $N >> p$, $c \approx \sqrt{m/(m-1)}$, and some software uses the latter approximation. 
-Importantly, this correction does not depend on $\bm{X}_j$ and is the same for all hypotheses tested. Like the CR0 estimator, however, this estimator often under-estimates the true variance.
+Setting $\bm{A}_j = \bm{I}_j$, an $n_j \times n_j$ identity matrix, results in the most basic form, described by \citet{Liang1986longitudinal}, among others. 
+Following Cameron and Miller (2015), we refer to this estimator as $\bm{V}^{CR0}$. 
+Setting $\bm{A}_j = c\bm{I}_j$, where $c = \sqrt{(m/(m-1))(N/(N - p))}$, results in a slightly larger estimator, denoted $\bm{V}^{CR1}$.
+Note that when $N >> p$, $c \approx \sqrt{m/(m-1)}$, and some software uses the latter approximation.
+Both the CR0 and CR1 estimators rely on asymptotic properties of the residuals in order to consistently estimate $\bs\Sigma_j$. 
+The correction constant used in the CR1 estimator does not depend on $\bm{X}_j$, and so cannot account for features of the covariates that might cause the cross-product of the residuals to better or worse estimates of the true variance. 
 
-There are several alternative small-sample corrections that are used with CRVE. The BRL approach will be described in the next section. Because it is an extension of the HC2 estimator for regressions with heteroskedastic but uncorrelated errors, we refer to it as CR2. Finally, a further alternative is to use a jack-knife resampling estimator; the CR3 estimator closely approximates the jack-knife approach, by taking $\bm{A}_j = \left(\bm{I} - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j'\bm{W}_j\right)^{-1}$. 
+Several further small-sample corrections for CRVE do account for features of the covariates.
+The BRL approach will be described in the next section. 
+Because it is an extension of the HC2 estimator for regressions with heteroskedastic but uncorrelated errors, we refer to it as CR2. 
+A further alternative is to use a jack-knife resampling estimator, or an approximation to it. The CR3 estimator closely approximates the jack-knife approach, by taking $\bm{A}_j = \left(\bm{I} - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j'\bm{W}_j\right)^{-1}$. 
 
 \section{BIAS REDUCED LINEARIZATION}
 \label{sec:BRL}
 
-The BRL approach chooses adjustment matrices so that the variance estimator is exactly unbiased under a specific working model for the data. It is therefore directly analogous to the HC2 heteroskedasticity-robust estimator, which is exactly unbiased under homoskedasticity. 
-\citet{Bell2002bias} developed the BRL estimator for linear regression models with errors having unknown dependence structure within clusters. 
-However, their implementation is not applicable to many fixed effect models, where the adjustment matrices may be undefined. Furthermore, the form of their adjustment matrices varies depending on whether fixed effects are absorbed or estimated directly by WLS, which is undesirable. Our implementation of BRL addresses both of these issues and can be implemented in models with quite general fixed effects specifications. It reduces to Bell and McCaffrey's implementation for models without fixed effects. 
+The BRL approach chooses adjustment matrices so that the variance estimator is exactly unbiased under a specific working model for the data. 
+It is therefore directly analogous to the HC2 heteroskedasticity-robust estimator, which is exactly unbiased under homoskedasticity. 
+\citet{Bell2002bias} developed the BRL estimator for linear regression models in which the errors follow an unknown dependence structure within clusters. 
+However, their implementation is not applicable to many fixed effect models, where the adjustment matrices may be undefined. 
+For example,
+\citet{Angrist2009mostly} pointed out that Bell and McCaffrey's approach cannot be applied in balanced state-by-year panels with fixed effects for states and for years because the adjustment matrices involve inverses of matrices that are not of full rank.
+The form of the Bell and McCaffrey matrices also varies depending on whether fixed effects are absorbed or estimated directly by WLS, which is undesirable. Our implementation of BRL addresses both of these issues and can be implemented in models with quite general fixed effects specifications. It reduces to Bell and McCaffrey's implementation for models without fixed effects. 
 
 Let $\bs\Phi_j$ be a working model for the covariance of the errors in cluster $j$, and denote $\bs\Phi = \text{diag}\left(\bs\Phi_1,...,\bs\Phi_m\right)$. Consider adjustment matrices satisfying the following criterion:
 \begin{equation}
@@ -230,10 +252,9 @@ Let $\bs\Phi_j$ be a working model for the covariance of the errors in cluster $
 \bm{\ddot{R}}_j' \bm{W}_j \bm{A}_j \left(\bm{I} - \bm{H_X}\right)_j \bs\Phi \left(\bm{I} - \bm{H_X}\right)_j' \bm{A}_j' \bm{W}_j \bm{\ddot{R}}_j = \bm{\ddot{R}}_j' \bm{W}_j \bs\Phi_j \bm{W}_j \bm{\ddot{R}}_j,
 \end{equation}
 where $\left(\bm{I} - \bm{H_X}\right)_j$ denotes the rows of $\bm{I} - \bm{H_X}$ corresponding to cluster $j$. 
-A variance estimator that uses such adjustment matrices will be exactly unbiased when the working model is correctly specified.
-\footnote{Note that this criterion differs from the criterion used by \citet{Bell2002bias} in that it pre- and post-multiplies both sides by $\bm{W}_j\bm{\ddot{R}}_j$. 
+A variance estimator that uses such adjustment matrices will be exactly unbiased when the working model is correctly specified.\footnote{Note that this criterion differs from the criterion used by \citet{Bell2002bias} in that it pre- and post-multiplies both sides by $\bm{W}_j\bm{\ddot{R}}_j$. 
 As will be seen, this modification permits the use of generalized matrix inverses in calculating the adjustment matrices, thus avoiding rank-deficiency problems that would otherwise leave them undefined.}
-When the working model deviates from the true covariance $\bs{\Sigma}_j$, the variance estimator remains biased. However, \citet{Bell2002bias} showed that the CR2 estimator still greatly reduces the bias compared to the more basic CR0 and CR1 estimators (thus the name "bias reduced linearization"). 
+When the working model deviates from the true covariance $\bs{\Sigma}_j$, the variance estimator remains biased. However, \citet{Bell2002bias} showed that the CR2 estimator still greatly reduces the bias compared to the more basic CR0 and CR1 estimators (thus the name ``bias reduced linearization''). 
 Extensive simulation results indicate that the remaining bias is typically minimal, even for large deviations from the assumed structure (CITE).
 Furthermore, as the number of clusters increases, the reliance on the working model diminishes. 
 One way to understand this approach is that it provides necessary scaffolding in the small sample case, which falls away when there is sufficient data.
@@ -249,7 +270,7 @@ where $\bm{D}_j$ is the upper-right triangular Cholesky factorization of $\hat{\
 \bm{B}_j = \bm{D}_j\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \left(\bm{I} - \bm{H_T}\right) \bs\Phi \left(\bm{I} - \bm{H_T}\right)' \left(\bm{I} - \bm{H_{\ddot{S}}}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' \bm{D}_j',
 \end{equation}
 and $\bm{B}_j^{+1/2}$ is the symmetric square root of the Moore-Penrose inverse of $\bm{B}_j $. 
-The Moore-Penrose inverse is well-defined even when $\bm{B}_j$ is not of full rank. 
+The Moore-Penrose inverse is well-defined even when $\bm{B}_j$ is not of full rank.\todo{Add citation.} 
 Theorem \ref{thm:BRL_FE} in Appendix \ref{app:theorems} shows that the adjustment matrices given by (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) satisfy criterion (\ref{eq:CR2_criterion}) and are invariant to whether the model is estimated by direct WLS estimation or after absorbing some or all of the fixed effects. 
 
 In many applications, it will make sense to choose weighting matrices that are the inverses of the working covariance model, so that $\bm{W}_j = \bs\Phi_j^{-1}$. In this case, the adjustment matrices can be calculated using $\bm{\tilde{B}}_j$ in place of $\bm{B}_j$, where
@@ -257,7 +278,7 @@ In many applications, it will make sense to choose weighting matrices that are t
 \label{eq:CR2_B_tilde}
 \bm{\tilde{B}}_j = \bm{D}_j\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \bs\Phi \left(\bm{I} - \bm{H_{\ddot{S}}}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' \bm{D}_j'.
 \end{equation}
-See Theorem \ref{thm:absorb} in Appendix \ref{app:theorems}.
+Theorem \ref{thm:absorb} in Appendix \ref{app:theorems} demonstrates that using $\bm{\tilde{B}}_j$ rather than $\bm{B}_j$ leads to algebraically identical adjustment matrices; the form of $\bm{\tilde{B}}_j$ is simply more convenient for computation.
 In the simple case of ordinary (unweighted) least squares, in which the working variance model posits that the errors are all independent and homoskedastic and $\bm{W} = \bs\Phi = \bm{I}$, the adjustment matrices simplify further to \[
 \bm{A}_j = \left(\bm{I}_j - \bm{\ddot{U}}_j\left(\bm{\ddot{U}}'\bm{\ddot{U}}\right)^{-1}\bm{\ddot{U}}_j'\right)^{+1/2},\]
 where $\bm{\ddot{U}} = \left(\bm{I} - \bm{H_T}\right)\bm{U}$.
