@@ -90,10 +90,6 @@ library(xtable)
 opts_chunk$set(echo = FALSE, cache = FALSE, fig.path='CR_fig/', fig.align='center', fig.show='hold')
 @
 
-
-\section{STANDARD CLUSTER-ROBUST VARIANCE ESTIMATION}
-\label{sec:CRVE}
-
 Fixed-effect models are an important tool for applied economic analysis. 
 Controlling for unobserved confounding factors.
 Leading cases: panel models for repeated measurements on a set of individuals, organizations, or other aggregate units; block-randomized experiments (or analogous observational studies). 
@@ -110,14 +106,14 @@ We consider a generic fixed effects model in which
 \label{eq:fixed_effects}
 \bm{y}_j = \bm{R}_j \bs\beta + \bm{S}_j \bs\gamma + \bm{T}_j \bs\delta + \bs\epsilon_j,
 \end{equation}
-where $\bm{R}_j$ is an $n_j \times r$ matrix of covariates, $\bm{S}_j$ is an $n_j \times s$ matrix describing fixed effects that vary across clusters, and $\bm{T}_j$ is an $n_j \times t$ matrix describing fixed effects that are identified only within clusters. For example, in a balanced state-by-year panel model where the variance is estimated by clustering on states, $\bm{T}_j$ would consist of an indicator for state $j$, $\bm{S}_j$ might include indicators for each time period, and $\bm{R}_j$ might include a set of policy indicators.  
+where $\bm{R}_j$ is an $n_j \times r$ matrix of covariates, $\bm{S}_j$ is an $n_j \times s$ matrix describing fixed effects that vary across clusters, and $\bm{T}_j$ is an $n_j \times t$ matrix describing fixed effects that are identified only within clusters. For example, in a balanced state-by-year panel model where the variance is estimated by clustering on states, $\bm{T}_j$ would consist of an indicator for state $j$, $\bm{S}_j$ would include indicators for each time period, and $\bm{R}_j$ would include a policy indicator or set of indicators.
 
 We assume that $\E\left(\bs\epsilon_j\left|\bm{R}_j,\bm{S}_j, \bm{T}_j\right.\right) = \bm{0}$ and $\Var\left(\bs\epsilon_j\left|\bm{R}_j,\bm{S}_j,\bm{T}_j\right.\right) = \bs\Sigma_j$, for $j = 1,...,m$, where the form of $\bs\Sigma_1,...,\bs\Sigma_m$ may be unknown but the errors are independent across clusters. 
-For notational convenience, let $\bm{U}_j = \left[\bm{R}_j \ \bm{S}_j \right]$, $\bm{X}_j = \left[\bm{U}_j \ \bm{T}_j \right]$, $\bs\alpha = \left(\bs\beta', \bs\gamma', \bs\delta' \right)'$, and $x = r + s + t$.
+For notational convenience, let $\bm{U}_j = \left[\bm{R}_j \ \bm{S}_j \right]$ denote the set of predictors that vary across clusters, $\bm{X}_j = \left[\bm{U}_j \ \bm{T}_j \right]$ denote the full set of predictors, $\bs\alpha = \left(\bs\beta', \bs\gamma', \bs\delta' \right)'$, and $x = r + s + t$.
 Denote the total number of individual observations by $N = \sum_{j=1}^m n_j$.
 Let $\bm{y}$, $\bm{R}$, $\bm{S}$, $\bm{T}$, $\bm{U}$, and $\bm{X}$ denote the matrices obtained by stacking their corresponding components, as in $\bm{R} = \left(\bm{R}_1' \ \bm{R}_2' \ \cdots \ \bm{R}_m'\right)'$. 
 
-In this model, inferential interest is confined to $\bs\beta$ and the fixed effects $\bs\gamma$ and $\bs\delta$ are treated as nuisance parameters. The distinction between the covariates $\bm{R}_j$ versus the fixed effects $\left[\bm{S}_j \ \bm{T}_j\right]$ thus depends on context and the analyst's inferential goals. The distinction between the two fixed effect matrices $\bm{S}_j$ and $\bm{T}_j$ is less ambiguous, in that the within-cluster fixed effects satisfy $\bm{T}_j \bm{T}_k' = \bm{0}$ for $j \neq k$. We further assume that $\left(\bm{U}'\bm{U} - \bm{U}_j'\bm{U}_j\right)$ is of full rank for $j = 1,...,m$.
+In this model, inferential interest is confined to $\bs\beta$ and the fixed effects $\bs\gamma$ and $\bs\delta$ are treated as nuisance parameters. The distinction between the covariates $\bm{R}_j$ versus the fixed effects $\left[\bm{S}_j \ \bm{T}_j\right]$ thus depends on context and the analyst's inferential goals. However, the distinction between the two fixed effect matrices $\bm{S}_j$ and $\bm{T}_j$ is unambiguous, in that the within-cluster fixed effects satisfy $\bm{T}_j \bm{T}_k' = \bm{0}$ for $j \neq k$. We further assume that $\left(\bm{U}'\bm{U} - \bm{U}_j'\bm{U}_j\right)$ is of full rank for $j = 1,...,m$.
 
 We shall consider weighted least-squares (WLS) estimation of $\bs\beta$. 
 For each cluster $j$, let $\bm{W}_j$ be a symmetric, $n_j \times n_j$ weighting matrix of full rank. 
@@ -128,7 +124,7 @@ The resulting average is equivalent to the WLS estimator with weights $\bm{W}_j 
 In the latter case, it is assumed that $\Var\left(\bm{e}_j\left|\bm{X}_j\right.\right) = \bs\Phi_j$, where $\bs\Phi_j$ is a known function of a low-dimensional parameter. 
 For example, an auto-regressive error structure might be posited to describe repeated measures on an individual over time. 
 The weighting matrices are then taken to be $\bm{W}_j = \hat{\bs\Phi}_j^{-1}$, where the $\hat{\bs\Phi}_j$ are constructed from estimates of the variance parameter.
-Finally, for analysis of data from complex survey designs, WLS may be used with sampling weights in order to recover design-unbiased estimates of population parameters.
+Finally, for analysis of data from complex survey designs, WLS may be used with sampling weights in order to account for unequal selection probabilities.
 
 Several approaches computing the WLS estimator are possible. 
 One possibility is to calculate WLS estimates of the full parameter vector $\bs\alpha$ directly. 
@@ -164,9 +160,9 @@ One approach to estimating this variance is based on a parametric model for the 
 If this approach is used, each $\bs\Sigma_j$ is substituted with an estimate $\bs{\hat\Phi}_j$, producing the model-based variance estimator
 \begin{equation}
 \label{eq:V_model}
-\bm{V}^M = \bm{M_{\ddot{R}}}\left(\sum_{j=1}^m \bm{\ddot{R}}_j' \bm{W}_j \bs{\hat\Phi}_j \bm{W}_j\bm{\ddot{R}}_j\right) \bm{M_{\ddot{R}}},.
+\bm{V}^M = \bm{M_{\ddot{R}}}\left(\sum_{j=1}^m \bm{\ddot{R}}_j' \bm{W}_j \bs{\hat\Phi}_j \bm{W}_j\bm{\ddot{R}}_j\right) \bm{M_{\ddot{R}}}.
 \end{equation}
-However, if the working model is mis-specified, the model-based variance estimator will be inconsistent and inferences based upon it will be invalid.
+However, if the working model is mis-specified, the model-based variance estimator will be inconsistent and inferences based upon it will be invalid.\todo{Do we even need to write out the formula for $V^M$?}
 
 \subsection{Standard CRVE}
 
@@ -180,7 +176,7 @@ Each of these are of the form
 \end{equation}
 for some $n_j$ by $n_j$ adjustment matrix $\bm{A}_j$. 
 The form of these adjustments parallels those of the heteroscedastity-consistent (HC) variance estimators proposed by \citet*{MacKinnon1985some}. 
-Setting $\bm{A}_j = \bm{I}_j$, an $n_j \times n_j$ identity matrix, results in the most basic form, described by \citet{Liang1986longitudinal}, among others. 
+Setting $\bm{A}_j = \bm{I}_j$, an $n_j \times n_j$ identity matrix, results in the most basic form, described by \citet{Liang1986longitudinal}. 
 Following Cameron and Miller (2015), we refer to this estimator as $\bm{V}^{CR0}$. 
 Setting $\bm{A}_j = c\bm{I}_j$, where $c = \sqrt{(m/(m-1))(N/(N - p))}$, results in a slightly larger estimator, denoted $\bm{V}^{CR1}$.
 Note that when $N >> p$, $c \approx \sqrt{m/(m-1)}$, and some software uses the latter approximation.
@@ -188,19 +184,17 @@ Both the CR0 and CR1 estimators rely on asymptotic properties of the residuals i
 The correction constant used in the CR1 estimator does not depend on $\bm{X}_j$, and so cannot account for features of the covariates that might cause the cross-product of the residuals to better or worse estimates of the true variance. 
 
 Several further small-sample corrections for CRVE do account for features of the covariates.
-The BRL approach will be described in the next section. 
-Because it is an extension of the HC2 estimator for regressions with heteroskedastic but uncorrelated errors, we refer to it as CR2. 
-A further alternative is to use a jack-knife resampling estimator, or an approximation to it. The CR3 estimator closely approximates the jack-knife approach, by taking $\bm{A}_j = \left(\bm{I} - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j'\bm{W}_j\right)^{-1}$. 
+The BRL approach (described in the next section) is an extension of the HC2 estimator for regressions with heteroskedastic but uncorrelated errors; we therefore refer to it as CR2. 
+A further alternative is CR3, which uses adjustment matrices given by $\bm{A}_j = \left(\bm{I} - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j'\bm{W}_j\right)^{-1}$. The CR3 estimator closely approximates the jackknife re-sampling variance estimator. 
 
 \section{BIAS REDUCED LINEARIZATION}
 \label{sec:BRL}
 
 The BRL approach chooses adjustment matrices so that the variance estimator is exactly unbiased under a specific working model for the data. 
 It is therefore directly analogous to the HC2 heteroskedasticity-robust estimator, which is exactly unbiased under homoskedasticity. 
-\citet{Bell2002bias} developed the BRL estimator for linear regression models in which the errors follow an unknown dependence structure within clusters. 
+\citet{Bell2002bias} developed the BRL estimator for linear regression models in which the errors have an unknown dependence structure within clusters. 
 However, their implementation is not applicable to many fixed effect models, where the adjustment matrices may be undefined. 
-For example,
-\citet{Angrist2009mostly} pointed out that Bell and McCaffrey's approach cannot be applied in balanced state-by-year panels with fixed effects for states and for years because the adjustment matrices involve inverses of matrices that are not of full rank.
+For instance, \citet{Angrist2009mostly} pointed out that Bell and McCaffrey's approach cannot be applied in balanced state-by-year panels with fixed effects for states and for years because the adjustment matrices involve inverses of matrices that are not of full rank.
 The form of the Bell and McCaffrey matrices also varies depending on whether fixed effects are absorbed or estimated directly by WLS, which is undesirable. Our implementation of BRL addresses both of these issues and can be implemented in models with quite general fixed effects specifications. It reduces to Bell and McCaffrey's implementation for models without fixed effects. 
 
 Let $\bs\Phi_j$ be a working model for the covariance of the errors in cluster $j$, and denote $\bs\Phi = \text{diag}\left(\bs\Phi_1,...,\bs\Phi_m\right)$. Consider adjustment matrices satisfying the following criterion:
@@ -210,11 +204,11 @@ Let $\bs\Phi_j$ be a working model for the covariance of the errors in cluster $
 \end{equation}
 where $\left(\bm{I} - \bm{H_X}\right)_j$ denotes the rows of $\bm{I} - \bm{H_X}$ corresponding to cluster $j$. 
 A variance estimator that uses such adjustment matrices will be exactly unbiased when the working model is correctly specified.\footnote{Note that this criterion differs from the criterion used by \citet{Bell2002bias} in that it pre- and post-multiplies both sides by $\bm{W}_j\bm{\ddot{R}}_j$. 
-As will be seen, this modification permits the use of generalized matrix inverses in calculating the adjustment matrices, thus avoiding rank-deficiency problems that would otherwise leave them undefined.}
+As will be seen, this modification justifies the use of generalized matrix inverses in calculating the adjustment matrices, thus avoiding rank-deficiency problems that would otherwise leave them undefined.}
 When the working model deviates from the true covariance $\bs{\Sigma}_j$, the variance estimator remains biased. However, \citet{Bell2002bias} showed that the CR2 estimator still greatly reduces the bias compared to the more basic CR0 and CR1 estimators (thus the name ``bias reduced linearization''). 
 Extensive simulation results indicate that the remaining bias is typically minimal, even for large deviations from the assumed structure (CITE).
 Furthermore, as the number of clusters increases, the reliance on the working model diminishes. 
-One way to understand this approach is that it provides necessary scaffolding in the small sample case, which falls away when there is sufficient data.
+In a sense, CR2 provides necessary scaffolding in the small sample case, which falls away when there is sufficient data.
 
 Criterion (\ref{eq:CR2_criterion}) does not uniquely define $\bm{A}_j$. Following \citet{McCaffrey2001generalizations}, we propose to use a symmetric solution in which
 \begin{equation}
@@ -227,8 +221,8 @@ where $\bm{D}_j$ is the upper-right triangular Cholesky factorization of $\hat{\
 \bm{B}_j = \bm{D}_j\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \left(\bm{I} - \bm{H_T}\right) \bs\Phi \left(\bm{I} - \bm{H_T}\right)' \left(\bm{I} - \bm{H_{\ddot{S}}}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j' \bm{D}_j',
 \end{equation}
 and $\bm{B}_j^{+1/2}$ is the symmetric square root of the Moore-Penrose inverse of $\bm{B}_j $. 
-The Moore-Penrose inverse is well-defined even when $\bm{B}_j$ is not of full rank.\todo{Add citation.} 
-Theorem \ref{thm:BRL_FE} in Appendix \ref{app:theorems} shows that the adjustment matrices given by (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) satisfy criterion (\ref{eq:CR2_criterion}) and are invariant to whether the model is estimated by direct WLS estimation or after absorbing some or all of the fixed effects. 
+The Moore-Penrose inverse is well-defined and unique even when $\bm{B}_j$ is not of full rank \citep[][Thm. 9.18]{Banerjee2014linear}.
+Theorem \ref{thm:BRL_FE} in Appendix \ref{app:theorems} shows that the adjustment matrices given by (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) satisfy criterion (\ref{eq:CR2_criterion}). Furthermore, because the adjustment matrices are defined in terms of all three components of the predictors ($\bm{R}$,$\bm{S}$, and $\bm{T}$), they are invariant to whether the model is estimated by direct WLS estimation or after absorbing some or all of the fixed effects. 
 
 In many applications, it will make sense to choose weighting matrices that are the inverses of the working covariance model, so that $\bm{W}_j = \bs\Phi_j^{-1}$. In this case, the adjustment matrices can be calculated using $\bm{\tilde{B}}_j$ in place of $\bm{B}_j$, where
 \begin{equation}
@@ -240,15 +234,15 @@ In the simple case of ordinary (unweighted) least squares, in which the working 
 \bm{A}_j = \left(\bm{I}_j - \bm{\ddot{U}}_j\left(\bm{\ddot{U}}'\bm{\ddot{U}}\right)^{-1}\bm{\ddot{U}}_j'\right)^{+1/2},\]
 where $\bm{\ddot{U}} = \left(\bm{I} - \bm{H_T}\right)\bm{U}$.
 
-In the remainder of this paper, we will focus on this BRL approach, using the $\bm{V}^{CR2}$ estimator throughout. 
+The remainder of the paper considers hypothesis testing procedures based on the BRL variance estimator, $\bm{V}^{CR2}$. 
 
 
 \section{HYPOTHESIS TESTING}
 \label{sec:testing}
 
 Wald-type test statistics based on CRVEs are often used to test hypotheses regarding the coefficients in the regression specification. 
-Such procedures are justified based on the asymptotic behavior of robust Wald statistics as the number of clusters grows large (i.e., $m \to \infty$). 
-However, evidence from a wide variety of contexts indicates that the asymptotic results can be a very poor approximation when the number of clusters is small, even when small-sample corrections such as CR2 are employed \citep{Bell2002bias, Bertrand2004how, Cameron2008bootstrap}. 
+Such procedures are justified based on the asymptotic behavior of robust Wald statistics as the number of clusters grows large (i.e., as $m \to \infty$). 
+However, evidence from a wide variety of contexts indicates that the asymptotic limiting distribution can be a very poor approximation when the number of clusters is small, even when small-sample corrections such as CR2 are employed \citep{Bell2002bias, Bertrand2004how, Cameron2008bootstrap}. 
 Furthermore, the accuracy of asymptotic approximations depends on design features such as the degree of imbalance in the covariates, skewness of the covariates, and similarity of cluster sizes \citep{McCaffrey2001generalizations, Tipton2015small, Webb2013wild}. 
 Consequently, no simple rule-of-thumb exists for what constitutes an adequate sample size to trust the asymptotic test. 
 
@@ -258,31 +252,27 @@ For a general CRVE estimator, the Wald statistic  is then
 \label{eq:Wald_stat}
 Q = \left(\bm{C}\bs{\hat\beta} - \bm{d}\right)'\left(\bm{C} \bm{V}^{CR} \bm{C}'\right)^{-1}\left(\bm{C}\bs{\hat\beta} - \bm{d}\right).
 \end{equation}
-The asymptotically valid Wald test rejects $H_0$ at level $\alpha$ if $Q$ exceeds $\chi^2(\alpha; q)$, the $\alpha$ critical value from a chi-squared distribution with $q$ degrees of freedom. \todo{Citations to evidence that asymptotic test is way too liberal?} When samples are small, in standard practice instead the test $F = Q/q$ is often used with the CR1 estimator and the reference distribution $F(q, m - 1)$.\todo{Is this really standard?} 
+The asymptotically valid Wald test rejects $H_0$ at level $\alpha$ if $Q$ exceeds $\chi^2(\alpha; q)$, the $\alpha$ critical value from a chi-squared distribution with $q$ degrees of freedom. \todo{Citations to evidence that asymptotic test is way too liberal?} 
+When the number of clusters is small, it is common to instead use the test statistic $F = Q/q$, compared to the $F(q, m - 1)$ reference distribution.\todo{Is this really standard?} 
 
-Small-sample adjustments to hypothesis tests based on CRVE have largely focused on tests for single coefficients, i.e., $H_0: \beta_i = 0$. 
-For one-dimensional constraints, an equivalent to the Wald F test is to use the test statistic $Z = \hat\beta_i / \sqrt{V_i^{CR}}$, the distribution of which is approximately standard normal in large samples. 
-In small samples, one can instead approximate the distribution of $Z$ by a $t(m - 1)$ distribution. 
-However, \citet{Bell2002bias} showed that, even when the CR2 estimator is used, $Z$ does not follow a $t(m - 1)$ distribution in small samples. 
-They then proposed to approximate the distribution of $Z$ by a $t$ distribution with degrees of freedom determined by a Satterthwaite approximation, under the working covariance model.
-
-The following subsection reviews the \citet{Bell2002bias} approach for one-dimensional hypothesis tests, which applies directly in fixed-effect models. 
-We then propose a method for testing more general, $q$-dimensional linear hypotheses regarding $\bs\beta$, by approximating the distribution of $Q$ using an $F$ distribution with estimated degrees of freedom.
+Small-sample adjustments to hypothesis tests based on CRVE have largely focused on tests for single coefficients. The following subsection reviews approaches for one-dimensional hypothesis tests, with special attention to the Satterthwaite approximation approach proposed by \citet{Bell2002bias}. 
+We then propose a method for testing more general, $q$-dimensional linear hypotheses regarding $\bs\beta$. Our approach is similar to a Satterthwaite approximation, in that it involves approximating the distribution of $Q$ using an $F$ distribution with estimated degrees of freedom. 
 
 \subsection{Small-sample corrections for t-tests}
 
-Our approach to developing a better small-sample F-test parallels that the t-test developed by Bell and McCaffrey (2002). 
-In this section, we therefore review this approach. As noted, the standard test implemented in software uses the CR1 correction with the $t(m - 1)$ reference distribution. 
-The first and surely most common approach is to compare $|Z|$ to the appropriate critical value from a $t$ distribution with $m - 1$ degrees of freedom. 
+Consider testing the hypothesis $H_0: \bm{c}'\bs\beta = 0$ for some fixed $r \times 1$ contrast vector. 
+For this one-dimensional constraint, an equivalent to the Wald F test is to use the test statistic $Z = \bm{c}'\bs{\hat\beta} / \sqrt{\bm{c}'\bm{V}^{CR}\bm{c}}$, which follows a standard normal in large samples. 
+In small samples, it is common to instead approximate the distribution of $Z$ by a $t(m - 1)$ distribution. 
 \citet{Hansen2007asymptotic} provided one justification for the use of a $t(m-1)$ reference distribution by identifying conditions under which $Z$ converges in distribution to $t(m-1)$ as the within-cluster sample sizes grow large, with $m$ fixed \citep[see also][]{Donald2007inference}. 
 \citet{Ibragimov2010tstatistic} proposed a weighting technique derived so that that $t(m-1)$ critical values would be conservative (leading to rejection rates less than or equal to $\alpha$).
 However, both of these arguments require that $\bm{c}'\bs\beta$ be separately identified within each cluster. 
 Outside of these circumstances, using $t(m-1)$ critical values can still lead to over-rejection \citep{Cameron2015practitioners}. 
 Furthermore, this correction does not take into account that the distribution of $\bm{V}^{CR}$ is affected by the structure of the covariate matrix. 
+An alternative, proposed by \citet{Bell2002bias}, is to approximate the distribution of $Z$ by a $t$ distribution with degrees of freedom determined by a Satterthwaite approximation, under the working covariance model.
 
-In contrast, the approach developed by \citet{McCaffrey2001generalizations} is to instead estimate the degrees of freedom of the t-test using a Satterthwaite approximation \citep{Satterthwaite1946approximate}.
-This approach compares $Z$ to a $t$ reference distribution, with degrees of freedom $\nu$ that are estimated from the data. 
-Theoretically, the degrees of freedom should be 
+The t-test developed by \citet{Bell2002bias} involves using a $t(\nu)$ references distribution with degrees of freedom estimated by a Satterthwaite approximation.
+The Satterthwaite approximation \citep{Satterthwaite1946approximate} entails using degrees of freedom that are a function of the the first two moments of the sampling distribution of $\bm{c}' \bm{V}^{CR} \bm{c}$.
+Theoretically, these degrees of freedom should be 
 \begin{equation}
 \label{eq:nu_Satterthwaite}
 \nu = \frac{2\left[\E\left(\bm{c}'\bm{V}^{CR2}\bm{c}\right)\right]^2}{\Var\left(\bm{c}'\bm{V}^{CR2}\bm{c}\right)}.
@@ -290,23 +280,30 @@ Theoretically, the degrees of freedom should be
 Expressions for the first two moments of $\bm{c}'\bm{V}^{CR2}\bm{c}$ can be derived under the assumption that the errors $\bs\epsilon_1,...,\bs\epsilon_m$ are normally distributed; see Appendix \ref{app:VCR_dist}. 
 
 In practice, both moments involve the variance structure $\bs\Sigma$, which is unknown. 
-\citet{McCaffrey2001generalizations} proposed to estimate the moments based on the same working model as used to derive the adjustment matrices. 
-A ``model-based'' estimate of the degrees of freedom is then calculated as 
+\citet{Bell2002bias} proposed to estimate the moments based on the same working model as used to derive the adjustment matrices. 
+This ``model-based'' estimate of the degrees of freedom is then calculated as 
 \begin{equation}
-\nu_{M} = \frac{\left(\sum_{j=1}^m \bm{s}_j' \hat{\bs\Phi} \bm{s}_j\right)^2}{\sum_{i=1}^m \sum_{j=1}^m \left(\bm{s}_i' \hat{\bs\Phi} \bm{s}_j\right)^2},
+\nu_{M} = \frac{\left(\sum_{j=1}^m \bm{p}_j' \hat{\bs\Phi} \bm{p}_j\right)^2}{\sum_{i=1}^m \sum_{j=1}^m \left(\bm{p}_i' \hat{\bs\Phi} \bm{p}_j\right)^2},
 \end{equation}
-where $\bm{s}_j = \left(\bm{I} - \bm{H}\right)_j'\bm{A}_j'\bm{W}_j\bm{X}_j\bm{M}\bm{c}$. 
-Alternately, for any of the CRVEs one could instead use an empirical estimate of the degrees of freedom, constructed by substituting $\bm{e}_j \bm{e}_j'$ in place of $\bs\Sigma_j$. 
-However, \citet{Bell2002bias} found using simulation that the plug-in degrees of freedom estimate produced very conservative rejection rates. 
+where $\bm{p}_j = \left(\bm{I} - \bm{H_X}\right)_j'\bm{A}_j \bm{W}_j\bm{\ddot{R}}_j\bm{M_{\ddot{R}}} \bm{c}$.\todo{Can we use $\bm{H_{\ddot{U}}}$ here instead?} 
+Alternately, for any of the CRVEs one could instead use an ``empirical'' estimate of the degrees of freedom, constructed by substituting $\bm{e}_j \bm{e}_j'$ in place of $\bs\Sigma_j$. 
+However, \citet{Bell2002bias} found using simulation that this plug-in degrees of freedom estimate led to very conservative rejection rates. 
 
-The \citet{McCaffrey2001generalizations} approach has been shown to perform well in a variety of conditions (CITE simulation studies). These studies encompass a variety of data generation processes and covariate types. Importantly, a key finding is that the degrees of freedom depend not only on the number of clusters $m$, but also on features of the covariates. When the covariate is balanced -- as occurs in balanced panels with a dichotomous covariate with the same proportion of ones in each cluster -- the degrees of freedom are $m - 1$ even in small samples. However, when the covariate exhibits large imbalances -- as occurs when the panel is not balanced or if the proportion of ones varies considerably from cluster to cluster -- these degrees of freedom can be tremendously smaller. Similarly, covariates with large leverage points can exhibit similar losses in terms of degrees of freedom. The result is that the small-sample corrections are required even when the number of clusters seems large, suggesting that this CR2 t-test be applied as a default in all CRVE based analyses. 
+The \citet{Bell2002bias} approach has been shown to perform well in a variety of conditions (CITE simulation studies). 
+These studies encompass a variety of data generation processes and covariate types. 
+A key finding is that the degrees of freedom depend not only on the number of clusters $m$, but also on features of the covariates. 
+When the covariate is balanced across clusters---as occurs in balanced panels with a dichotomous covariate with the same proportion of ones in each cluster---the degrees of freedom are $m - 1$ even in small samples. 
+However, when the covariate exhibits large imbalances---as occurs when the panel is not balanced or if the proportion of ones varies from cluster to cluster---the degrees of freedom can be considerably smaller. 
+Similarly, covariates with large leverage points will tend to exhibit lower of degrees of freedom. 
+Because the degrees of freedom are covariate-dependent, it is not possible to assess whether a small-sample correction is needed based solely on the total number of clusters in the data. 
+Consequently, we recommend that t-tests based on CRVE should routinely use the CR2 variance estimator and the Satterthwaite degrees of freedom, regardless even when $m$ appears to be large.
 
 \subsection{Small-sample corrections for F-tests}
 
-Compared to single-constraint tests, fewer approaches to small-sample correction are available for multiple-constraint tests. 
-A simple correction, analogous to the CR1 for t-tests, would be to compare $Q / q$ to an $F(q, m - 1)$ reference distribution. 
+Little extant research has considered small-sample corrections for multiple-constraint hypothesis tests based on robust Wald statistics.
+A simple correction, analogous to the CR1 for t-tests, would be to compare $Q / q$ to an $F(q, m - 1)$ reference distribution.\todo{We already said this.} 
 As we will show in our simulation study, like the t-test case, this test tends to be overly liberal. 
-The ideal adjustment, therefore, would be to determine empirically the degrees of freedom of the $F$ distribution using an approach similar to that for the BRL t-test. In the broad literature, several small-sample corrections for multiple-constraint Wald tests of this form have been proposed. 
+The ideal adjustment\todo{Why ideal? Doesn't matter if it's an F, as long as it works, no?}, therefore, would be to determine empirically the degrees of freedom of the $F$ distribution using an approach similar to that for the BRL t-test. In the broad literature, several small-sample corrections for multiple-constraint Wald tests of this form have been proposed. 
 While this broader literature includes methods based on spectral decomposition (CITE), as well as several methods based on the Wishart distribution (which we focus in on here), we ultimately focus here on the development of a single test that performs well under a vareity of conditions (see Tipton Pustejovsky 2015). 
 
 Following the approach of \cite{Pan2002small}, who developed a similar method in the context of CRVE for generalized estimating equations, the method we propose ivolves approximating the distribution of $\bm{C}\bm{V}^{CR2} \bm{C}'$ by a multiple of a Wishart distribution. From this it follows that $Q$ approximately follows a multiple of an F distribution. Specifically, if $\eta \bm{C}\bm{V}^{CR2} \bm{C}'$ approximately follows a Wishart distribution with $\eta$ degrees of freedom and scale matrix $\bm{C} \Var\left(\bm{C}\bs{\hat\beta}\right)\bm{C}'$, then 
@@ -323,11 +320,11 @@ In developing the test, we therefore borrow strategies from the literature on CR
 One approach, developed by \cite{Pan2002small}, is to use as degrees of freedom the value that minimizes the squared differences between the covariances among the entries of $\eta \bm{C}\bm{V}^{CR}\bm{C}'$ and the covariances of the Wishart distribution with $\eta$ degrees of freedom and scale matrix $\bm{C}\bm{V}^{CR}\bm{C}'$. Another approach, developed by \citet{Zhang2012two-wayANOVA, Zhang2012MANOVA, Zhang2013tests} in the context of heteroskedastic and multivariate analysis of variance models, is to instead match the mean and total variance of $\bm{C}\bm{V}^{CR}\bm{C}'$ (i.e., the sum of the variances of its entries), which avoids the need to calculate any covariances. In what follows we focus on this latter approach, which we find performs best in practice (see Tipton Pustejovsky 2015).
 
 Let $\bm{c}_1,...,\bm{c}_q$ denote the $p \times 1$ row-vectors of $\bm{C}$. 
-Let $\bm{t}_{sh} = \left(\bm{I} - \bm{H}\right)_h'\bm{A}_h'\bm{W}_h\bm{X}_h\bm{M}\bm{c}_s$ for $s = 1,...,q$ and $h = 1,...,m$. 
+Let $\bm{p}_{sh} = \left(\bm{I} - \bm{H}\right)_h'\bm{A}_h'\bm{W}_h\bm{X}_h\bm{M}\bm{c}_s$ for $s = 1,...,q$ and $h = 1,...,m$. 
 The degrees of freedom are then estimated under the working model as
 \begin{equation}
 \label{eq:eta_model}
-\eta_M = \frac{\sum_{s,t=1}^q \sum_{h,i=1}^m b_{st} \bm{t}_{sh}'\hat{\bs\Omega}\bm{t}_{th} \bm{t}_{si}'\hat{\bs\Omega}\bm{t}_{ti}}{\sum_{s,t=1}^q \sum_{h,i=1}^m \bm{t}_{sh}'\hat{\bs\Omega}\bm{t}_{ti} \bm{t}_{sh}'\hat{\bs\Omega}\bm{t}_{ti} + \bm{t}_{sh}'\hat{\bs\Omega}\bm{t}_{si} \bm{t}_{th}'\hat{\bs\Omega}\bm{t}_{ti}},
+\eta_M = \frac{\sum_{s,t=1}^q \sum_{h,i=1}^m b_{st} \bm{p}_{sh}'\hat{\bs\Omega}\bm{p}_{th} \bm{p}_{si}'\hat{\bs\Omega}\bm{p}_{ti}}{\sum_{s,t=1}^q \sum_{h,i=1}^m \bm{p}_{sh}'\hat{\bs\Omega}\bm{p}_{ti} \bm{p}_{sh}'\hat{\bs\Omega}\bm{p}_{ti} + \bm{p}_{sh}'\hat{\bs\Omega}\bm{p}_{si} \bm{p}_{th}'\hat{\bs\Omega}\bm{p}_{ti}},
 \end{equation}
 where $b_{st} = 1 + (s=t)$ for $s,t=1,..,q$.
 Note that $\eta_M$ reduces to $\nu_M$ if $q = 1$.
@@ -373,7 +370,7 @@ Now, observe that $\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \left(\bm{I} - \bm{
 &= \bm{\ddot{R}}_j' \bm{W}_j \bm{D}_j \bm{V}\bm{V}' \bm{D}_j' \bm{W}_j \bm{\ddot{R}}_j. 
 \end{align}
 
-Because $\bm{D}_j$, and $\bs\Phi$ are positive definite and $\bm{B}_j$ is symmetric, the eigenvectors $\bm{V}$ define an orthogonal basis for the column span of $\left(\bm{I} - \bm{H_{\ddot{U}}}\right)_j$.\todo{Cite Bannerjee and Roy} 
+Because $\bm{D}_j$, and $\bs\Phi$ are positive definite and $\bm{B}_j$ is symmetric, the eigenvectors $\bm{V}$ define an orthonormal basis for the column span of $\left(\bm{I} - \bm{H_{\ddot{U}}}\right)_j$.\todo{CITATION?} 
 We now show that $\bm{\ddot{U}}_j$ is in the column space of $\left(\bm{I} - \bm{H_X}\right)_j$. 
 Let $\bm{Z}_j$ be an $n_j \times (r + s)$ matrix of zeros. 
 Let $\bm{Z}_k = - \bm{\ddot{U}}_k \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1}$, for $k \neq j$ and take $\bm{Z} = \left(\bm{Z}_1',...,\bm{Z}_m'\right)'$. 
@@ -440,22 +437,22 @@ and so $\bm{B}_j^+ = \bm{\tilde{B}}_j^+$. It follows that $\bm{A}_j = \bm{\tilde
 
 The small-sample approximations for t-tests and F-tests both involve the distribution of the entries of $\bm{V}^{CR2}$. This appendix explains the relevant distribution theory.
 
-First, note that the CR2 estimator can be written in the form $\bm{V}^{CR2} = \sum_{j=1}^M \bm{T}_j \bm{e}_j \bm{e}_j' \bm{T}_j'$ for $p \times n_j$ matrices $\bm{T}_j = \bm{M} \bm{X}_j' \bm{W}_j \bm{A}_j$.
+First, note that any of the CR estimatosr can be written in the form $\bm{V}^{CR2} = \sum_{j=1}^M \bm{P}_j \bm{e}_j \bm{e}_j' \bm{P}_j'$ for $r \times n_j$ matrices $\bm{P}_j = \bm{M_{\ddot{R}}} \bm{\ddot{R}}_j' \bm{W}_j \bm{A}_j$.
 Let $\bm{c}_1,\bm{c}_2,\bm{c}_3,\bm{c}_4$ be fixed, $p \times 1$ vectors and consider the linear combination $\bm{c}_1' \bm{V}^{CR2} \bm{c}_2$. 
-\citet[Theorem 4]{Bell2002bias} show that the linear combination is a quadratic form in $\bm{Y}$: \[
-\bm{c}_1' \bm{V}^{CR2} \bm{c}_2 = \bm{Y}'\left(\sum_{j=1}^m \bm{t}_{2j} \bm{t}_{1j}'\right) \bm{Y}, \]
-for $N \times 1$ vectors $\bm{t}_{sh} = \left(\bm{I} - \bm{H}\right)_h' \bm{T}_h' \bm{c}_s$, $s = 1,...,4$, and $h = 1,...,m$. 
+\citet[Theorem 4]{Bell2002bias} show that the linear combination is a quadratic form in $\bm{y}$: \[
+\bm{c}_1' \bm{V}^{CR2} \bm{c}_2 = \bm{y}'\left(\sum_{j=1}^m \bm{p}_{2j} \bm{p}_{1j}'\right) \bm{y}, \]
+for $N \times 1$ vectors $\bm{p}_{sh} = \left(\bm{I} - \bm{H_X}\right)_h' \bm{P}_h' \bm{c}_s$, $s = 1,...,4$, and $h = 1,...,m$. 
 
-Standard results regarding quadratic forms can be used to derive the moments of the linear combination. We now assume that $\bs\epsilon_1,...,\bs\epsilon_m$ are multivariate normal with zero mean and variance $\bs\Sigma$. It follows that 
+Standard results regarding quadratic forms can be used to derive the moments of the linear combination \citep[e.g.,][Sec. 13.5]{Searle2006matrix}. We now assume that $\bs\epsilon_1,...,\bs\epsilon_m$ are multivariate normal with zero mean and variance $\bs\Sigma$. It follows that 
 \begin{align}
 \label{eq:CRVE_expectation}
-\E\left(\bm{c}_1' \bm{V}^{CR2} \bm{c}_2\right) &= \sum_{j=1}^m \bm{t}_{1j}' \bs\Sigma \bm{t}_{2j} \\
+\E\left(\bm{c}_1' \bm{V}^{CR2} \bm{c}_2\right) &= \sum_{j=1}^m \bm{p}_{1j}' \bs\Sigma \bm{p}_{2j} \\
 \label{eq:CRVE_variance}
-\Var\left(\bm{c}_1' \bm{V}^{CR2} \bm{c}_2\right) &= \sum_{i=1}^m \sum_{j=1}^m \left(\bm{t}_{1i}' \bs\Sigma \bm{t}_{2j}\right)^2 + \bm{t}_{1i}' \bs\Sigma \bm{t}_{1j} \bm{t}_{2i}' \bs\Sigma \bm{t}_{2j} \\
+\Var\left(\bm{c}_1' \bm{V}^{CR2} \bm{c}_2\right) &= \sum_{i=1}^m \sum_{j=1}^m \left(\bm{p}_{1i}' \bs\Sigma \bm{p}_{2j}\right)^2 + \bm{p}_{1i}' \bs\Sigma \bm{p}_{1j} \bm{p}_{2i}' \bs\Sigma \bm{p}_{2j} \\
 \label{eq:CRVE_covariance}
-\Cov\left(\bm{c}_1' \bm{V}^{CR2} \bm{c}_2, \bm{c}_3' \bm{V}^{CR} \bm{c}_4\right) &= \sum_{i=1}^m \sum_{j=1}^m \bm{t}_{1i}' \bs\Sigma \bm{t}_{4j} \bm{t}_{2i}' \bs\Sigma \bm{t}_{3j} + \bm{t}_{1i}' \bs\Sigma \bm{t}_{3j} \bm{t}_{2i}' \bs\Sigma \bm{t}_{4j}.
+\Cov\left(\bm{c}_1' \bm{V}^{CR2} \bm{c}_2, \bm{c}_3' \bm{V}^{CR} \bm{c}_4\right) &= \sum_{i=1}^m \sum_{j=1}^m \bm{p}_{1i}' \bs\Sigma \bm{p}_{4j} \bm{p}_{2i}' \bs\Sigma \bm{p}_{3j} + \bm{p}_{1i}' \bs\Sigma \bm{p}_{3j} \bm{p}_{2i}' \bs\Sigma \bm{p}_{4j}.
 \end{align}
-Furthermore, the distribution of $\bm{c}_1' \bm{V}^{CR2} \bm{c}_2$ can be expressed as a weighted sum of $\chi^2_1$ distributions, with weights given by the eigen-values of the $m \times m$ matrix with $\left(i,j\right)^{th}$ entry $\bm{t}_{1i}' \bs\Sigma \bm{t}_{2j}$, $i,j=1,...,m$.
+Furthermore, the distribution of $\bm{c}_1' \bm{V}^{CR2} \bm{c}_2$ can be expressed as a weighted sum of $\chi^2_1$ distributions \citep{mathai1992quadratic}, with weights given by the eigen-values of the $m \times m$ matrix with $\left(i,j\right)^{th}$ entry $\bm{p}_{1i}' \bs\Sigma \bm{p}_{2j}$, $i,j=1,...,m$.
 
 \bibliographystyle{agsm}
 \bibliography{bibliography}

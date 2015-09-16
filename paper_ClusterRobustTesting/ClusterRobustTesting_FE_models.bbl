@@ -5,6 +5,11 @@ Angrist, J.~D. \harvardand\ Pischke, J.  \harvardyearleft 2009\harvardyearright
   , {\em {Mostly harmless econometrics: An empiricist's companion}}, Princeton
   University Press, Princeton, NJ.
 
+\harvarditem{Banerjee \harvardand\ Roy}{2014}{Banerjee2014linear}
+Banerjee, S. \harvardand\ Roy, A.  \harvardyearleft 2014\harvardyearright ,
+  {\em {Linear Algebra and Matrix Analysis for Statistics}}, Taylor \& Francis,
+  Boca Raton, FL.
+
 \harvarditem{Bell \harvardand\ McCaffrey}{2002}{Bell2002bias}
 Bell, R.~M. \harvardand\ McCaffrey, D.~F.  \harvardyearleft
   2002\harvardyearright , `{Bias reduction in standard errors for linear
@@ -49,17 +54,21 @@ Ibragimov, R. \harvardand\ M\"{u}ller, U.~K.  \harvardyearleft
   robust inference}', {\em Journal of Business \& Economic Statistics} {\bf
   28}(4),~453--468.
 
-\harvarditem{{\em {Longitudinal data analysis using generalized linear
-  models}}}{1986}{Liang1986longitudinal}
-{\em {Longitudinal data analysis using generalized linear models}}
-  \harvardyearleft 1986\harvardyearright , {\em Biometrika} {\bf
-  73}(1),~13--22.
+\harvarditem{Liang \harvardand\ Zeger}{1986}{Liang1986longitudinal}
+Liang, K.-Y. \harvardand\ Zeger, S.~L.  \harvardyearleft 1986\harvardyearright
+  , `{Longitudinal data analysis using generalized linear models}', {\em
+  Biometrika} {\bf 73}(1),~13--22.
 
 \harvarditem{MacKinnon \harvardand\ White}{1985}{MacKinnon1985some}
 MacKinnon, J.~G. \harvardand\ White, H.  \harvardyearleft 1985\harvardyearright
   , `{Some heteroskedasticity-consistent covariance matrix estimators with
   improved finite sample properties}', {\em Journal of Econometrics} {\bf
   29},~305--325.
+
+\harvarditem{Mathai \harvardand\ Provost}{1992}{mathai1992quadratic}
+Mathai, A.~M. \harvardand\ Provost, S.~B.  \harvardyearleft
+  1992\harvardyearright , {\em {Quadratic forms in random variables: theory and
+  applications}}, M. Dekker, New York.
 
 \harvarditem[McCaffrey et~al.]{McCaffrey, Bell \harvardand\
   Botts}{2001}{McCaffrey2001generalizations}
@@ -78,6 +87,10 @@ Pan, W. \harvardand\ Wall, M.~M.  \harvardyearleft 2002\harvardyearright ,
 Satterthwaite, F.~E.  \harvardyearleft 1946\harvardyearright , `{An approximate
   distribution of estimates of variance components}', {\em Biometrics bulletin}
   {\bf 2}(6),~110--114.
+
+\harvarditem{Searle}{2006}{Searle2006matrix}
+Searle, S.~R.  \harvardyearleft 2006\harvardyearright , {\em {Matrix Algebra
+  Useful for Statistics}}, john wiley edn, Hoboken, NJ.
 
 \harvarditem{Tipton \harvardand\ Pustejovsky}{forthcoming}{Tipton2015small}
 Tipton, E. \harvardand\ Pustejovsky, J.~E.  \harvardyearleft
