@@ -214,7 +214,7 @@ Each of these are of the form
 for some $n_j$ by $n_j$ adjustment matrix $\bm{A}_j$. 
 The form of these adjustments parallels those of the heteroscedastity-consistent (HC) variance estimators proposed by \citet*{MacKinnon1985some}. 
 Setting $\bm{A}_j = \bm{I}_j$, an $n_j \times n_j$ identity matrix, results in the most basic form, described by \citet{Liang1986longitudinal}. 
-Following Cameron and Miller (2015), we refer to this estimator as $\bm{V}^{CR0}$. 
+Following \citet{Cameron2015practitioners}, we refer to this estimator as $\bm{V}^{CR0}$. 
 Setting $\bm{A}_j = c\bm{I}_j$, where $c = \sqrt{(m/(m-1))(N/(N - p))}$, results in a slightly larger estimator, denoted $\bm{V}^{CR1}$.
 Note that when $N >> p$, $c \approx \sqrt{m/(m-1)}$, and some software uses the latter approximation.
 Both the CR0 and CR1 estimators rely on asymptotic properties of the residuals in order to consistently estimate $\bs\Sigma_j$. 
@@ -222,7 +222,7 @@ The correction constant used in the CR1 estimator does not depend on $\bm{X}_j$,
 
 Several further small-sample corrections for CRVE do account for features of the covariates.
 The BRL approach (described in the next section) is an extension of the HC2 estimator for regressions with heteroskedastic but uncorrelated errors; we therefore refer to it as CR2. 
-A further alternative is CR3, which uses adjustment matrices given by $\bm{A}_j = \left(\bm{I} - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j'\bm{W}_j\right)^{-1}$. The CR3 estimator closely approximates the jackknife re-sampling variance estimator. 
+A further alternative is CR3, which uses adjustment matrices given by $\bm{A}_j = \left(\bm{I} - \bm{\ddot{R}}_j \bm{M_{\ddot{R}}}\bm{\ddot{R}}_j'\bm{W}_j\right)^{-1}$. The CR3 estimator closely approximates the jackknife re-sampling variance estimator \citep{Bell2002bias, Mancl2001covariance}. 
 
 \section{BIAS REDUCED LINEARIZATION}
 \label{sec:BRL}
@@ -277,18 +277,20 @@ The remainder of the paper considers hypothesis testing procedures based on the 
 \section{HYPOTHESIS TESTING}
 \label{sec:testing}
 
-Wald-type test statistics based on CRVEs are often used to test hypotheses regarding the coefficients in the regression specification. 
+Wald-type test statistics based on CRVEs are often used to test hypotheses regarding the coefficients of the regression specification. 
 Such procedures are justified based on the asymptotic behavior of robust Wald statistics as the number of clusters grows large (i.e., as $m \to \infty$). 
 However, evidence from a wide variety of contexts indicates that the asymptotic limiting distribution can be a very poor approximation when the number of clusters is small, even when small-sample corrections such as CR2 are employed \citep{Bell2002bias, Bertrand2004how, Cameron2008bootstrap}. 
 Furthermore, the accuracy of asymptotic approximations depends on design features such as the degree of imbalance in the covariates, skewness of the covariates, and similarity of cluster sizes \citep{McCaffrey2001generalizations, Tipton2015small, Webb2013wild}. 
 Consequently, no simple rule-of-thumb exists for what constitutes an adequate sample size to trust the asymptotic test. 
+This provides motivation for development of general-purpose hypothesis testing procedures that have accurate rejection rates in small samples.
 
 We will consider linear constraints on $\bs\beta$, where the null hypothesis has the form $H_0: \bm{C}\bs\beta = \bm{d}$ for fixed $q \times r$ matrix $\bm{C}$ and $q \times 1$ vector $\bm{d}$. 
-For a general CRVE estimator, the Wald statistic  is then
+The cluster-robust Wald statistic  is then
 \begin{equation}
 \label{eq:Wald_stat}
-Q = \left(\bm{C}\bs{\hat\beta} - \bm{d}\right)'\left(\bm{C} \bm{V}^{CR} \bm{C}'\right)^{-1}\left(\bm{C}\bs{\hat\beta} - \bm{d}\right).
+Q = \left(\bm{C}\bs{\hat\beta} - \bm{d}\right)'\left(\bm{C} \bm{V}^{CR} \bm{C}'\right)^{-1}\left(\bm{C}\bs{\hat\beta} - \bm{d}\right),
 \end{equation}
+where $\bm{V}^{CR}$ is any of the cluster-robust estimators described above.
 The asymptotically valid Wald test rejects $H_0$ at level $\alpha$ if $Q$ exceeds $\chi^2(\alpha; q)$, the $\alpha$ critical value from a chi-squared distribution with $q$ degrees of freedom. \todo{Citations to evidence that asymptotic test is way too liberal?} 
 When the number of clusters is small, it is common to instead use the test statistic $F = Q/q$, compared to the $F(q, m - 1)$ reference distribution.\todo{Is this really standard?} 
 
@@ -298,16 +300,16 @@ We then propose a method for testing more general, $q$-dimensional linear hypoth
 \subsection{Small-sample corrections for t-tests}
 
 Consider testing the hypothesis $H_0: \bm{c}'\bs\beta = 0$ for some fixed $r \times 1$ contrast vector. 
-For this one-dimensional constraint, an equivalent to the Wald F test is to use the test statistic $Z = \bm{c}'\bs{\hat\beta} / \sqrt{\bm{c}'\bm{V}^{CR}\bm{c}}$, which follows a standard normal in large samples. 
+For this one-dimensional constraint, an equivalent to the Wald F test is to use the test statistic $Z = \bm{c}'\bs{\hat\beta} / \sqrt{\bm{c}'\bm{V}^{CR}\bm{c}}$, which follows a standard normal distribution in large samples. 
 In small samples, it is common to instead approximate the distribution of $Z$ by a $t(m - 1)$ distribution. 
-\citet{Hansen2007asymptotic} provided one justification for the use of a $t(m-1)$ reference distribution by identifying conditions under which $Z$ converges in distribution to $t(m-1)$ as the within-cluster sample sizes grow large, with $m$ fixed \citep[see also][]{Donald2007inference}. 
+\citet{Hansen2007asymptotic} provided one justification for the use of this reference distribution by identifying conditions under which $Z$ converges in distribution to $t(m-1)$ as the within-cluster sample sizes grow large, with $m$ fixed \citep[see also][]{Donald2007inference}. 
 \citet{Ibragimov2010tstatistic} proposed a weighting technique derived so that that $t(m-1)$ critical values would be conservative (leading to rejection rates less than or equal to $\alpha$).
 However, both of these arguments require that $\bm{c}'\bs\beta$ be separately identified within each cluster. 
 Outside of these circumstances, using $t(m-1)$ critical values can still lead to over-rejection \citep{Cameron2015practitioners}. 
-Furthermore, this correction does not take into account that the distribution of $\bm{V}^{CR}$ is affected by the structure of the covariate matrix. 
+Furthermore, using these critical values does not take into account that the distribution of $\bm{V}^{CR}$ is affected by the structure of the covariate matrix. 
 An alternative, proposed by \citet{Bell2002bias}, is to approximate the distribution of $Z$ by a $t$ distribution with degrees of freedom determined by a Satterthwaite approximation, under the working covariance model.
 
-The t-test developed by \citet{Bell2002bias} involves using a $t(\nu)$ references distribution with degrees of freedom estimated by a Satterthwaite approximation.
+The t-test developed by \citet{Bell2002bias} involves using a $t(\nu)$ references distribution with degrees of freedom $\nu$, which are estimated by a Satterthwaite approximation.
 The Satterthwaite approximation \citep{Satterthwaite1946approximate} entails using degrees of freedom that are a function of the the first two moments of the sampling distribution of $\bm{c}' \bm{V}^{CR} \bm{c}$.
 Theoretically, these degrees of freedom should be 
 \begin{equation}
@@ -317,9 +319,10 @@ Theoretically, these degrees of freedom should be
 Expressions for the first two moments of $\bm{c}'\bm{V}^{CR2}\bm{c}$ can be derived under the assumption that the errors $\bs\epsilon_1,...,\bs\epsilon_m$ are normally distributed; see Appendix \ref{app:VCR_dist}. 
 
 In practice, both moments involve the variance structure $\bs\Sigma$, which is unknown. 
-\citet{Bell2002bias} proposed to estimate the moments based on the same working model as used to derive the adjustment matrices. 
+\citet{Bell2002bias} proposed to estimate the moments based on the same working model that is used to derive the adjustment matrices. 
 This ``model-based'' estimate of the degrees of freedom is then calculated as 
 \begin{equation}
+\label{eq:nu_model}
 \nu_{M} = \frac{\left(\sum_{j=1}^m \bm{p}_j' \hat{\bs\Phi} \bm{p}_j\right)^2}{\sum_{i=1}^m \sum_{j=1}^m \left(\bm{p}_i' \hat{\bs\Phi} \bm{p}_j\right)^2},
 \end{equation}
 where $\bm{p}_j = \left(\bm{I} - \bm{H_X}\right)_j'\bm{A}_j \bm{W}_j\bm{\ddot{R}}_j\bm{M_{\ddot{R}}} \bm{c}$.\todo{Can we use $\bm{H_{\ddot{U}}}$ here instead?} 
@@ -342,45 +345,37 @@ Consequently, we recommend that t-tests based on CRVE should routinely use the C
 
 \subsection{Small-sample corrections for F-tests}
 
-Little extant research has considered small-sample corrections for multiple-constraint hypothesis tests based on cluster-robust Wald statistics.
-A simple correction, analogous to the CR1 for t-tests, would be to compare $Q / q$ to an $F(q, m - 1)$ reference distribution.\todo{We already said this.} 
-As we will show in our simulation study, like the t-test case, this test tends to be overly liberal. 
-
-We now consider an alternative approach that approximates the distribution of $Q / q$ by a multiple of an F distribution with degrees of freedom estimated based on the working variance model. 
-Specifically, we approximate the distribution of $\bm{C}\bm{V}^{CR2} \bm{C}'$ by a Wishart distribution with estimated degrees of freedom.
-The sampling distribution of $Q$ is then approximated by a multiple of an $F$ distribution. 
-This approach is conceptually similar to the Satterthwaite approximation for one-dimensional constraints and reduces to it if $q = 1$. 
-For $q > 1$, however, it entails a further step in the approximation\todo{What am I trying to say here?} that arise from approximating the multivariate distribution of $\bm{V}^{CR2}$, rather than the univariate distribution of a single component. 
-
-Although not previously considered for Wald tests based on CRVE, the strategy of approximating the distribution of $\bm{V}^{CR2}$ by a Wishart does have some precedents  and has been found to perform well for some simpler models that are to special cases of CRVE. 
-
-In the broad literature, several small-sample corrections for multiple-constraint Wald tests of this form have been proposed. 
-While this broader literature includes methods based on spectral decomposition (CITE), as well as several methods based on the Wishart distribution (which we focus in on here), we ultimately focus here on the development of a single test that performs well under a vareity of conditions (see Tipton Pustejovsky 2015). 
-
-Following the approach of \cite{Pan2002small}, who developed a similar method in the context of CRVE for generalized estimating equations, the method we propose ivolves approximating the distribution of $\bm{C}\bm{V}^{CR2} \bm{C}'$ by a multiple of a Wishart distribution. From this it follows that $Q$ approximately follows a multiple of an F distribution. Specifically, if $\eta \bm{C}\bm{V}^{CR2} \bm{C}'$ approximately follows a Wishart distribution with $\eta$ degrees of freedom and scale matrix $\bm{C} \Var\left(\bm{C}\bs{\hat\beta}\right)\bm{C}'$, then 
+Little research has considered small-sample corrections for multiple-constraint hypothesis tests based on cluster-robust Wald statistics. 
+We now propose an approach that approximates the distribution of $Q / q$ by a multiple of an F distribution with degrees of freedom estimated based on the working variance model. 
+The sampling distribution of $Q$ is then approximated by Hotelling's $T^2$ distribution, a multiple of an $F$ distribution. 
+Specifically, suppose that $\eta \bm{C}\bm{V}^{CR2} \bm{C}'$ approximately follows a Wishart distribution with $\eta$ degrees of freedom and scale matrix $\bm{C} \Var\left(\bs{\hat\beta}\right)\bm{C}'$, then 
 \begin{equation}
 \label{eq:AHT}
 \left(\frac{\eta - q + 1}{\eta q}\right) Q \ \dot\sim \ F(q, \eta - q + 1).
 \end{equation}
-We will refer to this as the approximate Hotelling's $T^2$ (AHT) test, and the remainder of this section will develop this test in greater detail.
+We will refer to this as the approximate Hotelling's $T^2$ (AHT) test.
+We consider how to estimate $\eta$ below.
+This approach is conceptually similar to the Satterthwaite approximation for one-dimensional constraints and reduces to it if $q = 1$. 
+For $q > 1$, however, it entails a further step in the approximation\todo{What am I trying to say here?} that arise from approximating the multivariate distribution of $\bm{V}^{CR2}$, rather than the univariate distribution of a single component. 
 
-Just as in the t-test case, our goal is to develop a strategy to estimate the degrees of freedom of this F-test (through the parameter $\eta$). 
-To do so, we estimate the degrees of freedom of the Wishart distribution so that they match the mean and variance of $\bm{C}\bm{V}^{CR} \bm{C}'$. 
-A problem that arises in doing so is that when $q > 1$ it is not possible to exactly match both moments. 
-In developing the test, we therefore borrow strategies from the literature on CRVE found more broadly. 
-One approach, developed by \cite{Pan2002small}, is to use as degrees of freedom the value that minimizes the squared differences between the covariances among the entries of $\eta \bm{C}\bm{V}^{CR}\bm{C}'$ and the covariances of the Wishart distribution with $\eta$ degrees of freedom and scale matrix $\bm{C}\bm{V}^{CR}\bm{C}'$. Another approach, developed by \citet{Zhang2012two-wayANOVA, Zhang2012MANOVA, Zhang2013tests} in the context of heteroskedastic and multivariate analysis of variance models, is to instead match the mean and total variance of $\bm{C}\bm{V}^{CR}\bm{C}'$ (i.e., the sum of the variances of its entries), which avoids the need to calculate any covariances. In what follows we focus on this latter approach, which we find performs best in practice (see Tipton Pustejovsky 2015).
+Although not previously considered for Wald tests based on CRVE, the strategy of approximating the distribution of a robust variance estimator by a Wishart has been studied for some simpler models that are to special cases of CRVE. \citet{Zhang2013tests, Zhang2012twowayANOVA} described an AHT test for contrasts in analysis of variance models with unequal within-cell variance, which are particularly simple cases of linear models with heteroskedastic error terms. \citet{Zhang2012MANOVA} extended the method to multivariate analysis of variance models where the covariance of the errors differs across cells, a special case of model (\ref{eq:fixed_effects}) in which the CR2 variance estimator has a particularly simple form. In all of these cases, Zhang demonstrated that the robust variance estimator is a mixture of Wishart distributions that is well-approximated by a Wishart distribution with estimated degrees of freedom. Additionally, \citet{Pan2002small} described an F-test based on CR0 for use in GEE models, which also uses the Wishart approximation to the distribution of $\bm{V}^{CR}$ but estimates the degrees of freedom using a different method than the one we describe below.
+
+The contribution of the present paper is to extend the AHT test to the more general setting of linear models with fixed effects. The remaining question is how to estimate the parameter $\eta$, which determines scalar multiplier and demoninator degrees of freedom of the F-test. 
+To do so, we estimate the degrees of freedom of the Wishart distribution so that they match the mean and variance of $\bm{C}\bm{V}^{CR} \bm{C}'$ under the working variance model $\bs\Phi$, just as in the degrees of freedom for the t-test. 
+The problem that arises in doing so is that when $q > 1$ it is not possible to exactly match both moments. 
+\cite{Pan2002small} proposed to choose $\eta$ to minimize the squared differences between the covariances among the entries of $\eta \bm{C}\bm{V}^{CR}\bm{C}'$ and the covariances of the Wishart distribution with $\eta$ degrees of freedom and scale matrix $\bm{C}\bm{V}^{CR}\bm{C}'$. \citet{Zhang2012MANOVA} instead matches the mean and total variance of $\bm{C}\bm{V}^{CR}\bm{C}'$ (i.e., the sum of the variances of its entries), which avoids the need to calculate any covariances. In what follows we focus on this latter approach, which we have found to perform better in practice \citep{Tipton2015small}.
 
 Let $\bm{c}_1,...,\bm{c}_q$ denote the $p \times 1$ row-vectors of $\bm{C}$. 
 Let $\bm{p}_{sh} = \left(\bm{I} - \bm{H}\right)_h'\bm{A}_h'\bm{W}_h\bm{X}_h\bm{M}\bm{c}_s$ for $s = 1,...,q$ and $h = 1,...,m$. 
 The degrees of freedom are then estimated under the working model as
 \begin{equation}
 \label{eq:eta_model}
-\eta_M = \frac{\sum_{s,t=1}^q \sum_{h,i=1}^m b_{st} \bm{p}_{sh}'\hat{\bs\Omega}\bm{p}_{th} \bm{p}_{si}'\hat{\bs\Omega}\bm{p}_{ti}}{\sum_{s,t=1}^q \sum_{h,i=1}^m \bm{p}_{sh}'\hat{\bs\Omega}\bm{p}_{ti} \bm{p}_{sh}'\hat{\bs\Omega}\bm{p}_{ti} + \bm{p}_{sh}'\hat{\bs\Omega}\bm{p}_{si} \bm{p}_{th}'\hat{\bs\Omega}\bm{p}_{ti}},
+\eta_M = \frac{\sum_{s,t=1}^q \sum_{h,i=1}^m b_{st} \bm{p}_{sh}'\hat{\bs\Phi}\bm{p}_{th} \bm{p}_{si}'\hat{\bs\Phi}\bm{p}_{ti}}{\sum_{s,t=1}^q \sum_{h,i=1}^m \bm{p}_{sh}'\hat{\bs\Phi}\bm{p}_{ti} \bm{p}_{sh}'\hat{\bs\Phi}\bm{p}_{ti} + \bm{p}_{sh}'\hat{\bs\Phi}\bm{p}_{si} \bm{p}_{th}'\hat{\bs\Phi}\bm{p}_{ti}},
 \end{equation}
 where $b_{st} = 1 + (s=t)$ for $s,t=1,..,q$.
-Note that $\eta_M$ reduces to $\nu_M$ if $q = 1$.
+Note that $\eta_M$ reduces to $\nu_M$ from Equation (\ref{eq:nu_model}) if $q = 1$.
 
-This F-test shares features with the t-test developed by Bell and McCaffrey. Like the t-test, the degrees of freedom of this F-test depend non only on the number of clusters, but also on features of the covariates being tested. Again, these degrees of freedom can be much smaller than $m - 1$, and are particularly smaller when the covariates being tested exhibit high imbalances or leverage. Unlike the t-test case, however, in multi-parameter case, it is often more difficult to diagnose the cause of these small degrees of freedom. In some situations, however, these are straightforward extensions to the findings in t-tests. For example, if the goal is to test if there are differences across a four-arm treatment study, the degrees of freedom are largest (and close to $m - 1$) when the treatment is allocated equally across the four groups within each cluster. When the proportion varies across clusters, these degrees of freedom fall, often leading to degrees of freedom in the "small sample" territory even when the number of clusters is large. In the next section, we will illustrate these principles in a simulation study.
+This F-test shares features with the t-test developed by Bell and McCaffrey. Like the t-test, the degrees of freedom of this F-test depend non only on the number of clusters, but also on features of the covariates being tested. Again, these degrees of freedom can be much smaller than $m - 1$, and are particularly smaller when the covariates being tested exhibit high imbalances or leverage. Unlike the t-test case, however, in multi-parameter case, it is often more difficult to diagnose the cause of these small degrees of freedom. In some situations, however, these are straightforward extensions to the findings in t-tests. For example, if the goal is to test if there are differences across a four-arm treatment study, the degrees of freedom are largest (and close to $m - 1$) when the treatment is allocated equally across the four groups within each cluster.\todo{As in a block-randomized experiment, with all four treatment conditions in each block?} When the proportion varies across clusters, these degrees of freedom fall, often leading to degrees of freedom in the ``small sample'' territory even when the number of clusters is large. In the next section, we will illustrate these principles in several examples.
 
 \section{EXAMPLES}
 \label{subsec:examples_F}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  16 SEP 2015 20:51
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  18 SEP 2015 12:49
 entering extended mode
 **ClusterRobustTesting_FE_models.tex
 
@@ -8,10 +8,10 @@ LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
 croatian, czech, danish, dutch, esperanto, estonian, farsi, finnish, french, ga
-lician, german, german-x-2013-05-26, greek, gujarati, hindi, hungarian, iceland
+lician, german, german-x-2012-05-30, greek, gujarati, hindi, hungarian, iceland
 ic, indonesian, interlingua, irish, italian, kannada, kurmanji, latin, latvian,
  lithuanian, malayalam, marathi, mongolian, mongolianlmc, monogreek, ngerman, n
-german-x-2013-05-26, nynorsk, oriya, panjabi, pinyin, polish, portuguese, roman
+german-x-2012-05-30, nynorsk, oriya, panjabi, pinyin, polish, portuguese, roman
 ian, russian, sanskrit, serbian, slovak, slovenian, spanish, swedish, swissgerm
 an, tamil, telugu, turkish, turkmen, ukenglish, ukrainian, uppersorbian, usengl
 ishmax, welsh, loaded.
@@ -174,7 +174,7 @@ This is `epsf.tex' v2.7.4 <14 February 2011>
 Package: enumerate 1999/03/05 v3.00 enumerate extensions (DPC)
 \@enLab=\toks26
 )
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\apacite\apacite.sty"
+(C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\latex\apacite\apacite.sty
 Package: apacite 2013/07/21 v6.03 APA citation
 \c@BibCnt=\count102
 \bibleftmargin=\skip50
@@ -183,7 +183,7 @@ Package: apacite 2013/07/21 v6.03 APA citation
 \bibitemsep=\skip53
 \biblabelsep=\skip54
 )
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\natbib\natbib.sty"
+(C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\latex\natbib\natbib.sty
 Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibhang=\skip55
 \bibsep=\skip56
@@ -208,7 +208,7 @@ Package: xkeyval 2012/10/14 v2.6b package option processing (HA)
 \XKV@depth=\count104
 File: xkeyval.tex 2012/10/14 v2.6b key=value parser (HA)
 ))
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\xcolor\xcolor.sty"
+(C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\latex\xcolor\xcolor.sty
 Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\color.cfg"
@@ -525,7 +525,7 @@ LaTeX Info: Redefining \addtolength on input line 77.
 \c@thm=\count128
 \c@lem=\count129
 
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\upquote\upquote.sty"
+(C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\latex\upquote\upquote.sty
 Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verba
 tim
 )
@@ -544,7 +544,7 @@ LaTeX Font Info:    ... okay on input line 85.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 85.
 LaTeX Font Info:    ... okay on input line 85.
 
-("C:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
+(C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count130
 \scratchdimen=\dimen174
@@ -559,7 +559,7 @@ LaTeX Font Info:    ... okay on input line 85.
 \everyMPtoPDFconversion=\toks42
 )
 \c@maskedRefs=\count136
- ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\apacite\english.apc"
+ (C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\latex\apacite\english.apc
 File: english.apc 2013/07/21 v6.03 apacite language file
 LaTeX Info: Redefining \BPBI on input line 129.
 LaTeX Info: Redefining \BHBI on input line 130.
@@ -567,7 +567,7 @@ LaTeX Info: Redefining \BHBI on input line 130.
 ABD: EveryShipout initializing macros [1
 Non-PDF special ignored!
 
-{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
+{C:/Users/jep2963/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
 Overfull \hbox (27.76999pt too wide) in paragraph at lines 147--147
 [][][] 
  []
@@ -621,63 +621,63 @@ Overfull \hbox (27.76999pt too wide) in paragraph at lines 249--249
  []
 
 [6] [7] [8] [9]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 335--335
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 337--337
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 335--335
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 337--337
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 336--336
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 338--338
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 336--336
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 338--338
 [][][] 
  []
 
 
 LaTeX Warning: Marginpar on page 10 moved.
 
-[10]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 368--368
+[10] [11]
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 371--371
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 368--368
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 371--371
 [][][] 
  []
 
-[11]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 388--388
-[][][] 
- []
-
-
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 388--388
+[12]
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 402--402
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 390--390
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 402--402
+[][][] 
+ []
+
+[13]
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 421--421
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 390--390
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 421--421
 [][][] 
  []
 
-[12] [13]
+[14]
 Missing character: There is no â in font cmr12!
 Missing character: There is no € in font cmr12!
 Missing character: There is no “ in font cmr12!
- [14] [15]
+ [15]
 Missing character: There is no â in font cmr12!
 Missing character: There is no € in font cmr12!
 Missing character: There is no ™ in font cmr12!
@@ -685,45 +685,45 @@ Missing character: There is no â in font cmr12!
 Missing character: There is no € in font cmr12!
 Missing character: There is no ™ in font cmr12!
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 446--446
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 451--451
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 446--446
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 451--451
 [][][] 
  []
 
 [16] [17]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 510--510
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 515--515
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 510--510
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 515--515
 [][][] 
  []
 
 [18] [19]
-Overfull \hbox (17.21786pt too wide) in paragraph at lines 577--579
+Overfull \hbox (17.21786pt too wide) in paragraph at lines 582--584
 []\OT1/cmr/m/n/12 First, note that any of the CR es-ti-matosr can be writ-ten i
 n the form $\OT1/cmr/bx/n/12 V[] \OT1/cmr/m/n/12 = [][] \OT1/cmr/bx/n/12 P[]e[]
 e[]P[]$
  []
 
-
+[20]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
-bustTesting_FE_models.bbl [20] [21] [22]) [23]
+bustTesting_FE_models.bbl [21] [22]) [23]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting_FE_models.aux) ) 
 Here is how much of TeX's memory you used:
- 13466 strings out of 493921
- 262916 string characters out of 3144871
- 322537 words of memory out of 3000000
- 16495 multiletter control sequences out of 15000+200000
+ 13471 strings out of 493921
+ 263198 string characters out of 3144871
+ 319529 words of memory out of 3000000
+ 16500 multiletter control sequences out of 15000+200000
  17480 words of font info for 61 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 62i,14n,76p,1170b,836s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 62i,14n,76p,1306b,836s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/publ
 ic/amsfonts/cm/cmbx10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public
 /amsfonts/cm/cmbx12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/a
@@ -746,7 +746,7 @@ les (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files
 MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiK
 TeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTeX
  2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on ClusterRobustTesting_FE_models.pdf (23 pages, 331996 bytes).
+Output written on ClusterRobustTesting_FE_models.pdf (23 pages, 333984 bytes).
 PDF statistics:
  167 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

@@ -99,6 +99,11 @@ MacKinnon, J.~G. \harvardand\ White, H.  \harvardyearleft 1985\harvardyearright
   improved finite sample properties}', {\em Journal of Econometrics} {\bf
   29},~305--325.
 
+\harvarditem{Mancl \harvardand\ DeRouen}{2001}{Mancl2001covariance}
+Mancl, L.~A. \harvardand\ DeRouen, T.~A.  \harvardyearleft
+  2001\harvardyearright , `{A covariance estimator for GEE with improved
+  small-sample properties}', {\em Biometrics} {\bf 57}(1),~126--134.
+
 \harvarditem{Mathai \harvardand\ Provost}{1992}{mathai1992quadratic}
 Mathai, A.~M. \harvardand\ Provost, S.~B.  \harvardyearleft
   1992\harvardyearright , {\em {Quadratic forms in random variables: theory and
@@ -161,7 +166,7 @@ Wooldridge, J.~M.  \harvardyearleft 2003\harvardyearright , `{Cluster-sample
   methods in applied econometrics}', {\em The American Economic Review} {\bf
   93}(2),~133--138.
 
-\harvarditem{Zhang}{2012{\em a}}{Zhang2012two-wayANOVA}
+\harvarditem{Zhang}{2012{\em a}}{Zhang2012twowayANOVA}
 Zhang, J.-T.  \harvardyearleft 2012{\em a}\harvardyearright , `{An approximate
   degrees of freedom test for heteroscedastic two-way ANOVA}', {\em Journal of
   Statistical Planning and Inference} {\bf 142}(1),~336--346.
