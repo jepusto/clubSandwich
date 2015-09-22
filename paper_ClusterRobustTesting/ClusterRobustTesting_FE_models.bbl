@@ -55,12 +55,6 @@ Donald, S.~G. \harvardand\ Lang, K.  \harvardyearleft 2007\harvardyearright ,
   `{Inference with difference-in-differences and other panel data}', {\em
   Review of Economics and Statistics} {\bf 89}(2),~221--233.
 
-\harvarditem{Eicker}{1967}{eicker1967limit}
-Eicker, F.  \harvardyearleft 1967\harvardyearright , {Limit theorems for
-  regressions with unequal and dependent errors}, {\em in} `Proceedings of the
-  Berkeley Symposium on Mathematical Statistics and Probability', Vol.~1,
-  pp.~59--82.
-
 \harvarditem{Hansen}{2007}{Hansen2007asymptotic}
 Hansen, C.~B.  \harvardyearleft 2007\harvardyearright , `{Asymptotic properties
   of a robust variance matrix estimator for panel data when T is large}', {\em
@@ -152,19 +146,9 @@ Tipton, E. \harvardand\ Pustejovsky, J.~E.  \harvardyearleft
 Webb, M. \harvardand\ MacKinnon, J.~G.  \harvardyearleft 2013\harvardyearright
   , {Wild Bootstrap Inference for Wildly Different Cluster Sizes}.
 
-\harvarditem{White}{1980}{White1980heteroskedasticity}
-White, H.  \harvardyearleft 1980\harvardyearright , `{A
-  heteroskedasticity-consistent covariance matrix estimator and a direct test
-  for heteroskedasticity}', {\em Econometrica} {\bf 48}(4),~817--838.
-
 \harvarditem{Wooldridge}{2002}{Wooldridge2002econometric}
 Wooldridge, J.~M.  \harvardyearleft 2002\harvardyearright , {\em {Econometric
   Analysis of Cross Section and Panel Data}}, MIT Press, Cambridge, MA.
-
-\harvarditem{Wooldridge}{2003}{Wooldridge2003cluster}
-Wooldridge, J.~M.  \harvardyearleft 2003\harvardyearright , `{Cluster-sample
-  methods in applied econometrics}', {\em The American Economic Review} {\bf
-  93}(2),~133--138.
 
 \harvarditem{Zhang}{2012{\em a}}{Zhang2012twowayANOVA}
 Zhang, J.-T.  \harvardyearleft 2012{\em a}\harvardyearright , `{An approximate
