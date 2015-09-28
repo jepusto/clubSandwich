@@ -109,12 +109,11 @@ Standard errors are routinely "clustered" to account for correlations arising fr
 The method is an extension to another economic mainstay -heteroscedasticity-robust standard errors (Huber, 1967, Eicker, 1967, White, 1980) - which are commonly used to account for non-constant variance in regression models. 
 While CRVE has existed for over 30 years, it is in the last 10 years that it has become standard practice, as illustrated by its coverage in major textbooks and review articles (e.g., Woolridge, 2010; Angrist and Pischke, 2009; Cameron and Miller 2011).
 
-Like heteroscedasticity robust standard errors, CRVE allows analysts to estimate causal and structural models using ordinary least squares (OLS), while adjusting standard errors and hypothesis tests thereafter.
+CRVE allows analysts to estimate causal and structural models using ordinary least squares (OLS), while adjusting standard errors and hypothesis tests thereafter.
 The method is broadly applicable and can be used to test both individual and multi-parameter hypotheses.
 For example, an analyst may wish to understand the effect of several state-level policy shifts on employment outcomes, where the policies were implemented at different time-points in each state. 
-The effect of the policies could be estimated using OLS with states and time-periods accounted for using fixed effects.
-These fixed effects could be included in the model as dummy variables or, more commonly, could be 'absorbed' by first demeaning the data.
-CRVE would then be used to account for clustering by both state and time, and these clustered standard errors could by used to test hypotheses regarding each policy (i.e., a t-test), as well as across policies (i.e., an F-test).
+To answer this question, an OLS model could be estimated with states and time-periods accounted for using fixed effects; these fixed effects could be included in the model as dummy variables or, more commonly, could be 'absorbed' by first demeaning the data.
+CRVE would then be used to account for clustering by both state and time, and these clustered standard errors would by used to test hypotheses regarding each policy (i.e., a t-test), as well as across policies (i.e., an F-test).
 This approach to accounting for clustering via both fixed effects and the use of CRVE is now standard and was popularized by Bertrand, Duflo, and M (2004), who showed via simulation that to do otherwise led to inappropriately small standard errors and incorrect hypothesis tests. 
 
 In CRVE, standard errors are estimated empirically, thus not requiring analysts to assume a particular correlation structure.
@@ -123,6 +122,7 @@ As the method has become more common, however, researchers have turned attention
 \citet{Cameron2015practitioners} provide a thorough review of this literature, including a discussion of current practice, possible solutions, and open problems. 
 They highlight the well known results that in small samples, CRVE has a downward bias and that hypothesis tests based on CRVEs can have Type-I error rates that are far from the nominal level of the test.
 Moreover, they review recent research showing that the small-sample corrections for t-tests typically found in software such as Stata and SAS are inadequate. 
+
 Cameron and Miller highlight a potentially promising solution to these problems, called the bias-reduced linearization method (BRL), introduced by \citet{McCaffrey2001generalizations} and \citet{Bell2002bias}. 
 BRL entails correcting the bias of the CRVE so that it is exactly unbiased under a working model specified by the analyst, while also remaining asymptotically consistent under arbitrary true variance structures. 
 Simulations reported by \citet{Bell2002bias} demonstrate that the BRL correction serves to reduce the bias of the CRVE even when the working model is mis-specified. 
@@ -153,19 +153,19 @@ We conclude the paper with a discussion (Section 5), where we argue that the BRL
 We begin by considering a generic model of the form,
 \begin{equation}
 \label{eq:fixed_effects_ij}
-\ {y}_{ij} = \bm{p}_j \bs\tau + \bm{q}_j\bs\eta + \bm{s}_j \bs\gamma + \bm{t}_j \bs\delta + \epsilon_{ij} 
+\ {y}_{ij} = \bm{z}'_j \bs\tau + \bm{x}'_j\bs\eta + \bm{s}'_j \bs\gamma + \bm{t}'_j \bs\delta + \epsilon_{ij} 
 \end{equation}
-where for observation $i$ in cluster $j$, $\bm{p}_j$ is a vecor of $p$ coefficients of primary interest in an analysis (e.g., policy variables), $\bm{q}_j$ is a vector of $q$ control variables, $\bm{s}_j$ is a vector of $s$ fixed effects that vary across clusters, and $\bm{t}_j$ is a vector of $t$ fixed effects that are defined within clusters. In the state-policy example indicated in the introduction, these $\bm{p}_j$ would be dummies for each policy under study, $\bm{q}_j$ might include demographic controls, $\bm{s}_j$ would include state fixed effects, and $\bm{t}_j$ would indicate time-period fixed effects. In this example, focus would be on testing hypotheses regarding $\bs \tau$, with estimation of $\bs\eta$, $\bs\gamma$, and $\bs\delta$ remaining incidental. 
+where for observation $i$ in cluster $j$, $\bm{z}_j$ is a vecor of $z$ coefficients of primary interest in an analysis (e.g., policy variables), $\bm{x}_j$ is a vector of $x$ control (e.g., demographics) variables, $\bm{s}_j$ is a vector of $s$ fixed effects that vary across clusters, and $\bm{t}_j$ is a vector of $t$ fixed effects that are defined within clusters. In the state-policy example indicated in the introduction, these $\bm{z}_j$ would be dummies for each policy under study, $\bm{x}_j$ might include demographic controls, $\bm{s}_j$ would include state fixed effects, and $\bm{t}_j$ would indicate time-period fixed effects. In this example, focus would be on testing hypotheses regarding $\bs \tau$, with estimation of $\bs\eta$, $\bs\gamma$, and $\bs\delta$ remaining incidental. 
 
 In developing theory, it is often easier to work with the matrix version of this model, where now
 \begin{equation}
 \label{eq:fixed_effects}
 \bm{y}_j = \bm{R}_j \bs\beta + \bm{S}_j \bs\gamma + \bm{T}_j \bs\delta + \bs\epsilon_j,
 \end{equation}
-where for cluster $j$, $\bm{R}_j$ is an $n_j \times r$ matrix of covariates that includes both the focal ($\bm{p}_j$) and control ($\bm{q}_j$) covariates (i.e., $q + p = r$); $\bm{S}_j$ is an $n_j \times s$ matrix describing fixed effects that vary across clusters, and $\bm{T}_j$ is an $n_j \times t$ matrix describing fixed effects that are identified only within clusters. 
+where for cluster $j$, $\bm{R}_j$ is an $n_j \times r$ matrix of covariates that includes both the focal ($\bm{z}_j$) and control ($\bm{x}_j$) covariates (i.e., $z + x = r$); $\bm{S}_j$ is an $n_j \times s$ matrix describing fixed effects that vary across clusters, and $\bm{T}_j$ is an $n_j \times t$ matrix describing fixed effects that are identified only within clusters. 
 
 We assume that $\E\left(\bs\epsilon_j\left|\bm{R}_j,\bm{S}_j, \bm{T}_j\right.\right) = \bm{0}$ and $\Var\left(\bs\epsilon_j\left|\bm{R}_j,\bm{S}_j,\bm{T}_j\right.\right) = \bs\Sigma_j$, for $j = 1,...,m$, where the form of $\bs\Sigma_1,...,\bs\Sigma_m$ may be unknown but the errors are independent across clusters. 
-For notational convenience, let $\bm{U}_j = \left[\bm{R}_j \ \bm{S}_j \right]$ denote the set of predictors that vary across clusters, $\bm{X}_j = \left[\bm{U}_j \ \bm{T}_j \right]$ denote the full set of predictors, $\bs\alpha = \left(\bs\beta', \bs\gamma', \bs\delta' \right)'$, and $x = r + s + t$.
+For notational convenience, let $\bm{U}_j = \left[\bm{R}_j \ \bm{S}_j \right]$ denote the set of predictors that vary across clusters, $\bm{X}_j = \left[\bm{U}_j \ \bm{T}_j \right]$ denote the full set of predictors, $\bs\alpha = \left(\bs\beta', \bs\gamma', \bs\delta' \right)'$, and $p = r + s + t$.
 Denote the total number of individual observations by $N = \sum_{j=1}^m n_j$.
 Let $\bm{y}$, $\bm{R}$, $\bm{S}$, $\bm{T}$, $\bm{U}$, and $\bm{X}$ denote the matrices obtained by stacking their corresponding components, as in $\bm{R} = \left(\bm{R}_1' \ \bm{R}_2' \ \cdots \ \bm{R}_m'\right)'$. 
 
@@ -188,7 +188,7 @@ This means that the values of $\bs\gamma$ and $\bs\delta$ are nuisance parameter
 Estimating each of these fixed effects - as occurs if the fixed effects are included as dummy variables in the model - be computationally intensive and numerically inaccurate if the number of clusters is large (i.e., $s + t$ large). 
 In the policy example given above, for example, this could easily result in over 70 parameters (i.e., 50 states, 20 time periods).
 An alternative that is commonly implemented, therefore, is to first absorb the fixed effects. 
-Informally, this amounts to demeaning the data by substracting the cluster-mean value from both the outcomes and covariates; this results in the "within" estimator, which is commonly implemented in panel data analyses. 
+This amounts to demeaning the data by substracting the cluster-mean value from both the outcomes and covariates; this results in the "within" estimator, which is commonly implemented in panel data analyses. 
 By aborbing the fixed effects, only the $r$ parameters in $\bs\beta$ need to be estimated, which results in a more computationally efficient and numerically accurate procedure. 
 
 In Section 2 of this paper, we will discuss more fully comparisons between the dummy variable and aborption approaches to fixed effects. 
@@ -261,7 +261,8 @@ While the idea of specifying a model seems antithetical to the general goal of u
 In these instances, the variance estimator is no longer unbiased, but its bias is greatly reduced (thus the name "bias reduced linearization"). Furthermore, as the number of clusters increases, the reliance on this working model diminishes. 
 In a sense, CR2 provides necessary scaffolding in the small sample case, which falls away when there is sufficient data.
 
-In the original formulation given by Bell and McCaffrey (2002), for a given working model $\bs\Phi_j$, the BRL approach amounted to defining the matrices $\bm{A}_j$ such that,
+In the original formulation given by Bell and McCaffrey (2002), begin by defining $\bs\Phi_j$ as a working model for the covariance of the errors in cluster $j$, and denote $\bs\Phi = \text{diag}\left(\bs\Phi_1,...,\bs\Phi_m\right)$.
+For a given working model $\bs\Phi_j$, the BRL approach amounted to defining the matrices $\bm{A}_j$ such that,
 \begin{equation}
 \label{eq:CR2_criterion_BMv}
 \bm{A}_j \left(\bm{I} - \bm{H}\right)_j \bs\Phi \left(\bm{I} - \bm{H}\right)_j' \bm{A}_j'  =  \bs\Phi_j 
@@ -278,7 +279,7 @@ In some instances, the equality defining the $\bm{A}_j$ matrices above cannot be
 \citet{Angrist2009mostly} highlight that this problem (that the $\bm{A}_j$ matrices are undefined) arises in models with balanced state-by-year panels with fixed effects for states and for years because the adjustment matrices involve inverses of matrices that are not of full rank. Given that the inclusion of clusters via both fixed effects and CRVE is now standard, this problem has made it difficult to implement BRL in a wide variety of economic applications. 
 
 In order to address this concern, we provide an alternative formulation of $\bm{A}_j$ that meets the requirements for generalized inverses. 
-Begin by defining $\bs\Phi_j$ as a working model for the covariance of the errors in cluster $j$, and denote $\bs\Phi = \text{diag}\left(\bs\Phi_1,...,\bs\Phi_m\right)$. Instead of criterion (EQN ??), now define the adjustment matrices $\bm{A}_j$ as those satisfying the following criterion:
+Instead of criterion (EQN ??), now define the adjustment matrices $\bm{A}_j$ as those satisfying the following criterion:
 \begin{equation}
 \label{eq:CR2_criterion}
 \bm{\ddot{R}}_j' \bm{W}_j \bm{A}_j \left(\bm{I} - \bm{H_X}\right)_j \bs\Phi \left(\bm{I} - \bm{H_X}\right)_j' \bm{A}_j' \bm{W}_j \bm{\ddot{R}}_j = \bm{\ddot{R}}_j' \bm{W}_j \bs\Phi_j \bm{W}_j \bm{\ddot{R}}_j,
@@ -305,17 +306,17 @@ Let $\bm{L} = \left(\bm{\ddot{U}}'\bm{\ddot{U}} - \bm{\ddot{U}}_j'\bm{\ddot{U}}_
 \end{thm}
 Proof: See Appendix A.
 
-The above theorm \ref{thm:BRL_FE} shows that the adjustment matrices given by (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) satisfy criterion (\ref{eq:CR2_criterion}). Furthermore, because the adjustment matrices are defined in terms of all three components of the predictors ($\bm{R}$,$\bm{S}$, and $\bm{T}$), they are invariant to whether the model is estimated by direct WLS estimation or after absorbing some or all of the fixed effects. 
-The result is that by changing the criterion for defining $\bm{A}_j$ and using generalized inverses, we are able to now implement the BRL adjustments in a wide range of applications, including the fixed effects models commonly used in economics.
+The above theorm \ref{thm:BRL_FE_intext} shows that the adjustment matrices given by (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) satisfy criterion (\ref{eq:CR2_criterion}). Furthermore, because the adjustment matrices are defined in terms of all three components of the predictors ($\bm{R}$,$\bm{S}$, and $\bm{T}$), they are invariant to whether the model is estimated by direct WLS estimation or after absorbing some or all of the fixed effects. 
+The result is that by changing the criterion for defining $\bm{A}_j$ and using generalized inverses, we are able to now implement the BRL adjustments in a wide range of applications.
 
-\subsection{Absorption and Dummy Equality}
+\subsection{Absorption and Dummy Equivalence}
 
 A second problem, highlighted by Cameron and Miller (2015), is that the small-sample CRVE approach can result in a different estimator depending upon if the fixed effects are included in the model as dummies or absorbed. 
 For example, this problem arises with the CR1 estimator, which has the form $\bm{A}_j = c\bm{I}_j$, where $c = \sqrt{(m/(m-1))(N/(N - p))}$. In this estimator, $p$ depends on the total number of covariates estimated in the model.
 When fixed effects are included as dummies, $p = r + s + t$, whereas when the fixed effects are absorbed, instead $p = r$. 
 Cameron and Miller highlight that this can be particularly problematic if the clusters are small, as when they each include a pair of individuals; in these studies, the correction results in a variance that is over twice as large when using absorption compared to the use of dummies.
 
-This non-equality problem given above can also arise when implementing the BRL method. 
+This non-equivalence problem given above can also arise when implementing the BRL method. 
 Below, we show that by defining the problem in a particular way, the adjustment matrices $\bm{A}_j$ are invariant to the method for adjusting for fixed effects.
 To see how, begin by noting that in many applications, it will make sense to choose weighting matrices that are the inverses of the working covariance model, so that $\bm{W}_j = \bs\Phi_j^{-1}$. In this case, the adjustment matrices can be calculated using $\bm{\tilde{B}}_j$ in place of $\bm{B}_j$, where
 \begin{equation}
@@ -324,12 +325,12 @@ To see how, begin by noting that in many applications, it will make sense to cho
 \end{equation}
 
 \begin{thm}
-\label{thm:absorb}
+\label{thm:absorb1}
 Let $\bm{\tilde{A}}_j = \bm{D}_j'\bm{\tilde{B}}_j^{+1/2} \bm{D}_j$, where $\bm{\tilde{B}}_j$ is given in (\ref{eq:CR2_B_tilde}). If $\bm{T}_j \bm{T}_k' = \bm{0}$ for $j \neq k$ and $\bm{W} = \bs\Phi^{-1}$, then $\bm{A}_j = \bm{\tilde{A}}_j$. 
 \end{thm}
 Proof: See Appendix A.
 
-As theorem \ref{thm:absorb} above demonstrates, using $\bm{\tilde{B}}_j$ rather than $\bm{B}_j$ leads to algebraically identical adjustment matrices; the form of $\bm{\tilde{B}}_j$ is simply more convenient for computation.
+As theorem \ref{thm:absorb1} above demonstrates, using $\bm{\tilde{B}}_j$ rather than $\bm{B}_j$ leads to algebraically identical adjustment matrices; the form of $\bm{\tilde{B}}_j$ is simply more convenient for computation.
 Interestingly, in the simple case of ordinary (unweighted) least squares, in which the working variance model posits that the errors are all independent and homoskedastic and $\bm{W} = \bs\Phi = \bm{I}$, the adjustment matrices simplify further to \[
 \bm{A}_j = \left(\bm{I}_j - \bm{\ddot{U}}_j\left(\bm{\ddot{U}}'\bm{\ddot{U}}\right)^{-1}\bm{\ddot{U}}_j'\right)^{+1/2},\]
 where $\bm{\ddot{U}} = \left(\bm{I} - \bm{H_T}\right)\bm{U}$.
@@ -351,7 +352,7 @@ Like the bias of the CRVE estimator itself, the accuracy of the asymptotic appro
 This provides motivation for development of general-purpose hypothesis testing procedures that have accurate rejection rates in small samples.
 
 In this section, we develop a general method for conducting hypothesis tests using CRVE in small samples. We begin by considering linear constraints on $\bs\beta$, where the null hypothesis has the form $H_0: \bm{C}\bs\beta = \bm{d}$ for fixed $q \times r$ matrix $\bm{C}$ and $q \times 1$ vector $\bm{d}$. 
-The cluster-robust Wald statistic  is then
+The cluster-robust Wald statistic is then
 \begin{equation}
 \label{eq:Wald_stat}
 Q = \left(\bm{C}\bs{\hat\beta} - \bm{d}\right)'\left(\bm{C} \bm{V}^{CR} \bm{C}'\right)^{-1}\left(\bm{C}\bs{\hat\beta} - \bm{d}\right),
@@ -361,15 +362,16 @@ In large samples, it can be shown that this Wald test rejects $H_0$ at level $\a
 Equivalently, when $q = 1$, this means that in large samples the test follows a standard normal distribution. 
 Regardless of the value of $q$ however, in practice it is rarely clear how large samples need to be for Wald tests to be implemented.
 In the $q = 1$ case, the standard is therefore to instead use the t-distribution instead, with degrees of freedom $m - 1$ when CR1 is employed.
-Similarly, when $q > 1$, this results in the test $F = Q/q$, which is compared to the $F(q, m - 1)$ reference distribution.\todo{Is this really standard?} 
+Similarly, when $q > 1$, this results in the test $F = Q/q$, which is compared to the $F(q, m - 1)$ reference distribution.
+%\todo{Is this really standard?} 
 
-By moving to the t- and F-distributions, the CR1 corrections greatly improve the performance of these Wald-type tests in small samples.
-However, these corrections alone are not adequate, since - like the bias adjustment - the degrees of freedom do not account adequately for features of the covariates that affect performance of the statistics.
-Cameron and Miller highlight this problem, noting that the BRL approach provides an alternative method for estimating the degrees of freedom using a Satterthwaite approximation. 
-This method has been widely tested and shown to perform well; we review the method and findings in the next sub-section.
-Importantly, however, no such small-sample approach has been developed for multi-parameter hypothesist tests. 
-In the sub-section that follows, we develop such a test.
-Our approach is similar to a Satterthwaite approximation, in that it involves approximating the distribution of $Q$ using an $F$ distribution with estimated degrees of freedom. 
+%By moving to the t and F-distributions, the CR1 corrections greatly improve the performance of these Wald-type tests in small samples.
+%However, these corrections alone are not adequate, since - like the bias adjustment - the degrees of freedom do not account adequately for features of the covariates that affect performance of the statistics.
+%Cameron and Miller highlight this problem, noting that the BRL approach provides an alternative method for estimating the degrees of freedom using a Satterthwaite approximation. 
+%This method has been widely tested and shown to perform well; we review the method and findings in the next sub-section.
+%Importantly, however, no such small-sample approach has been developed for multi-parameter hypothesist tests. 
+%In the sub-section that follows, we develop such a test.
+%Our approach is similar to a Satterthwaite approximation, in that it involves approximating the distribution of $Q$ using an $F$ distribution with estimated degrees of freedom. 
 
 \subsection{Small-sample corrections for t-tests}
  
@@ -399,7 +401,8 @@ This ``model-assisted'' estimate of the degrees of freedom is then calculated as
 \label{eq:nu_model}
 \nu_{M} = \frac{\left(\sum_{j=1}^m \bm{p}_j' \hat{\bs\Phi} \bm{p}_j\right)^2}{\sum_{i=1}^m \sum_{j=1}^m \left(\bm{p}_i' \hat{\bs\Phi} \bm{p}_j\right)^2},
 \end{equation}
-where $\bm{p}_j = \left(\bm{I} - \bm{H_X}\right)_j'\bm{A}_j \bm{W}_j\bm{\ddot{R}}_j\bm{M_{\ddot{R}}} \bm{c}$.\todo{Can we use $\bm{H_{\ddot{U}}}$ here instead?} 
+where $\bm{p}_j = \left(\bm{I} - \bm{H_X}\right)_j'\bm{A}_j \bm{W}_j\bm{\ddot{R}}_j\bm{M_{\ddot{R}}} \bm{c}$.
+%\todo{Can we use $\bm{H_{\ddot{U}}}$ here instead?} 
 Alternately, for any of the CRVEs one could instead use an ``empirical'' estimate of the degrees of freedom, constructed by substituting $\bm{e}_j \bm{e}_j'$ in place of $\bs\Sigma_j$. 
 However, \citet{Bell2002bias} found using simulation that this plug-in degrees of freedom estimate led to very conservative rejection rates. 
 
@@ -482,7 +485,7 @@ In particular, we focus here on cases in which the true covariance structure dev
 
 %Data generation
 
-%Results
+\subsection{Results}
 
 
 \section{EXAMPLES}
@@ -494,15 +497,15 @@ In this section we examine three short examples of the use of CRVE with small sa
 
 \subsubsection{Tennessee STAR class-size experiment.} 
 
-The Tennessee STAR class size experiment is one of the most well studied interventions in education.  In the experiment, K – 3 students and teachers were randomized within each of 79 schools to one of three conditions: small class-size (targetted to have 13-17 students), regular class-size, or regular class-size with an aide (see Schazenbach, 2006 for a review). Analyses of the original study and follow up waves have found that being in a small class improves a variety of outcomes, including higher test scores \citep{Schanzenbach2006what}, increased likelihood of taking college entrance exams \citep{Krueger2001effect}, and increased rates of home ownership and earnings \citep{Chetty2011how}. 
+The Tennessee STAR class size experiment is one of the most well studied interventions in education.  In the experiment, $K - 3$ students and teachers were randomized within each of 79 schools to one of three conditions: small class-size (targetted to have 13-17 students), regular class-size, or regular class-size with an aide (see Schazenbach, 2006 for a review). Analyses of the original study and follow up waves have found that being in a small class improves a variety of outcomes, including higher test scores \citep{Schanzenbach2006what}, increased likelihood of taking college entrance exams \citep{Krueger2001effect}, and increased rates of home ownership and earnings \citep{Chetty2011how}. 
 
 The class-size experiment consists of three treatment conditions and multiple, student-level outcomes of possible interest. The analytic model is 
 \begin{equation}
-Y_{ijk} = \bm{z}_{jk}'\bs\alpha_i + \bm{x}_{jk}'\bs\beta + \gamma_k + \epsilon_{ijk}
+y_{ijk} = \bm{z}_{j}'\bs\tau_k + \bm{x}_{ij}'\bs\eta_{k} + \gamma_{jk} + \epsilon_{ijk}
 \end{equation}
-For outcome $i$, student $j$ is found in school $k$; $\bm{z}_{jk}$ includes dummies for the small-class and regular-plus-aide conditions; and the vector $\bm{x}_{jk}$ includes a set of student demographics (i.e., free or reduced lunch status; race; gender; age). Following Krueger (1999), we put the the reading, word recognition, and math scores on comparable scales by converting each outcome to percentile rankings based upon their distributions in the control condition.
+For outcome $k$, student $i$ is found in school $j$; $\bm{z}_{j}$ includes dummies for the small-class and regular-plus-aide conditions; and the vector $\bm{x}_{ij}$ includes a set of student demographics (i.e., free or reduced lunch status; race; gender; age). Following Krueger (1999), we put the the reading, word recognition, and math scores on comparable scales by converting each outcome to percentile rankings based upon their distributions in the control condition.
 
-We estimated the model in two ways. First, we estimated $\bs\alpha_i$ separately for each outcome $i$ and tested the null hypothesis that $\bs\alpha_i = \bm{0}$. Second, we use the seemingly unrelated regression (SUR) framework to test for treatment effects across conditions, using a simultaneous test across outcomes. In the SUR model, separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. An overall test of the differences between conditions thus amounts to testing the null hypothesis that $\bs\alpha_1 = \bs\alpha_2 = \bs\alpha_3 = \bm{0}$. In all models, we estimated $\bs\alpha_i$ and $\bs\beta$ after absorbing the school fixed effects and clustered the errors by school.
+We estimated the model in two ways. First, we estimated $\bs\tau_k$ separately for each outcome $k$ and tested the null hypothesis that $\bs\tau_k = \bm{0}$. Second, we use the seemingly unrelated regression (SUR) framework to test for treatment effects across conditions, using a simultaneous test across outcomes. In the SUR model, separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. An overall test of the differences between conditions thus amounts to testing the null hypothesis that $\bs\tau_1 = \bs\tau_2 = \bs\tau_3 = \bm{0}$. In all models, we estimated $\bs\tau_i$ and $\bs\eta$ after absorbing the school fixed effects and clustered the errors by school.
 
 \subsubsection{Heterogeneous treatment impacts} 
 
@@ -511,24 +514,25 @@ In the Achievement Awards demonstration, 40 non-vocational high schools with the
 
 Baseline data was collected in January 2001 with follow up data collected in June 2001 and 2002. Following \citet{Angrist2009effects}, we focus on the number of certification tests taken as the outcome and report results separately for girls, for boys, and for the combined sample. Given that the program took place in three different types of schools, in this example we focus on determining if there is evidence of variation in treatment impacts across types of schools (i.e., Jewish secular, Jewish religious, and Arab). We use the analytic model:
 \begin{equation}
-Y_{ij} = \bm{z}_j'\bs\alpha + T_j \bm{z}_j \bs\delta + \bm{x}_{ij}'\bs\beta + \epsilon_{ij}
+y_{ij} = \bm{z}_j'\bs\tau_0 + T_j \bm{z}_j \bs\tau_1 + \bm{x}_{ij}'\bs\beta + \epsilon_{ij}
 \end{equation}
-In this model for student $i$ in school $j$, $\bm{z}_j$ is a vector of dummies indicating school type; $T_j$ is a treatment dummy indicating if school $j$ was assigned to the treatment condition; and $\bm{x}_{ij}$ contains individual student demographics (i.e., mother’s and father’s education; immigration status; number of siblings; and an indicator for the quartile of their pre-test achievement from previous years). The components of $\bs\delta$ represent the average treatment impacts in Jewish secular, Jewish religious, and Arab schools. We test the null hypothesis that $\delta_1 = \delta_2 = \delta_3$ to determine if the treatment impact differs across school types. In the second panel of Table 1 we provide the results of this test separately for boys and girls and by year. Importantly, note that the 2000 results are baseline tests, while the 2001 and 2002 results measure the effectiveness of the program.\todo{Add note about program being discontinued in 2002} 
+In this model for student $i$ in school $j$, $\bm{z}_j$ is a vector of dummies indicating school type; $T_j$ is a treatment dummy indicating if school $j$ was assigned to the treatment condition; and $\bm{x}_{ij}$ contains individual student demographics (i.e., mother's and father's education; immigration status; number of siblings; and an indicator for the quartile of their pre-test achievement from previous years). The components of $\bs\tau_1$ represent the average treatment impacts in Jewish secular, Jewish religious, and Arab schools. We test the null hypothesis that $\tau_{11} = \tau_{12} = \tau_{13}$ to determine if the treatment impact differs across school types. In the second panel of Table 1 we provide the results of this test separately for boys and girls and by year. Importantly, note that the 2000 results are baseline tests, while the 2001 and 2002 results measure the effectiveness of the program.
+%\todo{Add note about program being discontinued in 2002} 
 
 \subsubsection{Robust Hausmann test} 
 
 In this final example, we shift focus from analyses of experiments to panel data. Here we build off of an example first developed in \citet{Bertrand2004how} using Current Population Survey (CPS) data to relate demographics to earnings. Following \citet{Cameron2015practitioners}, we aggregated the data from the individual level to the time period, producing a balanced panel with 36 time points within 51 states (including the District of Columbia). We focus on the model,
 \begin{equation}
-Y_{tj} = \bm{r}_{tj}'\bs\alpha + \gamma_j + \epsilon_{ij}.
+y_{tj} = \bm{z}_{tj}'\bs\tau + \gamma_j + \epsilon_{tj}.
 \end{equation}
-In this model, time-point $t$ is nested within state $j$; the outcome $Y_{tj}$ is log-earnings, which are reported in 1999 dollars; $\bm{r}_{tj}$ includes a vector of demographic covariates specific to the time point (i.e., dummy variables for female and white; age and age-squared); and $\gamma_j$ is a fixed effect for state $j$. 
+In this model, time-point $t$ is nested within state $j$; the outcome $y_{tj}$ is log-earnings, which are reported in 1999 dollars; $\bm{z}_{tj}$ includes a vector of demographic covariates specific to the time point (i.e., dummy variables for female and white; age and age-squared); and $\gamma_j$ is a fixed effect for state $j$. 
 
-For sake of example, we focus here on determining whether to use a fixed effects (FE) estimator or a random effects (RE) estimator the four parameters in $\bs\alpha$, based on a Hausmann test. In an OLS model with uncorrelated, the Hausmann test directly compares the vectors of FE and RE estimates using a chi-squared test. However, this specification fails when cluster-robust standard errors are employed, and instead an artificial-Hausman test \citep{Arellano1993on} is typically used \citep[pp. 290-291]{Wooldridge2002econometric}. This test instead amends the model to additionally include within-cluster deviations (or cluster aggregates) of the variables of interest. In our example, this becomes,
+For sake of example, we focus here on determining whether to use a fixed effects (FE) estimator or a random effects (RE) estimator the four parameters in $\bs\tau$, based on a Hausmann test. In an OLS model with uncorrelated, the Hausmann test directly compares the vectors of FE and RE estimates using a chi-squared test. However, this specification fails when cluster-robust standard errors are employed, and instead an artificial-Hausman test \citep{Arellano1993on} is typically used \citep[pp. 290-291]{Wooldridge2002econometric}. This test instead amends the model to additionally include within-cluster deviations (or cluster aggregates) of the variables of interest. In our example, this becomes,
 \begin{equation}
-Y_{tj} = \bm{r}_{tj}'\bs\alpha + \bm{\ddot{r}}_{tj}\bs\beta + \gamma_j + \epsilon_{tj},
+y_{tj} = \bm{z}_{tj}'\bs\tau + \bm{\ddot{z}}_{tj}\bs\beta + \gamma_j + \epsilon_{tj},
 \end{equation}
-where $\bm{\ddot{r}}_{tj}$ denotes the vector of within-cluster deviations of the covariates (i.e., $\bm{\ddot{r}}_{tj} = \bm{r}_{tj} - \frac{1}{T}\sum_{t=1}^T \bm{r}_{tj}$).
-The four parameters in $\bs\beta$ represent the differences between the within-panel and between-panel estimates of $\bs\alpha$. The artificial Hausmann test therefore reduces to testing the null hypothesis that $\bs\beta = \bm{0}$ using an F test with $q = 4$. We estimate the model using WLS with weights derived under the assumption that  $\gamma_1,...,\gamma_J$ are mutually independent, normally distributed, and independent of $\epsilon_{tj}$.
+where $\bm{\ddot{z}}_{tj}$ denotes the vector of within-cluster deviations of the covariates (i.e., $\bm{\ddot{z}}_{tj} = \bm{z}_{tj} - \frac{1}{T}\sum_{t=1}^T \bm{z}_{tj}$).
+The four parameters in $\bs\beta$ represent the differences between the within-panel and between-panel estimates of $\bs\tau$. The artificial Hausmann test therefore reduces to testing the null hypothesis that $\bs\beta = \bm{0}$ using an F test with $q = 4$. We estimate the model using WLS with weights derived under the assumption that  $\gamma_1,...,\gamma_m$ are mutually independent, normally distributed, and independent of $\epsilon_{tj}$.
 
 %\section{SIMULATION EVIDENCE}
 %\label{subsec:simulations}
@@ -577,7 +581,8 @@ Now, observe that $\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_j \left(\bm{I} - \bm{
 &= \bm{\ddot{R}}_j' \bm{W}_j \bm{D}_j \bm{V}\bm{V}' \bm{D}_j' \bm{W}_j \bm{\ddot{R}}_j. 
 \end{align}
 
-Because $\bm{D}_j$, and $\bs\Phi$ are positive definite and $\bm{B}_j$ is symmetric, the eigenvectors $\bm{V}$ define an orthonormal basis for the column span of $\left(\bm{I} - \bm{H_{\ddot{U}}}\right)_j$.\todo{CITATION?} 
+Because $\bm{D}_j$, and $\bs\Phi$ are positive definite and $\bm{B}_j$ is symmetric, the eigenvectors $\bm{V}$ define an orthonormal basis for the column span of $\left(\bm{I} - \bm{H_{\ddot{U}}}\right)_j$.
+%\todo{CITATION?} 
 We now show that $\bm{\ddot{U}}_j$ is in the column space of $\left(\bm{I} - \bm{H_X}\right)_j$. 
 Let $\bm{Z}_j$ be an $n_j \times (r + s)$ matrix of zeros. 
 Let $\bm{Z}_k = - \bm{\ddot{U}}_k \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1}$, for $k \neq j$ and take $\bm{Z} = \left(\bm{Z}_1',...,\bm{Z}_m'\right)'$. 
@@ -644,11 +649,12 @@ and so $\bm{B}_j^+ = \bm{\tilde{B}}_j^+$. It follows that $\bm{A}_j = \bm{\tilde
 
 The small-sample approximations for t-tests and F-tests both involve the distribution of the entries of $\bm{V}^{CR2}$. This appendix explains the relevant distribution theory.
 
-First, note that any of the CR estimatosr can be written in the form $\bm{V}^{CR2} = \sum_{j=1}^M \bm{P}_j \bm{e}_j \bm{e}_j' \bm{P}_j'$ for $r \times n_j$ matrices $\bm{P}_j = \bm{M_{\ddot{R}}} \bm{\ddot{R}}_j' \bm{W}_j \bm{A}_j$.
-Let $\bm{c}_1,\bm{c}_2,\bm{c}_3,\bm{c}_4$ be fixed, $p \times 1$ vectors and consider the linear combination $\bm{c}_1' \bm{V}^{CR2} \bm{c}_2$. 
-\citet[Theorem 4]{Bell2002bias} show that the linear combination is a quadratic form in $\bm{y}$: \[
-\bm{c}_1' \bm{V}^{CR2} \bm{c}_2 = \bm{y}'\left(\sum_{j=1}^m \bm{p}_{2j} \bm{p}_{1j}'\right) \bm{y}, \]
-for $N \times 1$ vectors $\bm{p}_{sh} = \left(\bm{I} - \bm{H_X}\right)_h' \bm{P}_h' \bm{c}_s$, $s = 1,...,4$, and $h = 1,...,m$. 
+%<something wrong with next ... commented only to compile >
+%First, note that any of the CR estimators can be written in the form $\bm{V}^{CR2} = \sum_{j=1}^M \bm{P}_j \bm{e}_j \bm{e}_j' \bm{P}_j'$ for $r \times n_j$ matrices $\bm{P}_j = \bm{M_{\ddot{R}}} \bm{\ddot{R}}_j' \bm{W}_j \bm{A}_j$.
+%Let $\bm{c}_1,\bm{c}_2,\bm{c}_3,\bm{c}_4$ be fixed, $p \times 1$ vectors and consider the linear combination $\bm{c}_1' \bm{V}^{CR2} \bm{c}_2$. 
+%\citet[Theorem 4]{Bell2002bias} show that the linear combination is a quadratic form in $\bm{y}$: \[
+%\bm{c}_1' \bm{V}^{CR2} \bm{c}_2 = \bm{y}'\left(\sum_{j=1}^m \bm{p}_{2j} \bm{p}_{1j}'\right) \bm{y}, \]
+%for $N \times 1$ vectors $\bm{p}_{sh} = \left(\bm{I} - \bm{H_X}\right)_h' \bm{P}_h' \bm{c}_s$, $s = 1,...,4$, and $h = 1,...,m$. 
 
 Standard results regarding quadratic forms can be used to derive the moments of the linear combination \citep[e.g.,][Sec. 13.5]{Searle2006matrix}. We now assume that $\bs\epsilon_1,...,\bs\epsilon_m$ are multivariate normal with zero mean and variance $\bs\Sigma$. It follows that 
 \begin{align}
