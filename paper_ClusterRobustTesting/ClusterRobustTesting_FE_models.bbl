@@ -1,5 +1,13 @@
 \begin{thebibliography}{xx}
 
+\harvarditem[Achilles et~al.]{Achilles, Bain, Bellott, Boyd-Zaharias, Finn,
+  Folger, Johnston \harvardand\ Word}{2008}{Achilles2008tennessee}
+Achilles, C.~M., Bain, H.~P., Bellott, F., Boyd-Zaharias, J., Finn, J., Folger,
+  J., Johnston, J. \harvardand\ Word, E.  \harvardyearleft
+  2008\harvardyearright , `{Tennessee's Student Teacher Achievement Ratio
+  (STAR) project}'.
+\newline\harvardurl{http://hdl.handle.net/1902.1/10766}
+
 \harvarditem{Angrist \harvardand\ Lavy}{2009}{Angrist2009effects}
 Angrist, J.~D. \harvardand\ Lavy, V.  \harvardyearleft 2009\harvardyearright ,
   `{The effects of high stakes high school achievement awards : Evidence from a
@@ -9,6 +17,11 @@ Angrist, J.~D. \harvardand\ Lavy, V.  \harvardyearleft 2009\harvardyearright ,
 Angrist, J.~D. \harvardand\ Pischke, J.  \harvardyearleft 2009\harvardyearright
   , {\em {Mostly harmless econometrics: An empiricist's companion}}, Princeton
   University Press, Princeton, NJ.
+
+\harvarditem{Arellano}{1987}{Arellano1987computing}
+Arellano, M.  \harvardyearleft 1987\harvardyearright , `{Computing robust
+  standard errors for within-groups estimators}', {\em Oxford Bulletin of
+  Economics and Statistics} {\bf 49}(4),~431--434.
 
 \harvarditem{Arellano}{1993}{Arellano1993on}
 Arellano, M.  \harvardyearleft 1993\harvardyearright , `{On the testing of
@@ -55,6 +68,12 @@ Donald, S.~G. \harvardand\ Lang, K.  \harvardyearleft 2007\harvardyearright ,
   `{Inference with difference-in-differences and other panel data}', {\em
   Review of Economics and Statistics} {\bf 89}(2),~221--233.
 
+\harvarditem{Eicker}{1967}{eicker1967limit}
+Eicker, F.  \harvardyearleft 1967\harvardyearright , {Limit theorems for
+  regressions with unequal and dependent errors}, {\em in} `Proceedings of the
+  Berkeley Symposium on Mathematical Statistics and Probability', Vol.~1,
+  pp.~59--82.
+
 \harvarditem{Hansen}{2007}{Hansen2007asymptotic}
 Hansen, C.~B.  \harvardyearleft 2007\harvardyearright , `{Asymptotic properties
   of a robust variance matrix estimator for panel data when T is large}', {\em
@@ -64,6 +83,12 @@ Hansen, C.~B.  \harvardyearleft 2007\harvardyearright , `{Asymptotic properties
 Henderson, H.~V. \harvardand\ Searle, S.~R.  \harvardyearleft
   1981\harvardyearright , `{On deriving the inverse of a sum of matrices}',
   {\em Siam Review} {\bf 23}(1),~53--60.
+
+\harvarditem{Huber}{1967}{Huber1967behavior}
+Huber, P.~J.  \harvardyearleft 1967\harvardyearright , {The behavior of maximum
+  likelihood estimates under nonstandard conditions}, {\em in} `Proceedings of
+  the fifth Berkeley symposium on Mathematical Statistics and Probability',
+  University of California Press, Berkeley, CA, pp.~221--233.
 
 \harvarditem{Ibragimov \harvardand\ M\"{u}ller}{2010}{Ibragimov2010tstatistic}
 Ibragimov, R. \harvardand\ M\"{u}ller, U.~K.  \harvardyearleft
@@ -146,9 +171,23 @@ Tipton, E. \harvardand\ Pustejovsky, J.~E.  \harvardyearleft
 Webb, M. \harvardand\ MacKinnon, J.~G.  \harvardyearleft 2013\harvardyearright
   , {Wild Bootstrap Inference for Wildly Different Cluster Sizes}.
 
+\harvarditem{White}{1980}{White1980heteroskedasticity}
+White, H.  \harvardyearleft 1980\harvardyearright , `{A
+  heteroskedasticity-consistent covariance matrix estimator and a direct test
+  for heteroskedasticity}', {\em Econometrica} {\bf 48}(4),~817--838.
+
+\harvarditem{White}{1984}{white1984asymptotic}
+White, H.  \harvardyearleft 1984\harvardyearright , {\em Asymptotic theory for
+  econometricians}, Academic Press, Inc., Orlando, FL.
+
 \harvarditem{Wooldridge}{2002}{Wooldridge2002econometric}
 Wooldridge, J.~M.  \harvardyearleft 2002\harvardyearright , {\em {Econometric
   Analysis of Cross Section and Panel Data}}, MIT Press, Cambridge, MA.
+
+\harvarditem{Wooldridge}{2010}{Wooldridge2010econometric}
+Wooldridge, J.~M.  \harvardyearleft 2010\harvardyearright , {\em {Econometric
+  Analysis of Cross Section and Panel Data}}, 2nd edn, MIT Press, Cambridge,
+  MA.
 
 \harvarditem{Zhang}{2012{\em a}}{Zhang2012twowayANOVA}
 Zhang, J.-T.  \harvardyearleft 2012{\em a}\harvardyearright , `{An approximate
