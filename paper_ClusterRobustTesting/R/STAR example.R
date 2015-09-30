@@ -1,8 +1,11 @@
 library(stringr)
 library(lubridate)
+library(plyr)
 library(dplyr)
 library(tidyr)
+library(plm)
 library(clubSandwich)
+library(Pusto)
 rm(list=ls())
 
 # Read in student data files 
@@ -35,22 +38,84 @@ filter(student_dat, flaggk==1) %>%
   gather("outcome","scale_score",gktreadss, gktmathss, gkwordskillss) %>%
   mutate(outcome = ifelse(outcome=="gktreadss","read",ifelse(outcome=="gktmathss","math","wordskill"))) %>%
   group_by(outcome) %>%
-  do(data.frame(stdntid = .$stdntid, test_pct = 100 * ecdf(.$scale_score[.$gkclasstype != 1])(.$scale_score))) ->
+  do(data.frame(stdntid = .$stdntid, test_pct = 100 * ecdf(.$scale_score[.$gkclasstype != 1])(.$scale_score))) %>%
+  unite(SID_outcome, stdntid, outcome, remove = FALSE) ->
   student_outcomes
-
-#------------------------------------------
-# Seemingly unrelated regression
-#------------------------------------------
 
 filter(student_dat, flaggk==1) %>%
   select(stdntid, gkschid, white, free, female, agek, gk_small, gk_RA) %>%
+  mutate(gkschid = factor(gkschid)) %>%
   left_join(student_outcomes, by = "stdntid") %>%
   na.omit() ->
   student_dat_outcomes
 
-SUR <- lm(test_pct ~ 0 + outcome + outcome:gk_small + outcome:gk_RA 
-          + white + female + free + agek + as.factor(gkschid),
+
+#------------------------------------------
+# fit regressions
+#------------------------------------------
+
+# reading
+
+read <- lm(test_pct ~ 0 + gk_small + gk_RA + white + female + free + agek + gkschid,
+           data = filter(student_dat_outcomes, outcome=="read"))
+read_plm <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
+                data = filter(student_dat_outcomes, outcome=="read"), index = c("gkschid","stdntid"))
+all.equal(coef(read)[1:6], coef(read_plm))
+
+# math
+
+math <- lm(test_pct ~ 0 + gk_small + gk_RA + white + female + free + agek + gkschid,
+           data = filter(student_dat_outcomes, outcome=="math"))
+math_plm <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
+                data = filter(student_dat_outcomes, outcome=="math"), index = c("gkschid","stdntid"))
+all.equal(coef(math)[1:6], coef(math_plm))
+
+# word recognition
+
+word <- lm(test_pct ~ 0 + gk_small + gk_RA + white + female + free + agek + gkschid,
+           data = filter(student_dat_outcomes, outcome=="wordskill"))
+word_plm <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
+                data = filter(student_dat_outcomes, outcome=="wordskill"), index = c("gkschid","stdntid"))
+all.equal(coef(word)[1:6], coef(word_plm))
+
+# SUR
+
+SUR <- lm(test_pct ~ 0 + gkschid + outcome + outcome:gk_small + outcome:gk_RA 
+          + white + female + free + agek,
           data = student_dat_outcomes)
-coef(SUR)
-vcov_SUR <- vcovCR(SUR, cluster = student_dat_outcomes$gkschid, type = "CR2", inverse_var = TRUE)
-Wald_test(SUR, 86:91 , vcov = vcov_SUR, test = "All") 
+SUR_plm <- plm(test_pct ~ outcome + outcome:gk_small + outcome:gk_RA + white + female + free + agek,
+                data = student_dat_outcomes, index = c("gkschid","SID_outcome"))
+all.equal(coef(SUR)[80:91], coef(SUR_plm))
+
+mods <- list(read_lm = read, read_plm = read_plm,
+             math_lm = math, math_plm = math_plm,
+             word_lm = word, word_plm = word_plm,
+             SUR_lm = SUR, SUR_plm = SUR_plm)
+#------------------------------------------
+# Wald tests
+#------------------------------------------
+
+run_Wald_tests <- function(mod) {
+  trt_coefs <- which(grepl("gk_", names(coef(mod))))
+  if ("plm" %in% class(mod)) {
+    CR0 <- Wald_test(mod, trt_coefs, vcov = "CR0", test = "Naive-F")
+    CR2 <- Wald_test(mod, trt_coefs, vcov = "CR2", test = c("Naive-F","HTZ")) 
+  } else {
+    clustering_var <- model.frame(mod)$gkschid
+    CR0 <- Wald_test(mod, trt_coefs, vcov = "CR0", cluster = clustering_var, test = "Naive-F")
+    CR2 <- Wald_test(mod, trt_coefs, vcov = "CR2", cluster = clustering_var, test = c("Naive-F","HTZ")) 
+  }
+  CR0$CR <- 0
+  CR0$test <- rownames(CR0)
+  CR2$CR <- 2
+  CR2$test <- rownames(CR2)
+  res <- rbind(CR0, CR2)
+  class(res) <- "data.frame"
+  row.names(res) <- NULL
+  select(res, CR, test, Fstat, df, p_val)
+}
+run_Wald_tests(math)
+
+cluster <- start_parallel()
+F_tests <- ldply(mods[1:6], run_Wald_tests)
+stopCluster(cluster)
