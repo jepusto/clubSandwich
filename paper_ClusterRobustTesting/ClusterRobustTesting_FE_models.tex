@@ -346,7 +346,8 @@ For example, this problem arises with the CR1 estimator, which has the form $\bm
 When fixed effects are included as dummies, $p = r + s + t$, whereas when the fixed effects are absorbed, instead $p = r$. 
 Cameron and Miller highlight that this can be particularly problematic if the clusters are small, as when they each include a pair of individuals; in these studies, the correction results in a variance that is over twice as large when using absorption compared to the use of dummies.
 
-This non-equivalence problem given above can also arise when implementing the BRL method. 
+This non-equivalence problem given above can also arise when implementing the BRL method.
+\todo[inline]{Explain how the non-equivalence stuff works---it's a matter of assuming a working model for the errors or the working model for the residuals (after absorption).}
 Below, we show that by defining the problem in a particular way, the adjustment matrices $\bm{A}_i$ are invariant to the method for adjusting for fixed effects.
 To see how, begin by noting that in many applications, it will make sense to choose weighting matrices that are the inverses of the working covariance model, so that $\bm{W}_i = \bs\Phi_i^{-1}$. In this case, the adjustment matrices can be calculated using $\bm{\tilde{B}}_i$ in place of $\bm{B}_i$, where
 \begin{equation}
