@@ -4,8 +4,8 @@ library(plyr)
 library(dplyr)
 library(tidyr)
 library(plm)
+library(nlme)
 library(clubSandwich)
-library(Pusto)
 rm(list=ls())
 
 # Read in student data files 
@@ -46,6 +46,7 @@ filter(student_dat, flaggk==1) %>%
   select(stdntid, gkschid, white, free, female, agek, gk_small, gk_RA) %>%
   mutate(gkschid = factor(gkschid)) %>%
   left_join(student_outcomes, by = "stdntid") %>%
+  mutate(outcome_int = as.integer(factor(outcome))) %>%
   na.omit() ->
   student_dat_outcomes
 
@@ -87,23 +88,28 @@ SUR_plm <- plm(test_pct ~ outcome + outcome:gk_small + outcome:gk_RA + white + f
                 data = student_dat_outcomes, index = c("gkschid","SID_outcome"))
 all.equal(coef(SUR)[80:91], coef(SUR_plm))
 
+SUR_gls <- gls(test_pct ~ 0 + gkschid + outcome + outcome:gk_small + outcome:gk_RA
+               + white + female + free + agek, data = student_dat_outcomes, 
+               correlation = corSymm(form = ~ outcome_int | stdntid))
+summary(SUR_gls)$tTable[-(1:79),]
+
 mods <- list(read_lm = read, read_plm = read_plm,
              math_lm = math, math_plm = math_plm,
              word_lm = word, word_plm = word_plm,
-             SUR_lm = SUR, SUR_plm = SUR_plm)
+             SUR_lm = SUR, SUR_plm = SUR_plm, SUR_gls = SUR_gls)
 #------------------------------------------
 # Wald tests
 #------------------------------------------
 
 run_Wald_tests <- function(mod) {
   trt_coefs <- which(grepl("gk_", names(coef(mod))))
-  if ("plm" %in% class(mod)) {
-    CR0 <- Wald_test(mod, trt_coefs, vcov = "CR0", test = "Naive-F")
-    CR2 <- Wald_test(mod, trt_coefs, vcov = "CR2", test = c("Naive-F","HTZ")) 
-  } else {
+  if (class(mod) == "lm") {
     clustering_var <- model.frame(mod)$gkschid
     CR0 <- Wald_test(mod, trt_coefs, vcov = "CR0", cluster = clustering_var, test = "Naive-F")
     CR2 <- Wald_test(mod, trt_coefs, vcov = "CR2", cluster = clustering_var, test = c("Naive-F","HTZ")) 
+  } else {
+    CR0 <- Wald_test(mod, trt_coefs, vcov = "CR0", test = "Naive-F")
+    CR2 <- Wald_test(mod, trt_coefs, vcov = "CR2", test = c("Naive-F","HTZ")) 
   }
   CR0$CR <- 0
   CR0$test <- rownames(CR0)
@@ -114,8 +120,14 @@ run_Wald_tests <- function(mod) {
   row.names(res) <- NULL
   select(res, CR, test, Fstat, df, p_val)
 }
-run_Wald_tests(math)
 
-cluster <- start_parallel()
-F_tests <- ldply(mods[1:6], run_Wald_tests)
-stopCluster(cluster)
+system.time(F_tests <- ldply(mods[seq(2,8,2)], run_Wald_tests, .progress = "text"))
+save(F_tests, file = "paper_ClusterRobustTesting/STAR_test_results.Rdata")
+
+# system.time(SUR_gls_F <- run_Wald_tests(SUR_gls))
+# Need to fix IH calculation in vcovCR!!!!
+trt_coefs <- which(grepl("gk_", names(coef(SUR_gls))))
+gls_CR0 <- vcovCR(SUR_gls, type = "CR0")
+gls_CR2 <- vcovCR(SUR_gls, type = "CR2")
+Wald_test(SUR_gls, trt_coefs, vcov = gls_CR0, test = "Naive-F")
+Wald_test(SUR_gls, trt_coefs, vcov = gls_CR2, test = c("Naive-F","HTZ"))
