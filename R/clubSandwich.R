@@ -90,14 +90,24 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
                     x = X_list, w = W_list, SIMPLIFY = FALSE)
   XW <- matrix(unlist(XW_list), p, N)[,order(order(cluster))]
   M <- chol2inv(chol(XW %*% X))
-  IH <- diag(nrow = N) - X %*% M %*% XW 
   
-  E_list <- switch(type,
-                   "CR0" = lapply(XW_list, function(x) M %*% x),
-                   "CR1" = lapply(XW_list, function(x) (M %*% x) * J / (J - 1)),
-                   "CR2" = CR2(M, XW_list, IH, Theta, cluster, inverse_var),
-                   "CR3" = CR3(M, XW_list, IH_jj = matrix_list(IH, cluster, "both")),
-                   "CR4" = CR4(M, X_list, XW_list, IH, Theta, cluster, inverse_var))
+  if (type=="CR0") E_list <- lapply(XW_list, function(x) M %*% x)
+  if (type=="CR1") E_list <- lapply(XW_list, function(x) (M %*% x) * J / (J - 1))
+  if (type=="CR2") {
+    IH <- diag(nrow = N) - X %*% M %*% XW 
+    E_list <- CR2(M, XW_list, IH, Theta, cluster, inverse_var)
+  }
+  if (type=="CR3") {
+    IH <- diag(nrow = N) - X %*% M %*% XW
+    IH_jj <- mapply(function(x, xw) diag(nrow = nrow(x)) - x %*% M %*% xw,
+                    x = X_list, xw = XW_list)
+    CR3(M, XW_list, IH_jj = matrix_list(IH, cluster, "both"))
+  }
+  if (type=="CR4") {
+    IH <- diag(nrow = N) - X %*% M %*% XW
+    CR4(M, X_list, XW_list, IH, Theta, cluster, inverse_var)
+  }
+    
   res_list <- split(resid, cluster)
   
   components <- mapply(function(e, r) e %*% r, e = E_list, r = res_list, SIMPLIFY = TRUE)
