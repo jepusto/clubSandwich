@@ -104,7 +104,7 @@ mods <- list(read_lm = read, read_plm = read_plm,
 
 run_Wald_tests <- function(mod) {
   trt_coefs <- which(grepl("gk_", names(coef(mod))))
-  if (class(mod) == "lm") {
+  if (all(class(mod) == "lm")) {
     clustering_var <- model.frame(mod)$gkschid
     CR0 <- Wald_test(mod, trt_coefs, vcov = "CR0", cluster = clustering_var, test = "Naive-F")
     CR2 <- Wald_test(mod, trt_coefs, vcov = "CR2", cluster = clustering_var, test = c("Naive-F","HTZ")) 
@@ -125,18 +125,19 @@ run_Wald_tests <- function(mod) {
 system.time(F_tests <- ldply(mods, run_Wald_tests, .progress = "text"))
 save(F_tests, file = "paper_ClusterRobustTesting/STAR_test_results.Rdata")
 
-trt_coefs <- which(grepl("gk_", names(coef(SUR_gls))))
-gls_CR0 <- vcovCR(SUR_gls, type = "CR0")
-gls_CR2 <- vcovCR(SUR_gls, type = "CR2")
-Wald_test(SUR_gls, trt_coefs, vcov = gls_CR0, test = "Naive-F")
-Wald_test(SUR_gls, trt_coefs, vcov = gls_CR2, test = c("Naive-F","HTZ"))
-
-
 #------------------------
 # Test
 #------------------------
-obj <- SUR
-clustering_var <- model.frame(obj)$gkschid
+obj <- SUR_plm
+
+if ("plm" %in% class(obj)) {
+  index <- attr(model.frame(obj),"index")
+  clustering_var <- switch(obj$args$effect,
+                           individual = index[[1]],
+                           time = index[[2]])
+} else {
+  clustering_var <- model.frame(obj)$gkschid
+}
 type <- "CR2"
 target <- NULL
 inverse_var <- FALSE
@@ -146,3 +147,9 @@ system.time(CR1 <- vcovCR(obj, cluster = clustering_var, type = "CR1", inverse_v
 system.time(CR2 <- vcovCR(obj, cluster = clustering_var, type = "CR2", inverse_var = inverse_var))
 system.time(CR3 <- vcovCR(obj, cluster = clustering_var, type = "CR3", inverse_var = inverse_var))
 system.time(CR4 <- vcovCR(obj, cluster = clustering_var, type = "CR4", inverse_var = inverse_var))
+
+
+vcov <- CR2
+constraints <- which(grepl("gk_", names(coef(obj))))
+test <-  c("Naive-F","HTZ")
+system.time(walds <- Wald_test(obj, constraints, vcov, test) )
