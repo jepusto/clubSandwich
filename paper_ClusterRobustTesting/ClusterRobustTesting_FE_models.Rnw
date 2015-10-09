@@ -3,6 +3,7 @@
 \usepackage{amsthm}
 \usepackage{graphicx,psfrag,epsf}
 \usepackage{enumerate}
+\usepackage{booktabs}
 %\usepackage{natbib}
 \RequirePackage[natbibapa]{apacite}
 
@@ -85,6 +86,8 @@ The text of your abstract.  200 or fewer words.
 <<setup, include=FALSE, warning=FALSE, cache=FALSE>>=
 library(knitr)
 library(xtable)
+library(dplyr)
+library(stringr)
 
 # set global chunk options
 opts_chunk$set(echo = FALSE, cache = FALSE, fig.path='CR_fig/', fig.align='center', fig.show='hold')
@@ -521,11 +524,43 @@ The Tennessee STAR class size experiment is one of the most intensively studied 
 
 The class-size experiment consists of three treatment conditions and multiple, student-level outcomes of possible interest. Here, we examine the results for the subgroup of students who were in kindergarten during the first year of the study, focusing on reading, word recognition, and math scores measured at the end of kindergarten \citep{Achilles2008tennessee}. Following \citet{Krueger2001effect}, we put the three outcomes on comparable scales by converting the scores to percentile ranks based upon their distributions in the control condition. The analytic model is then
 \begin{equation}
-y_{ijk} = \bm{r}_{ij}'\bs\beta_k + \bm{s}_{ij}'\bs\gamma + \delta_i + \epsilon_{ijk}, 
+y_{ijk} = \bm{r}_{ij}'\bs\beta_k + \bm{s}_{ij}'\bs\gamma_0 + \gamma_k + \delta_i + \epsilon_{ijk}, 
 \end{equation}
-where $y_{ijk}$ is the percentile rank for student $j$ in school $i$ on outcome $k$; $\bm{r}_{ij}$ includes indicators for the small-class and regular-plus-aide conditions; $\bm{s}_{ij}$ includes student demographic covariates (i.e., free or reduced-price lunch status; race; gender; age). 
+where $y_{ijk}$ is the percentile rank on outcome $k$ for student $j$ in school $i$; $\bm{r}_{ij}$ includes indicators for the small-class and regular-plus-aide conditions; $\bm{s}_{ij}$ includes student demographic covariates (i.e., free or reduced-price lunch status; race; gender; age); $\gamma_k$ is a fixed effect for outcome $k$; and $\delta_i$ is a fixed effect for school $i$. 
 
-We estimated the model in two ways. First, we estimated $\bs\beta_k$ separately for each outcome $k$ and tested the null hypothesis that $\bs\beta_k = \bm{0}$. Second, we use the seemingly unrelated regression (SUR) framework to test for treatment effects across conditions, using a simultaneous test across outcomes. In the SUR model, separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. An overall test of the differences between conditions thus amounts to testing the null hypothesis that $\bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bm{0}$. In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the school fixed effects and clustered the errors by school.
+We estimated the model in two ways. First, we estimated $\bs\beta_k$ separately for each outcome $k$ and tested the null hypothesis that $\bs\beta_k = \bm{0}$. Second, we use the seemingly unrelated regression (SUR) framework to simultaneously test for treatment effects across conditions and across outcomes. In the SUR model, separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. An overall test of the differences between conditions thus amounts to testing the null hypothesis that $\bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bm{0}$. In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the school fixed effects and clustered the errors by school.
+
+<<STAR_results, results="asis">>=
+load("STAR_test_results.Rdata")
+filter(F_tests, grepl("_plm", .id)) %>%
+  mutate(Outcome = factor(.id, levels = c("read_plm","math_plm","word_plm","SUR_plm"),
+                          labels = c("Reading","Math","Word recognition","Combined (SUR)")),
+         Correction = paste0("CR",CR),
+         Test = factor(test, levels = c("Naive-F","HTZ"), labels = c("F","AHZ")),
+         F = round(Fstat,3),
+         df = round(df, 1),
+         p = round(p_val, 5)) %>%
+  select(Outcome, Correction, Test, F, df, p) ->
+  STAR_results
+
+STAR_results$Outcome[-seq(1,12,3)] <- NA
+
+print(xtable(STAR_results, 
+             caption = "Tests of treatment effects in Tennessee STAR class size experiment",
+             label = "tab:STAR",
+             align = "llccrrr",
+             digits = c(0,0,0,0,3,1,5)
+             ), 
+      include.rownames=FALSE, 
+      hline.after = c(-1,0,3,6,9,12),
+      booktabs = TRUE,
+      table.placement = "tbh")
+@
+
+Table \ref{tab:STAR} displays the results of the hypothesis tests. Across all outcomes, use of CR2 variance estimates with the AHZ test leads to slightly smaller F statistics, smaller degrees of freedom, and larger $p$-values compared to use of CR1 or CR2 with $J - 1$ degrees of freedom. In all cases, the reduction in degrees of freedom is relatively minor (i.e., less than 10 for the tests of individual outcomes and less than 15 for the joint test). This is because the class-size experiment used a randomized block design, and so the constraints being tested are identified within every cluster and are relatively balanced. Nonetheless, the use of the AHZ test still makes a bigger difference in the F statistic and $p$-values than does the use of CR2 standard errors.
+\todo[inline]{Why do degrees of freedom change across outcomes? Is it just little changes in missing observations? Should we just show reading and SUR results?}
+\todo[inline]{Should we do any t-tests?}
+\todo[inline]{Why does SUR test have bigger p-value than individual tests?}
 
 \subsection{Heterogeneous treatment impacts} 
 

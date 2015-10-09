@@ -106,17 +106,17 @@ run_Wald_tests <- function(mod) {
   trt_coefs <- which(grepl("gk_", names(coef(mod))))
   if (all(class(mod) == "lm")) {
     clustering_var <- model.frame(mod)$gkschid
-    CR0 <- Wald_test(mod, trt_coefs, vcov = "CR0", cluster = clustering_var, test = "Naive-F")
+    CR1 <- Wald_test(mod, trt_coefs, vcov = "CR1", cluster = clustering_var, test = "Naive-F")
     CR2 <- Wald_test(mod, trt_coefs, vcov = "CR2", cluster = clustering_var, test = c("Naive-F","HTZ")) 
   } else {
-    CR0 <- Wald_test(mod, trt_coefs, vcov = "CR0", test = "Naive-F")
+    CR1 <- Wald_test(mod, trt_coefs, vcov = "CR1", test = "Naive-F")
     CR2 <- Wald_test(mod, trt_coefs, vcov = "CR2", test = c("Naive-F","HTZ")) 
   }
-  CR0$CR <- 0
-  CR0$test <- rownames(CR0)
+  CR1$CR <- 1
+  CR1$test <- rownames(CR1)
   CR2$CR <- 2
   CR2$test <- rownames(CR2)
-  res <- rbind(CR0, CR2)
+  res <- rbind(CR1, CR2)
   class(res) <- "data.frame"
   row.names(res) <- NULL
   select(res, CR, test, Fstat, df, p_val)

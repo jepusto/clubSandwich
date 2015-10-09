@@ -52,6 +52,7 @@
 \usepackage{amsthm}
 \usepackage{graphicx,psfrag,epsf}
 \usepackage{enumerate}
+\usepackage{booktabs}
 %\usepackage{natbib}
 \RequirePackage[natbibapa]{apacite}
 
@@ -137,17 +138,17 @@ The text of your abstract.  200 or fewer words.
 %Recent solutions. 
 
 The use of cluster-robust variance estimation \citep[CRVE][]{Arellano1987computing, Liang1986longitudinal, white1984asymptotic} is now common across a wide range of economic analyses.
-Standard errors are routinely ``clustered'' to account for correlations arising from the sampling of aggregate units (e.g., countries, regions, states, villages) containing multiple individuals. 
+Standard errors are routinely ``clustered'' to account for correlations arising from the sampling of aggregate units (e.g., countries, regions, states, villages), each containing multiple individuals. 
 Likewise, CRVE is now routinly used in analysis of panel data to account for correlation of measurements on the same individual unit across time periods. 
 The method is an extension to another economic mainstay, heteroscedasticity-robust standard errors \citep{eicker1967limit, Huber1967behavior, White1980heteroskedasticity}, which are used to account for non-constant variance in regression models. 
-Although CRVE has existed for over 30 years, its has become standard practice only in the last decade, as illustrated by its coverage in major textbooks and review articles \citep[e.g.,][]{Wooldridge2010econometric, Angrist2009mostly, Cameron2015practitioners}.
+Although CRVE has existed for over 30 years, it has become standard practice only in the last decade, as illustrated by its coverage in major textbooks and review articles \citep[e.g.,][]{Wooldridge2010econometric, Angrist2009mostly, Cameron2015practitioners}.
 
 CRVE allows analysts to estimate causal and structural models using ordinary least squares (OLS) or weighted least squares (WLS), while adjusting standard errors thereafter.
 Cluster-robust variance estimators can also be used as the basis for both single- or multiple-parameter hypothesis tests.
 For example, an analyst may wish to understand the effects on employment outcomes of several state-level policy shifts, where the policies were implemented at different time-points in each state. 
 A standard approach to estimating such effects is via a regression model that includes indicator variables for each policy shift, as well as fixed effects for states and time-periods in order to control for unobserved confounding in each of these dimensions. 
-The model might be estimated by OLS, with the fixed effects included as indicator variables; more commonly, the effects of the policy indicators might be estimated after absorbing the fixed effects, a computational technique that is also known as fixed effects transformation or within transformation \citep{Wooldridge2010econometric}. 
-Standard errors would then be clustered by state to account for dependence in the residual errors from a given state, and these clustered standard errors would by used to test hypotheses regarding each policy (i.e., a t-test) or across policies (i.e., an F-test).
+The model might be estimated by OLS, with the fixed effects included as indicator variables; more commonly, the effects of the policy indicators might be estimated after absorbing the fixed effects, a computational technique that is also known as the fixed effects or within transformation \citep{Wooldridge2010econometric}. 
+Standard errors would then be clustered by state to account for dependence in the residual errors from a given state, and these clustered standard errors would be used to test hypotheses regarding each policy (i.e., a t-test) or across policies (i.e., an F-test).
 The need to cluster the standard errors by state, even when including state fixed effects, was highlighted by \citet{Bertrand2004how}, who showed that to do otherwise can lead to inappropriately small standard errors and hypothesis tests with incorrect rejection rates. 
 
 In CRVE, standard errors are estimated empirically, thus not requiring analysts to assume a particular correlation structure.
@@ -163,10 +164,9 @@ Simulations reported by \citet{Bell2002bias} demonstrate that the BRL correction
 The same authors also proposed and studied small-sample corrections to single-parameter hypothesis tests using the BRL variance estimator, based on Satterthwaite \citep{Bell2002bias} or saddlepoint approximations \citep{McCaffrey2006improved}.
 
 Despite promising simulation evidence that BRL performs well \citep[e.g.,][]{Imbens2012robust}, several problems arise making it difficult to implement in the kinds of analyses common in economics. 
-First, as \citet{Angrist2009mostly} argue, if the fixed effects are accounted for via the inclusion of cluster dummies, the BRL adjustment breaks down and cannot be implemented.\todo{This isn't right.} 
-This makes the method only useful in cases in which absorbtion or demeaning is preferred.
-Second, however, as \citet{Cameron2015practitioners} highlight, the standard errors that result from absorption can be substantially different than those produced using dummies. 
-This inconsisency leads analysts to have to choose the appropriate method for accounting for fixed effects on an ad hoc basis, with little guidance regarding the best strategy.
+First, as \citet{Angrist2009mostly} argue, when clustering is doubly accounted for (both through fixed effects and clustered standard errors) the BRL adjustment breaks down and cannot be implemented.
+Second, however, as \citet{Cameron2015practitioners} highlight, even when the BRL adjustment can be computed, the standard errors that result from absorption can be substantially different than those produced using dummy fixed effects. 
+This problem also plagues the small sample corrections more commonly implemented, and leads analysts to have to choose the appropriate method for accounting for fixed effects on an ad hoc basis, with little guidance regarding the best strategy.
 Third---and more generally---although \citet{Bell2002bias} provide a method for conducting single parameter tests, small-sample methods for multiple-parameter tests are lacking.
 These tests occur commonly in the broader economics literature and are found not only in panel data (e.g., the Hausman test), but also more broadly in seemingly unrelated regression models, and when analyzing experimental data (e.g., baseline equivalence), particularly when there are multiple treatment groups. 
 
@@ -176,7 +176,8 @@ In this paper, we address each of these three concerns, in the end articulating 
 In the remainder of this section, we introduce our econometric framework and review the standard CRVE methods, as implemented in most software applications. 
 In Section 2, we review the original BRL correction, and propose modifications that make it possible to implement BRL in a broad class of models with fixed effects.
 In Section 3, we propose a method for testing multiple-constraint hypotheses (i.e., F-tests) based on CRVE with the BRL adjustments, and show that the t-test proposed by \citet{Bell2002bias} is a special case. 
-We then provide simulation evidence that this small-sample F-test offers drastic improvements over commonly implemented alternatives and performs comparably with current state-of-the-art methods such as the cluster-wild bootstrap procedure described by \citet{Cameron2008bootstrap} and \citet{Webb2013wild}. 
+We then provide simulation evidence that this small-sample F-test offers drastic improvements over commonly implemented alternatives.
+%and performs comparably with current state-of-the-art methods such as the cluster-wild bootstrap procedure described by \citet{Cameron2008bootstrap} and \citet{Webb2013wild}. 
 In Section 4, we illustrate the use of CRVE in small samples, implementing the proposed hypothesis tests in three examples that cover a variety of contexts where CRVE is commonly used. 
 We conclude the paper with a discussion (Section 5), where we argue that the BRL approach given here is not only superior to CRVE more generally, but also that it is potentially more useful in practice than other resampling based methods.\todo{Bold!} 
 
@@ -472,12 +473,18 @@ We consider how to estimate $\eta$ below.
 This approach is conceptually similar to the Satterthwaite approximation for one-dimensional constraints and reduces to it if $q = 1$. 
 For $q > 1$, however, the test depends on multivariate features of the covariates, including both CRVE estimates of variances and covariances. 
 
-Although not previously considered for Wald tests based on CRVE, the strategy of approximating the distribution of a robust variance estimator by a Wishart has been studied for some simpler models that are to special cases of CRVE. \citet{Zhang2013tests, Zhang2012twowayANOVA} described an AHT test for contrasts in analysis of variance models with unequal within-cell variance, which are particularly simple cases of linear models with heteroskedastic error terms. \citet{Zhang2012MANOVA} extended the method to multivariate analysis of variance models where the covariance of the errors differs across cells, a special case of model (\ref{eq:fixed_effects}) in which the CR2 variance estimator has a particularly simple form. In all of these cases, Zhang demonstrated that the robust variance estimator is a mixture of Wishart distributions that is well-approximated by a Wishart distribution with estimated degrees of freedom. Additionally, \citet{Pan2002small} described an F-test based on CR0 for use in GEE models, which also uses the Wishart approximation to the distribution of $\bm{V}^{CR}$ but estimates the degrees of freedom using a different method than the one we describe below.
+Although not previously considered for Wald tests based on CRVE, the strategy of approximating the distribution of a robust variance estimator by a Wishart has been studied for some simpler models that are to special cases of CRVE. 
+\citet{Zhang2013tests, Zhang2012twowayANOVA} described an AHT test for contrasts in analysis of variance models with unequal within-cell variance, which are particularly simple cases of linear models with heteroskedastic error terms. 
+\citet{Zhang2012MANOVA} extended the method to multivariate analysis of variance models where the covariance of the errors differs across cells, a special case of model (\ref{eq:fixed_effects}) in which the CR2 variance estimator has a particularly simple form. In all of these cases, Zhang demonstrated that the robust variance estimator is a mixture of Wishart distributions that is well-approximated by a Wishart distribution with estimated degrees of freedom. 
+Additionally, \citet{Pan2002small} described an F-test based on CR0 for use in GEE models, which also uses the Wishart approximation to the distribution of $\bm{V}^{CR}$ but estimates the degrees of freedom using a different method than the one we describe below.
 
-The contribution of the present paper is to extend the AHT test to the more general setting of linear models with fixed effects. The remaining question is how to estimate the parameter $\eta$, which determines scalar multiplier and demoninator degrees of freedom of the F-test. 
+The contribution of the present paper is to extend the AHT test to the more general setting of linear models with fixed effects. 
+The remaining question is how to estimate the parameter $\eta$, which determines scalar multiplier and demoninator degrees of freedom of the F-test. 
 To do so, we estimate the degrees of freedom of the Wishart distribution so that they match the mean and variance of $\bm{C}\bm{V}^{CR} \bm{C}'$ under the working variance model $\bs\Phi$, just as in the degrees of freedom for the t-test. 
 The problem that arises in doing so is that when $q > 1$ it is not possible to exactly match both moments. 
-\cite{Pan2002small} proposed to choose $\eta$ to minimize the squared differences between the covariances among the entries of $\eta \bm{C}\bm{V}^{CR}\bm{C}'$ and the covariances of the Wishart distribution with $\eta$ degrees of freedom and scale matrix $\bm{C}\bm{V}^{CR}\bm{C}'$. \citet{Zhang2012MANOVA} instead matches the mean and total variance of $\bm{C}\bm{V}^{CR}\bm{C}'$ (i.e., the sum of the variances of its entries), which avoids the need to calculate any covariances. In what follows we focus on this latter approach, which we have found to perform better in practice \citep{Tipton2015small}.
+\cite{Pan2002small} proposed to choose $\eta$ to minimize the squared differences between the covariances among the entries of $\eta \bm{C}\bm{V}^{CR}\bm{C}'$ and the covariances of the Wishart distribution with $\eta$ degrees of freedom and scale matrix $\bm{C}\bm{V}^{CR}\bm{C}'$. 
+\citet{Zhang2012MANOVA} instead matches the mean and total variance of $\bm{C}\bm{V}^{CR}\bm{C}'$ (i.e., the sum of the variances of its entries), which avoids the need to calculate any covariances. 
+In what follows we focus on this latter approach, which we have found to perform better in practice \citep{Tipton2015small}.
 
 Let $\bm{c}_1,...,\bm{c}_q$ denote the $p \times 1$ row-vectors of $\bm{C}$. 
 Let $\bm{p}_{sh} = \left(\bm{I} - \bm{H}\right)_h'\bm{A}_h'\bm{W}_h\bm{X}_h\bm{M}\bm{c}_s$ for $s = 1,...,q$ and $h = 1,...,m$. 
@@ -499,25 +506,48 @@ When the proportion varies across clusters, these degrees of freedom fall, often
 %In the next section, we will illustrate these principles in several examples.
 \subsection{Simulation Study}
 
-In the previous sub-sections, we have argued that the previously proposed BRL (CR2) t-test and our proposed AHT F-test both perform significantly better than the standard CR1 based tests commonly used in economic applications. 
-This argument is based on extensive simulations that illustrate that the Type I error of the CR1 t-tests can be far above nominal while the CR2 t-test remains close to nominal, and that the differences in these patterns depends largely on features of the covariates being tested. 
-For example, simulation studies by MacKinnon (2013) indicate that when a covariate has high skew, particularly with a large leverage point, that for a test with $\alpha$ = 0.05, the Type I error can be as high as 0.30 (CITE).
-Similarly, simulations by Tipton (2014) indicate that in these cases, the CR2 test performs vastly better, largely because the degrees of freedom of the CR2 test are much smaller than those of the CR1 test (e.g., df = 5.05 vs df = 38).
-Imbens and Kolesar ....
-Cameron and Miller ....
-While not as widely studied, simulation results for the AHT F-test indicate similar patterns (Tipton and Pustejovsky, in press). 
-In a large set of simulations, these indicate that the CR1 based F-test (with $q$ and $m - 1$ degrees of freedom) can lead to Type I error many times larger than stated, and that like the t-test, these patterns are strongest when the covariates included in the test exhibit large imbalances or skew. 
-Also like the CR2 t-test, the AHT F-test performs close to nominal largely because these covariate features are taken into account in the calculation of the degrees of freedom, which can be much smaller than $m - 1$ in practice.
+Throughout this paper, we have argued that the CR2 hypothesis tests (i.e., the BRL t-test and the AHT F-test) perform significantly better than the standard CR1 tests commonly used in economic applications. 
+This argument is based on results from several large simulation studies. 
+In this section, we review the design of these studies and their results, with particular emphasis on the role of covariate features and sample size on the Type I error rates of these tests.
+Throughought, we use "CR2" test to refer to that with both the BRL correction to the variance and the Satterthwaite degrees of freedom. 
 
-In this section, we illustrate the performance of the new AHT F-test using a simulation study focused on the data generation models commonly found in economic analyses.
-Our focus here is on indicating cases in which the results from the standard CR1 F-test may diverge largely from that of this CR2 test.
-By studying these "extreme" cases, we can have a sense of how these tests perform in wide variety of circumstances, and the factors that affect performance.
-In particular, we focus here on cases in which the true covariance structure deviates significantly from the 'working model', since we anticipate that economists used to the "model-free" benefits of CRVE may be particularly interested in these findings. 
+To date, four papers have examined the performance of the CR2 t-test; the results of these studies are indicated in TABLE 1. 
+As Table 1 illustrates, these simulation studies have included a range of applications; for example, Cameron and Miller (2015) and Imbens and Kolesar (2015) have focused on conditions common in economics, while Bell and McCaffrey (2002) focused on those common in complex surveys, and Tipton (2015) on those in meta-analysis. 
+Some of these studies have focused on policy dummies in the balanced case, while others have varied the degree of balance, and yet others have examined continous covariates that are symmetrically distributed, as well as those with high skew and leverage.
+In particular, these studies show that the CR1 t-test can have Type I error far above nominal when the covariate tested is unbalanced, skewed (i.e., high leverage), or when the number of observations per cluster varies. 
+These studies have also examined the role of the number of clusters, with values ranging from 6 to 50, as well as the number of observations per clusters (from 1 to roughly 260).
+Results not shown in Table 1 indicate that differences between the CR1 and CR2 test performance have less to do with the number of clusters, however, than the degrees of freedom, and that these degrees of freedom can be tremendously smaller than the number of clusters and depend on covariate features.
+Finally, each of the simulation studies tests how well the CR2 approach holds up to model misspecification, particularly since the approach requires specification of a "working" model (see columns for "error structure").
+To do so, these studies have simulated data with various degress of heteroskedasticity and clustering, while using working models that are more simple.
+
+Table 1 also highlights the range of Type I error values found in these studies for both the CR1 and CR2 tests.
+Looking over all the conditions studied, this ranges 0.001 - 0.13 for CR2, compared to 0.01 - 0.34 for CR1, with these differences being most pronounced for covariates that are unbalanced or have high leverage.
+Importantly, both Bell and McCaffrey (2002) and Tipton (2015) highlight that the t-distribution approximation used in the CR2 test holds only when the degrees of freedom are greater than about 4 or 5, and therefore break out their results separately for these two cases.
+These results (not shown here) indicate that the CR2 test has nominal Type I error whenever the degrees of freedom are greater than 4 or 5, but can have Type I error slightly above or below nominal for smaller degrees of freedom.
+This is important since the highest Type I error for the CR2 test is indicated in the Imbens and Kolesar (2015) paper (i.e., 0.13), and this paper does not separate results out by degrees of freedom. 
+Given the conditions studied (i.e., only 3 out of 30 clusters have a policy), we would expect that the degrees of freedom here are very small, thus explaining the larger than typical Type I error.
+
+%Table 1: Review of previous literature
+
+In comparison to the t-test, the CR2 F-test has only been tested by fewer authors.
+Tipton and Pustejovsky (2015) initially proposed the test in the meta-analytic case, however, and conducted extensive simulations in the conditions encountered there commonly. 
+These conditions are found in the final panel of Table 1.
+As these rows indicate, these simulations varied the number of clusters $m$ (10 - 100), as well as the number of within-cluster observations $n$ (from 1 to 10), the dimension $q$ of the test (from 2 - 5) and the number of covariates in the regression model $p$ from 2 - 5. 
+In the meta-analytic context, it is typical to use inverse-variance weighting (akin to feasible-WLS) to account for heteroskedasticity, and these simulations thus base both the working model and the weights upon a simple heteroscedastic structure. 
+The true correlation structure is varied far from this by inclusion of both correlations between errors within studies and random effects between studies; this is similar to the structure used in Tipton (2015). 
+As Table 2 indicates, over this range of conditions, the Type I error for the CR2 F-test ranges between XXX-XXX, while varying considerably from XX-XXX for the CR1 test.
+
+Given the fact that the CR2 F-test is newer, in this section we conduct a new simulation study focused on the contexts found more commonly in the economics literature.
+This includes tests where $q$ is relatively small (e.g., 2 - 4) while $p$ is larger (since the model often includes demographic controls).
+Most importantly, we focus on the case in which the working model assumes homoscedasticity (what the literature refers to as the "BM" working model) or assumes random effects (suggested by Imbens-Kolesar).
+We also increase the within-study sample size to $n = 100$, to become more closely in line with conditions found in practice. 
+Like previous studies, we then vary the true correlation structure so as to test the sensitivity of the CR2 approach to model misspecification.
 
 %Data generation
 
 \subsection{Results}
 
+%Put these in Table 3
 
 \section{EXAMPLES}
 \label{subsec:examples_F}
@@ -535,11 +565,47 @@ The Tennessee STAR class size experiment is one of the most intensively studied 
 
 The class-size experiment consists of three treatment conditions and multiple, student-level outcomes of possible interest. Here, we examine the results for the subgroup of students who were in kindergarten during the first year of the study, focusing on reading, word recognition, and math scores measured at the end of kindergarten \citep{Achilles2008tennessee}. Following \citet{Krueger2001effect}, we put the three outcomes on comparable scales by converting the scores to percentile ranks based upon their distributions in the control condition. The analytic model is then
 \begin{equation}
-y_{ijk} = \bm{r}_{ij}'\bs\beta_k + \bm{s}_{ij}'\bs\gamma + \delta_i + \epsilon_{ijk}, 
+y_{ijk} = \bm{r}_{ij}'\bs\beta_k + \bm{s}_{ij}'\bs\gamma_0 + \gamma_k + \delta_i + \epsilon_{ijk}, 
 \end{equation}
-where $y_{ijk}$ is the percentile rank for student $j$ in school $i$ on outcome $k$; $\bm{r}_{ij}$ includes indicators for the small-class and regular-plus-aide conditions; $\bm{s}_{ij}$ includes student demographic covariates (i.e., free or reduced-price lunch status; race; gender; age). 
+where $y_{ijk}$ is the percentile rank on outcome $k$ for student $j$ in school $i$; $\bm{r}_{ij}$ includes indicators for the small-class and regular-plus-aide conditions; $\bm{s}_{ij}$ includes student demographic covariates (i.e., free or reduced-price lunch status; race; gender; age); $\gamma_k$ is a fixed effect for outcome $k$; and $\delta_i$ is a fixed effect for school $i$. 
 
-We estimated the model in two ways. First, we estimated $\bs\beta_k$ separately for each outcome $k$ and tested the null hypothesis that $\bs\beta_k = \bm{0}$. Second, we use the seemingly unrelated regression (SUR) framework to test for treatment effects across conditions, using a simultaneous test across outcomes. In the SUR model, separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. An overall test of the differences between conditions thus amounts to testing the null hypothesis that $\bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bm{0}$. In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the school fixed effects and clustered the errors by school.
+We estimated the model in two ways. First, we estimated $\bs\beta_k$ separately for each outcome $k$ and tested the null hypothesis that $\bs\beta_k = \bm{0}$. Second, we use the seemingly unrelated regression (SUR) framework to simultaneously test for treatment effects across conditions and across outcomes. In the SUR model, separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. An overall test of the differences between conditions thus amounts to testing the null hypothesis that $\bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bm{0}$. In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the school fixed effects and clustered the errors by school.
+
+% latex table generated in R 3.2.2 by xtable 1.7-4 package
+% Fri Oct 09 16:04:51 2015
+\begin{table}[tbh]
+\centering
+\begin{tabular}{lccrrr}
+  \toprule
+Outcome & Correction & Test & F & df & p \\ 
+  \midrule
+Reading & CR1 & F & 9.073 & 78.0 & 0.00029 \\ 
+   & CR2 & F & 9.046 & 78.0 & 0.00029 \\ 
+   & CR2 & AHZ & 8.916 & 68.5 & 0.00036 \\ 
+   \midrule
+Math & CR1 & F & 6.838 & 78.0 & 0.00183 \\ 
+   & CR2 & F & 6.823 & 78.0 & 0.00186 \\ 
+   & CR2 & AHZ & 6.725 & 68.6 & 0.00215 \\ 
+   \midrule
+Word recognition & CR1 & F & 8.094 & 78.0 & 0.00064 \\ 
+   & CR2 & F & 8.073 & 78.0 & 0.00065 \\ 
+   & CR2 & AHZ & 7.957 & 68.5 & 0.00078 \\ 
+   \midrule
+Combined (SUR) & CR1 & F & 3.284 & 78.0 & 0.00622 \\ 
+   & CR2 & F & 3.276 & 78.0 & 0.00632 \\ 
+   & CR2 & AHZ & 3.042 & 64.9 & 0.01103 \\ 
+   \bottomrule
+\end{tabular}
+\caption{Tests of treatment effects in Tennessee STAR class size experiment} 
+\label{tab:STAR}
+\end{table}
+
+
+
+Table \ref{tab:STAR} displays the results of the hypothesis tests. Across all outcomes, use of CR2 variance estimates with the AHZ test leads to slightly smaller F statistics, smaller degrees of freedom, and larger $p$-values compared to use of CR1 or CR2 with $J - 1$ degrees of freedom. In all cases, the reduction in degrees of freedom is relatively minor (i.e., less than 10 for the tests of individual outcomes and less than 15 for the joint test). This is because the class-size experiment used a randomized block design, and so the constraints being tested are identified within every cluster and are relatively balanced. Nonetheless, the use of the AHZ test still makes a bigger difference in the F statistic and $p$-values than does the use of CR2 standard errors.
+\todo[inline]{Why do degrees of freedom change across outcomes? Is it just little changes in missing observations? Should we just show reading and SUR results?}
+\todo[inline]{Should we do any t-tests?}
+\todo[inline]{Why does SUR test have bigger p-value than individual tests?}
 
 \subsection{Heterogeneous treatment impacts} 
 
