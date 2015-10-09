@@ -88,15 +88,16 @@ SUR_plm <- plm(test_pct ~ outcome + outcome:gk_small + outcome:gk_RA + white + f
                 data = student_dat_outcomes, index = c("gkschid","SID_outcome"))
 all.equal(coef(SUR)[80:91], coef(SUR_plm))
 
-SUR_gls <- gls(test_pct ~ 0 + gkschid + outcome + outcome:gk_small + outcome:gk_RA
-               + white + female + free + agek, data = student_dat_outcomes, 
-               correlation = corSymm(form = ~ outcome_int | stdntid))
-summary(SUR_gls)$tTable[-(1:79),]
+# SUR_gls <- gls(test_pct ~ 0 + gkschid + outcome + outcome:gk_small + outcome:gk_RA
+#                + white + female + free + agek, data = student_dat_outcomes, 
+#                correlation = corSymm(form = ~ outcome_int | stdntid))
+# summary(SUR_gls)$tTable[-(1:79),]
 
 mods <- list(read_lm = read, read_plm = read_plm,
              math_lm = math, math_plm = math_plm,
              word_lm = word, word_plm = word_plm,
-             SUR_lm = SUR, SUR_plm = SUR_plm, SUR_gls = SUR_gls)
+             SUR_lm = SUR, SUR_plm = SUR_plm)
+
 #------------------------------------------
 # Wald tests
 #------------------------------------------
@@ -121,13 +122,27 @@ run_Wald_tests <- function(mod) {
   select(res, CR, test, Fstat, df, p_val)
 }
 
-system.time(F_tests <- ldply(mods[seq(2,8,2)], run_Wald_tests, .progress = "text"))
+system.time(F_tests <- ldply(mods, run_Wald_tests, .progress = "text"))
 save(F_tests, file = "paper_ClusterRobustTesting/STAR_test_results.Rdata")
 
-# system.time(SUR_gls_F <- run_Wald_tests(SUR_gls))
-# Need to fix IH calculation in vcovCR!!!!
 trt_coefs <- which(grepl("gk_", names(coef(SUR_gls))))
 gls_CR0 <- vcovCR(SUR_gls, type = "CR0")
 gls_CR2 <- vcovCR(SUR_gls, type = "CR2")
 Wald_test(SUR_gls, trt_coefs, vcov = gls_CR0, test = "Naive-F")
 Wald_test(SUR_gls, trt_coefs, vcov = gls_CR2, test = c("Naive-F","HTZ"))
+
+
+#------------------------
+# Test
+#------------------------
+obj <- SUR
+clustering_var <- model.frame(obj)$gkschid
+type <- "CR2"
+target <- NULL
+inverse_var <- FALSE
+
+system.time(CR0 <- vcovCR(obj, cluster = clustering_var, type = "CR0", inverse_var = inverse_var))
+system.time(CR1 <- vcovCR(obj, cluster = clustering_var, type = "CR1", inverse_var = inverse_var))
+system.time(CR2 <- vcovCR(obj, cluster = clustering_var, type = "CR2", inverse_var = inverse_var))
+system.time(CR3 <- vcovCR(obj, cluster = clustering_var, type = "CR3", inverse_var = inverse_var))
+system.time(CR4 <- vcovCR(obj, cluster = clustering_var, type = "CR4", inverse_var = inverse_var))
