@@ -146,23 +146,23 @@ We conclude the paper with a discussion (Section 5), where we argue that the BRL
 We begin by considering a generic model of the form,
 \begin{equation}
 \label{eq:fixed_effects_ij}
-\ {y}_{ij} = \bm{r}_{ij}' \bs\beta + \bm{s}_{ij}' \bs\gamma + \bm{t}_{ij}' \bs\delta + \epsilon_{ij} 
+\ {y}_{ij} = \bm{r}_{ij}' \bs\beta + \bm{s}_{ij}' \bs\gamma + \bm{t}_{ij}' \bs\mu + \epsilon_{ij} 
 \end{equation}
-where for observation $j$ in cluster $i$, $\bm{r}_{ij}$ is a vector of $r$ predictors of primary interest in an analysis (e.g., policy variables) as well as additional control variables, $\bm{s}_{ij}$ is a vector of $s$ fixed effects that vary across clusters, and $\bm{t}_{ij}$ is a vector of $t$ fixed effects that are identified within clusters. In the state-policy example described in the introduction, the $\bm{r}_{ij}$ would include indicators for each policy under study and additional demographic controls, $\bm{s}_{ij}$ would include year fixed effects, and $\bm{t}_{ij}$ would indicate state fixed effects. Interest would focus on testing hypotheses regarding the coefficients in $\bs\beta$ that correspond to the policy indicators, while $\bs\gamma$ and $\bs\delta$ would be considered incidental. 
+where for observation $j$ in cluster $i$, $\bm{r}_{ij}$ is a vector of $r$ predictors of primary interest in an analysis (e.g., policy variables) as well as additional control variables, $\bm{s}_{ij}$ is a vector of $s$ fixed effects that vary across clusters, and $\bm{t}_{ij}$ is a vector of $t$ fixed effects that are identified within clusters. In the state-policy example described in the introduction, the $\bm{r}_{ij}$ would include indicators for each policy under study and additional demographic controls, $\bm{s}_{ij}$ would include year fixed effects, and $\bm{t}_{ij}$ would indicate state fixed effects. Interest would focus on testing hypotheses regarding the coefficients in $\bs\beta$ that correspond to the policy indicators, while $\bs\gamma$ and $\bs\mu$ would be considered incidental. 
 
 In developing theory, it is often easier to work with the matrix version of this model, where now
 \begin{equation}
 \label{eq:fixed_effects}
-\bm{y}_i = \bm{R}_i \bs\beta + \bm{S}_i \bs\gamma + \bm{T}_i \bs\delta + \bs\epsilon_i,
+\bm{y}_i = \bm{R}_i \bs\beta + \bm{S}_i \bs\gamma + \bm{T}_i \bs\mu + \bs\epsilon_i,
 \end{equation}
 where for cluster $j$, $\bm{R}_i$ is an $n_i \times r$ matrix of focal predictors and controls; $\bm{S}_i$ is an $n_i \times s$ matrix describing fixed effects that vary across clusters, and $\bm{T}_i$ is an $n_i \times t$ matrix describing fixed effects that are identified only within clusters. 
 
 We assume that $\E\left(\bs\epsilon_i\left|\bm{R}_i,\bm{S}_i, \bm{T}_i\right.\right) = \bm{0}$ and $\Var\left(\bs\epsilon_i\left|\bm{R}_i,\bm{S}_i,\bm{T}_i\right.\right) = \bs\Sigma_i$, for $i = 1,...,m$, where the form of $\bs\Sigma_1,...,\bs\Sigma_m$ may be unknown but the errors are independent across clusters. 
-For notational convenience, let $\bm{U}_i = \left[\bm{R}_i \ \bm{S}_i \right]$ denote the set of predictors that vary across clusters, $\bm{X}_i = \left[\bm{R}_i \ \bm{S}_i \ \bm{T}_i \right]$ denote the full set of predictors, $\bs\alpha = \left(\bs\beta', \bs\gamma', \bs\delta' \right)'$, and $p = r + s + t$.
+For notational convenience, let $\bm{U}_i = \left[\bm{R}_i \ \bm{S}_i \right]$ denote the set of predictors that vary across clusters, $\bm{X}_i = \left[\bm{R}_i \ \bm{S}_i \ \bm{T}_i \right]$ denote the full set of predictors, $\bs\alpha = \left(\bs\beta', \bs\gamma', \bs\mu' \right)'$, and $p = r + s + t$.
 Denote the total number of individual observations by $N = \sum_{i=1}^m n_i$.
 Let $\bm{y}$, $\bm{R}$, $\bm{S}$, $\bm{T}$, $\bm{U}$, and $\bm{X}$ denote the matrices obtained by stacking their corresponding components, as in $\bm{R} = \left(\bm{R}_1' \ \bm{R}_2' \ \cdots \ \bm{R}_m'\right)'$. 
 
-In this model, inferential interest is confined to $\bs\beta$ and the fixed effects $\bs\gamma$ and $\bs\delta$ are treated as nuisance parameters. The distinction between the covariates $\bm{R}_i$ versus the fixed effects $\left[\bm{S}_i \ \bm{T}_i\right]$ thus depends on context and the analyst's inferential goals. However, the distinction between the two fixed effect matrices $\bm{S}_i$ and $\bm{T}_i$ is unambiguous, in that the within-cluster fixed effects satisfy $\bm{T}_h \bm{T}_i' = \bm{0}$ for $h \neq i$. We further assume that $\left(\bm{U}'\bm{U} - \bm{U}_i'\bm{U}_i\right)$ is of full rank for $i = 1,...,m$.
+In this model, inferential interest is confined to $\bs\beta$ and the fixed effects $\bs\gamma$ and $\bs\mu$ are treated as nuisance parameters. The distinction between the covariates $\bm{R}_i$ versus the fixed effects $\left[\bm{S}_i \ \bm{T}_i\right]$ thus depends on context and the analyst's inferential goals. However, the distinction between the two fixed effect matrices $\bm{S}_i$ and $\bm{T}_i$ is unambiguous, in that the within-cluster fixed effects satisfy $\bm{T}_h \bm{T}_i' = \bm{0}$ for $h \neq i$. We further assume that $\left(\bm{U}'\bm{U} - \bm{U}_i'\bm{U}_i\right)$ is of full rank for $i = 1,...,m$.
 
 We can estimate the $\bs\beta$ using weighted least squares (WLS), where for cluster $i$ we define $\bm{W}_i$ to be a symmetric, $n_i \times n_i$ weighting matrix of full rank. 
 Importantly, the WLS framework includes the unweighted case (where $\bm{W}_i = \bm{I}_i$, an identity matrix), as well as feasible GLS.\footnote{
@@ -177,7 +177,7 @@ Finally, for analysis of data from complex survey designs, WLS may be used with 
 \subsection{Absorption}
 
 In most analyses, the goal is to estimate and test hypotheses regarding the parameters in $\bs\beta$. 
-This means that the values of $\bs\gamma$ and $\bs\delta$ are nuisance parameters and are not of inferential interest. 
+This means that the values of $\bs\gamma$ and $\bs\mu$ are nuisance parameters and are not of inferential interest. 
 Estimating each of these fixed effects - as occurs if the fixed effects are included as dummy variables in the model - be computationally intensive and numerically inaccurate if the number of clusters is large (i.e., $s + t$ large). 
 In the policy example given above, for example, this could easily result in over 70 parameters (i.e., 50 states, 20 time periods).
 An alternative that is commonly implemented, therefore, is to first absorb the fixed effects. 
@@ -452,7 +452,7 @@ The degrees of freedom are then estimated under the working model as
 \label{eq:eta_model}
 \eta_M = \frac{\sum_{s,t=1}^q \sum_{h,i=1}^m b_{st} \bm{p}_{sh}'\hat{\bs\Phi}\bm{p}_{th} \bm{p}_{si}'\hat{\bs\Phi}\bm{p}_{ti}}{\sum_{s,t=1}^q \sum_{h,i=1}^m \bm{p}_{sh}'\hat{\bs\Phi}\bm{p}_{ti} \bm{p}_{sh}'\hat{\bs\Phi}\bm{p}_{ti} + \bm{p}_{sh}'\hat{\bs\Phi}\bm{p}_{si} \bm{p}_{th}'\hat{\bs\Phi}\bm{p}_{ti}},
 \end{equation}
-where $b_{st} = 1 + (s=t)$ for $s,t=1,..,q$.
+where $b_{st} = 1 + (s=t)$ for $s,t=1,..,q$.\todo{Note that this formulation is different from what we did in the JEBS paper. Are they equivalent? Are they both invariant to transformation of the constraint matrix?}
 Note that $\eta_M$ reduces to $\nu_M$ from Equation (\ref{eq:nu_model}) if $q = 1$.
 
 This F-test shares features with the t-test developed by Bell and McCaffrey. Like the t-test, the degrees of freedom of this F-test depend not only on the number of clusters, but also on features of the covariates being tested. 
@@ -524,9 +524,9 @@ The Tennessee STAR class size experiment is one of the most intensively studied 
 
 The class-size experiment consists of three treatment conditions and multiple, student-level outcomes of possible interest. Here, we examine the results for the subgroup of students who were in kindergarten during the first year of the study, focusing on reading, word recognition, and math scores measured at the end of kindergarten \citep{Achilles2008tennessee}. Following \citet{Krueger2001effect}, we put the three outcomes on comparable scales by converting the scores to percentile ranks based upon their distributions in the control condition. The analytic model is then
 \begin{equation}
-y_{ijk} = \bm{r}_{ij}'\bs\beta_k + \bm{s}_{ij}'\bs\gamma_0 + \gamma_k + \delta_i + \epsilon_{ijk}, 
+y_{ijk} = \bm{r}_{ij}'\bs\beta_k + \bm{s}_{ij}'\bs\gamma_0 + \gamma_k + \mu_i + \epsilon_{ijk}, 
 \end{equation}
-where $y_{ijk}$ is the percentile rank on outcome $k$ for student $j$ in school $i$; $\bm{r}_{ij}$ includes indicators for the small-class and regular-plus-aide conditions; $\bm{s}_{ij}$ includes student demographic covariates (i.e., free or reduced-price lunch status; race; gender; age); $\gamma_k$ is a fixed effect for outcome $k$; and $\delta_i$ is a fixed effect for school $i$. 
+where $y_{ijk}$ is the percentile rank on outcome $k$ for student $j$ in school $i$; $\bm{r}_{ij}$ includes indicators for the small-class and regular-plus-aide conditions; $\bm{s}_{ij}$ includes student demographic covariates (i.e., free or reduced-price lunch status; race; gender; age); $\gamma_k$ is a fixed effect for outcome $k$; and $\mu_i$ is a fixed effect for school $i$. 
 
 We estimated the model in two ways. First, we estimated $\bs\beta_k$ separately for each outcome $k$ and tested the null hypothesis that $\bs\beta_k = \bm{0}$. Second, we use the seemingly unrelated regression (SUR) framework to simultaneously test for treatment effects across conditions and across outcomes. In the SUR model, separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. An overall test of the differences between conditions thus amounts to testing the null hypothesis that $\bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bm{0}$. In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the school fixed effects and clustered the errors by school.
 
@@ -562,12 +562,23 @@ Table \ref{tab:STAR} displays the results of the hypothesis tests. Across all ou
 \todo[inline]{Should we do any t-tests?}
 \todo[inline]{Why does SUR test have bigger p-value than individual tests?}
 
-\subsection{Heterogeneous treatment impacts} 
+\subsection{Achievement Awards demonstration} 
 
-\citet{Angrist2009effects} reported results from a randomized trial in Israel aimed at increasing matriculation certification for post-secondary education among low achievers. 
-In the Achievement Awards demonstration, 40 non-vocational high schools with the lowest 1999 certification rates nationally were selected (but with a  minimum threshold of 3\%). This included 10 Arab and 10 Jewish religious schools and 20 Jewish secular schools. The 40 schools were then pair-matched based on the 1999 certification rates, and within each pair one school was randomized to receive a cash-transfer program. In these treatment schools, every student who completed certification was eligible for a payment. The total amount at stake for a student who passed all the milestones was just under \$2,400.   
+\citet{Angrist2009effects} reported results from a randomized trial in Israel that aimed to increase completion rates of the Bagrut, the national matriculation certificate for post-secondary education, among low-achieving high school students. 
+In the Achievement Awards demonstration, 40 non-vocational high schools with low rates of Bagrut completion were selected from across Israel, including 10 Arab and 10 Jewish religious schools and 20 Jewish secular schools. 
+The 40 schools were then pair-matched based on 1999 rates of Bagrut completion, and within each pair one school was randomized to receive a cash-transfer program. 
+In these treatment schools, seniors who completed certification was eligible for a payment of approximately \$1,500. Administrative records were available for the school years ending in June of 2000, 2001, and 2002. 
 
-Baseline data was collected in January 2001 with follow up data collected in June 2001 and 2002. Following \citet{Angrist2009effects}, we focus on the number of certification tests taken as the outcome and report results separately for girls, for boys, and for the combined sample. Given that the program took place in three different types of schools, in this example we focus on determining if there is evidence of variation in treatment impacts across types of schools (i.e., Jewish secular, Jewish religious, and Arab). We use the analytic model:
+Our analysis focuses the effect of the cash incentive program on Bagrut completion rates. The completion rates for June, 2000 constitute baseline measures. The incentive program was in effect for the group of seniors in treatment schools taking the Bagrut exams in Spring of 2001. However, the program was discontinued for the following year, and so we treat 2002 completion rates as being unaffected by treatment assignment.
+
+Using specification similar to those estimated in \citet{Angrist2009effects}, we estimate three distinct models in order to demonstrate the performance of the small-sample hypothesis tests. First, we test for whether the average effect of the program differs from zero, using the model: 
+\begin{equation}
+y_{itj} = z_{it}\delta + \bm{r}_{itj}'\bs\beta + \bm{s}_{i}'\bs\gamma_t + \mu_i + \epsilon_{itj}
+\end{equation}
+In this model for student $j$ in year $t$ in school $j$, $z_{it}$ is an indicator equal to one in the treatment schools for the 2001 school year and otherwise equal to zero. The vector $\bm{r}_{itj}$ includes individual student demographic measures (i.e., mother's and father's education, immigration status, number of siblings, and an indicator for the quartile of their pre-test achievement from previous years). The vector $\bm{s}_i$ includes indicator variables for school type (Arab religious, Jewish religious, or Jewish secular), with coefficients that are estimated separately for each year. 
+
+
+Following \citet{Angrist2009effects}, we report results separately for girls, for boys, and for the combined sample. Given that the program took place in three different types of schools, in this example we focus on determining if there is evidence of variation in treatment impacts across types of schools (i.e., Jewish secular, Jewish religious, and Arab). We use the analytic model:
 \begin{equation}
 y_{ij} = \bm{z}_j'\bs\tau_0 + T_j \bm{z}_j \bs\tau_1 + \bm{x}_{ij}'\bs\beta + \epsilon_{ij}
 \end{equation}

@@ -493,7 +493,7 @@ The degrees of freedom are then estimated under the working model as
 \label{eq:eta_model}
 \eta_M = \frac{\sum_{s,t=1}^q \sum_{h,i=1}^m b_{st} \bm{p}_{sh}'\hat{\bs\Phi}\bm{p}_{th} \bm{p}_{si}'\hat{\bs\Phi}\bm{p}_{ti}}{\sum_{s,t=1}^q \sum_{h,i=1}^m \bm{p}_{sh}'\hat{\bs\Phi}\bm{p}_{ti} \bm{p}_{sh}'\hat{\bs\Phi}\bm{p}_{ti} + \bm{p}_{sh}'\hat{\bs\Phi}\bm{p}_{si} \bm{p}_{th}'\hat{\bs\Phi}\bm{p}_{ti}},
 \end{equation}
-where $b_{st} = 1 + (s=t)$ for $s,t=1,..,q$.
+where $b_{st} = 1 + (s=t)$ for $s,t=1,..,q$.\todo{Note that this formulation is different from what we did in the JEBS paper. Are they equivalent? Are they both invariant to transformation of the constraint matrix?}
 Note that $\eta_M$ reduces to $\nu_M$ from Equation (\ref{eq:nu_model}) if $q = 1$.
 
 This F-test shares features with the t-test developed by Bell and McCaffrey. Like the t-test, the degrees of freedom of this F-test depend not only on the number of clusters, but also on features of the covariates being tested. 
@@ -571,8 +571,8 @@ where $y_{ijk}$ is the percentile rank on outcome $k$ for student $j$ in school 
 
 We estimated the model in two ways. First, we estimated $\bs\beta_k$ separately for each outcome $k$ and tested the null hypothesis that $\bs\beta_k = \bm{0}$. Second, we use the seemingly unrelated regression (SUR) framework to simultaneously test for treatment effects across conditions and across outcomes. In the SUR model, separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. An overall test of the differences between conditions thus amounts to testing the null hypothesis that $\bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bm{0}$. In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the school fixed effects and clustered the errors by school.
 
-% latex table generated in R 3.2.2 by xtable 1.7-4 package
-% Fri Oct 09 16:04:51 2015
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Sat Oct 10 19:23:54 2015
 \begin{table}[tbh]
 \centering
 \begin{tabular}{lccrrr}
@@ -599,7 +599,6 @@ Combined (SUR) & CR1 & F & 3.284 & 78.0 & 0.00622 \\
 \caption{Tests of treatment effects in Tennessee STAR class size experiment} 
 \label{tab:STAR}
 \end{table}
-
 
 
 Table \ref{tab:STAR} displays the results of the hypothesis tests. Across all outcomes, use of CR2 variance estimates with the AHZ test leads to slightly smaller F statistics, smaller degrees of freedom, and larger $p$-values compared to use of CR1 or CR2 with $J - 1$ degrees of freedom. In all cases, the reduction in degrees of freedom is relatively minor (i.e., less than 10 for the tests of individual outcomes and less than 15 for the joint test). This is because the class-size experiment used a randomized block design, and so the constraints being tested are identified within every cluster and are relatively balanced. Nonetheless, the use of the AHZ test still makes a bigger difference in the F statistic and $p$-values than does the use of CR2 standard errors.
