@@ -244,9 +244,9 @@ get_S_array <- function(obj, cluster, target, E_list) {
   J <- nlevels(cluster)
   
   X <- model_matrix(obj)
-  p <- ncol(X)
   alias <- is.na(coef_CR(obj))
   if (any(alias)) X <- X[, !alias, drop = FALSE]
+  p <- ncol(X)
   X_list <- matrix_list(X, cluster, "row")
   
   W <- weightMatrix(obj)
@@ -272,5 +272,5 @@ get_S_array <- function(obj, cluster, target, E_list) {
   S_list <- mapply(Sj, e = E_list, x = X_list, tc = Theta_cholT, cl = levels(cluster),
                    MoreArgs = list(cluster=cluster, MXWTheta_cholT=MXWTheta_cholT), SIMPLIFY = FALSE)
 
-  array(unlist(S_list), dim = c(ncol(X), N, J))
+  array(unlist(S_list), dim = c(p, N, J))
 }

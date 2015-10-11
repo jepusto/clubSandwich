@@ -164,11 +164,14 @@ Wald_test <- function(obj, constraints, vcov, test = "HTZ", ...) {
 
 Wald_testing <- function(C_mat, beta, vcov, test, S_array) {
   q <- nrow(C_mat)
-  N <- dim(S_array)[2]
-  J <- dim(S_array)[3]
-  S_array <- array(apply(S_array, 3, function(s) C_mat %*% s), dim = c(q, N, J))
-  Omega <- apply(array(apply(S_array, 3, tcrossprod), dim = c(q,q,J)), 1:2, sum)
-  Omega_nsqrt <- Sym_power(Omega, -1/2)
+  
+  if (any(c("chi-sq","Naive-F","HTA","HTB","HTZ","EDF","EDT") %in% test)) {
+    N <- dim(S_array)[2]
+    J <- dim(S_array)[3]
+    S_array <- array(apply(S_array, 3, function(s) C_mat %*% s), dim = c(q, N, J))
+    Omega <- apply(array(apply(S_array, 3, tcrossprod), dim = c(q,q,J)), 1:2, sum)
+    Omega_nsqrt <- Sym_power(Omega, -1/2)
+  }
   
   # Wald statistic
   Q <- as.numeric(t(C_mat %*% beta) %*% chol2inv(chol(C_mat %*% vcov %*% t(C_mat))) %*% C_mat %*% beta)
