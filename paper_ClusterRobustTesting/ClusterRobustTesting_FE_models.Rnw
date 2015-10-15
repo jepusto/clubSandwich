@@ -83,16 +83,6 @@ The text of your abstract.  200 or fewer words.
 \section{INTRODUCTION}
 \label{sec:intro}
 
-<<setup, include=FALSE, warning=FALSE, cache=FALSE>>=
-library(knitr)
-library(xtable)
-library(dplyr)
-library(stringr)
-
-# set global chunk options
-opts_chunk$set(echo = FALSE, cache = FALSE, fig.path='CR_fig/', fig.align='center', fig.show='hold')
-@
-
 %Problems with standard CRVE.
 %Recent solutions. 
 
@@ -462,8 +452,23 @@ In some situations, however, these are straightforward extensions to the finding
 For example, if the goal is to test if there are differences across a four-arm treatment study, the degrees of freedom are largest (and close to $m - 1$) when the treatment is allocated equally across the four groups within each cluster. 
 When the proportion varies across clusters, these degrees of freedom fall, often leading to degrees of freedom in the ``small sample'' territory even when the number of clusters is large. 
 
-%In the next section, we will illustrate these principles in several examples.
-\subsection{Simulation Study}
+\section{Simulation Study}
+<<setup, include=FALSE, warning=FALSE, cache=FALSE>>=
+library(knitr)
+library(xtable)
+
+library(plyr)
+library(tidyr)
+library(dplyr)
+library(stringr)
+
+library(clubSandwich)
+
+# set global chunk options
+opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache = FALSE, 
+               fig.path='CR_fig/', fig.align='center', fig.show='hold')
+@
+
 
 Throughout this paper, we have argued that the CR2 hypothesis tests (i.e., the BRL t-test and the AHT F-test) perform significantly better than the standard CR1 tests commonly used in economic applications. 
 This argument is based on results from several large simulation studies. 
@@ -567,22 +572,85 @@ Table \ref{tab:STAR} displays the results of the hypothesis tests. Across all ou
 \citet{Angrist2009effects} reported results from a randomized trial in Israel that aimed to increase completion rates of the Bagrut, the national matriculation certificate for post-secondary education, among low-achieving high school students. 
 In the Achievement Awards demonstration, 40 non-vocational high schools with low rates of Bagrut completion were selected from across Israel, including 10 Arab and 10 Jewish religious schools and 20 Jewish secular schools. 
 The 40 schools were then pair-matched based on 1999 rates of Bagrut completion, and within each pair one school was randomized to receive a cash-transfer program. 
-In these treatment schools, seniors who completed certification was eligible for a payment of approximately \$1,500. Administrative records were available for the school years ending in June of 2000, 2001, and 2002. 
+In these treatment schools, seniors who completed certification were eligible for payments of approximately \$1,500. 
+Student-level covariate and outcome data were drawn from administrative records, available for the school years ending in June of 2000, 2001, and 2002. 
 
-Our analysis focuses the effect of the cash incentive program on Bagrut completion rates. The completion rates for June, 2000 constitute baseline measures. The incentive program was in effect for the group of seniors in treatment schools taking the Bagrut exams in Spring of 2001. However, the program was discontinued for the following year, and so we treat 2002 completion rates as being unaffected by treatment assignment.
+Our analysis focuses the effect of the cash incentive program on Bagrut completion rates. 
+For sake of simplicity, we report results for the sub-sample of female students.
+Bagrut completion rates for June, 2000 constitute baseline measures. 
+The incentive program was in effect for the group of seniors in treatment schools taking the Bagrut exams in Spring of 2001. 
+However, the program was discontinued for the following year, and so we treat 2002 completion rates as being unaffected by treatment assignment.
 
-Using specification similar to those estimated in \citet{Angrist2009effects}, we estimate three distinct models in order to demonstrate the performance of the small-sample hypothesis tests. First, we test for whether the average effect of the program differs from zero, using the model: 
+We estimate two distinct models and tested several different hypotheses in order to demonstrate the performance of the small-sample hypothesis tests under a range of condition. First, we test for whether the average effect of the program differs from zero. \citet{Angrist2009effects} provided evidence that the program effects for female students are moderated by the prior academic performance. We therefore estimate separate average effects for students in the lower and upper halves of the distribution of prior test scores. Let $h = 1,2,3$ index the sector of each school (Arab religious, Jewish religious, or Jewish secular). We then use the model: 
 \begin{equation}
-y_{itj} = z_{it}\delta + \bm{r}_{itj}'\bs\beta + \bm{s}_{i}'\bs\gamma_t + \mu_i + \epsilon_{itj}
+\label{eq:AL_ATE}
+y_{hitj} = z_{hit}\bm{r}_{hitj}'\bs\beta + \bm{s}_{hitj}'\bs\gamma + \gamma_{ht} + \mu_{hi} + \epsilon_{hitj}
 \end{equation}
-In this model for student $j$ in year $t$ in school $j$, $z_{it}$ is an indicator equal to one in the treatment schools for the 2001 school year and otherwise equal to zero. The vector $\bm{r}_{itj}$ includes individual student demographic measures (i.e., mother's and father's education, immigration status, number of siblings, and an indicator for the quartile of their pre-test achievement from previous years). The vector $\bm{s}_i$ includes indicator variables for school type (Arab religious, Jewish religious, or Jewish secular), with coefficients that are estimated separately for each year. 
+In this model for student $j$ in year $t$ in school $i$ in sector $h$, $z_{hit}$ is an indicator equal to one in the treatment schools for the 2001 school year and otherwise equal to zero; $\bm{r}_{hitj}$ is a vector of indicators for whether the student is in the lower or upper half of the distribution of prior academic performance; and $\bs\beta = \left(\beta_1, \beta_2\right)$ is a vector of average treatment effects. The vector $\bm{s}_{hitj}$ includes the following individual student demographic measures: mother's and father's education, immigration status, number of siblings, and indicators for each quartile in the distribution of prior-year academic performance. The model also includes fixed effects $\gamma_{ht}$ for each sector in each year and $\mu_{hi}$ for each school. 
+
+Based on Model (\ref{eq:AL_ATE}), we tested for whether the average treatment effects in the lower and upper halves differ from zero, first as separate t-tests (i.e., $H_1: \beta_1 = 0$, $H_2: \beta_2 = 0$) and then using a joint F-test (i.e., $H_3: \beta_1 = \beta_2 = 0$). Table 
+
+<<Angrist_Lavy, cache=TRUE>>=
+library(foreign)
+library(plm)
+devtools::load_all(".")
+
+#-----------------------------------------
+# read in and munge data
+#-----------------------------------------
+# setwd("paper_ClusterRobustTesting")
+filenames <- paste0("data/AngristLavy_AERdata/base",c("99","00","01","02"), ".dta")
+panel_dat_list <- lapply(filenames, read.dta)
+panel_dat <- bind_rows(panel_dat_list)
+
+panel_dat <- within(panel_dat, {
+  yr <- factor(year, levels = c(99,0,1,2), labels = 1999:2002)
+  school_type <- factor(ifelse(semrel, "Religious", ifelse(semarab, "Arab","Secular")))
+  student_id <- paste0(yr, "-", student_id)
+  treated2001 <- (yr=="2001") * treated
+  sex <- ifelse(boy==1, "Boy","Girl")
+  ah4 <- m_ahim >= 4
+})
+
+panel_dat <- cbind(panel_dat, model.matrix(~ 0 + yr, data = panel_dat))
+
+qntl <- function(x, groups = 4) {
+  qtl <- quantile(x, (0:groups) / groups)
+  cut(x, qtl, labels = 1:groups, include.lowest = TRUE, right = FALSE, ordered_result = TRUE)
+}
+
+filter(panel_dat, yr!=1999) %>%
+  group_by(yr, sex) %>%
+  mutate(qrtl = qntl(lagscore, 4),
+         half = qntl(lagscore, 2)) %>%
+  ungroup() %>%
+  filter(sex=="Girl") %>%
+  select(-yr1999, -boy, -sex) %>%
+  arrange(school_id, student_id) ->
+  panel_dat
+
+panel_fit <- plm(zakaibag ~ yr2000:school_type + yr2001:school_type + 
+                   educav + educem + ole5 + ah4 + qrtl + treated2001:half, 
+             data = panel_dat, index = c("school_id","student_id"))
+panel_constraints <<- grepl("treated2001", names(coef(panel_fit)))
+
+t_CR1 <- coef_test(panel_fit, vcov="CR1", test = "naive-t")[panel_constraints,]
+t_CR2 <- coef_test(panel_fit, vcov="CR2", test = c("naive-t","Satterthwaite"))[panel_constraints,]
+joint_CR1 <- Wald_test(panel_fit, constraints = panel_constraints, vcov = "CR1", test = "Naive-F")
+joint_CR2 <- Wald_test(panel_fit, constraints = panel_constraints, vcov = "CR2", test = c("Naive-F","HTZ"))
+@
+
+<<AL_ATEs, results = "asis">>=
+t_tests <- rbind(t_CR1, t_CR2)
+within(t_CR1, {
+  F = (beta / SE)^2
+  p_CR1 = p_t
+})
+cbind(select(t_tests, F, p_CR1), select(t_CR2, p_CR2 = p_t, df, p_Satt))
+@
 
 
-Following \citet{Angrist2009effects}, we report results separately for girls, for boys, and for the combined sample. Given that the program took place in three different types of schools, in this example we focus on determining if there is evidence of variation in treatment impacts across types of schools (i.e., Jewish secular, Jewish religious, and Arab). We use the analytic model:
-\begin{equation}
-y_{ij} = \bm{z}_j'\bs\tau_0 + T_j \bm{z}_j \bs\tau_1 + \bm{x}_{ij}'\bs\beta + \epsilon_{ij}
-\end{equation}
-In this model for student $i$ in school $j$, $\bm{z}_j$ is a vector of dummies indicating school type; $T_j$ is a treatment dummy indicating if school $j$ was assigned to the treatment condition; and $\bm{x}_{ij}$ contains individual student demographics (i.e., mother's and father's education; immigration status; number of siblings; and an indicator for the quartile of their pre-test achievement from previous years). The components of $\bs\tau_1$ represent the average treatment impacts in Jewish secular, Jewish religious, and Arab schools. We test the null hypothesis that $\tau_{11} = \tau_{12} = \tau_{13}$ to determine if the treatment impact differs across school types. In the second panel of Table 1 we provide the results of this test separately for boys and girls and by year. Importantly, note that the 2000 results are baseline tests, while the 2001 and 2002 results measure the effectiveness of the program.
+The components of $\bs\tau_1$ represent the average treatment impacts in Jewish secular, Jewish religious, and Arab schools. We test the null hypothesis that $\tau_{11} = \tau_{12} = \tau_{13}$ to determine if the treatment impact differs across school types. In the second panel of Table 1 we provide the results of this test separately for boys and girls and by year. Importantly, note that the 2000 results are baseline tests, while the 2001 and 2002 results measure the effectiveness of the program.
 %\todo{Add note about program being discontinued in 2002} 
 
 \subsection{Robust Hausmann test} 

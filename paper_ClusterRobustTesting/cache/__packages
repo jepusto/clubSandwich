@@ -1,0 +1,11 @@
+base
+knitr
+xtable
+plyr
+tidyr
+dplyr
+stringr
+foreign
+Formula
+plm
+clubSandwich
