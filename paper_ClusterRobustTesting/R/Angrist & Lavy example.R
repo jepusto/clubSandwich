@@ -46,6 +46,10 @@ filter(panel_dat, yr!=1999) %>%
 with(panel_dat, table(yr, sex))
 with(panel_dat, table(sex, half, yr))
 
+group_by(panel_dat, school_type, treated, school_id) %>%
+  summarize(n = n()) %>%
+  group_by(school_type, treated) %>%
+  summarize(schools = n(), students = sum(n))
 #-----------------------------------------
 # ATE, panel model
 #-----------------------------------------

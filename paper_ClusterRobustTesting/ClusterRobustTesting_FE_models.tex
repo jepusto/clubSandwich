@@ -570,8 +570,8 @@ where $y_{ijk}$ is the percentile rank on outcome $k$ for student $j$ in school 
 
 We estimated the model in two ways. First, we estimated $\bs\beta_k$ separately for each outcome $k$ and tested the null hypothesis that $\bs\beta_k = \bm{0}$. Second, we use the seemingly unrelated regression (SUR) framework to simultaneously test for treatment effects across conditions and across outcomes. In the SUR model, separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. An overall test of the differences between conditions thus amounts to testing the null hypothesis that $\bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bm{0}$. In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the school fixed effects and clustered the errors by school.
 
-% latex table generated in R 3.2.0 by xtable 1.7-4 package
-% Wed Oct 14 22:12:05 2015
+% latex table generated in R 3.2.2 by xtable 1.7-4 package
+% Fri Oct 16 16:08:29 2015
 \begin{table}[tbh]
 \centering
 \begin{tabular}{lccrrr}
@@ -595,7 +595,7 @@ Combined (SUR) & CR1 & F & 3.284 & 78.0 & 0.00622 \\
    & CR2 & AHZ & 3.042 & 64.9 & 0.01103 \\ 
    \bottomrule
 \end{tabular}
-\caption{Tests of treatment effects in Tennessee STAR class size experiment} 
+\caption{Tests of treatment effects in the Tennessee STAR class size experiment} 
 \label{tab:STAR}
 \end{table}
 
@@ -619,40 +619,87 @@ Bagrut completion rates for June, 2000 constitute baseline measures.
 The incentive program was in effect for the group of seniors in treatment schools taking the Bagrut exams in Spring of 2001. 
 However, the program was discontinued for the following year, and so we treat 2002 completion rates as being unaffected by treatment assignment.
 
-We estimate two distinct models and tested several different hypotheses in order to demonstrate the performance of the small-sample hypothesis tests under a range of condition. First, we test for whether the average effect of the program differs from zero. \citet{Angrist2009effects} provided evidence that the program effects for female students are moderated by the prior academic performance. We therefore estimate separate average effects for students in the lower and upper halves of the distribution of prior test scores. Let $h = 1,2,3$ index the sector of each school (Arab religious, Jewish religious, or Jewish secular). We then use the model: 
+We estimate two distinct models and tested several different hypotheses in order to demonstrate the performance of the small-sample hypothesis tests under a range of condition. 
+First, we test for whether the average effect of the program differs from zero. \citet{Angrist2009effects} provided evidence that the program effects for female students are moderated by the prior academic performance. 
+We therefore estimate separate average effects for students in the lower and upper halves of the distribution of prior test scores. 
+Let $h = 1,2,3$ index the sector of each school (Arab religious, Jewish religious, or Jewish secular). 
+We then use the model: 
 \begin{equation}
 \label{eq:AL_ATE}
 y_{hitj} = z_{hit}\bm{r}_{hitj}'\bs\beta + \bm{s}_{hitj}'\bs\gamma + \gamma_{ht} + \mu_{hi} + \epsilon_{hitj}
 \end{equation}
-In this model for student $j$ in year $t$ in school $i$ in sector $h$, $z_{hit}$ is an indicator equal to one in the treatment schools for the 2001 school year and otherwise equal to zero; $\bm{r}_{hitj}$ is a vector of indicators for whether the student is in the lower or upper half of the distribution of prior academic performance; and $\bs\beta = \left(\beta_1, \beta_2\right)$ is a vector of average treatment effects. The vector $\bm{s}_{hitj}$ includes the following individual student demographic measures: mother's and father's education, immigration status, number of siblings, and indicators for each quartile in the distribution of prior-year academic performance. The model also includes fixed effects $\gamma_{ht}$ for each sector in each year and $\mu_{hi}$ for each school. 
+In this model for student $j$ in year $t$ in school $i$ in sector $h$, $z_{hit}$ is an indicator equal to one in the treatment schools for the 2001 school year and otherwise equal to zero; $\bm{r}_{hitj}$ is a vector of indicators for whether the student is in the lower or upper half of the distribution of prior academic performance; and $\bs\beta = \left(\beta_1, \beta_2\right)$ is a vector of average treatment effects. 
+The vector $\bm{s}_{hitj}$ includes the following individual student demographic measures: mother's and father's education, immigration status, number of siblings, and indicators for each quartile in the distribution of prior-year academic performance. 
+The model also includes fixed effects $\gamma_{ht}$ for each sector in each year and $\mu_{hi}$ for each school. 
 
-Based on Model (\ref{eq:AL_ATE}), we tested for whether the average treatment effects in the lower and upper halves differ from zero, first as separate t-tests (i.e., $H_1: \beta_1 = 0$, $H_2: \beta_2 = 0$) and then using a joint F-test (i.e., $H_3: \beta_1 = \beta_2 = 0$). Table 
+Based on Model (\ref{eq:AL_ATE}), we test for whether the average treatment effects in the lower and upper halves differ from zero, first as separate t-tests (i.e., $H_1: \beta_1 = 0$, $H_2: \beta_2 = 0$) and then using a joint F-test (i.e., $H_3: \beta_1 = \beta_2 = 0$). 
+In a modified model, we test for whether school sector moderates the program effects. 
+To do so, we allow the coefficients on the average treatment effects to vary by sector, replacing $\bs\beta$ by $\bs\beta_h$ in Model (\ref{eq:AL_ATE}). We then test for the equality of the treatment effects (i.e., $H_4: \bs\beta_1 = \bs\beta_2 = \bs\beta_3$). 
 
 
 
+% latex table generated in R 3.2.2 by xtable 1.7-4 package
+% Fri Oct 16 16:08:30 2015
+\begin{table}[bth]
+\centering
+\begin{tabular}{lccrrr}
+  \toprule
+Hypothesis & Correction & Test & F & df & p \\ 
+  \midrule
+ATE - lower half (q = 1) & CR1 & F & 0.079 & 34.00 & 0.78065 \\ 
+   & CR2 & F & 0.068 & 34.00 & 0.79573 \\ 
+   & CR2 & AHZ & 0.068 & 20.67 & 0.79674 \\ 
+   \midrule
+ATE - upper half (q = 1) & CR1 & F & 5.746 & 34.00 & 0.02217 \\ 
+   & CR2 & F & 5.169 & 34.00 & 0.02943 \\ 
+   & CR2 & AHZ & 5.169 & 15.86 & 0.03726 \\ 
+   \midrule
+ATE - joint (q = 2) & CR1 & F & 3.848 & 34.00 & 0.03116 \\ 
+   & CR2 & F & 3.589 & 34.00 & 0.03854 \\ 
+   & CR2 & AHZ & 3.371 & 15.46 & 0.06096 \\ 
+   \midrule
+Moderation by sector (q = 4) & CR1 & F & 8.213 & 34.00 & 0.00010 \\ 
+   & CR2 & F & 5.603 & 34.00 & 0.00142 \\ 
+   & CR2 & AHZ & 2.895 & 3.21 & 0.19446 \\ 
+   \bottomrule
+\end{tabular}
+\caption{Tests of treatment effects in the Achievement Awards Demonstration} 
+\label{tab:AAD}
+\end{table}
 
 
-
-The components of $\bs\tau_1$ represent the average treatment impacts in Jewish secular, Jewish religious, and Arab schools. We test the null hypothesis that $\tau_{11} = \tau_{12} = \tau_{13}$ to determine if the treatment impact differs across school types. In the second panel of Table 1 we provide the results of this test separately for boys and girls and by year. Importantly, note that the 2000 results are baseline tests, while the 2001 and 2002 results measure the effectiveness of the program.
-%\todo{Add note about program being discontinued in 2002} 
+Table \ref{tab:AAD} reports the results of all four hypothesis tests, using the CR1 and CR2 adjustments for variance estimation and either the naiv\"e degrees of freedom (for these data, $m - 1 = 34$) or the approximate Hotelling's $T^2$-Z degrees of freedom. 
+Several features of these results are worth noting. 
+First, for the tests of single-parameter hypotheses, the differences between the CR1 and CR2 test statistics are minor, although the AHZ (Satterthwaite) degrees of freedom are substantially lower than the naiv\"e ones. 
+As a result, the $p$-value for the ATE in the upper half of the prior achievement distribution is 68\% larger based on our preferred test than based on the standard F-test with CR1. 
+Second, the joint test that the ATEs are zero in both halves of the prior achivement distribution is sensitive to both the CR adjustment and the degrees of freedom: the $p$-value based on our preferred test is 0.061, compared to the $p = 0.031$ for the standard test. 
+Finally, the test of moderation by sector is strongly affected by the CR2 adjustment and AHZ degrees of freedom. 
+In particular, the AHZ degrees of freedom are just 3.21, far lower than the number of clusters. 
+The low degrees of freedom are a consequence of the small number of schools of each type in each treatment condition.
+Although the total sample includes 35 schools, there are only 9 Arab religious, 7 Jewish religious, and 19 Jewish secular schools, each split across two treatment conditions, and the treatment effects are estimated by making comparisons across clusters. 
+As a result, the F statistic based on CR2 has a very large sampling variance under the null hypothesis.
+\todo{Connect to simulation results--higher $q$, between-cluster}
 
 \subsection{Robust Hausmann test} 
 
-In this final example, we shift focus from analyses of experiments to panel data. Here we build off of an example first developed in \citet{Bertrand2004how} using Current Population Survey (CPS) data to relate demographics to earnings. Following \citet{Cameron2015practitioners}, we aggregated the data from the individual level to the time period, producing a balanced panel with 36 time points within 51 states (including the District of Columbia). We focus on the model,
+In this final example, we shift focus from analyses of experiments to panel data. 
+Here we build off of an example first developed in \citet{Bertrand2004how} using Current Population Survey (CPS) data to relate demographics to earnings. 
+Following \citet{Cameron2015practitioners}, we aggregated the data from the individual level to the time period, producing a balanced panel with $T = 36$ time points within 51 states (including the District of Columbia). 
+We focus on the model,
 \begin{equation}
-y_{tj} = \bm{z}_{tj}'\bs\tau + \gamma_j + \epsilon_{tj}.
+y_{it} = \bm{r}_{it}'\bs\beta + \gamma_t + \mu_i + \epsilon_{it}.
 \end{equation}
-In this model, time-point $t$ is nested within state $j$; the outcome $y_{tj}$ is log-earnings, which are reported in 1999 dollars; $\bm{z}_{tj}$ includes a vector of demographic covariates specific to the time point (i.e., dummy variables for female and white; age and age-squared); and $\gamma_j$ is a fixed effect for state $j$. 
+In this model, time-point $t$ is nested within state $i$; the outcome $y_{it}$ is log-earnings, which are reported in 1999 dollars; $\bm{r}_{it}$ is a vector of demographic covariates specific to the time point, including indicator variables for female and white, age, and age-squared; $\gamma_t$ is a fixed effect for time point $t$; and $\mu_i$ is an effect for state $i$. 
 
-For sake of example, we focus here on determining whether to use a fixed effects (FE) estimator or a random effects (RE) estimator the four parameters in $\bs\tau$, based on a Hausmann test. In an OLS model with uncorrelated, the Hausmann test directly compares the vectors of FE and RE estimates using a chi-squared test. However, this specification fails when cluster-robust standard errors are employed, and instead an artificial-Hausman test \citep{Arellano1993on} is typically used \citep[pp. 290-291]{Wooldridge2002econometric}. This test instead amends the model to additionally include within-cluster deviations (or cluster aggregates) of the variables of interest. In our example, this becomes,
+For sake of example, we focus here on a Hausman test to determine whether to use a fixed effects (FE) estimator or a random effects (RE) estimator for the four parameters in $\bs\beta$. 
+In an OLS model with uncorrelated, the Hausmann test directly compares the vectors of FE and RE estimates using a chi-squared test. 
+Although this formulation of the Hausmann test is not available when cluster-robust standard errors are employed, it remains possible to use an artificial-Hausman test \citep{Arellano1993on, Wooldridge2002econometric}. 
+This test instead amends the model to include within-cluster deviations (or cluster aggregates) of the variables of interest. In our example, this becomes,
 \begin{equation}
-y_{tj} = \bm{z}_{tj}'\bs\tau + \bm{\ddot{z}}_{tj}\bs\beta + \gamma_j + \epsilon_{tj},
+y_{it} = \bm{\ddot{r}}_{it}'\bs\beta + \bm{r}_{it}'\bs\delta + \gamma_t + \mu_i + \epsilon_{it},
 \end{equation}
-where $\bm{\ddot{z}}_{tj}$ denotes the vector of within-cluster deviations of the covariates (i.e., $\bm{\ddot{z}}_{tj} = \bm{z}_{tj} - \frac{1}{T}\sum_{t=1}^T \bm{z}_{tj}$).
-The four parameters in $\bs\beta$ represent the differences between the within-panel and between-panel estimates of $\bs\tau$. The artificial Hausmann test therefore reduces to testing the null hypothesis that $\bs\beta = \bm{0}$ using an F test with $q = 4$. We estimate the model using WLS with weights derived under the assumption that  $\gamma_1,...,\gamma_m$ are mutually independent, normally distributed, and independent of $\epsilon_{tj}$.
-
-%\section{SIMULATION EVIDENCE}
-%\label{subsec:simulations}
+where $\bm{\ddot{r}}_{it}$ denotes the vector of within-cluster deviations of the covariates (i.e., $\bm{\ddot{r}}_{it} = \bm{r}_{it} - \frac{1}{T}\sum_{t=1}^T \bm{r}_{it}$).
+The four parameters in $\bs\delta$ represent the differences between the between-panel and within-panel estimates of $\bs\beta$. The artificial Hausmann test therefore reduces to testing the null hypothesis that $\bs\beta = \bm{0}$ using an F test with $q = 4$. We estimate the model using WLS with weights derived under the assumption that  $\mu_1,...,\mu_m$ are mutually independent, normally distributed, and independent of $\epsilon_{it}$.
 
 \section{DISCUSSION}
 \label{sec:discussion}
