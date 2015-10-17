@@ -759,14 +759,14 @@ We focus on the model,
 \begin{equation}
 y_{it} = \bm{r}_{it}'\bs\beta + \gamma_t + \mu_i + \epsilon_{it}.
 \end{equation}
-In this model, time-point $t$ is nested within state $i$; the outcome $y_{it}$ is log-earnings, which are reported in 1999 dollars; $\bm{r}_{it}$ is a vector of demographic covariates specific to the time point, including indicator variables for female and white, age, and age-squared; $\gamma_t$ is a fixed effect for time point $t$; and $\mu_i$ is an effect for state $i$. 
+In this model, time-point $t$ is nested within state $i$; the outcome $y_{it}$ is log-earnings, which are reported in 1999 dollars; $\bm{r}_{it}$ is a vector of demographic covariates specific to the time point, including years of education, age, the square of age, and an indicator for female; $\gamma_t$ is a fixed effect for time point $t$; and $\mu_i$ is an effect for state $i$. 
 
 For sake of example, we focus here on a Hausman test to determine whether to use a fixed effects (FE) estimator or a random effects (RE) estimator for the four parameters in $\bs\beta$. 
 In an OLS model with uncorrelated, the Hausmann test directly compares the vectors of FE and RE estimates using a chi-squared test. 
 Although this formulation of the Hausmann test is not available when cluster-robust standard errors are employed, it remains possible to use an artificial-Hausman test \citep{Arellano1993on, Wooldridge2002econometric}. 
 This test instead amends the model to include within-cluster deviations (or cluster aggregates) of the variables of interest. In our example, this becomes,
 \begin{equation}
-y_{it} = \bm{\ddot{r}}_{it}'\bs\beta + \bm{r}_{it}'\bs\delta + \gamma_t + \mu_i + \epsilon_{it},
+y_{it} = \bm{r}_{it}'\bs\beta + \bm{\ddot{r}}_{it}'\bs\delta + \gamma_t + \mu_i + \epsilon_{it},
 \end{equation}
 where $\bm{\ddot{r}}_{it}$ denotes the vector of within-cluster deviations of the covariates (i.e., $\bm{\ddot{r}}_{it} = \bm{r}_{it} - \frac{1}{T}\sum_{t=1}^T \bm{r}_{it}$).
 The four parameters in $\bs\delta$ represent the differences between the between-panel and within-panel estimates of $\bs\beta$. The artificial Hausmann test therefore reduces to testing the null hypothesis that $\bs\beta = \bm{0}$ using an F test with $q = 4$. We estimate the model using WLS with weights derived under the assumption that  $\mu_1,...,\mu_m$ are mutually independent, normally distributed, and independent of $\epsilon_{it}$.
