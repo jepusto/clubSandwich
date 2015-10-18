@@ -94,6 +94,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   E_list <- switch(type,
                    CR0 = lapply(XW_list, function(xw) M %*% xw),
                    CR1 = lapply(XW_list, function(xw) (M %*% xw) * sqrt(J / (J - 1))),
+                   CR1S = lapply(XW_list, function(xw) (M %*% xw) * sqrt(J * N / ((J - 1) * (N - p)))),
                    CR2 = CR2(M, X_list, XW_list, Theta_list = matrix_list(Theta, cluster, "both"), inverse_var),
                    CR3 = CR3(M, X_list, XW_list),
                    CR4 = CR4(M, X_list, XW_list, Theta_list = matrix_list(Theta, cluster, "both"), inverse_var)
@@ -101,8 +102,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
 
   res_list <- split(resid, cluster)
   
-  components <- mapply(function(e, r) e %*% r, e = E_list, r = res_list, SIMPLIFY = TRUE)
-  
+  components <- do.call(cbind, mapply(function(e, r) e %*% r, e = E_list, r = res_list, SIMPLIFY = FALSE))
   vcov <- tcrossprod(components)
   rownames(vcov) <- colnames(vcov) <- colnames(X)
   attr(vcov, "type") <- type
