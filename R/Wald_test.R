@@ -34,7 +34,7 @@ get_constraint_mat <- function(obj, constraints) {
           diag(1L, nrow = p)[term_names %in% constraints,,drop=FALSE]
         })
 
-  C_mat[,!beta_NA]
+  C_mat[,!beta_NA,drop=FALSE]
 
 }
 

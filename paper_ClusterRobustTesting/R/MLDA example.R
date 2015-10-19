@@ -57,8 +57,8 @@ Wald_test(RE1, constraints = 3, vcov = "CR2", test = c("Naive-F", "HTZ"))
 
 obj <- RE1
 constraints <- 3
-vcov <- vcovCR(obj, type = "CR1")
-test <- "Naive-F"
+vcov <- vcovCR(obj, type = "CR2")
+test <- c("Naive-F","HTZ")
 
 # no trends, with year FE, controlling for beer taxes
 FE_fit_lm <- lm(mrate ~ 0 + legal + beertaxa + factor(state) + factor(year), data = dat)
