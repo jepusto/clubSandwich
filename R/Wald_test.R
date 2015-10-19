@@ -41,13 +41,25 @@ get_constraint_mat <- function(obj, constraints) {
 #--------------------------------------------------
 # calculate a covariance array
 #--------------------------------------------------
+sub_three <- function(arr, subset) {
+  arr_sub <- arr[,,subset]
+  dim_three <- if (length(subset)==1) NULL else length(subset)
+  arr_dim <- c(dim(arr)[1:2], dim_three)
+  dim(arr_sub) <- arr_dim
+  arr_sub
+}
+
+f <- function(x,...) {
+  m <- match.call(expand.dots = FALSE)
+  m[["..."]]
+}
 
 covariance_array <- function(S_array, Omega_nsqrt, q = nrow(Omega_nsqrt), J = dim(S_array)[3]) {
   B_array <- array(apply(S_array, 3, function(s) Omega_nsqrt %*% s), dim = dim(S_array))
   B_jk <- array(NA, dim = c(J, J, q, q))
   if (q > 1) {
     for (j in 1:J) for (k in 1:j) {
-      L <- B_array[,,j] %*% t(B_array[,,k])
+      L <- sub_three(B_array,j) %*% t(sub_three(B_array,k))
       B_jk[j,k,,] <- L
       B_jk[k,j,,] <- t(L)
     }
@@ -76,7 +88,7 @@ total_variance_mat <- function(S_array, Omega_nsqrt, q = nrow(Omega_nsqrt), J = 
   B_array <- array(apply(S_array, 3, function(s) Omega_nsqrt %*% s), dim = dim(S_array))
   B_jk <- array(NA, dim = c(J, J, q, q))
   for (j in 1:J) for (k in 1:j) {
-    L <- B_array[,,j] %*% t(B_array[,,k])
+    L <- sub_three(B_array,j) %*% t(sub_three(B_array,k))
     B_jk[j,k,,] <- L
     B_jk[k,j,,] <- t(L)
   }
