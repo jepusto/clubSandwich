@@ -458,6 +458,7 @@ When the proportion varies across clusters, these degrees of freedom fall, often
 library(knitr)
 library(xtable)
 
+library(foreign)
 library(plyr)
 library(tidyr)
 library(dplyr)
@@ -750,26 +751,54 @@ Although the total sample includes 35 schools, there are only 9 Arab religious, 
 As a result, the F statistic based on CR2 has a very large sampling variance under the null hypothesis.
 \todo{Connect to simulation results--higher $q$, between-cluster}
 
-\subsection{Robust Hausmann test} 
+\subsection{Effects of minimum legal drinking age on mortality} 
 
-In this final example, we shift focus from analyses of experiments to panel data. 
-Here we build off of an example first developed in \citet{Bertrand2004how} using Current Population Survey (CPS) data to relate demographics to earnings. 
-Following \citet{Cameron2015practitioners}, we aggregated the data from the individual level to the time period, producing a balanced panel with $T = 36$ time points within 51 states (including the District of Columbia). 
-We focus on the model,
+In this final example, we shift focus from analyses of experiments to panel data, using an example described in Angrist and Pischke (2015)\todo{Cite}.
+Using data from the Fatal Accident Reporting System maintained by the National Highway Traffic Safety Administration, we examine the effects of changes in the minimum legal drinking age over the time period of 1970-1983 on state-level death rates resulting from motor vehicle crashes.\todo{Note about measure of legal drinking age.}
+A standard difference-in-differences specification for such a state-by-year panel is
 \begin{equation}
+\label{eq:MLDA}
 y_{it} = \bm{r}_{it}'\bs\beta + \gamma_t + \mu_i + \epsilon_{it}.
 \end{equation}
-In this model, time-point $t$ is nested within state $i$; the outcome $y_{it}$ is log-earnings, which are reported in 1999 dollars; $\bm{r}_{it}$ is a vector of demographic covariates specific to the time point, including years of education, age, the square of age, and an indicator for female; $\gamma_t$ is a fixed effect for time point $t$; and $\mu_i$ is an effect for state $i$. 
+In this model, time-point $t$ is nested within state $i$; the outcome $y_{it}$ is the number of deaths in motor vehicle crashes (per 100,000 residents) for state $i$ at time $t$; $\bm{r}_{it}$ is a vector of covariates; $\gamma_t$ is a fixed effect for time point $t$; and $\mu_i$ is an effect for state $i$. In our initial specification, $\bm{r}_{it}$ consists solely of a measure of the proportion of the population between the ages of 18 and 20 years who can legally drink alcohol
+In a further specification, we include as a further control the beer taxation rate. 
 
-For sake of example, we focus here on a Hausman test to determine whether to use a fixed effects (FE) estimator or a random effects (RE) estimator for the four parameters in $\bs\beta$. 
-In an OLS model with uncorrelated, the Hausmann test directly compares the vectors of FE and RE estimates using a chi-squared test. 
-Although this formulation of the Hausmann test is not available when cluster-robust standard errors are employed, it remains possible to use an artificial-Hausman test \citep{Arellano1993on, Wooldridge2002econometric}. 
+For each model, we first report an artificial-Hausman test \citep{Arellano1993on, Wooldridge2002econometric} to determine whether to use a fixed effects (FE) estimator or a random effects (RE) estimator for $\bs\beta$. 
 This test instead amends the model to include within-cluster deviations (or cluster aggregates) of the variables of interest. In our example, this becomes,
 \begin{equation}
-y_{it} = \bm{r}_{it}'\bs\beta + \bm{\ddot{r}}_{it}'\bs\delta + \gamma_t + \mu_i + \epsilon_{it},
+y_{it} = \bm{r}_{it}\beta + \bm{\ddot{r}}_{it}\bs\delta + \gamma_t + \mu_i + \epsilon_{it},
 \end{equation}
-where $\bm{\ddot{r}}_{it}$ denotes the vector of within-cluster deviations of the covariates (i.e., $\bm{\ddot{r}}_{it} = \bm{r}_{it} - \frac{1}{T}\sum_{t=1}^T \bm{r}_{it}$).
-The four parameters in $\bs\delta$ represent the differences between the between-panel and within-panel estimates of $\bs\beta$. The artificial Hausmann test therefore reduces to testing the null hypothesis that $\bs\beta = \bm{0}$ using an F test with $q = 4$. We estimate the model using WLS with weights derived under the assumption that  $\mu_1,...,\mu_m$ are mutually independent, normally distributed, and independent of $\epsilon_{it}$.
+where $\bm{\ddot{r}}_{it}$ denotes the within-cluster deviations of the covariate.
+The parameter $\bs\delta$ then captures the difference between the between-panel and within-panel estimates of $\bs\beta$. 
+With this setup, the artificial Hausmann test amounts to testing the null hypothesis that $\bs\delta = \bm{0}$. 
+We estimate the model using WLS with weights derived under the assumption that  $\mu_1,...,\mu_m$ are mutually independent, normally distributed, and independent of $\epsilon_{it}$.
+
+<<MLDA_table>>=
+library(foreign)
+library(nlme)
+deaths <- read.dta("data/deaths.dta") 
+
+filter(deaths, agegr=="18-20 yrs" & year <= 1983 & dtype == "MVA" & !is.na(beertaxa)) %>%
+  select(-agegr, -dtype) %>%
+  group_by(state) %>%
+  mutate(legal_s = legal - mean(legal),
+         beertaxa_s = beertaxa - mean(beertaxa)) ->
+  death_dat
+
+# Hausmann tests
+
+RE1 <- lme(mrate ~ legal + legal_s + factor(year), 
+              data = death_dat,
+              random = ~ 1 | state)
+Wald_test(RE1, constraints = 3, vcov = "CR1", test = "Naive-F")
+Wald_test(RE1, constraints = 3, vcov = "CR2", test = c("Naive-F", "HTZ"))
+
+coef_test(RE1, vcov = "CR0", test = "naive-t")
+coef_test(RE1, vcov = "CR2", test = c("naive-t","Satterthwaite"))
+
+
+@
+
 
 \section{DISCUSSION}
 \label{sec:discussion}
