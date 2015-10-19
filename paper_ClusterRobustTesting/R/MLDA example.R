@@ -14,7 +14,7 @@ filter(deaths, agegr==2 & year <= 1983 & dtype %in% c(1, 2, 3, 6)) %>%
   group_by(death) ->
   death_dat
 
-# replicate Table 5.2
+# replicate Tables 5.2 and 5.3
 
 est <- function(dat, controls = NULL) {
   frml_string <- "mrate ~ 0 + legal"
@@ -41,6 +41,8 @@ est_5.3 <- do(death_dat, est(., controls = "beertaxa"))
 #--------------------------------
 # Hausman-type tests
 #--------------------------------
+library(nlme)
+deaths <- read.dta("data/deaths.dta")
 
 filter(deaths, agegr=="18-20 yrs" & year <= 1983 & dtype == "MVA" & !is.na(beertaxa)) %>%
   select(-agegr, -dtype) %>%
@@ -49,30 +51,73 @@ filter(deaths, agegr=="18-20 yrs" & year <= 1983 & dtype == "MVA" & !is.na(beert
          beertaxa_s = beertaxa - mean(beertaxa)) ->
   death_dat
 
+# just policy variable
+
 RE1 <- lme(mrate ~ legal + legal_s + factor(year), 
            data = death_dat,
            random = ~ 1 | state)
+summary(RE1)
+coef_test(RE1, vcov = "CR1", test = "naive-t")["legal_s",]
+coef_test(RE1, vcov = "CR2", test = c("naive-t", "Satterthwaite"))["legal_s",]
 Wald_test(RE1, constraints = 3, vcov = "CR1", test = "Naive-F")
 Wald_test(RE1, constraints = 3, vcov = "CR2", test = c("Naive-F", "HTZ"))
 
-obj <- RE1
-constraints <- 3
-vcov <- vcovCR(obj, type = "CR2")
-test <- c("Naive-F","HTZ")
 
-# no trends, with year FE, controlling for beer taxes
-FE_fit_lm <- lm(mrate ~ 0 + legal + beertaxa + factor(state) + factor(year), data = dat)
-coef_test(FE_fit, vcov = "CR0", cluster = dat$state, test = "z")[c("legal","beertaxa"),]
-FE_fit_plm <- plm(mrate ~ legal + beertaxa, data = dat, 
-                  index = c("state","year"),
-                  effect = "twoways")
-coef_test(FE_fit_plm, vcov = "CR0", cluster = "individual", test = "z")
+# controlling for beer taxes
 
-RE_fit <- lme(mrate ~ legal + beertaxa + legal_s + beertaxa_s + factor(year), 
-              data = dat,
+RE2 <- lme(mrate ~ legal + beertaxa + legal_s + beertaxa_s + factor(year), 
+              data = death_dat,
               random = ~ 1 | state)
-summary(RE_fit)
-coef_test(RE_fit, vcov = "CR1", test = "naive-t")[c("legal_s","beertaxa_s"),]
-coef_test(RE_fit, vcov = "CR2", test = c("naive-t","Satterthwaite"))[c("legal_s","beertaxa_s"),]
-Wald_test(RE_fit, constraints = 4:5, vcov = "CR1", test = "Naive-F")
-Wald_test(RE_fit, constraints = 4:5, vcov = "CR2", test = c("Naive-F","HTZ"))
+summary(RE2)
+coef_test(RE2, vcov = "CR1", test = "naive-t")[c("legal_s","beertaxa_s"),]
+coef_test(RE2, vcov = "CR2", test = c("naive-t","Satterthwaite"))[c("legal_s","beertaxa_s"),]
+Wald_test(RE2, constraints = 4:5, vcov = "CR1", test = "Naive-F")
+Wald_test(RE2, constraints = 4:5, vcov = "CR2", test = c("Naive-F","HTZ"))
+
+#--------------------------------
+# Random effects estimates
+#--------------------------------
+
+# just policy variable
+
+RE1_fit <- lme(mrate ~ legal + factor(year), 
+           data = death_dat,
+           random = ~ 1 | state)
+summary(RE1_fit)
+coef_test(RE1_fit, vcov = "CR1", test = "naive-t")["legal",]
+coef_test(RE1_fit, vcov = "CR2", test = c("naive-t", "Satterthwaite"))["legal",]
+Wald_test(RE1_fit, constraints = 2, vcov = "CR1", test = "Naive-F")
+Wald_test(RE1_fit, constraints = 2, vcov = "CR2", test = c("Naive-F", "HTZ"))
+
+# controlling for beer taxes
+
+RE2_fit <- lme(mrate ~ legal + beertaxa + factor(year), 
+           data = death_dat,
+           random = ~ 1 | state)
+summary(RE2_fit)
+coef_test(RE2_fit, vcov = "CR1", test = "naive-t")[c("legal","beertaxa"),]
+coef_test(RE2_fit, vcov = "CR2", test = c("naive-t","Satterthwaite"))[c("legal","beertaxa"),]
+Wald_test(RE2_fit, constraints = 2, vcov = "CR1", test = "Naive-F")
+Wald_test(RE2_fit, constraints = 2, vcov = "CR2", test = c("Naive-F","HTZ"))
+
+#--------------------------------
+# fixed effects estimates
+#--------------------------------
+
+# just policy variable
+
+FE1_fit <- lm(mrate ~ 0 + legal + factor(year) + factor(state), data = death_dat)
+summary(FE1_fit)
+coef_test(FE1_fit, vcov = "CR1", cluster = death_dat$state, test = "naive-t")["legal",]
+coef_test(FE1_fit, vcov = "CR2", cluster = death_dat$state, test = c("naive-t", "Satterthwaite"))["legal",]
+Wald_test(FE1_fit, constraints = 1, vcov = "CR1", cluster = death_dat$state, test = "Naive-F")
+Wald_test(FE1_fit, constraints = 1, vcov = "CR2", cluster = death_dat$state, test = c("Naive-F", "HTZ"))
+
+# controlling for beer taxes
+
+FE2_fit <- lm(mrate ~ 0 + legal + beertaxa + factor(year) + factor(state), data = death_dat)
+summary(FE2_fit)
+coef_test(FE2_fit, vcov = "CR1", cluster = death_dat$state, test = "naive-t")[c("legal","beertaxa"),]
+coef_test(FE2_fit, vcov = "CR2", cluster = death_dat$state, test = c("naive-t","Satterthwaite"))[c("legal","beertaxa"),]
+Wald_test(FE2_fit, constraints = 1, vcov = "CR1", cluster = death_dat$state, test = "Naive-F")
+Wald_test(FE2_fit, constraints = 1, vcov = "CR2", cluster = death_dat$state, test = c("Naive-F","HTZ"))

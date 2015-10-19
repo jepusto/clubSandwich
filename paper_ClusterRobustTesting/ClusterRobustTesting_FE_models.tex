@@ -570,8 +570,8 @@ where $y_{ijk}$ is the percentile rank on outcome $k$ for student $j$ in school 
 
 We estimated the model in two ways. First, we estimated $\bs\beta_k$ separately for each outcome $k$ and tested the null hypothesis that $\bs\beta_k = \bm{0}$. Second, we use the seemingly unrelated regression (SUR) framework to simultaneously test for treatment effects across conditions and across outcomes. In the SUR model, separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. An overall test of the differences between conditions thus amounts to testing the null hypothesis that $\bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bm{0}$. In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the school fixed effects and clustered the errors by school.
 
-% latex table generated in R 3.2.0 by xtable 1.7-4 package
-% Sun Oct 18 21:12:04 2015
+% latex table generated in R 3.2.2 by xtable 1.7-4 package
+% Mon Oct 19 10:06:52 2015
 \begin{table}[tbh]
 \centering
 \begin{tabular}{lccrrr}
@@ -638,8 +638,8 @@ To do so, we allow the coefficients on the average treatment effects to vary by 
 
 
 
-% latex table generated in R 3.2.0 by xtable 1.7-4 package
-% Sun Oct 18 21:12:04 2015
+% latex table generated in R 3.2.2 by xtable 1.7-4 package
+% Mon Oct 19 10:06:52 2015
 \begin{table}[bth]
 \centering
 \begin{tabular}{lccrrr}
@@ -692,15 +692,51 @@ y_{it} = \bm{r}_{it}'\bs\beta + \gamma_t + \mu_i + \epsilon_{it}.
 In this model, time-point $t$ is nested within state $i$; the outcome $y_{it}$ is the number of deaths in motor vehicle crashes (per 100,000 residents) for state $i$ at time $t$; $\bm{r}_{it}$ is a vector of covariates; $\gamma_t$ is a fixed effect for time point $t$; and $\mu_i$ is an effect for state $i$. In our initial specification, $\bm{r}_{it}$ consists solely of a measure of the proportion of the population between the ages of 18 and 20 years who can legally drink alcohol
 In a further specification, we include as a further control the beer taxation rate. 
 
-For each model, we first report an artificial-Hausman test \citep{Arellano1993on, Wooldridge2002econometric} to determine whether to use a fixed effects (FE) estimator or a random effects (RE) estimator for $\bs\beta$. 
-This test instead amends the model to include within-cluster deviations (or cluster aggregates) of the variables of interest. In our example, this becomes,
+For each specification, we estimate the effect of lowering the policy variable using both random effects (RE) and fixed effects (FE) estimation. 
+For the RE estimates, we use WLS with weights derived under the assumption that  $\mu_1,...,\mu_m$ are mutually independent, normally distributed, and independent of $\epsilon_{it}$.
+we also report an artificial Hausman test \citep{Arellano1993on, Wooldridge2002econometric} for correlation between the covariates $\bm{r}_{it}$ and the state effects $\mu_i$. Such correlation creates bias in the RE estimator of the policy effect, thus necessitating the use of the FE estimator.
+The artificial Hausman test amends model (\ref{eq:MLDA}) to include within-cluster deviations (or cluster aggregates) of the variables of interest, so that the estimating equation is
 \begin{equation}
 y_{it} = \bm{r}_{it}\beta + \bm{\ddot{r}}_{it}\bs\delta + \gamma_t + \mu_i + \epsilon_{it},
 \end{equation}
 where $\bm{\ddot{r}}_{it}$ denotes the within-cluster deviations of the covariate.
-The parameter $\bs\delta$ then captures the difference between the between-panel and within-panel estimates of $\bs\beta$. 
-With this setup, the artificial Hausmann test amounts to testing the null hypothesis that $\bs\delta = \bm{0}$. 
-We estimate the model using WLS with weights derived under the assumption that  $\mu_1,...,\mu_m$ are mutually independent, normally distributed, and independent of $\epsilon_{it}$.
+The parameter $\bs\delta$ captures the difference between the between-panel and within-panel estimates of $\bs\beta$. 
+With this setup, the artificial Hausmann test amounts to testing the null hypothesis that $\bs\delta = \bm{0}$, where $\bs\delta$ is estimated using RE.  
+
+
+
+\begin{table}[bth]
+\centering
+\begin{tabular}{lccrrrcrrr}
+  \toprule
+  & & & \multicolumn{3}{c}{Policy variable only} & & \multicolumn{3}{c}{Controlling for beer taxes} \\ \cline{4-6} \cline{8-10}
+ & Correction & Test & F & df & p & & F & df & p \\ 
+% latex table generated in R 3.2.2 by xtable 1.7-4 package
+% Mon Oct 19 10:06:52 2015
+  \midrule
+Random effects & CR1 & F & 8.342 & 49.00 & 0.00575 &  & 8.261 & 49.00 & 0.00598 \\ 
+   & CR2 & F & 7.962 & 49.00 & 0.00688 &  & 7.785 & 49.00 & 0.00749 \\ 
+   & CR2 & AHZ & 7.962 & 24.82 & 0.00926 &  & 7.785 & 24.74 & 0.00999 \\ 
+   \midrule
+Fixed effects & CR1 & F & 9.450 & 49.00 & 0.00345 &  & 9.660 & 49.00 & 0.00313 \\ 
+   & CR2 & F & 9.033 & 49.00 & 0.00417 &  & 9.116 & 49.00 & 0.00402 \\ 
+   & CR2 & AHZ & 9.033 & 22.57 & 0.00639 &  & 9.116 & 22.72 & 0.00616 \\ 
+   \midrule
+Hausman test & CR1 & F & 4.280 & 49.00 & 0.04386 &  & 2.930 & 49.00 & 0.06283 \\ 
+   & CR2 & F & 4.113 & 49.00 & 0.04800 &  & 2.775 & 49.00 & 0.07214 \\ 
+   & CR2 & AHZ & 4.113 & 27.46 & 0.05235 &  & 2.489 & 8.69 & 0.13980 \\ 
+   \bottomrule
+
+\end{tabular}
+\caption{Tests of effects of minimum legal drink age and Hausman specification test} 
+\label{tab:MLDA}
+\end{table}
+
+Table \ref{tab:MLDA} displays the results of the tests for the policy variable and the Hausman tests for each model specification. 
+As in previous examples, our preferred version of the test uses the CR2 adjustment to the variance estimator and the AHZ test. 
+The results of the policy effect tests are quite similar across specifications and versions of the test. 
+Of note is that the RE and FE estimates have only half the degrees of freedom of the naiv\"e test. 
+For the artificial Hausman test in the model that controls for beer taxes, the AHZ test has less than 9 degrees of freedom, which leads to a much larger p-value compared to using an F test with $m - 1 = 49$ degrees of freedom. 
 
 \section{DISCUSSION}
 \label{sec:discussion}
