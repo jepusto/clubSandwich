@@ -57,46 +57,52 @@ filter(student_dat, flaggk==1) %>%
 
 # reading
 
-read <- lm(test_pct ~ 0 + gk_small + gk_RA + white + female + free + agek + gkschid,
+read_lm_A <- lm(test_pct ~ 0 + gk_small + white + female + free + agek + gkschid,
            data = filter(student_dat_outcomes, outcome=="read"))
-read_plm <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
+read_plm_A <- plm(test_pct ~ gk_small + white + female + free + agek,
                 data = filter(student_dat_outcomes, outcome=="read"), index = c("gkschid","stdntid"))
-all.equal(coef(read)[1:6], coef(read_plm))
+all.equal(coef(read_lm_A)[1:5], coef(read_plm_A))
+
+read_plm_B <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
+                  data = filter(student_dat_outcomes, outcome=="read"), index = c("gkschid","stdntid"))
 
 # math
 
-math <- lm(test_pct ~ 0 + gk_small + gk_RA + white + female + free + agek + gkschid,
+math_lm_A <- lm(test_pct ~ 0 + gk_small + white + female + free + agek + gkschid,
            data = filter(student_dat_outcomes, outcome=="math"))
-math_plm <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
+math_plm_A <- plm(test_pct ~ gk_small + white + female + free + agek,
                 data = filter(student_dat_outcomes, outcome=="math"), index = c("gkschid","stdntid"))
-all.equal(coef(math)[1:6], coef(math_plm))
+all.equal(coef(math_lm_A)[1:5], coef(math_plm_A))
+
+math_plm_B <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
+                  data = filter(student_dat_outcomes, outcome=="math"), index = c("gkschid","stdntid"))
 
 # word recognition
 
-word <- lm(test_pct ~ 0 + gk_small + gk_RA + white + female + free + agek + gkschid,
+word_lm_A <- lm(test_pct ~ 0 + gk_small + white + female + free + agek + gkschid,
            data = filter(student_dat_outcomes, outcome=="wordskill"))
-word_plm <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
+word_plm_A <- plm(test_pct ~ gk_small + white + female + free + agek,
                 data = filter(student_dat_outcomes, outcome=="wordskill"), index = c("gkschid","stdntid"))
-all.equal(coef(word)[1:6], coef(word_plm))
+all.equal(coef(word_lm_A)[1:5], coef(word_plm_A))
+
+word_plm_B <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
+                  data = filter(student_dat_outcomes, outcome=="wordskill"), index = c("gkschid","stdntid"))
 
 # SUR
 
-SUR <- lm(test_pct ~ 0 + gkschid + outcome + outcome:gk_small + outcome:gk_RA 
-          + white + female + free + agek,
+SUR_lm_A <- lm(test_pct ~ 0 + gkschid + outcome + outcome:gk_small + white + female + free + agek,
           data = student_dat_outcomes)
-SUR_plm <- plm(test_pct ~ outcome + outcome:gk_small + outcome:gk_RA + white + female + free + agek,
-                data = student_dat_outcomes, index = c("gkschid","SID_outcome"))
-all.equal(coef(SUR)[80:91], coef(SUR_plm))
+SUR_plm_A <- plm(test_pct ~ outcome + outcome:gk_small + white + female + free + agek,
+                 data = student_dat_outcomes, index = c("gkschid","SID_outcome"))
+all.equal(coef(SUR_lm_A)[80:88], coef(SUR_plm_A))
 
-# SUR_gls <- gls(test_pct ~ 0 + gkschid + outcome + outcome:gk_small + outcome:gk_RA
-#                + white + female + free + agek, data = student_dat_outcomes, 
-#                correlation = corSymm(form = ~ outcome_int | stdntid))
-# summary(SUR_gls)$tTable[-(1:79),]
+SUR_plm_B <- plm(test_pct ~ outcome + outcome:gk_small + outcome:gk_RA + white + female + free + agek,
+                 data = student_dat_outcomes, index = c("gkschid","SID_outcome"))
 
-mods <- list(read_lm = read, read_plm = read_plm,
-             math_lm = math, math_plm = math_plm,
-             word_lm = word, word_plm = word_plm,
-             SUR_lm = SUR, SUR_plm = SUR_plm)
+mods <- list(read_plm_A = read_plm_A, read_plm_B = read_plm_B,
+             math_plm_A = math_plm_A, math_plm_B = math_plm_B,
+             word_plm_A = word_plm_A, word_plm_B = word_plm_B,
+             SUR_plm_A = SUR_plm_A, SUR_plm_B = SUR_plm_B)
 
 #------------------------------------------
 # Wald tests
@@ -119,11 +125,11 @@ run_Wald_tests <- function(mod) {
   res <- rbind(CR1, CR2)
   class(res) <- "data.frame"
   row.names(res) <- NULL
-  select(res, CR, test, Fstat, df, p_val)
+  res$q <- length(trt_coefs)
+  select(res, q, CR, test, Fstat, df, p_val)
 }
 
 system.time(F_tests <- ldply(mods, run_Wald_tests, .progress = "text"))
-save(F_tests, file = "paper_ClusterRobustTesting/STAR_test_results.Rdata")
 
 #------------------------
 # Test

@@ -35,8 +35,6 @@
 \newcommand{\bs}{\boldsymbol}
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
-%\SweaveOpts{concordance=TRUE}
 
 \def\spacingset#1{\renewcommand{\baselinestretch}%
 {#1}\small\normalsize} \spacingset{1}
@@ -471,6 +469,9 @@ library(plyr)
 library(tidyr)
 library(dplyr)
 library(stringr)
+library(lubridate)
+
+library(plm)
 
 #library(clubSandwich)
 devtools::load_all()
@@ -529,69 +530,189 @@ Like previous studies, we then vary the true correlation structure so as to test
 \section{EXAMPLES}
 \label{subsec:examples_F}
 
-In this section we examine three short examples of the use of CRVE with small samples, spanning a variety of applied contexts. 
+This section presents three short examples of the use of CRVE with small or moderate samples of clusters, spanning a variety of applied contexts. 
 In the first example, the effects of substantive interest are identified within each cluster. 
 In the second example, the effects involve between-cluster contrasts. 
 The third example involves a cluster-robust Hausmann test for differences between within- and across-cluster information. 
-In each example, we illustrate how the proposed small-sample t- and F-tests can be used and how they can differ from both the standard CR1 and Wild bootstrap tests. 
+In each example, we demonstrate the proposed small-sample t- and F-tests and compare them to the standard CR1 and Wild bootstrap tests. 
 R code and data files are available for each analysis as an online supplement.
 
 \subsection{Tennessee STAR class-size experiment.} 
 
 The Tennessee STAR class size experiment is one of the most intensively studied interventions in education \citep[for a detailed review, see][]{Schanzenbach2006what}.  The experiment involved students in kindergarten through third grade across 79 schools. Within each school, students and their teachers were randomized equally to one of three conditions: small class-size (targetted to have 13-17 students), regular class-size, or regular class-size with an aide.
-Among other outcomes, subsequent research has focused on the effects of these conditions on kindergarden reading, math, and word recognition \citep{Achilles2008tennessee}; high school test scores \citep{Schanzenbach2006what}; college entrance exam participation \citep{Krueger2001effect}; and home ownership and earnings\citep{Chetty2011how}.
-%Analyses of the original study and follow-up waves have found that being in a small class improves a variety of student outcomes, including higher test scores \citep{Schanzenbach2006what}, increased likelihood of taking college entrance exams \citep{Krueger2001effect}, and increased rates of home ownership and earnings \citep{Chetty2011how}. 
+Among other outcomes, subsequent research has focused on the effects of these conditions on kindergarden reading, math, and word recognition \citep{Achilles2008tennessee}; high school test scores \citep{Schanzenbach2006what}; college entrance exam participation \citep{Krueger2001effect}; and home ownership and earnings \citep{Chetty2011how}.
 
-In this example, we exploit the fact that the STAR experiment involves three conditions and multiple outcomes to compare results garnered from the the BRL t-test and AHT F-test to those using the more commonly implemented CR1 tests. 
-To do so, we focus only on the subgroup of students who were in kindergarten during the first year of the study, and on the three outcomes measured at the end of the year, standardized to percentile ranks \citet{Krueger2001effect}: reading, word recognition, and math \citep{Achilles2008tennessee}.
-For each of these $k = 1, 2, 3$ outcomes, the following analytic model can be specified, which compares outcomes across the three conditions: 
+The STAR experiment involved three treatment conditions and multiple outcomes, providing a scenario where both t-tests (with $q = 1$) and F-tests with varying constraint dimensions can be applied. 
+For simplicity, we focus only on the subgroup of students who were in kindergarten during the first year of the study, and on the three outcomes measured at the end of the year, standardized to percentile ranks \citep{Krueger2001effect}: reading, word recognition, and math \citep{Achilles2008tennessee}.
+We posit the following following analytic model: 
 \begin{equation}
 y_{ijk} = \bm{r}_{ij}'\bs\beta_k + \bm{s}_{ij}'\bs\gamma_0 + \gamma_k + \mu_i + \epsilon_{ijk}, 
 \end{equation}
-where $y_{ijk}$ is the percentile rank on outcome $k$ for student $j$ in school $i$; $\bm{r}_{ij}$ includes indicators for the small-class and regular-plus-aide conditions; $\bm{s}_{ij}$ includes student demographic covariates (i.e., free or reduced-price lunch status; race; gender; age); $\gamma_k$ is a fixed effect for outcome $k$; and $\mu_i$ is a fixed effect for school $i$. 
+where $y_{ijk}$ is the percentile rank on outcome $k$ for student $j$ in school $i$; $\bm{r}_{ij}$ includes indicators for the small-class and regular-plus-aide conditions; $\bm{s}_{ij}$ includes student demographic covariates (i.e., free or reduced-price lunch status; race; gender; age); $\gamma_k$ is a fixed effect for outcome $k$; and $\mu_i$ is a fixed effect for school $i$. In this model, $\beta_{1k}$ represents the average effect of being in a small class and $\beta_{2k}$ represents the average of effect of being in a regular class with an aid, in each case compared to a regular-size class without an aid.
 
-Using this model, we provide results for three separate hypotheses that may be of interest in an analysis. 
-First, for each outcome $k$, the effects of the small class size ($\bs\beta_{1k}$) and regular plus aide ($\bs\beta_{2k}$) conditions could be estimated, with separate hypotheses conducted regarding the effectiveness of each (e.g., $\bs\beta_{1k} = 0$). 
-This results in the BRL t-test reviewed in SECTION 3.1. 
-Second, for each outcome $k$, the hypothesis that there are no differences across the three conditions could be tested (i.e., $\bs\beta_k = \bm{0}$). 
-This requires the AHT F-test introduced in SECTION 3.2.
-Third, and most general, looking over all three outcomes, the hypothesis that there are no differences between conditions could be tested (i.e., $\bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bm{0}$). 
-This requires use of the seemingly unrelated regression (SUR) framework, and another application of the AHT F-test. 
+Using this model, we test four distinct hypotheses that vary in dimension from $q = 1$ to $q = 6$. 
+First, using only the data for outcome $k$, we test the effects of the small class size ($H_0: \beta_{1k} = 0$) while maintaining the assumption that the additional classroom aide has no effect on student achievement (i.e., constraining $\beta_{2k} = 0$). 
+Second, again only using the data for outcome $k$, we test the hypothesis that there are no differences across the three class-size conditions (i.e., $H_0: \bs\beta_k = \bm{0}$). 
+Third, combining the data across all three outcomes, we test the hypothesis that small class size had no effects on any outcome (i.e., $\beta_{11} = \beta_{12} = \beta_{13} = 0$), while again maintaining the assumption that the additional classroom aide had no effects. 
+Finally, we test the hypothesis that there are no differences across the three class-size conditions on any outcome (i.e., $H_0: \bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bm{0}$). 
+The third and fourth tests use the seemingly unrelated regression (SUR) framework, in which separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. 
+In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the school fixed effects and clustered the errors by school.
 
-%In the SUR model, separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. 
+<<STAR_models, include=FALSE, cache=TRUE>>=
 
-%We estimated the model in two ways. First, we estimated $\bs\beta_k$ separately for each outcome $k$ and tested the null hypothesis that $\bs\beta_k = \bm{0}$. Second, we use the seemingly unrelated regression (SUR) framework to simultaneously test for treatment effects across conditions and across outcomes. In the SUR model, separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. An overall test of the differences between conditions thus amounts to testing the null hypothesis that $\bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bm{0}$. In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the school fixed effects and clustered the errors by school.
+# Read in student data files 
+stud <- read.table("data/TNSTAR/STAR_Students.tab", sep = "\t", header = TRUE)
 
-<<STAR_results, results="asis">>=
-load("STAR_test_results.Rdata")
-filter(F_tests, grepl("_plm", .id)) %>%
-  mutate(Outcome = factor(.id, levels = c("read_plm","math_plm","word_plm","SUR_plm"),
-                          labels = c("Reading","Math","Word recognition","Combined (SUR)")),
+#-----------------------------------
+# Student data 
+#------------------------------------
+
+student_dat <- within(stud, {
+  female <- ifelse(gender==2, 1, 0)
+  minority <- ifelse(race %in% c(1,3), 0, 1)
+  white <- 1 - minority
+  gk_small <- ifelse(gkclasstype=="1", 1, 0)
+  gk_RA <- ifelse(gkclasstype == "3", 1, 0)
+  free <- ifelse(gkfreelunch == "1", 1, 0)
+  urbanicity <- factor(gksurban, levels = 1:4, c("Inner","Suburb","Rural","Urban"))
+  dob <- as.Date(paste(birthyear, birthmonth, birthday, sep = "-"))
+  agek <- new_interval(dob, as.Date("1985-09-01")) / duration(num = 1, units = "years")
+})
+
+#------------------------------------------
+# Outcome measure creation 
+#------------------------------------------
+
+# scale outcomes according to percentiles in regular/RA conditions
+
+filter(student_dat, flaggk==1) %>%
+  select(stdntid, gkclasstype, gktreadss, gktmathss, gkwordskillss) %>%
+  gather("outcome","scale_score",gktreadss, gktmathss, gkwordskillss) %>%
+  mutate(outcome = ifelse(outcome=="gktreadss","read",ifelse(outcome=="gktmathss","math","wordskill"))) %>%
+  group_by(outcome) %>%
+  do(data.frame(stdntid = .$stdntid, test_pct = 100 * ecdf(.$scale_score[.$gkclasstype != 1])(.$scale_score))) %>%
+  unite(SID_outcome, stdntid, outcome, remove = FALSE) ->
+  student_outcomes
+
+filter(student_dat, flaggk==1) %>%
+  select(stdntid, gkschid, white, free, female, agek, gk_small, gk_RA) %>%
+  mutate(gkschid = factor(gkschid)) %>%
+  left_join(student_outcomes, by = "stdntid") %>%
+  mutate(outcome_int = as.integer(factor(outcome))) %>%
+  na.omit() ->
+  student_dat_outcomes
+
+
+#------------------------------------------
+# fit regressions
+#------------------------------------------
+
+# reading
+
+read_lm_A <- lm(test_pct ~ 0 + gk_small + white + female + free + agek + gkschid,
+           data = filter(student_dat_outcomes, outcome=="read"))
+read_plm_A <- plm(test_pct ~ gk_small + white + female + free + agek,
+                data = filter(student_dat_outcomes, outcome=="read"), index = c("gkschid","stdntid"))
+all.equal(coef(read_lm_A)[1:5], coef(read_plm_A))
+
+read_plm_B <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
+                  data = filter(student_dat_outcomes, outcome=="read"), index = c("gkschid","stdntid"))
+
+# math
+
+math_lm_A <- lm(test_pct ~ 0 + gk_small + white + female + free + agek + gkschid,
+           data = filter(student_dat_outcomes, outcome=="math"))
+math_plm_A <- plm(test_pct ~ gk_small + white + female + free + agek,
+                data = filter(student_dat_outcomes, outcome=="math"), index = c("gkschid","stdntid"))
+all.equal(coef(math_lm_A)[1:5], coef(math_plm_A))
+
+math_plm_B <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
+                  data = filter(student_dat_outcomes, outcome=="math"), index = c("gkschid","stdntid"))
+
+# word recognition
+
+word_lm_A <- lm(test_pct ~ 0 + gk_small + white + female + free + agek + gkschid,
+           data = filter(student_dat_outcomes, outcome=="wordskill"))
+word_plm_A <- plm(test_pct ~ gk_small + white + female + free + agek,
+                data = filter(student_dat_outcomes, outcome=="wordskill"), index = c("gkschid","stdntid"))
+all.equal(coef(word_lm_A)[1:5], coef(word_plm_A))
+
+word_plm_B <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
+                  data = filter(student_dat_outcomes, outcome=="wordskill"), index = c("gkschid","stdntid"))
+
+# SUR
+
+SUR_lm_A <- lm(test_pct ~ 0 + gkschid + outcome + outcome:gk_small + white + female + free + agek,
+          data = student_dat_outcomes)
+SUR_plm_A <- plm(test_pct ~ outcome + outcome:gk_small + white + female + free + agek,
+                 data = student_dat_outcomes, index = c("gkschid","SID_outcome"))
+all.equal(coef(SUR_lm_A)[80:88], coef(SUR_plm_A))
+
+SUR_plm_B <- plm(test_pct ~ outcome + outcome:gk_small + outcome:gk_RA + white + female + free + agek,
+                 data = student_dat_outcomes, index = c("gkschid","SID_outcome"))
+
+mods <- list(read_plm_A = read_plm_A, read_plm_B = read_plm_B,
+             math_plm_A = math_plm_A, math_plm_B = math_plm_B,
+             word_plm_A = word_plm_A, word_plm_B = word_plm_B,
+             SUR_plm_A = SUR_plm_A, SUR_plm_B = SUR_plm_B)
+
+#------------------------------------------
+# Wald tests
+#------------------------------------------
+
+run_Wald_tests <- function(mod) {
+  trt_coefs <- which(grepl("gk_", names(coef(mod))))
+  if (all(class(mod) == "lm")) {
+    clustering_var <- model.frame(mod)$gkschid
+    CR1 <- Wald_test(mod, trt_coefs, vcov = "CR1", cluster = clustering_var, test = "Naive-F")
+    CR2 <- Wald_test(mod, trt_coefs, vcov = "CR2", cluster = clustering_var, test = c("Naive-F","HTZ")) 
+  } else {
+    CR1 <- Wald_test(mod, trt_coefs, vcov = "CR1", test = "Naive-F")
+    CR2 <- Wald_test(mod, trt_coefs, vcov = "CR2", test = c("Naive-F","HTZ")) 
+  }
+  CR1$CR <- 1
+  CR1$test <- rownames(CR1)
+  CR2$CR <- 2
+  CR2$test <- rownames(CR2)
+  res <- rbind(CR1, CR2)
+  class(res) <- "data.frame"
+  row.names(res) <- NULL
+  res$q <- length(trt_coefs)
+  select(res, q, CR, test, Fstat, df, p_val)
+}
+
+STAR_F_tests <- ldply(mods, run_Wald_tests)
+@
+
+<<STAR_tables, results="asis">>=
+filter(STAR_F_tests, grepl("(math|SUR)", .id) & (CR==1 | test=="HTZ")) %>%
+  mutate(Outcome = ifelse(grepl("math", .id), "Math","Combined"),
+         Effect = paste0(ifelse(grepl("_A", .id), "Small class", "Small class and classroom aide"), " (q=",q,")"),
          Correction = paste0("CR",CR),
-         Test = factor(test, levels = c("Naive-F","HTZ"), labels = c("F","AHZ")),
+         Test = factor(test, levels = c("Naive-F","HTZ"), labels = c("Standard","AHZ")),
          F = round(Fstat,3),
          df = round(df, 2),
          p = round(p_val, 5)) %>%
-  select(Outcome, Correction, Test, F, df, p) ->
+  select(Outcome, Effect, Test, F, df, p) ->
   STAR_results
 
-STAR_results$Outcome[-seq(1,12,3)] <- NA
+STAR_results$Outcome[-seq(1,8,4)] <- NA
+STAR_results$Effect[-seq(1,8,2)] <- NA
 
 print(xtable(STAR_results, 
              caption = "Tests of treatment effects in the Tennessee STAR class size experiment",
              label = "tab:STAR",
-             align = "llccrrr",
+             align = "llllrrr",
              digits = c(0,0,0,0,3,1,5)
              ), 
       include.rownames=FALSE, 
-      hline.after = c(-1,0,3,6,9,12),
+      hline.after = c(-1,0,4,8),
       booktabs = TRUE,
       table.placement = "tbh")
 @
 
-Table \ref{tab:STAR} displays the results of a representative subset of these hypothesis tests.
-\todo[inline]{James -- make a table that only includes: 1) t-test for math (S, R+A); 2) F-test for math; 3)F-test for SUR. In each only compare CR1 vs AHT (no need for the middle option)}
-These results illustrate two important points regarding the use of CR2 in practice.
+Table \ref{tab:STAR} displays the results for a representative subset of these hypothesis tests, using either the standard hypothesis test or the AHZ test.
+These results illustrate two important points regarding the use of the AHZ test in practice.
 First, across all three analyses, the CR2 t- and F-tests are typically slightly smaller than those produced using CR1. 
 This trend is common, since the BRL adjustments to the variance estimator are typically small in scope.
 Second, in the case in which treatment is randomly allocated in equal proportions within each cluster, the degrees of freedom for the CR2 tests are only slightly smaller than those for the CR1 tests. 
@@ -602,22 +723,27 @@ Importantly, these conditions do not always occur in practice, as the next examp
 
 \citet{Angrist2009effects} reported results from a randomized trial in Israel that aimed to increase completion rates of the Bagrut, the national matriculation certificate for post-secondary education, among low-achieving high school students. 
 In the Achievement Awards demonstration, 40 non-vocational high schools with low rates of Bagrut completion were selected from across Israel, including 10 Arab and 10 Jewish religious schools and 20 Jewish secular schools. 
-The 40 schools were then pair-matched based on 1999 rates of Bagrut completion, and within each pair one school was randomized to receive a cash-transfer program. 
+The schools were then pair-matched based on 1999 rates of Bagrut completion, and within each pair one school was randomized to receive a cash-transfer program. 
 In these treatment schools, seniors who completed certification were eligible for payments of approximately \$1,500. 
-Student-level covariate and outcome data were drawn from administrative records, available for the school years ending in June of 2000, 2001, and 2002, with many focusing on Bagrut completion rates. 
+Student-level covariate and outcome data were drawn from administrative records available for the school years ending in June of 2000, 2001, and 2002. The primary outcome of interest is Bagrut completion. 
 
-In order to analyze this data, we use the following model.
-Let $h = 1,2,3$ index the sector of each school (Arab religious, Jewish religious, or Jewish secular). 
-We then use the model: 
+This study provides an opportunity to examine the CR2 tests in a situation in which the treatment was assigned at the cluster level, with a smaller number of clusters.
+For simplicity, we restrict our analysis to the sample of female students.
+Letting $h = 1,2,3$ index the sector of each school (Arab religious, Jewish religious, or Jewish secular), we posit the following analytic model: 
 \begin{equation}
 \label{eq:AL_ATE}
-y_{hitj} = z_{hit}\bm{r}_{hitj}'\bs\beta + \bm{s}_{hitj}'\bs\gamma + \gamma_{ht} + \mu_{hi} + \epsilon_{hitj}
+y_{hitj} = z_{hit}\bm{r}_{hitj}'\bs\beta_h + \bm{s}_{hitj}'\bs\gamma + \gamma_{ht} + \mu_{hi} + \epsilon_{hitj}
 \end{equation}
-In this model for student $j$ in year $t$ in school $i$ in sector $h$, $z_{hit}$ is an indicator equal to one in the treatment schools for the 2001 school year and otherwise equal to zero; $\bm{r}_{hitj}$ is a vector of indicators for whether the student is in the lower or upper half of the distribution of prior academic performance; and $\bs\beta = \left(\beta_1, \beta_2\right)$ is a vector of average treatment effects. 
+In this model for student $j$ in year $t$ in school $i$ in sector $h$, $z_{hit}$ is an indicator equal to one in the treatment schools for the 2001 school year and otherwise equal to zero; $\bm{r}_{hitj}$ is a vector of indicators for whether the student is in the lower or upper half of the distribution of prior academic performance; and $\bs\beta_h = \left(\beta_{1h}, \beta_{2h}\right)$ is a vector of average treatment effects for schools in sector $h$. 
 The vector $\bm{s}_{hitj}$ includes the following individual student demographic measures: mother's and father's education, immigration status, number of siblings, and indicators for each quartile in the distribution of prior-year academic performance. 
 The model also includes fixed effects $\gamma_{ht}$ for each sector in each year and $\mu_{hi}$ for each school. 
 
-The analysis of the Bagrut provides an opportunity to examine the CR2 tests in a situation in which the treatment was assigned at the cluster level, with a smaller number of clusters. 
+Based on Model (\ref{eq:AL_ATE}), we test three hypotheses. 
+First, we assume that the program effects are constant across sector (i.e., $\bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bs\beta$) and test for whether the program affected completion rates for students in each half of the prior achievement distribution (i.e., $H_0: \bs\beta = 0$).
+Second, we test for whether treatment effects differ . 
+In a modified model, we test for whether school sector moderates the program effects. 
+To do so, we allow the coefficients on the average treatment effects to vary by sector, replacing $\bs\beta$ by $\bs\beta_h$ in Model (\ref{eq:AL_ATE}). We then test for the equality of the treatment effects (i.e., $H_4: \bs\beta_1 = \bs\beta_2 = \bs\beta_3$). 
+
 We focus here on three analyses, each focusing only ont the sub-sample of female students.
 First, we test whether the average effect of the incentive on Bagrut completion is zero; to do so, we use a slightly simpler version of the above model in which the $\bm{r}_{hitj}$ are excluded. 
 This hypothesis is tested using a t-test.

@@ -14,9 +14,11 @@ character string specifying which small-sample adjustment should be used to
 calculate the variance-covariance.}
 
 \item{test}{Character vector specifying which small-sample corrections to
-calculate. \code{"Satterthwaite"} returns a Satterthwaite correction.
-\code{"saddlepoint"} returns a saddlepoint correction. Default is
-\code{"Satterthwaite"}.}
+calculate. \code{"z"} returns a z test (i.e., using a standard normal
+reference distribution). \code{"naive-t"} returns a t test with \code{m -
+1} degrees of freedom. \code{"Satterthwaite"} returns a Satterthwaite
+correction. \code{"saddlepoint"} returns a saddlepoint correction. Default
+is \code{"Satterthwaite"}.}
 
 \item{Ex_method}{Character string that controls how the expectation of the
 sandwich estimator is determined for use in the Satterthwaite
