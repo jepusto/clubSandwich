@@ -332,7 +332,7 @@ and $\bm{B}_i^{+1/2}$ is the symmetric square root of the Moore-Penrose inverse 
 The Moore-Penrose inverse is well-defined and unique even when $\bm{B}_i$ is not of full rank \citep[][Thm. 9.18]{Banerjee2014linear}. These adjustment matrices satisfy criterion (\ref{eq:CR2_criterion}), as stated in the following theorem.
 
 \begin{thm}
-\label{thm:BRL_FE_intext}
+\label{thm:BRL_FE}
 Let $\bm{L}_i = \left(\bm{\ddot{U}}'\bm{\ddot{U}} - \bm{\ddot{U}}_i'\bm{\ddot{U}}_i\right)$ and assume that $\bm{L}_1,...,\bm{L}_m$ have full rank $r + s$. Further assume that $\Var\left(\bs\epsilon_i\left|\bm{R}_i,\bm{S}_i,\bm{T}_i\right.\right) = \bs\Phi_i$, for $i = 1,...,m$. Then the adjustment matrix $\bm{A}_i$ defined in (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) satisfies criterion (\ref{eq:CR2_criterion}) and $\bm{V}^{CR2}$ is exactly unbiased.
 \end{thm}
 
@@ -361,7 +361,7 @@ In this case, the adjustment matrices can be calculated using $\bm{\tilde{B}}_i$
 \end{equation}
 
 \begin{thm}
-\label{thm:absorb1}
+\label{thm:absorb}
 Let $\bm{\tilde{A}}_i = \bm{D}_i'\bm{\tilde{B}}_i^{+1/2} \bm{D}_i$, where $\bm{\tilde{B}}_i$ is given in (\ref{eq:CR2_B_tilde}). If $\bm{T}_i \bm{T}_k' = \bm{0}$ for $j \neq k$ and $\bm{W} = \bs\Phi^{-1}$, then $\bm{A}_i = \bm{\tilde{A}}_i$. 
 \end{thm}
 Proof: See Appendix A.
@@ -573,11 +573,12 @@ Among other outcomes, subsequent research has focused on the effects of these co
 
 The STAR experiment involved three treatment conditions and multiple outcomes, providing a scenario where both t-tests (with $q = 1$) and F-tests with varying constraint dimensions can be applied. 
 For simplicity, we focus only on the subgroup of students who were in kindergarten during the first year of the study, and on the three outcomes measured at the end of the year, standardized to percentile ranks \citep{Krueger2001effect}: reading, word recognition, and math \citep{Achilles2008tennessee}.
-We posit the following following analytic model: 
+The analytic model is: 
 \begin{equation}
 y_{ijk} = \bm{r}_{ij}'\bs\beta_k + \bm{s}_{ij}'\bs\gamma_0 + \gamma_k + \mu_i + \epsilon_{ijk}, 
 \end{equation}
-where $y_{ijk}$ is the percentile rank on outcome $k$ for student $j$ in school $i$; $\bm{r}_{ij}$ includes indicators for the small-class and regular-plus-aide conditions; $\bm{s}_{ij}$ includes student demographic covariates (i.e., free or reduced-price lunch status; race; gender; age); $\gamma_k$ is a fixed effect for outcome $k$; and $\mu_i$ is a fixed effect for school $i$. In this model, $\beta_{1k}$ represents the average effect of being in a small class and $\beta_{2k}$ represents the average of effect of being in a regular class with an aid, in each case compared to a regular-size class without an aid.
+where $y_{ijk}$ is the percentile rank on outcome $k$ for student $j$ in school $i$; $\bm{r}_{ij}$ includes indicators for the small-class and regular-plus-aide conditions; $\bm{s}_{ij}$ includes student demographic covariates (i.e., free or reduced-price lunch status; race; gender; age); $\gamma_k$ is a fixed effect for outcome $k$; and $\mu_i$ is a fixed effect for school $i$. 
+In this model, $\beta_{1k}$ represents the average effect of being in a small class and $\beta_{2k}$ represents the average of effect of being in a regular class with an aid, in each case compared to a regular-size class without an aid.
 
 Using this model, we test four distinct hypotheses that vary in dimension from $q = 1$ to $q = 6$. 
 First, using only the data for outcome $k$, we test the effects of the small class size ($H_0: \beta_{1k} = 0$) while maintaining the assumption that the additional classroom aide has no effect on student achievement (i.e., constraining $\beta_{2k} = 0$). 
@@ -589,8 +590,8 @@ In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the sch
 
 
 
-% latex table generated in R 3.2.2 by xtable 1.7-4 package
-% Fri Oct 30 15:51:40 2015
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Sun Nov 01 15:10:21 2015
 \begin{table}[tbh]
 \centering
 \begin{tabular}{lllrrr}
@@ -629,65 +630,44 @@ The schools were then pair-matched based on 1999 rates of Bagrut completion, and
 In these treatment schools, seniors who completed certification were eligible for payments of approximately \$1,500. 
 Student-level covariate and outcome data were drawn from administrative records available for the school years ending in June of 2000, 2001, and 2002. The primary outcome of interest is Bagrut completion. 
 
-Letting $h = 1,2,3$ index the sector of each school (Arab religious, Jewish religious, or Jewish secular), we
-posit the following analytic model: 
+This study provides an opportunity to examine the CR2 tests in a situation in which the treatment was assigned at the cluster level, with a smaller number of clusters.
+For simplicity, we restrict our analysis to the sample of female students.
+The incentive program was in effect for the group of seniors in treatment schools taking the Bagrut exams in Spring of 2001. 
+However, the program was discontinued for the following year, and so we treat completion rates for 2000 and 2002 as being unaffected by treatment assignment.
+Following the original analysis of \citet{Angrist2009effects}, we allow the program's effects to vary depending on whether a students was in the upper or lower half of the distribution of prior-year academic performance. 
+Letting $h = 1,2,3$ index the sector of each school (Arab religious, Jewish religious, or Jewish secular), we consider the following analytic model: 
 \begin{equation}
 \label{eq:AL_ATE}
-y_{hitj} = z_{hit}\bm{r}_{hitj}'\bs\beta + \bm{s}_{hitj}'\bs\gamma + \gamma_{ht} + \mu_{hi} + \epsilon_{hitj}
+y_{hitj} = z_{hit}\bm{r}_{hitj}'\bs\beta_h + \bm{s}_{hitj}'\bs\gamma + \gamma_{ht} + \mu_{hi} + \epsilon_{hitj}
 \end{equation}
-In this model for student $j$ in year $t$ in school $i$ in sector $h$, $z_{hit}$ is an indicator equal to one in the treatment schools for the 2001 school year and otherwise equal to zero; $\bm{r}_{hitj}$ is a vector of indicators for whether the student is in the lower or upper half of the distribution of prior academic performance; and $\bs\beta = \left(\beta_1, \beta_2\right)$ is a vector of average treatment effects. 
+In this model for student $j$ in year $t$ in school $i$ in sector $h$, $z_{hit}$ is an indicator equal to one in the treatment schools for the 2001 school year and otherwise equal to zero; $\bm{r}_{hitj}$ is a vector of indicators for whether the student is in the lower or upper half of the distribution of prior academic performance; and $\bs\beta_h = \left(\beta_{1h}, \beta_{2h}\right)$ is a vector of average treatment effects for schools in sector $h$. 
 The vector $\bm{s}_{hitj}$ includes the following individual student demographic measures: mother's and father's education, immigration status, number of siblings, and indicators for each quartile in the distribution of prior-year academic performance. 
 The model also includes fixed effects $\gamma_{ht}$ for each sector in each year and $\mu_{hi}$ for each school. 
-
-The analysis of the Bagrut provides an opportunity to examine the CR2 tests in a situation in which the treatment was assigned at the cluster level, with a smaller number of clusters. 
-We focus here on three analyses, each focusing only ont the sub-sample of female students.
-First, we test whether the average effect of the incentive on Bagrut completion is zero; to do so, we use a slightly simpler version of the above model in which the $\bm{r}_{hitj}$ are excluded. 
-This hypothesis is tested using a t-test.
-Second, we test whether the effect of the program differs across student subgroups based upon prior academic performance (i.e. $\bs\beta = \left(\beta_1, \beta_2\right)$ = 0).
-This results in an F-test, particularly one with a covariate that varies within each cluster..
-Third, we test whether the average effect of the program differs across the three sectors ($h = 1,2,3$).
-This also results in an F-test, but one in which the covariate of interest varies at the cluster level. 
-
-%Our analysis focuses the effect of the cash incentive program on Bagrut completion rates. 
-%For sake of simplicity, we report results for the sub-sample of female students.
-%Bagrut completion rates for June, 2000 constitute baseline measures. 
-%The incentive program was in effect for the group of seniors in treatment schools taking the Bagrut exams in Spring of 2001. 
-%However, the program was discontinued for the following year, and so we treat 2002 completion rates as being unaffected by treatment assignment.
-
-%We estimate two distinct models and tested several different hypotheses in order to demonstrate the performance of the small-sample hypothesis tests under a range of condition. 
-%irst, we test for whether the average effect of the program differs from zero. \citet{Angrist2009effects} provided evidence that the program effects for female students are moderated by the prior academic performance. 
-%We therefore estimate separate average effects for students in the lower and upper halves of the distribution of prior test scores. 
-
-
-%Based on Model (\ref{eq:AL_ATE}), we test for whether the average treatment effects in the lower and upper halves differ from zero, first as separate t-tests (i.e., $H_1: \beta_1 = 0$, $H_2: \beta_2 = 0$) and then using a joint F-test (i.e., $H_3: \beta_1 = \beta_2 = 0$). 
-%In a modified model, we test for whether school sector moderates the program effects. 
-%To do so, we allow the coefficients on the average treatment effects to vary by sector, replacing $\bs\beta$ by $\bs\beta_h$ in Model (\ref{eq:AL_ATE}). We then test for the equality of the treatment effects (i.e., $H_4: \bs\beta_1 = \bs\beta_2 = \bs\beta_3$). 
+Based on Model (\ref{eq:AL_ATE}), we test four hypotheses. 
+First, we assume that the program effects are constant across sector (i.e., $\bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bs\beta$) and test for whether the program affected completion rates for students in the upper half of the prior achievement distribution ($H_0: \beta_2 = 0$, with $q = 1$).
+Second, we test for whether program effects differ from zero in each half of the prior academic performance ($H_0: \bs\beta = 0$, with $q = 2$), still assuming that program effects are constant across sector. 
+Third, we test for whether program effects in the upper half of the prior achievement distribution vary by school sector ($H_0: \beta_{21} = \beta_{22} = \beta_{23}$, with $q = 3$). 
+Finally, we conduct a joint test for whether program effects in each half of the prior achievement distribution vary by school sector ($H_0: \bs\beta_1 = \bs\beta_2 = \bs\beta_3$, with $q = 4$). 
 
 
 
-% latex table generated in R 3.2.2 by xtable 1.7-4 package
-% Fri Oct 30 15:51:40 2015
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Sun Nov 01 15:10:21 2015
 \begin{table}[bth]
 \centering
-\begin{tabular}{lccrrr}
+\begin{tabular}{lcrrr}
   \toprule
-Hypothesis & Correction & Test & F & df & p \\ 
+Hypothesis & Test & F & df & p \\ 
   \midrule
-ATE - lower half (q = 1) & CR1 & F & 0.079 & 34.00 & 0.78065 \\ 
-   & CR2 & F & 0.068 & 34.00 & 0.79573 \\ 
-   & CR2 & AHZ & 0.068 & 20.67 & 0.79674 \\ 
+ATE - upper half (q = 1) & Standard & 5.746 & 34.00 & 0.02217 \\ 
+   & AHZ & 5.169 & 15.86 & 0.03726 \\ 
+  ATE - joint (q = 2) & Standard & 3.848 & 34.00 & 0.03116 \\ 
+   & AHZ & 3.371 & 15.46 & 0.06096 \\ 
    \midrule
-ATE - upper half (q = 1) & CR1 & F & 5.746 & 34.00 & 0.02217 \\ 
-   & CR2 & F & 5.169 & 34.00 & 0.02943 \\ 
-   & CR2 & AHZ & 5.169 & 15.86 & 0.03726 \\ 
-   \midrule
-ATE - joint (q = 2) & CR1 & F & 3.848 & 34.00 & 0.03116 \\ 
-   & CR2 & F & 3.589 & 34.00 & 0.03854 \\ 
-   & CR2 & AHZ & 3.371 & 15.46 & 0.06096 \\ 
-   \midrule
-Moderation by sector (q = 4) & CR1 & F & 8.213 & 34.00 & 0.00010 \\ 
-   & CR2 & F & 5.603 & 34.00 & 0.00142 \\ 
-   & CR2 & AHZ & 2.895 & 3.21 & 0.19446 \\ 
+Moderation - upper half (q = 2) & Standard & 3.186 & 34.00 & 0.05393 \\ 
+   & AHZ & 0.091 & 3.19 & 0.91520 \\ 
+  Moderation - joint (q = 4) & Standard & 8.213 & 34.00 & 0.00010 \\ 
+   & AHZ & 2.895 & 3.21 & 0.19446 \\ 
    \bottomrule
 \end{tabular}
 \caption{Tests of treatment effects in the Achievement Awards Demonstration} 
@@ -695,9 +675,7 @@ Moderation by sector (q = 4) & CR1 & F & 8.213 & 34.00 & 0.00010 \\
 \end{table}
 
 
-\todo{James -- 1) three hypothesis tests here: ATE for all (t-test); ATE -joint (q=2); by sector (q=4); 2) For each only compare CR1 and CR2-AHZ.}
-
-Table \ref{tab:AAD} reports the results of all three hypothesis tests. 
+Table \ref{tab:AAD} reports the results of all four hypothesis tests. 
 These results indicate three important trends.
 First, in the case of the first two hypotheses, the CR2 test statistics are only slightly smaller than their CR1 counterparts, though the degrees of freedom are considerably smaller. 
 These differences reflect the fact that fact that the treatment indicator occurs at the cluster level, but that the subgroups varied within each cluster. 
@@ -730,10 +708,9 @@ A standard difference-in-differences specification for such a state-by-year pane
 \label{eq:MLDA}
 y_{it} = \bm{r}_{it}'\bs\beta + \gamma_t + \mu_i + \epsilon_{it}.
 \end{equation}
-In this model, time-point $t$ is nested within state $i$; the outcome $y_{it}$ is the number of deaths in motor vehicle crashes (per 100,000 residents) for state $i$ at time $t$; $\bm{r}_{it}$ is a vector of covariates; $\gamma_t$ is a fixed effect for time point $t$; and $\mu_i$ is an effect for state $i$. In our initial specification, $\bm{r}_{it}$ consists solely of a measure of the proportion of the population between the ages of 18 and 20 years who can legally drink alcohol
-In a further specification, we include as a further control the beer taxation rate. 
+In this model, time-point $t$ is nested within state $i$; the outcome $y_{it}$ is the number of deaths in motor vehicle crashes (per 100,000 residents) in state $i$ at time $t$; $\bm{r}_{it}$ is a vector of covariates; $\gamma_t$ is a fixed effect for time point $t$; and $\mu_i$ is an effect for state $i$. The vector $\bm{r}_{it}$ consists of a measure of the proportion of the population between the ages of 18 and 20 years who can legally drink alcohol and a measure of the beer taxation rate, both of which vary across states and across time.. 
 
-For each specification, we estimate the effect of lowering the policy variable using both random effects (RE) and fixed effects (FE) estimation. 
+In order to estimate the effect of lowering the legal drinking age, we apply both random effects (RE) and fixed effects (FE) estimation. 
 For the RE estimates, we use WLS with weights derived under the assumption that  $\mu_1,...,\mu_m$ are mutually independent, normally distributed, and independent of $\epsilon_{it}$.
 We also report an artificial Hausman test \citep{Arellano1993on, Wooldridge2002econometric} for correlation between the covariates $\bm{r}_{it}$ and the state effects $\mu_i$. Such correlation creates bias in the RE estimator of the policy effect, thus necessitating the use of the FE estimator.
 The artificial Hausman test amends model (\ref{eq:MLDA}) to include within-cluster deviations (or cluster aggregates) of the variables of interest, so that the estimating equation is
@@ -746,32 +723,27 @@ With this setup, the artificial Hausmann test amounts to testing the null hypoth
 
 
 
+% latex table generated in R 3.2.0 by xtable 1.7-4 package
+% Sun Nov 01 15:10:21 2015
 \begin{table}[bth]
 \centering
-\begin{tabular}{lccrrrcrrr}
+\begin{tabular}{lcrrr}
   \toprule
-  & & & \multicolumn{3}{c}{Policy variable only} & & \multicolumn{3}{c}{Controlling for beer taxes} \\ \cline{4-6} \cline{8-10}
- & Correction & Test & F & df & p & & F & df & p \\ 
-% latex table generated in R 3.2.2 by xtable 1.7-4 package
-% Fri Oct 30 15:51:40 2015
+Hypothesis & Test & F & df & p \\ 
   \midrule
-Random effects & CR1 & F & 8.342 & 49.00 & 0.00575 &  & 8.261 & 49.00 & 0.00598 \\ 
-   & CR2 & F & 7.962 & 49.00 & 0.00688 &  & 7.785 & 49.00 & 0.00749 \\ 
-   & CR2 & AHZ & 7.962 & 24.82 & 0.00926 &  & 7.785 & 24.74 & 0.00999 \\ 
+Random effects & Standard & 8.261 & 49.00 & 0.00598 \\ 
+   & AHZ & 7.785 & 24.74 & 0.00999 \\ 
+  Fixed effects & Standard & 9.660 & 49.00 & 0.00313 \\ 
+   & AHZ & 9.116 & 22.72 & 0.00616 \\ 
    \midrule
-Fixed effects & CR1 & F & 9.450 & 49.00 & 0.00345 &  & 9.660 & 49.00 & 0.00313 \\ 
-   & CR2 & F & 9.033 & 49.00 & 0.00417 &  & 9.116 & 49.00 & 0.00402 \\ 
-   & CR2 & AHZ & 9.033 & 22.57 & 0.00639 &  & 9.116 & 22.72 & 0.00616 \\ 
-   \midrule
-Hausman test & CR1 & F & 4.280 & 49.00 & 0.04386 &  & 2.930 & 49.00 & 0.06283 \\ 
-   & CR2 & F & 4.113 & 49.00 & 0.04800 &  & 2.775 & 49.00 & 0.07214 \\ 
-   & CR2 & AHZ & 4.113 & 27.46 & 0.05235 &  & 2.489 & 8.69 & 0.13980 \\ 
+Hausman test & Standard & 2.930 & 49.00 & 0.06283 \\ 
+   & AHZ & 2.489 & 8.69 & 0.13980 \\ 
    \bottomrule
-
 \end{tabular}
 \caption{Tests of effects of minimum legal drink age and Hausman specification test} 
 \label{tab:MLDA}
 \end{table}
+
 
 Table \ref{tab:MLDA} displays the results of the tests for the policy variable and the Hausman tests for each model specification. 
 As in previous examples, our preferred version of the test uses the CR2 adjustment to the variance estimator and the AHZ test. 
@@ -806,12 +778,8 @@ For the artificial Hausman test in the model that controls for beer taxes, the A
 
 This appendix states and provides proof of two theorems regarding the BRL adjustment matrices. 
 
-\begin{thm}
-\label{thm:BRL_FE}
-Let $\bm{L} = \left(\bm{\ddot{U}}'\bm{\ddot{U}} - \bm{\ddot{U}}_i'\bm{\ddot{U}}_i\right)$ and assume that $\bm{L}$ has full rank $r + s$, so that its inverse exists. Then the adjustment matrices $\bm{A}_i$ defined in (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) satisfy criterion (\ref{eq:CR2_criterion}) and $\bm{V}^{CR2}$ is exactly unbiased when the working covariance model $\bs\Phi$ is correctly specified.
-\end{thm}
+\subsection{Proof of Theorem \ref{thm:BRL_FE}}
 
-\begin{proof}
 The Moore-Penrose inverse of $\bm{B}_i$ can be computed from its eigen-decomposition. Let $b \leq n_i$ denote the rank of $\bm{B}_i$. 
 Let $\bs\Lambda$ be the $b \times b$ diagonal matrix of the positive eigenvalues of $\bm{B}_i$ and $\bm{V}$ be the $n_i \times b$ matrix of corresponding eigen-vectors, so that $\bm{B}_i = \bm{V}\bs\Lambda\bm{V}'$. 
 Then $\bm{B}_i^+ = \bm{V}\bs\Lambda^{-1}\bm{V}'$ and $\bm{B}_i^{+1/2} = \bm{V}\bs\Lambda^{-1/2}\bm{V}'$.
@@ -823,8 +791,7 @@ Now, observe that $\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_i \left(\bm{I} - \bm{
 &= \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{V}\bm{V}' \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i. 
 \end{align}
 
-Because $\bm{D}_i$, and $\bs\Phi$ are positive definite and $\bm{B}_i$ is symmetric, the eigenvectors $\bm{V}$ define an orthonormal basis for the column span of $\left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i$.
-%\todo{CITATION?} 
+Because $\bm{D}_i$, and $\bs\Phi$ are positive definite and $\bm{B}_i$ is symmetric, the eigenvectors $\bm{V}$ define an orthonormal basis for the column span of $\left(\bm{I} - \bm{H_{\ddot{X}}}\right)_i$.
 We now show that $\bm{\ddot{U}}_i$ is in the column space of $\left(\bm{I} - \bm{H_X}\right)_i$. 
 Let $\bm{Z}_i$ be an $n_i \times (r + s)$ matrix of zeros. 
 Let $\bm{Z}_k = - \bm{\ddot{U}}_k \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1}$, for $k \neq j$ and take $\bm{Z} = \left(\bm{Z}_1',...,\bm{Z}_m'\right)'$. 
@@ -835,7 +802,7 @@ It follows that
 &= \bm{Z}_i - \bm{\ddot{U}}_i\bm{M_{\ddot{U}}}\sum_{k=1}^m \bm{\ddot{U}}_k'\bm{W}_k\bm{Z}_k = \bm{\ddot{U}}_i\bm{M_{\ddot{U}}} \left(\sum_{k \neq j} \bm{\ddot{U}}_k' \bm{W}_k \bm{\ddot{U}} \right) \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1} \\
 &= \bm{\ddot{U}}_i.
 \end{align*}
-Thus, there exists an $N \times (r + s)$ matrix $\bm{Z}$ such that $\left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \bm{Z} = \bm{\ddot{U}}_i$, i.e., $\bm{\ddot{U}}_i$ is in the column span of $\left(\bm{I} - \bm{H_X}\right)_i$. Because $\bm{D}_i \bm{W}_i$ is positive definite and $\bm{\ddot{R}}_i$ is a sub-matrix of $\bm{\ddot{U}}_i$, $\bm{D}_i\bm{W}_i\bm{\ddot{R}}_i$ is also in the column span of $\left(\bm{I} - \bm{H_X}\right)_i$. It follows that 
+Thus, there exists an $N \times (r + s)$ matrix $\bm{Z}$ such that $\left(\bm{I} - \bm{H_{\ddot{X}}}\right)_i \bm{Z} = \bm{\ddot{U}}_i$, i.e., $\bm{\ddot{U}}_i$ is in the column span of $\left(\bm{I} - \bm{H_X}\right)_i$. Because $\bm{D}_i \bm{W}_i$ is positive definite and $\bm{\ddot{R}}_i$ is a sub-matrix of $\bm{\ddot{U}}_i$, $\bm{D}_i\bm{W}_i\bm{\ddot{R}}_i$ is also in the column span of $\left(\bm{I} - \bm{H_X}\right)_i$. It follows that 
 \begin{equation}
 \label{eq:step2}
 \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{V}\bm{V}' \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i = \bm{\ddot{R}}_i' \bm{W}_i \bs\Phi_i \bm{W}_i \bm{\ddot{R}}_i.
@@ -850,14 +817,9 @@ It follows that
 &= \bm{M_{\ddot{R}}}\left[\sum_{i=1}^m \bm{\ddot{R}}_i' \bm{W}_i \bs\Phi_i \bm{W}_i \bm{\ddot{R}}_i \right] \bm{M_{\ddot{R}}} \\
 &= \Var\left(\bs{\hat\beta}\right)
 \end{align*}
-\end{proof}
 
-\begin{thm}
-\label{thm:absorb}
-Let $\bm{\tilde{A}}_i = \bm{D}_i'\bm{\tilde{B}}_i^{+1/2} \bm{D}_i$, where $\bm{\tilde{B}}_i$ is given in (\ref{eq:CR2_B_tilde}). If $\bm{T}_i \bm{T}_k' = \bm{0}$ for $j \neq k$ and $\bm{W} = \bs\Phi^{-1}$, then $\bm{A}_i = \bm{\tilde{A}}_i$. 
-\end{thm}
+\subsection{Proof of Theorem \ref{thm:absorb}}
 
-\begin{proof}
 From the fact that $\bm{\ddot{U}}_i'\bm{W}_i\bm{T}_i = \bm{0}$ for $i = 1,...,m$, it follows that \begin{align*}
 \bm{B}_i &= \bm{D}_i \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \left(\bm{I} - \bm{H_T}\right) \hat{\bs\Phi} \left(\bm{I} - \bm{H_T}\right)' \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i' \bm{D}_i'\\
 &= \bm{D}_i \left(\bm{I} - \bm{H_{\ddot{U}}} - \bm{H_T}\right)_i \hat{\bs\Phi} \left(\bm{I} - \bm{H_{\ddot{U}}} - \bm{H_T}\right)_i' \bm{D}_i' \\
@@ -884,7 +846,6 @@ But \[
 \bm{\tilde{B}}_i = \bm{D}_i \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \bs\Phi \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i' \bm{D}_i' = \bm{D}_i \left(\bs\Phi_i - \bm{\ddot{U}}_i\bm{M_{\ddot{U}}} \bm{\ddot{U}}_i'\right) \bm{D}_i' = \bm{D}_i \bs\Omega_i^+ \bm{D}_i',
 \]
 and so $\bm{B}_i^+ = \bm{\tilde{B}}_i^+$. It follows that $\bm{A}_i = \bm{\tilde{A}}_i$ for $i = 1,...,m$. 
-\end{proof}
 
 \section{DISTRIBUTION THEORY FOR $\bm{V}^{CR}$}
 \label{app:VCR_dist}
