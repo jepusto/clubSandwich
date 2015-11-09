@@ -35,11 +35,6 @@
 \newcommand{\bs}{\boldsymbol}
 
 \begin{document}
-<<<<<<< HEAD
-%\SweaveOpts{concordance=TRUE}
-%\SweaveOpts{concordance=TRUE}
-=======
->>>>>>> f09547c1e2555d28f94c6500b9277389a906fa81
 
 \def\spacingset#1{\renewcommand{\baselinestretch}%
 {#1}\small\normalsize} \spacingset{1}
@@ -172,7 +167,7 @@ Finally, for analysis of data from complex survey designs, WLS may be used with 
 
 In most analyses, the goal is to estimate and test hypotheses regarding the parameters in $\bs\beta$. 
 This means that the values of $\bs\gamma$ and $\bs\mu$ are nuisance parameters and are not of inferential interest. 
-Estimating each of these fixed effects - as occurs if the fixed effects are included as dummy variables in the model - can be computationally intensive and numerically inaccurate if the number of clusters is large (i.e., $s + t$ large). 
+Estimating each of these fixed effects---as occurs if the fixed effects are included as dummy variables in the model---can be computationally intensive and numerically inaccurate if the number of clusters is large (i.e., $s + t$ large). 
 In the policy example given above, for example, this could easily result in over 70 parameters (i.e., 50 states, 20 time periods).
 An alternative that is commonly implemented, therefore, is to first absorb the fixed effects. 
 This amounts to demeaning the data by substracting the cluster-mean value from both the outcomes and covariates; this results in the "within" estimator, which is commonly implemented in panel data analyses. 
@@ -322,7 +317,7 @@ Let $\bm{\tilde{A}}_i = \bm{D}_i'\bm{\tilde{B}}_i^{+1/2} \bm{D}_i$, where $\bm{\
 \end{thm}
 Proof: See Appendix A.
 
-As theorem \ref{thm:absorb1} above demonstrates, using $\bm{\tilde{B}}_i$ rather than $\bm{B}_i$ leads to algebraically identical adjustment matrices; the form of $\bm{\tilde{B}}_i$ is simply more convenient for computation.
+As theorem \ref{thm:absorb} above demonstrates, using $\bm{\tilde{B}}_i$ rather than $\bm{B}_i$ leads to algebraically identical adjustment matrices; the form of $\bm{\tilde{B}}_i$ is simply more convenient for computation.
 Interestingly, in the simple case of ordinary (unweighted) least squares, in which the working variance model posits that the errors are all independent and homoskedastic and $\bm{W} = \bs\Phi = \bm{I}$, the adjustment matrices simplify further to \[
 \bm{A}_i = \left(\bm{I}_i - \bm{\ddot{U}}_i\left(\bm{\ddot{U}}'\bm{\ddot{U}}\right)^{-1}\bm{\ddot{U}}_i'\right)^{+1/2},\]
 where $\bm{\ddot{U}} = \left(\bm{I} - \bm{H_T}\right)\bm{U}$.
@@ -340,7 +335,7 @@ Cluster-robust Wald-type test statistics are a function of the parameter estimat
 Such tests are justified based on the asymptotic behavior of robust Wald statistics as the number of clusters grows large (i.e., as $m \to \infty$). 
 
 Like the research on the bias of the CRVE estimator, evidence from a wide variety of contexts indicates that the asymptotic limiting distribution of these statistics may be a poor approximation when the number of clusters is small, even if corrections such as CR2 are employed \citep{Bell2002bias, Bertrand2004how, Cameron2008bootstrap}. 
-Like the bias of the CRVE estimator itself, the accuracy of the asymptotic approximations depends on design features such as the degree of imbalance, skewness, and leverage in the covariates, and similarity of cluster sizes \citep{McCaffrey2001generalizations, Tipton2015small, Webb2013wild}. 
+Like the bias of the CRVE estimator itself, the accuracy of the asymptotic approximations depends on design features such as the degree of imbalance, skewness, and leverage in the covariates, and similarity of cluster sizes \citep{McCaffrey2001generalizations, Tipton2015small-F, Webb2013wild}. 
 This provides motivation for development of general-purpose hypothesis testing procedures that have accurate rejection rates in small samples.
 
 In this section, we develop a general method for conducting hypothesis tests based on CRVE. We consider linear constraints on $\bs\beta$, where the null hypothesis has the form $H_0: \bm{C}\bs\beta = \bm{d}$ for fixed $q \times r$ matrix $\bm{C}$ and $q \times 1$ vector $\bm{d}$. 
@@ -406,7 +401,7 @@ However, when the covariate exhibits large imbalances---as occurs when the panel
 Similarly, covariates with large leverage points will tend to exhibit lower of degrees of freedom. 
 
 
-By adjusting the degrees of freedom to account for these features, the Type I error rate of the test is nearly-always less than or equal to nominal, so long as the degrees of freedom are larger than 4 or 5 (Bell & McCaffrey, 2002; Tipton, 2015).
+By adjusting the degrees of freedom to account for these features, the Type I error rate of the test is nearly-always less than or equal to nominal, so long as the degrees of freedom are larger than 4 or 5 \citep{Bell2002bias, Tipton2015small-t}.
 This is because when the degrees of freedom are smaller, the t-distribution approximation to the sampling distribution doesn't hold, and the Type I error can be higher than the stated $\alpha$ level.
 In comparison, the CR1 degrees of freedom (i.e., $m - 1$) are constant, and the test only performs well when in the cases in which the covariates are balanced.
 Importantly, because the degrees of freedom are covariate-dependent, it is not possible to assess whether a small-sample correction is needed based solely on the total number of clusters in the data. 
@@ -500,8 +495,8 @@ The results of these studies are indicated in TABLE 1.
 As Table 1 illustrates, these simulation studies have included a range of applications; for example, Cameron and Miller (2015) and Imbens and Kolesar (2015) have focused on conditions common in economics, while Bell and McCaffrey (2002) focused on those common in complex surveys, and Tipton (2015) on those in meta-analysis. 
 Some of these studies have focused on policy dummies in the balanced case, while others have varied the degree of balance, and yet others have examined continous covariates that are symmetrically distributed, as well as those with high skew and leverage.
 These studies have also examined the role of the number of clusters, with values ranging from 6 to 50, as well as the number of observations per clusters (from 1 to roughly 260).
-Finally, the studies have examined a range of both true error structures -- including various combinations of heteroscedasticity and clustering -- and estimation strategies, with a focus in particular on different 'working' models. 
-By varying the working model from the true error structure, the studies allow for the effect of model 'mispecification' to be studied.
+Finally, the studies have examined a range of both true error structures---including various combinations of heteroscedasticity and clustering---and estimation strategies, with a focus in particular on different 'working' models. 
+By varying the working model from the true error structure, the studies allow for the effect of model mispecification to be studied.
 Finally, while most of these studies focus on comparisons in OLS, one study (Tipton, 2015) focuses on the use of WLS.
 
 The last column of Table 1 indicates the range of Type I error rates given over the conditions studied in each of the simulation studies, with values given for both the CR1 and CR2S tests.

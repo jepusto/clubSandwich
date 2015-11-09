@@ -161,7 +161,12 @@ Schanzenbach, D.~W.  \harvardyearleft 2006\harvardyearright , `{What have
 Searle, S.~R.  \harvardyearleft 2006\harvardyearright , {\em {Matrix Algebra
   Useful for Statistics}}, john wiley edn, Hoboken, NJ.
 
-\harvarditem{Tipton \harvardand\ Pustejovsky}{forthcoming}{Tipton2015small}
+\harvarditem{Tipton}{2015}{Tipton2015small-t}
+Tipton, E.  \harvardyearleft 2015\harvardyearright , `{Small sample adjustments
+  for robust variance estimation with meta-regression.}', {\em Psychological
+  Methods} {\bf 20}(3),~375--393.
+
+\harvarditem{Tipton \harvardand\ Pustejovsky}{forthcoming}{Tipton2015small-F}
 Tipton, E. \harvardand\ Pustejovsky, J.~E.  \harvardyearleft
   forthcoming\harvardyearright , `{Small-sample adjustments for tests of
   moderators and model fit using robust variance estimation in
