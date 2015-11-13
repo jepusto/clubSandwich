@@ -70,17 +70,6 @@ test_that("two-way effects agree with lm", {
   
 })
 
-obj <- plm::plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
-                              data = Produc_scramble, index = c("state","year"), 
-                              effect = "twoways", model = "within")
-obj2 <- plm::plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
-                 data = Produc, index = c("state","year"), 
-                 effect = "twoways", model = "within")
-cluster <- Produc_scramble$cluster
-type <- "CR0"
-target <- NULL
-inverse_var <- TRUE
-
 # test for equality with HC when cluster = rownames(data)
 # test cluster specification
 # test target matrix specification

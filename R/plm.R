@@ -35,6 +35,8 @@ vcovCR.plm <- function(obj, cluster, type, target, inverse_var) {
   
   if (obj$args$model=="random" & obj$args$effect=="twoways") stop("Variance matrix is not block diagonal.")
   
+  index <- attr(model.frame(obj),"index")
+  
   if (missing(cluster)) {
     if (obj$args$effect=="twoways") stop("You must specify a clustering variable.")
     index <- attr(model.frame(obj),"index")
@@ -43,11 +45,13 @@ vcovCR.plm <- function(obj, cluster, type, target, inverse_var) {
                       time = index[[2]])
   } else if ((length(cluster)==1) & is.character(cluster)) {
     if (cluster %in% c("individual","time")) {
-      index <- attr(model.frame(obj),"index")
       cluster <- switch(cluster,
                         individual = index[[1]],
                         time = index[[2]])
     } 
+  } else {
+    sort_order <- get_index_order(obj)
+    cluster <- cluster[sort_order]
   }
   
   if (missing(target)) target <- NULL
@@ -55,7 +59,13 @@ vcovCR.plm <- function(obj, cluster, type, target, inverse_var) {
   vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
 }
 
-# coef()
+get_index_order <- function(obj) {
+  envir <- environment(obj$formula)
+  mf <- match.call(plm::plm, call = obj$call, envir = envir)
+  index_names <- names(attr(model.frame(obj), "index"))
+  index <- eval(mf$data, envir)[,index_names]
+  order(index[,1],index[,2])
+}
 
 #-----------------------------------------------
 # Model matrix
