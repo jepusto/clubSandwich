@@ -21,6 +21,16 @@ model_matrix.default <- function(obj) {
 }
 
 #----------------------------------------------
+# get augmented design matrix
+#----------------------------------------------
+
+augmented_model_matrix <- function(obj, cluster, inverse_var) UseMethod("augmented_model_matrix")
+
+augmented_model_matrix.default <- function(obj, cluster, inverse_var) {
+  NULL
+}
+
+#----------------------------------------------
 # get residuals
 #----------------------------------------------
 

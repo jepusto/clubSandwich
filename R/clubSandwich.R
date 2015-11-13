@@ -76,9 +76,28 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   
   X_list <- matrix_list(X, cluster, "row")
   
-  resid <- residuals_CR(obj)
   W <- weightMatrix(obj)
   W_list <- matrix_list(W, cluster, "both")
+  XW_list <- mapply(function(x, w) as.matrix(t(x) %*% w), 
+                    x = X_list, w = W_list, SIMPLIFY = FALSE)
+  XW <- matrix(unlist(XW_list), p, N)[,order(order(cluster))]
+  M <- chol2inv(chol(XW %*% X))
+  
+  if (type=="CR2") {
+    S <- augmented_model_matrix(obj, cluster, inverse_var)
+    if (is.null(S)) {
+      U_list <- X_list
+      UW_list <- XW_list
+      M_U <- M
+    } else {
+      U <- cbind(X, S)
+      U_list <- matrix_list(U, cluster, "row")
+      UW_list <- mapply(function(u, w) as.matrix(t(u) %*% w), 
+                        u = U_list, w = W_list, SIMPLIFY = FALSE)
+      UW <- matrix(unlist(UW_list), ncol(U), N)[,order(order(cluster))]
+      M_U <- chol2inv(chol(UW %*% U))
+    }
+  }
   
   if (is.null(target)) {
     Theta <- targetVariance(obj)
@@ -86,19 +105,16 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
     Theta <- target
   }
   
-  XW_list <- mapply(function(x, w) as.matrix(t(x) %*% w), 
-                    x = X_list, w = W_list, SIMPLIFY = FALSE)
-  XW <- matrix(unlist(XW_list), p, N)[,order(order(cluster))]
-  M <- chol2inv(chol(XW %*% X))
-  
   E_list <- switch(type,
                    CR0 = lapply(XW_list, function(xw) M %*% xw),
                    CR1 = lapply(XW_list, function(xw) (M %*% xw) * sqrt(J / (J - 1))),
                    CR1S = lapply(XW_list, function(xw) (M %*% xw) * sqrt(J * N / ((J - 1) * (N - p)))),
-                   CR2 = CR2(M, X_list, XW_list, Theta_list = matrix_list(Theta, cluster, "both"), inverse_var),
+                   CR2 = CR2(M_U, U_list, UW_list, M, XW_list, Theta_list = matrix_list(Theta, cluster, "both"), inverse_var),
                    CR3 = CR3(M, X_list, XW_list),
                    CR4 = CR4(M, X_list, XW_list, Theta_list = matrix_list(Theta, cluster, "both"), inverse_var)
                    )
+
+  resid <- residuals_CR(obj)
 
   res_list <- split(resid, cluster)
   
@@ -171,23 +187,23 @@ IH_jj_list <- function(M, X_list, XW_list) {
 # Estimating function adjustments
 #---------------------------------------------
 
-CR2 <- function(M, X_list, XW_list, Theta_list, inverse_var = FALSE) {
+CR2 <- function(M_U, U_list, UW_list, M, XW_list, Theta_list, inverse_var = FALSE) {
 
   Theta_chol <- lapply(Theta_list, chol)
 
   if (inverse_var) {
-    IH_jj <- IH_jj_list(M, X_list, XW_list)
+    IH_jj <- IH_jj_list(M_U, U_list, UW_list)
     G_list <- mapply(function(a,b,ih) as.matrix(a %*% ih %*% b %*% t(a)), 
                      a = Theta_chol, b = Theta_list, ih = IH_jj, SIMPLIFY = FALSE)
   } else {
-    H_jj <- mapply(function(x, xw) x %*% M %*% xw, 
-                   x = X_list, xw = XW_list, SIMPLIFY = FALSE)
-    xwTwx <- mapply(function(xw, th) xw %*% th %*% t(xw), 
-                  xw = XW_list, th = Theta_list, SIMPLIFY = TRUE)
-    MXWTWXM <- M %*% matrix(rowSums(xwTwx), nrow(M), ncol(M)) %*% M
-    G_list <- mapply(function(thet, h, x, v) 
-      as.matrix(v %*% (thet - h %*% thet - thet %*% t(h) + x %*% MXWTWXM %*% t(x)) %*% v),
-      thet = Theta_list, h = H_jj, x = X_list, v = Theta_chol, SIMPLIFY = FALSE)
+    H_jj <- mapply(function(u, uw) u %*% M_U %*% uw, 
+                   u = U_list, uw = UW_list, SIMPLIFY = FALSE)
+    uwTwu <- mapply(function(uw, th) uw %*% th %*% t(uw), 
+                  uw = UW_list, th = Theta_list, SIMPLIFY = TRUE)
+    MUWTWUM <- M_U %*% matrix(rowSums(uwTwu), nrow(M), ncol(M)) %*% M_U
+    G_list <- mapply(function(thet, h, u, v) 
+      as.matrix(v %*% (thet - h %*% thet - thet %*% t(h) + u %*% MUWTWUM %*% t(u)) %*% v),
+      thet = Theta_list, h = H_jj, u = U_list, v = Theta_chol, SIMPLIFY = FALSE)
   }
 
   A_list <- mapply(function(v, g) as.matrix(t(v) %*% Sym_power(g, -1/2) %*% v), 

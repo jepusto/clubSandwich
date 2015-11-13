@@ -33,21 +33,21 @@
 
 vcovCR.plm <- function(obj, cluster, type, target, inverse_var) {
   
-  if (obj$args$model=="random" & obj$args$effect=="twoway") stop("Variance matrix is not block diagonal.")
+  if (obj$args$model=="random" & obj$args$effect=="twoways") stop("Variance matrix is not block diagonal.")
   
   if (missing(cluster)) {
-    if (obj$args$effect=="twoway") stop("You must specify a clustering variable.")
+    if (obj$args$effect=="twoways") stop("You must specify a clustering variable.")
     index <- attr(model.frame(obj),"index")
     cluster <- switch(obj$args$effect,
                       individual = index[[1]],
                       time = index[[2]])
-  } else if (is.character(cluster)) {
+  } else if ((length(cluster)==1) & is.character(cluster)) {
     if (cluster %in% c("individual","time")) {
       index <- attr(model.frame(obj),"index")
       cluster <- switch(cluster,
                         individual = index[[1]],
                         time = index[[2]])
-    }
+    } 
   }
   
   if (missing(target)) target <- NULL
@@ -69,6 +69,48 @@ model_matrix.plm <- function(obj) {
   }
 }
 
+#----------------------------------------------
+# Augmented model matrix
+#----------------------------------------------
+
+augmented_model_matrix.plm <- function(obj, cluster, inverse_var) {
+  index <- attr(model.frame(obj),"index")
+  individual <- droplevels(as.factor(index[[1]]))
+  time <- droplevels(as.factor(index[[2]]))
+  effect <- obj$args$effect
+  
+  if (obj$args$model=="within") {
+    if (inverse_var) {
+      if (effect=="individual") {
+        if (identical(individual, cluster)) {
+          S <- NULL
+        } else {
+          S <- model.matrix(~ 0 + individual)
+        }
+      } else if (effect=="time") {
+        if (identical(time, cluster)) {
+          S <- NULL 
+        } else {
+          S <- model.matrix(~ 0 + time)
+        }
+      } else if (effect=="twoways") {
+        if (identical(individual, cluster)) {
+          S <- model.matrix(~ 0 + time)
+        } else if (identical(time, cluster)) {
+          S <- model.matrix(~ 0 + individual)
+        } else {
+          S <- model.matrix(~ 0 + individual + time)
+        }
+      } 
+    } else {
+      S <- model.matrix(~ 0 + individual + time)
+    }
+  } else {
+    S <- NULL
+  }
+  
+  return(S)
+}
 #-------------------------------------
 # unadjusted residuals
 #-------------------------------------
