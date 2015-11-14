@@ -110,6 +110,14 @@ icc = 0.3
 trt_var = 0
 outcome_mean = rep(0, 2)
 dat <- simulate_panel(m, n, k, cluster_balance, time_balance, rho, ar, icc, trt_var, outcome_mean)
+constraints <- list(t_B = "outcome1:trtB",
+                    t_C = "outcome1:trtC",
+                    F_1 = c("outcome1:trtB", "outcome1:trtC"),
+                    F_B = c("outcome1:trtB","outcome2:trtB","outcome3:trtB"),
+                    F_C = c("outcome1:trtC","outcome2:trtC","outcome3:trtC"),
+                    F_all = c("outcome1:trtB","outcome2:trtB","outcome3:trtB",
+                              "outcome1:trtC","outcome2:trtC","outcome3:trtC"))
+
 select(dat, outcome, cluster, time, trt) %>% spread(time, trt) %>% head()
 
 select(dat, outcome, cluster, time, y) %>% 
@@ -123,17 +131,42 @@ select(dat, outcome, cluster, time, y) %>%
 # Model-fitting/estimation/testing functions
 #------------------------------------------------------
 
+absorb <- function(X_mat, cluster) 
+  apply(X_mat, 2, function(x) x - tapply(x, cluster, mean)[cluster])
 
-full_fit <- function(dat) {
-  cluster_means <- with(dat, tapply(y, cluster, mean))
-  time_means <- with(dat, tapply(y, time, mean))
-  dat$y_absorb <- dat$y - cluster_means[dat$cluster] - time_means[dat$time]
-  trt_dummies <- model.matrix(~ trt, data = dat)[,-1]
-  dat <- cbind(dat, trt_dummies)
-  frml <- paste("y_absorb ~ 0 +", paste(colnames(trt_dummies), "outcome", sep = ":", collapse = " + "))
-  lm_fit <- lm(frml, data = dat)
+model_matrix.lm_quick <- function(obj) obj$model_matrix
+augmented_model_matrix.lm_quick <- function(obj, cluster, inverse_var) obj$augmented_model_matrix
+targetVariance.lm_quick <- function(obj) rep(1, obj$rank + obj$df.residual)
+weightMatrix.lm_quick <- function(obj) rep(1, obj$rank + obj$df.residual)
+
+full_fit <- function(dat, constraints) {
+  cluster_mean <- with(dat, tapply(y, cluster, mean))
+  time_mean <- with(dat, tapply(y, time, mean))
+  y_absorb <- dat$y - cluster_mean[dat$cluster] - time_mean[dat$time]
   
-  U <- model.matrix(~ 0 + trt + trt:outcome + factor(time), data = dat)
+  S <- model.matrix(~ 0 + factor(time), data = dat)[,-1]
+  S_absorb <- absorb(S, dat$cluster)
+  R <- model.matrix(~ outcome + trt:outcome, data = dat)[,-1]
+  R_absorb_T <- absorb(R, dat$cluster)
+  R_absorb <- residuals(lm.fit(S_absorb, R_absorb_T))
+  lm_fit <- lm.fit(R_absorb, y_absorb)
+  lm_fit$model_matrix <- R_absorb
+  lm_fit$augmented_model_matrix <- S_absorb
+  class(lm_fit) <- "lm_quick"
+  
+  V_CR1 <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR1")
+  Walds_CR1 <- Wald_test(lm_fit, constraints = constraints, vcov = V_CR1, test = "Naive-F")
+  CR1_adjustments <- lapply(Walds_CR1, function(res) as.data.frame(res[,c("delta","df")]))
+
+  V_CR2 <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR2", inverse_var = TRUE)
+  Walds_CR2 <- Wald_test(lm_fit, constraints = constraints, vcov = V_CR2, test = "All")
+  CR2_adjustments <- lapply(Walds_CR2, function(res) as.data.frame(res[,c("delta","df")]))
+
+  result <- list(lm_fit = lm_fit, 
+                 CR1_estmats = attr(V_CR1,"estmats"),
+                 CR2_estmats = attr(V_CR2,"estmats"),
+                 CR1_adjustments = CR1_adjustments,
+                 CR2_adjustments = CR2_adjustments)
   return(result)
 }
 
