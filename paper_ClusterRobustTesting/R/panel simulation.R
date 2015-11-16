@@ -1,6 +1,5 @@
+devtools::load_all("clubSandwich")
 library(mvtnorm)
-library(plyr)
-devtools::load_all() # load clubSandwich
 
 rm(list = ls())
 
@@ -25,7 +24,7 @@ design_matrix <- function(m, n, k, cluster_balance, time_balance) {
   cluster_design <- round(m * cluster_balance)
   cluster_design[1] <- m - sum(cluster_design[-1])
   cluster_type <- rep(names(cluster_design), cluster_design)
-
+  
   trt_design <- within_design(time_balance, n)
   
   X <- data.frame(outcome = factor(rep(1:k, each = m * n)),
@@ -34,7 +33,7 @@ design_matrix <- function(m, n, k, cluster_balance, time_balance) {
                   trt = unlist(trt_design[cluster_type]))
   return(X)
 }
-  
+
 error_series <- function(m, n, k, rho, ar) {
   if (k == 1 & ar != 0) {
     e_mat <- replicate(m, as.vector(arima.sim(list(ar = ar), n = n, 
@@ -67,11 +66,11 @@ simulate_outcome <- function(m, n, k, trt, cluster, icc, rho, ar, trt_var, outco
 
 simulate_panel <- function(m, n, k, cluster_balance, time_balance, 
                            icc, rho = 0.8, ar = 0, trt_var = 0, outcome_mean = 0) {
-
+  
   dat <- design_matrix(m, n, k, cluster_balance, time_balance)
   dat$y <- simulate_outcome(m, n, k, trt = dat$trt, cluster = dat$cluster, 
                             icc, rho, ar, trt_var, outcome_mean)
-
+  
   return(dat)
 }
 
@@ -138,11 +137,11 @@ full_fit <- function(dat, cluster_effects, time_effects, constraints) {
   
   V_CR1 <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR1")
   Walds_CR1 <- Wald_test(lm_fit, constraints = constraints, vcov = V_CR1, test = "Naive-F")
-
+  
   V_CR2 <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR2", inverse_var = TRUE)
   Walds_CR2 <- Wald_test(lm_fit, constraints = constraints, vcov = V_CR2, 
                          test = c("Naive-F","HTA","HTB","HTZ"))
-
+  
   result <- list(lm_fit = lm_fit, 
                  trt = dat$trt,
                  cluster = dat$cluster,
@@ -182,7 +181,7 @@ Wald_test_quick <- function(beta, vcov, constraints, adjustments) {
 }
 
 quick_fit <- function(res, y) {
-
+  
   if (res$cluster_effects & res$time_effects) {
     cluster_mean <- tapply(y, res$cluster, mean)
     time_mean <- tapply(y, res$time, mean)
@@ -202,7 +201,7 @@ quick_fit <- function(res, y) {
   V_CR1 <- vcovCR_quick(resid = residuals(lm_fit), 
                         cluster = res$cluster, 
                         E_list = res$CR1_estmats)
-
+  
   Walds_CR1 <- Wald_test_quick(beta = coef(lm_fit),
                                vcov = V_CR1,
                                constraints = res$constraints,
@@ -211,7 +210,7 @@ quick_fit <- function(res, y) {
   V_CR2 <- vcovCR_quick(resid = residuals(lm_fit), 
                         cluster = res$cluster, 
                         E_list = res$CR2_estmats)
-
+  
   Walds_CR2 <- Wald_test_quick(beta = coef(lm_fit),
                                vcov = V_CR2,
                                constraints = res$constraints,
@@ -320,19 +319,22 @@ calculate_error_rate <- function(a, results) {
 # Simulation Driver
 #------------------------------------------------------
 
-run_sim <- function(iterations, m, n, k, 
-                   balance, balance_designs, constraints, 
-                   rho, ar, icc, trt_var, outcome_mean, 
-                   alpha_levels = c(.005,.01,.05,.10), seed = NULL) {
-
+run_sim <- function(iterations, m, n, k, design, constraints, 
+                    rho, ar, icc, trt_var, outcome_mean = 0, 
+                    alpha_levels = c(.005,.01,.05,.10), seed = NULL) {
+  
   if (!is.null(seed)) set.seed(seed)
   
   # get balance parameters
-  cluster_balance <- balance_designs[[balance]]$cluster_balance
-  time_balance <- balance_designs[[balance]]$time_balance
-  cluster_effects <- balance_designs[[balance]]$cluster_effects
-  time_effects <- balance_designs[[balance]]$time_effects
-
+  if (length(design)==1) design <- design[[1]]
+  cluster_balance <- design[["cluster_balance"]]
+  time_balance <- design[["time_balance"]]
+  cluster_effects <- design[["cluster_effects"]]
+  time_effects <- design[["time_effects"]]
+  
+  # get constraint list
+  if (length(constraints) == 1 & is.null(names(constraints))) constraints <- constraints[[1]]
+  
   # setup: simulate data and fit model  
   dat <- simulate_panel(m, n, k, cluster_balance, time_balance, rho, ar, icc, trt_var, outcome_mean)
   initial_fit <- full_fit(dat, cluster_effects, time_effects, constraints)
@@ -342,33 +344,34 @@ run_sim <- function(iterations, m, n, k,
     y <- simulate_outcome(m, n, k, trt = dat$trt, cluster = dat$cluster, icc, rho, ar, trt_var, outcome_mean)
     quick_fit(initial_fit, y)
   })
-
+  
   rejection_rates <- lapply(alpha_levels, calculate_error_rate, results = results)
   do.call(rbind, rejection_rates)
 }
 
-# demonstrate the simulation driver
-
-balance_designs <- list(test = list(
-  cluster_balance = c(A = 1/3, AB = 1/3, ABC = 1/3),
-  time_balance = list(A = 1, AB = c(1/2, 1/2), ABC = c(1/4, 1/4, 1/2)),
-  cluster_effects = TRUE,
-  time_effects = TRUE
-  ))
-
-constraints <- list(t_B = "outcome1:trtB",
-                    t_C = "outcome1:trtC",
-                    F_1 = c("outcome1:trtB", "outcome1:trtC"),
-                    F_B = c("outcome1:trtB","outcome2:trtB","outcome3:trtB"),
-                    F_C = c("outcome1:trtC","outcome2:trtC","outcome3:trtC"),
-                    F_all = c("outcome1:trtB","outcome2:trtB","outcome3:trtB",
-                              "outcome1:trtC","outcome2:trtC","outcome3:trtC"))
-
-system.time(
-  sim_res <- run_sim(iterations = 1000, m = 50, n = 18, k = 3, 
-                  balance = "test", balance_designs, constraints,
-                  rho = 0.8, ar = 0, icc = 0.3, trt_var = 0, outcome_mean = rep(0,3))
-)
+# # demonstrate the simulation driver
+# 
+# design <- list(
+#   cluster_balance = c(A = 1/3, AB = 1/3, ABC = 1/3),
+#   time_balance = list(A = 1, AB = c(1/2, 1/2), ABC = c(1/4, 1/4, 1/2)),
+#   cluster_effects = TRUE,
+#   time_effects = TRUE
+# )
+# 
+# constraints <- list(t_B = "outcome1:trtB",
+#                     t_C = "outcome1:trtC",
+#                     F_1 = c("outcome1:trtB", "outcome1:trtC"),
+#                     F_B = c("outcome1:trtB","outcome2:trtB","outcome3:trtB"),
+#                     F_C = c("outcome1:trtC","outcome2:trtC","outcome3:trtC"),
+#                     F_all = c("outcome1:trtB","outcome2:trtB","outcome3:trtB",
+#                               "outcome1:trtC","outcome2:trtC","outcome3:trtC"))
+# 
+# system.time(
+#   sim_res <- run_sim(iterations = 1000, m = 50, n = 18, k = 3, 
+#                      design = design, constraints,
+#                      rho = 0.8, ar = 0, icc = 0.3, trt_var = 0, outcome_mean = rep(0,3))
+# )
+# sim_res
 
 #-------------------------------------
 # Experimental Design
@@ -379,102 +382,117 @@ set.seed(20151116)
 
 # balance specifications
 
-balance_designs <- list(
-  "all-balanced-within" = list(
+designs <- list(
+  "RB-balanced" = list(
     cluster_balance = c(ABC = 1),
     time_balance = list(ABC = c(1/3, 1/3, 1/3)),
     cluster_effects = TRUE,
     time_effects = FALSE),
-  "all-unbalanced-within" = list(
+  "RB-unbalanced" = list(
     cluster_balance = c(ABC = 1),
     time_balance = list(ABC = c(1/2, 1/3, 1/6)),
     cluster_effects = TRUE,
     time_effects = FALSE),
-  "balanced-between" = list(
+  "CR-balanced" = list(
     cluster_balance = c(A = 1/3, B = 1/3, C = 1/3),
     time_balance = list(A = 1, B = 1, C = 1),
     cluster_effects = FALSE,
     time_effects = TRUE),
-  "unbalanced-between" = list(
+  "CR-unbalanced" = list(
     cluster_balance = c(A = .5, B = .3, C = .2),
     time_balance = list(A = 1, B = 1, C = 1),
     cluster_effects = FALSE,
     time_effects = TRUE),
-  "DD-balanced-within" = list(
+  "DD-balanced-balanced" = list(
     cluster_balance = c(A = 1/2, ABC = 1/2),
     time_balance = list(A = 1, ABC = c(1/3, 1/3, 1/3)),
     cluster_effects = TRUE,
     time_effects = TRUE),
-  "unbalanced-DD-balanced-within" = list(
+  "DD-unbalanced-balanced" = list(
     cluster_balance = c(A = 2/3, ABC = 1/3),
     time_balance = list(A = 1, ABC = c(1/3, 1/3, 1/3)),
     cluster_effects = TRUE,
     time_effects = TRUE),
-  "DD-unbalanced-within" = list(
+  "DD-balanced-unbalanced" = list(
     cluster_balance = c(A = 1/2, ABC = 1/2),
     time_balance = list(A = 1, ABC = c(1/2, 1/3, 1/6)),
     cluster_effects = TRUE,
     time_effects = TRUE),
-  "unbalanced-DD-unbalanced-within" = list(
+  "DD-unbalanced-unbalanced" = list(
     cluster_balance = c(A = 2/3, ABC = 1/3),
     time_balance = list(A = 1, ABC = c(1/2, 1/3, 1/6)),
     cluster_effects = TRUE,
     time_effects = TRUE)
 )
 
-# varied design parameters
-m = c(30,50)
-n = c(12,18,30)
-icc = c(0, 0.2, 0.4)
-trt_var = c(0.01, 0.04)
-balance <- names(balance_designs)
+# constraints to test
 
-# combine into a design set
-design_factors <- list(m = m, n = n, icc = icc, trt_var = trt_var, balance = balance) 
-params <- expand.grid(design_factors)
+constraints <- list(t_B = "outcome1:trtB",
+                    t_C = "outcome1:trtC",
+                    F_1 = c("outcome1:trtB", "outcome1:trtC"),
+                    F_B = c("outcome1:trtB","outcome2:trtB","outcome3:trtB"),
+                    F_C = c("outcome1:trtC","outcome2:trtC","outcome3:trtC"),
+                    F_all = c("outcome1:trtB","outcome2:trtB","outcome3:trtB",
+                              "outcome1:trtC","outcome2:trtC","outcome3:trtC"))
+
+# design parameters
+
+design_factors <- list(design = 1:length(designs),
+                       iterations = 1000,
+                       m = c(30,50), 
+                       n = c(18,30), 
+                       icc = c(0.0, 0.2, 0.4), 
+                       trt_var = c(0.00, 0.01, 0.04),
+                       k = 3,
+                       rho = 0.8,
+                       ar = 0.0)
+
+params <- expand.grid(design_factors, stringsAsFactors = FALSE, KEEP.OUT.ATTRS = FALSE)
+params$design <- designs
+params$constraints <- list(constraints)
 params$seed <- round(runif(nrow(params)) * 2^30)
 
-# constant design parameters
-iterations <- 1000
-k <- 3 
-rho <- 0.8
-ar <- 0
-outcome_mean <- rep(0,3)
-constraints <- list(t_B = "outcome1:trtB",
-                         t_C = "outcome1:trtC",
-                         F_1 = c("outcome1:trtB", "outcome1:trtC"),
-                         F_B = c("outcome1:trtB","outcome2:trtB","outcome3:trtB"),
-                         F_C = c("outcome1:trtC","outcome2:trtC","outcome3:trtC"),
-                         F_all = c("outcome1:trtB","outcome2:trtB","outcome3:trtB",
-                                   "outcome1:trtC","outcome2:trtC","outcome3:trtC"))
-MoreArgs <- list(k = k, rho = rho, ar = ar, outcome_mean = outcome_mean, 
-                 balance_designs = balance_designs, constraints = constraints, iterations = iterations)
- 
+
+
 # All look right?
 lengths(design_factors)
 nrow(params)
 head(params)
 
-p_row <- 1 + 36 * 7
-params[p_row,]
-splat(run_sim)(c(params[p_row,], MoreArgs))
+# p_row <- nrow(params) 
+# test_params <- params[p_row,]
+# iters <- c(10,100,1000,10000)
+# times <- sapply(iters, function(t) {
+#   test_params$iterations <- t
+#   system.time(plyr::splat(run_sim)(test_params))
+# })
+# 
+# (time_dat <- data.frame(iters, t(times[1:3,])))
+# summary(lm(elapsed ~ iters, data = time_dat))
 
 #--------------------------------------------------------
 # run simulations in parallel
 #--------------------------------------------------------
-
-library(plyr)
 library(Pusto)
-cluster <- start_parallel(source_obj)
+library(plyr)
 
-system.time(results <- mdply(params, .fun = run_sim,
-                             k = k, rho = rho, ar = ar, outcome_mean = outcome_mean, 
-                             balance_designs = balance_designs, constraints = constraints, 
-                             iterations = iterations, 
-                             .parallel = TRUE))
+cluster <- start_parallel(source_obj)
+clusterEvalQ(cluster, devtools::load_all("clubSandwich"))
+clusterEvalQ(cluster, library(mvtnorm))
+
+system.time(results <- mdply(params, .fun = run_sim, .parallel = TRUE))
 
 stopCluster(cluster)
 
-save(results, file = "paper_ClusterRobustTesting/R/Simulation Results.Rdata")
+results_clean <- within(results, {
+  constraints <- NULL
+  seed <- NULL
+  design <- names(design)
+})
+head(results_clean, 40)
+subset(results_clean, alpha==.05 & design=="RB-balanced" & test %in% c("CR1 Naive-F","CR2 HTZ"),
+       select = c(m, n, icc, trt_var, test, t_B:F_all))
+
+save(params, results, file = "paper_ClusterRobustTesting/R/Simulation Results.Rdata")
 
 
