@@ -438,7 +438,7 @@ constraints <- list(t_B = "outcome1:trtB",
 # design parameters
 
 design_factors <- list(design = 1:length(designs),
-                       iterations = 1000,
+                       iterations = 10000,
                        m = c(30,50), 
                        n = c(18,30), 
                        icc = c(0.0, 0.2, 0.4), 
@@ -489,10 +489,8 @@ results_clean <- within(results, {
   seed <- NULL
   design <- names(design)
 })
-head(results_clean, 40)
-subset(results_clean, alpha==.05 & design=="RB-balanced" & test %in% c("CR1 Naive-F","CR2 HTZ"),
-       select = c(m, n, icc, trt_var, test, t_B:F_all))
+head(results_clean, 20)
 
-save(params, results, file = "paper_ClusterRobustTesting/R/Simulation Results.Rdata")
+save(designs, constraints, params, results, file = "paper_ClusterRobustTesting/R/Simulation Results.Rdata")
 
 
