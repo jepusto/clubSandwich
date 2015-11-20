@@ -48,9 +48,12 @@ error_series <- function(m, n, k, rho, ar) {
   return(as.vector(e_mat))
 }
 
-simulate_outcome <- function(m, n, k, trt, cluster, icc, rho, ar, trt_var, outcome_mean) {
+simulate_outcome <- function(m, n, k, trt, cluster, outcome_id, icc, rho, ar, trt_var, outcome_mean) {
   
   if (nlevels(trt) != length(outcome_mean)) outcome_mean <- rep_len(outcome_mean, length.out = nlevels(trt))
+
+  trt <- trt[outcome_id == levels(outcome_id)[1]]
+  cluster <- cluster[outcome_id == levels(outcome_id)[1]]
   
   if (trt_var > 0 & icc > 0) {
     r <- 1 - trt_var / (2 * icc)
@@ -68,26 +71,39 @@ simulate_panel <- function(m, n, k, cluster_balance, time_balance,
                            icc, rho = 0.8, ar = 0, trt_var = 0, outcome_mean = 0) {
   
   dat <- design_matrix(m, n, k, cluster_balance, time_balance)
-  dat$y <- simulate_outcome(m, n, k, trt = dat$trt, cluster = dat$cluster, 
+  dat$y <- simulate_outcome(m, n, k, 
+                            trt = dat$trt, cluster = dat$cluster, outcome_id = dat$outcome,
                             icc, rho, ar, trt_var, outcome_mean)
   
   return(dat)
 }
 
-# library(tidyr)
-# library(dplyr)
-# dat <- simulate_panel(m = 9, n = 30, k = 3, 
-#                       cluster_balance = c(A = 1/3, AB = 1/3, ABC = 1/3), 
-#                       time_balance = list(A = 1, AB = c(1/2, 1/2), ABC = c(1/4, 1/4, 1/2)), 
-#                       rho = 0.8, ar = 0.0, icc = 0.3, trt_var = 0, outcome_mean = rep(0,3))
-# 
-# select(dat, outcome, cluster, time, trt) %>% spread(time, trt) %>% head(10)
-# 
-# select(dat, outcome, cluster, time, y) %>% 
-#   spread(time, y) %>% 
-#   group_by(outcome) %>% 
-#   do(data.frame(r = cor(.[,-1:-2]))) %>%
-#   as.data.frame()
+library(corrplot)
+m = 3
+n = 6
+k = 3
+cluster_balance = c(ABC = 1)
+time_balance = list(ABC = c(1/3,1/3,1/3))
+rho = 0.8
+icc = 0.3
+trt_var = 0.2
+ar = 0
+outcome_mean = 0
+dat <- simulate_panel(m, n, k, cluster_balance, time_balance, 
+                      icc = icc, rho = rho, trt_var = trt_var, 
+                      outcome_mean = outcome_mean)
+trt <- dat$trt
+cluster <- dat$cluster
+outcome_id <- dat$outcome
+
+more_dat <- replicate(10000, 
+                      simulate_outcome(m, n, k, 
+                                       trt = dat$trt, cluster = dat$cluster, outcome_id = dat$outcome,
+                                       icc, rho, ar = 0, trt_var = trt_var, outcome_mean = 0))
+corr_mat <- cor(t(more_dat))
+corrplot(corr_mat)
+round(corr_mat)[1:(m * n), 1:(m*n)], 3)
+round(cor(t(more_dat))[m*n + 1:(m * n), m*n + 1:(m*n)], 3)
 
 #------------------------------------------------------
 # Model-fitting/estimation/testing functions
@@ -227,16 +243,16 @@ quick_fit <- function(res, y) {
 #---------------------------------
 
 # # generate data
-# m = 30
+# m = 50
 # n = 12
 # k = 3
-# cluster_balance = c(ABC = 1)
-# time_balance = list(ABC = c(1/2,1/3,1/6))
+# cluster_balance = c(A = 1/2, ABC = 1/2)
+# time_balance = list(A = 1, ABC = c(1/2,1/3,1/6))
 # cluster_effects = TRUE
-# time_effects = FALSE
+# time_effects = TRUE
 # rho = 0.8
 # ar = 0.0
-# icc = 0
+# icc = 0.2
 # trt_var = 0.01
 # outcome_mean = rep(0, 3)
 # constraints <- list(t_B = "outcome1:trtB",
@@ -304,16 +320,6 @@ quick_fit <- function(res, y) {
 # cbind(dplyr::bind_rows(res$CR2_adjustments), dplyr::bind_rows(Wald_CR2))
 # all.equal(res$CR2_adjustments, Wald_CR2)
 
-#------------------------------------------------------
-# performance calculation
-#------------------------------------------------------
-
-calculate_error_rate <- function(a, results) {
-  error_rate <- as.data.frame(apply(results < a, 1:2, mean))
-  error_rate$alpha <- a
-  error_rate$test <- rownames(error_rate)
-  error_rate
-}
 
 #------------------------------------------------------
 # Simulation Driver
@@ -321,7 +327,7 @@ calculate_error_rate <- function(a, results) {
 
 run_sim <- function(iterations, m, n, k, design, constraints, 
                     rho, ar, icc, trt_var, outcome_mean = 0, 
-                    alpha_levels = c(.005,.01,.05,.10), seed = NULL) {
+                    alpha_levels = c(.01,.05,.10), seed = NULL) {
   
   if (!is.null(seed)) set.seed(seed)
   
@@ -345,33 +351,45 @@ run_sim <- function(iterations, m, n, k, design, constraints,
     quick_fit(initial_fit, y)
   })
   
-  rejection_rates <- lapply(alpha_levels, calculate_error_rate, results = results)
-  do.call(rbind, rejection_rates)
+  # get degrees of freedom
+  CR1_df <- sapply(initial_fit$CR1_adjustments, function(x) x$df)
+  CR2_df <- sapply(initial_fit$CR2_adjustments, function(x) x$df)
+  rownames(CR2_df) <- rownames(initial_fit$CR2_adjustments[[1]])
+  df <- rbind(CR1_df, CR2_df)
+
+  # calculate rejection rates
+  error_rate <- sapply(alpha_levels, function(a) as.vector(apply(results < a, 1:2, mean)))
+  colnames(error_rate) <- paste0("alpha", 100 * alpha_levels)
+  
+  # format output
+  data.frame(expand.grid(test = rownames(results), hypothesis = colnames(results)), 
+             error_rate, 
+             df = as.vector(df))
 }
 
-# # demonstrate the simulation driver
-# 
-# design <- list(
-#   cluster_balance = c(A = 1/3, AB = 1/3, ABC = 1/3),
-#   time_balance = list(A = 1, AB = c(1/2, 1/2), ABC = c(1/4, 1/4, 1/2)),
-#   cluster_effects = TRUE,
-#   time_effects = TRUE
-# )
-# 
-# constraints <- list(t_B = "outcome1:trtB",
-#                     t_C = "outcome1:trtC",
-#                     F_1 = c("outcome1:trtB", "outcome1:trtC"),
-#                     F_B = c("outcome1:trtB","outcome2:trtB","outcome3:trtB"),
-#                     F_C = c("outcome1:trtC","outcome2:trtC","outcome3:trtC"),
-#                     F_all = c("outcome1:trtB","outcome2:trtB","outcome3:trtB",
-#                               "outcome1:trtC","outcome2:trtC","outcome3:trtC"))
-# 
-# system.time(
-#   sim_res <- run_sim(iterations = 1000, m = 50, n = 18, k = 3, 
-#                      design = design, constraints,
-#                      rho = 0.8, ar = 0, icc = 0.3, trt_var = 0, outcome_mean = rep(0,3))
-# )
-# sim_res
+# demonstrate the simulation driver
+
+design <- list(
+  cluster_balance = c(A = 1/2, ABC = 1/2),
+  time_balance = list(A = 1, ABC = c(1/3, 1/3, 1/3)),
+  cluster_effects = TRUE,
+  time_effects = TRUE
+)
+
+constraints <- list(t_B = "outcome1:trtB",
+                    t_C = "outcome1:trtC",
+                    F_1 = c("outcome1:trtB", "outcome1:trtC"),
+                    F_B = c("outcome1:trtB","outcome2:trtB","outcome3:trtB"),
+                    F_C = c("outcome1:trtC","outcome2:trtC","outcome3:trtC"),
+                    F_all = c("outcome1:trtB","outcome2:trtB","outcome3:trtB",
+                              "outcome1:trtC","outcome2:trtC","outcome3:trtC"))
+
+system.time(
+  sim_res <- run_sim(iterations = 1000, m = 500, n = 12, k = 3, 
+                     design = design, constraints,
+                     rho = 0.8, ar = 0, icc = 0.2, trt_var = 0.01, outcome_mean = rep(0,3))
+)
+sim_res
 
 #-------------------------------------
 # Experimental Design
@@ -491,6 +509,6 @@ results_clean <- within(results, {
 })
 head(results_clean, 20)
 
-save(designs, constraints, params, results, file = "paper_ClusterRobustTesting/R/Simulation Results.Rdata")
+save(designs, constraints, params, results, file = "paper_ClusterRobustTesting/R/Panel simulation results.Rdata")
 
 
