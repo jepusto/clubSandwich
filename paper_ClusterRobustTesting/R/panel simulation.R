@@ -1,5 +1,6 @@
 devtools::load_all("clubSandwich")
 library(mvtnorm)
+library(stringr)
 
 rm(list = ls())
 
@@ -13,9 +14,10 @@ within_design <- function(time_balance, n) {
     if (sum(b) > 0) b[1] <- n - sum(b[-1])
     b
   })
+  
+  trt_conditions <- str_split(str_extract(names(time_balance), "[[:upper:]]+"), pattern = "")
   trt_design <- mapply(function(type, balance) rep(type, balance), 
-                       type = strsplit(names(time_balance), split = NULL),
-                       balance = trt_balance, SIMPLIFY = FALSE)
+                       type = trt_conditions, balance = trt_balance, SIMPLIFY = FALSE)
   names(trt_design) <- names(time_balance)
   trt_design
 }
@@ -78,32 +80,30 @@ simulate_panel <- function(m, n, k, cluster_balance, time_balance,
   return(dat)
 }
 
-library(corrplot)
-m = 3
-n = 6
-k = 3
-cluster_balance = c(ABC = 1)
-time_balance = list(ABC = c(1/3,1/3,1/3))
-rho = 0.8
-icc = 0.3
-trt_var = 0.2
-ar = 0
-outcome_mean = 0
-dat <- simulate_panel(m, n, k, cluster_balance, time_balance, 
-                      icc = icc, rho = rho, trt_var = trt_var, 
-                      outcome_mean = outcome_mean)
-trt <- dat$trt
-cluster <- dat$cluster
-outcome_id <- dat$outcome
-
-more_dat <- replicate(10000, 
-                      simulate_outcome(m, n, k, 
-                                       trt = dat$trt, cluster = dat$cluster, outcome_id = dat$outcome,
-                                       icc, rho, ar = 0, trt_var = trt_var, outcome_mean = 0))
-corr_mat <- cor(t(more_dat))
-corrplot(corr_mat)
-round(corr_mat)[1:(m * n), 1:(m*n)], 3)
-round(cor(t(more_dat))[m*n + 1:(m * n), m*n + 1:(m*n)], 3)
+# library(corrplot)
+# m = 3
+# n = 12
+# k = 1
+# cluster_balance = c(ABC1 = 1/2, ABC2 = 1/2)
+# time_balance = list(ABC1 = c(1/3,1/3,1/3), ABC2 = c(1/2,1/4,1/4))
+# rho = 0.8
+# icc = 0.3
+# trt_var = 0.2
+# ar = 0
+# outcome_mean = 0
+# dat <- simulate_panel(m, n, k, cluster_balance, time_balance, 
+#                       icc = icc, rho = rho, trt_var = trt_var, 
+#                       outcome_mean = outcome_mean)
+# trt <- dat$trt
+# cluster <- dat$cluster
+# outcome_id <- dat$outcome
+# 
+# more_dat <- replicate(10000, 
+#                       simulate_outcome(m, n, k, 
+#                                        trt = trt, cluster = cluster, outcome_id = outcome_id,
+#                                        icc, rho, ar = 0, trt_var = trt_var, outcome_mean = 0))
+# corr_mat <- cor(t(more_dat))
+# corrplot(corr_mat, method = "square", cl.lim = c(min(corr_mat), max(corr_mat)))
 
 #------------------------------------------------------
 # Model-fitting/estimation/testing functions
@@ -347,7 +347,8 @@ run_sim <- function(iterations, m, n, k, design, constraints,
   
   # replicate based on initial fit 
   results <- replicate(iterations, {
-    y <- simulate_outcome(m, n, k, trt = dat$trt, cluster = dat$cluster, icc, rho, ar, trt_var, outcome_mean)
+    y <- simulate_outcome(m, n, k, trt = dat$trt, cluster = dat$cluster, 
+                          outcome_id = dat$outcome, icc, rho, ar, trt_var, outcome_mean)
     quick_fit(initial_fit, y)
   })
   
@@ -367,29 +368,29 @@ run_sim <- function(iterations, m, n, k, design, constraints,
              df = as.vector(df))
 }
 
-# demonstrate the simulation driver
-
-design <- list(
-  cluster_balance = c(A = 1/2, ABC = 1/2),
-  time_balance = list(A = 1, ABC = c(1/3, 1/3, 1/3)),
-  cluster_effects = TRUE,
-  time_effects = TRUE
-)
-
-constraints <- list(t_B = "outcome1:trtB",
-                    t_C = "outcome1:trtC",
-                    F_1 = c("outcome1:trtB", "outcome1:trtC"),
-                    F_B = c("outcome1:trtB","outcome2:trtB","outcome3:trtB"),
-                    F_C = c("outcome1:trtC","outcome2:trtC","outcome3:trtC"),
-                    F_all = c("outcome1:trtB","outcome2:trtB","outcome3:trtB",
-                              "outcome1:trtC","outcome2:trtC","outcome3:trtC"))
-
-system.time(
-  sim_res <- run_sim(iterations = 1000, m = 500, n = 12, k = 3, 
-                     design = design, constraints,
-                     rho = 0.8, ar = 0, icc = 0.2, trt_var = 0.01, outcome_mean = rep(0,3))
-)
-sim_res
+# # demonstrate the simulation driver
+# 
+# design <- list(
+#   cluster_balance = c(A = 1/2, ABC1 = 1/4, ABC2 = 1/4),
+#   time_balance = list(A = 1, ABC1 = c(1/3, 1/3, 1/3), ABC2 = c(1/2, 1/4, 1/4)),
+#   cluster_effects = TRUE,
+#   time_effects = TRUE
+# )
+# 
+# constraints <- list(t_B = "outcome1:trtB",
+#                     t_C = "outcome1:trtC",
+#                     F_1 = c("outcome1:trtB", "outcome1:trtC"),
+#                     F_B = c("outcome1:trtB","outcome2:trtB","outcome3:trtB"),
+#                     F_C = c("outcome1:trtC","outcome2:trtC","outcome3:trtC"),
+#                     F_all = c("outcome1:trtB","outcome2:trtB","outcome3:trtB",
+#                               "outcome1:trtC","outcome2:trtC","outcome3:trtC"))
+# 
+# system.time(
+#   sim_res <- run_sim(iterations = 1000, m = 50, n = 12, k = 3, 
+#                      design = design, constraints,
+#                      rho = 0.8, ar = 0, icc = 0.2, trt_var = 0.01, outcome_mean = rep(0,3))
+# )
+# sim_res
 
 #-------------------------------------
 # Experimental Design
@@ -401,14 +402,24 @@ set.seed(20151116)
 # balance specifications
 
 designs <- list(
-  "RB-balanced" = list(
+  "RB-balanced-equal" = list(
     cluster_balance = c(ABC = 1),
     time_balance = list(ABC = c(1/3, 1/3, 1/3)),
     cluster_effects = TRUE,
     time_effects = FALSE),
-  "RB-unbalanced" = list(
+  "RB-balanced-unequal" = list(
     cluster_balance = c(ABC = 1),
     time_balance = list(ABC = c(1/2, 1/3, 1/6)),
+    cluster_effects = TRUE,
+    time_effects = FALSE),
+  "RB-unbalanced-equal" = list(
+    cluster_balance = c(ABC1 = 1/2, ABC2 = 1/2),
+    time_balance = list(ABC1 = c(1/2, 1/3, 1/6), ABC2 = c(1/6, 1/3, 1/2)),
+    cluster_effects = TRUE,
+    time_effects = FALSE),
+  "RB-unbalanced-unequal" = list(
+    cluster_balance = c(ABC1 = 1/2, ABC2 = 1/2),
+    time_balance = list(ABC1 = c(1/2, 1/3, 1/6), ABC2 = c(1/3, 5/9, 1/9)),
     cluster_effects = TRUE,
     time_effects = FALSE),
   "CR-balanced" = list(
@@ -457,12 +468,12 @@ constraints <- list(t_B = "outcome1:trtB",
 
 design_factors <- list(design = 1:length(designs),
                        iterations = 10000,
-                       m = c(30,50), 
+                       m = c(15,30,50), 
                        n = c(18,30), 
-                       icc = c(0.0, 0.2, 0.4), 
+                       icc = c(0.05, 0.15, 0.25), 
                        trt_var = c(0.00, 0.01, 0.04),
                        k = 3,
-                       rho = 0.8,
+                       rho = c(0.2, 0.8),
                        ar = 0.0)
 
 params <- expand.grid(design_factors, stringsAsFactors = FALSE, KEEP.OUT.ATTRS = FALSE)
@@ -497,6 +508,7 @@ library(plyr)
 cluster <- start_parallel(source_obj)
 clusterEvalQ(cluster, devtools::load_all("clubSandwich"))
 clusterEvalQ(cluster, library(mvtnorm))
+clusterEvalQ(cluster, library(stringr))
 
 system.time(results <- mdply(params, .fun = run_sim, .parallel = TRUE))
 
@@ -507,8 +519,20 @@ results_clean <- within(results, {
   seed <- NULL
   design <- names(design)
 })
-head(results_clean, 20)
+head(results_clean, 30)
 
 save(designs, constraints, params, results, file = "paper_ClusterRobustTesting/R/Panel simulation results.Rdata")
 
 
+library(mailR)
+send.mail(from = "jepusto@gmail.com",
+          to = "pusto@austin.utexas.edu",
+          subject = "all done",
+          body = "Here you go!",
+          attach.files = "paper_ClusterRobustTesting/R/Panel simulation results.Rdata",
+          smtp = list(host.name = "smtp.gmail.com", 
+                      port = 465, 
+                      user.name = "jepusto", 
+                      passwd = "xiqzdlacycwuksdf", 
+                      ssl = TRUE),
+          authenticate = TRUE)

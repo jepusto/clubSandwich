@@ -9,14 +9,16 @@ output: pdf_document
 
 The simulation is set up to generate data from the following process. A set of $K$ outcomes is observed at each of $n$ time points, for each of $m$ units. These units and/or time points are observed under $H$ different treatment conditions, where the units may be completely nested within condition (i.e., a cluster-randomized design), completely crossed with condition (i.e., a randomized block design), or crossed with condition for some units but not for others (i.e., a difference-in-differences design). Suppose that there are $G$ groups of units that share an identical pattern of treatment assignments, each of size $m_g$. Let $n_{ghi}$ denote the number of time points at which unit $i$ in group $g$ is observed under condition $h$. All models used $H = 3$ treatment conditions. Eight different designs were simulated:
 
-1. Balanced randomized block design, where all treatment conditions were observed for every unit ($G = 1, m_1 = m$), with $n_{1hi} = n / 3$. 
-2. Unbalanced randomized block design (well, sort of), where all treatment conditions were observed for every unit ($G = 1, m_1 = m$), but with $n_{11i} = n / 2, n_{12i} = n / 3, n_{13i} = n / 6$. 
-3. Balanced cluster-randomized design, where units were nested within treatment conditions, so that $G = 3$; $m_g = m / 3$; and $n_{ghi} = n$ for $g = h$ and zero otherwise. 
-4. Unbalanced cluster-randomized design, where units were nested within treatment conditions, so that $G = 3$; $m_1 = 0.5 m, m_2 = 0.3 m, m_3 = 0.2 m$; and $n_{ghi} = n$ for $g = h$ and zero otherwise.
-5. Difference-in-differences design with $G = 2$; where half of the observations remain in baseline throughout ($m_1 = m / 2$ and $n_{11i} = n$) and the remaining half are observed for an __equal__ number of time points under each treatment condition ($m_2 = m / 2$ and $n_{2hi} = n / 3$). 
-6. Difference-in-differences design with $G = 2$; where 2/3 of the observations remain in baseline throughout ($m_1 = 2 m / 3$ and $n_{11i} = n$) and the remaining 1/3 are observed for an __equal__ number of time points under each treatment condition ($m_2 = m / 3$ and $n_{2hi} = n / 3$). 
-7. Difference-in-differences design with $G = 2$; where half of the observations remain in baseline throughout ($m_1 = m / 2$ and $n_{11i} = n$) and the remaining half are observed for an __unequal__ number of time points under each treatment condition ($m_2 = m / 2$ and $n_{21i} = n / 2, n_{22i} = n / 3, n_{23i} = n / 6$). 
-8. Difference-in-differences design with $G = 2$; where 2/3 of the observations remain in baseline throughout ($m_1 = 2m / 3$ and $n_{11i} = n$) and the remaining 1/3 are observed for an __unequal__ number of time points under each treatment condition ($m_2 = m / 3$ and $n_{21i} = n / 2, n_{22i} = n / 3, n_{23i} = n / 6$). 
+1. Balanced randomized block design with an equal allocation, where all treatment conditions were observed for every unit ($G = 1, m_1 = m$), with $n_{1hi} = n / 3$. 
+2. Balanced randomized block design with an unequal allocation, with $G = 1, m_1 = m$, $n_{11i} = n / 2, n_{12i} = n / 3, n_{13i} = n / 6$. 
+3. Unbalanced randomized block design with an equal allocation, where $G = 2, m_1 = m_2 = m / 2$, $n_{11i} = n / 2, n_{12i} = n / 3, n_{13i} = n / 6$, and $n_{21i} = n / 6, n_{22i} = n / 3, n_{23i} = n / 2$. 
+4. Unbalanced randomized block design with an unequal allocation, where $G = 2, m_1 = m_2 = m / 2$, $n_{11i} = n / 2, n_{12i} = n / 3, n_{13i} = n / 6$, and $n_{21i} = n / 3, n_{22i} = 5 n / 9, n_{23i} = n / 9$. 
+5. Balanced cluster-randomized design, where units were nested within treatment conditions, so that $G = 3$; $m_g = m / 3$; and $n_{ghi} = n$ for $g = h$ and zero otherwise. 
+6. Unbalanced cluster-randomized design, where units were nested within treatment conditions, so that $G = 3$; $m_1 = 0.5 m, m_2 = 0.3 m, m_3 = 0.2 m$; and $n_{ghi} = n$ for $g = h$ and zero otherwise.
+7. Difference-in-differences design with $G = 2$; where half of the observations remain in baseline throughout ($m_1 = m / 2$ and $n_{11i} = n$) and the remaining half are observed for an __equal__ number of time points under each treatment condition ($m_2 = m / 2$ and $n_{2hi} = n / 3$). 
+8. Difference-in-differences design with $G = 2$; where 2/3 of the observations remain in baseline throughout ($m_1 = 2 m / 3$ and $n_{11i} = n$) and the remaining 1/3 are observed for an __equal__ number of time points under each treatment condition ($m_2 = m / 3$ and $n_{2hi} = n / 3$). 
+9. Difference-in-differences design with $G = 2$; where half of the observations remain in baseline throughout ($m_1 = m / 2$ and $n_{11i} = n$) and the remaining half are observed for an __unequal__ number of time points under each treatment condition ($m_2 = m / 2$ and $n_{21i} = n / 2, n_{22i} = n / 3, n_{23i} = n / 6$). 
+10. Difference-in-differences design with $G = 2$; where 2/3 of the observations remain in baseline throughout ($m_1 = 2m / 3$ and $n_{11i} = n$) and the remaining 1/3 are observed for an __unequal__ number of time points under each treatment condition ($m_2 = m / 3$ and $n_{21i} = n / 2, n_{22i} = n / 3, n_{23i} = n / 6$). 
 
 \newpage 
 
@@ -44,11 +46,11 @@ The simulation examined the following combinations of sample size and parameters
 
 Parameter         | Meaning                              | Levels
 ------------------|--------------------------------------|------------
-$m$               | number of units                      | 30, 50
+$m$               | number of units                      | 15, 30, 50
 $n$               | number of time-points                | 18, 30 
 $k$               | number of outcomes                   | 3
-$\rho$            | correlation between outcome measures | 0.8
-$ICC$             | intra-class correlation              | 0.0, 0.2, 0.4
+$\rho$            | correlation between outcome measures | 0.2, 0.8
+$ICC$             | intra-class correlation              | 0.05, 0.15, 0.25
 $\sigma_\delta^2$ | treatment effect variability         | 0.0, 0.01, 0.04
 
 The mean outcomes were set to $\mu_h = 0$ across all $H$ conditions, so that the null hypotheses to be tested are true. Each combination of parameters was tested for all eight designs.
