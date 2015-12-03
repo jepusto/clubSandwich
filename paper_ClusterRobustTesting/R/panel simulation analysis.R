@@ -17,16 +17,21 @@ gather(results, "alpha", "reject", alpha1:alpha10) %>%
   mutate(alpha = as.numeric(substring(alpha, 6)) / 100) ->
   results_long_all
 
-filter(results_long_all, test %in% c("CR1 Naive-F", "CR2 HTZ")) %>%
+filter(results_long_all, test %in% c("CR1 Naive-F", "CR2 HTZ") 
+       & design %in% c("CR-balanced","CR-unbalanced","DD-balanced-unbalanced",
+                       "DD-unbalanced-unbalanced","RB-balanced-unequal","RB-unbalanced-unequal")) %>%
   within({
-    test <- ifelse(test=="CR1 Naive-F", "Naive", "AHZ")
+    test <- factor(ifelse(test=="CR1 Naive-F", "Naive", "AHZ"), levels = c("Naive","AHZ"))
     UB <- alpha + qnorm(0.95) * sqrt(alpha * (1 - alpha) / iterations)
     m_fac <- paste0("m = ",m)
     q <- hypothesis
     levels(q) <- c(1,1,2,3,3,6)
+    design <- str_extract(design, "[A-Z]+-[a-z]+")
     q_alpha <- paste0("q = ", q, ", alpha = ", alpha)
     alpha_q <- paste0("alpha = ", alpha, ", q = ", q)
     alpha_m <- paste0("alpha = ", alpha, ", m = ", m)
+    m_test <- factor(paste0(test, " test, m = ", m))
+    m_test <- factor(m_test, levels = levels(m_test)[c(4:6,1:3)])
   }) ->
   results_long
 head(results_long)
@@ -47,6 +52,7 @@ filter(results_compare, m==15 & n==18 & icc==0.05 &
   mutate(Naive = 0, AHZ = 0) -> 
   zeros_compare
 
+alpha_val <- 0.4
 #--------------------------
 # Overview
 #--------------------------
@@ -57,13 +63,13 @@ filter(results_compare, m==15 & n==18 & icc==0.05 &
 
 # boxplots
 
-ggplot(results_long, aes(m_fac, reject, fill = test)) + 
-  geom_boxplot() + 
+ggplot(results_long, aes(m_fac, reject, fill = test, color = test)) + 
+  geom_boxplot(coef = Inf, alpha = alpha_val) + 
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
   facet_wrap(~ alpha_q, ncol = 4, scales = "free") + 
-  labs(x = NULL, y = "Rejection rate", fill = "Test") + 
+  labs(x = NULL, y = "Rejection rate", fill = "Test", color = "Test") + 
   theme_bw() + theme(legend.position = "bottom")
 
 # head-to-head, separate plots by alpha and q
@@ -99,6 +105,7 @@ ggplot(results_compare, aes(Naive, AHZ, color = factor(q), shape = factor(q))) +
 # Take-away: Actual rejection rates are strongly affected by balance
 
 # alpha = .05, dotplot
+
 filter(results_long, alpha==0.05) %>%
   ggplot(aes(design, reject, color = factor(q), shape = factor(q))) + 
   geom_point() + 
@@ -109,11 +116,25 @@ filter(results_long, alpha==0.05) %>%
   labs(x = NULL, y = "Rejection rate", color = "q", shape = "q") + 
   theme_bw() + theme(legend.position = "bottom", axis.text.x = element_text(angle = 90, hjust = 1))
 
+
+# alpha = .05, squished boxplots
+
+filter(results_long, alpha==0.05) %>%
+  ggplot(aes(design, reject, color = factor(q), fill = factor(q))) + 
+  geom_boxplot(coef = Inf, alpha = alpha_val) + 
+  geom_blank(data = zeros_long) + 
+  geom_hline(aes(yintercept = alpha)) + 
+  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  facet_wrap(~ m_test, scales = "free") + 
+  labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
+  theme_bw() + theme(legend.position = "bottom", axis.text.x = element_text(angle = 90, hjust = 1))
+
+
 # alpha = .05, boxplot excluding q = 6
 
 filter(results_long, alpha==0.05 & q != 6) %>%
 ggplot(aes(design, reject, fill = design)) + 
-  geom_boxplot() + 
+  geom_boxplot(coef = Inf) + 
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
@@ -125,7 +146,7 @@ ggplot(aes(design, reject, fill = design)) +
 
 filter(results_long, alpha==0.05 & q == 6) %>%
   ggplot(aes(design, reject, fill = design)) + 
-  geom_boxplot() + 
+  geom_boxplot(coef = Inf) + 
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
@@ -140,12 +161,13 @@ filter(results_long, alpha==0.05 & q == 6) %>%
 # Take-away: Model mis-specification doesn't matter for AHZ. 
 
 filter(results_long, alpha==0.05 & test=="AHZ") %>%
-  ggplot(aes(factor(trt_var), reject, fill = factor(icc))) + 
-  geom_boxplot() + 
+  ggplot(aes(factor(trt_var), reject, fill = factor(icc), color = factor(icc))) + 
+  geom_boxplot(coef = Inf, alpha = alpha_val) + 
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
   facet_grid(m ~ q, labeller = "label_both", scales = "free") + 
-  labs(x = "treatment effect variance", y = "Rejection rate", fill = "intra-class correlation") + 
+  labs(x = "treatment effect variance", y = "Rejection rate", fill = "intra-class correlation", color = "intra-class correlation") + 
   theme_bw() + theme(legend.position = "bottom")
 
+# Look at whether adding icc/correlation structure improves rejection rate accuracy for very small sample sizes

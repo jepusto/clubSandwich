@@ -82,5 +82,5 @@ In words:
 * $t_C$ is the hypothesis that there is no difference between treatment conditions 1 and 3 on the first outcome;
 * $F_1$ is the hypothesis that there is no difference among the treatment conditions on the first outcome;
 * $F_B$ is the hypothesis that there is no difference between treatment conditions 1 and 2 on any of the outcomes;
-* $F_B$ is the hypothesis that there is no difference between treatment conditions 1 and 3 on any of the outcomes;
+* $F_C$ is the hypothesis that there is no difference between treatment conditions 1 and 3 on any of the outcomes;
 * $F_{all}$ is the hypothesis that there is no difference among the treatment conditions on any of the outcomes.

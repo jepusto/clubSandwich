@@ -67,6 +67,9 @@
 \addtolength{\textheight}{1.3in}%
 \addtolength{\topmargin}{-.8in}%
 
+\usepackage{float}    % for fig.pos='H'
+\usepackage{rotfloat} % for sidewaysfigure
+
 \usepackage[textwidth=1in, textsize=tiny]{todonotes}
 %\usepackage[disable]{todonotes}
 
@@ -511,14 +514,13 @@ When the proportion varies across clusters, these degrees of freedom fall, often
 
 \section{Simulation Study}
 
-
-
 Throughout this paper, we have argued that the CR2 based hypothesis tests perform significantly better than the standard CR1 tests commonly used in economic applications. 
 This argument is based on results from several large simulation studies. 
 In this section, we review the design of these studies and their results, with particular emphasis on the role of covariate features and sample size on the Type I error rates of these tests.
 Throughought, we use "CR2S" test to refer to those tests employing both the BRL correction to the variance and the Satterthwaite degrees of freedom. For t-tests, CR2S thus refers to test described in Section 3.1, while for the F-test CR2S refers the that found in Section 3.2. 
 
 \subsection{Review of previous simulation studies}
+
 To date, four papers have examined the performance of the CR2 t-test and these papers have included nearly 100 parameter combinations. 
 The results of these studies are indicated in TABLE 1. 
 As Table 1 illustrates, these simulation studies have included a range of applications; for example, Cameron and Miller (2015) and Imbens and Kolesar (2015) have focused on conditions common in economics, while Bell and McCaffrey (2002) focused on those common in complex surveys, and Tipton (2015) on those in meta-analysis. 
@@ -557,6 +559,7 @@ In comparison, the Type I error of the CR1 test was often very high (between XX 
 Again, like the t-test, the degrees of freedom of the CR2S F-test here were driven by covariate features, with particularly low degrees of freedom resulting when the covariate set studied included imbalances or skew.
 
 \subsection{Simulation Design}
+
 While the simulation study produced by Tipton and Pustejovsky (in press) included a variety of conditions, the set studied focused largely on the types of data found in meta-analysis and regression more broadly. 
 These differ from the economic context in two ways.
 First, in meta-analysis, it is common for there to be both heteroscedasticity assumed and for analysts to implement weights in the analysis (typically inverse-variance).
@@ -571,7 +574,52 @@ Together with the results from Tipton and Pustejovsky (2015), the studies cover 
 
 \subsection{Simulation Results}
 
-%Put these in Table 3
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{sidewaysfigure}
+
+{\centering \includegraphics[width=\linewidth]{CR_fig/overview-1} 
+
+}
+
+\caption[Rejection rates of Naive and AHZ tests, by dimension of hypothesis (]{Rejection rates of Naive and AHZ tests, by dimension of hypothesis ($q$) and nominal type I error ($\alpha$)}\label{fig:overview}
+\end{sidewaysfigure}
+
+
+\end{knitrout}
+
+Figure \ref{fig:overview} shows that Naive-F = bad, AHZ = rad! Also, performance of the naive test degrades (becomes liberal) for larger q, whereas AHZ test becomes more conservative.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{sidewaysfigure}
+
+{\centering \includegraphics[width=\linewidth]{CR_fig/balance-1} 
+
+}
+
+\caption[Rejection rates of Naive and AHZ tests, by study design and dimension of hypothesis (]{Rejection rates of Naive and AHZ tests, by study design and dimension of hypothesis ($q$). CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design.}\label{fig:balance}
+\end{sidewaysfigure}
+
+
+\end{knitrout}
+
+Figure \ref{fig:balance} shows that rejection rates are strongly affected by imbalance of the clusters.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{sidewaysfigure}
+
+{\centering \includegraphics[width=\linewidth]{CR_fig/misspecification-1} 
+
+}
+
+\caption[Rejection rates of AHZ test, by treatment effect variance and intra-class correlation]{Rejection rates of AHZ test, by treatment effect variance and intra-class correlation.}\label{fig:misspecification}
+\end{sidewaysfigure}
+
+
+\end{knitrout}
+
+Figure \ref{fig:misspecification} shows that model mis-specification doesn't matter for AHZ. 
 
 \section{EXAMPLES}
 \label{subsec:examples_F}
@@ -608,7 +656,7 @@ In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the sch
 
 
 % latex table generated in R 3.2.2 by xtable 1.7-4 package
-% Mon Nov 09 08:35:42 2015
+% Thu Dec 03 16:02:52 2015
 \begin{table}[tbh]
 \centering
 \begin{tabular}{lllrrr}
@@ -671,7 +719,7 @@ Finally, we conduct a joint test for whether program effects differ across stude
 
 
 % latex table generated in R 3.2.2 by xtable 1.7-4 package
-% Mon Nov 09 08:35:42 2015
+% Thu Dec 03 16:02:52 2015
 \begin{table}[bth]
 \centering
 \begin{tabular}{lcrrr}
@@ -743,7 +791,7 @@ With this setup, the artificial Hausmann test amounts to testing the null hypoth
 
 
 % latex table generated in R 3.2.2 by xtable 1.7-4 package
-% Mon Nov 09 08:35:42 2015
+% Thu Dec 03 16:02:52 2015
 \begin{table}[bth]
 \centering
 \begin{tabular}{lcrrr}
