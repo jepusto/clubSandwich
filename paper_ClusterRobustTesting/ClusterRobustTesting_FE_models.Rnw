@@ -38,6 +38,7 @@
 \newcommand{\bs}{\boldsymbol}
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 \def\spacingset#1{\renewcommand{\baselinestretch}%
 {#1}\small\normalsize} \spacingset{1}
@@ -504,14 +505,15 @@ Like Tipton (2015), these simulations focused on true correlation structures tha
 The working models for these were then varied far from the true error stucture; for example, based on models with no clustering at all.
 Finally, the number of clusters was varied from 10 to 100, each with between 1 and 10 observations. 
 Type I error was then compared over a range of $\alpha$ levels for both the CR1 and CR2S F-tests.
-The findings indicated that the CR2S F-test always had Type I error less than or equal to the stated $\alpha$ level, except in cases with extreme model mispecification. 
-Even in these cases, however, the Type I error was in line with those observed for t-tests; for example, for $\alpha = 0.05$ the error was not above 0.06. 
+
+The results of the simulations by Tipton and Pustejovsky indicate that the CR2S F-test always has Type I error less than or equal to the stated $\alpha$ level, except in cases with extreme model mispecification. 
+Even in these cases, however, in the conditions studied the Type I error was in line with those observed for t-tests; for example, for $\alpha = 0.05$ the error was not above 0.06. 
 In comparison, the Type I error of the CR1 test was often very high (between XX and XXX), with particularly large differences when the degrees of freedom of the two tests differed.
 Again, like the t-test, the degrees of freedom of the CR2S F-test here were driven by covariate features, with particularly low degrees of freedom resulting when the covariate set studied included imbalances or skew.
 
 \subsection{Simulation Design}
 
-While the simulation study produced by Tipton and Pustejovsky (in press) included a variety of conditions, the set studied focused largely on the types of data found in meta-analysis and regression more broadly. 
+While the simulation study produced by Tipton and Pustejovsky (2015) included a variety of conditions, the set studied focused largely on the types of data found in meta-analysis and regression more broadly. 
 These differ from the economic context in two ways.
 First, in meta-analysis, it is common for there to be both heteroscedasticity assumed and for analysts to implement weights in the analysis (typically inverse-variance).
 This use of weights is less common in economic applications.
@@ -519,11 +521,63 @@ Second, in meta-analysis, analysts are typically interested in a variety of cova
 In comparison, in economics, many applications focus on the effects of different policies (and thus dummies), particularly policies that may vary at the cluster and/or observation level.
 For example, a policy may be implemented in a portion of states (the cluster level), or in all states, but at different time points (the observation level), or a combination of the two.
 Given these differences, in this paper we provide an additional simulation study focused on designs more commonly found in economics.
-Together with the results from Tipton and Pustejovsky (2015), the studies cover a wide range of conditions, offering a comprehensive examination of the CR2S F-test in application.
+%Together with the results from Tipton and Pustejovsky (2015), the studies cover a wide range of conditions, offering a comprehensive examination of the CR2S F-test in application.
 
 %Data generation
+In this simulation study, we focus on several research designs and analysis models, including the analysis of experiments, panel data (difference-in-difference models), and seemingly unrelated regression.
+In the analysis of experiments, two designs are common: the cluster randomized design (CRT), in which treatments are assigned randomly at the cluster level; and the randomized block design (RBD), in which treatments are randomly assigned within each cluster.
+For both designs we investigated the effect of a design with three treatment arms (2 policy indicators), with units randomized either equally across these arms or unequally. 
+This resulted in two cluster randomized designs: one with exactly 1/3 of clusters in each of the three arms (CR-balanced) and the other with unequal allocations (.5, .3, .2; CR-unbalanced).
+For randomized block designs, this resulted in two designs as well: one with exactly 1/3 of units in each cluster in each of the three arms (RB-balanced), and the other with unequal allocations (n/2,n/3,n/6; RB-unbalanced).
+In the analysis of panel data, often policies are observed at all time points in some clusters, while changing across time points in others.
+Here we investigated a total of four cases. 
+In the first case, XXXX.
+In the second case, XXXX.
+
+The set-up described above for both the experimental and panel-data cases resulted in single-paramter ($q = 1$) and multi-parameter ($q = 2$) hypothesis tests.
+For $q = 1$, tests focused on the hypothesis that a single policy arm differed from the control, while for $q = 2$, tests focused on the hypothesis that there were no differences across all arms.
+For each of these tests, the data was generated ... MORE HERE ...
+(JAMES HELP!)
+
+For the final set of simulations, the above structure was replicated across three outcome variables, generated such that the outcomes were correlated (e.g., reading, math, science test scores).
+This resulted in a seemingly unrelated regression model, allowing hypotheses of higher dimensions to be tested.
+The first of these tested if a single treatment arm differed from the control arm across the three outcomes ($q = 3$), while the second tested if there were differences across all three outcomes and arms ($q = 6$).
+In order to generate this data, in addition to the above strucutre, the outcomes were generated to be either correlated weakly (0.20) or strongly (0.80). 
+For all of these designs, Appendix C includes further details on the simulation study design.
 
 \subsection{Simulation Results}
+In this section, we provide an overview of the results from the previously described simulation study. 
+We focus here on three trends, each depicted visually in a figure and discussed in the text.
+Importantly, these trends are similar to results found in Tipton and Pustejovsky (2015), providing further support that the CR2S F-test performs well in a wide range of data generating mechanisms and parameter combinations.
+
+The first result is that the CR2S F-test has Type I error close to the stated $\alpha$ level for all parameter combinations studied, whereas the CR1 does not. 
+These results are found in Figure 1, which provides evidence across dimension of the test $q$ (the columns) and $\alpha$ levels (the rows). 
+In each of these figures, the number of clusters is depicted from left to right, varying from 15 to 50, and the stated $\alpha$ level is given with a horizontal black line; the dashed line indicates the simulation error upper bound.
+In this figure, the CR2S test is seen to have Type I error near the stated $\alpha$ level, even with a small number of clusters.
+When the number of clusters is very small ($m = 15$) the Type I error can be samller than the stated $\alpha$ level, and while there exist situations in which the error is above the simulation bounds, at most the Type I error is XXX for $\alpha = 0.01$, XXX for $\alpha = 0.05$, and XXX for $\alpha = 0.10$.
+In comparison, the Type I error for the CR1 test can be markedly higher than the stated $\alpha$ level, particularly when the number of clusters is small. 
+This is particularly true as the dimension of the test increases; for example, for $\alpha = 0.05$, when there are 15 clusters the maximum Type I error ranges from 0.12 ($q = 1$) to 0.65 ($q = 6$).
+Perhaps even more important for practice, even when there are 50 clusters, the Type I error for the CR1 test can be far above the stated $\alpha$ level.
+Again, focusing on the $\alpha = 0.05$ case, this error ranges from a maximum of 0.07 ($q = 1$) to 0.20 ($q = 6). 
+
+In order to better understand the effects of different paramter combinations on the performance of both tests, Figure 2 focuses on the $\alpha = 0.05$ case and divides the results out by number of clusters (columns) and test (rows).
+Within each graph, results are given by the policy design, with 6 combinations illustrated, and within each from left to right by the dimension of the test ($q = 1,2,3,6$).
+The top panel focuses on the CR1 test, highlighting both that the Type I error climbs in relation to the dimension of the test ($q$) and in relation to the degree of imbalance in the policy indicators.
+Here differences between the balanced and unbalanced cases are largest for the cluster-randomized (CR) designs and the panel data (DD) designs, with the best performance arising for the randomized block designs (RB).
+In the bottom panel, results are given for the CR2S test; here we focus on three trends.
+First, as for the CR1 test, the Type I error increases as the dimension of the test increases, though never above 0.07.
+Second, whereas imbalance results in Type I error larger than nominal for the CR1 test, for the CR2S test, it results in Type I error below nominal. 
+This trend is the strongest for the cluster-randomized (CR) design where Type I error can be close to 0 at its minimum. 
+Third, for studies with at least 30 clusters, the Type I error is very close to nominal (between 0.03 and 0.055) for all conditions studied.
+
+Finally, by simulating the errors across a variety of parameter combinations, we were also able to test the impact of misspecification of the working model on Type I error.
+Figure 3 depicts Type I error rates for $\alpha = 0.05$ for the CR2S test by the dimension $q$ of the test (columns) and the number of clusters (rows).
+Within each, results are separated by the 9 combinations of treatment effect variance and ICCs, noting that the working model assumed values of zero for each.
+Within each of these 12 blocks, results are shown to be very similar across these 9 error structures, with no clear pattern to the small differences that emerge.
+These results follow closely those from Tipton and Pustejovsky (2015), which also found that even with extreme model misspecification the Type I error of the CR2S test was close to nominal. 
+
+%should we also discuss the df trends, comparing the satterthwaite df to to $m$? seems like this would be good, since it's the main driver of the results and isn't something that's been highlighted too much by IK.
+
 
 <<setup, include=FALSE, warning=FALSE, cache=FALSE>>=
 # setwd("paper_ClusterRobustTesting")
@@ -1144,6 +1198,23 @@ For the artificial Hausman test the AHZ test has fewer than \Sexpr{round(Haus2_C
 
 \section{DISCUSSION}
 \label{sec:discussion}
+
+Cluster robust standard errors are common practice in economic applications, since in large samples they require few assumptions regarding the error structure of the data.
+In small and moderate samples, however, the CRVE approach can result in overly liberal tests, with Type I error far above nominal.
+A promising solution therefore is to incorporate a working model for the error structure into the CRVE approach -- bias reduced linearization -- as introduced by Bell and McCaffrey (2002), and to use estimated degrees of freedom.
+In this paper, we have provided solutions to three problems facing the implementation of this BRL approach in economics, making the method useful in a wide range of applications.
+
+While the idea of identifying and implementing a working model for the error structure seems antithetical to the idea of CRVE, simulations studies provided here and elsewhere show that the approach is robust to a high degree of misspecification of this working model.
+Importantly, the role of this structure while larger when the number of clusters is very small, effectively falls away as the number of clusters increases, converging to the usual CRVE estimator in large samples.
+This structure greatly improves the performance of CRVE, bringing the Type I error in line with the stated $\alpha$ levels for tests, even in less than ideal situations.
+
+The main driver to these adjustments, as illustrated both in the simulation study and the set of examples, is the fact that in this approach the degrees of freedom are estimated using a Satterthwaite approximation.
+These degrees of freedom can be much smaller than the number of clusters, particularly when the covariates being tested exhibit a high degree of imbalance or skewness.
+In economics, these problems are common, particularly in the analysis of experiments and in difference-in-difference models used in panel data. 
+In this paper, we have shown that the small sample adjustments provided here perform well even in situations in which a series of policies are allocated very unequally across groups, and that the approach works by greatly reducing the degrees of freedom.
+In many cases these degrees of freedom can be quite small, even when the number of clusters is moderate to large.
+Most striking, perhaps, is the fact that these differences occur even with as many as 50 clusters, a rule of thumb often given for when CRVE should perform well.
+
 
 %Current take-home points:
 %\begin{itemize}
