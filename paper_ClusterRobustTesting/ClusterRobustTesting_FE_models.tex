@@ -1,4 +1,53 @@
-\documentclass[12pt]{article}
+\documentclass[12pt]{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{graphicx,psfrag,epsf}
@@ -36,10 +85,8 @@
 \newcommand{\tr}{\text{tr}}
 \newcommand{\bm}{\mathbf}
 \newcommand{\bs}{\boldsymbol}
-
-\usepackage{Sweave}
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
-\input{ClusterRobustTesting_FE_models-concordance}
 
 \def\spacingset#1{\renewcommand{\baselinestretch}%
 {#1}\small\normalsize} \spacingset{1}
@@ -308,8 +355,6 @@ This non-equivalence problem given above can also arise when implementing the BR
 Below, we show that by defining the problem in a particular way, the adjustment matrices $\bm{A}_i$ are invariant to the method for adjusting for fixed effects.
 To see how, begin by noting that in many applications, it will make sense to choose weighting matrices that are the inverses of the working covariance model, so that $\bm{W}_i = \bs\Phi_i^{-1}$. 
 
-\todo[inline]{James-- I find from here on (including above sentence) confusing. It sounds like we are requiring the use of inverse variance weights for this result, but then the last paragraph gives the case in which W = I. Could it be formulated more generally?}
-
 In this case, the adjustment matrices can be calculated using $\bm{\tilde{B}}_i$ in place of $\bm{B}_i$, where
 \begin{equation}
 \label{eq:CR2_B_tilde}
@@ -321,6 +366,8 @@ In this case, the adjustment matrices can be calculated using $\bm{\tilde{B}}_i$
 Let $\bm{\tilde{A}}_i = \bm{D}_i'\bm{\tilde{B}}_i^{+1/2} \bm{D}_i$, where $\bm{\tilde{B}}_i$ is given in (\ref{eq:CR2_B_tilde}). If $\bm{T}_i \bm{T}_k' = \bm{0}$ for $j \neq k$ and $\bm{W} = \bs\Phi^{-1}$, then $\bm{A}_i = \bm{\tilde{A}}_i$. 
 \end{thm}
 Proof: See Appendix A.
+
+\todo[inline]{Connect this to the IK case.}
 
 As theorem \ref{thm:absorb} above demonstrates, using $\bm{\tilde{B}}_i$ rather than $\bm{B}_i$ leads to algebraically identical adjustment matrices; the form of $\bm{\tilde{B}}_i$ is simply more convenient for computation.
 Interestingly, in the simple case of ordinary (unweighted) least squares, in which the working variance model posits that the errors are all independent and homoskedastic and $\bm{W} = \bs\Phi = \bm{I}$, the adjustment matrices simplify further to \[
@@ -405,7 +452,6 @@ When the covariate is balanced across clusters---as occurs in balanced panels wi
 However, when the covariate exhibits large imbalances---as occurs when the panel is not balanced or if the proportion of ones varies from cluster to cluster---the degrees of freedom can be considerably smaller. 
 Similarly, covariates with large leverage points will tend to exhibit lower of degrees of freedom. 
 
-
 By adjusting the degrees of freedom to account for these features, the Type I error rate of the test is nearly-always less than or equal to nominal, so long as the degrees of freedom are larger than 4 or 5 \citep{Bell2002bias, Tipton2015small-t}.
 This is because when the degrees of freedom are smaller, the t-distribution approximation to the sampling distribution doesn't hold, and the Type I error can be higher than the stated $\alpha$ level.
 In comparison, the CR1 degrees of freedom (i.e., $m - 1$) are constant, and the test only performs well when in the cases in which the covariates are balanced.
@@ -470,7 +516,8 @@ When the proportion varies across clusters, these degrees of freedom fall, often
 Throughout this paper, we have argued that the CR2 based hypothesis tests perform significantly better than the standard CR1 tests commonly used in economic applications. 
 This argument is based on results from several large simulation studies. 
 In this section, we review the design of these studies and their results, with particular emphasis on the role of covariate features and sample size on the Type I error rates of these tests.
-Throughought, we use "CR2S" test to refer to those tests employing both the BRL correction to the variance and the Satterthwaite degrees of freedom. For t-tests, CR2S thus refers to test described in Section 3.1, while for the F-test CR2S refers the that found in Section 3.2. 
+Throughought, we use "CR2S" test to refer to those tests employing both the BRL correction to the variance and the Satterthwaite degrees of freedom. 
+For t-tests, CR2S thus refers to test described in Section 3.1, while for the F-test CR2S refers the that found in Section 3.2. 
 
 \subsection{Review of previous simulation studies}
 
@@ -506,14 +553,15 @@ Like Tipton (2015), these simulations focused on true correlation structures tha
 The working models for these were then varied far from the true error stucture; for example, based on models with no clustering at all.
 Finally, the number of clusters was varied from 10 to 100, each with between 1 and 10 observations. 
 Type I error was then compared over a range of $\alpha$ levels for both the CR1 and CR2S F-tests.
-The findings indicated that the CR2S F-test always had Type I error less than or equal to the stated $\alpha$ level, except in cases with extreme model mispecification. 
-Even in these cases, however, the Type I error was in line with those observed for t-tests; for example, for $\alpha = 0.05$ the error was not above 0.06. 
+
+The results of the simulations by Tipton and Pustejovsky indicate that the CR2S F-test always has Type I error less than or equal to the stated $\alpha$ level, except in cases with extreme model mispecification. 
+Even in these cases, however, in the conditions studied the Type I error was in line with those observed for t-tests; for example, for $\alpha = 0.05$ the error was not above 0.06. 
 In comparison, the Type I error of the CR1 test was often very high (between XX and XXX), with particularly large differences when the degrees of freedom of the two tests differed.
 Again, like the t-test, the degrees of freedom of the CR2S F-test here were driven by covariate features, with particularly low degrees of freedom resulting when the covariate set studied included imbalances or skew.
 
 \subsection{Simulation Design}
 
-While the simulation study produced by Tipton and Pustejovsky (in press) included a variety of conditions, the set studied focused largely on the types of data found in meta-analysis and regression more broadly. 
+While the simulation study produced by Tipton and Pustejovsky (2015) included a variety of conditions, the set studied focused largely on the types of data found in meta-analysis and regression more broadly. 
 These differ from the economic context in two ways.
 First, in meta-analysis, it is common for there to be both heteroscedasticity assumed and for analysts to implement weights in the analysis (typically inverse-variance).
 This use of weights is less common in economic applications.
@@ -521,138 +569,447 @@ Second, in meta-analysis, analysts are typically interested in a variety of cova
 In comparison, in economics, many applications focus on the effects of different policies (and thus dummies), particularly policies that may vary at the cluster and/or observation level.
 For example, a policy may be implemented in a portion of states (the cluster level), or in all states, but at different time points (the observation level), or a combination of the two.
 Given these differences, in this paper we provide an additional simulation study focused on designs more commonly found in economics.
-Together with the results from Tipton and Pustejovsky (2015), the studies cover a wide range of conditions, offering a comprehensive examination of the CR2S F-test in application.
+%Together with the results from Tipton and Pustejovsky (2015), the studies cover a wide range of conditions, offering a comprehensive examination of the CR2S F-test in application.
 
 %Data generation
+In this simulation study, we focus on several research designs and analysis models, including the analysis of experiments, panel data (difference-in-difference models), and seemingly unrelated regression.
+In the analysis of experiments, two designs are common: the cluster randomized design (CRT), in which treatments are assigned randomly at the cluster level; and the randomized block design (RBD), in which treatments are randomly assigned within each cluster.
+For both designs we investigated the effect of a design with three treatment arms (2 policy indicators), with units randomized either equally across these arms or unequally. 
+This resulted in two cluster randomized designs: one with exactly 1/3 of clusters in each of the three arms (CR-balanced) and the other with unequal allocations (.5, .3, .2; CR-unbalanced).
+For randomized block designs, this resulted in two designs as well: one with exactly 1/3 of units in each cluster in each of the three arms (RB-balanced), and the other with unequal allocations (n/2,n/3,n/6; RB-unbalanced).
+In the analysis of panel data, often policies are observed at all time points in some clusters, while changing across time points in others.
+Here we investigated a total of four cases. 
+In the first case, XXXX.
+In the second case, XXXX.
+
+The set-up described above for both the experimental and panel-data cases resulted in single-paramter ($q = 1$) and multi-parameter ($q = 2$) hypothesis tests.
+For $q = 1$, tests focused on the hypothesis that a single policy arm differed from the control, while for $q = 2$, tests focused on the hypothesis that there were no differences across all arms.
+For each of these tests, the data was generated ... MORE HERE ...
+(JAMES HELP!)
+
+For the final set of simulations, the above structure was replicated across three outcome variables, generated such that the outcomes were correlated (e.g., reading, math, science test scores).
+This resulted in a seemingly unrelated regression model, allowing hypotheses of higher dimensions to be tested.
+The first of these tested if a single treatment arm differed from the control arm across the three outcomes ($q = 3$), while the second tested if there were differences across all three outcomes and arms ($q = 6$).
+In order to generate this data, in addition to the above strucutre, the outcomes were generated to be either correlated weakly (0.20) or strongly (0.80). 
+For all of these designs, Appendix C includes further details on the simulation study design.
 
 \subsection{Simulation Results}
 
-\begin{Schunk}
-\begin{Sinput}
-> # setwd("paper_ClusterRobustTesting")
-> library(knitr)
-> library(xtable)
-> library(foreign)
-> library(plyr)
-> library(tidyr)
-> library(dplyr)
-> library(stringr)
-> library(lubridate)
-> library(ggplot2)
-> library(plm)
-> #library(clubSandwich)
-> devtools::load_all()
-> # set global chunk options
-> opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache = FALSE, 
-+                fig.path='CR_fig/', fig.align='center', fig.show='hold')
-> load("R/Panel simulation results.Rdata")
-> results <- within(results, {
-+   constraints <- NULL
-+   seed <- NULL
-+   design <- names(design)
-+ })
-> head(results)
-\end{Sinput}
-\begin{Soutput}
-             design iterations  m  n  icc trt_var k rho ar        test
-1 RB-balanced-equal      10000 15 18 0.05       0 3 0.2  0 CR1 Naive-F
-2 RB-balanced-equal      10000 15 18 0.05       0 3 0.2  0 CR2 Naive-F
-3 RB-balanced-equal      10000 15 18 0.05       0 3 0.2  0     CR2 HTA
-4 RB-balanced-equal      10000 15 18 0.05       0 3 0.2  0     CR2 HTB
-5 RB-balanced-equal      10000 15 18 0.05       0 3 0.2  0     CR2 HTZ
-6 RB-balanced-equal      10000 15 18 0.05       0 3 0.2  0 CR1 Naive-F
-  hypothesis alpha1 alpha5 alpha10       df
-1        t_B 0.0096 0.0501  0.1005 14.00000
-2        t_B 0.0096 0.0501  0.1005 14.00000
-3        t_B 0.0098 0.0509  0.1016 14.49257
-4        t_B 0.0098 0.0509  0.1016 14.49257
-5        t_B 0.0098 0.0509  0.1016 14.49257
-6        t_C 0.0088 0.0490  0.0975 14.00000
-\end{Soutput}
-\begin{Sinput}
-> gather(results, "alpha", "reject", alpha1:alpha10) %>%
-+   mutate(alpha = as.numeric(substring(alpha, 6)) / 100) ->
-+   results_long_all
-> filter(results_long_all, test %in% c("CR1 Naive-F", "CR2 HTZ") 
-+        & design %in% c("CR-balanced","CR-unbalanced","DD-balanced-unbalanced",
-+                        "DD-unbalanced-unbalanced","RB-balanced-unequal","RB-unbalanced-unequal")) %>%
-+   within({
-+     test <- factor(ifelse(test=="CR1 Naive-F", "Naive", "AHZ"), levels = c("Naive","AHZ"))
-+     UB <- alpha + qnorm(0.95) * sqrt(alpha * (1 - alpha) / iterations)
-+     m_fac <- paste0("m = ",m)
-+     q <- hypothesis
-+     levels(q) <- c(1,1,2,3,3,6)
-+     design <- str_extract(design, "[A-Z]+-[a-z]+")
-+     q_alpha <- paste0("q = ", q, ", alpha = ", alpha)
-+     alpha_q <- paste0("alpha = ", alpha, ", q = ", q)
-+     alpha_m <- paste0("alpha = ", alpha, ", m = ", m)
-+     m_test <- factor(paste0(test, " test, m = ", m))
-+     m_test <- factor(m_test, levels = levels(m_test)[c(4:6,1:3)])
-+   }) ->
-+   results_long
-> head(results_long)
-\end{Sinput}
-\begin{Soutput}
-       design iterations  m  n  icc trt_var k rho ar  test hypothesis       df
-1 RB-balanced      10000 15 18 0.05       0 3 0.2  0 Naive        t_B 14.00000
-2 RB-balanced      10000 15 18 0.05       0 3 0.2  0   AHZ        t_B 14.49257
-3 RB-balanced      10000 15 18 0.05       0 3 0.2  0 Naive        t_C 14.00000
-4 RB-balanced      10000 15 18 0.05       0 3 0.2  0   AHZ        t_C 14.49257
-5 RB-balanced      10000 15 18 0.05       0 3 0.2  0 Naive        F_1 14.00000
-6 RB-balanced      10000 15 18 0.05       0 3 0.2  0   AHZ        F_1 13.49257
-  alpha reject             m_test              alpha_m             alpha_q
-1  0.01 0.0112 Naive test, m = 15 alpha = 0.01, m = 15 alpha = 0.01, q = 1
-2  0.01 0.0117   AHZ test, m = 15 alpha = 0.01, m = 15 alpha = 0.01, q = 1
-3  0.01 0.0106 Naive test, m = 15 alpha = 0.01, m = 15 alpha = 0.01, q = 1
-4  0.01 0.0107   AHZ test, m = 15 alpha = 0.01, m = 15 alpha = 0.01, q = 1
-5  0.01 0.0152 Naive test, m = 15 alpha = 0.01, m = 15 alpha = 0.01, q = 2
-6  0.01 0.0110   AHZ test, m = 15 alpha = 0.01, m = 15 alpha = 0.01, q = 2
-              q_alpha q  m_fac         UB
-1 q = 1, alpha = 0.01 1 m = 15 0.01163661
-2 q = 1, alpha = 0.01 1 m = 15 0.01163661
-3 q = 1, alpha = 0.01 1 m = 15 0.01163661
-4 q = 1, alpha = 0.01 1 m = 15 0.01163661
-5 q = 2, alpha = 0.01 2 m = 15 0.01163661
-6 q = 2, alpha = 0.01 2 m = 15 0.01163661
-\end{Soutput}
-\begin{Sinput}
-> select(results_long, -df) %>%
-+   spread(test, reject) ->
-+   results_compare
-> head(results_compare)
-\end{Sinput}
-\begin{Soutput}
-       design iterations  m  n  icc trt_var k rho ar hypothesis alpha
-1 RB-balanced      10000 15 18 0.05       0 3 0.2  0        t_B  0.01
-2 RB-balanced      10000 15 18 0.05       0 3 0.2  0        t_B  0.01
-3 RB-balanced      10000 15 18 0.05       0 3 0.2  0        t_C  0.01
-4 RB-balanced      10000 15 18 0.05       0 3 0.2  0        t_C  0.01
-5 RB-balanced      10000 15 18 0.05       0 3 0.2  0        F_1  0.01
-6 RB-balanced      10000 15 18 0.05       0 3 0.2  0        F_1  0.01
-              m_test              alpha_m             alpha_q
-1 Naive test, m = 15 alpha = 0.01, m = 15 alpha = 0.01, q = 1
-2   AHZ test, m = 15 alpha = 0.01, m = 15 alpha = 0.01, q = 1
-3 Naive test, m = 15 alpha = 0.01, m = 15 alpha = 0.01, q = 1
-4   AHZ test, m = 15 alpha = 0.01, m = 15 alpha = 0.01, q = 1
-5 Naive test, m = 15 alpha = 0.01, m = 15 alpha = 0.01, q = 2
-6   AHZ test, m = 15 alpha = 0.01, m = 15 alpha = 0.01, q = 2
-              q_alpha q  m_fac         UB  Naive    AHZ
-1 q = 1, alpha = 0.01 1 m = 15 0.01163661 0.0112     NA
-2 q = 1, alpha = 0.01 1 m = 15 0.01163661     NA 0.0117
-3 q = 1, alpha = 0.01 1 m = 15 0.01163661 0.0106     NA
-4 q = 1, alpha = 0.01 1 m = 15 0.01163661     NA 0.0107
-5 q = 2, alpha = 0.01 2 m = 15 0.01163661 0.0152     NA
-6 q = 2, alpha = 0.01 2 m = 15 0.01163661     NA 0.0110
-\end{Soutput}
-\begin{Sinput}
-> filter(results_long, n==18 & icc==0.05 & 
-+          trt_var==0 & rho==0.2 & design=="CR-balanced") %>%
-+   mutate(reject=0) -> 
-+   zeros_long
-> filter(results_compare, m==15 & n==18 & icc==0.05 & 
-+          trt_var==0 & rho==0.2 & design=="CR-balanced") %>%
-+   mutate(Naive = 0, AHZ = 0) -> 
-+   zeros_compare
-\end{Sinput}
-\end{Schunk}
+In this section, we provide an overview of the results from the previously described simulation study. 
+We focus here on three trends, each depicted visually in a figure and discussed in the text.
+Importantly, these trends are similar to results found in Tipton and Pustejovsky (2015), providing further support that the CR2S F-test performs well in a wide range of data generating mechanisms and parameter combinations.
+
+The first result is that the CR2S F-test has Type I error close to the stated $\alpha$ level for all parameter combinations studied, whereas the CR1 does not. 
+These results are found in Figure 1, which provides evidence across dimension of the test $q$ (the columns) and $\alpha$ levels (the rows). 
+In each of these figures, the number of clusters is depicted from left to right, varying from 15 to 50, and the stated $\alpha$ level is given with a horizontal black line; the dashed line indicates the simulation error upper bound.
+In this figure, the CR2S test is seen to have Type I error near the stated $\alpha$ level, even with a small number of clusters.
+When the number of clusters is very small ($m = 15$) the Type I error can be samller than the stated $\alpha$ level, and while there exist situations in which the error is above the simulation bounds, at most the Type I error is XXX for $\alpha = 0.01$, XXX for $\alpha = 0.05$, and XXX for $\alpha = 0.10$.
+In comparison, the Type I error for the CR1 test can be markedly higher than the stated $\alpha$ level, particularly when the number of clusters is small. 
+This is particularly true as the dimension of the test increases; for example, for $\alpha = 0.05$, when there are 15 clusters the maximum Type I error ranges from 0.12 ($q = 1$) to 0.65 ($q = 6$).
+Perhaps even more important for practice, even when there are 50 clusters, the Type I error for the CR1 test can be far above the stated $\alpha$ level.
+Again, focusing on the $\alpha = 0.05$ case, this error ranges from a maximum of 0.07 ($q = 1$) to 0.20 ($q = 6$). 
+
+In order to better understand the effects of different paramter combinations on the performance of both tests, Figure 2 focuses on the $\alpha = 0.05$ case and divides the results out by number of clusters (columns) and test (rows).
+Within each graph, results are given by the policy design, with 6 combinations illustrated, and within each from left to right by the dimension of the test ($q = 1,2,3,6$).
+The top panel focuses on the CR1 test, highlighting both that the Type I error climbs in relation to the dimension of the test ($q$) and in relation to the degree of imbalance in the policy indicators.
+Here differences between the balanced and unbalanced cases are largest for the cluster-randomized (CR) designs and the panel data (DD) designs, with the best performance arising for the randomized block designs (RB).
+In the bottom panel, results are given for the CR2S test; here we focus on three trends.
+First, as for the CR1 test, the Type I error increases as the dimension of the test increases, though never above 0.07.
+Second, whereas imbalance results in Type I error larger than nominal for the CR1 test, for the CR2S test, it results in Type I error below nominal. 
+This trend is the strongest for the cluster-randomized (CR) design where Type I error can be close to 0 at its minimum. 
+Third, for studies with at least 30 clusters, the Type I error is very close to nominal (between 0.03 and 0.055) for all conditions studied.
+
+% Should we also discuss the df trends, comparing the satterthwaite df to to $m$? seems like this would be good, since it's the main driver of the results and isn't something that's been highlighted too much by IK. Range of df by m, broken out by design and q.
+
+Finally, by simulating the errors across a variety of parameter combinations, we were also able to test the impact of misspecification of the working model on Type I error.
+Figure 3 depicts Type I error rates for $\alpha = 0.05$ for the CR2S test by the dimension $q$ of the test (columns) and the number of clusters (rows).
+Within each, results are separated by the 9 combinations of treatment effect variance and ICCs, noting that the working model assumed values of zero for each.
+Within each of these 12 blocks, results are shown to be very similar across these 9 error structures, with no clear pattern to the small differences that emerge.
+These results follow closely those from Tipton and Pustejovsky (2015), which also found that even with extreme model misspecification the Type I error of the CR2S test was close to nominal. 
+
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{sidewaysfigure}
+
+{\centering \includegraphics[width=\linewidth]{CR_fig/overview-1} 
+
+}
+
+\caption[Rejection rates of Naive and AHZ tests, by dimension of hypothesis (]{Rejection rates of Naive and AHZ tests, by dimension of hypothesis ($q$) and nominal type I error ($\alpha$)}\label{fig:overview}
+\end{sidewaysfigure}
+
+
+\end{knitrout}
+
+Figure \ref{fig:overview} shows that Naive-F = bad, AHZ = rad! Also, performance of the naive test degrades (becomes liberal) for larger q, whereas AHZ test becomes more conservative.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{sidewaysfigure}
+
+{\centering \includegraphics[width=\linewidth]{CR_fig/balance-1} 
+
+}
+
+\caption[Rejection rates of Naive and AHZ tests, by study design and dimension of hypothesis (]{Rejection rates of Naive and AHZ tests, by study design and dimension of hypothesis ($q$). CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design.}\label{fig:balance}
+\end{sidewaysfigure}
+
+
+\end{knitrout}
+
+Figure \ref{fig:balance} shows that rejection rates are strongly affected by imbalance of the clusters.
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{sidewaysfigure}
+
+{\centering \includegraphics[width=\linewidth]{CR_fig/misspecification-1} 
+
+}
+
+\caption[Rejection rates of AHZ test, by treatment effect variance and intra-class correlation]{Rejection rates of AHZ test, by treatment effect variance and intra-class correlation.}\label{fig:misspecification}
+\end{sidewaysfigure}
+
+
+\end{knitrout}
+
+Figure \ref{fig:misspecification} shows that model mis-specification doesn't matter for AHZ. 
+
+\section{EXAMPLES}
+\label{subsec:examples_F}
+
+This section presents three short examples of the use of CRVE with small or moderate samples of clusters, spanning a variety of applied contexts. 
+In the first example, the effects of substantive interest are identified within each cluster. 
+In the second example, the effects involve between-cluster contrasts. 
+The third example involves a cluster-robust Hausmann test for differences between within- and across-cluster information. 
+In each example, we demonstrate the proposed small-sample t- and F-tests and compare them to the standard CR1 and Wild bootstrap tests. 
+R code and data files are available for each analysis as an online supplement.
+
+\subsection{Tennessee STAR class-size experiment.} 
+
+The Tennessee STAR class size experiment is one of the most intensively studied interventions in education \citep[for a detailed review, see][]{Schanzenbach2006what}.  The experiment involved students in kindergarten through third grade across 79 schools. Within each school, students and their teachers were randomized equally to one of three conditions: small class-size (targetted to have 13-17 students), regular class-size, or regular class-size with an aide.
+Among other outcomes, subsequent research has focused on the effects of these conditions on kindergarden reading, math, and word recognition \citep{Achilles2008tennessee}; high school test scores \citep{Schanzenbach2006what}; college entrance exam participation \citep{Krueger2001effect}; and home ownership and earnings \citep{Chetty2011how}.
+
+The STAR experiment involved three treatment conditions and multiple outcomes, providing a scenario where both t-tests (with $q = 1$) and F-tests with varying constraint dimensions can be applied. 
+For simplicity, we focus only on the subgroup of students who were in kindergarten during the first year of the study, and on the three outcomes measured at the end of the year, standardized to percentile ranks \citep{Krueger2001effect}: reading, word recognition, and math \citep{Achilles2008tennessee}.
+The analytic model is: 
+\begin{equation}
+y_{ijk} = \bm{r}_{ij}'\bs\beta_k + \bm{s}_{ij}'\bs\gamma_0 + \gamma_k + \mu_i + \epsilon_{ijk}, 
+\end{equation}
+where $y_{ijk}$ is the percentile rank on outcome $k$ for student $j$ in school $i$; $\bm{r}_{ij}$ includes indicators for the small-class and regular-plus-aide conditions; $\bm{s}_{ij}$ includes student demographic covariates (i.e., free or reduced-price lunch status; race; gender; age); $\gamma_k$ is a fixed effect for outcome $k$; and $\mu_i$ is a fixed effect for school $i$. 
+In this model, $\beta_{1k}$ represents the average effect of being in a small class and $\beta_{2k}$ represents the average of effect of being in a regular class with an aid, in each case compared to a regular-size class without an aid.
+
+Using this model, we test four distinct hypotheses that vary in dimension from $q = 1$ to $q = 6$. 
+First, using only the data for outcome $k$, we test the effects of small class size ($H_0: \beta_{1k} = 0$) while maintaining the assumption that the additional classroom aide has no effect on student achievement (i.e., constraining $\beta_{2k} = 0$). 
+Second, again only using the data for outcome $k$, we test the hypothesis that there are no differences across the three class-size conditions (i.e., $H_0: \bs\beta_k = \bm{0}$). 
+Third, combining the data across all three outcomes, we test the hypothesis that small class size (vs regular and regular plus aide) had no effects on any outcome (i.e., $\beta_{11} = \beta_{12} = \beta_{13} = 0$).
+Finally, we test the hypothesis that there are no differences across the three class-size conditions on any outcome (i.e., $H_0: \bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bm{0}$). 
+The third and fourth tests use the seemingly unrelated regression (SUR) framework, in which separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. 
+In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the school fixed effects and clustering the errors by school.
+
+
+
+% latex table generated in R 3.2.3 by xtable 1.7-4 package
+% Mon Dec 21 16:11:41 2015
+\begin{table}[tbh]
+\centering
+\begin{tabular}{lllrrr}
+  \toprule
+Outcome & Effect & Test & F & df & p \\ 
+  \midrule
+Math & Small class (q=1) & Standard & 13.624 & 78.0 & 0.00041 \\ 
+   &  & AHZ & 13.590 & 69.0 & 0.00045 \\ 
+   & Small class and classroom aide (q=2) & Standard & 6.838 & 78.0 & 0.00183 \\ 
+   &  & AHZ & 6.725 & 68.6 & 0.00215 \\ 
+   \midrule
+Combined & Small class (q=3) & Standard & 6.408 & 78.0 & 0.00062 \\ 
+   &  & AHZ & 6.206 & 67.0 & 0.00088 \\ 
+   & Small class and classroom aide (q=6) & Standard & 3.284 & 78.0 & 0.00622 \\ 
+   &  & AHZ & 3.042 & 64.9 & 0.01103 \\ 
+   \bottomrule
+\end{tabular}
+\caption{Tests of treatment effects in the Tennessee STAR class size experiment} 
+\label{tab:STAR}
+\end{table}
+
+
+Table \ref{tab:STAR} displays the results for a representative subset of these hypothesis tests, using either the standard CR1 hypothesis test or the CR2S test.
+These results illustrate two important points regarding the use of the AHZ test in practice.
+First, across all three analyses, the CR2 t- and F-tests are typically slightly smaller than those produced using CR1. 
+This trend is common, since the BRL adjustments to the variance estimator are typically small in scope.
+Second, in the case in which treatment is randomly allocated in equal proportions within each cluster -- as occurs in the TN STAR experiment -- the degrees of freedom for the CR2 tests are only slightly smaller than those for the CR1 tests. 
+In combination with the rather large sample size of 79 schools, these differences have only a minimal effect on the p-values for these tests. 
+Importantly, these conditions do not always occur in practice, as the next examples will illustrate. 
+
+\subsection{Achievement Awards demonstration} 
+
+\citet{Angrist2009effects} reported results from a randomized trial in Israel that aimed to increase completion rates of the Bagrut, the national matriculation certificate for post-secondary education, among low-achieving high school students. 
+In the Achievement Awards demonstration, 40 non-vocational high schools with low rates of Bagrut completion were selected from across Israel, including 10 Arab and 10 Jewish religious schools and 20 Jewish secular schools. 
+The schools were then pair-matched based on 1999 rates of Bagrut completion, and within each pair one school was randomized to receive a cash-transfer program. 
+In these treatment schools, seniors who completed certification were eligible for payments of approximately \$1,500. 
+Student-level covariate and outcome data were drawn from administrative records available for the school years ending in June of 2000, 2001, and 2002. 
+The incentive program was in effect for the group of seniors in treatment schools taking the Bagrut exams in Spring of 2001. 
+However, the program was discontinued for the following year, and so we treat completion rates for 2000 and 2002 as being unaffected by treatment assignment.
+The primary outcome of interest is Bagrut completion. 
+
+This study provides an opportunity to examine the CR2 tests in a situation in which the treatment was assigned at the cluster level, with a smaller number of clusters.
+For simplicity, we restrict our analysis to the sample of female students.
+Following the original analysis of \citet{Angrist2009effects}, we allow the program's effects to vary depending on whether a students was in the upper or lower half of the distribution of prior-year academic performance. 
+Letting $h = 1,2,3$ index the sector of each school (Arab religious, Jewish religious, or Jewish secular), we consider the following analytic model: 
+\begin{equation}
+\label{eq:AL_ATE}
+y_{hitj} = z_{hit}\bm{r}_{hitj}'\bs\beta_h + \bm{s}_{hitj}'\bs\gamma + \gamma_{ht} + \mu_{hi} + \epsilon_{hitj}
+\end{equation}
+In this model for student $j$ in year $t$ in school $i$ in sector $h$, $z_{hit}$ is an indicator equal to one in the treatment schools for the 2001 school year and otherwise equal to zero; $\bm{r}_{hitj}$ is a vector of indicators for whether the student is in the lower or upper half of the distribution of prior academic performance; and $\bs\beta_h = \left(\beta_{1h}, \beta_{2h}\right)$ is a vector of average treatment effects for schools in sector $h$. 
+The vector $\bm{s}_{hitj}$ includes the following individual student demographic measures: mother's and father's education, immigration status, number of siblings, and indicators for each quartile in the distribution of prior-year academic performance. 
+The model also includes fixed effects $\gamma_{ht}$ for each sector in each year and $\mu_{hi}$ for each school. 
+
+Based on Model (\ref{eq:AL_ATE}), we test four hypotheses, again with the goal of exploring the use of the CR2S tests in a range of conditions. 
+First, we assume that the program effects are constant across sector (i.e., $\bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bs\beta$) and test for whether the program affected completion rates for students in the upper half of the prior achievement distribution ($H_0: \beta_2 = 0$, with $q = 1$).
+Second, we test for whether the program was effective in either half of the prior academic performance ($H_0: \bs\beta = 0$, with $q = 2$), still assuming that program effects are constant across sector. 
+Third, we test for whether program effects in the upper half of the prior achievement distribution vary by school sector ($H_0: \beta_{21} = \beta_{22} = \beta_{23}$, with $q = 3$). 
+Finally, we conduct a joint test for whether program effects differ across student prior achievement crossed with school sector ($H_0: \bs\beta_1 = \bs\beta_2 = \bs\beta_3$, with $q = 4$). 
+
+
+
+% latex table generated in R 3.2.3 by xtable 1.7-4 package
+% Mon Dec 21 16:11:41 2015
+\begin{table}[bth]
+\centering
+\begin{tabular}{lcrrr}
+  \toprule
+Hypothesis & Test & F & df & p \\ 
+  \midrule
+ATE - upper half (q = 1) & Standard & 5.746 & 34.00 & 0.02217 \\ 
+   & AHZ & 5.169 & 15.86 & 0.03726 \\ 
+  ATE - joint (q = 2) & Standard & 3.848 & 34.00 & 0.03116 \\ 
+   & AHZ & 3.371 & 15.46 & 0.06096 \\ 
+   \midrule
+Moderation - upper half (q = 2) & Standard & 3.186 & 34.00 & 0.05393 \\ 
+   & AHZ & 0.091 & 3.19 & 0.91520 \\ 
+  Moderation - joint (q = 4) & Standard & 8.213 & 34.00 & 0.00010 \\ 
+   & AHZ & 2.895 & 3.21 & 0.19446 \\ 
+   \bottomrule
+\end{tabular}
+\caption{Tests of treatment effects in the Achievement Awards Demonstration} 
+\label{tab:AAD}
+\end{table}
+
+
+Table \ref{tab:AAD} reports the results of all four hypothesis tests. 
+These results indicate three important trends.
+First, in the case of the first two hypotheses, the CR2 test statistics are only slightly smaller than their CR1 counterparts, though the degrees of freedom are considerably smaller. 
+These differences reflect the fact that the treatment indicator occurs at the cluster level, but that the subgroups varied within each cluster. 
+Together these lead to a larger impact on results than in the STAR case, where treatment was assigned at the student level.
+Second, the third and fourth hypotheses tests -- comparing treatment effects across sectors and subgroups -- illustrates cases in which the CR2S and CR1 tests greatly diverge.
+In these cases, the CR2S test statistic and degrees of freedom are both considerably smaller than those from the CR1 test. 
+This reflects the degree of imbalance in allocations across sectors (20,10,10) combined with the cluster-level randomization. 
+Together these result in cases in which using the small sample adjustments greatly impact the findings. 
+
+
+% 
+% using the CR1 and CR2 adjustments for variance estimation and either the naiv\"e degrees of freedom (for these data, $m - 1 = 34$) or the approximate Hotelling's $T^2$-Z degrees of freedom. 
+% Several features of these results are worth noting. 
+% First, for the tests of single-parameter hypotheses, the differences between the CR1 and CR2 test statistics are minor, although the AHZ (Satterthwaite) degrees of freedom are substantially lower than the naiv\"e ones. 
+% As a result, the $p$-value for the ATE in the upper half of the prior achievement distribution is round(100 * (AL_results[6,"p"] / AL_results[4,"p"] - 1))\% larger based on our preferred test than based on the standard F-test with CR1. 
+% Second, the joint test that the ATEs are zero in both halves of the prior achivement distribution is sensitive to both the CR adjustment and the degrees of freedom: the $p$-value based on our preferred test is round(AL_results[9,"p"], 3), compared to the $p = round(AL_results[7,"p"], 3)$ for the standard test. 
+% Finally, the test of moderation by sector is strongly affected by the CR2 adjustment and AHZ degrees of freedom. 
+% In particular, the AHZ degrees of freedom are just round(AL_results[12,"df"],2), far lower than the number of clusters. 
+% The low degrees of freedom are a consequence of the small number of schools of each type in each treatment condition.
+% Although the total sample includes 35 schools, there are only 9 Arab religious, 7 Jewish religious, and 19 Jewish secular schools, each split across two treatment conditions, and the treatment effects are estimated by making comparisons across clusters. 
+% As a result, the F statistic based on CR2 has a very large sampling variance under the null hypothesis.
+% \todo{Connect to simulation results--higher $q$, between-cluster}
+
+\subsection{Effects of minimum legal drinking age on mortality} 
+
+In this final example, we shift focus from analyses of experiments to panel data, using an example described in Angrist and Pischke (2015)\todo{Cite}.
+Using data from the Fatal Accident Reporting System maintained by the National Highway Traffic Safety Administration, we examine the effects of changes in the minimum legal drinking age over the time period of 1970-1983 on state-level death rates resulting from motor vehicle crashes.\todo{Note about measure of legal drinking age.}
+A standard difference-in-differences specification for such a state-by-year panel is
+\begin{equation}
+\label{eq:MLDA}
+y_{it} = \bm{r}_{it}'\bs\beta + \gamma_t + \mu_i + \epsilon_{it}.
+\end{equation}
+In this model, time-point $t$ is nested within state $i$; the outcome $y_{it}$ is the number of deaths in motor vehicle crashes (per 100,000 residents) in state $i$ at time $t$; $\bm{r}_{it}$ is a vector of covariates; $\gamma_t$ is a fixed effect for time point $t$; and $\mu_i$ is an effect for state $i$. The vector $\bm{r}_{it}$ consists of a measure of the proportion of the population between the ages of 18 and 20 years who can legally drink alcohol and a measure of the beer taxation rate, both of which vary across states and across time.. 
+
+In order to estimate the effect of lowering the legal drinking age, we apply both random effects (RE) and fixed effects (FE) estimation. 
+For the RE estimates, we use WLS with weights derived under the assumption that  $\mu_1,...,\mu_m$ are mutually independent, normally distributed, and independent of $\epsilon_{it}$.
+We also report an artificial Hausman test \citep{Arellano1993on, Wooldridge2002econometric} for correlation between the covariates $\bm{r}_{it}$ and the state effects $\mu_i$. Such correlation creates bias in the RE estimator of the policy effect, thus necessitating the use of the FE estimator.
+The artificial Hausman test amends model (\ref{eq:MLDA}) to include within-cluster deviations (or cluster aggregates) of the variables of interest, so that the estimating equation is
+\begin{equation}
+y_{it} = \bm{r}_{it}\beta + \bm{\ddot{r}}_{it}\bs\delta + \gamma_t + \mu_i + \epsilon_{it},
+\end{equation}
+where $\bm{\ddot{r}}_{it}$ denotes the within-cluster deviations of the covariate.
+The parameter $\bs\delta$ captures the difference between the between-panel and within-panel estimates of $\bs\beta$. 
+With this setup, the artificial Hausmann test amounts to testing the null hypothesis that $\bs\delta = \bm{0}$, where $\bs\delta$ is estimated using RE.  
+
+
+
+% latex table generated in R 3.2.3 by xtable 1.7-4 package
+% Mon Dec 21 16:11:41 2015
+\begin{table}[bth]
+\centering
+\begin{tabular}{lcrrr}
+  \toprule
+Hypothesis & Test & F & df & p \\ 
+  \midrule
+Random effects & Standard & 8.261 & 49.00 & 0.00598 \\ 
+   & AHZ & 7.785 & 24.74 & 0.00999 \\ 
+  Fixed effects & Standard & 9.660 & 49.00 & 0.00313 \\ 
+   & AHZ & 9.116 & 22.72 & 0.00616 \\ 
+   \midrule
+Hausman test & Standard & 2.930 & 49.00 & 0.06283 \\ 
+   & AHZ & 2.489 & 8.69 & 0.13980 \\ 
+   \bottomrule
+\end{tabular}
+\caption{Tests of effects of minimum legal drink age and Hausman specification test} 
+\label{tab:MLDA}
+\end{table}
+
+
+Table \ref{tab:MLDA} displays the results of the tests for the policy variable and the Hausman tests for each model specification. 
+As in previous examples, our preferred version of the test uses the CR2S adjustment to the variance estimator and the AHZ test. 
+The results of the policy effect tests are quite similar across specifications and versions of the test. 
+Of note is that the RE and FE estimates have only half the degrees of freedom of the naiv\"e test. 
+For the artificial Hausman test the AHZ test has fewer than 9 degrees of freedom, which leads to a much larger p-value compared to using the CR1 F test. 
+
+\section{DISCUSSION}
+\label{sec:discussion}
+
+Cluster robust standard errors are common practice in economic applications, since in large samples they require few assumptions regarding the error structure of the data.
+In small and moderate samples, however, the CRVE approach can result in overly liberal tests, with Type I error far above nominal.
+A promising solution therefore is to incorporate a working model for the error structure into the CRVE approach -- bias reduced linearization -- as introduced by Bell and McCaffrey (2002), and to use estimated degrees of freedom.
+In this paper, we have provided solutions to three problems facing the implementation of this BRL approach in economics, making the method useful in a wide range of applications.
+
+While the idea of identifying and implementing a working model for the error structure seems antithetical to the idea of CRVE, simulations studies provided here and elsewhere show that the approach is robust to a high degree of misspecification of this working model.
+Importantly, the role of this structure while larger when the number of clusters is very small, effectively falls away as the number of clusters increases, converging to the usual CRVE estimator in large samples.
+This structure greatly improves the performance of CRVE, bringing the Type I error in line with the stated $\alpha$ levels for tests, even in less than ideal situations.
+
+The main driver to these adjustments, as illustrated both in the simulation study and the set of examples, is the fact that in this approach the degrees of freedom are estimated using a Satterthwaite approximation.
+These degrees of freedom can be much smaller than the number of clusters, particularly when the covariates being tested exhibit a high degree of imbalance or skewness.
+In economics, these problems are common, particularly in the analysis of experiments and in difference-in-difference models used in panel data. 
+In this paper, we have shown that the small sample adjustments provided here perform well even in situations in which a series of policies are allocated very unequally across groups, and that the approach works by greatly reducing the degrees of freedom.
+In many cases these degrees of freedom can be quite small, even when the number of clusters is moderate to large.
+Most striking, perhaps, is the fact that these differences occur even with as many as 50 clusters, a rule of thumb often given for when CRVE should perform well.
+
+
+%Current take-home points:
+%\begin{itemize}
+%\item How much does the working matrix matter?
+%\item Role of degrees of freedom
+%\item Logical consistency: t-test and F-test; FE and absorbtion
+%\item Comparing these to CR1
+%\item Comparing these to Wild bootstrap
+%\item Previous research has broken out CR* from the test. We didn't do this this time because...
+
+
+%Future research:
+%\begin{itemize}
+%\item ``empirical'' degrees of freedom estimation
+%\item use of other CR estimators
+%\item computational issues with CR2 (especially when $n_i$'s are large)
+%\item saddlepoint methods for $q > 1$
+%\end{itemize}
+
+\appendix
+
+\section{BRL adjustment matrices}
+\label{app:theorems}
+
+This appendix states and provides proof of two theorems regarding the BRL adjustment matrices. 
+
+\subsection{Proof of Theorem \ref{thm:BRL_FE}}
+
+The Moore-Penrose inverse of $\bm{B}_i$ can be computed from its eigen-decomposition. Let $b \leq n_i$ denote the rank of $\bm{B}_i$. 
+Let $\bs\Lambda$ be the $b \times b$ diagonal matrix of the positive eigenvalues of $\bm{B}_i$ and $\bm{V}$ be the $n_i \times b$ matrix of corresponding eigen-vectors, so that $\bm{B}_i = \bm{V}\bs\Lambda\bm{V}'$. 
+Then $\bm{B}_i^+ = \bm{V}\bs\Lambda^{-1}\bm{V}'$ and $\bm{B}_i^{+1/2} = \bm{V}\bs\Lambda^{-1/2}\bm{V}'$.
+
+Now, observe that $\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_i \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \left(\bm{I} - \bm{H_T}\right) = \left(\bm{I} - \bm{H_X}\right)_i$. Thus, 
+\begin{align}
+\label{eq:step1}
+\bm{\ddot{R}}_i' \bm{W}_i \bm{A}_i \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i' \bm{A}_i' \bm{W}_i \bm{\ddot{R}}_i &= \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{B}_i^{+1/2} \bm{B}_i \bm{B}_i^{+1/2} \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i \nonumber \\
+&= \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{V}\bm{V}' \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i. 
+\end{align}
+
+Because $\bm{D}_i$, and $\bs\Phi$ are positive definite and $\bm{B}_i$ is symmetric, the eigenvectors $\bm{V}$ define an orthonormal basis for the column span of $\left(\bm{I} - \bm{H_{\ddot{X}}}\right)_i$.
+We now show that $\bm{\ddot{U}}_i$ is in the column space of $\left(\bm{I} - \bm{H_X}\right)_i$. 
+Let $\bm{Z}_i$ be an $n_i \times (r + s)$ matrix of zeros. 
+Let $\bm{Z}_k = - \bm{\ddot{U}}_k \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1}$, for $k \neq j$ and take $\bm{Z} = \left(\bm{Z}_1',...,\bm{Z}_m'\right)'$. 
+Now observe that $\left(\bm{I} - \bm{H_T}\right) \bm{Z} = \bm{Z}$. 
+It follows that 
+\begin{align*}
+\left(\bm{I} - \bm{H_X}\right)_i \bm{Z} &= \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \left(\bm{I} - \bm{H_T}\right) \bm{Z} = \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \bm{Z} \\
+&= \bm{Z}_i - \bm{\ddot{U}}_i\bm{M_{\ddot{U}}}\sum_{k=1}^m \bm{\ddot{U}}_k'\bm{W}_k\bm{Z}_k = \bm{\ddot{U}}_i\bm{M_{\ddot{U}}} \left(\sum_{k \neq j} \bm{\ddot{U}}_k' \bm{W}_k \bm{\ddot{U}} \right) \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1} \\
+&= \bm{\ddot{U}}_i.
+\end{align*}
+Thus, there exists an $N \times (r + s)$ matrix $\bm{Z}$ such that $\left(\bm{I} - \bm{H_{\ddot{X}}}\right)_i \bm{Z} = \bm{\ddot{U}}_i$, i.e., $\bm{\ddot{U}}_i$ is in the column span of $\left(\bm{I} - \bm{H_X}\right)_i$. Because $\bm{D}_i \bm{W}_i$ is positive definite and $\bm{\ddot{R}}_i$ is a sub-matrix of $\bm{\ddot{U}}_i$, $\bm{D}_i\bm{W}_i\bm{\ddot{R}}_i$ is also in the column span of $\left(\bm{I} - \bm{H_X}\right)_i$. It follows that 
+\begin{equation}
+\label{eq:step2}
+\bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{V}\bm{V}' \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i = \bm{\ddot{R}}_i' \bm{W}_i \bs\Phi_i \bm{W}_i \bm{\ddot{R}}_i.
+\end{equation}
+Substituting (\ref{eq:step2}) into (\ref{eq:step1}) demonstrates that $\bm{A}_i$ satisfies criterion (\ref{eq:CR2_criterion}).
+
+Under the working model, the residuals from cluster $i$ have mean $\bm{0}$ and variance \[
+\Var\left(\bm{\ddot{e}}_i\right) = \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i',\] 
+It follows that 
+\begin{align*}
+\E\left(\bm{V}^{CR2}\right) &= \bm{M_{\ddot{R}}}\left[\sum_{i=1}^m \bm{\ddot{R}}_i' \bm{W}_i \bm{A}_i \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i' \bm{A}_i \bm{W}_i \bm{\ddot{R}}_i \right] \bm{M_{\ddot{R}}} \\
+&= \bm{M_{\ddot{R}}}\left[\sum_{i=1}^m \bm{\ddot{R}}_i' \bm{W}_i \bs\Phi_i \bm{W}_i \bm{\ddot{R}}_i \right] \bm{M_{\ddot{R}}} \\
+&= \Var\left(\bs{\hat\beta}\right)
+\end{align*}
+
+\subsection{Proof of Theorem \ref{thm:absorb}}
+
+From the fact that $\bm{\ddot{U}}_i'\bm{W}_i\bm{T}_i = \bm{0}$ for $i = 1,...,m$, it follows that \begin{align*}
+\bm{B}_i &= \bm{D}_i \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \left(\bm{I} - \bm{H_T}\right) \hat{\bs\Phi} \left(\bm{I} - \bm{H_T}\right)' \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i' \bm{D}_i'\\
+&= \bm{D}_i \left(\bm{I} - \bm{H_{\ddot{U}}} - \bm{H_T}\right)_i \hat{\bs\Phi} \left(\bm{I} - \bm{H_{\ddot{U}}} - \bm{H_T}\right)_i' \bm{D}_i' \\
+&= \bm{D}_i \left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i' - \bm{T}_i \bm{M_T}\bm{T}_i'\right)\bm{D}_i'
+\end{align*}
+and 
+\begin{equation}
+\label{eq:B_i_inverse}
+\bm{B}_i^+ = \left(\bm{D}_i'\right)^{-1} \left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i' - \bm{T}_i \bm{M_T}\bm{T}_i'\right)^+ \bm{D}_i^{-1}.
+\end{equation}
+Let $\bs\Omega_i = \left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\right)^+$.
+Using a generalized Woodbury identity \citep{Henderson1981on}, \[
+\bs\Omega_i = \bm{W}_i + \bm{W}_i \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\left(\bm{M_{\ddot{U}}} - \bm{M_{\ddot{U}}} \bm{\ddot{U}}_i' \bm{W}_i \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\right)^+ \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\bm{W}_i. \]
+It follows that $\bs\Omega_i \bm{T}_i = \bm{W}_i \bm{T}_i$. 
+Another application of the generalized Woodbury identity gives 
+\begin{align*}
+\left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i' - \bm{T}_i \bm{M_T}\bm{T}_i'\right)^+ &= \bs\Omega_i + \bs\Omega_i \bm{T}_i \bm{M_T}\left(\bm{M_T} - \bm{M_T}\bm{T}_i' \bs\Omega_i \bm{T}_i \bm{M_T}\right)^+ \bm{M_T} \bm{T}_i' \bs\Omega_i \\
+&= \bs\Omega_i + \bm{W}_i \bm{T}_i \bm{M_T}\left(\bm{M_T} - \bm{M_T}\bm{T}_i' \bm{W}_i \bm{T}_i\bm{M_T}\right)^+ \bm{M_T} \bm{T}_i' \bm{W}_i \\
+&= \bs\Omega_i.
+\end{align*}
+The last equality follows from the fact that $\bm{T}_i \bm{M_T}\left(\bm{M_T} - \bm{M_T}\bm{T}_i' \bm{W}_i \bm{T}_i\bm{M_T}\right)^{-} \bm{M_T} \bm{T}_i' = \bm{0}$ because the fixed effects are nested within clusters. 
+Substituting into (\ref{eq:B_i_inverse}), we then have that $\bm{B}_i^+ = \left(\bm{D}_i'\right)^{-1} \bs\Omega_i \bm{D}_i^{-1}$. 
+But \[
+\bm{\tilde{B}}_i = \bm{D}_i \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \bs\Phi \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i' \bm{D}_i' = \bm{D}_i \left(\bs\Phi_i - \bm{\ddot{U}}_i\bm{M_{\ddot{U}}} \bm{\ddot{U}}_i'\right) \bm{D}_i' = \bm{D}_i \bs\Omega_i^+ \bm{D}_i',
+\]
+and so $\bm{B}_i^+ = \bm{\tilde{B}}_i^+$. It follows that $\bm{A}_i = \bm{\tilde{A}}_i$ for $i = 1,...,m$. 
+
+\section{DISTRIBUTION THEORY FOR $\bm{V}^{CR}$}
+\label{app:VCR_dist}
+
+The small-sample approximations for t-tests and F-tests both involve the distribution of the entries of $\bm{V}^{CR2}$. This appendix explains the relevant distribution theory.
+
+% First, note that any of the CR estimators can be written in the form $\bm{V}^{CR2} = \sum_{i=1}^M \bm{P}_i \bm{e}_i \bm{e}_i' \bm{P}_i'$ for $r \times n_i$ matrices $\bm{P}_i = \bm{M_{\ddot{R}}} \bm{\ddot{R}}_i' \bm{W}_i \bm{A}_i$.
+% Let $\bm{c}_1,\bm{c}_2,\bm{c}_3,\bm{c}_4$ be fixed, $p \times 1$ vectors and consider the linear combination $\bm{c}_1' \bm{V}^{CR2} \bm{c}_2$. 
+% \citet[Theorem 4]{Bell2002bias} show that the linear combination is a quadratic form in $\bm{y}$: \[
+% \bm{c}_1' \bm{V}^{CR2} \bm{c}_2 = \bm{y}'\left(\sum_{i=1}^m \bm{p}_{2j} \bm{p}_{1j}'\right) \bm{y}, \]
+% for $N \times 1$ vectors $\bm{p}_{sh} = \left(\bm{I} - \bm{H_X}\right)_h' \bm{P}_h' \bm{c}_s$, $s = 1,...,4$, and $h = 1,...,m$. 
+
+Standard results regarding quadratic forms can be used to derive the moments of the linear combination \citep[e.g.,][Sec. 13.5]{Searle2006matrix}. We now assume that $\bs\epsilon_1,...,\bs\epsilon_m$ are multivariate normal with zero mean and variance $\bs\Sigma$. It follows that 
+\begin{align}
+\label{eq:CRVE_expectation}
+\E\left(\bm{c}_1' \bm{V}^{CR2} \bm{c}_2\right) &= \sum_{i=1}^m \bm{p}_{1j}' \bs\Sigma \bm{p}_{2j} \\
+\label{eq:CRVE_variance}
+\Var\left(\bm{c}_1' \bm{V}^{CR2} \bm{c}_2\right) &= \sum_{i=1}^m \sum_{i=1}^m \left(\bm{p}_{1i}' \bs\Sigma \bm{p}_{2j}\right)^2 + \bm{p}_{1i}' \bs\Sigma \bm{p}_{1j} \bm{p}_{2i}' \bs\Sigma \bm{p}_{2j} \\
+\label{eq:CRVE_covariance}
+\Cov\left(\bm{c}_1' \bm{V}^{CR2} \bm{c}_2, \bm{c}_3' \bm{V}^{CR} \bm{c}_4\right) &= \sum_{i=1}^m \sum_{i=1}^m \bm{p}_{1i}' \bs\Sigma \bm{p}_{4j} \bm{p}_{2i}' \bs\Sigma \bm{p}_{3j} + \bm{p}_{1i}' \bs\Sigma \bm{p}_{3j} \bm{p}_{2i}' \bs\Sigma \bm{p}_{4j}.
+\end{align}
+Furthermore, the distribution of $\bm{c}_1' \bm{V}^{CR2} \bm{c}_2$ can be expressed as a weighted sum of $\chi^2_1$ distributions \citep{mathai1992quadratic}, with weights given by the eigen-values of the $m \times m$ matrix with $\left(i,j\right)^{th}$ entry $\bm{p}_{1i}' \bs\Sigma \bm{p}_{2j}$, $i,i=1,...,m$.
+
+\bibliographystyle{agsm}
+\bibliography{bibliography}
+
+\end{document}
 

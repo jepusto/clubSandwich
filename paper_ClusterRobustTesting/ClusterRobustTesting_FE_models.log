@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  20 DEC 2015 13:44
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  21 DEC 2015 16:11
 entering extended mode
 **ClusterRobustTesting_FE_models.tex
 
@@ -621,65 +621,65 @@ Overfull \hbox (27.76999pt too wide) in paragraph at lines 182--182
  []
 
 [4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 505--505
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 504--504
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 505--505
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 504--504
 [][][] 
  []
 
 [16] [17] [18] [19] [20] [21]
 
-Package xcolor Warning: Incompatible color definition on input line 633.
+Package xcolor Warning: Incompatible color definition on input line 634.
 
 <CR_fig/overview-1.pdf, id=89, 867.24pt x 614.295pt>
 File: CR_fig/overview-1.pdf Graphic file (type pdf)
 
 <use CR_fig/overview-1.pdf>
-Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 635.
+Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 636.
 (pdftex.def)             Requested size: 642.45122pt x 455.08672pt.
 
 
-Package xcolor Warning: Incompatible color definition on input line 648.
+Package xcolor Warning: Incompatible color definition on input line 649.
 
 <CR_fig/balance-1.pdf, id=90, 867.24pt x 614.295pt>
 File: CR_fig/balance-1.pdf Graphic file (type pdf)
  <use CR_fig/balance-1.pdf>
-Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 650.
+Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 651.
 (pdftex.def)             Requested size: 642.45122pt x 455.08672pt.
 
 
-Package xcolor Warning: Incompatible color definition on input line 663.
+Package xcolor Warning: Incompatible color definition on input line 664.
 
 <CR_fig/misspecification-1.pdf, id=91, 867.24pt x 614.295pt>
 File: CR_fig/misspecification-1.pdf Graphic file (type pdf)
 
 <use CR_fig/misspecification-1.pdf>
-Package pdftex.def Info: CR_fig/misspecification-1.pdf used on input line 665.
+Package pdftex.def Info: CR_fig/misspecification-1.pdf used on input line 666.
 (pdftex.def)             Requested size: 642.45122pt x 455.08672pt.
  [22] [23 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting
 /CR_fig/overview-1.pdf>] [24 <C:/Users/jep2963/Documents/R/clubSandwich/paper_C
 lusterRobustTesting/CR_fig/balance-1.pdf>]
 [25 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
 g/misspecification-1.pdf>] [26] [27] [28] [29]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 824--824
-[][][] 
- []
-
-
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 824--824
-[][][] 
- []
-
-
 Overfull \hbox (27.76999pt too wide) in paragraph at lines 825--825
 [][][] 
  []
 
 
 Overfull \hbox (27.76999pt too wide) in paragraph at lines 825--825
+[][][] 
+ []
+
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 826--826
+[][][] 
+ []
+
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 826--826
 [][][] 
  []
 
@@ -714,7 +714,7 @@ m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program
 Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Fil
 es (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files 
 (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on ClusterRobustTesting_FE_models.pdf (38 pages, 375926 bytes).
+Output written on ClusterRobustTesting_FE_models.pdf (38 pages, 375422 bytes).
 PDF statistics:
  231 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
