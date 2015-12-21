@@ -117,7 +117,7 @@ Hotelling_Tsq <- function(Q, q, nu) {
 # Wald-type tests
 #---------------------------------------------
 
-#' Test parameter constraints in a fitted linear rergression model
+#' Test parameter constraints in a fitted linear regression model
 #' 
 #' \code{Wald_test} reports Wald-type tests of linear contrasts from a fitted 
 #' linear regression model, using a sandwich estimator for the 
