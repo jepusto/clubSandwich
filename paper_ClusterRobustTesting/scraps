@@ -1,1 +1,5 @@
+We further assume that $\left(\bm{U}'\bm{U} - \bm{U}_i'\bm{U}_i\right)$ is of full rank for $i = 1,...,m$.
+
+$\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_i \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \left(\bm{I} - \bm{H_T}\right) = \left(\bm{I} - \bm{H_X}\right)_i$. Thus, 
+
 (However, \citet{Cameron2015practitioners} note that the correction factor used in Stata is sensitive to how the model is estimated, because it is a function of the dimension of the covariate matrix.)

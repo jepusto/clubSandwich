@@ -129,6 +129,12 @@ Liang, K.-Y. \harvardand\ Zeger, S.~L.  \harvardyearleft 1986\harvardyearright
   , `{Longitudinal data analysis using generalized linear models}', {\em
   Biometrika} {\bf 73}(1),~13--22.
 
+\harvarditem{MacKinnon}{2013}{MacKinnon2013thirty}
+MacKinnon, J.~G.  \harvardyearleft 2013\harvardyearright , {Thirty years of
+  heteroskedasticity-robust inference}, {\em in} X.~Chen \harvardand\ N.~R.
+  Swanson, eds, `Recent Advances and Future Directions in Causality,
+  Prediction, and Specification Analysis', Springer New York, New York, NY.
+
 \harvarditem{MacKinnon \harvardand\ White}{1985}{MacKinnon1985some}
 MacKinnon, J.~G. \harvardand\ White, H.  \harvardyearleft 1985\harvardyearright
   , `{Some heteroskedasticity-consistent covariance matrix estimators with
