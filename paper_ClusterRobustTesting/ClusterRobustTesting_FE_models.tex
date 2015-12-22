@@ -134,29 +134,30 @@ The text of your abstract.  200 or fewer words.
 \section{INTRODUCTION}
 \label{sec:intro}
 
-%Problems with standard CRVE.
-%Recent solutions. 
+In a wide array of economic analyses, interest centers on the parameters of linear regression models, estimated by ordinary or weighted least squares (OLS/WLS) from a sample of units that are correlated. 
+Correlation among units may arise from the sampling of aggregate units (e.g., countries, districts, villages), each of which contains multiple observations; from repeated measurement of an outcome on a common set of units, as in panel data; or from model mis-specification, as in analysis of regression discontinuity designs \citep{Lee2008regression}. 
+A common approach to inference in these settings is to use cluster-robust variance estimation \citep[CRVE;][]{Arellano1987computing, Liang1986longitudinal, white1984asymptotic}.
+The advantage of CRVE is that it produces consistent standard errors and test statistics without imposing strong parametric assumptions about the dependence structure of the errors in the model.
+Instead, the method relies on the relatively weaker assumption that units can be grouped into clusters that are mutually independent. 
+CRVE is an extension to another economic mainstay, heteroscedasticity-robust variance estimation \citep{eicker1967limit, Huber1967behavior, White1980heteroskedasticity}, which is used to account for non-constant variance in regression models with independent errors.
+In the past decade, CRVE has become standard practice for applied micro-economic analysis, as evidenced by its coverage in major textbooks and review articles \citep[e.g.,][]{Wooldridge2010econometric, Angrist2009mostly, Cameron2015practitioners}.
 
-The use of cluster-robust variance estimation [CRVE] \citep{Arellano1987computing, Liang1986longitudinal, white1984asymptotic} is now common across a wide range of economic analyses.
-Standard errors are routinely ``clustered'' to account for correlations arising from the sampling of aggregate units (e.g., countries, regions, states, villages), each containing multiple observations. 
-Likewise, CRVE is now routinly used in the analysis of panel data to account for correlation of measurements on the same individual units across time periods. 
-The method is an extension to another economic mainstay, heteroscedasticity-robust standard errors \citep{eicker1967limit, Huber1967behavior, White1980heteroskedasticity}, which are used to account for non-constant variance in regression models. 
-Although CRVE has existed for over 30 years, it has become standard practice only in the last decade, as illustrated by its coverage in major textbooks and review articles \citep[e.g.,][]{Wooldridge2010econometric, Angrist2009mostly, Cameron2015practitioners}.
-
-CRVE allows analysts to estimate causal and structural models using ordinary least squares (OLS) or weighted least squares (WLS), while adjusting standard errors thereafter.
-These standard errors can also be used as the basis for both single- or multiple-parameter hypothesis tests.
-For example, an analyst may wish to understand the effects on employment outcomes of several state-level policy shifts, where the policies were implemented at different time-points in each state. 
-A standard approach to estimating such effects is via a regression model that includes indicator variables for each policy shift, demographic controls, and fixed effects for states and time-periods in order to control for unobserved confounding in each of these dimensions. 
-The model might be estimated by OLS, with the fixed effects included as indicator variables; more commonly, the effects of the policy indicators might be estimated after absorbing the fixed effects, a computational technique that is also known as the fixed effects or within transformation \citep{Wooldridge2010econometric}. 
+For example, consider a study of the effects on employment outcomes of several state-level policy shifts, where the policies were implemented at different time-points in each state. 
+In a difference-in-differences analysis, the policy effects would be parameterized in a regression model that includes indicator variables for each policy shift, demographic controls, and fixed effects for states and time-periods in order to control for unobserved confounding in each of these dimensions. 
+The model could be estimated by OLS, with the fixed effects included as indicator variables; more commonly, the effects of the policy indicators would be estimated after absorbing the fixed effects, a computational technique that is also known as the fixed effects or within transformation \citep{Wooldridge2010econometric}. 
 Standard errors would then be clustered by state to account for dependence in the residual errors from a given state, and these clustered standard errors would be used to test hypotheses regarding each policy (i.e., a t-test) or across policies (i.e., an F-test).
 The need to cluster the standard errors by state, even when including state fixed effects, was highlighted by \citet{Bertrand2004how}, who showed that to do otherwise can lead to inappropriately small standard errors and hypothesis tests with incorrect rejection rates. 
 
-In CRVE, standard errors are estimated empirically, thus not requiring analysts to assume a particular correlation structure.
-The standard errors produced are consistent estimates of the true standard errors, leading to appropriate hypotheses tests when the number of clusters is large.
-As the method has become more common, however, researchers have turned attention to the performance of these tests in small and moderate samples. 
+The consistency properties of CRVE are asymptotic in the number of independent clusters \citep{Wooldridge2003cluster}.\footnote{Working in a panel data setting, \citet{Hansen2007asymptotic} and \citet{Donald2007inference} identified conditions under which cluster-robust test statistics converge to a limiting $t$-distribution as the number of measurement occasions increases, holding the number of independent units fixed.}
+Recent methodological work has demonstrated that CRVE can be biased downward and associated hypothesis tests can have Type-I error rates considerably in excess of nominal levels, when based on samples with only a small or moderate number of clusters \citep[e.g.,][]{Webb2013wild}.
 \citet{Cameron2015practitioners} provide a thorough review of this literature, including a discussion of current practice, possible solutions, and open problems. 
-They highlight the well-known phenomenon that in small samples, CRVE has a downward bias and that hypothesis tests based on CRVEs can have Type-I error rates that are considerably larger the nominal level of the test.
-Moreover, they review recent research showing that the small-sample corrections for t-tests typically found in software such as Stata and SAS are inadequate. 
+In particular, they demonstrate that small-sample corrections for t-tests implemented in common software packages such as Stata and SAS do not provide adequate control of Type-I error. 
+
+Other recent work has proposed methods for cluster-robust inference with a small number of clusters. \citet{Cameron2008bootstrap} investigated a range of bootstrapping procedures that provide improved Type-I error control in small samples. 
+
+\citet{Ibragimov2010tstatistic} 
+\citet{Carter2013asymptotic}
+\citet{Conley2011inference}
 
 Cameron and Miller also point to a potentially promising solution to these problems, the bias-reduced linearization (BRL) method, which was introduced by \citet{McCaffrey2001generalizations} and \citet{Bell2002bias}. 
 BRL entails correcting the bias of the CRVE so that it is exactly unbiased under a working model specified by the analyst, while also remaining asymptotically consistent under arbitrary true variance structures. 
@@ -169,8 +170,6 @@ Second, however, as \citet{Cameron2015practitioners} highlight, even when the BR
 This problem also plagues the small sample corrections more commonly implemented, and leads analysts to have to choose the appropriate method for accounting for fixed effects on an ad hoc basis, with little guidance regarding the best strategy.
 Third---and more generally---although \citet{Bell2002bias} provide a method for conducting single parameter tests, small-sample methods for multiple-parameter tests are lacking.
 These tests occur commonly in the broader economics literature and are found not only in panel data (e.g., the Hausman test), but also more broadly in seemingly unrelated regression models, and when analyzing experimental data (e.g., baseline equivalence), particularly when there are multiple treatment groups. 
-
-\todo[inline]{Briefly review alternative small-sample stuff.}
 
 In this paper, we address each of these three concerns, in the end articulating a BRL methodology that is suitable for everyday econometric practice. 
 In the remainder of this section, we introduce our econometric framework and review the standard CRVE methods, as implemented in most software applications. 
@@ -710,7 +709,7 @@ In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the sch
 
 
 % latex table generated in R 3.2.3 by xtable 1.7-4 package
-% Mon Dec 21 16:11:41 2015
+% Mon Dec 21 22:18:31 2015
 \begin{table}[tbh]
 \centering
 \begin{tabular}{lllrrr}
@@ -773,7 +772,7 @@ Finally, we conduct a joint test for whether program effects differ across stude
 
 
 % latex table generated in R 3.2.3 by xtable 1.7-4 package
-% Mon Dec 21 16:11:41 2015
+% Mon Dec 21 22:18:31 2015
 \begin{table}[bth]
 \centering
 \begin{tabular}{lcrrr}
@@ -845,7 +844,7 @@ With this setup, the artificial Hausmann test amounts to testing the null hypoth
 
 
 % latex table generated in R 3.2.3 by xtable 1.7-4 package
-% Mon Dec 21 16:11:41 2015
+% Mon Dec 21 22:18:31 2015
 \begin{table}[bth]
 \centering
 \begin{tabular}{lcrrr}

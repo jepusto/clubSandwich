@@ -56,12 +56,24 @@ Cameron, A.~C., Gelbach, J.~B. \harvardand\ Miller, D.  \harvardyearleft
 Cameron, A.~C. \harvardand\ Miller, D.~L.  \harvardyearleft
   2015\harvardyearright , {A practitioner's guide to cluster-robust inference}.
 
+\harvarditem[Carter et~al.]{Carter, Schnepel \harvardand\
+  Steigerwald}{2013}{Carter2013asymptotic}
+Carter, A.~V., Schnepel, K.~T. \harvardand\ Steigerwald, D.~G.
+  \harvardyearleft 2013\harvardyearright , {Asymptotic Behavior of a t Test
+  Robust to Cluster Heterogeneity}.
+
 \harvarditem[Chetty et~al.]{Chetty, Friedman, Hilger, Saez, Schanzenbach
   \harvardand\ Yagan}{2011}{Chetty2011how}
 Chetty, R., Friedman, J.~N., Hilger, N., Saez, E., Schanzenbach, D.~W.
   \harvardand\ Yagan, D.  \harvardyearleft 2011\harvardyearright , `{How does
   your kindergarten classroom affect your earnings? Evidence from Project
   STAR}', {\em The Quarterly Journal of Economics} {\bf 126}(4),~1593--1660.
+
+\harvarditem{Conley \harvardand\ Taber}{2011}{Conley2011inference}
+Conley, T.~G. \harvardand\ Taber, C.~R.  \harvardyearleft 2011\harvardyearright
+  , `{Inference with “Difference in Differences” with a Small Number of
+  Policy Changes}', {\em Review of Economics and Statistics} {\bf
+  93}(1),~113--125.
 
 \harvarditem{Donald \harvardand\ Lang}{2007}{Donald2007inference}
 Donald, S.~G. \harvardand\ Lang, K.  \harvardyearleft 2007\harvardyearright ,
@@ -106,6 +118,11 @@ Krueger, A. \harvardand\ Whitmore, D.  \harvardyearleft 2001\harvardyearright ,
   `{The effect of attending a small class in the early grades on college-test
   taking and middle school test results: Evidence from Project STAR}', {\em The
   Economic Journal} {\bf 111}(468),~1--28.
+
+\harvarditem{Lee \harvardand\ Card}{2008}{Lee2008regression}
+Lee, D.~S. \harvardand\ Card, D.  \harvardyearleft 2008\harvardyearright ,
+  `{Regression discontinuity inference with specification error}', {\em Journal
+  of Econometrics} {\bf 142}(2),~655--674.
 
 \harvarditem{Liang \harvardand\ Zeger}{1986}{Liang1986longitudinal}
 Liang, K.-Y. \harvardand\ Zeger, S.~L.  \harvardyearleft 1986\harvardyearright
@@ -188,6 +205,11 @@ White, H.  \harvardyearleft 1984\harvardyearright , {\em Asymptotic theory for
 \harvarditem{Wooldridge}{2002}{Wooldridge2002econometric}
 Wooldridge, J.~M.  \harvardyearleft 2002\harvardyearright , {\em {Econometric
   Analysis of Cross Section and Panel Data}}, MIT Press, Cambridge, MA.
+
+\harvarditem{Wooldridge}{2003}{Wooldridge2003cluster}
+Wooldridge, J.~M.  \harvardyearleft 2003\harvardyearright , `{Cluster-sample
+  methods in applied econometrics}', {\em The American Economic Review} {\bf
+  93}(2),~133--138.
 
 \harvarditem{Wooldridge}{2010}{Wooldridge2010econometric}
 Wooldridge, J.~M.  \harvardyearleft 2010\harvardyearright , {\em {Econometric
