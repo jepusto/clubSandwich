@@ -1,5 +1,48 @@
 We further assume that $\left(\bm{U}'\bm{U} - \bm{U}_i'\bm{U}_i\right)$ is of full rank for $i = 1,...,m$.
 
-$\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_i \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \left(\bm{I} - \bm{H_T}\right) = \left(\bm{I} - \bm{H_X}\right)_i$. Thus, 
-
 (However, \citet{Cameron2015practitioners} note that the correction factor used in Stata is sensitive to how the model is estimated, because it is a function of the dimension of the covariate matrix.)
+
+In the $q = 1$ case, the standard is therefore to instead use the t-distribution instead, with degrees of freedom $m - 1$ when CR1 is employed.
+Similarly, when $q > 1$, this results in the test $F = Q/q$, which is compared to the $F(q, m - 1)$ reference distribution.
+\todo{Is this really standard?} 
+
+By moving to the t and F-distributions, the CR1 corrections greatly improve the performance of these Wald-type tests in small samples.
+However, these corrections alone are not adequate, since - like the bias adjustment - the degrees of freedom do not account adequately for features of the covariates that affect performance of the statistics.
+Cameron and Miller highlight this problem, noting that the BRL approach provides an alternative method for estimating the degrees of freedom using a Satterthwaite approximation. 
+This method has been widely tested and shown to perform well; we review the method and findings in the next sub-section.
+Importantly, however, no such small-sample approach has been developed for multi-parameter hypothesist tests. 
+In the sub-section that follows, we develop such a test.
+Our approach is similar to a Satterthwaite approximation, in that it involves approximating the distribution of $Q$ using an $F$ distribution with estimated degrees of freedom. 
+
+In this section, we review extant work on small-sample corrections for single-parameter hypothesis tests (i.e., t-tests), following which we propose a small-sample correction for multiple-parameter tests (i.e., F-tests).
+
+In addition to the Satterthwaite approximation, two other promising methods for testing single-constraint hypotheses have been proposed. \citet{McCaffrey2006improved} described a saddlepoint approximation to the distribution of $Z$, providing simulation evidence that a test based on a this approximation offers even more accurate rejection rates than the Satterthwaite approximation. 
+A further method is to use a bootstrap re-sampling technique that provides small-sample refinements in the test rejection rates.
+\citet{Cameron2008bootstrap} studied several such bootstrapping techniques. 
+\citet{Webb2013wild} describe a wild boostrap procedure that performs well even when $m$ is quite small and when clusters are of unequal size.  
+
+\cite{Pan2002small} proposed to choose $\eta$ to minimize the squared differences between the covariances among the entries of $\eta \bs\Omega$ and the covariances of the Wishart distribution with $\eta$ degrees of freedom and scale matrix $\bm{C}\bm{V}^{CR}\bm{C}'$. 
+\citet{Zhang2012MANOVA} instead matches the mean and total variance of $\bm{C}\bm{V}^{CR}\bm{C}'$ (i.e., the sum of the variances of its entries), which avoids the need to calculate any covariances. 
+
+
+\section{DISTRIBUTION THEORY FOR $\bm{V}^{CR}$}
+\label{app:VCR_dist}
+
+The small-sample approximations for t-tests and F-tests both involve the distribution of the entries of $\bm{V}^{CR2}$. This appendix explains the relevant distribution theory.
+
+% First, note that any of the CR estimators can be written in the form $\bm{V}^{CR2} = \sum_{i=1}^M \bm{P}_i \bm{e}_i \bm{e}_i' \bm{P}_i'$ for $r \times n_i$ matrices $\bm{P}_i = \bm{M_{\ddot{R}}} \bm{\ddot{R}}_i' \bm{W}_i \bm{A}_i$.
+% Let $\bm{c}_1,\bm{c}_2,\bm{c}_3,\bm{c}_4$ be fixed, $p \times 1$ vectors and consider the linear combination $\bm{c}_1' \bm{V}^{CR2} \bm{c}_2$. 
+% \citet[Theorem 4]{Bell2002bias} show that the linear combination is a quadratic form in $\bm{y}$: \[
+% \bm{c}_1' \bm{V}^{CR2} \bm{c}_2 = \bm{y}'\left(\sum_{i=1}^m \bm{p}_{2j} \bm{p}_{1j}'\right) \bm{y}, \]
+% for $N \times 1$ vectors $\bm{p}_{sh} = \left(\bm{I} - \bm{H_X}\right)_h' \bm{P}_h' \bm{c}_s$, $s = 1,...,4$, and $h = 1,...,m$. 
+
+Standard results regarding quadratic forms can be used to derive the moments of the linear combination \citep[e.g.,][Sec. 13.5]{Searle2006matrix}. We now assume that $\bs\epsilon_1,...,\bs\epsilon_m$ are multivariate normal with zero mean and variance $\bs\Sigma$. It follows that 
+\begin{align}
+\label{eq:CRVE_expectation}
+\E\left(\bm{c}_1' \bm{V}^{CR2} \bm{c}_2\right) &= \sum_{i=1}^m \bm{p}_{1j}' \bs\Sigma \bm{p}_{2j} \\
+\label{eq:CRVE_variance}
+\Var\left(\bm{c}_1' \bm{V}^{CR2} \bm{c}_2\right) &= \sum_{i=1}^m \sum_{i=1}^m \left(\bm{p}_{1i}' \bs\Sigma \bm{p}_{2j}\right)^2 + \bm{p}_{1i}' \bs\Sigma \bm{p}_{1j} \bm{p}_{2i}' \bs\Sigma \bm{p}_{2j} \\
+\label{eq:CRVE_covariance}
+\Cov\left(\bm{c}_1' \bm{V}^{CR2} \bm{c}_2, \bm{c}_3' \bm{V}^{CR} \bm{c}_4\right) &= \sum_{i=1}^m \sum_{i=1}^m \bm{p}_{1i}' \bs\Sigma \bm{p}_{4j} \bm{p}_{2i}' \bs\Sigma \bm{p}_{3j} + \bm{p}_{1i}' \bs\Sigma \bm{p}_{3j} \bm{p}_{2i}' \bs\Sigma \bm{p}_{4j}.
+\end{align}
+Furthermore, the distribution of $\bm{c}_1' \bm{V}^{CR2} \bm{c}_2$ can be expressed as a weighted sum of $\chi^2_1$ distributions \citep{mathai1992quadratic}, with weights given by the eigen-values of the $m \times m$ matrix with $\left(i,j\right)^{th}$ entry $\bm{p}_{1i}' \bs\Sigma \bm{p}_{2j}$, $i,i=1,...,m$.

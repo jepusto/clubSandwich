@@ -146,11 +146,6 @@ Mancl, L.~A. \harvardand\ DeRouen, T.~A.  \harvardyearleft
   2001\harvardyearright , `{A covariance estimator for GEE with improved
   small-sample properties}', {\em Biometrics} {\bf 57}(1),~126--134.
 
-\harvarditem{Mathai \harvardand\ Provost}{1992}{mathai1992quadratic}
-Mathai, A.~M. \harvardand\ Provost, S.~B.  \harvardyearleft
-  1992\harvardyearright , {\em {Quadratic forms in random variables: theory and
-  applications}}, M. Dekker, New York.
-
 \harvarditem{McCaffrey \harvardand\ Bell}{2006}{McCaffrey2006improved}
 McCaffrey, D.~F. \harvardand\ Bell, R.~M.  \harvardyearleft
   2006\harvardyearright , `{Improved hypothesis testing for coefficients in
@@ -179,10 +174,6 @@ Satterthwaite, F.~E.  \harvardyearleft 1946\harvardyearright , `{An approximate
 Schanzenbach, D.~W.  \harvardyearleft 2006\harvardyearright , `{What have
   researchers learned from Project STAR?}', {\em Brookings Papers on Education
   Policy} {\bf 2006}(1),~205--228.
-
-\harvarditem{Searle}{2006}{Searle2006matrix}
-Searle, S.~R.  \harvardyearleft 2006\harvardyearright , {\em {Matrix Algebra
-  Useful for Statistics}}, john wiley edn, Hoboken, NJ.
 
 \harvarditem{Tipton}{2015}{Tipton2015small-t}
 Tipton, E.  \harvardyearleft 2015\harvardyearright , `{Small sample adjustments
@@ -231,10 +222,5 @@ Zhang, J.-T.  \harvardyearleft 2012{\em a}\harvardyearright , `{An approximate
 Zhang, J.-T.  \harvardyearleft 2012{\em b}\harvardyearright , `{An approximate
   Hotelling T2 -test for heteroscedastic one-way MANOVA}', {\em Open Journal of
   Statistics} {\bf 2},~1--11.
-
-\harvarditem{Zhang}{2013}{Zhang2013tests}
-Zhang, J.-T.  \harvardyearleft 2013\harvardyearright , `{Tests of linear
-  hypotheses in the ANOVA under heteroscedasticity}', {\em International
-  Journal of Advanced Statistics and Probability} {\bf 1}(2),~9--24.
 
 \end{thebibliography}
