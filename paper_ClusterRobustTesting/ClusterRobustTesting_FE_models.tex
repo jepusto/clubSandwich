@@ -55,6 +55,7 @@
 \usepackage{booktabs}
 %\usepackage{natbib}
 \RequirePackage[natbibapa]{apacite}
+\usepackage{caption}
 \usepackage{multirow}
 
 %\pdfminorversion=4
@@ -511,11 +512,14 @@ Some of the studies have focused on policy dummies in the balanced case, while o
 These studies have also examined the role of the number of clusters, with values ranging from 6 to 50, as well as the number of observations per clusters (from 1 to roughly 260).
 Finally, the studies used a range of both true error structures---including various combinations of heteroscedasticity and clustering---and estimation strategies---including different 'working' models.
 Specifically, studies evaluated the effects of model mis-specification by using working models that differ from the true error structure.
-Finally, while most previous studies focused on OLS estimation, one study \citep{Tipton2015small-t} examined the performance of t-tests based on WLS estimation.
+Finally, while most previous studies focused on OLS estimation, one study \citep{Tipton2015small-t} examined the performance of t-tests based on WLS estimation.\todo{Beth, is there any way to condense the four columns under ``Variable type''?}\todo{Beth, what is the difference between IK2015 Table 1 vs Table 2?}
 
 \begin{sidewaystable}
+\small
 \label{tab:simulation_summary}
+\caption{Type I error rates of t-tests based on CRVE}
 \include{simulation_table}
+\caption*{Table refers to the table within the relevent article. $m$ is the number of clusters; $n$ is the number of observations within each cluster; c indicates cluster-level covariate, while o indicates observation-level covariate; \% = percent taking value of one; H = heteroskedastic; RE = random effects (moulton factor); C = correlated errors; (\#) indicates number of different models tested.}
 \end{sidewaystable}
 
 The last column of Table \ref{tab:simulation_summary} indicates the range of Type I error rates given over the conditions studied in each of the simulation studies, with values given for both the standard and AHZ tests.
@@ -541,7 +545,7 @@ Type I error rates of the standard test and the AHZ F-test were compared across 
 
 The results of the simulations by \citet{Tipton2015small-F} indicate that the AHZ F-test always has Type I error less than or equal to the stated $\alpha$ level, except in cases with extreme model mispecification. 
 Even in these cases, however, in the conditions studied the Type I error was in line with those observed for t-tests; for example, for $\alpha = 0.05$ the error was not above 0.06. 
-In comparison, the Type I error of the standard test were often very high (between XX and XXX), with particularly large differences when the degrees of freedom of the two tests differed.
+In comparison, the Type I error of the standard test were often very high, with maximum rejection rates ranging from .17 to .22, depending on the dimension of the constraint being tested.
 Like the t-test, the degrees of freedom of the AHZ F-test were driven by covariate features, with particularly low degrees of freedom resulting when the covariate set studied is unbalanced or skewed.
 
 While the simulation study by \citet{Tipton2015small-F} included a variety of conditions, its design was focused on the types of data found in meta-analytic applications. 
@@ -693,7 +697,7 @@ In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the sch
 
 
 % latex table generated in R 3.2.3 by xtable 1.7-4 package
-% Thu Dec 24 10:57:19 2015
+% Thu Dec 24 14:21:03 2015
 \begin{table}[tbh]
 \centering
 \begin{tabular}{lllrrr}
@@ -756,7 +760,7 @@ Finally, we conduct a joint test for whether program effects differ across stude
 
 
 % latex table generated in R 3.2.3 by xtable 1.7-4 package
-% Thu Dec 24 10:57:19 2015
+% Thu Dec 24 14:21:03 2015
 \begin{table}[bth]
 \centering
 \begin{tabular}{lcrrr}
@@ -828,7 +832,7 @@ With this setup, the artificial Hausmann test amounts to testing the null hypoth
 
 
 % latex table generated in R 3.2.3 by xtable 1.7-4 package
-% Thu Dec 24 10:57:19 2015
+% Thu Dec 24 14:21:03 2015
 \begin{table}[bth]
 \centering
 \begin{tabular}{lcrrr}
