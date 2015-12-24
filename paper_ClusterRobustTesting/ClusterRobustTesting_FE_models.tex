@@ -446,7 +446,7 @@ We now describe an approach to multi-parameter testing that closely parallels th
 Our approach is to approximate the sampling distribution of $Q$ by Hotelling's $T^2$ distribution (a multiple of an F distribution) with estimated degrees of freedom. To motivate the approximation, observe that $Q$ can be written as \[
 Q = \bm{z}' \bs\Omega^{-1} \bm{z},
 \]
-where $\bs\Theta = \bm{C} \bm{M_{\ddot{R}}}\bm{\ddot{R}}'\bm{W}\bs\Phi\bm{W}\bm{\ddot{R}}\bm{M_{\ddot{R}}} \bm{C}'$ is the true variance of $\bm{C}\bs{\hat\beta}$ under the working model, $\bm{z} = \bs\Theta^{-1/2}\left(\bm{C}\bs{\hat\beta} - \bm{d}\right)$, and $\bs\Omega = \bs\Theta^{-1/2} \bm{C} \bm{V}^{CR2}\bm{C}'\bs\Theta^{-1/2}$. 
+where $\bm{G} = \bm{C} \bm{M_{\ddot{R}}}\bm{\ddot{R}}'\bm{W}\bs\Phi\bm{W}\bm{\ddot{R}}\bm{M_{\ddot{R}}} \bm{C}'$ is the variance of $\bm{C}\bs{\hat\beta}$ under the working model, $\bm{z} = \bm{G}^{-1/2}\left(\bm{C}\bs{\hat\beta} - \bm{d}\right)$, and $\bs\Omega = \bm{G}^{-1/2} \bm{C} \bm{V}^{CR2}\bm{C}'\bm{G}^{-1/2}$. 
 Now suppose that $\eta \times \bs\Omega$ approximately follows a Wishart distribution with $\eta$ degrees of freedom and a $q$-dimensional identity scale matrix. It then follows that
 \begin{equation}
 \label{eq:AHT}
@@ -458,10 +458,11 @@ This approximation is conceptually similar to the Satterthwaite approximation fo
 For $q > 1$, the test depends on the multivariate distribution of $\bm{V}^{CR2}$, including both variance and covariance terms. 
 
 \citet{Tipton2015small-F} recently introduced this test for application in the special case of CRVE for meta-regression models.
-Wishart approximations have also been proposed as approximations in some simpler models where special cases of CRVE are used.  
-\citet{Zhang2012twowayANOVA} described an AHT test for contrasts in analysis of variance models with unequal within-cell variance, which are particularly simple cases of linear models with heteroskedastic error terms. 
+Wishart approximations have also been proposed as approximations in some simpler models where special cases of CRVE are used.
+\citet{Nel1986solution} proposed an AHT-type test for testing equality of multivariate means across two samples with unequal variance-covariance matrices \citep[i.e., the multivariate Behrens-Fisher problem; see also][]{Krishnamoorthy2004modified}.
+\citet{Zhang2012twowayANOVA} followed a similar approach in developing a test for contrasts in analysis of variance models with unequal within-cell variance, which are particularly simple cases of linear models with heteroskedastic error terms. 
 \citet{Zhang2012MANOVA} extended the method to multivariate analysis of variance models where the covariance of the errors differs across groups, a special case of model (\ref{eq:fixed_effects}) where the CR2 variance estimator has a particularly simple form. 
-In each of these cases, Zhang demonstrated that the robust variance estimator is a mixture of Wishart distributions that is well-approximated by a Wishart distribution with estimated degrees of freedom.
+In each of these special cases, the robust variance estimator is a mixture of Wishart distributions that is well-approximated by a Wishart distribution with estimated degrees of freedom.
 Additionally, \citet{Pan2002small} described an F-test for use in GEE models, which uses the Wishart approximation to the distribution of $\bm{V}^{CR0}$ but estimates the degrees of freedom using a different method than the one we describe below.
 
 The contribution of the present paper is to extend the AHT test to the general setting of linear models with fixed effects and clustered errors. 
@@ -470,23 +471,23 @@ To do so, we match the mean and variance of $\bs\Omega$ to that of the approxima
 The problem that arises in doing so is that it is not possible to exactly match both moments if $q > 1$.
 Following \citet{Tipton2015small-F}, we instead match the mean and total variance of $\bs\Omega$---i.e., the sum of the variances of its entries.
 
-Let $\bs\theta_1,...,\bs\theta_q$ denote the $q \times 1$ column vectors of $\bs\Theta^{-1/2}$. 
+Let $\bm{g}_1,...,\bm{g}_q$ denote the $q \times 1$ column vectors of $\bm{G}^{-1/2}$. 
 Let \[
-\bm{p}_{sh} = \left(\bm{I} - \bm{H_X}\right)_h' \bm{A}_h \bm{W}_h \bm{\ddot{R}}_h \bm{M_{\ddot{R}}}\bm{C} \bs\theta_s \]
-for $s = 1,...,q$ and $h = 1,...,m$. 
+\bm{p}_{si} = \left(\bm{I} - \bm{H_X}\right)_i' \bm{A}_i \bm{W}_i \bm{\ddot{R}}_i \bm{M_{\ddot{R}}}\bm{C} \bm{g}_s \]
+for $s = 1,...,q$ and $i = 1,...,m$.\todo{Possible to simplify $p_{si}$ by ignoring within-cluster fixed effects?} 
 The degrees of freedom are then estimated under the working model as
 \begin{equation}
 \label{eq:eta_model}
-\eta_M = \frac{q(q + 1)}{\sum_{s,t=1}^q \sum_{h,i=1}^m \bm{p}_{sh}'\bs\Phi\bm{p}_{ti} \bm{p}_{th}'\bs\Phi\bm{p}_{si} + \bm{p}_{sh}'\bs\Phi\bm{p}_{si} \bm{p}_{th}'\bs\Phi\bm{p}_{ti}}.
+\eta_M = \frac{q(q + 1)}{\sum_{s,t=1}^q \sum_{i,j=1}^m \bm{p}_{si}'\bs\Phi\bm{p}_{tj} \bm{p}_{ti}'\bs\Phi\bm{p}_{sj} + \bm{p}_{si}'\bs\Phi\bm{p}_{sj} \bm{p}_{ti}'\bs\Phi\bm{p}_{tj}}.
 \end{equation}
 If $q = 1$, then $\eta_M$ reduces to $\nu_M$ from Equation (\ref{eq:nu_model}).
 
-This F-test shares features with the t-test developed by Bell and McCaffrey. Like the t-test, the degrees of freedom of this F-test depend not only on the number of clusters, but also on features of the covariates being tested. 
-Again, these degrees of freedom can be much smaller than $m - 1$, and are particularly smaller when the covariates being tested are unbalanced or exhibit high leverage. 
-Unlike the t-test case, however, in multi-parameter case, it is often more difficult to diagnose the cause of these small degrees of freedom. 
-In some situations, however, these are straightforward extensions to the findings in t-tests. 
-For example, if the goal is to test if there are differences across a four-arm treatment study, the degrees of freedom are largest (and close to $m - 1$) when the treatment is allocated equally across the four groups within each cluster. 
-When the proportion varies across clusters, these degrees of freedom fall, often leading to degrees of freedom in the ``small sample'' territory even when the number of clusters is large. 
+This F-test shares features with the t-test developed by Bell and McCaffrey. As with the t-test, the degrees of freedom of this F-test depend not only on the number of clusters, but also on features of the covariates being tested. 
+Again, these degrees of freedom can be much lower than $m - 1$, particularly when the covariates being tested exhibit high leverage or are unbalanced across clusters. 
+For example, if the goal is to test if there are differences across a three-arm randomized block experiment with clustering by block, the degrees of freedom will be largest (approaching $m - 1$) when the treatment is allocated equally across the three groups within each block. 
+When the proportion varies across clusters, these degrees of freedom fall, potentially leading to degrees of freedom in the ``small sample'' territory even when the number of clusters is large. 
+% Outside of this simple example, it is generally more difficult to diagnose the cause of lower degrees of freedom in the multi-parameter case.\todo{Is this point necessary?}
+\todo{Transition to simulation study?}
 
 \section{Simulation Study}
 \label{sec:simulation}
@@ -687,8 +688,8 @@ In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the sch
 
 
 
-% latex table generated in R 3.2.3 by xtable 1.8-0 package
-% Wed Dec 23 16:20:46 2015
+% latex table generated in R 3.2.3 by xtable 1.7-4 package
+% Wed Dec 23 21:26:17 2015
 \begin{table}[tbh]
 \centering
 \begin{tabular}{lllrrr}
@@ -750,8 +751,8 @@ Finally, we conduct a joint test for whether program effects differ across stude
 
 
 
-% latex table generated in R 3.2.3 by xtable 1.8-0 package
-% Wed Dec 23 16:20:47 2015
+% latex table generated in R 3.2.3 by xtable 1.7-4 package
+% Wed Dec 23 21:26:17 2015
 \begin{table}[bth]
 \centering
 \begin{tabular}{lcrrr}
@@ -822,8 +823,8 @@ With this setup, the artificial Hausmann test amounts to testing the null hypoth
 
 
 
-% latex table generated in R 3.2.3 by xtable 1.8-0 package
-% Wed Dec 23 16:20:47 2015
+% latex table generated in R 3.2.3 by xtable 1.7-4 package
+% Wed Dec 23 21:26:17 2015
 \begin{table}[bth]
 \centering
 \begin{tabular}{lcrrr}

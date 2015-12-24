@@ -113,6 +113,11 @@ Imbens, G.~W. \harvardand\ Kolesar, M.  \harvardyearleft 2012\harvardyearright
   , {Robust standard errors in small samples: some practical advice}.
 \newline\harvardurl{http://www.nber.org/papers/w18478}
 
+\harvarditem{Krishnamoorthy \harvardand\ Yu}{2004}{Krishnamoorthy2004modified}
+Krishnamoorthy, K. \harvardand\ Yu, J.  \harvardyearleft 2004\harvardyearright
+  , `{Modified Nel and Van der Merwe test for the multivariate Behrens–Fisher
+  problem}', {\em Statistics {\&} Probability Letters} {\bf 66}(2),~161--169.
+
 \harvarditem{Krueger \harvardand\ Whitmore}{2001}{Krueger2001effect}
 Krueger, A. \harvardand\ Whitmore, D.  \harvardyearleft 2001\harvardyearright ,
   `{The effect of attending a small class in the early grades on college-test
@@ -158,6 +163,11 @@ McCaffrey, D.~F., Bell, R.~M. \harvardand\ Botts, C.~H.  \harvardyearleft
   2001\harvardyearright , {Generalizations of biased reduced linearization},
   {\em in} `Proceedings of the Annual Meeting of the American Statistical
   Association', number 1994.
+
+\harvarditem{Nel \harvardand\ van~der Merwe}{1986}{Nel1986solution}
+Nel, D. \harvardand\ van~der Merwe, C.  \harvardyearleft 1986\harvardyearright
+  , `{A solution to the multivariate Behrens-Fisher problem}', {\em
+  Communications in Statistics - Theory and Methods} {\bf 15}(12),~3719--3735.
 
 \harvarditem{Pan \harvardand\ Wall}{2002}{Pan2002small}
 Pan, W. \harvardand\ Wall, M.~M.  \harvardyearleft 2002\harvardyearright ,
