@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  28 DEC 2015 13:42
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  28 DEC 2015 14:16
 entering extended mode
 **ClusterRobustTesting_FE_models.tex
 
@@ -645,52 +645,62 @@ Overfull \hbox (27.76999pt too wide) in paragraph at lines 169--169
 [][][] 
  []
 
-[3] [4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15] [16]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 481--481
+[3] [4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14]
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 427--427
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 481--481
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 427--427
+[][][] 
+ []
+
+[15] [16]
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 483--483
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 494--494
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 483--483
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 494--494
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 496--496
+[][][] 
+ []
+
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 496--496
 [][][] 
  []
 
 [17]
 
-Package caption Warning: \label without proper \caption on input line 519.
+Package caption Warning: \label without proper \caption on input line 521.
 See the caption package documentation for explanation.
 
 
 LaTeX Warning: Reference `tab:simulation_summary' on page 18 undefined on input
- line 509.
+ line 511.
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 515--515
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 517--517
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 515--515
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 517--517
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 515--515
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 517--517
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 515--515
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 517--517
 [][][] 
  []
 
@@ -707,66 +717,67 @@ Overfull \hbox (0.63428pt too wide) in paragraph at lines 4--4
 
 )
 
-Package caption Warning: \label without proper \caption on input line 519.
+Package caption Warning: \label without proper \caption on input line 521.
 See the caption package documentation for explanation.
 
 
 LaTeX Warning: Reference `tab:simulation_summary' on page 19 undefined on input
- line 525.
+ line 527.
 
 [19] [20
 
 
 ] [21] [22] [23]
 
-Package xcolor Warning: Incompatible color definition on input line 621.
+Package xcolor Warning: Incompatible color definition on input line 623.
 
-<CR_fig/overview-1.pdf, id=97, 867.24pt x 614.295pt>
+<CR_fig/overview-1.pdf, id=99, 867.24pt x 614.295pt>
 File: CR_fig/overview-1.pdf Graphic file (type pdf)
 
 <use CR_fig/overview-1.pdf>
-Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 623.
+Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 625.
 (pdftex.def)             Requested size: 642.45122pt x 455.08672pt.
 
 
-Package xcolor Warning: Incompatible color definition on input line 636.
+Package xcolor Warning: Incompatible color definition on input line 638.
 
-<CR_fig/balance-1.pdf, id=98, 867.24pt x 614.295pt>
+<CR_fig/balance-1.pdf, id=100, 867.24pt x 614.295pt>
 File: CR_fig/balance-1.pdf Graphic file (type pdf)
- <use CR_fig/balance-1.pdf>
-Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 638.
+
+<use CR_fig/balance-1.pdf>
+Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 640.
 (pdftex.def)             Requested size: 642.45122pt x 455.08672pt.
 
 
-Package xcolor Warning: Incompatible color definition on input line 651.
+Package xcolor Warning: Incompatible color definition on input line 653.
 
-<CR_fig/misspecification-1.pdf, id=99, 867.24pt x 614.295pt>
+<CR_fig/misspecification-1.pdf, id=101, 867.24pt x 614.295pt>
 File: CR_fig/misspecification-1.pdf Graphic file (type pdf)
 
 <use CR_fig/misspecification-1.pdf>
-Package pdftex.def Info: CR_fig/misspecification-1.pdf used on input line 653.
+Package pdftex.def Info: CR_fig/misspecification-1.pdf used on input line 655.
 (pdftex.def)             Requested size: 642.45122pt x 455.08672pt.
  [24] [25 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting
 /CR_fig/overview-1.pdf>] [26 <C:/Users/jep2963/Documents/R/clubSandwich/paper_C
 lusterRobustTesting/CR_fig/balance-1.pdf>]
 [27 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
 g/misspecification-1.pdf>] [28] [29] [30] [31]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 812--812
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 814--814
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 812--812
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 814--814
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 813--813
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 815--815
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 813--813
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 815--815
 [][][] 
  []
 
@@ -792,36 +803,38 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 14773 strings out of 493921
- 286639 string characters out of 3144871
- 340497 words of memory out of 3000000
- 17762 multiletter control sequences out of 15000+200000
+ 14778 strings out of 493921
+ 286779 string characters out of 3144871
+ 341571 words of memory out of 3000000
+ 17767 multiletter control sequences out of 15000+200000
  18182 words of font info for 63 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
  62i,14n,80p,1052b,695s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C
-:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/P
-rogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Pro
-gram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Progr
-am Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Program
- Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Fi
-les (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files
- (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files (x
-86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files (x86)
-/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Program Files (x86)/
-MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/MiK
-TeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)/MiKTeX
- 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files (x86)/MiKTeX 2.9
-/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fon
-ts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/t
-ype1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/typ
-e1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/
-public/amsfonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/pub
-lic/amsfonts/cm/cmti12.pfb>
-Output written on ClusterRobustTesting_FE_models.pdf (40 pages, 399908 bytes).
+:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx5.pfb><C:/P
+rogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx6.pfb><C:/Prog
+ram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Program
+ Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program F
+iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Fil
+es (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Program Files
+ (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Files (x
+86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files (x86)
+/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files (x86)/Mi
+KTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files (x86)/MiKTe
+X 2.9/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Program Files (x86)/MiKTeX
+ 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/MiKTeX 2.
+9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)/MiKTeX 2.9/f
+onts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
+/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/typ
+e1/public/amsfonts/cm/cmr8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/p
+ublic/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/pub
+lic/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public
+/amsfonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/am
+sfonts/cm/cmti12.pfb>
+Output written on ClusterRobustTesting_FE_models.pdf (40 pages, 415941 bytes).
 PDF statistics:
- 245 PDF objects out of 1000 (max. 8388607)
+ 253 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  28 words of extra memory for PDF output out of 10000 (max. 10000000)
 
