@@ -453,85 +453,103 @@ Evidence from several large simulation studies indicates that hypothesis tests b
 However, existing simulations have focused almost entirely on single-parameter tests. 
 In this section, we first review findings from previous simulations, with particular emphasis on the role of covariate features and sample size on the Type I error rates of these tests.
 We then describe the design and results of a new simulation study, which focused on the rejection rates of multiple-parameter tests.
-Throughout, we refer to tests employing the CR2-corrected CRVE and estimated degrees of freedom as the ``AHZ'' test; for t-tests, the estimated degrees of freedom are equivalent to the Satterthwaite approximation given in Equation (\ref{eq:nu_model}). 
+  Throughout, we refer to tests employing the CR2-corrected CRVE and estimated degrees of freedom as the ``AHT'' test; for t-tests, the estimated degrees of freedom are equivalent to the Satterthwaite approximation given in Equation (\ref{eq:nu_model}). 
 We refer to tests employing the CR1 correction and $m - 1$ degrees of freedom as the ``standard'' test. 
 
 \subsection{Review of previous simulation studies}
 
-To date, four simulations have examined the performance of the CR2 t-test, across a total of nearly 100 parameter combinations. 
-Table \ref{tab:simulation_summary} summarizes the results of these studies, which have included a range of applications
-For example, \citet{Cameron2015practitioners} and \citet{Imbens2015robust} have focused on conditions common in economics, while \citet{Bell2002bias} focused on those common in complex surveys and \citet{Tipton2015small-t} on those in meta-analysis. 
-Some of the studies have focused on policy dummies in the balanced case, while others have varied the degree of balance; still others have examined continous covariates that are symmetrically distributed, as well as those with high skew and leverage.
-These studies have also examined the role of the number of clusters, with values ranging from 6 to 50, as well as the number of observations per clusters (from 1 to roughly 260).
-Finally, the studies used a range of both true error structures---including various combinations of heteroscedasticity and clustering---and estimation strategies---including different 'working' models.
-Specifically, studies evaluated the effects of model mis-specification by using working models that differ from the true error structure.
-Finally, while most previous studies focused on OLS estimation, one study \citep{Tipton2015small-t} examined the performance of t-tests based on WLS estimation.\todo{Beth, is there any way to condense the four columns under ``Variable type''?}\todo{Beth, what is the difference between IK2015 Table 1 vs Table 2?}
+To date, four simulations have examined the performance of the CR2 t-test, across a total of nearly 100 parameter combinations and a range of application contexts.
+\citet{Cameron2015practitioners} and \citet{Imbens2015robust} focused on conditions common in economics, while \citet{Bell2002bias} focused on those common in complex surveys and \citet{Tipton2015small-t} on those in meta-analysis. 
+Table \ref{tab:simulation_summary} summarizes the results of these studies.
+Some of the studies focused on policy dummies in the balanced case, while others varied the degree of balance; still others examined continous covariates that are symmetrically distributed, as well as those with high skew and leverage.
+These studies also examined the role of the number of clusters, with values ranging from 6 to 50, as well as the number of observations per clusters (from 1 to roughly 260).
+Finally, the studies used a range of both true error structures (including various combinations of heteroscedasticity and clustering) and estimation strategies (including different 'working' models), including scenarios in which the working model differed from the true error structure.
+Finally, while most previous studies focused on OLS estimation, one study \citep{Tipton2015small-t} examined the performance of t-tests based on WLS estimation.\todo{Beth, is there any way to condense the four columns under ``Variable type''? If you change it in the Excel file I will modify this table to match.}\todo{Beth, what is the difference between IK2015 Table 1 vs Table 2?}
 
 \begin{sidewaystable}
 \small
-\label{tab:simulation_summary}
 \caption{Type I error rates of t-tests based on CRVE}
+\label{tab:simulation_summary}
 \include{simulation_table}
 \caption*{Table refers to the table within the relevent article. $m$ is the number of clusters; $n$ is the number of observations within each cluster; c indicates cluster-level covariate, while o indicates observation-level covariate; \% = percent taking value of one; H = heteroskedastic; RE = random effects (moulton factor); C = correlated errors; (\#) indicates number of different models tested.}
 \end{sidewaystable}
 
-The last column of Table \ref{tab:simulation_summary} indicates the range of Type I error rates given over the conditions studied in each of the simulation studies, with values given for both the standard and AHZ tests.
+Table \ref{tab:simulation_summary} also indicates the range of Type I error rates observed across the conditions studied in each of the simulation studies, with values given for both the standard and AHT tests.
 Across studies, the Type I error for the standard t-test ranges from .01 to .34 for a stated $\alpha$ level of .05.
 These values are particularly far above nominal when the covariate tested is unbalanced, skewed (i.e., high leverage), or when the number of observations per cluster varies. 
-While not illustrated by the table, high Type I error rates occur not only when the number of clusters is very small, but also at moderate sizes when the covariate is unbalanced or skewed. 
+Although not reported in the table, high Type I error rates occur not only when the number of clusters is very small, but also at moderate sizes when the covariate is unbalanced or skewed. 
 
-In comparison, the AHZ t-test performs considerably better across the range of conditions studied, with Type I error rates ranging between 0.01 and 0.13.
+In comparison, the AHT t-test performs considerably better across the range of conditions studied, with Type I error rates ranging between 0.01 and 0.13.
 Notably, the largest value observed here is from \citet{Imbens2015robust}, who do not break results out by degrees of freedom. 
-Given the condition studied (30 clusters, with only 3 having a policy dummy), these degrees of freedom are possibly below the cut-off of 4 or 5 at which others have shown the t-test approximation to fail \citep{Tipton2015small-t}. 
+Given the condition studied (30 clusters, with only 3 having a policy dummy), it is quite possible that the degrees of freedom are below the cut-off of 4 or 5 at which others have shown the t-test approximation to fail \citep{Tipton2015small-t}. 
 Putting this value aside, the maximum Type I error observed in these conditions is 0.06, only slightly higher than nominal.
-Importantly, these nearly nominal Type I error rates hold even when the working model is far from the true error structure, and for various types of covariates.
-While not shown in the table, this is because the AHZ test takes into account covariate features in the degrees of freedom, which can be far less than $m - 1$.
+Crucially, these nearly nominal Type I error rates hold even when the working model is far from the true error structure, and for various types of covariates.
+This is because the AHT test takes into account covariate features in the degrees of freedom, which can be far less than $m - 1$.
 
-In comparison to the t-test, the AHZ F-test has only been studied in a single simulation focused on the meta-analytic case \citep{Tipton2015small-F}.
+In comparison to the t-test, the AHT F-test has only been studied in a single simulation focused on the meta-analytic case \citep{Tipton2015small-F}.
 Although this study focused only on the use of CRVE with WLS estimation, it was comprehensive in other regards.
 In particular, it examined the effects of the number of covariates in the model (up to $p = 5$) and the number of constraints tested ($q = 2,3,4,5$), including cases in which $p = q$ and in which $q < p$. 
 The simulations also examined models with various combinations of covariate types, including both balanced and unbalanced indicator variables, as well as symmetric or skewed continuous covariates.
 Like \citet{Tipton2015small-t}, these simulations focused on true correlation structures that included heteroscedasticity, clustering (i.e., a cluster specific random effect), and correlated errors.
-The working models for these were then varied far from the true error stucture (i.e., an independent-errors working model).
+The working models were then chosen to be far from the true error stucture (i.e., an independent-errors working model).
 Finally, the number of clusters was varied from 10 to 100, each with between 1 and 10 observations. 
-Type I error rates of the standard test and the AHZ F-test were compared across a range of $\alpha$ levels.
+Type I error rates of the standard test and the AHT F-test were compared for nominal $\alpha$ levels of .01, .05, and .10.
 
-The results of the simulations by \citet{Tipton2015small-F} indicate that the AHZ F-test always has Type I error less than or equal to the stated $\alpha$ level, except in cases with extreme model mispecification. 
-Even in these cases, however, in the conditions studied the Type I error was in line with those observed for t-tests; for example, for $\alpha = 0.05$ the error was not above 0.06. 
-In comparison, the Type I error of the standard test were often very high, with maximum rejection rates ranging from .17 to .22, depending on the dimension of the constraint being tested.
-Like the t-test, the degrees of freedom of the AHZ F-test were driven by covariate features, with particularly low degrees of freedom resulting when the covariate set studied is unbalanced or skewed.
+The results of the simulations by \citet{Tipton2015small-F} indicate that the AHT F-test always has Type I error less than or equal to the stated $\alpha$ level, except in cases with extreme model mis-specification. 
+However, even under such conditions, the Type I error was in line with rates observed for t-tests; for example, for $\alpha = 0.05$ the error was not above 0.06. 
+In comparison, the Type I error of the standard test was often very high, with maximum rejection rates ranging from .17 to .22, depending on the dimension of the constraint being tested.
+Like the t-test, the degrees of freedom of the AHT F-test were driven by covariate features, with particularly low degrees of freedom resulting from covariates that are unbalanced or skewed.
 
 While the simulation study by \citet{Tipton2015small-F} included a variety of conditions, its design was focused on the types of data found in meta-analytic applications. 
 These differ from the economic context in two ways.
 First, in meta-analysis, it is common to have heteroscedasticity of a known form and for analysts to incorporate weights in the analysis (typically inverse-variance weights).
 In comparison, unweighted, OLS estimation is more common in economic applications.
-Second, meta-analytic regressions often involve testing variety of types of covariates, including continuous regressors.
+Second, meta-analytic regressions often involve testing a variety of types of covariates, including continuous regressors.
 In comparison, many economic applications are focused on testing binary indicator variables that represent differences between policy regimes. 
 Tests for policy effects can involve cluster-level comparisons (e.g., comparisons across states) or observation-level comparisons (e.g., pre/post comparisons within each state), or a combination of both observation-level and cluster-level comparisons (as in difference-in-differences analysis).
-In light of these differences, we designed a new study to evaluate the performance of the standard and AHZ tests under conditions that more closely resemble economic applications. 
+In light of these differences, we conducted a new study to evaluate the performance of the standard and AHT tests under conditions that more closely resemble economic applications. 
 
 \subsection{Simulation Design}
 
-In this simulation study, we focus on several research designs and analysis models, including the analysis of experiments, panel data (difference-in-difference models), and seemingly unrelated regression.
-In the analysis of experiments, two designs are common: the cluster randomized design (CRT), in which treatments are assigned randomly at the cluster level; and the randomized block design (RBD), in which treatments are randomly assigned within each cluster.
-For both designs we investigated the effect of a design with three treatment arms (2 policy indicators), with units randomized either equally across these arms or unequally. 
-This resulted in two cluster randomized designs: one with exactly 1/3 of clusters in each of the three arms (CR-balanced) and the other with unequal allocations (.5, .3, .2; CR-unbalanced).
-For randomized block designs, this resulted in two designs as well: one with exactly 1/3 of units in each cluster in each of the three arms (RB-balanced), and the other with unequal allocations (n/2,n/3,n/6; RB-unbalanced).
-In the analysis of panel data, often policies are observed at all time points in some clusters, while changing across time points in others.
-Here we investigated a total of four cases. 
-In the first case, XXXX.
-In the second case, XXXX.
+The simulation study focused on testing hypotheses about the relative effects of three policy conditions, while varying the manner in which the policy indicators are assigned across clusters across three distinct designs. 
+First, we considered a randomized block (RB) design in which every policy condition is observed in every cluster. 
+Second, we considered a cluster-randomized (CR) design in which each cluster is observed under a single policy condition. 
+Third, we considered a difference-in-differences (DD) design in which some clusters are observed under all three policy conditions while other clusters are observed under a single condition. 
+For each design, we simulated both balanced and unbalanced configurations. 
+Thus, the simulation included a total of six distinct study designs, across which the performance of CRVEs is expected to vary. 
+Appendix \ref{app:simulations} describes the exact specification of each design. For each design, we simulated designs with $m = 15$, 30, or 50 clusters, each with $n = 18$ or 30 units.
 
-The set-up described above for both the experimental and panel-data cases resulted in single-paramter ($q = 1$) and multi-parameter ($q = 2$) hypothesis tests.
-For $q = 1$, tests focused on the hypothesis that a single policy arm differed from the control, while for $q = 2$, tests focused on the hypothesis that there were no differences across all arms.
-For each of these tests, the data was generated ... MORE HERE ...
-(JAMES HELP!)
+For a given study design, we simulated multivariate outcome data so that we could examine the performance of the proposed testing procedures for null hypotheses of varying dimension. 
+Specifically, we simulated a tri-variate, equi-correlated outcome, based on a data-generating process in which all three policy conditions produce identical average outcomes, so that all tested null hypotheses hold. 
+Let $y_{hijk}$ denote the measurement of outcome $k$ at time point $j$ for unit $i$ under condition $h$, for $h = 1,...,3$, $i = 1,...,m$, $j = 1,...,n$, and $k = 1,...,3$. 
+The data-generating model is then 
+\begin{equation}
+\label{eq:data_generating_model}
+y_{hijk} = \nu_{hi} + \epsilon_{ijk},
+\end{equation}
+where $\nu_{hi}$ is a random effect for unit $i$ under condition $h$ and $\epsilon_{ijk}$ is the idiosyncratic error for unit $i$ at time point $j$ on outcome $k$. 
+The random effects for unit $i$ are taken to have variance $\Var\left(\nu_{hi}\right) = \tau^2$. 
+Further, we assumed that these random effects are correlated, which has the effect of inducing variability in the cluster-specific treatment effects and thus a degree of mis-specification into the analytic models described below. Letting $\sigma_\delta^2$ denote the degree of treatment effect variability relative to the total variability in a given outcome measurement, we simulated the random effects $\nu_{1i},\nu_{2i},\nu_{3i}$ to satisfy $\text{Var}\left(\nu_{gi} - \nu_{hi}\right) = \sigma_\delta^2$ for $g \neq h, g,h = 1,2,3$. 
+The errors at a given time point are assumed to be correlated, with $\Var\left(\epsilon_{ijk}\right) = 1 - \tau^2$ and $\text{corr}\left(\epsilon_{ijk}, \epsilon_{ijl}\right) = \rho$ for $k\neq l, k,l = 1,2,3$. 
+Under this data-generating process, we simulated data based on parameter values of $\tau^2 = .05$, .15, or .25 for the intra-class correlation; outcome correlations that were either weak ($\rho = .2$) or strong ($\rho = .8$); and values of $\sigma_\delta^2 = .00$, .01, or .04 for treatment effect variability.\todo{Explanation of how these parameters affect misspecification of analytic models.} Each combination of sample sizes and parameter levels was simulated under each of the six study designs, yielding a total of $3 \times 2 \times 3 \times 2 \times 3 \times 6 = \Sexpr{3 * 2 * 3 * 2 * 3 * 6}$ simulation conditions.
 
-For the final set of simulations, the above structure was replicated across three outcome variables, generated such that the outcomes were correlated (e.g., reading, math, science test scores).
-This resulted in a seemingly unrelated regression model, allowing hypotheses of higher dimensions to be tested.
-The first of these tested if a single treatment arm differed from the control arm across the three outcomes ($q = 3$), while the second tested if there were differences across all three outcomes and arms ($q = 6$).
-In order to generate this data, in addition to the above strucutre, the outcomes were generated to be either correlated weakly (0.20) or strongly (0.80). 
-For all of these designs, Appendix C includes further details on the simulation study design.
+Given a set of simulated data, we estimated the effects of the second and third policy conditions (relative to the first) on each outcome, using a seemingly unrelated regression framework. 
+The general analytic model for the difference-in-differences design was
+\begin{equation}
+\label{eq:sim_analytic_model}
+y_{hijk} = \mu_{hk} + \alpha_i + \gamma_j + \epsilon_{ijk},
+\end{equation}
+where $\mu_{hk}$ is the mean of outcome $k$ under condition $h$, $\alpha_i$ is a fixed effect for each cluster, $\gamma_j$ is a fixed effect for each unit within the cluster (i.e., per time-point), and $\epsilon_{ijk}$ is residual error. 
+The model is estimated by OLS after absorbing the fixed effects, and so the ``working'' model amounts to assuming that the residuals are all independent and identically distributed. Consequently, the working model is mis-specified both because of correlation among the outcomes ($\rho > 0$) and because of the treatment effect variability ($\sigma_\delta^2 > 0$). 
+For the cluster-randomized designs, fixed effects for clusters are omitted because the clusters are nested within treatment conditions. For the randomized block designs, the fixed effects for time-points are omitted for simplicity.
+
+The analytic model (\ref{eq:sim_analytic_model}) provided opportunities to test a range of single- and multi-parameter hypotheses. 
+We first tested the single-dimensional null hypotheses that a given policy condition had no average effect on the first outcome ($H_0: \mu_{11} = \mu_{12}$ or $H_0: \mu_{11} = \mu_{13}$). 
+We also tested the null hypothesis of no differences among policy conditions on the first outcome ($H_0: \mu_{11} = \mu_{12} = \mu_{13}$), which has dimension $q = 2$. 
+We then tested the multi-variate versions of the above tests, which involve all three outcome measures jointly. Here, we tested the null hypotheses that a given policy condition had no average effects on any outcome (i.e., $H_0: \mu_{11} = \mu_{1h}, \mu_{21} = \mu_{2h}, \mu_{31} = \mu_{3h}$, for $h = 2$ or $h = 3$) which has dimension $q = 3$. 
+Finally, we tested the null hypothesis of no differences among policy conditions on any outcome ($H_0: \mu_{11} = \mu_{12} = \mu_{13}, \mu_{21} = \mu_{22} = \mu_{23}, \mu_{31} = \mu_{32} = \mu_{33}$), which has dimension $q = 6$. 
+
+For a given combination of sample sizes, parameter levels, and study design, we simulated 10,000 datasets from model (\ref{eq:data_generating_model}), estimated model (\ref{eq:sim_analytic_model}) on each dataset, and tested all of the hypotheses described above. Simulated Type I error rates therefore have standard errors of approximately \Sexpr{round(sqrt(.01 * .99 / 10000),3)} for $\alpha = .01$, \Sexpr{round(sqrt(.05 * .95 / 10000),3)} for $\alpha = .05$, and \Sexpr{round(sqrt(.1 * .9 / 10000),3)} for $\alpha = .10$. 
 
 \subsection{Simulation Results}
 
@@ -608,7 +626,7 @@ filter(results_long_all, test %in% c("CR1 Naive-F", "CR2 HTZ")
        & design %in% c("CR-balanced","CR-unbalanced","DD-balanced-unbalanced",
                        "DD-unbalanced-unbalanced","RB-balanced-unequal","RB-unbalanced-unequal")) %>%
   within({
-    test <- factor(ifelse(test=="CR1 Naive-F", "Naive", "AHZ"), levels = c("Naive","AHZ"))
+    test <- factor(ifelse(test=="CR1 Naive-F", "Naive", "AHT"), levels = c("Naive","AHT"))
     UB <- alpha + qnorm(0.95) * sqrt(alpha * (1 - alpha) / iterations)
     m_fac <- paste0("m = ",m)
     q <- hypothesis
@@ -636,11 +654,11 @@ filter(results_long, n==18 & icc==0.05 &
 
 filter(results_compare, m==15 & n==18 & icc==0.05 & 
          trt_var==0 & rho==0.2 & design=="CR-balanced") %>%
-  mutate(Naive = 0, AHZ = 0) -> 
+  mutate(Naive = 0, AHT = 0) -> 
   zeros_compare
 @
 
-<<overview, fig.width = 12, fig.height = 8.5, out.width = "\\linewidth", fig.cap = "Rejection rates of Naive and AHZ tests, by dimension of hypothesis ($q$) and nominal type I error ($\\alpha$)", fig.env = "sidewaysfigure">>=
+<<overview, fig.width = 12, fig.height = 8.5, out.width = "\\linewidth", fig.cap = "Rejection rates of Naive and AHT tests, by dimension of hypothesis ($q$) and nominal type I error ($\\alpha$)", fig.env = "sidewaysfigure">>=
 
 alpha_val <- 0.4
 
@@ -655,9 +673,9 @@ ggplot(results_long, aes(m_fac, reject, fill = test, color = test)) +
 
 @
 
-Figure \ref{fig:overview} shows that Naive-F = bad, AHZ = rad! Also, performance of the naive test degrades (becomes liberal) for larger q, whereas AHZ test becomes more conservative.
+Figure \ref{fig:overview} shows that Naive-F = bad, AHT = rad! Also, performance of the naive test degrades (becomes liberal) for larger q, whereas AHT test becomes more conservative.
 
-<<balance, fig.width = 12, fig.height = 8.5, out.width = "\\linewidth", fig.cap = "Rejection rates of Naive and AHZ tests, by study design and dimension of hypothesis ($q$). CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design.", fig.env = "sidewaysfigure">>=
+<<balance, fig.width = 12, fig.height = 8.5, out.width = "\\linewidth", fig.cap = "Rejection rates of Naive and AHT tests, by study design and dimension of hypothesis ($q$). CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design.", fig.env = "sidewaysfigure">>=
 
 filter(results_long, alpha==0.05) %>%
   ggplot(aes(design, reject, color = factor(q), fill = factor(q))) + 
@@ -673,9 +691,9 @@ filter(results_long, alpha==0.05) %>%
 
 Figure \ref{fig:balance} shows that rejection rates are strongly affected by unbalance of the clusters.
 
-<<misspecification, fig.width = 12, fig.height = 8.5, out.width = "\\linewidth", fig.cap = "Rejection rates of AHZ test, by treatment effect variance and intra-class correlation.", fig.env = "sidewaysfigure">>=
+<<misspecification, fig.width = 12, fig.height = 8.5, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT test, by treatment effect variance and intra-class correlation.", fig.env = "sidewaysfigure">>=
 
-filter(results_long, alpha==0.05 & test=="AHZ") %>%
+filter(results_long, alpha==0.05 & test=="AHT") %>%
   ggplot(aes(factor(trt_var), reject, fill = factor(icc), color = factor(icc))) + 
   geom_boxplot(coef = Inf, alpha = alpha_val) + 
   geom_blank(data = zeros_long) + 
@@ -687,7 +705,7 @@ filter(results_long, alpha==0.05 & test=="AHZ") %>%
 
 @
 
-Figure \ref{fig:misspecification} shows that model mis-specification doesn't matter for AHZ. 
+Figure \ref{fig:misspecification} shows that model mis-specification doesn't matter for AHT. 
 
 \section{EXAMPLES}
 \label{sec:examples}
@@ -852,7 +870,7 @@ filter(STAR_F_tests, grepl("(math|SUR)", .id) & (CR==1 | test=="HTZ")) %>%
   mutate(Outcome = ifelse(grepl("math", .id), "Math","Combined"),
          Effect = paste0(ifelse(grepl("_A", .id), "Small class", "Small class and classroom aide"), " (q=",q,")"),
          Correction = paste0("CR",CR),
-         Test = factor(test, levels = c("Naive-F","HTZ"), labels = c("Standard","AHZ")),
+         Test = factor(test, levels = c("Naive-F","HTZ"), labels = c("Standard","AHT")),
          F = round(Fstat,3),
          df = round(df, 2),
          p = round(p_val, 5)) %>%
@@ -875,7 +893,7 @@ print(xtable(STAR_results,
 @
 
 Table \ref{tab:STAR} displays the results for a representative subset of these hypothesis tests, using either the standard CR1 hypothesis test or the CR2S test.
-These results illustrate two important points regarding the use of the AHZ test in practice.
+These results illustrate two important points regarding the use of the AHT test in practice.
 First, across all three analyses, the CR2 t- and F-tests are typically slightly smaller than those produced using CR1. 
 This trend is common, since the BRL adjustments to the variance estimator are typically small in scope.
 Second, in the case in which treatment is randomly allocated in equal proportions within each cluster -- as occurs in the TN STAR experiment -- the degrees of freedom for the CR2 tests are only slightly smaller than those for the CR1 tests. 
@@ -1035,13 +1053,13 @@ AL_results <- within(AL_results, {
                              labels = c("ATE - lower half (q = 1)", "ATE - upper half (q = 1)", 
                                         "ATE - joint (q = 2)", "Moderation - lower half (q = 2)", 
                                         "Moderation - upper half (q = 2)", "Moderation - joint (q = 4)"))
-  Test <- factor(Test, levels = c("Naive-F", "HTZ"), labels = c("Standard","AHZ"))
+  Test <- factor(Test, levels = c("Naive-F", "HTZ"), labels = c("Standard","AHT"))
   df <- round(df, 2)
   p <- round(p, 5)
 })
 
 arrange(AL_results, Hypothesis, Correction, Test) %>%
-  filter(Correction=="CR1" | Test=="AHZ", !grepl("lower", Hypothesis)) %>%
+  filter(Correction=="CR1" | Test=="AHT", !grepl("lower", Hypothesis)) %>%
   select(-Correction) ->
   AL_results
 
@@ -1073,11 +1091,11 @@ Together these result in cases in which using the small sample adjustments great
 % 
 % using the CR1 and CR2 adjustments for variance estimation and either the naiv\"e degrees of freedom (for these data, $m - 1 = 34$) or the approximate Hotelling's $T^2$-Z degrees of freedom. 
 % Several features of these results are worth noting. 
-% First, for the tests of single-parameter hypotheses, the differences between the CR1 and CR2 test statistics are minor, although the AHZ (Satterthwaite) degrees of freedom are substantially lower than the naiv\"e ones. 
+% First, for the tests of single-parameter hypotheses, the differences between the CR1 and CR2 test statistics are minor, although the AHT (Satterthwaite) degrees of freedom are substantially lower than the naiv\"e ones. 
 % As a result, the $p$-value for the ATE in the upper half of the prior achievement distribution is \Sexpr{round(100 * (AL_results[6,"p"] / AL_results[4,"p"] - 1))}\% larger based on our preferred test than based on the standard F-test with CR1. 
 % Second, the joint test that the ATEs are zero in both halves of the prior achivement distribution is sensitive to both the CR adjustment and the degrees of freedom: the $p$-value based on our preferred test is \Sexpr{round(AL_results[9,"p"], 3)}, compared to the $p = \Sexpr{round(AL_results[7,"p"], 3)}$ for the standard test. 
-% Finally, the test of moderation by sector is strongly affected by the CR2 adjustment and AHZ degrees of freedom. 
-% In particular, the AHZ degrees of freedom are just \Sexpr{round(AL_results[12,"df"],2)}, far lower than the number of clusters. 
+% Finally, the test of moderation by sector is strongly affected by the CR2 adjustment and AHT degrees of freedom. 
+% In particular, the AHT degrees of freedom are just \Sexpr{round(AL_results[12,"df"],2)}, far lower than the number of clusters. 
 % The low degrees of freedom are a consequence of the small number of schools of each type in each treatment condition.
 % Although the total sample includes 35 schools, there are only 9 Arab religious, 7 Jewish religious, and 19 Jewish secular schools, each split across two treatment conditions, and the treatment effects are estimated by making comparisons across clusters. 
 % As a result, the F statistic based on CR2 has a very large sampling variance under the null hypothesis.
@@ -1154,16 +1172,16 @@ Haus2_CR2 <- Wald_test(RE2_Hausman, constraints = 4:5, vcov = "CR2", test = c("N
 M1 <- as.data.frame(rbind(RE1_CR1, RE1_CR2, FE1_CR1, FE1_CR2, Haus1_CR1, Haus1_CR2))
 rownames(M1) <- NULL
 M1$Correction <- c("CR1","CR2","CR2")
-M1$Test <- c("F","F","AHZ")
+M1$Test <- c("F","F","AHT")
 M1$Hypothesis <- c("Random effects",NA,NA,"Fixed effects",NA,NA,"Hausman test",NA,NA)
 
 M2 <- as.data.frame(rbind(RE2_CR1, RE2_CR2, FE2_CR1, FE2_CR2, Haus2_CR1, Haus2_CR2))
 rownames(M2) <- NULL
 M2$Correction <- c("CR1","CR2","CR2")
-M2$Test <- c("Standard","Standard","AHZ")
+M2$Test <- c("Standard","Standard","AHT")
 M2$Hypothesis <- c("Random effects",NA,NA,"Fixed effects",NA,NA,"Hausman test",NA,NA)
 
-filter(M2, Correction=="CR1" | Test=="AHZ") %>%
+filter(M2, Correction=="CR1" | Test=="AHT") %>%
   select(Hypothesis, Test, "F" = Fstat, df, p = p_val) ->
   MLDA_results
 
@@ -1180,10 +1198,10 @@ print(xtable(MLDA_results,
 @
 
 Table \ref{tab:MLDA} displays the results of the tests for the policy variable and the Hausman tests for each model specification. 
-As in previous examples, our preferred version of the test uses the CR2S adjustment to the variance estimator and the AHZ test. 
+As in previous examples, our preferred version of the test uses the CR2S adjustment to the variance estimator and the AHT test. 
 The results of the policy effect tests are quite similar across specifications and versions of the test. 
 Of note is that the RE and FE estimates have only half the degrees of freedom of the naiv\"e test. 
-For the artificial Hausman test the AHZ test has fewer than \Sexpr{round(Haus2_CR2["HTZ","df"])} degrees of freedom, which leads to a much larger p-value compared to using the CR1 F test. 
+For the artificial Hausman test the AHT test has fewer than \Sexpr{round(Haus2_CR2["HTZ","df"])} degrees of freedom, which leads to a much larger p-value compared to using the CR1 F test. 
 
 \section{DISCUSSION}
 \label{sec:discussion}
@@ -1296,6 +1314,19 @@ But \[
 \bm{\tilde{B}}_i = \bm{D}_i \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \bs\Phi \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i' \bm{D}_i' = \bm{D}_i \left(\bs\Phi_i - \bm{\ddot{U}}_i\bm{M_{\ddot{U}}} \bm{\ddot{U}}_i'\right) \bm{D}_i' = \bm{D}_i \bs\Psi_i^+ \bm{D}_i',
 \]
 and so $\bm{B}_i^+ = \bm{\tilde{B}}_i^+$. It follows that $\bm{A}_i = \bm{\tilde{A}}_i$ for $i = 1,...,m$. 
+
+\section{Details of simulation study}
+\label{app:simulations}
+
+This appendix provides further details regarding the design of the simulations reported in Section \ref{sec:simulation}. The simulations examined six distinct study designs. Outcomes are measured for $n$ units (which may be individuals, as in a cluster-randomized or block-randomized design, or time-points, as in a difference-in-differences panel) in each of $m$ clusters under one of three treatment conditions. Suppose that there are $G$ groups of units that share an identical pattern of treatment assignments, each of size $m_g$. Let $n_{ghi}$ denote the number of units at which cluster $i$ in group $g$ is observed under condition $h$, for $i=1,...,m$, $g = 1,...,G$, and $h = 1,2,3$. The following six designs were simulated:
+\begin{enumerate}
+\item A balanced, block-randomized design, with an un-equal allocation within each block. In the balanced design, the treatment allocation is identical for each block, with $G = 1$, $m_1 = m$, $n_{11i} = n / 2$, $n_{12i} = n / 3$, and $n_{13i} = n / 6$.
+\item An unbalanced, block-randomized design, with two different patterns of treatment allocation. Here, $G = 2$,  $m_1 = m_2 = m / 2$, $n_{11i} = n / 2$, $n_{12i} = n / 3$, $n_{13i} = n / 6$, $n_{21i} = n / 3$, $n_{22i} = 5 n / 9$, and $n_{23i} = n / 9$.
+\item A balanced, cluster-randomized design, in which units are nested within clusters and an equal number of clusters are assigned to each treatment condition. Here, $G = 3$, $m_g = m / 3$, and $n_{ghi} = n$ for $g = h$ and zero otherwise.
+\item An unbalanced, cluster-randomized design, in which units are nested within clusters but the number of clusters assigned to each condition is not equal. Here, $G = 3$; $m_1 = 0.5 m, m_2 = 0.3 m, m_3 = 0.2 m$; and $n_{ghi} = n$ for $g = h$ and zero otherwise. 
+\item A balanced difference-in-differences design, with two patterns of treatment allocation ($G = 2$) and clusters allocated equally to each pattern ($m_1 = m_2 = m / 2$). Here, half of the clusters are observed under the first treatment condition only ($n_{11i} = n$) and the remaining half are observed under all three conditions, with $n_{21i} = n / 2$, $n_{22i} = n / 3$, and $n_{23i} = n / 6$.
+\item An unbalanced difference-in-differences design, again with two patterns of treatment allocation ($G = 2$), but where $m_1 = 2 m / 3$ clusters are observed under the first treatment condition only ($n_{11i} = n$) and the remaining $m_2 = m / 3$ clusters are observed under all three conditions, with  $n_{21i} = n / 2$, $n_{22i} = n / 3$, and $n_{23i} = n / 6$.
+\end{enumerate}
 
 \bibliographystyle{agsm}
 \bibliography{bibliography}

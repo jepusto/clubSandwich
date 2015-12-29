@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  28 DEC 2015 14:16
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  28 DEC 2015 22:20
 entering extended mode
 **ClusterRobustTesting_FE_models.tex
 
@@ -676,31 +676,22 @@ Overfull \hbox (27.76999pt too wide) in paragraph at lines 496--496
  []
 
 [17]
-
-Package caption Warning: \label without proper \caption on input line 521.
-See the caption package documentation for explanation.
-
-
-LaTeX Warning: Reference `tab:simulation_summary' on page 18 undefined on input
- line 511.
-
-
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 517--517
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 516--516
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 517--517
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 516--516
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 517--517
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 516--516
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 517--517
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 516--516
 [][][] 
  []
 
@@ -715,126 +706,123 @@ Overfull \hbox (0.63428pt too wide) in paragraph at lines 4--4
 \OT1/cmr/m/n/10.95 structure|  
  []
 
-)
-
-Package caption Warning: \label without proper \caption on input line 521.
-See the caption package documentation for explanation.
+) [19] [20
 
 
-LaTeX Warning: Reference `tab:simulation_summary' on page 19 undefined on input
- line 527.
+] [21]
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 583--583
+[][][] 
+ []
 
-[19] [20
 
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 583--583
+[][][] 
+ []
 
-] [21] [22] [23]
+[22] [23] [24]
 
-Package xcolor Warning: Incompatible color definition on input line 623.
+Package xcolor Warning: Incompatible color definition on input line 641.
 
-<CR_fig/overview-1.pdf, id=99, 867.24pt x 614.295pt>
+<CR_fig/overview-1.pdf, id=102, 867.24pt x 614.295pt>
 File: CR_fig/overview-1.pdf Graphic file (type pdf)
 
 <use CR_fig/overview-1.pdf>
-Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 625.
+Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 643.
 (pdftex.def)             Requested size: 642.45122pt x 455.08672pt.
+ [25] [26 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting
+/CR_fig/overview-1.pdf>]
 
+Package xcolor Warning: Incompatible color definition on input line 656.
 
-Package xcolor Warning: Incompatible color definition on input line 638.
-
-<CR_fig/balance-1.pdf, id=100, 867.24pt x 614.295pt>
+<CR_fig/balance-1.pdf, id=119, 867.24pt x 614.295pt>
 File: CR_fig/balance-1.pdf Graphic file (type pdf)
 
 <use CR_fig/balance-1.pdf>
-Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 640.
+Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 658.
 (pdftex.def)             Requested size: 642.45122pt x 455.08672pt.
 
 
-Package xcolor Warning: Incompatible color definition on input line 653.
+Package xcolor Warning: Incompatible color definition on input line 671.
 
-<CR_fig/misspecification-1.pdf, id=101, 867.24pt x 614.295pt>
+<CR_fig/misspecification-1.pdf, id=120, 867.24pt x 614.295pt>
 File: CR_fig/misspecification-1.pdf Graphic file (type pdf)
 
 <use CR_fig/misspecification-1.pdf>
-Package pdftex.def Info: CR_fig/misspecification-1.pdf used on input line 655.
+Package pdftex.def Info: CR_fig/misspecification-1.pdf used on input line 673.
 (pdftex.def)             Requested size: 642.45122pt x 455.08672pt.
- [24] [25 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting
-/CR_fig/overview-1.pdf>] [26 <C:/Users/jep2963/Documents/R/clubSandwich/paper_C
-lusterRobustTesting/CR_fig/balance-1.pdf>]
-[27 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
-g/misspecification-1.pdf>] [28] [29] [30] [31]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 814--814
+ [27] [28 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting
+/CR_fig/balance-1.pdf>] [29 <C:/Users/jep2963/Documents/R/clubSandwich/paper_Cl
+usterRobustTesting/CR_fig/misspecification-1.pdf>] [30] [31] [32]
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 832--832
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 814--814
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 832--832
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 815--815
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 833--833
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 815--815
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 833--833
 [][][] 
  []
 
-[32] [33] [34] [35] [36]
+[33] [34] [35] [36] [37] [38]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
-bustTesting_FE_models.bbl [37]
+bustTesting_FE_models.bbl [39]
 Missing character: There is no ‚ in font cmr12!
 Missing character: There is no Ä in font cmr12!
 Missing character: There is no ú in font cmr12!
 Missing character: There is no ‚ in font cmr12!
 Missing character: There is no Ä in font cmr12!
 Missing character: There is no ù in font cmr12!
+ [40]
 Missing character: There is no ‚ in font cmr12!
 Missing character: There is no Ä in font cmr12!
 Missing character: There is no ì in font cmr12!
- [38] [39]) [40]
+ [41]) [42]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting_FE_models.aux
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\simulatio
-n_table.aux))
-
-LaTeX Warning: There were undefined references.
-
- ) 
+n_table.aux)) ) 
 Here is how much of TeX's memory you used:
- 14778 strings out of 493921
- 286779 string characters out of 3144871
- 341571 words of memory out of 3000000
- 17767 multiletter control sequences out of 15000+200000
+ 14786 strings out of 493921
+ 286985 string characters out of 3144871
+ 342635 words of memory out of 3000000
+ 17775 multiletter control sequences out of 15000+200000
  18182 words of font info for 63 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
  62i,14n,80p,1052b,695s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
-<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C
-:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx5.pfb><C:/P
-rogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx6.pfb><C:/Prog
-ram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Program
- Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program F
-iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Fil
-es (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Program Files
- (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Files (x
-86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files (x86)
-/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files (x86)/Mi
-KTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files (x86)/MiKTe
-X 2.9/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Program Files (x86)/MiKTeX
- 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/MiKTeX 2.
-9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)/MiKTeX 2.9/f
-onts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
-/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/typ
-e1/public/amsfonts/cm/cmr8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/p
-ublic/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/pub
-lic/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public
-/amsfonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/am
-sfonts/cm/cmti12.pfb>
-Output written on ClusterRobustTesting_FE_models.pdf (40 pages, 415941 bytes).
+<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/c
+m/cmbx10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/
+cmbx12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
+bx5.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx6
+.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx8.pf
+b><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb>
+<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C
+:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/
+Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Pro
+gram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Progra
+m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program F
+iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program File
+s (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Program Files
+ (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x
+86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)
+/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files (x86)/MiK
+TeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 
+2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files (x86)/MiKTeX 2.9/
+fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
+/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/ty
+pe1/public/amsfonts/cm/cmti12.pfb>
+Output written on ClusterRobustTesting_FE_models.pdf (42 pages, 425506 bytes).
 PDF statistics:
- 253 PDF objects out of 1000 (max. 8388607)
+ 259 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  28 words of extra memory for PDF output out of 10000 (max. 10000000)
 
