@@ -737,16 +737,17 @@ This section presents three short examples of the use of CRVE with small or mode
 In the first example, the effects of substantive interest are identified within each cluster. 
 In the second example, the effects involve between-cluster contrasts. 
 The third example involves a cluster-robust Hausmann test for differences between within- and across-cluster information. 
-In each example, we demonstrate the proposed small-sample t- and F-tests and compare them to the standard CR1 and Wild bootstrap tests. 
-R code and data files are available for each analysis as an online supplement.
+In each example, we demonstrate the proposed AHT test for single- and multiple-parameter hypotheses and compare the results to the standard test based on the CR1 variance estimator and $m - 1$ degrees of freedom. 
+Data files and replication code (in R) are available for each analysis as an online supplement.
 
 \subsection{Tennessee STAR class-size experiment.} 
 
 The Tennessee STAR class size experiment is one of the most intensively studied interventions in education \citep[for a detailed review, see][]{Schanzenbach2006what}.  The experiment involved students in kindergarten through third grade across 79 schools. Within each school, students and their teachers were randomized equally to one of three conditions: small class-size (targetted to have 13-17 students), regular class-size, or regular class-size with an aide.
-Among other outcomes, subsequent research has focused on the effects of these conditions on kindergarden reading, math, and word recognition \citep{Achilles2008tennessee}; high school test scores \citep{Schanzenbach2006what}; college entrance exam participation \citep{Krueger2001effect}; and home ownership and earnings \citep{Chetty2011how}.
+Subsequent research has focused on the effects of these conditions on kindergarden reading, math, and word recognition \citep{Achilles2008tennessee}; high school test scores \citep{Schanzenbach2006what}; college entrance exam participation \citep{Krueger2001effect}; and home ownership and earnings \citep{Chetty2011how}, among other outcomes.
 
 The STAR experiment involved three treatment conditions and multiple outcomes, providing a scenario where both t-tests (with $q = 1$) and F-tests with varying constraint dimensions can be applied. 
-For simplicity, we focus only on the subgroup of students who were in kindergarten during the first year of the study, and on the three outcomes measured at the end of the year, standardized to percentile ranks \citep{Krueger2001effect}: reading, word recognition, and math \citep{Achilles2008tennessee}.
+For simplicity, we focus only on the subgroup of students who were in kindergarten during the first year of the study, and on three outcomes measured at the end of the kindergarten year: reading, word recognition, and math \citep{Achilles2008tennessee}. 
+Outcome scores are standardized to percentile ranks, following \citet{Krueger2001effect}.
 The analytic model is: 
 \begin{equation}
 y_{ijk} = \bm{r}_{ij}'\bs\beta_k + \bm{s}_{ij}'\bs\gamma_0 + \gamma_k + \mu_i + \epsilon_{ijk}, 
@@ -755,12 +756,12 @@ where $y_{ijk}$ is the percentile rank on outcome $k$ for student $j$ in school 
 In this model, $\beta_{1k}$ represents the average effect of being in a small class and $\beta_{2k}$ represents the average of effect of being in a regular class with an aid, in each case compared to a regular-size class without an aid.
 
 Using this model, we test four distinct hypotheses that vary in dimension from $q = 1$ to $q = 6$. 
-First, using only the data for outcome $k$, we test the effects of small class size ($H_0: \beta_{1k} = 0$) while maintaining the assumption that the additional classroom aide has no effect on student achievement (i.e., constraining $\beta_{2k} = 0$). 
-Second, again only using the data for outcome $k$, we test the hypothesis that there are no differences across the three class-size conditions (i.e., $H_0: \bs\beta_k = \bm{0}$). 
+First, using only the math achievement scores, we test the effects of small class size ($H_0: \beta_{11} = 0$) while maintaining the assumption that the additional classroom aide has no effect on student achievement (i.e., constraining $\beta_{21} = 0$). 
+Second, again only using the data for outcome $k$, we test the hypothesis that there are no differences across the three class-size conditions (i.e., $H_0: \bs\beta_1 = \bm{0}$). 
 Third, combining the data across all three outcomes, we test the hypothesis that small class size (vs regular and regular plus aide) had no effects on any outcome (i.e., $\beta_{11} = \beta_{12} = \beta_{13} = 0$).
 Finally, we test the hypothesis that there are no differences across the three class-size conditions on any outcome (i.e., $H_0: \bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bm{0}$). 
 The third and fourth tests use the seemingly unrelated regression (SUR) framework, in which separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. 
-In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the school fixed effects and clustering the errors by school.
+In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the school fixed effects and clustering the standard errors by school.
 
 <<STAR_models, include=FALSE, cache=TRUE>>=
 
@@ -915,13 +916,13 @@ print(xtable(STAR_results,
       table.placement = "tbh")
 @
 
-Table \ref{tab:STAR} displays the results for a representative subset of these hypothesis tests, using either the standard CR1 hypothesis test or the CR2S test.
+Table \ref{tab:STAR} displays the results for a representative subset of these hypothesis tests, using either the standard test (with CR1) or the AHT test (with CR2).
 These results illustrate two important points regarding the use of the AHT test in practice.
-First, across all three analyses, the CR2 t- and F-tests are typically slightly smaller than those produced using CR1. 
-This trend is common, since the BRL adjustments to the variance estimator are typically small in scope.
-Second, in the case in which treatment is randomly allocated in equal proportions within each cluster -- as occurs in the TN STAR experiment -- the degrees of freedom for the CR2 tests are only slightly smaller than those for the CR1 tests. 
+First, across all three analyses, the AHT t- and F-tests are typically slightly smaller than the corresponding standard test.
+This trend is common because the CR2 adjustments to the variance estimator are typically small in scope.\todo{This needs to be qualified--Angrist \& Lavy found that the CR2 standard errors were considerably larger than the unadjusted SEs!}
+Second, if treatment is randomly allocated in approximately equal proportions within each cluster---as occurred in the TN STAR experiment---the degrees of freedom for the AHT tests are only slightly smaller than those for the standard tests. 
 In combination with the rather large sample size of 79 schools, these differences have only a minimal effect on the p-values for these tests. 
-Importantly, these conditions do not always occur in practice, as the next examples will illustrate. 
+However, these conditions do not always occur in practice, as the following examples illustrate.\todo{Beth, what would you think about cutting this example, or moving it to third place? It's an underwhelming way to lead off this section.}
 
 \subsection{Achievement Awards demonstration} 
 
@@ -929,13 +930,13 @@ Importantly, these conditions do not always occur in practice, as the next examp
 In the Achievement Awards demonstration, 40 non-vocational high schools with low rates of Bagrut completion were selected from across Israel, including 10 Arab and 10 Jewish religious schools and 20 Jewish secular schools. 
 The schools were then pair-matched based on 1999 rates of Bagrut completion, and within each pair one school was randomized to receive a cash-transfer program. 
 In these treatment schools, seniors who completed certification were eligible for payments of approximately \$1,500. 
-Student-level covariate and outcome data were drawn from administrative records available for the school years ending in June of 2000, 2001, and 2002. 
-The incentive program was in effect for the group of seniors in treatment schools taking the Bagrut exams in Spring of 2001. 
-However, the program was discontinued for the following year, and so we treat completion rates for 2000 and 2002 as being unaffected by treatment assignment.
+Student-level covariate and outcome data were drawn from administrative records for the school years ending in June of 2000, 2001, and 2002. 
+The incentive program was in effect for the group of seniors in treatment schools taking the Bagrut exams in Spring of 2001, but the program was discontinued for the following year. 
+We therefore treat completion rates for 2000 and 2002 as being unaffected by treatment assignment.
 The primary outcome of interest is Bagrut completion. 
 
-This study provides an opportunity to examine the CR2 tests in a situation in which the treatment was assigned at the cluster level, with a smaller number of clusters.
-For simplicity, we restrict our analysis to the sample of female students.
+This study provides an opportunity to examine the AHT test in a situation in which the treatment was assigned at the cluster level, with a smaller number of clusters.
+For simplicity, we restrict our analysis to the sample of female students, which reduces the total sample to 35 schools.
 Following the original analysis of \citet{Angrist2009effects}, we allow the program's effects to vary depending on whether a students was in the upper or lower half of the distribution of prior-year academic performance. 
 Letting $h = 1,2,3$ index the sector of each school (Arab religious, Jewish religious, or Jewish secular), we consider the following analytic model: 
 \begin{equation}
@@ -946,11 +947,11 @@ In this model for student $j$ in year $t$ in school $i$ in sector $h$, $z_{hit}$
 The vector $\bm{s}_{hitj}$ includes the following individual student demographic measures: mother's and father's education, immigration status, number of siblings, and indicators for each quartile in the distribution of prior-year academic performance. 
 The model also includes fixed effects $\gamma_{ht}$ for each sector in each year and $\mu_{hi}$ for each school. 
 
-Based on Model (\ref{eq:AL_ATE}), we test four hypotheses, again with the goal of exploring the use of the CR2S tests in a range of conditions. 
+Based on Model (\ref{eq:AL_ATE}), we test four hypotheses, again with the goal of exploring the use of the AHT tests under a range of conditions. 
 First, we assume that the program effects are constant across sector (i.e., $\bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bs\beta$) and test for whether the program affected completion rates for students in the upper half of the prior achievement distribution ($H_0: \beta_2 = 0$, with $q = 1$).
 Second, we test for whether the program was effective in either half of the prior academic performance ($H_0: \bs\beta = 0$, with $q = 2$), still assuming that program effects are constant across sector. 
-Third, we test for whether program effects in the upper half of the prior achievement distribution vary by school sector ($H_0: \beta_{21} = \beta_{22} = \beta_{23}$, with $q = 3$). 
-Finally, we conduct a joint test for whether program effects differ across student prior achievement crossed with school sector ($H_0: \bs\beta_1 = \bs\beta_2 = \bs\beta_3$, with $q = 4$). 
+Third, we test for whether program effects in the upper half of the prior achievement distribution are moderated by school sector ($H_0: \beta_{21} = \beta_{22} = \beta_{23}$, with $q = 3$). 
+Finally, we conduct a joint test for whether program effects in either half of the prior achievement distribution are moderated by school sector ($H_0: \bs\beta_1 = \bs\beta_2 = \bs\beta_3$, with $q = 4$). 
 
 <<Angrist_Lavy, cache=TRUE>>=
 library(foreign)
@@ -1102,32 +1103,18 @@ print(xtable(AL_results,
 
 Table \ref{tab:AAD} reports the results of all four hypothesis tests. 
 These results indicate three important trends.
-First, in the case of the first two hypotheses, the CR2 test statistics are only slightly smaller than their CR1 counterparts, though the degrees of freedom are considerably smaller. 
-These differences reflect the fact that the treatment indicator occurs at the cluster level, but that the subgroups varied within each cluster. 
-Together these lead to a larger impact on results than in the STAR case, where treatment was assigned at the student level.
-Second, the third and fourth hypotheses tests -- comparing treatment effects across sectors and subgroups -- illustrates cases in which the CR2S and CR1 tests greatly diverge.
-In these cases, the CR2S test statistic and degrees of freedom are both considerably smaller than those from the CR1 test. 
-This reflects the degree of unbalance in allocations across sectors (20,10,10) combined with the cluster-level randomization. 
-Together these result in cases in which using the small sample adjustments greatly impact the findings. 
-
-
-% 
-% using the CR1 and CR2 adjustments for variance estimation and either the naiv\"e degrees of freedom (for these data, $m - 1 = 34$) or the approximate Hotelling's $T^2$-Z degrees of freedom. 
-% Several features of these results are worth noting. 
-% First, for the tests of single-parameter hypotheses, the differences between the CR1 and CR2 test statistics are minor, although the AHT (Satterthwaite) degrees of freedom are substantially lower than the naiv\"e ones. 
-% As a result, the $p$-value for the ATE in the upper half of the prior achievement distribution is \Sexpr{round(100 * (AL_results[6,"p"] / AL_results[4,"p"] - 1))}\% larger based on our preferred test than based on the standard F-test with CR1. 
-% Second, the joint test that the ATEs are zero in both halves of the prior achivement distribution is sensitive to both the CR adjustment and the degrees of freedom: the $p$-value based on our preferred test is \Sexpr{round(AL_results[9,"p"], 3)}, compared to the $p = \Sexpr{round(AL_results[7,"p"], 3)}$ for the standard test. 
-% Finally, the test of moderation by sector is strongly affected by the CR2 adjustment and AHT degrees of freedom. 
-% In particular, the AHT degrees of freedom are just \Sexpr{round(AL_results[12,"df"],2)}, far lower than the number of clusters. 
-% The low degrees of freedom are a consequence of the small number of schools of each type in each treatment condition.
-% Although the total sample includes 35 schools, there are only 9 Arab religious, 7 Jewish religious, and 19 Jewish secular schools, each split across two treatment conditions, and the treatment effects are estimated by making comparisons across clusters. 
-% As a result, the F statistic based on CR2 has a very large sampling variance under the null hypothesis.
-% \todo{Connect to simulation results--higher $q$, between-cluster}
+First, in the case of the first two hypotheses, the AHT test statistics are only slightly smaller than their standard counterparts, but the degrees of freedom are considerably smaller. 
+These differences in degrees of freedom arise because the treatment was assigned at the cluster level, while the subgroups varied within each cluster. 
+Together, these lead to a larger impact on results than in the STAR case, where treatment was assigned at the student level.\todo{Beth, can you clarify this? Together, these what?}
+Second, the third and fourth hypotheses tests, which compared treatment effects across sectors and subgroups, are cases in which the AHT and standard tests diverge markedly.
+For these cases, the AHT test statistic and degrees of freedom are both considerably smaller than those from the standard test. 
+This reflects the degree of unbalance in allocations across sectors (19 Jewish secular, 7 Jewish religious, and 9 Arab religious schools), combined with cluster-level randomization. 
+Together these result in cases in which using the small sample adjustments greatly impact the findings.\todo{Beth, ditto here.} 
 
 \subsection{Effects of minimum legal drinking age on mortality} 
 
-In this final example, we shift focus from analyses of experiments to panel data, using an example described in Angrist and Pischke (2015)\todo{Cite}.
-Using data from the Fatal Accident Reporting System maintained by the National Highway Traffic Safety Administration, we examine the effects of changes in the minimum legal drinking age over the time period of 1970-1983 on state-level death rates resulting from motor vehicle crashes.\todo{Note about measure of legal drinking age.}
+In this final example, we shift focus from analyses of experiments to panel data, using an example described in \citet{Angrist2014mastering}.
+Using data from the Fatal Accident Reporting System maintained by the National Highway Traffic Safety Administration, we estimated the effects of changes in the minimum legal drinking age over the time period of 1970-1983 on state-level death rates resulting from motor vehicle crashes.\todo{Note about measure of legal drinking age.}
 A standard difference-in-differences specification for such a state-by-year panel is
 \begin{equation}
 \label{eq:MLDA}
@@ -1135,15 +1122,15 @@ y_{it} = \bm{r}_{it}'\bs\beta + \gamma_t + \mu_i + \epsilon_{it}.
 \end{equation}
 In this model, time-point $t$ is nested within state $i$; the outcome $y_{it}$ is the number of deaths in motor vehicle crashes (per 100,000 residents) in state $i$ at time $t$; $\bm{r}_{it}$ is a vector of covariates; $\gamma_t$ is a fixed effect for time point $t$; and $\mu_i$ is an effect for state $i$. The vector $\bm{r}_{it}$ consists of a measure of the proportion of the population between the ages of 18 and 20 years who can legally drink alcohol and a measure of the beer taxation rate, both of which vary across states and across time.. 
 
-In order to estimate the effect of lowering the legal drinking age, we apply both random effects (RE) and fixed effects (FE) estimation. 
-For the RE estimates, we use WLS with weights derived under the assumption that  $\mu_1,...,\mu_m$ are mutually independent, normally distributed, and independent of $\epsilon_{it}$.
+We apply both random effects (RE) and fixed effects (FE) approaches to estimate the effect of lowering the legal drinking age. 
+For the RE estimates, we use WLS with weights derived under the assumption that  $\mu_1,...,\mu_m$ are mutually independent, normally distributed, and independent of $\epsilon_{it}$ and $\bm{r}_{it}$.
 We also report an artificial Hausman test \citep{Arellano1993on, Wooldridge2002econometric} for correlation between the covariates $\bm{r}_{it}$ and the state effects $\mu_i$. Such correlation creates bias in the RE estimator of the policy effect, thus necessitating the use of the FE estimator.
-The artificial Hausman test amends model (\ref{eq:MLDA}) to include within-cluster deviations (or cluster aggregates) of the variables of interest, so that the estimating equation is
+The artificial Hausman test amends model (\ref{eq:MLDA}) to include within-cluster deviations for the variables of interest, so that the estimating equation is
 \begin{equation}
 y_{it} = \bm{r}_{it}\beta + \bm{\ddot{r}}_{it}\bs\delta + \gamma_t + \mu_i + \epsilon_{it},
 \end{equation}
 where $\bm{\ddot{r}}_{it}$ denotes the within-cluster deviations of the covariate.
-The parameter $\bs\delta$ captures the difference between the between-panel and within-panel estimates of $\bs\beta$. 
+The parameter $\bs\delta$ captures the difference between the between-cluster and within-cluster estimates of $\bs\beta$. 
 With this setup, the artificial Hausmann test amounts to testing the null hypothesis that $\bs\delta = \bm{0}$, where $\bs\delta$ is estimated using RE.  
 
 <<MLDA_models, cache = TRUE>>=
@@ -1221,10 +1208,9 @@ print(xtable(MLDA_results,
 @
 
 Table \ref{tab:MLDA} displays the results of the tests for the policy variable and the Hausman tests for each model specification. 
-As in previous examples, our preferred version of the test uses the CR2S adjustment to the variance estimator and the AHT test. 
 The results of the policy effect tests are quite similar across specifications and versions of the test. 
-Of note is that the RE and FE estimates have only half the degrees of freedom of the naiv\"e test. 
-For the artificial Hausman test the AHT test has fewer than \Sexpr{round(Haus2_CR2["HTZ","df"])} degrees of freedom, which leads to a much larger p-value compared to using the CR1 F test. 
+Of note is that, for both the RE and FE estimates, the AHT tests have only half the degrees of freedom of the corresponding standard tests. 
+For the artificial Hausman test, the AHT test has fewer than \Sexpr{round(Haus2_CR2["HTZ","df"])} degrees of freedom, which leads to a much larger p-value compared to using the standard test based on CR1. 
 
 \section{DISCUSSION}
 \label{sec:discussion}

@@ -48,3 +48,16 @@ Standard results regarding quadratic forms can be used to derive the moments of 
 \Cov\left(\bm{c}_1' \bm{V}^{CR2} \bm{c}_2, \bm{c}_3' \bm{V}^{CR} \bm{c}_4\right) &= \sum_{i=1}^m \sum_{i=1}^m \bm{p}_{1i}' \bs\Sigma \bm{p}_{4j} \bm{p}_{2i}' \bs\Sigma \bm{p}_{3j} + \bm{p}_{1i}' \bs\Sigma \bm{p}_{3j} \bm{p}_{2i}' \bs\Sigma \bm{p}_{4j}.
 \end{align}
 Furthermore, the distribution of $\bm{c}_1' \bm{V}^{CR2} \bm{c}_2$ can be expressed as a weighted sum of $\chi^2_1$ distributions \citep{mathai1992quadratic}, with weights given by the eigen-values of the $m \times m$ matrix with $\left(i,j\right)^{th}$ entry $\bm{p}_{1i}' \bs\Sigma \bm{p}_{2j}$, $i,i=1,...,m$.
+
+% 
+% using the CR1 and CR2 adjustments for variance estimation and either the naiv\"e degrees of freedom (for these data, $m - 1 = 34$) or the approximate Hotelling's $T^2$-Z degrees of freedom. 
+% Several features of these results are worth noting. 
+% First, for the tests of single-parameter hypotheses, the differences between the CR1 and CR2 test statistics are minor, although the AHT (Satterthwaite) degrees of freedom are substantially lower than the naiv\"e ones. 
+% As a result, the $p$-value for the ATE in the upper half of the prior achievement distribution is \Sexpr{round(100 * (AL_results[6,"p"] / AL_results[4,"p"] - 1))}\% larger based on our preferred test than based on the standard F-test with CR1. 
+% Second, the joint test that the ATEs are zero in both halves of the prior achivement distribution is sensitive to both the CR adjustment and the degrees of freedom: the $p$-value based on our preferred test is \Sexpr{round(AL_results[9,"p"], 3)}, compared to the $p = \Sexpr{round(AL_results[7,"p"], 3)}$ for the standard test. 
+% Finally, the test of moderation by sector is strongly affected by the CR2 adjustment and AHT degrees of freedom. 
+% In particular, the AHT degrees of freedom are just \Sexpr{round(AL_results[12,"df"],2)}, far lower than the number of clusters. 
+% The low degrees of freedom are a consequence of the small number of schools of each type in each treatment condition.
+% Although the total sample includes 35 schools, there are only 9 Arab religious, 7 Jewish religious, and 19 Jewish secular schools, each split across two treatment conditions, and the treatment effects are estimated by making comparisons across clusters. 
+% As a result, the F statistic based on CR2 has a very large sampling variance under the null hypothesis.
+% \todo{Connect to simulation results--higher $q$, between-cluster}
