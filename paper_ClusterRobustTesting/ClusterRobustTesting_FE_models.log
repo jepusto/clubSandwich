@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  1 JAN 2016 21:31
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  3 JAN 2016 20:40
 entering extended mode
 **ClusterRobustTesting_FE_models.tex
 
@@ -735,8 +735,18 @@ File: CR_fig/overview-1.pdf Graphic file (type pdf)
 <use CR_fig/overview-1.pdf>
 Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 612.
 (pdftex.def)             Requested size: 642.45122pt x 455.08672pt.
- [24] [25 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting
-/CR_fig/overview-1.pdf>]
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 632--632
+[][][] 
+ []
+
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 632--632
+[][][] 
+ []
+
+[24] [25 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/
+CR_fig/overview-1.pdf>]
 
 Package xcolor Warning: Incompatible color definition on input line 635.
 
@@ -828,28 +838,39 @@ Overfull \hbox (27.76999pt too wide) in paragraph at lines 829--829
 [][][] 
  []
 
-[35] [36] [37] [38] [39] [40]
+[35] [36]
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 897--897
+[][][] 
+ []
+
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 897--897
+[][][] 
+ []
+
+[37] [38] [39] [40] [41]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
-bustTesting_FE_models.bbl [41]
+bustTesting_FE_models.bbl [42]
 Missing character: There is no â in font cmr12!
 Missing character: There is no € in font cmr12!
 Missing character: There is no œ in font cmr12!
 Missing character: There is no â in font cmr12!
 Missing character: There is no € in font cmr12!
 Missing character: There is no  in font cmr12!
+ [43]
 Missing character: There is no â in font cmr12!
 Missing character: There is no € in font cmr12!
 Missing character: There is no “ in font cmr12!
- [42] [43]) [44]
+ [44] [45]) [46]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting_FE_models.aux
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\simulatio
 n_table.aux)) ) 
 Here is how much of TeX's memory you used:
- 14817 strings out of 493921
- 287772 string characters out of 3144871
- 342040 words of memory out of 3000000
- 17805 multiletter control sequences out of 15000+200000
+ 14836 strings out of 493921
+ 288270 string characters out of 3144871
+ 342319 words of memory out of 3000000
+ 17824 multiletter control sequences out of 15000+200000
  18182 words of font info for 63 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
  62i,14n,80p,1140b,695s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -875,9 +896,9 @@ fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
 nts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
 /type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/ty
 pe1/public/amsfonts/cm/cmti12.pfb>
-Output written on ClusterRobustTesting_FE_models.pdf (44 pages, 438006 bytes).
+Output written on ClusterRobustTesting_FE_models.pdf (46 pages, 444810 bytes).
 PDF statistics:
- 275 PDF objects out of 1000 (max. 8388607)
+ 281 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  33 words of extra memory for PDF output out of 10000 (max. 10000000)
 

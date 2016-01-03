@@ -57,6 +57,12 @@ Cameron, A.~C., Gelbach, J.~B. \harvardand\ Miller, D.  \harvardyearleft
   clustered errors}', {\em The Review of Economics and Statistics} {\bf
   90}(3),~414--427.
 
+\harvarditem[Cameron et~al.]{Cameron, Gelbach \harvardand\
+  Miller}{2011}{Cameron2011robust}
+Cameron, A.~C., Gelbach, J.~B. \harvardand\ Miller, D.~L.  \harvardyearleft
+  2011\harvardyearright , `{Robust inference with multiway clustering}', {\em
+  Journal of Business {\&} Economic Statistics} {\bf 29}(2),~238--249.
+
 \harvarditem{Cameron \harvardand\ Miller}{2015}{Cameron2015practitioners}
 Cameron, A.~C. \harvardand\ Miller, D.~L.  \harvardyearleft
   2015\harvardyearright , {A practitioner's guide to cluster-robust inference}.
@@ -144,6 +150,10 @@ MacKinnon, J.~G.  \harvardyearleft 2013\harvardyearright , {Thirty years of
   heteroskedasticity-robust inference}, {\em in} X.~Chen \harvardand\ N.~R.
   Swanson, eds, `Recent Advances and Future Directions in Causality,
   Prediction, and Specification Analysis', Springer New York, New York, NY.
+
+\harvarditem{Mackinnon}{2014}{Mackinnon2014wild}
+Mackinnon, J.~G.  \harvardyearleft 2014\harvardyearright , {Wild cluster
+  bootstrap confidence intervals}.
 
 \harvarditem{MacKinnon \harvardand\ White}{1985}{MacKinnon1985some}
 MacKinnon, J.~G. \harvardand\ White, H.  \harvardyearleft 1985\harvardyearright
