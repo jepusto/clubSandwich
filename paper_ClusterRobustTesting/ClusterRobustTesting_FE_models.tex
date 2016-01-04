@@ -127,7 +127,7 @@ The text of your abstract.  200 or fewer words.
 \end{abstract}
 
 \noindent%
-{\it Keywords:}  3 to 6 keywords, that do not appear in the title
+{\it Keywords:} Robust Standard Errors, Clustering, Fixed-Effects, Small Samples
 \vfill
 
 \newpage
@@ -141,7 +141,7 @@ Such correlation among units can arise from sampling aggregate units (e.g., coun
 A common approach to inference in these settings is to use a cluster-robust variance estimator \citep[CRVE;][]{Arellano1987computing, Liang1986longitudinal, white1984asymptotic}.
 The advantage of CRVEs is that they produce consistent standard errors and test statistics without imposing strong parametric assumptions about the dependence structure of the errors in the model.
 Instead, the method relies on the weaker assumption that units can be grouped into clusters that are mutually independent. 
-CRVEs are an extension to another economic mainstay, heteroscedasticity-robust variance estimators \citep{eicker1967limit, Huber1967behavior, White1980heteroskedasticity}, which are used to account for non-constant variance in regression models with independent errors.
+CRVEs are an extension to another economic mainstay, heteroskedasticity-robust variance estimators \citep{eicker1967limit, Huber1967behavior, White1980heteroskedasticity}, which are used to account for non-constant variance in regression models with independent errors.
 In the past decade, use of CRVE has become standard practice for applied micro-economic analysis, as evidenced by coverage in major textbooks and review articles \citep[e.g.,][]{Wooldridge2010econometric, Angrist2009mostly, Cameron2015practitioners}.
 
 As a leading example of the application of CRVEs, consider for a study of the effects on employment outcomes of several state-level policy shifts, where the policies were implemented at different time-points in each state. 
@@ -166,16 +166,16 @@ First, \citet{Angrist2009mostly} noted that the BRL correction breaks down (i.e.
 Second, in models with fixed effects, the magnitude of the BRL adjustment depends on whether it is computed based on the full design matrix used in OLS estimation (i.e., including fixed effect dummies) or after absorbing the fixed effects. 
 \citet{Cameron2015practitioners} noted that other methods of small-sample correction suffer from the same subtle problem of depending on arbitrary computational details.  
 Third, extant methods for hypothesis testing based on BRL are limited to single-parameter constraints \citep{Bell2002bias, McCaffrey2006improved} and small-sample methods for multiple-parameter hypothesis tests remain lacking.
-Multiple-parameter tests are used in an range of applications, including in panel data settings (e.g., Hausman tests for consistency of random effects estimators), seemingly unrelated regression models, and analysis of field experiments with multiple treatment groups.\todo{Examples???}
+Multiple-parameter tests are used in an range of applications, including in panel data settings (e.g., Hausman tests for consistency of random effects estimators), seemingly unrelated regression models, and analysis of field experiments with multiple treatment groups.\todo{Could we cite empirical examples of each of these?}
 
 This paper addresses each of these concerns in turn, with the aim of extending the BRL method so that is suitable for everyday econometric practice, including models with fixed effects. First, we describe a extension to the BRL adjustment that is well-defined in models with arbitrary sets of fixed effects, where existing BRL adjustments break down. Second, we demonstrate how to calculate the BRL adjustments so that they are invariant to whether the regression is estimated using OLS or after absorbing the fixed effects (i.e., using the within estimator) and identify conditions under which first-stage absorption of the fixed effects can be safely ignored. Finally, we propose a procedure for testing multiple-parameter hypotheses by approximating the sampling distribution of the Wald statistic by Hotelling's $T^2$ distribution with estimated degrees of freedom. The method is a generalization of the Satterthwaite correction proposed by \citet{Bell2002bias} for single parameter constraints.
 
 Our work is related to a stream of recent literature that has examined methods for cluster-robust inference with a small number of clusters. 
-\citet{Conley2011inference} proposed methods for hypothesis testing in a differnce-in-differences setting where the number of treated units is small and fixed, while the number of untreated units increases asymptotically. 
+\citet{Conley2011inference} proposed methods for hypothesis testing in a difference-in-differences setting where the number of treated units is small and fixed, while the number of untreated units increases asymptotically. 
 \citet{Ibragimov2010tstatistic} proposed a method for constructing robust tests of scalar parameters that maintains the nominal Type-I error rate; however, their method requires that the target parameter be identified within each independent cluster and so it is not always applicable.  
 \citet{Cameron2008bootstrap} investigated a range of bootstrapping procedures that provide improved Type-I error control in small samples, finding that a cluster wild-bootstrap technique was particularly accurate in small samples. 
 Nearly all of this work has focused on single-parameter hypothesis tests only. 
-For multiple-parameter constraints, \citet{Cameron2015practitioners} suggest an ad-hoc degrees of freedom adjustment and note, as an alternative, that boootstrapping techniques can in principle be applied to multiple-parameter tests. 
+For multiple-parameter constraints, \citet{Cameron2015practitioners} suggest an ad-hoc degrees of freedom adjustment and note, as an alternative, that bootstrapping techniques can in principle be applied to multiple-parameter tests. 
 However, little methodological work has examined the accuracy of multiple-parameter tests.
 
 The paper is organized as follows. The remainder of this section introduces our econometric framework and reviews the standard CRVE methods, as implemented in most software applications.
@@ -264,7 +264,7 @@ While there are several versions of this approach, all can be written in the for
 \end{equation}
 where $\bm{e}_i = \bm{Y}_i - \bm{X}_i \bs{\hat\beta}$ is the vector of residuals from cluster $i$ and $\bm{A}_i$ is some $n_i$ by $n_i$ adjustment matrix. 
 
-The form of these adjustment matrices parallels those of the heteroscedastity-consistent (HC) variance estimators proposed by \citet*{MacKinnon1985some}. 
+The form of these adjustment matrices parallels those of the heteroskedasticity-consistent (HC) variance estimators proposed by \citet*{MacKinnon1985some}. 
 The most basic CRVE, described by \citet{Liang1986longitudinal}, uses $\bm{A}_i = \bm{I}_i$, an $n_i \times n_i$ identity matrix. 
 Following \citet{Cameron2015practitioners}, we refer to this estimator as CR0. 
 This estimator is biased towards zero because the cross-product of the residuals $\bm{e}_i \bm{e}_i'$ tends to under-estimate the true variance $\bs\Sigma_i$ in cluster $i$.
@@ -350,9 +350,9 @@ Essentially, calculating CR2 based on the absorbed model amounts to assuming tha
 We find this method of specifying the working model to be incoherent, and therefore recommend against taking it.
 Rather, the CR2 adjustment matrices should be calculated based on a working model for the errors in the full regression model, following Equations (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) as stated. 
 
-A drawback of using the CR2 adjustment matrices based on the full regression model is that it entails calculating the projection matrix $\bm{H_X}$ for the full set of $p$ covariates (i.e., including fixed effect indicators). Given that the entire advantage of using absorption to calculate $\hat{\bs\beta}$ is to avoid computations involving large, sparse matrices, it is of interest to find methods for more efficiently calculating the CR2 adjustment matrices. Some efficiencies can be gained by using the fact that the residual projection matrix $\bm{I} - \bm{H_X}$ can be factored into components as $\left(\bm{I} - \bm{H_X}\right)_i = \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_i \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \left(\bm{I} - \bm{H_T}\right)$.
+A drawback of using the CR2 adjustment matrices based on the full regression model is that it entails calculating the projection matrix $\bm{H_X}$ for the full set of $p$ covariates (i.e., including fixed effect indicators). Given that the entire advantage of using absorption to calculate $\hat{\bs\beta}$ is to avoid computations involving large, sparse matrices, it is of interest to find methods for more efficiently calculating the CR2 adjustment matrices. Some efficiency can be gained by using the fact that the residual projection matrix $\bm{I} - \bm{H_X}$ can be factored into components as $\left(\bm{I} - \bm{H_X}\right)_i = \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_i \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \left(\bm{I} - \bm{H_T}\right)$.
 
-In certain cases, further computational efficiencies can be achieved by computing the adjustment matrices after absorbing the within-cluster fixed effects $\bm{T}$ (but not the between-cluster fixed effects $\bm{S}$). 
+In certain cases, further computational efficiency can be achieved by computing the adjustment matrices after absorbing the within-cluster fixed effects $\bm{T}$ (but not the between-cluster fixed effects $\bm{S}$). 
 Specifically, if the weights used for WLS estimation are the inverses of the working covariance model, so that $\bm{W}_i = \bs\Phi_i^{-1}$ for $i = 1,...,m$, then the adjustment matrices can be calculated without accounting for the within-cluster fixed effects. 
 This result is formalized in the following theorem.  
 
@@ -510,9 +510,9 @@ We refer to tests employing the CR1 correction and $m - 1$ degrees of freedom as
 To date, four simulations have examined the performance of the CR2 t-test, across a total of nearly 100 parameter combinations and a range of application contexts.
 \citet{Cameron2015practitioners} and \citet{Imbens2015robust} focused on conditions common in economics, while \citet{Bell2002bias} focused on those common in complex surveys and \citet{Tipton2015small-t} on those in meta-analysis. 
 Table \ref{tab:simulation_summary} summarizes the results of these studies.
-Some of the studies focused on policy dummies in the balanced case, while others varied the degree of balance; still others examined continous covariates that are symmetrically distributed, as well as those with high skew and leverage.
+Some of the studies focused on policy dummies in the balanced case, while others varied the degree of balance; still others examined continuous covariates that are symmetrically distributed, as well as those with high skew and leverage.
 These studies also examined the role of the number of clusters, with values ranging from 6 to 50, as well as the number of observations per clusters (from 1 to roughly 260).
-Finally, the studies used a range of both true error structures (including various combinations of heteroscedasticity and clustering) and estimation strategies (including different 'working' models), including scenarios in which the working model differed from the true error structure.
+Finally, the studies used a range of both true error structures (including various combinations of heteroskedasticity and clustering) and estimation strategies (including different 'working' models), including scenarios in which the working model differed from the true error structure.
 Finally, while most previous studies focused on OLS estimation, one study \citep{Tipton2015small-t} examined the performance of t-tests based on WLS estimation.\todo{Beth, is there any way to condense the four columns under ``Variable type''? If you change it in the Excel file I will modify this table to match.}\todo{Beth, what is the difference between IK2015 Table 1 vs Table 2?}
 
 \begin{sidewaystable}
@@ -520,7 +520,7 @@ Finally, while most previous studies focused on OLS estimation, one study \citep
 \caption{Type I error rates of t-tests based on CRVE}
 \label{tab:simulation_summary}
 \include{simulation_table}
-\caption*{Table refers to the table within the relevent article. $m$ is the number of clusters; $n$ is the number of observations within each cluster; c indicates cluster-level covariate, while o indicates observation-level covariate; \% = percent taking value of one; H = heteroskedastic; RE = random effects (moulton factor); C = correlated errors; (\#) indicates number of different models tested.}
+\caption*{Table refers to the table within the relevant article. $m$ is the number of clusters; $n$ is the number of observations within each cluster; c indicates cluster-level covariate, while o indicates observation-level covariate; \% = percent taking value of one; H = heteroskedastic; RE = random effects (Moulton factor); C = correlated errors; (\#) indicates number of different models tested.}
 \end{sidewaystable}
 
 Table \ref{tab:simulation_summary} also indicates the range of Type I error rates observed across the conditions studied in each of the simulation studies, with values given for both the standard and AHT tests.
@@ -539,8 +539,8 @@ In comparison to the t-test, the AHT F-test has only been studied in a single si
 Although this study focused only on the use of CRVE with WLS estimation, it was comprehensive in other regards.
 In particular, it examined the effects of the number of covariates in the model (up to $p = 5$) and the number of constraints tested ($q = 2,3,4,5$), including cases in which $p = q$ and in which $q < p$. 
 The simulations also examined models with various combinations of covariate types, including both balanced and unbalanced indicator variables, as well as symmetric or skewed continuous covariates.
-Like \citet{Tipton2015small-t}, these simulations focused on true correlation structures that included heteroscedasticity, clustering (i.e., a cluster specific random effect), and correlated errors.
-The working models were then chosen to be far from the true error stucture (i.e., an independent-errors working model).
+Like \citet{Tipton2015small-t}, these simulations focused on true correlation structures that included heteroskedasticity, clustering (i.e., a cluster specific random effect), and correlated errors.
+The working models were then chosen to be far from the true error structure (i.e., an independent-errors working model).
 Finally, the number of clusters was varied from 10 to 100, each with between 1 and 10 observations. 
 Type I error rates of the standard test and the AHT F-test were compared for nominal $\alpha$ levels of .01, .05, and .10.
 
@@ -551,7 +551,7 @@ Like the t-test, the degrees of freedom of the AHT F-test were driven by covaria
 
 While the simulation study by \citet{Tipton2015small-F} included a variety of conditions, its design was focused on the types of data found in meta-analytic applications. 
 These differ from the economic context in two ways.
-First, in meta-analysis, it is common to have heteroscedasticity of a known form and for analysts to incorporate weights in the analysis (typically inverse-variance weights).
+First, in meta-analysis, it is common to have heteroskedasticity of a known form and for analysts to incorporate weights in the analysis (typically inverse-variance weights).
 In comparison, unweighted, OLS estimation is more common in economic applications.
 Second, meta-analytic regressions often involve testing a variety of types of covariates, including continuous regressors.
 In comparison, many economic applications are focused on testing binary indicator variables that represent differences between policy regimes. 
@@ -644,7 +644,7 @@ Again, focusing on the $\alpha = 0.05$ case, the maximum error ranges from 0.072
 
 \end{knitrout}
 
-In order to better understand the effects of different paramter combinations on the performance of both tests, Figure \ref{fig:balance} focuses on the $\alpha = 0.05$ case and breaks out the results by study design. The top row of the figure depicts the standard test, while the bottom row depicts the AHT test; columns correspond to the number of clusters.
+In order to better understand the effects of different parameter combinations on the performance of both tests, Figure \ref{fig:balance} focuses on the $\alpha = 0.05$ case and breaks out the results by study design. The top row of the figure depicts the standard test, while the bottom row depicts the AHT test; columns correspond to the number of clusters.
 Within each graph, results are graphed by study design (on the horizontal axis), with colors corresponding to the dimension of the test.
 In the top panel, it can be seen that the rejection rate of the standard test increases with the dimension of the test ($q$) and the degree of unbalance in the study design.
 Differences between the balanced and unbalanced designs are largest for the CR and DD designs, with smaller discrepancies in RB designs.
@@ -687,7 +687,7 @@ These results follow closely those from Tipton and Pustejovsky (2015), which als
 
 \end{knitrout}
 
-Finally, Figure \ref{fig:df} depicts the range of estimated degrees of freedom for the AHT test as a function of the simulated study design and number of clusters ($m$). Within each boxplot, the degrees of freedom vary depending on the hypothesis tested, with constraints of larger dimension having lower degrees of freedom. It can be seen that the AHT degrees of freedom are often far less than $m - 1$ and that they are strongly affected by the pattern of treatment assignment and the degree of balance. The balanced and unbalanced RB designs generally had AHT degrees of freedom closest to $m - 1$ because the treatment effects being tested are all identified within each cluster. The balanced DD design usually had the next largest degrees of freedom because it involved contrasts between two patterns of treatment configuration, followed by the balanced CR design, which involved contrasts between three patterns of treatment configurations. For both of these designs, unbalance led to sharply reduced degrees of freedom.\todo{Any further thoughts here?}
+Finally, Figure \ref{fig:df} depicts the range of estimated degrees of freedom for the AHT test as a function of the simulated study design and number of clusters ($m$). Within each box plot, the degrees of freedom vary depending on the hypothesis tested, with constraints of larger dimension having lower degrees of freedom. It can be seen that the AHT degrees of freedom are often far less than $m - 1$ and that they are strongly affected by the pattern of treatment assignment and the degree of balance. The balanced and unbalanced RB designs generally had AHT degrees of freedom closest to $m - 1$ because the treatment effects being tested are all identified within each cluster. The balanced DD design usually had the next largest degrees of freedom because it involved contrasts between two patterns of treatment configuration, followed by the balanced CR design, which involved contrasts between three patterns of treatment configurations. For both of these designs, unbalance led to sharply reduced degrees of freedom.\todo{Any further thoughts here?}
 
 \todo[inline]{Conclusion/transition to examples.}
 
@@ -697,14 +697,14 @@ Finally, Figure \ref{fig:df} depicts the range of estimated degrees of freedom f
 This section presents three short examples of the use of CRVE with small or moderate samples of clusters, spanning a variety of applied contexts. 
 In the first example, the effects of substantive interest are identified within each cluster. 
 In the second example, the effects involve between-cluster contrasts. 
-The third example involves a cluster-robust Hausmann test for differences between within- and across-cluster information. 
+The third example involves a cluster-robust Hausman test for differences between within- and across-cluster information. 
 In each example, we demonstrate the proposed AHT test for single- and multiple-parameter hypotheses and compare the results to the standard test based on the CR1 variance estimator and $m - 1$ degrees of freedom. 
 Data files and replication code (in R) are available for each analysis as an online supplement.
 
 \subsection{Tennessee STAR class-size experiment.} 
 
-The Tennessee STAR class size experiment is one of the most intensively studied interventions in education \citep[for a detailed review, see][]{Schanzenbach2006what}.  The experiment involved students in kindergarten through third grade across 79 schools. Within each school, students and their teachers were randomized equally to one of three conditions: small class-size (targetted to have 13-17 students), regular class-size, or regular class-size with an aide.
-Subsequent research has focused on the effects of these conditions on kindergarden reading, math, and word recognition \citep{Achilles2008tennessee}; high school test scores \citep{Schanzenbach2006what}; college entrance exam participation \citep{Krueger2001effect}; and home ownership and earnings \citep{Chetty2011how}, among other outcomes.
+The Tennessee STAR class size experiment is one of the most intensively studied interventions in education \citep[for a detailed review, see][]{Schanzenbach2006what}.  The experiment involved students in kindergarten through third grade across 79 schools. Within each school, students and their teachers were randomized equally to one of three conditions: small class-size (targeted to have 13-17 students), regular class-size, or regular class-size with an aide.
+Subsequent research has focused on the effects of these conditions on kindergarten reading, math, and word recognition \citep{Achilles2008tennessee}; high school test scores \citep{Schanzenbach2006what}; college entrance exam participation \citep{Krueger2001effect}; and home ownership and earnings \citep{Chetty2011how}, among other outcomes.
 
 The STAR experiment involved three treatment conditions and multiple outcomes, providing a scenario where both t-tests (with $q = 1$) and F-tests with varying constraint dimensions can be applied. 
 For simplicity, we focus only on the subgroup of students who were in kindergarten during the first year of the study, and on three outcomes measured at the end of the kindergarten year: reading, word recognition, and math \citep{Achilles2008tennessee}. 
@@ -727,7 +727,7 @@ In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the sch
 
 
 % latex table generated in R 3.2.3 by xtable 1.7-4 package
-% Sun Jan 03 20:40:36 2016
+% Sun Jan 03 21:09:10 2016
 \begin{table}[tbh]
 \centering
 \begin{tabular}{lllrrr}
@@ -790,7 +790,7 @@ Finally, we conduct a joint test for whether program effects in either half of t
 
 
 % latex table generated in R 3.2.3 by xtable 1.7-4 package
-% Sun Jan 03 20:40:36 2016
+% Sun Jan 03 21:09:10 2016
 \begin{table}[bth]
 \centering
 \begin{tabular}{lcrrr}
@@ -843,12 +843,12 @@ y_{it} = \bm{r}_{it}\beta + \bm{\ddot{r}}_{it}\bs\delta + \gamma_t + \mu_i + \ep
 \end{equation}
 where $\bm{\ddot{r}}_{it}$ denotes the within-cluster deviations of the covariate.
 The parameter $\bs\delta$ captures the difference between the between-cluster and within-cluster estimates of $\bs\beta$. 
-With this setup, the artificial Hausmann test amounts to testing the null hypothesis that $\bs\delta = \bm{0}$, where $\bs\delta$ is estimated using RE.  
+With this setup, the artificial Hausman test amounts to testing the null hypothesis that $\bs\delta = \bm{0}$, where $\bs\delta$ is estimated using RE.  
 
 
 
 % latex table generated in R 3.2.3 by xtable 1.7-4 package
-% Sun Jan 03 20:40:36 2016
+% Sun Jan 03 21:09:10 2016
 \begin{table}[bth]
 \centering
 \begin{tabular}{lcrrr}
@@ -878,7 +878,7 @@ For the artificial Hausman test, the AHT test has fewer than 9 degrees of freedo
 \label{sec:conclusion}
 
 Across the field of economics, empirical studies often involve modeling data with a correlated error structure. 
-Correlated errors arise in analysis of multi-stage samples, cluster-randomized trials, panel data, and regression discontinuitys with discrete forcing variables, among other study designs. 
+Correlated errors arise in analysis of multi-stage samples, cluster-randomized trials, panel data, and regression discontinuities with discrete forcing variables, among other study designs. 
 It is now routine to handle dependent error structures by using cluster-robust variance estimation, which provides asymptotically valid standard errors and hypothesis tests without making strong parametric assumptions about the error structure. 
 However, a growing body of recent work has drawn attention to the shortcomings of CRVE methods when the data include only a small or moderate number of independent clusters \citep{Cameron2008bootstrap, Cameron2015practitioners, Imbens2015robust, Webb2013wild}. 
 In particular, Wald tests based on CRVE can have rejection rates far in excess of the nominal Type I error. 
@@ -900,7 +900,7 @@ The estimated degrees of freedom are indicative of the precision of the standard
 We therefore recommend that the degrees of freedom be reported along with standard errors and $p$-values whenever the method is applied.
 
 The idea of developing small-sample adjustments based on a working model may seem strange to analysts accustomed to using CRVE---after all, the whole point of clustering standard errors is to avoid making assumptions about the error structure.
-However, simulation studies reported here and elsewhere \citep{Tipton2015small-t, Tipton2015small-F} have demonstrated that the approach is actually robust to a high degree of mis-specification in the working model. 
+However, simulation studies reported here and elsewhere \citep{Tipton2015small-t, Tipton2015small-F} have demonstrated that the approach is actually robust to a high degree of misspecification in the working model. 
 Furthermore, while the working model provides necessary ``scaffolding'' when the number of clusters is small, its  influence tends to fall away as the number of clusters increases, so that the CR2 estimator and AHT maintain the same asymptotic robustness as standard CRVE methods. 
 
 One outstanding problem with the CR2 variance estimator is that it can become computationally costly (or even infeasible) when the within-cluster sample sizes are large \citep{Mackinnon2014wild}. 
@@ -935,7 +935,7 @@ Then $\bm{B}_i^+ = \bm{V}\bs\Lambda^{-1}\bm{V}'$ and $\bm{B}_i^{+1/2} = \bm{V}\b
 &= \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{V}\bm{V}' \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i. 
 \end{align}
 
-Because $\bm{D}_i$, and $\bs\Phi$ are positive definite and $\bm{B}_i$ is symmetric, the eigenvectors $\bm{V}$ define an orthonormal basis for the column span of $\left(\bm{I} - \bm{H_{\ddot{X}}}\right)_i$.
+Because $\bm{D}_i$, and $\bs\Phi$ are positive definite and $\bm{B}_i$ is symmetric, the eigen-vectors $\bm{V}$ define an orthonormal basis for the column span of $\left(\bm{I} - \bm{H_{\ddot{X}}}\right)_i$.
 We now show that $\bm{\ddot{U}}_i$ is in the column space of $\left(\bm{I} - \bm{H_X}\right)_i$. 
 Let $\bm{Z}_i$ be an $n_i \times (r + s)$ matrix of zeros. 
 Let $\bm{Z}_k = - \bm{\ddot{U}}_k \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1}$, for $k \neq j$ and take $\bm{Z} = \left(\bm{Z}_1',...,\bm{Z}_m'\right)'$. 
