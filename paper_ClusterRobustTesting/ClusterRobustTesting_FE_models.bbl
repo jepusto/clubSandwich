@@ -67,6 +67,11 @@ Cameron, A.~C., Gelbach, J.~B. \harvardand\ Miller, D.~L.  \harvardyearleft
 Cameron, A.~C. \harvardand\ Miller, D.~L.  \harvardyearleft
   2015\harvardyearright , {A practitioner's guide to cluster-robust inference}.
 
+\harvarditem{Carpenter \harvardand\ Dobkin}{2011}{Carpenter2011minimum}
+Carpenter, C. \harvardand\ Dobkin, C.  \harvardyearleft 2011\harvardyearright ,
+  `{The minimum legal drinking age and public health}', {\em Journal of
+  Economic Perspectives} {\bf 25}(2),~133--156.
+
 \harvarditem[Carter et~al.]{Carter, Schnepel \harvardand\
   Steigerwald}{2013}{Carter2013asymptotic}
 Carter, A.~V., Schnepel, K.~T. \harvardand\ Steigerwald, D.~G.
@@ -90,12 +95,6 @@ Conley, T.~G. \harvardand\ Taber, C.~R.  \harvardyearleft 2011\harvardyearright
 Donald, S.~G. \harvardand\ Lang, K.  \harvardyearleft 2007\harvardyearright ,
   `{Inference with difference-in-differences and other panel data}', {\em
   Review of Economics and Statistics} {\bf 89}(2),~221--233.
-
-\harvarditem{Eicker}{1967}{eicker1967limit}
-Eicker, F.  \harvardyearleft 1967\harvardyearright , {Limit theorems for
-  regressions with unequal and dependent errors}, {\em in} `Proceedings of the
-  Berkeley Symposium on Mathematical Statistics and Probability', Vol.~1,
-  pp.~59--82.
 
 \harvarditem{Hansen}{2007}{Hansen2007asymptotic}
 Hansen, C.~B.  \harvardyearleft 2007\harvardyearright , `{Asymptotic properties
