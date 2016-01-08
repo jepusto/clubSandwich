@@ -14,7 +14,7 @@
 \newcommand{\blind}{0}
 
 % DON'T change margins - should be 1 inch all around.
-\addtolength{\oddsidemargin}{-.5in}%
+\addtolength{\oddsidemargin}{-.7in}%
 \addtolength{\evensidemargin}{-.5in}%
 \addtolength{\textwidth}{1in}%
 \addtolength{\textheight}{1.3in}%
@@ -23,7 +23,7 @@
 \usepackage{float}    % for fig.pos='H'
 \usepackage{rotfloat} % for sidewaysfigure
 
-\usepackage[disable, textwidth=1in, textsize=tiny]{todonotes}
+\usepackage[textwidth=1in, textsize=tiny]{todonotes}
 
 \newtheorem{thm}{Theorem}
 \newtheorem{lem}{Lemma}
