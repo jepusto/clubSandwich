@@ -2,7 +2,7 @@
 % Please edit documentation in R/Wald_test.R
 \name{Wald_test}
 \alias{Wald_test}
-\title{Test parameter constraints in a fitted linear rergression model}
+\title{Test parameter constraints in a fitted linear regression model}
 \usage{
 Wald_test(obj, constraints, vcov, test = "HTZ", ...)
 }
