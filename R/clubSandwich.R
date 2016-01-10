@@ -130,20 +130,30 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
 }
 
 #---------------------------------------------
+# as.matrix method for vcovCR
+#---------------------------------------------
+
+#' @export
+
+as.matrix.clubSandwich <- function(x, ...) {
+  attr(x, "type") <- NULL
+  attr(x, "cluster") <- NULL
+  attr(x, "estmats") <- NULL
+  attr(x, "target") <- NULL
+  class(x) <- "matrix"
+  x
+}
+
+
+#---------------------------------------------
 # print method for vcovCR
 #---------------------------------------------
 
 #' @export
 
 print.clubSandwich <- function(x, ...) {
-  attr(x, "type") <- NULL
-  attr(x, "cluster") <- NULL
-  attr(x, "estmats") <- NULL
-  attr(x, "target") <- NULL
-  class(x) <- "matrix"
-  print(x)
+  print(as.matrix(x))
 }
-
 
 #---------------------------------------------
 # matrix manipulation functions
