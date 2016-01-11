@@ -1,4 +1,4 @@
-devtools::load_all("clubSandwich")
+devtools::load_all()
 library(mvtnorm)
 library(stringr)
 
