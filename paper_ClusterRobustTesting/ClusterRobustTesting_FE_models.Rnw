@@ -6,7 +6,6 @@
 \usepackage{booktabs}
 %\usepackage{natbib}
 \RequirePackage[natbibapa]{apacite}
-\usepackage{caption}
 \usepackage{multirow}
 
 \usepackage{float}    % for fig.pos='H'
@@ -34,27 +33,26 @@
 \runtitle{Cluster-robust variance estimation in fixed effects models}
 \thankstext{T1}{The authors thank Dan Knopf for helpful discussions about the linear algebra behind the cluster-robust variance estimator.}
 
-
-\author{James E. Pustejovsky\thanksref{a}\ead[label=e1]{pusto@austin.utexas.edu}}
-\author{Elizabeth Tipton\thanksref{b}\ead[label=e2]{tipton@tc.columbia.edu}}
+\author{James E. Pustejovsky}
+\author{Elizabeth Tipton}
 \runauthor{Pustejovsky \& Tipton}
-\address[a]{University of Texas at Austin,
+\address{University of Texas at Austin,
 Educational Psychology Department,
 1912 Speedway, Stop D5800, 
 Austin, TX 78712.
-Email: \printead{e1}}
-\address[b]{Teachers College, Columbia University,
+Email: pusto@austin.utexas.edu}
+\address{Teachers College, Columbia University,
 Department of Human Development,
 525 W. 120th St., Box 118,
 New York, NY 10027. 
-Email: \printead{e2}}
+Email: tipton@tc.columbia.edu}
 
 \begin{abstract}
-Cluster-robust variance estimation (CRVE) is commonly used to account for heteroskedasticity and un-modeled dependence among the errors in regression models with unobserved effects. Although asymptotically consist, CRVE can be biased downward when the number of clusters is small, leading to hypothesis tests with overly liberal rejection rates. One solution is to use bias-reduced linearization (BRL), which corrects the CRVE based on a working model, in conjunction with t-tests with Satterthwaite degrees of freedom. We propose a generalization of BRL that can be applied in models with arbitrary sets of fixed effects, where the original BRL method is undefined. We also propose a small-sample test for multiple-parameter hypotheses, which generalizes the Satterthwaite approximation for t-tests. In simulations covering a variety of scenarios, we find that conventional cluster-robust Wald tests can severely under-reject while the proposed small-sample test maintains Type I error close to nominal levels. 
+Cluster-robust variance estimation (CRVE) is commonly used to account for heteroskedasticity and un-modeled dependence among the errors in regression models. Although asymptotically consist, CRVE can be biased downward when the number of clusters is small, leading to hypothesis tests with overly liberal rejection rates. More accurate tests can be constructed using bias-reduced linearization (BRL), which corrects the CRVE based on a working model, in conjunction with t-tests with Satterthwaite degrees of freedom. We propose a generalization of BRL that can be applied in models with arbitrary sets of fixed effects, where the original BRL method is undefined. We also propose a small-sample test for multiple-parameter hypotheses, which generalizes the Satterthwaite approximation for t-tests. In simulations covering a wide range of scenarios, we find that conventional cluster-robust Wald tests can severely under-reject while the proposed small-sample test maintains Type I error close to nominal levels. 
 \end{abstract}
 
 \begin{keyword}
-Robust Standard Errors, Clustering, Fixed-Effects, Small Samples
+Robust Standard Errors, Clustering, Fixed Effects, Small Samples
 \end{keyword}
 
 \end{frontmatter}
@@ -62,22 +60,22 @@ Robust Standard Errors, Clustering, Fixed-Effects, Small Samples
 \section{INTRODUCTION}
 \label{sec:intro}
 
-In a wide array of economic analyses, interest centers on the parameters of linear regression models, estimated by ordinary or weighted least squares (OLS/WLS) from a sample of units that are correlated. 
-Such correlation among units can arise from sampling aggregate units (e.g., countries, districts, villages), each of which contains multiple observations; from repeated measurement of an outcome on a common set of units, as in panel data; or from model misspecification, as in analysis of regression discontinuity designs \citep[e.g.,][]{Lee2008regression}. 
+Across a wide range of economic applications, interest centers on the parameters of a linear regression model, estimated by ordinary or weighted least squares (OLS/WLS) from a sample exhibiting within-group dependence. 
+Such dependence can arise from sampling aggregate units (e.g., counties, districts, villages), each of which contains multiple observations; from repeated measurement of an outcome on a common set of units, as in panel data; or from model misspecification, as in analysis of regression discontinuity designs \citep[e.g.,][]{Lee2008regression}. 
 A common approach to inference in these settings is to use a cluster-robust variance estimator \citep[CRVE;][]{Arellano1987computing, Liang1986longitudinal, white1984asymptotic}.
-The advantage of CRVEs is that they produce consistent standard errors and test statistics without imposing strong parametric assumptions about the dependence structure of the errors in the model.
+The advantage of the CRVE is that it produces consistent standard errors and test statistics without imposing strong parametric assumptions about the correlation structure of the errors in the model.
 Instead, the method relies on the weaker assumption that units can be grouped into clusters that are mutually independent. 
-CRVEs are an extension to another economic mainstay, heteroskedasticity-robust variance estimators \citep{Huber1967behavior, White1980heteroskedasticity}, which are used to account for non-constant variance in regression models with independent errors.
-In the past decade, use of CRVE has become standard practice for applied micro-economic analysis, as evidenced by coverage in major textbooks and review articles \citep[e.g.,][]{Wooldridge2010econometric, Angrist2009mostly, Cameron2015practitioners}.
+CRVE is an extension to another economic mainstay, heteroskedasticity-consistent variance estimators \citep{Huber1967behavior, White1980heteroskedasticity}, which are used to account for non-constant variance in regression models with uncorrelated errors.
+In the past decade, use of CRVEs has become standard practice for micro-economic researchers, as evidenced by coverage in major textbooks and review articles \citep[e.g.,][]{Wooldridge2010econometric, Angrist2009mostly, Cameron2015practitioners}.
 
-As a leading example of the application of CRVEs, consider a study of the effects on employment outcomes of several state-level policy shifts, where the policies were implemented at different time-points in each state. 
-In a difference-in-differences analysis of state-by-year panel data, the policy effects would be parameterized in a regression model that includes indicator variables for each policy shift and perhaps additional demographic controls. It is also common to include fixed effects for states and time-periods in order to control for unobserved confounding in each dimension. 
-The model could be estimated by OLS, with the fixed effects included as indicator variables; more commonly, the effects of the policy indicators would be estimated after absorbing the fixed effects, a computational technique that is also known as the fixed effects or within transformation \citep{Wooldridge2010econometric}. 
-Standard errors would then be clustered by state to account for residual dependence in the errors from a given state, and these clustered standard errors would be used to test hypotheses regarding each policy or the set of policies.
+As a leading example, consider a difference-in-differences analysis of state-by-year panel data, where the goal is to understand the effects on employment outcomes of several state-level policy shifts. 
+Here, each policy effect would be parameterized as a dummy variable in a regression model, which might also include other demographic controls. It is also common to include fixed effects for each state and each time-point in order to control for unobserved confounding in each dimension. 
+The model could be estimated by least squares with the fixed effects included as dummy variables (or what we will call the LSDV estimator). More commonly, the effects of the policy indicators would be estimated after absorbing the fixed effects, a computational technique that is also known as the fixed effects estimator or ``within transformation'' \citep{Wooldridge2010econometric}. 
+Standard errors would then be clustered by state to account for residual dependence in the errors from a given state, and these clustered standard errors would be used to test hypotheses about the set of policies.
 The need to cluster the standard errors by state, even when including state fixed effects, was highlighted by \citet{Bertrand2004how}, who showed that to do otherwise can lead to inappropriately small standard errors and hypothesis tests with incorrect rejection rates. 
 
 The consistency property of CRVEs is asymptotic in the number of independent clusters \citep{Wooldridge2003cluster}.
-Recent methodological work has demonstrated that CRVEs can be biased downward and associated hypothesis tests can have Type-I error rates considerably in excess of nominal levels when based on samples with only a small or moderate number of clusters \citep[e.g.,][]{Webb2013wild}.
+Recent methodological work has demonstrated that CRVEs can be biased downward and associated hypothesis tests can have Type-I error rates considerably in excess of nominal levels when based on a small or moderate number of clusters \citep[e.g.,][]{Webb2013wild}.
 \citet{Cameron2015practitioners} provide a thorough review of this literature, including a discussion of current practice, possible solutions, and open problems. 
 In particular, they demonstrate that small-sample corrections for t-tests implemented in common software packages such as Stata and SAS do not provide adequate control of Type-I error. 
 
@@ -87,16 +85,15 @@ Simulations reported by \citet{Bell2002bias} demonstrate that the BRL correction
 The same authors also proposed and studied small-sample corrections to single-parameter hypothesis tests using the BRL variance estimator, based on Satterthwaite \citep{Bell2002bias} or saddlepoint approximations \citep{McCaffrey2006improved}. 
 \citet{Angrist2009effects} applied the BRL correction in an analysis of a longitudinal cluster-randomized trial with 35 clusters, observing that the bias correction makes a difference for inferences. 
 
-Despite a growing body of simulation evidence that BRL performs well \citep[e.g.,][]{Imbens2015robust}, several problems with the method hinder its wider application. 
-First, \citet{Angrist2009mostly} noted that the BRL correction breaks down (i.e., cannot be calculated) in some highly parameterized models, such as state-by-year panels that include fixed effects for states and for years.
-Second, in models with fixed effects, the magnitude of the BRL adjustment depends on whether it is computed based on the full design matrix used in OLS estimation (i.e., including fixed effect dummies) or after absorbing the fixed effects. 
-\citet{Cameron2015practitioners} noted that other methods of small-sample correction suffer from the same subtle problem of depending on arbitrary computational details.  
+Despite a growing body of evidence that BRL performs well \citep[e.g.,][]{Imbens2015robust}, several problems with the method hinder its wider application. 
+First, \citet{Angrist2009mostly} noted that the BRL correction is undefined in some highly parameterized models, such as state-by-year panels that include fixed effects for states and for years.
+Second, in models with fixed effects, the magnitude of the BRL adjustment depends on whether it is computed based on the full design matrix (i.e., the LSDV estimator) or after absorbing the fixed effects.\footnote{\citet{Cameron2015practitioners} noted that other methods of small-sample correction, including the correction used in Stata, suffer from the same problem.}  
 Third, extant methods for hypothesis testing based on BRL are limited to single-parameter constraints \citep{Bell2002bias, McCaffrey2006improved} and small-sample methods for multiple-parameter hypothesis tests remain lacking.
 Multiple-parameter tests are used in a range of applications, including in panel data settings (e.g., Hausman tests for consistency of random effects estimators), seemingly unrelated regression models, and analysis of field experiments with multiple treatment groups.
 
-This paper addresses each of these concerns in turn, with the aim of extending the BRL method so that is suitable for everyday econometric practice, including models with fixed effects. 
+This paper addresses each of these concerns in turn, with the aim of extending the BRL method so that is suitable for general application. 
 First, we describe an extension to the BRL adjustment that is well-defined in models with arbitrary sets of fixed effects, where existing BRL adjustments break down. 
-Second, we demonstrate how to calculate the BRL adjustments so that they are invariant to whether the regression model is estimated including dummy fixed effects or after absorbing the fixed effects (i.e., using the within estimator) and identify conditions under which first-stage absorption of the fixed effects can be safely ignored. 
+Second, we demonstrate how to calculate the BRL adjustments based on the FE estimator and identify conditions under which first-stage absorption of the fixed effects can be ignored.
 Finally, we propose a procedure for testing multiple-parameter hypotheses by approximating the sampling distribution of the Wald statistic by Hotelling's $T^2$ distribution with estimated degrees of freedom. The method is a generalization of the Satterthwaite correction proposed by \citet{Bell2002bias} for single parameter constraints.
 
 Our work is related to a stream of recent literature that has examined methods for cluster-robust inference with a small number of clusters. 
@@ -109,30 +106,25 @@ However, little methodological work has examined the accuracy of multiple-parame
 
 The paper is organized as follows. The remainder of this section introduces our econometric framework and reviews the standard CRVE methods, as implemented in most software applications.
 Section \ref{sec:BRL} reviews the original BRL correction and describes modifications that make it possible to implement BRL in a broad class of models with fixed effects.
-Section \ref{sec:testing} discusses methods for hypothesis testing based on the BRL-adjusted CRVE. 
+Section \ref{sec:testing} discusses hypothesis tests based on the BRL-adjusted CRVE. 
 Section \ref{sec:simulation} reports a simulation study examining the null rejection rates of our proposed test for multiple-parameter constraints, where we find that the small-sample test offers drastic improvements over commonly implemented alternatives. 
-Section \ref{sec:examples} illustrates the use of the proposed hypothesis tests in three examples that cover a variety of contexts in which CRVE is commonly used. 
+Section \ref{sec:examples} illustrates the use of the proposed hypothesis tests in two applications, drawn from contexts where CRVE is commonly used. 
 Section \ref{sec:conclusion} concludes and discusses avenues for future work. 
 
 \subsection{Econometric framework}
 
 We consider a linear regression model of the form,
 \begin{equation}
-\label{eq:fixed_effects_ij}
-\ {y}_{ij} = \bm{r}_{ij}' \bs\beta + \bm{s}_{ij}' \bs\gamma + \bm{t}_{ij}' \bs\mu + \epsilon_{ij} 
-\end{equation}
-where for observation $j$ in cluster $i$, $\bm{r}_{ij}$ is a vector of $r$ predictors of primary interest (e.g., policy variables) and any additional controls, $\bm{s}_{ij}$ is a vector of $s$ fixed effects that vary across clusters, and $\bm{t}_{ij}$ is a vector of $t$ fixed effects that are identified within clusters. In the state-policy example described in the introduction, the $\bm{r}_{ij}$ would include indicator variables for each policy change, as well as additional demographic controls; $\bm{s}_{ij}$ would include year fixed effects; and $\bm{t}_{ij}$ would indicate state fixed effects. Interest would center on testing hypotheses regarding the coefficients in $\bs\beta$ that correspond to the policy indicators, while $\bs\gamma$ and $\bs\mu$ would be treated as incidental. 
-
-For developing theory, it is often easier to work with the matrix version of this model, in which
-\begin{equation}
 \label{eq:fixed_effects}
 \bm{y}_i = \bm{R}_i \bs\beta + \bm{S}_i \bs\gamma + \bm{T}_i \bs\mu + \bs\epsilon_i,
 \end{equation}
-where for cluster $i$, $\bm{R}_i$ is an $n_i \times r$ matrix of focal predictors and controls; $\bm{S}_i$ is an $n_i \times s$ matrix describing fixed effects that vary across clusters, and $\bm{T}_i$ is an $n_i \times t$ matrix describing fixed effects that are identified only within clusters. The distinction between the covariates $\bm{R}_i$ versus the fixed effects $\bm{S}_i$ is arbitrary and depends on the analyst's inferential goals. However, the distinction between the two fixed effect matrices $\bm{S}_i$ and $\bm{T}_i$ is unambiguous, in that the within-cluster fixed effects satisfy $\bm{T}_h \bm{T}_i' = \bm{0}$ for $h \neq i$. 
+where $\bm{y}_i$ is a vector of $n_i$ outcomes for cluster $i$,  $\bm{R}_i$ is an $n_i \times r$ matrix containing predictors of primary interest (e.g., policy variables) and any additional controls, $\bm{S}_i$ is an $n_i \times s$ matrix describing fixed effects that vary across clusters, and $\bm{T}_i$ is an $n_i \times t$ matrix describing fixed effects that are identified only within clusters.\footnote{The distinction between the covariates $\bm{R}_i$ versus the fixed effects $\bm{S}_i$ is arbitrary and depends on the analyst's inferential goals. However, the distinction between the two fixed effect matrices $\bm{S}_i$ and $\bm{T}_i$ is unambiguous, in that the within-cluster fixed effects satisfy $\bm{T}_h \bm{T}_i' = \bm{0}$ for $h \neq i$.}
+In the state-policy example described in the introduction, $\bm{R}_i$ would include indicator variables for each policy change, as well as additional demographic controls; $\bm{S}_i$ would include year fixed effects; and $\bm{T}_i$ would indicate state fixed effects. 
+Interest would center on testing hypotheses regarding the coefficients in $\bs\beta$ that correspond to the policy indicators, while $\bs\gamma$ and $\bs\mu$ would be treated as incidental. 
 
 We shall assume that $\E\left(\bs\epsilon_i\left|\bm{R}_i,\bm{S}_i, \bm{T}_i\right.\right) = \bm{0}$ and $\Var\left(\bs\epsilon_i\left|\bm{R}_i,\bm{S}_i,\bm{T}_i\right.\right) = \bs\Sigma_i$, for $i = 1,...,m$, where the form of $\bs\Sigma_1,...,\bs\Sigma_m$ may be unknown but the errors are independent across clusters. 
 For notational convenience, let $\bm{U}_i = \left[\bm{R}_i \ \bm{S}_i \right]$ denote the set of predictors that vary across clusters, $\bm{X}_i = \left[\bm{R}_i \ \bm{S}_i \ \bm{T}_i \right]$ denote the full set of predictors, $\bs\alpha = \left(\bs\beta', \bs\gamma', \bs\mu' \right)'$, and $p = r + s + t$.
-Denote the total number of individual observations by $N = \sum_{i=1}^m n_i$.
+Let $N = \sum_{i=1}^m n_i$ denote the total number of observations.
 Let $\bm{y}$, $\bm{R}$, $\bm{S}$, $\bm{T}$, $\bm{U}$, $\bm{X}$, and $\bs\epsilon$ denote the matrices obtained by stacking their corresponding components, as in $\bm{R} = \left(\bm{R}_1' \ \bm{R}_2' \ \cdots \ \bm{R}_m'\right)'$. 
 
 We assume that $\bs\beta$ is estimated by weighted least squares (WLS) using symmetric, full rank weighting matrices $\bm{W}_1,...,\bm{W}_m$. 
@@ -147,16 +139,16 @@ Finally, for analysis of data from complex survey designs, WLS may be used with 
 
 \subsection{Absorption}
 
-The goal of most analyses is to estimate and test hypotheses regarding the parameters in $\bs\beta$, while the fixed effects $\bs\gamma$ and $\bs\mu$ are not of inferential interest. Moreover, estimating all of the parameters by WLS becomes computationally intensive and numerically inaccurate if the model includes a large number of fixed effects (i.e., $s + t$ large). 
+The goal of most analyses is to estimate and test hypotheses regarding the parameters in $\bs\beta$, while the fixed effects $\bs\gamma$ and $\bs\mu$ are not of inferential interest. Moreover, LSDV estimation becomes computationally intensive and numerically inaccurate if the model includes a large number of fixed effects (i.e., $s + t$ large). 
 A commonly implemented solution is to first absorb the fixed effects, which leaves only the $r$ parameters in $\bs\beta$ to be estimated. 
 Section \ref{sec:BRL} examines the implications of absorption for application of the BRL adjustment. 
 In order to do, we now formalize the absorption method.
 
-To begin, denote the full block-diagonal weighting matrix as $\bm{W} = \text{diag}\left(\bm{W}_1,...,\bm{W}_m\right)$.
+Denote the full block-diagonal weighting matrix as $\bm{W} = \text{diag}\left(\bm{W}_1,...,\bm{W}_m\right)$.
 Let $\bm{K}$ be the $x \times r$ matrix that selects the covariates of interest, so that $\bm{X} \bm{K} = \bm{R}$ and $\bm{K}'\bs\alpha = \bs\beta$.
 For a generic matrix $\bm{Z}$ of full column rank, let $\bm{M_Z} = \left(\bm{Z}'\bm{W}\bm{Z}\right)^{-1}$ and $\bm{H_Z} = \bm{Z}\bm{M_Z}\bm{Z}'\bm{W}$. 
 
-The absorption technique involves obtaining the residuals from the regression of $\bm{y}$ on $\bm{T}$ and from the multivariate regressions of $\bm{U} = [\bm{R}\ \bm{S}]$ on $\bm{T}$. 
+The absorption technique involves obtaining the residuals from the regression of $\bm{y}$ on $\bm{T}$ and from the multivariate regressions of $[\bm{R}$ and $\bm{S}]$ on $\bm{T}$. 
 The $\bm{y}$ residuals and $\bm{R}$ residuals are then regressed on the $\bm{S}$ residuals. 
 Finally, these twice-regressed $\bm{y}$ residuals are regressed on the twice-regressed $\bm{R}$ residuals to obtain the WLS estimates of $\bs\beta$. 
 Let $\bm{\ddot{S}} = \left(\bm{I} - \bm{H_T}\right)\bm{S}$, $\bm{\ddot{R}} = \left(\bm{I} - \bm{H_{\ddot{S}}}\right)\left(\bm{I} - \bm{H_T}\right)\bm{R}$, and $\bm{\ddot{y}} = \left(\bm{I} - \bm{H_{\ddot{S}}}\right)\left(\bm{I} - \bm{H_T}\right)\bm{y}$. 
@@ -166,10 +158,7 @@ The WLS estimator of $\bs\beta$ can then be written as
 \label{eq:WLS}
 \bs{\hat\beta} = \bm{M_{\ddot{R}}} \sum_{i=1}^m \bm{\ddot{R}}_i' \bm{W}_i \bm{\ddot{y}}_i. 
 \end{equation}
-This estimator is algebraically identical to the direct WLS estimator based on the full set of predictors, \[
-\bs{\hat\beta} = \bm{K}'\bm{M_X} \sum_{i=1}^m \bm{X}_i' \bm{W}_i \bm{y}_i,
-\]
-but avoids the need to solve a system of $p$ linear equations.
+This estimator is algebraically identical to the LSDV estimator, $\bs{\hat\beta} = \bm{K}'\bm{M_X} \bm{X}' \bm{W} \bm{y}$, but avoids the need to solve a system of $p$ linear equations.
 
 In the remainder, we focus on the more general case in which fixed effects are absorbed before estimation of $\bs\beta$. For models that do not include within-cluster fixed effects, so that the full covariate matrix is $\bm{U} = \left[\bm{R} \ \bm{S}\right]$, all of the results hold after substituting $\bm{U}$ for $\bm{\ddot{R}}$. 
 
@@ -193,7 +182,7 @@ While there are several versions of this approach, all can be written in the for
 \end{equation}
 where $\bm{e}_i = \bm{Y}_i - \bm{X}_i \bs{\hat\beta}$ is the vector of residuals from cluster $i$ and $\bm{A}_i$ is some $n_i$ by $n_i$ adjustment matrix. 
 
-The form of these adjustment matrices parallels those of the heteroskedasticity-consistent (HC) variance estimators proposed by \citet*{MacKinnon1985some}. 
+The form of these adjustment matrices parallels those of the heteroskedasticity-consistent variance estimators proposed by \citet*{MacKinnon1985some}. 
 The most basic CRVE, described by \citet{Liang1986longitudinal}, uses $\bm{A}_i = \bm{I}_i$, an $n_i \times n_i$ identity matrix. 
 Following \citet{Cameron2015practitioners}, we refer to this estimator as CR0. 
 This estimator is biased towards zero because the cross-product of the residuals $\bm{e}_i \bm{e}_i'$ tends to under-estimate the true variance $\bs\Sigma_i$ in cluster $i$.
@@ -203,7 +192,7 @@ The CR1 or CR1S estimator is now commonly used in empirical applications.
 Use of these adjustments still tends to under-estimate the true variance of $\hat{\bs\beta}$ \citep{Cameron2015practitioners}. 
 Analytic work and simulation studies indicate that the degree of bias depends not only on the number of clusters $m$, but also on features of the covariates in $\bm{X}$. Specifically, 
 the bias tends to be larger when the covariates are skewed or unbalanced across clusters, or when clusters vary in size \citep{Carter2013asymptotic, MacKinnon2013thirty}. 
-A more principled approach to bias correction would therefore take into account these features of the covariates. 
+A more principled approach to bias correction would take into account these features of the covariates. 
 One such estimator uses adjustment matrices given by $\bm{A}_i = \left(\bm{I} - \bm{\ddot{R}}_i \bm{M_{\ddot{R}}}\bm{\ddot{R}}_i'\bm{W}_i\right)^{-1}$. This estimator, denoted CR3, closely approximates the jackknife re-sampling variance estimator \citep{Bell2002bias, Mancl2001covariance}.  
 However, CR3 tends to over-correct the bias of CR0, while the CR1 estimator tends to under-correct. 
 The next section describes in detail the BRL approach, which makes adjustments that are intermediate in magnitude between CR1 and CR3. 
@@ -214,24 +203,24 @@ The next section describes in detail the BRL approach, which makes adjustments t
 
 In contrast to the CR1 or CR3 estimators, the BRL correction for CRVE is premised on a ``working'' model for the structure of the errors, which must be specified by the analyst. 
 Under a given working model, adjustment matrices $\bm{A}_i$ are defined so that the variance estimator is exactly unbiased.
-We refer to this correction as CR2 because it is an extension of the HC2 variance estimator for regressions with uncorrelated errors, which is exactly unbiased when the errors are homoskedastic \citep{MacKinnon1985some}.
+We refer to this correction as CR2 because it extends the HC2 variance estimator for regressions with uncorrelated errors, which is exactly unbiased when the errors are homoskedastic \citep{MacKinnon1985some}.
 The idea of specifying a model may seem antithetical to the purpose of using CRVE, yet extensive simulation studies have demonstrated that the method performs better in small samples than any of the other adjustments, even when the working model is incorrect. (See Section \ref{sec:simulation} for a review of this literature.) 
 Although the CR2 estimator may no longer be exactly unbiased when the working model is misspecified, its bias still tends to be greatly reduced compared to CR1 or CR0 (thus the name ``bias reduced linearization''). Furthermore, as the number of clusters increases, reliance on the working model diminishes. 
 In a sense, CR2 provides necessary scaffolding in the small-sample case, which falls away when there is sufficient data.
 
-Let $\bs\Phi_i$ denote a working model for the covariance of the errors in cluster $i$ (up to a scalar constant), with $\bs\Phi = \text{diag}\left(\bs\Phi_1,...,\bs\Phi_m\right)$. 
-For example, following \citet{Bell2002bias} we might assume $\bs\Phi_i = \bm{I}_i$, i.e., that the errors are uncorrelated and homoskedastic. 
-Alternatively, \citet{Imbens2015robust} suggested using a basic random effects (i.e., compound symmetric) structure, in which $\bs\Phi_i$ has unit diagonal entries and off-diagonal entries of $\rho$, with $\rho$ estimated using the OLS residuals \citep[see][p. 16]{Imbens2015robust}.
+Let $\bs\Phi = \text{diag}\left(\bs\Phi_1,...,\bs\Phi_m\right)$ denote a working model for the covariance structure (up to a scalar constant). 
+For example, we might assume that the errors are uncorrelated and homoskedastic, with $\bs\Phi_i = \bm{I}_i$. 
+Alternatively, \citet{Imbens2015robust} suggested using a random effects (i.e., compound symmetric) structure, in which $\bs\Phi_i$ has unit diagonal entries and off-diagonal entries of $\rho$, with $\rho$ estimated using the OLS residuals \citep[see][p. 16]{Imbens2015robust}.
 
-Based on a given working model, in the original formulation of \citet{Bell2002bias}, the BRL adjustment matrices are chosen to satisfy the criterion
+In the original formulation of \citet{Bell2002bias}, the BRL adjustment matrices are chosen to satisfy the criterion
 \begin{equation}
 \label{eq:CR2_criterion_BM}
 \bm{A}_i \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i' \bm{A}_i'  =  \bs\Phi_i 
 \end{equation}
-where $\left(\bm{I} - \bm{H_X}\right)_i$ denotes the rows of $\bm{I} - \bm{H_X}$ corresponding to cluster $i$.
+for a given working model, where $\left(\bm{I} - \bm{H_X}\right)_i$ denotes the rows of $\bm{I} - \bm{H_X}$ corresponding to cluster $i$.
 If the working model and weight matrices are both taken to be identity matrices, then the adjustment matrices simplify to $\bm{A}_i = \left(\bm{I}_i - \bm{X}_i\bm{M_X} \bm{X}_i'\right)^{-1/2}$, where $\bm{Z}^{-1/2}$ denotes the symmetric square-root of the matrix $\bm{Z}$. 
-This formulation of $\bm{A}_i$ is problematic because, for some fixed effects models that are common in economic applications, Equation \ref{eq:CR2_criterion_BM} does not have a solution. 
-In the next two subsections, we address two problems that arise in models with fixed effects, thereby articulating a BRL methodology that is suitable for a wide range of applications.
+This formulation of $\bm{A}_i$ is problematic because, for some fixed effects models that are common in economic applications, Equation \ref{eq:CR2_criterion_BM} does not have any solution. 
+In the next two subsections, we address two problems with BRL that arise in models with fixed effects.
 
 \subsection{Generalized Inverse}
 
@@ -729,10 +718,9 @@ In the next section, we compare the two tests in several examples, drawn from a 
 \section{EXAMPLES}
 \label{sec:examples}
 
-This section presents three short examples that illustrate the performance of CRVE across a variety of applied contexts. 
+This section presents two examples that illustrate the performance of CRVE in different applied contexts. 
 In the first example, the effects of substantive interest involve between-cluster contrasts. 
 The second example involves a cluster-robust Hausman test for differences between within- and across-cluster information. 
-In the final example, the effects are identified within each cluster. 
 In each example, we demonstrate the proposed AHT test for single- and multiple-parameter hypotheses and compare the results to the standard test based on the CR1 variance estimator and $m - 1$ degrees of freedom. 
 The focus here is on providing insight into the conditions under which the AHT and standard estimators diverge in terms of three quantities of interest: the standard error estimates, the degrees of freedom estimates, and the stated p-values. 
 Data files and replication code (in R) are available for each analysis as an online supplement.
@@ -1026,190 +1014,6 @@ The results of the policy effect tests are quite similar across specifications a
 Of note is that, for both the RE and FE estimates, the AHT tests have only half the degrees of freedom of the corresponding standard tests. 
 For the artificial Hausman test, the AHT test has fewer than \Sexpr{round(Haus2_CR2["HTZ","df"])} degrees of freedom, which leads to a much larger p-value compared to using the standard test based on CR1. 
 
-\subsection{Tennessee STAR class-size experiment.} 
-
-The final example demonstrates an application in which the AHT and standard tests lead to similar results. The Tennessee STAR class size experiment is one of the most intensively studied interventions in education \citep[for a detailed review, see][]{Schanzenbach2006what}.  The experiment involved students in kindergarten through third grade across 79 schools. Within each school, students and their teachers were randomized equally to one of three conditions: small class-size (targeted to have 13-17 students), regular class-size, or regular class-size with an aide.
-Subsequent research has focused on the effects of these conditions on kindergarten reading, math, and word recognition \citep{Achilles2008tennessee}; high school test scores \citep{Schanzenbach2006what}; college entrance exam participation \citep{Krueger2001effect}; and home ownership and earnings \citep{Chetty2011how}, among other outcomes.
-
-The STAR experiment involved three treatment conditions and multiple outcomes, providing a scenario where both t-tests (with $q = 1$) and F-tests with varying constraint dimensions can be applied. 
-For simplicity, we focus only on the subgroup of students who were in kindergarten during the first year of the study, and on three outcomes measured at the end of the kindergarten year: reading, word recognition, and math \citep{Achilles2008tennessee}. 
-Outcome scores are standardized to percentile ranks, following \citet{Krueger2001effect}.
-The analytic model is: 
-\begin{equation}
-y_{ijk} = \bm{r}_{ij}'\bs\beta_k + \bm{s}_{ij}'\bs\gamma_0 + \gamma_k + \mu_i + \epsilon_{ijk}, 
-\end{equation}
-where $y_{ijk}$ is the percentile rank on outcome $k$ for student $j$ in school $i$; $\bm{r}_{ij}$ includes indicators for the small-class and regular-plus-aide conditions; $\bm{s}_{ij}$ includes student demographic covariates (i.e., free or reduced-price lunch status; race; gender; age); $\gamma_k$ is a fixed effect for outcome $k$; and $\mu_i$ is a fixed effect for school $i$. 
-In this model, $\beta_{1k}$ represents the average effect of being in a small class and $\beta_{2k}$ represents the average of effect of being in a regular class with an aid, in each case compared to a regular-size class without an aid.
-
-Using this model, we test four distinct hypotheses that vary in dimension from $q = 1$ to $q = 6$. 
-First, using only the math achievement scores, we test the effects of small class size ($H_0: \beta_{11} = 0$) while maintaining the assumption that the additional classroom aide has no effect on student achievement (i.e., constraining $\beta_{21} = 0$). 
-Second, again only using the data for outcome $k$, we test the hypothesis that there are no differences across the three class-size conditions (i.e., $H_0: \bs\beta_1 = \bm{0}$). 
-Third, combining the data across all three outcomes, we test the hypothesis that small class size (vs regular and regular plus aide) had no effects on any outcome (i.e., $\beta_{11} = \beta_{12} = \beta_{13} = 0$).
-Finally, we test the hypothesis that there are no differences across the three class-size conditions on any outcome (i.e., $H_0: \bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bm{0}$). 
-The third and fourth tests use the seemingly unrelated regression (SUR) framework, in which separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. 
-In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the school fixed effects and clustering the standard errors by school.
-
-<<STAR_models, include=FALSE, cache=TRUE>>=
-
-# Read in student data files 
-stud <- read.table("data/TNSTAR/STAR_Students.tab", sep = "\t", header = TRUE)
-
-#-----------------------------------
-# Student data 
-#------------------------------------
-
-student_dat <- within(stud, {
-  female <- ifelse(gender==2, 1, 0)
-  minority <- ifelse(race %in% c(1,3), 0, 1)
-  white <- 1 - minority
-  gk_small <- ifelse(gkclasstype=="1", 1, 0)
-  gk_RA <- ifelse(gkclasstype == "3", 1, 0)
-  free <- ifelse(gkfreelunch == "1", 1, 0)
-  urbanicity <- factor(gksurban, levels = 1:4, c("Inner","Suburb","Rural","Urban"))
-  dob <- as.Date(paste(birthyear, birthmonth, birthday, sep = "-"))
-  agek <- new_interval(dob, as.Date("1985-09-01")) / duration(num = 1, units = "years")
-})
-
-#------------------------------------------
-# Outcome measure creation 
-#------------------------------------------
-
-# scale outcomes according to percentiles in regular/RA conditions
-
-filter(student_dat, flaggk==1) %>%
-  select(stdntid, gkclasstype, gktreadss, gktmathss, gkwordskillss) %>%
-  gather("outcome","scale_score",gktreadss, gktmathss, gkwordskillss) %>%
-  mutate(outcome = ifelse(outcome=="gktreadss","read",ifelse(outcome=="gktmathss","math","wordskill"))) %>%
-  group_by(outcome) %>%
-  do(data.frame(stdntid = .$stdntid, test_pct = 100 * ecdf(.$scale_score[.$gkclasstype != 1])(.$scale_score))) %>%
-  unite(SID_outcome, stdntid, outcome, remove = FALSE) ->
-  student_outcomes
-
-filter(student_dat, flaggk==1) %>%
-  select(stdntid, gkschid, white, free, female, agek, gk_small, gk_RA) %>%
-  mutate(gkschid = factor(gkschid)) %>%
-  left_join(student_outcomes, by = "stdntid") %>%
-  mutate(outcome_int = as.integer(factor(outcome))) %>%
-  na.omit() ->
-  student_dat_outcomes
-
-
-#------------------------------------------
-# fit regressions
-#------------------------------------------
-
-# reading
-
-read_lm_A <- lm(test_pct ~ 0 + gk_small + white + female + free + agek + gkschid,
-           data = filter(student_dat_outcomes, outcome=="read"))
-read_plm_A <- plm(test_pct ~ gk_small + white + female + free + agek,
-                data = filter(student_dat_outcomes, outcome=="read"), index = c("gkschid","stdntid"))
-all.equal(coef(read_lm_A)[1:5], coef(read_plm_A))
-
-read_plm_B <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
-                  data = filter(student_dat_outcomes, outcome=="read"), index = c("gkschid","stdntid"))
-
-# math
-
-math_lm_A <- lm(test_pct ~ 0 + gk_small + white + female + free + agek + gkschid,
-           data = filter(student_dat_outcomes, outcome=="math"))
-math_plm_A <- plm(test_pct ~ gk_small + white + female + free + agek,
-                data = filter(student_dat_outcomes, outcome=="math"), index = c("gkschid","stdntid"))
-all.equal(coef(math_lm_A)[1:5], coef(math_plm_A))
-
-math_plm_B <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
-                  data = filter(student_dat_outcomes, outcome=="math"), index = c("gkschid","stdntid"))
-
-# word recognition
-
-word_lm_A <- lm(test_pct ~ 0 + gk_small + white + female + free + agek + gkschid,
-           data = filter(student_dat_outcomes, outcome=="wordskill"))
-word_plm_A <- plm(test_pct ~ gk_small + white + female + free + agek,
-                data = filter(student_dat_outcomes, outcome=="wordskill"), index = c("gkschid","stdntid"))
-all.equal(coef(word_lm_A)[1:5], coef(word_plm_A))
-
-word_plm_B <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
-                  data = filter(student_dat_outcomes, outcome=="wordskill"), index = c("gkschid","stdntid"))
-
-# SUR
-
-SUR_lm_A <- lm(test_pct ~ 0 + gkschid + outcome + outcome:gk_small + white + female + free + agek,
-          data = student_dat_outcomes)
-SUR_plm_A <- plm(test_pct ~ outcome + outcome:gk_small + white + female + free + agek,
-                 data = student_dat_outcomes, index = c("gkschid","SID_outcome"))
-all.equal(coef(SUR_lm_A)[80:88], coef(SUR_plm_A))
-
-SUR_plm_B <- plm(test_pct ~ outcome + outcome:gk_small + outcome:gk_RA + white + female + free + agek,
-                 data = student_dat_outcomes, index = c("gkschid","SID_outcome"))
-
-mods <- list(read_plm_A = read_plm_A, read_plm_B = read_plm_B,
-             math_plm_A = math_plm_A, math_plm_B = math_plm_B,
-             word_plm_A = word_plm_A, word_plm_B = word_plm_B,
-             SUR_plm_A = SUR_plm_A, SUR_plm_B = SUR_plm_B)
-
-#------------------------------------------
-# Wald tests
-#------------------------------------------
-
-run_Wald_tests <- function(mod) {
-  trt_coefs <- which(grepl("gk_", names(coef(mod))))
-  if (all(class(mod) == "lm")) {
-    clustering_var <- model.frame(mod)$gkschid
-    CR1 <- Wald_test(mod, trt_coefs, vcov = "CR1", cluster = clustering_var, test = "Naive-F")
-    CR2 <- Wald_test(mod, trt_coefs, vcov = "CR2", cluster = clustering_var, test = c("Naive-F","HTZ")) 
-  } else {
-    CR1 <- Wald_test(mod, trt_coefs, vcov = "CR1", test = "Naive-F")
-    CR2 <- Wald_test(mod, trt_coefs, vcov = "CR2", test = c("Naive-F","HTZ")) 
-  }
-  CR1$CR <- 1
-  CR1$test <- rownames(CR1)
-  CR2$CR <- 2
-  CR2$test <- rownames(CR2)
-  res <- rbind(CR1, CR2)
-  class(res) <- "data.frame"
-  row.names(res) <- NULL
-  res$q <- length(trt_coefs)
-  select(res, q, CR, test, Fstat, df, p_val)
-}
-
-STAR_F_tests <- ldply(mods, run_Wald_tests)
-@
-
-<<STAR_tables, results="asis">>=
-filter(STAR_F_tests, grepl("(math|SUR)", .id) & (CR==1 | test=="HTZ")) %>%
-  mutate(Outcome = ifelse(grepl("math", .id), "Math","Combined"),
-         Effect = paste0(ifelse(grepl("_A", .id), "Small class", "Small class and classroom aide"), " (q=",q,")"),
-         Correction = paste0("CR",CR),
-         Test = factor(test, levels = c("Naive-F","HTZ"), labels = c("Standard","AHT")),
-         F = round(Fstat,3),
-         df = round(df, 2),
-         p = round(p_val, 5)) %>%
-  select(Outcome, Effect, Test, F, df, p) ->
-  STAR_results
-
-STAR_results$Outcome[-seq(1,8,4)] <- NA
-STAR_results$Effect[-seq(1,8,2)] <- NA
-
-print(xtable(STAR_results, 
-             caption = "Tests of treatment effects in the Tennessee STAR class size experiment",
-             label = "tab:STAR",
-             align = "llllrrr",
-             digits = c(0,0,0,0,3,1,5)
-             ), 
-      include.rownames=FALSE, 
-      hline.after = c(-1,0,4,8),
-      booktabs = TRUE,
-      table.placement = "tbh", 
-      caption.placement = "top")
-@
-
-Table \ref{tab:STAR} displays the results for a representative subset of these hypothesis tests, using either the standard test (with CR1) or the AHT test (with CR2).
-These results illustrate two important points regarding the use of the AHT test in practice.
-First, across all three analyses, the AHT t- and F-tests are only typically slightly smaller than the corresponding standard test.
-Second, if treatment is randomly allocated in approximately equal proportions within each cluster---as occurred in the TN STAR experiment---the degrees of freedom for the AHT tests are only slightly smaller than those for the standard tests.
-In combination with the rather large sample size of 79 schools, these differences have only a minimal effect on the p-values for these tests. 
-As the previous two examples illustrate, however, the similarity between these tests is not common, and is a result only of the design of the study, indicating that the standard test is best used only in experiments randomized within clusters. 
-
 \section{Conclusion}
 \label{sec:conclusion}
 
@@ -1256,8 +1060,6 @@ It would be interesting to investigate whether the saddlepoint approximation cou
 
 \section{BRL adjustment matrices}
 \label{app:theorems}
-
-This appendix provides proof of the two theorems from Section \ref{sec:BRL}. 
 
 \subsection{Proof of Theorem \ref{thm:BRL_FE}}
 

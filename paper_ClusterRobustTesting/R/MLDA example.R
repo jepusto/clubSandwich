@@ -16,18 +16,18 @@ filter(deaths, agegr==2 & year <= 1983 & dtype %in% c(1, 2, 3, 6)) %>%
 
 # replicate Tables 5.2 and 5.3
 
-est <- function(dat, controls = NULL) {
+est <- function(dat, controls = NULL, vcov_type, test) {
   frml_string <- "mrate ~ 0 + legal"
   if (length(controls) > 0) frml_string <- paste(frml_string, controls, sep = " + ")
   
   notrend_noweight <- lm(as.formula(paste0(frml_string, " + factor(state) + factor(year)")), data = dat)
-  A <- coef_test(notrend_noweight, vcov = "CR1s", cluster = dat$state, test = "z")["legal",]
+  A <- coef_test(notrend_noweight, vcov = vcov_type, cluster = dat$state, test = test)["legal",]
   trend_noweight <- lm(as.formula(paste0(frml_string, " + factor(state) + factor(year) + year:factor(state)")), data = dat)
-  B <- coef_test(trend_noweight, vcov = "CR1s", cluster = dat$state, test = "z")["legal",]
+  B <- coef_test(trend_noweight, vcov = vcov_type, cluster = dat$state, test = test)["legal",]
   notrend_weight <- lm(as.formula(paste0(frml_string, " + factor(state) + factor(year)")), weights = pop, data = dat)
-  C <- coef_test(notrend_weight, vcov = "CR1s", cluster = dat$state, test = "z")["legal",]
+  C <- coef_test(notrend_weight, vcov = vcov_type, cluster = dat$state, test = test)["legal",]
   trend_weight <- lm(as.formula(paste0(frml_string, " + factor(state) + factor(year) + year:factor(state)")), weights = pop, data = dat)
-  D <- coef_test(trend_weight, vcov = "CR1s", cluster = dat$state, test = "z")["legal",]
+  D <- coef_test(trend_weight, vcov = vcov_type, cluster = dat$state, test = test)["legal",]
   res <- cbind(trend = c("No","Yes","No","Yes"),
                weight = c("No","No","Yes","Yes"),
                rbind(A, B, C, D))
@@ -35,8 +35,10 @@ est <- function(dat, controls = NULL) {
   res
 }
 
-est_5.2 <- do(death_dat, est(.))
-est_5.3 <- do(death_dat, est(., controls = "beertaxa"))
+do(death_dat, est(., vcov_type = "CR1S", test = "z"))
+do(death_dat, est(., vcov_type = "CR2", test = c("naive-t","Satterthwaite", "saddlepoint")))
+do(death_dat, est(., controls = "beertaxa", vcov_type = "CR1S", test = "z"))
+do(death_dat, est(., controls = "beertaxa", vcov_type = "CR2", test = c("naive-t","Satterthwaite", "saddlepoint")))
 
 #--------------------------------
 # Hausman-type tests

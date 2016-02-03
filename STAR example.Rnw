@@ -1,0 +1,183 @@
+\subsection{Tennessee STAR class-size experiment.} 
+
+The final example demonstrates an application in which the AHT and standard tests lead to similar results. The Tennessee STAR class size experiment is one of the most intensively studied interventions in education \citep[for a detailed review, see][]{Schanzenbach2006what}.  The experiment involved students in kindergarten through third grade across 79 schools. Within each school, students and their teachers were randomized equally to one of three conditions: small class-size (targeted to have 13-17 students), regular class-size, or regular class-size with an aide.
+Subsequent research has focused on the effects of these conditions on kindergarten reading, math, and word recognition \citep{Achilles2008tennessee}; high school test scores \citep{Schanzenbach2006what}; college entrance exam participation \citep{Krueger2001effect}; and home ownership and earnings \citep{Chetty2011how}, among other outcomes.
+
+The STAR experiment involved three treatment conditions and multiple outcomes, providing a scenario where both t-tests (with $q = 1$) and F-tests with varying constraint dimensions can be applied. 
+For simplicity, we focus only on the subgroup of students who were in kindergarten during the first year of the study, and on three outcomes measured at the end of the kindergarten year: reading, word recognition, and math \citep{Achilles2008tennessee}. 
+Outcome scores are standardized to percentile ranks, following \citet{Krueger2001effect}.
+The analytic model is: 
+\begin{equation}
+y_{ijk} = \bm{r}_{ij}'\bs\beta_k + \bm{s}_{ij}'\bs\gamma_0 + \gamma_k + \mu_i + \epsilon_{ijk}, 
+\end{equation}
+where $y_{ijk}$ is the percentile rank on outcome $k$ for student $j$ in school $i$; $\bm{r}_{ij}$ includes indicators for the small-class and regular-plus-aide conditions; $\bm{s}_{ij}$ includes student demographic covariates (i.e., free or reduced-price lunch status; race; gender; age); $\gamma_k$ is a fixed effect for outcome $k$; and $\mu_i$ is a fixed effect for school $i$. 
+In this model, $\beta_{1k}$ represents the average effect of being in a small class and $\beta_{2k}$ represents the average of effect of being in a regular class with an aid, in each case compared to a regular-size class without an aid.
+
+Using this model, we test four distinct hypotheses that vary in dimension from $q = 1$ to $q = 6$. 
+First, using only the math achievement scores, we test the effects of small class size ($H_0: \beta_{11} = 0$) while maintaining the assumption that the additional classroom aide has no effect on student achievement (i.e., constraining $\beta_{21} = 0$). 
+Second, again only using the data for outcome $k$, we test the hypothesis that there are no differences across the three class-size conditions (i.e., $H_0: \bs\beta_1 = \bm{0}$). 
+Third, combining the data across all three outcomes, we test the hypothesis that small class size (vs regular and regular plus aide) had no effects on any outcome (i.e., $\beta_{11} = \beta_{12} = \beta_{13} = 0$).
+Finally, we test the hypothesis that there are no differences across the three class-size conditions on any outcome (i.e., $H_0: \bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bm{0}$). 
+The third and fourth tests use the seemingly unrelated regression (SUR) framework, in which separate treatment effects are estimated for each outcome, but the student demographic effects and school fixed effects are pooled across outcomes. 
+In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the school fixed effects and clustering the standard errors by school.
+
+<<STAR_models, include=FALSE, cache=TRUE>>=
+
+# Read in student data files 
+stud <- read.table("data/TNSTAR/STAR_Students.tab", sep = "\t", header = TRUE)
+
+#-----------------------------------
+# Student data 
+#------------------------------------
+
+student_dat <- within(stud, {
+  female <- ifelse(gender==2, 1, 0)
+  minority <- ifelse(race %in% c(1,3), 0, 1)
+  white <- 1 - minority
+  gk_small <- ifelse(gkclasstype=="1", 1, 0)
+  gk_RA <- ifelse(gkclasstype == "3", 1, 0)
+  free <- ifelse(gkfreelunch == "1", 1, 0)
+  urbanicity <- factor(gksurban, levels = 1:4, c("Inner","Suburb","Rural","Urban"))
+  dob <- as.Date(paste(birthyear, birthmonth, birthday, sep = "-"))
+  agek <- new_interval(dob, as.Date("1985-09-01")) / duration(num = 1, units = "years")
+})
+
+#------------------------------------------
+# Outcome measure creation 
+#------------------------------------------
+
+# scale outcomes according to percentiles in regular/RA conditions
+
+filter(student_dat, flaggk==1) %>%
+  select(stdntid, gkclasstype, gktreadss, gktmathss, gkwordskillss) %>%
+  gather("outcome","scale_score",gktreadss, gktmathss, gkwordskillss) %>%
+  mutate(outcome = ifelse(outcome=="gktreadss","read",ifelse(outcome=="gktmathss","math","wordskill"))) %>%
+  group_by(outcome) %>%
+  do(data.frame(stdntid = .$stdntid, test_pct = 100 * ecdf(.$scale_score[.$gkclasstype != 1])(.$scale_score))) %>%
+  unite(SID_outcome, stdntid, outcome, remove = FALSE) ->
+  student_outcomes
+
+filter(student_dat, flaggk==1) %>%
+  select(stdntid, gkschid, white, free, female, agek, gk_small, gk_RA) %>%
+  mutate(gkschid = factor(gkschid)) %>%
+  left_join(student_outcomes, by = "stdntid") %>%
+  mutate(outcome_int = as.integer(factor(outcome))) %>%
+  na.omit() ->
+  student_dat_outcomes
+
+
+#------------------------------------------
+# fit regressions
+#------------------------------------------
+
+# reading
+
+read_lm_A <- lm(test_pct ~ 0 + gk_small + white + female + free + agek + gkschid,
+           data = filter(student_dat_outcomes, outcome=="read"))
+read_plm_A <- plm(test_pct ~ gk_small + white + female + free + agek,
+                data = filter(student_dat_outcomes, outcome=="read"), index = c("gkschid","stdntid"))
+all.equal(coef(read_lm_A)[1:5], coef(read_plm_A))
+
+read_plm_B <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
+                  data = filter(student_dat_outcomes, outcome=="read"), index = c("gkschid","stdntid"))
+
+# math
+
+math_lm_A <- lm(test_pct ~ 0 + gk_small + white + female + free + agek + gkschid,
+           data = filter(student_dat_outcomes, outcome=="math"))
+math_plm_A <- plm(test_pct ~ gk_small + white + female + free + agek,
+                data = filter(student_dat_outcomes, outcome=="math"), index = c("gkschid","stdntid"))
+all.equal(coef(math_lm_A)[1:5], coef(math_plm_A))
+
+math_plm_B <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
+                  data = filter(student_dat_outcomes, outcome=="math"), index = c("gkschid","stdntid"))
+
+# word recognition
+
+word_lm_A <- lm(test_pct ~ 0 + gk_small + white + female + free + agek + gkschid,
+           data = filter(student_dat_outcomes, outcome=="wordskill"))
+word_plm_A <- plm(test_pct ~ gk_small + white + female + free + agek,
+                data = filter(student_dat_outcomes, outcome=="wordskill"), index = c("gkschid","stdntid"))
+all.equal(coef(word_lm_A)[1:5], coef(word_plm_A))
+
+word_plm_B <- plm(test_pct ~ gk_small + gk_RA + white + female + free + agek,
+                  data = filter(student_dat_outcomes, outcome=="wordskill"), index = c("gkschid","stdntid"))
+
+# SUR
+
+SUR_lm_A <- lm(test_pct ~ 0 + gkschid + outcome + outcome:gk_small + white + female + free + agek,
+          data = student_dat_outcomes)
+SUR_plm_A <- plm(test_pct ~ outcome + outcome:gk_small + white + female + free + agek,
+                 data = student_dat_outcomes, index = c("gkschid","SID_outcome"))
+all.equal(coef(SUR_lm_A)[80:88], coef(SUR_plm_A))
+
+SUR_plm_B <- plm(test_pct ~ outcome + outcome:gk_small + outcome:gk_RA + white + female + free + agek,
+                 data = student_dat_outcomes, index = c("gkschid","SID_outcome"))
+
+mods <- list(read_plm_A = read_plm_A, read_plm_B = read_plm_B,
+             math_plm_A = math_plm_A, math_plm_B = math_plm_B,
+             word_plm_A = word_plm_A, word_plm_B = word_plm_B,
+             SUR_plm_A = SUR_plm_A, SUR_plm_B = SUR_plm_B)
+
+#------------------------------------------
+# Wald tests
+#------------------------------------------
+
+run_Wald_tests <- function(mod) {
+  trt_coefs <- which(grepl("gk_", names(coef(mod))))
+  if (all(class(mod) == "lm")) {
+    clustering_var <- model.frame(mod)$gkschid
+    CR1 <- Wald_test(mod, trt_coefs, vcov = "CR1", cluster = clustering_var, test = "Naive-F")
+    CR2 <- Wald_test(mod, trt_coefs, vcov = "CR2", cluster = clustering_var, test = c("Naive-F","HTZ")) 
+  } else {
+    CR1 <- Wald_test(mod, trt_coefs, vcov = "CR1", test = "Naive-F")
+    CR2 <- Wald_test(mod, trt_coefs, vcov = "CR2", test = c("Naive-F","HTZ")) 
+  }
+  CR1$CR <- 1
+  CR1$test <- rownames(CR1)
+  CR2$CR <- 2
+  CR2$test <- rownames(CR2)
+  res <- rbind(CR1, CR2)
+  class(res) <- "data.frame"
+  row.names(res) <- NULL
+  res$q <- length(trt_coefs)
+  select(res, q, CR, test, Fstat, df, p_val)
+}
+
+STAR_F_tests <- ldply(mods, run_Wald_tests)
+@
+
+<<STAR_tables, results="asis">>=
+filter(STAR_F_tests, grepl("(math|SUR)", .id) & (CR==1 | test=="HTZ")) %>%
+  mutate(Outcome = ifelse(grepl("math", .id), "Math","Combined"),
+         Effect = paste0(ifelse(grepl("_A", .id), "Small class", "Small class and classroom aide"), " (q=",q,")"),
+         Correction = paste0("CR",CR),
+         Test = factor(test, levels = c("Naive-F","HTZ"), labels = c("Standard","AHT")),
+         F = round(Fstat,3),
+         df = round(df, 2),
+         p = round(p_val, 5)) %>%
+  select(Outcome, Effect, Test, F, df, p) ->
+  STAR_results
+
+STAR_results$Outcome[-seq(1,8,4)] <- NA
+STAR_results$Effect[-seq(1,8,2)] <- NA
+
+print(xtable(STAR_results, 
+             caption = "Tests of treatment effects in the Tennessee STAR class size experiment",
+             label = "tab:STAR",
+             align = "llllrrr",
+             digits = c(0,0,0,0,3,1,5)
+             ), 
+      include.rownames=FALSE, 
+      hline.after = c(-1,0,4,8),
+      booktabs = TRUE,
+      table.placement = "tbh", 
+      caption.placement = "top")
+@
+
+Table \ref{tab:STAR} displays the results for a representative subset of these hypothesis tests, using either the standard test (with CR1) or the AHT test (with CR2).
+These results illustrate two important points regarding the use of the AHT test in practice.
+First, across all three analyses, the AHT t- and F-tests are only typically slightly smaller than the corresponding standard test.
+Second, if treatment is randomly allocated in approximately equal proportions within each cluster---as occurred in the TN STAR experiment---the degrees of freedom for the AHT tests are only slightly smaller than those for the standard tests.
+In combination with the rather large sample size of 79 schools, these differences have only a minimal effect on the p-values for these tests. 
+As the previous two examples illustrate, however, the similarity between these tests is not common, and is a result only of the design of the study, indicating that the standard test is best used only in experiments randomized within clusters. 

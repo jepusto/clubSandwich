@@ -1,13 +1,5 @@
 \begin{thebibliography}{xx}
 
-\harvarditem[Achilles et~al.]{Achilles, Bain, Bellott, Boyd-Zaharias, Finn,
-  Folger, Johnston \harvardand\ Word}{2008}{Achilles2008tennessee}
-Achilles, C.~M., Bain, H.~P., Bellott, F., Boyd-Zaharias, J., Finn, J., Folger,
-  J., Johnston, J. \harvardand\ Word, E.  \harvardyearleft
-  2008\harvardyearright , `{Tennessee's Student Teacher Achievement Ratio
-  (STAR) project}'.
-\newline\harvardurl{http://hdl.handle.net/1902.1/10766}
-
 \harvarditem{Angrist \harvardand\ Lavy}{2009}{Angrist2009effects}
 Angrist, J.~D. \harvardand\ Lavy, V.  \harvardyearleft 2009\harvardyearright ,
   `{The effects of high stakes high school achievement awards : Evidence from a
@@ -78,13 +70,6 @@ Carter, A.~V., Schnepel, K.~T. \harvardand\ Steigerwald, D.~G.
   \harvardyearleft 2013\harvardyearright , {Asymptotic Behavior of a t Test
   Robust to Cluster Heterogeneity}.
 
-\harvarditem[Chetty et~al.]{Chetty, Friedman, Hilger, Saez, Schanzenbach
-  \harvardand\ Yagan}{2011}{Chetty2011how}
-Chetty, R., Friedman, J.~N., Hilger, N., Saez, E., Schanzenbach, D.~W.
-  \harvardand\ Yagan, D.  \harvardyearleft 2011\harvardyearright , `{How does
-  your kindergarten classroom affect your earnings? Evidence from Project
-  STAR}', {\em The Quarterly Journal of Economics} {\bf 126}(4),~1593--1660.
-
 \harvarditem{Conley \harvardand\ Taber}{2011}{Conley2011inference}
 Conley, T.~G. \harvardand\ Taber, C.~R.  \harvardyearleft 2011\harvardyearright
   , `{Inference with “Difference in Differences” with a Small Number of
@@ -127,12 +112,6 @@ Imbens, G.~W. \harvardand\ Kolesar, M.  \harvardyearleft 2015\harvardyearright
 Krishnamoorthy, K. \harvardand\ Yu, J.  \harvardyearleft 2004\harvardyearright
   , `{Modified Nel and Van der Merwe test for the multivariate Behrens–Fisher
   problem}', {\em Statistics {\&} Probability Letters} {\bf 66}(2),~161--169.
-
-\harvarditem{Krueger \harvardand\ Whitmore}{2001}{Krueger2001effect}
-Krueger, A. \harvardand\ Whitmore, D.  \harvardyearleft 2001\harvardyearright ,
-  `{The effect of attending a small class in the early grades on college-test
-  taking and middle school test results: Evidence from Project STAR}', {\em The
-  Economic Journal} {\bf 111}(468),~1--28.
 
 \harvarditem{Lee \harvardand\ Card}{2008}{Lee2008regression}
 Lee, D.~S. \harvardand\ Card, D.  \harvardyearleft 2008\harvardyearright ,
@@ -193,11 +172,6 @@ Pan, W. \harvardand\ Wall, M.~M.  \harvardyearleft 2002\harvardyearright ,
 Satterthwaite, F.~E.  \harvardyearleft 1946\harvardyearright , `{An approximate
   distribution of estimates of variance components}', {\em Biometrics bulletin}
   {\bf 2}(6),~110--114.
-
-\harvarditem{Schanzenbach}{2006}{Schanzenbach2006what}
-Schanzenbach, D.~W.  \harvardyearleft 2006\harvardyearright , `{What have
-  researchers learned from Project STAR?}', {\em Brookings Papers on Education
-  Policy} {\bf 2006}(1),~205--228.
 
 \harvarditem{Tipton}{2015}{Tipton2015small-t}
 Tipton, E.  \harvardyearleft 2015\harvardyearright , `{Small sample adjustments
