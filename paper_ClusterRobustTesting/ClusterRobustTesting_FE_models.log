@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  8 JAN 2016 13:51
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  2 FEB 2016 21:34
 entering extended mode
 **ClusterRobustTesting_FE_models.tex
 
@@ -8,15 +8,26 @@ LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
 croatian, czech, danish, dutch, esperanto, estonian, farsi, finnish, french, ga
-lician, german, german-x-2012-05-30, greek, gujarati, hindi, hungarian, iceland
+lician, german, german-x-2013-05-26, greek, gujarati, hindi, hungarian, iceland
 ic, indonesian, interlingua, irish, italian, kannada, kurmanji, latin, latvian,
  lithuanian, malayalam, marathi, mongolian, mongolianlmc, monogreek, ngerman, n
-german-x-2012-05-30, nynorsk, oriya, panjabi, pinyin, polish, portuguese, roman
+german-x-2013-05-26, nynorsk, oriya, panjabi, pinyin, polish, portuguese, roman
 ian, russian, sanskrit, serbian, slovak, slovenian, spanish, swedish, swissgerm
 an, tamil, telugu, turkish, turkmen, ukenglish, ukrainian, uppersorbian, usengl
 ishmax, welsh, loaded.
+
+(C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ectaart.c
+ls
+Document Class: ectaart 2006/04/11Econometrica article class (VS)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\article.cls"
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\leqno.clo"
+File: leqno.clo 1998/08/17 v1.1c Standard LaTeX option (left equation numbers)
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\fleqn.clo"
+File: fleqn.clo 1998/08/17 v1.1c Standard LaTeX option (flush left equations)
+\mathindent=\dimen102
+)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\size12.clo"
 File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 )
@@ -30,15 +41,35 @@ File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 \c@table=\count86
 \abovecaptionskip=\skip41
 \belowcaptionskip=\skip42
-\bibindent=\dimen102
+\bibindent=\dimen103
 )
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
-Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+\c@firstpage=\count87
+\c@lastpage=\count88
+\c@thanks=\count89
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
 Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
 \KV@toks@=\toks14
 )
+\c@author=\count90
+\c@address=\count91
+\sv@mathsurround=\dimen104
+\sv@parindent=\dimen105
+\fm@box=\box26
+\fm@size=\dimen106
+\t@xtheight=\dimen107
+\c@addressref=\count92
+\abstract@box=\box27
+\keyword@box=\box28
+\pre@kwd@depth=\dimen108
+\authors@list=\toks15
+\keywords@list=\toks16
+\numberlines@box=\box29
+\numberlines@box@skip=\skip43
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
+Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
+
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
 Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
 
@@ -59,10 +90,10 @@ Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.sty"
 Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 )
-\Gread@gobject=\count87
+\Gread@gobject=\count93
 ))
-\Gin@req@height=\dimen103
-\Gin@req@width=\dimen104
+\Gin@req@height=\dimen109
+\Gin@req@width=\dimen110
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\color.sty"
 Package: color 2005/11/14 v1.0j Standard LaTeX Color (DPC)
@@ -74,18 +105,18 @@ Package color Info: Driver file: pdftex.def on input line 130.
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\framed\framed.sty"
 Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
-\OuterFrameSep=\skip43
-\fb@frw=\dimen105
-\fb@frh=\dimen106
-\FrameRule=\dimen107
-\FrameSep=\dimen108
+\OuterFrameSep=\skip44
+\fb@frw=\dimen111
+\fb@frh=\dimen112
+\FrameRule=\dimen113
+\FrameSep=\dimen114
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\alltt.sty"
 Package: alltt 1997/06/16 v2.0g defines alltt environment
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amsmath.sty"
 Package: amsmath 2013/01/14 v2.14 AMS math features
-\@mathmargin=\skip44
+\@mathmargin=\skip45
 
 For additional information on amsmath, use the `?' option.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amstext.sty"
@@ -93,166 +124,177 @@ Package: amstext 2000/06/29 v2.01
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amsgen.sty"
 File: amsgen.sty 1999/11/30 v2.0
-\@emptytoks=\toks15
-\ex@=\dimen109
+\@emptytoks=\toks17
+\ex@=\dimen115
 ))
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amsbsy.sty"
 Package: amsbsy 1999/11/29 v1.2d
-\pmbraise@=\dimen110
+\pmbraise@=\dimen116
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amsmath\amsopn.sty"
 Package: amsopn 1999/12/14 v2.01 operator names
 )
-\inf@bad=\count88
+\inf@bad=\count94
 LaTeX Info: Redefining \frac on input line 210.
-\uproot@=\count89
-\leftroot@=\count90
+\uproot@=\count95
+\leftroot@=\count96
 LaTeX Info: Redefining \overline on input line 306.
-\classnum@=\count91
-\DOTSCASE@=\count92
+\classnum@=\count97
+\DOTSCASE@=\count98
 LaTeX Info: Redefining \ldots on input line 378.
 LaTeX Info: Redefining \dots on input line 381.
 LaTeX Info: Redefining \cdots on input line 466.
-\Mathstrutbox@=\box26
-\strutbox@=\box27
-\big@size=\dimen111
+\Mathstrutbox@=\box30
+\strutbox@=\box31
+\big@size=\dimen117
 LaTeX Font Info:    Redeclaring font encoding OML on input line 566.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
-\macc@depth=\count93
-\c@MaxMatrixCols=\count94
+\macc@depth=\count99
+\c@MaxMatrixCols=\count100
 \dotsspace@=\muskip10
-\c@parentequation=\count95
-\dspbrk@lvl=\count96
-\tag@help=\toks16
-\row@=\count97
-\column@=\count98
-\maxfields@=\count99
-\andhelp@=\toks17
-\eqnshift@=\dimen112
-\alignsep@=\dimen113
-\tagshift@=\dimen114
-\tagwidth@=\dimen115
-\totwidth@=\dimen116
-\lineht@=\dimen117
-\@envbody=\toks18
-\multlinegap=\skip45
-\multlinetaggap=\skip46
-\mathdisplay@stack=\toks19
+\c@parentequation=\count101
+\dspbrk@lvl=\count102
+\tag@help=\toks18
+\row@=\count103
+\column@=\count104
+\maxfields@=\count105
+\andhelp@=\toks19
+\eqnshift@=\dimen118
+\alignsep@=\dimen119
+\tagshift@=\dimen120
+\tagwidth@=\dimen121
+\totwidth@=\dimen122
+\lineht@=\dimen123
+\@envbody=\toks20
+\multlinegap=\skip46
+\multlinetaggap=\skip47
+\mathdisplay@stack=\toks21
 LaTeX Info: Redefining \[ on input line 2665.
 LaTeX Info: Redefining \] on input line 2666.
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\amscls\amsthm.sty"
 Package: amsthm 2004/08/06 v2.20
-\thm@style=\toks20
-\thm@bodyfont=\toks21
-\thm@headfont=\toks22
-\thm@notefont=\toks23
-\thm@headpunct=\toks24
-\thm@preskip=\skip47
-\thm@postskip=\skip48
-\thm@headsep=\skip49
-\dth@everypar=\toks25
+\thm@style=\toks22
+\thm@bodyfont=\toks23
+\thm@headfont=\toks24
+\thm@notefont=\toks25
+\thm@headpunct=\toks26
+\thm@preskip=\skip48
+\thm@postskip=\skip49
+\thm@headsep=\skip50
+\dth@everypar=\toks27
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\psfrag\psfrag.sty"
 Package: psfrag 1998/04/11 v3.04 PSfrag (MCG)
-\pfg@pcount=\count100
-\pfg@scount=\count101
+\pfg@pcount=\count106
+\pfg@scount=\count107
 \pfg@temp=\write3
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\epsf\epsf.sty"
 This is `epsf.tex' v2.7.4 <14 February 2011>
 \epsffilein=\read1
-\epsfframemargin=\dimen118
-\epsfframethickness=\dimen119
-\epsfrsize=\dimen120
-\epsftmp=\dimen121
-\epsftsize=\dimen122
-\epsfxsize=\dimen123
-\epsfysize=\dimen124
-\pspoints=\dimen125
+\epsfframemargin=\dimen124
+\epsfframethickness=\dimen125
+\epsfrsize=\dimen126
+\epsftmp=\dimen127
+\epsftsize=\dimen128
+\epsfxsize=\dimen129
+\epsfysize=\dimen130
+\pspoints=\dimen131
 ) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\tools\enumerate.sty"
 Package: enumerate 1999/03/05 v3.00 enumerate extensions (DPC)
-\@enLab=\toks26
+\@enLab=\toks28
 )
-(C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\latex\booktabs\booktabs.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\booktabs\booktabs.sty"
 Package: booktabs 2005/04/14 v1.61803 publication quality tables
-\heavyrulewidth=\dimen126
-\lightrulewidth=\dimen127
-\cmidrulewidth=\dimen128
-\belowrulesep=\dimen129
-\belowbottomsep=\dimen130
-\aboverulesep=\dimen131
-\abovetopsep=\dimen132
-\cmidrulesep=\dimen133
-\cmidrulekern=\dimen134
-\defaultaddspace=\dimen135
-\@cmidla=\count102
-\@cmidlb=\count103
-\@aboverulesep=\dimen136
-\@belowrulesep=\dimen137
-\@thisruleclass=\count104
-\@lastruleclass=\count105
-\@thisrulewidth=\dimen138
+\heavyrulewidth=\dimen132
+\lightrulewidth=\dimen133
+\cmidrulewidth=\dimen134
+\belowrulesep=\dimen135
+\belowbottomsep=\dimen136
+\aboverulesep=\dimen137
+\abovetopsep=\dimen138
+\cmidrulesep=\dimen139
+\cmidrulekern=\dimen140
+\defaultaddspace=\dimen141
+\@cmidla=\count108
+\@cmidlb=\count109
+\@aboverulesep=\dimen142
+\@belowrulesep=\dimen143
+\@thisruleclass=\count110
+\@lastruleclass=\count111
+\@thisrulewidth=\dimen144
 )
-(C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\latex\apacite\apacite.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\apacite\apacite.sty"
 Package: apacite 2013/07/21 v6.03 APA citation
-\c@BibCnt=\count106
-\bibleftmargin=\skip50
-\bibindent=\skip51
-\bibparsep=\skip52
-\bibitemsep=\skip53
-\biblabelsep=\skip54
+\c@BibCnt=\count112
+\bibleftmargin=\skip51
+\bibindent=\skip52
+\bibparsep=\skip53
+\bibitemsep=\skip54
+\biblabelsep=\skip55
 )
-(C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\latex\natbib\natbib.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\natbib\natbib.sty"
 Package: natbib 2010/09/13 8.31b (PWD, AO)
-\bibhang=\skip55
-\bibsep=\skip56
+\bibhang=\skip56
+\bibsep=\skip57
 LaTeX Info: Redefining \cite on input line 694.
-\c@NAT@ctr=\count107
+\c@NAT@ctr=\count113
 )
 LaTeX Info: Redefining \BBA on input line 58.
 
-(C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\latex\caption\caption.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\caption\caption.sty"
 Package: caption 2013/05/02 v3.3-89 Customizing captions (AR)
 
-(C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\latex\caption\caption3.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\caption\caption3.sty"
 Package: caption3 2013/05/02 v1.6-88 caption3 kernel (AR)
 Package caption3 Info: TeX engine: e-TeX on input line 57.
-\captionmargin=\dimen139
-\captionmargin@=\dimen140
-\captionwidth=\dimen141
-\caption@tempdima=\dimen142
-\caption@indent=\dimen143
-\caption@parindent=\dimen144
-\caption@hangindent=\dimen145
+\captionmargin=\dimen145
+\captionmargin@=\dimen146
+\captionwidth=\dimen147
+\caption@tempdima=\dimen148
+\caption@indent=\dimen149
+\caption@parindent=\dimen150
+\caption@hangindent=\dimen151
+Package caption Info: Unknown document class (or package),
+(caption)             standard defaults will be used.
 )
-\c@ContinuedFloat=\count108
-)
-("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\multirow\multirow.sty"
-\bigstrutjot=\dimen146
+
+Package caption Warning: Unsupported document class (or package) detected,
+(caption)                usage of the caption package is not recommended.
+See the caption package documentation for explanation.
+
+Package caption Info: \@makecaption = \long macro:#1#2->\vskip \abovecaptionski
+p \sbox \@tempboxa {\hskip \true@parindent \textsc {#1}.--- #2}\ifdim \wd \@tem
+pboxa >\hsize \hskip \true@parindent \textsc {#1}.--- #2\par \else \global \@mi
+nipagefalse \hb@xt@ \hsize {\hfil \hskip -\true@parindent \box \@tempboxa \hfil
+ }\fi \vskip \belowcaptionskip .
+\c@ContinuedFloat=\count114
+) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\multirow\multirow.sty"
+\bigstrutjot=\dimen152
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\float\float.sty"
 Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count109
-\float@exts=\toks27
-\float@box=\box28
-\@float@everytoks=\toks28
-\@floatcapt=\box29
+\c@float@type=\count115
+\float@exts=\toks29
+\float@box=\box32
+\@float@everytoks=\toks30
+\@floatcapt=\box33
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\rotfloat\rotfloat.sty"
 Package: rotfloat 2004/01/04 v1.2 Combining float+rotating package (AS)
 
-(C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\latex\rotating\rotating.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\rotating\rotating.sty"
 Package: rotating 2009/03/28 v2.16a rotated objects in LaTeX
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\ifthen.sty"
 Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
 )
-\c@r@tfl@t=\count110
-\rotFPtop=\skip57
-\rotFPbot=\skip58
-\rot@float@box=\box30
-\rot@mess@toks=\toks29
+\c@r@tfl@t=\count116
+\rotFPtop=\skip58
+\rotFPbot=\skip59
+\rot@float@box=\box34
+\rot@mess@toks=\toks31
 )
 Package rotfloat Info: float package v1.3 detected on input line 74.
 )
@@ -264,12 +306,12 @@ Package: todonotes 2012/07/25
 Package: xkeyval 2012/10/14 v2.6b package option processing (HA)
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\xkeyval\xkeyval.tex"
-\XKV@toks=\toks30
-\XKV@tempa@toks=\toks31
-\XKV@depth=\count111
+\XKV@toks=\toks32
+\XKV@tempa@toks=\toks33
+\XKV@depth=\count117
 File: xkeyval.tex 2012/10/14 v2.6b key=value parser (HA)
 ))
-(C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\latex\xcolor\xcolor.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\xcolor\xcolor.sty"
 Package: xcolor 2007/01/21 v2.11 LaTeX color extensions (UK)
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\00miktex\color.cfg"
@@ -292,15 +334,15 @@ Package xcolor Info: Model `wave' substituted by `hsb' on input line 1360.
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\pgf\utilities\pgfrcs.sty"
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\utilities\pgfutil-common.te
 x"
-\pgfutil@everybye=\toks32
-\pgfutil@tempdima=\dimen147
-\pgfutil@tempdimb=\dimen148
+\pgfutil@everybye=\toks34
+\pgfutil@tempdima=\dimen153
+\pgfutil@tempdimb=\dimen154
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\utilities\pgfutil-common-li
 sts.tex"))
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\utilities\pgfutil-latex.def
 "
-\pgfutil@abb=\box31
+\pgfutil@abb=\box35
  ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\ms\everyshi.sty"
 Package: everyshi 2001/05/15 v3.00 EveryShipout Package (MS)
 ))
@@ -315,30 +357,30 @@ Package: pgf 2013/12/18 v3.0.0 (rcs-revision 1.14)
 Package: pgfsys 2013/11/30 v3.0.0 (rcs-revision 1.47)
  ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\utilities\pgfkeys.code.tex
 "
-\pgfkeys@pathtoks=\toks33
-\pgfkeys@temptoks=\toks34
+\pgfkeys@pathtoks=\toks35
+\pgfkeys@temptoks=\toks36
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\utilities\pgfkeysfiltered.c
 ode.tex"
-\pgfkeys@tmptoks=\toks35
+\pgfkeys@tmptoks=\toks37
 ))
-\pgf@x=\dimen149
-\pgf@y=\dimen150
-\pgf@xa=\dimen151
-\pgf@ya=\dimen152
-\pgf@xb=\dimen153
-\pgf@yb=\dimen154
-\pgf@xc=\dimen155
-\pgf@yc=\dimen156
+\pgf@x=\dimen155
+\pgf@y=\dimen156
+\pgf@xa=\dimen157
+\pgf@ya=\dimen158
+\pgf@xb=\dimen159
+\pgf@yb=\dimen160
+\pgf@xc=\dimen161
+\pgf@yc=\dimen162
 \w@pgf@writea=\write4
 \r@pgf@reada=\read2
-\c@pgf@counta=\count112
-\c@pgf@countb=\count113
-\c@pgf@countc=\count114
-\c@pgf@countd=\count115
-\t@pgf@toka=\toks36
-\t@pgf@tokb=\toks37
-\t@pgf@tokc=\toks38
+\c@pgf@counta=\count118
+\c@pgf@countb=\count119
+\c@pgf@countc=\count120
+\c@pgf@countd=\count121
+\t@pgf@toka=\toks38
+\t@pgf@tokb=\toks39
+\t@pgf@tokc=\toks40
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\systemlayer\pgf.cfg"
 File: pgf.cfg 2008/05/14  (rcs-revision 1.7)
@@ -356,8 +398,8 @@ File: pgfsys-common-pdf.def 2013/10/10  (rcs-revision 1.13)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\systemlayer\pgfsyssoftpath.
 code.tex"
 File: pgfsyssoftpath.code.tex 2013/09/09  (rcs-revision 1.9)
-\pgfsyssoftpath@smallbuffer@items=\count116
-\pgfsyssoftpath@bigbuffer@items=\count117
+\pgfsyssoftpath@smallbuffer@items=\count122
+\pgfsyssoftpath@bigbuffer@items=\count123
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\systemlayer\pgfsysprotocol.
 code.tex"
@@ -371,12 +413,12 @@ Package: pgfcore 2010/04/11 v3.0.0 (rcs-revision 1.7)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\math\pgfmathutil.code.tex")
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\math\pgfmathparser.code.tex
 "
-\pgfmath@dimen=\dimen157
-\pgfmath@count=\count118
-\pgfmath@box=\box32
-\pgfmath@toks=\toks39
-\pgfmath@stack@operand=\toks40
-\pgfmath@stack@operation=\toks41
+\pgfmath@dimen=\dimen163
+\pgfmath@count=\count124
+\pgfmath@box=\box36
+\pgfmath@toks=\toks41
+\pgfmath@stack@operand=\toks42
+\pgfmath@stack@operation=\toks43
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\math\pgfmathfunctions.code.
 tex"
@@ -397,57 +439,57 @@ code.tex")
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\math\pgfmathfunctions.integ
 erarithmetics.code.tex")))
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\math\pgfmathfloat.code.tex"
-\c@pgfmathroundto@lastzeros=\count119
+\c@pgfmathroundto@lastzeros=\count125
 ))
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\basiclayer\pgfcorepoints.co
 de.tex"
 File: pgfcorepoints.code.tex 2013/10/07  (rcs-revision 1.27)
-\pgf@picminx=\dimen158
-\pgf@picmaxx=\dimen159
-\pgf@picminy=\dimen160
-\pgf@picmaxy=\dimen161
-\pgf@pathminx=\dimen162
-\pgf@pathmaxx=\dimen163
-\pgf@pathminy=\dimen164
-\pgf@pathmaxy=\dimen165
-\pgf@xx=\dimen166
-\pgf@xy=\dimen167
-\pgf@yx=\dimen168
-\pgf@yy=\dimen169
-\pgf@zx=\dimen170
-\pgf@zy=\dimen171
+\pgf@picminx=\dimen164
+\pgf@picmaxx=\dimen165
+\pgf@picminy=\dimen166
+\pgf@picmaxy=\dimen167
+\pgf@pathminx=\dimen168
+\pgf@pathmaxx=\dimen169
+\pgf@pathminy=\dimen170
+\pgf@pathmaxy=\dimen171
+\pgf@xx=\dimen172
+\pgf@xy=\dimen173
+\pgf@yx=\dimen174
+\pgf@yy=\dimen175
+\pgf@zx=\dimen176
+\pgf@zy=\dimen177
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\basiclayer\pgfcorepathconst
 ruct.code.tex"
 File: pgfcorepathconstruct.code.tex 2013/10/07  (rcs-revision 1.29)
-\pgf@path@lastx=\dimen172
-\pgf@path@lasty=\dimen173
+\pgf@path@lastx=\dimen178
+\pgf@path@lasty=\dimen179
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\basiclayer\pgfcorepathusage
 .code.tex"
 File: pgfcorepathusage.code.tex 2013/12/13  (rcs-revision 1.23)
-\pgf@shorten@end@additional=\dimen174
-\pgf@shorten@start@additional=\dimen175
+\pgf@shorten@end@additional=\dimen180
+\pgf@shorten@start@additional=\dimen181
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\basiclayer\pgfcorescopes.co
 de.tex"
 File: pgfcorescopes.code.tex 2013/10/09  (rcs-revision 1.44)
-\pgfpic=\box33
-\pgf@hbox=\box34
-\pgf@layerbox@main=\box35
-\pgf@picture@serial@count=\count120
+\pgfpic=\box37
+\pgf@hbox=\box38
+\pgf@layerbox@main=\box39
+\pgf@picture@serial@count=\count126
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\basiclayer\pgfcoregraphicst
 ate.code.tex"
 File: pgfcoregraphicstate.code.tex 2013/09/19  (rcs-revision 1.11)
-\pgflinewidth=\dimen176
+\pgflinewidth=\dimen182
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\basiclayer\pgfcoretransform
 ations.code.tex"
 File: pgfcoretransformations.code.tex 2013/10/10  (rcs-revision 1.17)
-\pgf@pt@x=\dimen177
-\pgf@pt@y=\dimen178
-\pgf@pt@temp=\dimen179
+\pgf@pt@x=\dimen183
+\pgf@pt@y=\dimen184
+\pgf@pt@temp=\dimen185
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\basiclayer\pgfcorequick.cod
 e.tex"
@@ -464,13 +506,13 @@ File: pgfcorepathprocessing.code.tex 2013/09/09  (rcs-revision 1.9)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\basiclayer\pgfcorearrows.co
 de.tex"
 File: pgfcorearrows.code.tex 2013/11/07  (rcs-revision 1.40)
-\pgfarrowsep=\dimen180
+\pgfarrowsep=\dimen186
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\basiclayer\pgfcoreshade.cod
 e.tex"
 File: pgfcoreshade.code.tex 2013/07/15  (rcs-revision 1.15)
-\pgf@max=\dimen181
-\pgf@sys@shading@range@num=\count121
+\pgf@max=\dimen187
+\pgf@sys@shading@range@num=\count127
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\basiclayer\pgfcoreimage.cod
 e.tex"
@@ -479,7 +521,7 @@ File: pgfcoreimage.code.tex 2013/07/15  (rcs-revision 1.18)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\basiclayer\pgfcoreexternal.
 code.tex"
 File: pgfcoreexternal.code.tex 2013/07/15  (rcs-revision 1.20)
-\pgfexternal@startupbox=\box36
+\pgfexternal@startupbox=\box40
 ))
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\basiclayer\pgfcorelayers.co
 de.tex"
@@ -496,7 +538,7 @@ File: pgfcorepatterns.code.tex 2013/11/07  (rcs-revision 1.5)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\modules\pgfmoduleshapes.cod
 e.tex"
 File: pgfmoduleshapes.code.tex 2013/10/31  (rcs-revision 1.34)
-\pgfnodeparttextbox=\box37
+\pgfnodeparttextbox=\box41
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\modules\pgfmoduleplot.code.
 tex"
@@ -505,8 +547,8 @@ File: pgfmoduleplot.code.tex 2013/07/31  (rcs-revision 1.12)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\pgf\compatibility\pgfcomp-version
 -0-65.sty"
 Package: pgfcomp-version-0-65 2007/07/03 v3.0.0 (rcs-revision 1.7)
-\pgf@nodesepstart=\dimen182
-\pgf@nodesepend=\dimen183
+\pgf@nodesepstart=\dimen188
+\pgf@nodesepend=\dimen189
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\pgf\compatibility\pgfcomp-version
 -1-18.sty"
@@ -521,10 +563,10 @@ Package: pgfcomp-version-1-18 2007/07/23 v3.0.0 (rcs-revision 1.1)
 Package: pgffor 2013/12/13 v3.0.0 (rcs-revision 1.25)
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\math\pgfmath.code.tex")
-\pgffor@iter=\dimen184
-\pgffor@skip=\dimen185
-\pgffor@stack=\toks42
-\pgffor@toks=\toks43
+\pgffor@iter=\dimen190
+\pgffor@skip=\dimen191
+\pgffor@stack=\toks44
+\pgffor@toks=\toks45
 ))
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\frontendlayer\tikz\tikz.cod
 e.tex"
@@ -533,32 +575,32 @@ Package: tikz 2013/12/13 v3.0.0 (rcs-revision 1.142)
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\libraries\pgflibraryplothan
 dlers.code.tex"
 File: pgflibraryplothandlers.code.tex 2013/08/31 v3.0.0 (rcs-revision 1.20)
-\pgf@plot@mark@count=\count122
-\pgfplotmarksize=\dimen186
+\pgf@plot@mark@count=\count128
+\pgfplotmarksize=\dimen192
 )
-\tikz@lastx=\dimen187
-\tikz@lasty=\dimen188
-\tikz@lastxsaved=\dimen189
-\tikz@lastysaved=\dimen190
-\tikzleveldistance=\dimen191
-\tikzsiblingdistance=\dimen192
-\tikz@figbox=\box38
-\tikz@figbox@bg=\box39
-\tikz@tempbox=\box40
-\tikz@tempbox@bg=\box41
-\tikztreelevel=\count123
-\tikznumberofchildren=\count124
-\tikznumberofcurrentchild=\count125
-\tikz@fig@count=\count126
+\tikz@lastx=\dimen193
+\tikz@lasty=\dimen194
+\tikz@lastxsaved=\dimen195
+\tikz@lastysaved=\dimen196
+\tikzleveldistance=\dimen197
+\tikzsiblingdistance=\dimen198
+\tikz@figbox=\box42
+\tikz@figbox@bg=\box43
+\tikz@tempbox=\box44
+\tikz@tempbox@bg=\box45
+\tikztreelevel=\count129
+\tikznumberofchildren=\count130
+\tikznumberofcurrentchild=\count131
+\tikz@fig@count=\count132
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\modules\pgfmodulematrix.cod
 e.tex"
 File: pgfmodulematrix.code.tex 2013/09/17  (rcs-revision 1.8)
-\pgfmatrixcurrentrow=\count127
-\pgfmatrixcurrentcolumn=\count128
-\pgf@matrix@numberofcolumns=\count129
+\pgfmatrixcurrentrow=\count133
+\pgfmatrixcurrentcolumn=\count134
+\pgf@matrix@numberofcolumns=\count135
 )
-\tikz@expandcount=\count130
+\tikz@expandcount=\count136
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\generic\pgf\frontendlayer\tikz\librarie
 s\tikzlibrarytopaths.code.tex"
@@ -570,23 +612,23 @@ File: tikzlibrarypositioning.code.tex 2008/10/06 v3.0.0 (rcs-revision 1.7)
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\tools\calc.sty"
 Package: calc 2007/08/22 v4.3 Infix arithmetic (KKT,FJ)
-\calc@Acount=\count131
-\calc@Bcount=\count132
-\calc@Adimen=\dimen193
-\calc@Bdimen=\dimen194
-\calc@Askip=\skip59
-\calc@Bskip=\skip60
+\calc@Acount=\count137
+\calc@Bcount=\count138
+\calc@Adimen=\dimen199
+\calc@Bdimen=\dimen200
+\calc@Askip=\skip60
+\calc@Bskip=\skip61
 LaTeX Info: Redefining \setlength on input line 76.
 LaTeX Info: Redefining \addtolength on input line 77.
-\calc@Ccount=\count133
-\calc@Cskip=\skip61
+\calc@Ccount=\count139
+\calc@Cskip=\skip62
 )
-\c@@todonotes@numberoftodonotes=\count134
+\c@@todonotes@numberoftodonotes=\count140
 )
-\c@thm=\count135
-\c@lem=\count136
+\c@thm=\count141
+\c@lem=\count142
 
-(C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\latex\upquote\upquote.sty
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\upquote\upquote.sty"
 Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verba
 tim
 )
@@ -594,35 +636,34 @@ tim
 bustTesting_FE_models.aux
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\simulatio
 n_table.aux))
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 90.
-LaTeX Font Info:    ... okay on input line 90.
-
-(C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 79.
+LaTeX Font Info:    ... okay on input line 79.
+ ("C:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count137
-\scratchdimen=\dimen195
-\scratchbox=\box42
-\nofMPsegments=\count138
-\nofMParguments=\count139
-\everyMPshowfont=\toks44
-\MPscratchCnt=\count140
-\MPscratchDim=\dimen196
-\MPnumerator=\count141
-\makeMPintoPDFobject=\count142
-\everyMPtoPDFconversion=\toks45
+\scratchcounter=\count143
+\scratchdimen=\dimen201
+\scratchbox=\box46
+\nofMPsegments=\count144
+\nofMParguments=\count145
+\everyMPshowfont=\toks46
+\MPscratchCnt=\count146
+\MPscratchDim=\dimen202
+\MPnumerator=\count147
+\makeMPintoPDFobject=\count148
+\everyMPtoPDFconversion=\toks47
 )
-\c@maskedRefs=\count143
- (C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\latex\apacite\english.apc
+\c@maskedRefs=\count149
+ ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\apacite\english.apc"
 File: english.apc 2013/07/21 v6.03 apacite language file
 LaTeX Info: Redefining \BPBI on input line 129.
 LaTeX Info: Redefining \BHBI on input line 130.
@@ -632,37 +673,210 @@ Package caption Info: float package is loaded.
 Package caption Info: rotating package is loaded.
 Package caption Info: End \AtBeginDocument code.
 
-ABD: EveryShipout initializing macros [1
+ABD: EveryShipout initializing macros
+LaTeX Font Info:    Calculating math sizes for size <11> on input line 82.
+
+
+LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <5.5> not available
+(Font)              size <5> substituted on input line 82.
+
+
+LaTeX Font Warning: Font shape `OML/cmm/m/it' in size <5.5> not available
+(Font)              size <5> substituted on input line 82.
+
+
+LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <5.5> not available
+(Font)              size <5> substituted on input line 82.
+
+
+! LaTeX Error: Command \upshape invalid in math mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.87 ...a}\ead[label=e1]{pusto@austin.utexas.edu}}
+                                                  
+Please define a new math alphabet
+if you want to use a special font in math mode. 
+
+
+! LaTeX Error: Command \upshape invalid in math mode.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.88 ...{b}\ead[label=e2]{tipton@tc.columbia.edu}}
+                                                  
+Please define a new math alphabet
+if you want to use a special font in math mode. 
+
+[1
 Non-PDF special ignored!
 
-{C:/Users/jep2963/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2] [3] [
-4] [5] [6] [7] [8]
-Overfull \hbox (3.09045pt too wide) in paragraph at lines 269--275
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
+[1
+
+]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[2]
+Underfull \vbox (badness 5475) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[3]
+Underfull \vbox (badness 5475) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[4]
+Underfull \vbox (badness 5475) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[5]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[6]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[7]
+Overfull \hbox (57.48277pt too wide) in paragraph at lines 204--207
+[]\OT1/cmr/m/n/12 To be-gin, de-note the full block-diagonal weight-ing ma-trix
+ as $\OT1/cmr/bx/n/12 W \OT1/cmr/m/n/12 = [] []$.
+ []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[8]
+Overfull \hbox (25.01532pt too wide) in paragraph at lines 245--251
 []\OT1/cmr/m/n/12 The form of these ad-just-ment ma-tri-ces par-al-lels those o
-f the heteroskedasticity-consistent
- []
-
-[9] [10] [11] [12] [13] [14] [15]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 435--435
-[][][] 
+f the heteroskedasticity-
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 435--435
-[][][] 
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
  []
 
-[16] [17] [18]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 492--492
-[][][] 
+[9]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[10]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[11]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[12]
+Overfull \hbox (27.49663pt too wide) in paragraph at lines 312--313
+\OT1/cmr/m/it/12 sume that $\OT1/cmr/bx/n/12 L[]\OML/cmm/m/it/12 ; :::; \OT1/cm
+r/bx/n/12 L[]$ \OT1/cmr/m/it/12 have full rank $\OML/cmm/m/it/12 r \OT1/cmr/m/n
+/12 + \OML/cmm/m/it/12 s$\OT1/cmr/m/it/12 . Fur-ther as-sume that $[] [] \OT1/c
+mr/m/n/12 =$
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 492--492
-[][][] 
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[13]
+Underfull \vbox (badness 1622) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[14]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[15]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[16]
+Underfull \vbox (badness 2401) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[17]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[18]
+Overfull \hbox (19.62788pt too wide) in paragraph at lines 433--436
+[]\OT1/cmr/m/n/12 Little re-search has con-sid-ered small-sample cor-rec-tions 
+for multiple-constraint
+ []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
  []
 
 [19]
+Overfull \hbox (13.88544pt too wide) in paragraph at lines 437--437
+[]\OT1/cmr/m/n/12 Our ap-proach is to ap-prox-i-mate the sam-pling dis-tri-bu-t
+ion of $\OML/cmm/m/it/12 Q$ \OT1/cmr/m/n/12 by Hotelling's
+ []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[20]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[21]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[22]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\simulatio
 n_table.tex
 Overfull \hbox (0.63428pt too wide) in paragraph at lines 4--4
@@ -674,120 +888,369 @@ Overfull \hbox (2.97635pt too wide) in paragraph at lines 4--4
 []|\OT1/cmr/m/n/10.95 Covariate 
  []
 
-) [20] [21
+)
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[23]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[24
 
 
-] [22] [23] [24]
-Overfull \hbox (2.69463pt too wide) in paragraph at lines 607--613
-[]\OT1/cmr/m/n/12 Analytic model (17[]) pro-vided op-por-tu-ni-ties to test a r
-ange of single- and multi-parameter
+]
+Underfull \vbox (badness 5475) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
  []
 
 [25]
+Underfull \vbox (badness 5475) has occurred while \output is active []
 
-Package xcolor Warning: Incompatible color definition on input line 622.
 
-<CR_fig/overview-1.pdf, id=106, 867.24pt x 614.295pt>
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[26]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[27]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[28]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[29]
+
+Package xcolor Warning: Incompatible color definition on input line 598.
+
+<CR_fig/overview-1.pdf, id=126, 867.24pt x 614.295pt>
 File: CR_fig/overview-1.pdf Graphic file (type pdf)
 
 <use CR_fig/overview-1.pdf>
-Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 624.
-(pdftex.def)             Requested size: 642.45122pt x 455.08672pt.
+Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 600.
+(pdftex.def)             Requested size: 588.0pt x 416.51527pt.
 
 
-Package xcolor Warning: Incompatible color definition on input line 647.
+Package xcolor Warning: Incompatible color definition on input line 623.
 
-<CR_fig/balance-1.pdf, id=107, 867.24pt x 614.295pt>
+<CR_fig/balance-1.pdf, id=127, 867.24pt x 614.295pt>
 File: CR_fig/balance-1.pdf Graphic file (type pdf)
 
 <use CR_fig/balance-1.pdf>
-Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 649.
-(pdftex.def)             Requested size: 642.45122pt x 455.08672pt.
- [26] [27 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting
-/CR_fig/overview-1.pdf>] [28 <C:/Users/jep2963/Documents/R/clubSandwich/paper_C
-lusterRobustTesting/CR_fig/balance-1.pdf>]
+Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 625.
+(pdftex.def)             Requested size: 588.0pt x 416.51527pt.
 
-Package xcolor Warning: Incompatible color definition on input line 670.
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
 
-<CR_fig/misspecification-1.pdf, id=135, 867.24pt x 614.295pt>
+[30]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[31 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
+g/overview-1.pdf>]
+
+Package xcolor Warning: Incompatible color definition on input line 646.
+
+<CR_fig/misspecification-1.pdf, id=144, 867.24pt x 614.295pt>
 File: CR_fig/misspecification-1.pdf Graphic file (type pdf)
 
 <use CR_fig/misspecification-1.pdf>
-Package pdftex.def Info: CR_fig/misspecification-1.pdf used on input line 672.
-(pdftex.def)             Requested size: 642.45122pt x 455.08672pt.
+Package pdftex.def Info: CR_fig/misspecification-1.pdf used on input line 648.
+(pdftex.def)             Requested size: 588.0pt x 416.51527pt.
+
+Underfull \vbox (badness 5475) has occurred while \output is active []
 
 
-Package xcolor Warning: Incompatible color definition on input line 690.
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
 
-<CR_fig/df-1.pdf, id=136, 722.7pt x 289.08pt>
+[32]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[33 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
+g/balance-1.pdf>]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[34 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
+g/misspecification-1.pdf>]
+
+Package xcolor Warning: Incompatible color definition on input line 666.
+
+<CR_fig/df-1.pdf, id=172, 722.7pt x 289.08pt>
 File: CR_fig/df-1.pdf Graphic file (type pdf)
  <use CR_fig/df-1.pdf>
-Package pdftex.def Info: CR_fig/df-1.pdf used on input line 692.
-(pdftex.def)             Requested size: 462.26999pt x 184.9091pt.
- [29]
-[30 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
-g/misspecification-1.pdf>] [31 <C:/Users/jep2963/Documents/R/clubSandwich/paper
-_ClusterRobustTesting/CR_fig/df-1.pdf>] [32] [33]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 798--798
-[][][] 
+Package pdftex.def Info: CR_fig/df-1.pdf used on input line 668.
+(pdftex.def)             Requested size: 384.0pt x 153.59982pt.
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[35 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
+g/df-1.pdf>]
+Underfull \vbox (badness 6741) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[36]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[37]
+Underfull \vbox (badness 5475) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[38]
+Underfull \vbox (badness 1895) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[39]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[40]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[41]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[42]
+Overfull \hbox (14.11197pt too wide) in paragraph at lines 847--862
+ [][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 798--798
-[][][] 
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
  []
 
-[34] [35] [36] [37] [38] [39] [40] [41] [42] [43]
+[43]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[44]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[45]
+Underfull \vbox (badness 1622) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[46]
+Overfull \hbox (31.11353pt too wide) in paragraph at lines 923--926
+[]\OT1/cmr/m/n/12 The Moore-Penrose in-verse of $\OT1/cmr/bx/n/12 B[]$ \OT1/cmr
+/m/n/12 can be com-puted from its eigen-decomposition.
+ []
+
+
+Overfull \hbox (42.6511pt too wide) in paragraph at lines 930--930
+[] 
+ []
+
+
+Overfull \hbox (46.26216pt too wide) in paragraph at lines 942--942
+[] 
+ []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[47]
+Overfull \hbox (9.447pt too wide) in paragraph at lines 957--957
+[] 
+ []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[48]
+Overfull \hbox (98.80745pt too wide) in paragraph at lines 980--980
+[] 
+ []
+
+
+Overfull \hbox (48.34117pt too wide) in paragraph at lines 980--983
+\OT1/cmr/m/n/12 The last equal-ity fol-lows from the fact that $\OT1/cmr/bx/n/1
+2 T[][] [][] []T[] \OT1/cmr/m/n/12 =$
+ []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[49]
+Overfull \hbox (4.65439pt too wide) in paragraph at lines 995--996
+[]\OT1/cmr/m/n/12 A bal-anced, cluster-randomized de-sign, in which units are n
+ested within
+ []
+
+
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
-bustTesting_FE_models.bbl [44]
-Missing character: There is no ‚ in font cmr12!
-Missing character: There is no Ä in font cmr12!
-Missing character: There is no ú in font cmr12!
-Missing character: There is no ‚ in font cmr12!
-Missing character: There is no Ä in font cmr12!
-Missing character: There is no ù in font cmr12!
- [45]
-Missing character: There is no ‚ in font cmr12!
-Missing character: There is no Ä in font cmr12!
-Missing character: There is no ì in font cmr12!
- [46]) [47]
+bustTesting_FE_models.bbl
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[50]
+Underfull \hbox (badness 2359) in paragraph at lines 49--52
+[]\OT1/cmr/m/n/10 Bertrand, M., Du-flo, E. and Mul-lainathan, S. (2004), `How m
+uch should we
+ []
+
+
+Underfull \hbox (badness 1997) in paragraph at lines 49--52
+\OT1/cmr/m/n/10 trust differences-in-differences es-ti-mates?', \OT1/cmr/m/it/1
+0 Quar-terly Jour-nal of Eco-nomics
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[51]
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ú in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ù in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ì in font cmr10!
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[52]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[53])
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[54]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting_FE_models.aux
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\simulatio
-n_table.aux)) ) 
+n_table.aux))
+
+LaTeX Font Warning: Size substitutions with differences
+(Font)              up to 0.5pt have occurred.
+
+ ) 
 Here is how much of TeX's memory you used:
- 14767 strings out of 493921
- 286661 string characters out of 3144871
- 330280 words of memory out of 3000000
- 17755 multiletter control sequences out of 15000+200000
- 18182 words of font info for 63 fonts, out of 3000000 for 9000
+ 15184 strings out of 493921
+ 291761 string characters out of 3144871
+ 337288 words of memory out of 3000000
+ 18160 multiletter control sequences out of 15000+200000
+ 18160 words of font info for 64 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 62i,14n,76p,1294b,695s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/c
-m/cmbx10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/
-cmbx12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
-bx5.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx6
-.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx8.pf
-b><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb>
-<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C
-:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/
-Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Pro
-gram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Progra
-m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program F
-iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program File
-s (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Program Files
- (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x
-86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)
-/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files (x86)/MiK
-TeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 
-2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files (x86)/MiKTeX 2.9/
-fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
-nts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
-/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/ty
-pe1/public/amsfonts/cm/cmti12.pfb>
-Output written on ClusterRobustTesting_FE_models.pdf (47 pages, 441899 bytes).
+ 62i,14n,76p,1050b,695s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
+<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C
+:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx5.pfb><C:/P
+rogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx6.pfb><C:/Prog
+ram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Program
+ Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Program 
+Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program Fi
+les (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program File
+s (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Program Files 
+(x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Files (x8
+6)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files (x86)/
+MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files (x86)/MiK
+TeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files (x86)/MiKTeX
+ 2.9/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Program Files (x86)/MiKTeX 
+2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/MiKTeX 2.9
+/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
+/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/typ
+e1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/p
+ublic/amsfonts/cm/cmr8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/publi
+c/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/
+amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/ams
+fonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfon
+ts/cm/cmti10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts
+/cm/cmti12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/c
+m/cmtt10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/
+cmtt8.pfb>
+Output written on ClusterRobustTesting_FE_models.pdf (55 pages, 532721 bytes).
 PDF statistics:
- 285 PDF objects out of 1000 (max. 8388607)
+ 331 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  33 words of extra memory for PDF output out of 10000 (max. 10000000)
 

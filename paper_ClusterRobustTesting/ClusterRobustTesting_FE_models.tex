@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}\usepackage[]{graphicx}\usepackage[]{color}
+\documentclass[draft]{ectaart}\usepackage[]{graphicx}\usepackage[]{color}
 %% maxwidth is the original width if it is less than linewidth
 %% otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -58,17 +58,6 @@
 \usepackage{caption}
 \usepackage{multirow}
 
-%\pdfminorversion=4
-% NOTE: To produce blinded version, replace "0" with "1" below.
-\newcommand{\blind}{0}
-
-% DON'T change margins - should be 1 inch all around.
-\addtolength{\oddsidemargin}{-.7in}%
-\addtolength{\evensidemargin}{-.5in}%
-\addtolength{\textwidth}{1in}%
-\addtolength{\textheight}{1.3in}%
-\addtolength{\topmargin}{-.8in}%
-
 \usepackage{float}    % for fig.pos='H'
 \usepackage{rotfloat} % for sidewaysfigure
 
@@ -89,48 +78,35 @@
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 
-\def\spacingset#1{\renewcommand{\baselinestretch}%
-{#1}\small\normalsize} \spacingset{1}
+\begin{frontmatter}
+\title{Small sample methods for cluster-robust variance estimation and hypothesis testing in fixed effects models\protect\thanksref{T1}}
+\runtitle{Cluster-robust variance estimation in fixed effects models}
+\thankstext{T1}{The authors thank Dan Knopf for helpful discussions about the linear algebra behind the cluster-robust variance estimator.}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\author{James E. Pustejovsky\thanksref{a}\ead[label=e1]{pusto@austin.utexas.edu}}
+\author{Elizabeth Tipton\thanksref{b}\ead[label=e2]{tipton@tc.columbia.edu}}
+\runauthor{Pustejovsky \& Tipton}
+\address[a]{University of Texas at Austin,
+Educational Psychology Department,
+1912 Speedway, Stop D5800, 
+Austin, TX 78712.
+Email: \printead{e1}}
+\address[b]{Teachers College, Columbia University,
+Department of Human Development,
+525 W. 120th St., Box 118,
+New York, NY 10027. 
+Email: \printead{e2}}
 
-\if0\blind
-{
-  \title{\bf Small sample methods for cluster-robust variance estimation and hypothesis testing in fixed effects models}
-  \author{\\James E. Pustejovsky\thanks{
-    The authors thank Dan Knopf for helpful discussions about the linear algebra behind the cluster-robust variance estimator.}\hspace{.2cm}\\
-    Department of Educational Psychology \\ 
-    University of Texas at Austin\\ \\
-    and \\ \\
-    Elizabeth Tipton \\
-    Department of Human Development \\ 
-    Teachers College, Columbia University}
-  \maketitle
-} \fi
-
-\if1\blind
-{
-  \bigskip
-  \bigskip
-  \bigskip
-  \begin{center}
-    {\LARGE\bf Small sample methods for cluster-robust variance estimation and hypothesis testing in fixed-effect models}
-\end{center}
-  \medskip
-} \fi
-
-\bigskip
 \begin{abstract}
-In longitudinal panels and other regression models with unobserved effects, fixed effects estimation is often paired with cluster-robust variance estimation (CRVE) in order to account for heteroskedasticity and un-modeled dependence among the errors. CRVE is asymptotically consistent as the number of independent clusters increases, but can be biased downward for sample sizes often found in applied work, leading to hypothesis tests with overly liberal rejection rates. One solution is to use bias-reduced linearization (BRL), which corrects the CRVE so that it is unbiased under a working model, and t-tests with Satterthwaite degrees of freedom. We propose a generalization of BRL that can be applied in models with arbitrary sets of fixed effects, where the original BRL method is undefined, and describe how to apply the method when the regression is estimated after absorbing the fixed effects. We also propose a small-sample test for multiple-parameter hypotheses, which generalizes the Satterthwaite approximation for t-tests. In simulations covering a variety of study designs, we find that conventional cluster-robust Wald tests can severely under-reject while the proposed small-sample test maintains Type I error very close to nominal levels. 
+Cluster-robust variance estimation (CRVE) is commonly used to account for heteroskedasticity and un-modeled dependence among the errors in regression models with unobserved effects. Although asymptotically consist, CRVE can be biased downward when the number of clusters is small, leading to hypothesis tests with overly liberal rejection rates. One solution is to use bias-reduced linearization (BRL), which corrects the CRVE based on a working model, in conjunction with t-tests with Satterthwaite degrees of freedom. We propose a generalization of BRL that can be applied in models with arbitrary sets of fixed effects, where the original BRL method is undefined. We also propose a small-sample test for multiple-parameter hypotheses, which generalizes the Satterthwaite approximation for t-tests. In simulations covering a variety of scenarios, we find that conventional cluster-robust Wald tests can severely under-reject while the proposed small-sample test maintains Type I error close to nominal levels. 
 \end{abstract}
 
-\noindent%
-{\it Keywords:} Robust Standard Errors, Clustering, Fixed-Effects, Small Samples
-\vfill
+\begin{keyword}
+Robust Standard Errors, Clustering, Fixed-Effects, Small Samples
+\end{keyword}
 
-\newpage
-\spacingset{1.45} % DON'T change the spacing!
+\end{frontmatter}
 
 \section{INTRODUCTION}
 \label{sec:intro}
@@ -753,10 +729,12 @@ Finally, we conduct a joint test for whether program effects in either half of t
 
 
 
-% latex table generated in R 3.2.3 by xtable 1.8-0 package
-% Fri Jan 08 13:51:07 2016
+% latex table generated in R 3.2.3 by xtable 1.7-4 package
+% Tue Feb 02 21:34:48 2016
 \begin{table}[bth]
 \centering
+\caption{Tests of treatment effects in the Achievement Awards Demonstration} 
+\label{tab:AAD}
 \begin{tabular}{lcrrr}
   \toprule
 Hypothesis & Test & F & df & p \\ 
@@ -772,8 +750,6 @@ Moderation - upper half (q = 2) & Standard & 3.186 & 34.00 & 0.05393 \\
    & AHT & 2.895 & 3.21 & 0.19446 \\ 
    \bottomrule
 \end{tabular}
-\caption{Tests of treatment effects in the Achievement Awards Demonstration} 
-\label{tab:AAD}
 \end{table}
 
 
@@ -810,10 +786,12 @@ With this setup, the artificial Hausman test amounts to testing the null hypothe
 
 
 
-% latex table generated in R 3.2.3 by xtable 1.8-0 package
-% Fri Jan 08 13:51:07 2016
+% latex table generated in R 3.2.3 by xtable 1.7-4 package
+% Tue Feb 02 21:34:48 2016
 \begin{table}[bth]
 \centering
+\caption{Tests of effects of minimum legal drink age and Hausman specification test} 
+\label{tab:MLDA}
 \begin{tabular}{lcrrr}
   \toprule
 Hypothesis & Test & F & df & p \\ 
@@ -827,8 +805,6 @@ Hausman test & Standard & 2.930 & 49.00 & 0.06283 \\
    & AHT & 2.489 & 8.69 & 0.13980 \\ 
    \bottomrule
 \end{tabular}
-\caption{Tests of effects of minimum legal drink age and Hausman specification test} 
-\label{tab:MLDA}
 \end{table}
 
 
@@ -862,10 +838,12 @@ In all models, we estimated $\bs\beta_k$ and $\bs\gamma$ after absorbing the sch
 
 
 
-% latex table generated in R 3.2.3 by xtable 1.8-0 package
-% Fri Jan 08 13:51:07 2016
+% latex table generated in R 3.2.3 by xtable 1.7-4 package
+% Tue Feb 02 21:34:48 2016
 \begin{table}[tbh]
 \centering
+\caption{Tests of treatment effects in the Tennessee STAR class size experiment} 
+\label{tab:STAR}
 \begin{tabular}{lllrrr}
   \toprule
 Outcome & Effect & Test & F & df & p \\ 
@@ -881,8 +859,6 @@ Combined & Small class (q=3) & Standard & 6.408 & 78.0 & 0.00062 \\
    &  & AHT & 3.042 & 64.9 & 0.01103 \\ 
    \bottomrule
 \end{tabular}
-\caption{Tests of treatment effects in the Tennessee STAR class size experiment} 
-\label{tab:STAR}
 \end{table}
 
 
