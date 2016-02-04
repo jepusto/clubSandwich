@@ -253,7 +253,7 @@ The next section describes in detail the BRL approach, which makes adjustments t
 In contrast to the CR1 or CR3 estimators, the BRL correction is premised on a ``working'' model for the structure of the errors, which must be specified by the analyst. 
 Under a given working model, adjustment matrices $\bm{A}_i$ are defined so that the variance estimator is exactly unbiased.
 We refer to this correction as CR2 because it extends the HC2 variance estimator for regressions with uncorrelated errors, which is exactly unbiased when the errors are homoskedastic \citep{MacKinnon1985some}.
-The idea of specifying a model may seem antithetical to the purpose of using CRVE, yet extensive simulation studies have demonstrated that the method performs better in small samples than any of the other adjustments, even when the working model is incorrect. (See Section \ref{sec:simulation} for a review of this literature.) 
+The idea of specifying a model may seem antithetical to the purpose of using CRVE, yet extensive simulation studies have demonstrated that the method performs better in small samples than any of the other adjustments, even when the working model is incorrect \citep{Bell2002bias, Cameron2015practitioners, Imbens2015robust, Tipton2015small-t}. 
 Although the CR2 estimator may no longer be exactly unbiased when the working model is misspecified, its bias still tends to be greatly reduced compared to CR1 or CR0 (thus the name ``bias reduced linearization''). Furthermore, as the number of clusters increases, reliance on the working model diminishes. 
 In a sense, CR2 provides necessary scaffolding in the small-sample case, which falls away when there is sufficient data.
 
@@ -656,8 +656,8 @@ Finally, we conduct a joint test for whether program effects in either half of t
 
 
 
-% latex table generated in R 3.2.3 by xtable 1.7-4 package
-% Wed Feb 03 21:52:37 2016
+% latex table generated in R 3.2.3 by xtable 1.8-0 package
+% Thu Feb 04 09:03:35 2016
 \begin{table}[bth]
 \centering
 \caption{Tests of treatment effects in the Achievement Awards Demonstration} 
@@ -713,8 +713,8 @@ With this setup, the artificial Hausman test amounts to testing the null hypothe
 
 
 
-% latex table generated in R 3.2.3 by xtable 1.7-4 package
-% Wed Feb 03 21:52:37 2016
+% latex table generated in R 3.2.3 by xtable 1.8-0 package
+% Thu Feb 04 09:03:35 2016
 \begin{table}[bth]
 \centering
 \caption{Tests of effects of minimum legal drink age and Hausman specification test} 

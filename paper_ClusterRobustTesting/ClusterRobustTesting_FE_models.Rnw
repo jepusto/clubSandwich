@@ -204,7 +204,7 @@ The next section describes in detail the BRL approach, which makes adjustments t
 In contrast to the CR1 or CR3 estimators, the BRL correction is premised on a ``working'' model for the structure of the errors, which must be specified by the analyst. 
 Under a given working model, adjustment matrices $\bm{A}_i$ are defined so that the variance estimator is exactly unbiased.
 We refer to this correction as CR2 because it extends the HC2 variance estimator for regressions with uncorrelated errors, which is exactly unbiased when the errors are homoskedastic \citep{MacKinnon1985some}.
-The idea of specifying a model may seem antithetical to the purpose of using CRVE, yet extensive simulation studies have demonstrated that the method performs better in small samples than any of the other adjustments, even when the working model is incorrect. (See Section \ref{sec:simulation} for a review of this literature.) 
+The idea of specifying a model may seem antithetical to the purpose of using CRVE, yet extensive simulation studies have demonstrated that the method performs better in small samples than any of the other adjustments, even when the working model is incorrect \citep{Bell2002bias, Cameron2015practitioners, Imbens2015robust, Tipton2015small-t}. 
 Although the CR2 estimator may no longer be exactly unbiased when the working model is misspecified, its bias still tends to be greatly reduced compared to CR1 or CR0 (thus the name ``bias reduced linearization''). Furthermore, as the number of clusters increases, reliance on the working model diminishes. 
 In a sense, CR2 provides necessary scaffolding in the small-sample case, which falls away when there is sufficient data.
 
@@ -348,10 +348,11 @@ where $\bm{p}_i = \left(\bm{I} - \bm{H_X}\right)_i'\bm{A}_i \bm{W}_i\bm{\ddot{R}
 Alternately, for any of the CRVEs one could instead use an ``empirical'' estimate of the degrees of freedom, constructed by substituting $\bm{e}_i \bm{e}_i'$ in place of $\bs\Phi_i$. 
 However, \citet{Bell2002bias} found using simulation that this plug-in degrees of freedom estimate led to very conservative rejection rates. 
 
-When used with CR2, the Satterthwaite approximation has been shown to perform well across a variety of data generation processes, covariate types, and weighting procedures (see Section 4).\todo{Beth, possible to trim down the following two paragraphs?}
-When the covariate is balanced across clusters---as occurs in a balanced panel with the same proportion of treated units in each cluster---the degrees of freedom are $m - 1$. 
+The Satterthwaite approximation works because the degrees of freedom account for covariate features that affect the distribution of the test statistic. When the covariate is balanced across clusters---as occurs in a balanced panel with the same proportion of treated units in each cluster---the degrees of freedom are $m - 1$. 
 However, when the covariate is highly unbalanced---as occurs when the panel is not balanced and the proportion of treated units varies from cluster to cluster---the degrees of freedom can be considerably smaller.
 Similarly, covariates with large leverage points will tend to exhibit lower of degrees of freedom. 
+
+When used with CR2, the Satterthwaite approximation has been shown to perform well across a variety of data generation processes, covariate types, and weighting procedures.
 
 By adjusting the degrees of freedom to account for these features, the Type I error rate of the test is nearly always less than or equal to the nominal $\alpha$, so long as the degrees of freedom are larger than 4 or 5 \citep{Bell2002bias, Tipton2015small-t}.
 When the degrees of freedom are very small, the t-distribution approximation to the sampling distribution does not hold, and the Type I error can be higher than the stated $\alpha$ level. \footnote{When the degrees of freedom are smaller than 4 or 5, \citet{Tipton2015small-t} suggested using a smaller $\bs\alpha$ level for hypothesis testing in order to partially compensate. Another possibility would be to use the saddlepoint approximation proposed by \citet{McCaffrey2006improved}.}
