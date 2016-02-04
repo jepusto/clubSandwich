@@ -211,14 +211,9 @@ Wooldridge, J.~M.  \harvardyearleft 2010\harvardyearright , {\em {Econometric
   Analysis of Cross Section and Panel Data}}, 2nd edn, MIT Press, Cambridge,
   MA.
 
-\harvarditem{Zhang}{2012{\em a}}{Zhang2012twowayANOVA}
-Zhang, J.-T.  \harvardyearleft 2012{\em a}\harvardyearright , `{An approximate
-  degrees of freedom test for heteroscedastic two-way ANOVA}', {\em Journal of
+\harvarditem{Zhang}{2012}{Zhang2012twowayANOVA}
+Zhang, J.-T.  \harvardyearleft 2012\harvardyearright , `{An approximate degrees
+  of freedom test for heteroscedastic two-way ANOVA}', {\em Journal of
   Statistical Planning and Inference} {\bf 142}(1),~336--346.
-
-\harvarditem{Zhang}{2012{\em b}}{Zhang2012MANOVA}
-Zhang, J.-T.  \harvardyearleft 2012{\em b}\harvardyearright , `{An approximate
-  Hotelling T2 -test for heteroscedastic one-way MANOVA}', {\em Open Journal of
-  Statistics} {\bf 2},~1--11.
 
 \end{thebibliography}

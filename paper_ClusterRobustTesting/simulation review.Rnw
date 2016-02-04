@@ -1,0 +1,51 @@
+
+\subsection{Review of previous simulation studies\todo{Cut this subsection?}}
+
+To date, four simulation studies have examined the performance of the CR2 t-test, across a total of nearly 100 parameter combinations and a range of application contexts.
+\citet{Cameron2015practitioners} and \citet{Imbens2015robust} focused on conditions common in economics, while \citet{Bell2002bias} focused on those common in complex surveys and \citet{Tipton2015small-t} on those in meta-analysis. 
+Table \ref{tab:simulation_summary} summarizes the results of these studies.
+Some of the studies focused on policy dummies in the balanced case, while others varied the degree of balance; still others examined continuous covariates that are symmetrically distributed, as well as those with high skew and leverage.
+These studies also examined the role of the number of clusters, with values ranging from 6 to 50, as well as the number of observations per clusters (from 1 to roughly 260).
+The studies used a range of both true error structures and working models, including scenarios in which the working model differed from the true error structure.
+Although most previous studies focused on OLS estimation, one study \citep{Tipton2015small-t} examined the performance of t-tests based on WLS estimation.
+
+\begin{sidewaystable}
+\small
+\caption{Type I error rates of t-tests based on CRVE}
+\label{tab:simulation_summary}
+\include{simulation_table}
+\caption*{Table refers to the table within the relevant article. $m$ is the number of clusters; $n$ is the number of observations within each cluster; c indicates cluster-level covariate, while o indicates observation-level covariate; \% = percent taking value of one; M = symmetric continuous; K = skewed continuous; H = heteroskedastic; RE = random effects (Moulton factor); C = correlated errors; LN = log-normal errors; (\#) indicates number of different models tested.}
+\end{sidewaystable}
+
+Table \ref{tab:simulation_summary} also indicates the range of Type I error rates observed across the conditions studied in each of the simulation studies, with values given for both the standard and AHT tests.
+Across studies, the Type I error for the standard t-test ranges from .01 to .34 for a stated $\alpha$ level of .05.
+These values are particularly far above nominal when the covariate tested is unbalanced, skewed (i.e., high leverage), or when the within-cluster sample sizes vary. 
+
+In comparison, the AHT t-test performs considerably better across the range of conditions studied, with Type I error rates ranging between 0.01 and 0.13.
+Notably, the largest value observed here is from \citet{Imbens2015robust}, who do not break results out by degrees of freedom. 
+Given the condition studied (30 clusters, with only 3 having a policy dummy), it is quite possible that the degrees of freedom are below the cut-off of 4 or 5 at which others have shown the t-test approximation can fail \citep{Tipton2015small-t}. 
+Putting this value aside, the maximum Type I error observed in these conditions is 0.06, only slightly higher than nominal.
+Crucially, these nearly nominal Type I error rates hold even when the working model is far from the true error structure, and for various types of covariates.
+
+In comparison to the t-test, the AHT F-test has only been studied in a single simulation focused on the meta-analytic case \citep{Tipton2015small-F}.
+Although this study looked only at WLS estimation, it was comprehensive in other respects.
+In particular, it examined the effects of the number of covariates in the model (up to $p = 5$) and the number of constraints tested ($q = 2,3,4,5$), including cases in which $p = q$ and in which $q < p$. 
+The simulations also examined models with various combinations of covariate types, including both balanced and unbalanced indicator variables, as well as symmetric or skewed continuous covariates.
+Like \citet{Tipton2015small-t}, these simulations focused on true correlation structures that included heteroskedasticity, clustering (i.e., a cluster specific random effect), and correlated errors.
+The working models were then chosen to be far from the true error structure (i.e., an independent-errors working model).
+Finally, the number of clusters was varied from 10 to 100, each with between 1 and 10 observations. 
+Type I error rates of the standard test and the AHT F-test were compared for nominal $\alpha$ levels of .01, .05, and .10.
+
+The results of the simulations by \citet{Tipton2015small-F} indicate that the AHT F-test always has Type I error less than or equal to the stated $\alpha$ level, except in cases with extreme model misspecification. 
+However, even under such conditions, the Type I error was in line with rates observed for t-tests; for example, for $\alpha = 0.05$ the error was not above 0.06. 
+In comparison, the Type I error of the standard test was often very high, with maximum rejection rates ranging from .17 to .22, depending on the dimension of the constraint being tested.
+Like the t-test, the degrees of freedom of the AHT F-test were driven by covariate features, with particularly low degrees of freedom resulting from covariates that are unbalanced or skewed.
+
+While the simulation study by \citet{Tipton2015small-F} included a variety of conditions, its design was focused on the types of data found in meta-analytic applications. 
+These differ from the economic context in two ways.
+First, in meta-analysis, it is common to have heteroskedasticity of a known form and for analysts to incorporate weights in the analysis (typically inverse-variance weights).
+In comparison, unweighted, OLS estimation is more common in economic applications.
+Second, meta-analytic regressions often involve testing a variety of types of covariates, including continuous regressors.
+In comparison, many economic applications are focused on testing binary indicator variables that represent differences between policy regimes. 
+Tests for policy effects can involve cluster-level comparisons (e.g., comparisons across states) or observation-level comparisons (e.g., pre/post comparisons within each state), or a combination of both observation-level and cluster-level comparisons (as in difference-in-differences analysis).
+In light of these differences, we conducted a new study to evaluate the performance of the standard and AHT tests under conditions that more closely resemble economic applications. 

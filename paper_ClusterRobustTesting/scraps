@@ -61,3 +61,5 @@ Furthermore, the distribution of $\bm{c}_1' \bm{V}^{CR2} \bm{c}_2$ can be expres
 % Although the total sample includes 35 schools, there are only 9 Arab religious, 7 Jewish religious, and 19 Jewish secular schools, each split across two treatment conditions, and the treatment effects are estimated by making comparisons across clusters. 
 % As a result, the F statistic based on CR2 has a very large sampling variance under the null hypothesis.
 % \todo{Connect to simulation results--higher $q$, between-cluster}
+
+Specifically, we simulated a tri-variate, equi-correlated outcome from a data-generating process in which all three policy conditions produce identical average outcomes, so that all tested null hypotheses hold. 
