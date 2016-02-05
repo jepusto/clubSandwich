@@ -1,5 +1,5 @@
 
-\subsection{Review of previous simulation studies\todo{Cut this subsection?}}
+\subsection{Review of previous simulation studies}
 
 To date, four simulation studies have examined the performance of the CR2 t-test, across a total of nearly 100 parameter combinations and a range of application contexts.
 \citet{Cameron2015practitioners} and \citet{Imbens2015robust} focused on conditions common in economics, while \citet{Bell2002bias} focused on those common in complex surveys and \citet{Tipton2015small-t} on those in meta-analysis. 

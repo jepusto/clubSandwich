@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  4 FEB 2016 09:03
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  5 FEB 2016 15:39
 entering extended mode
 **ClusterRobustTesting_FE_models.tex
 
@@ -241,7 +241,7 @@ Package: natbib 2010/09/13 8.31b (PWD, AO)
 LaTeX Info: Redefining \cite on input line 694.
 \c@NAT@ctr=\count113
 )
-LaTeX Info: Redefining \BBA on input line 58.
+LaTeX Info: Redefining \BBA on input line 57.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\multirow\multirow.sty"
 \bigstrutjot=\dimen145
@@ -607,18 +607,18 @@ tim
 )
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting_FE_models.aux)
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 78.
-LaTeX Font Info:    ... okay on input line 78.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
 
 (C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -641,24 +641,30 @@ LaTeX Info: Redefining \BPBI on input line 129.
 LaTeX Info: Redefining \BHBI on input line 130.
 )
 ABD: EveryShipout initializing macros
-LaTeX Font Info:    Calculating math sizes for size <11> on input line 81.
+LaTeX Font Info:    Calculating math sizes for size <11> on input line 80.
 
 
 LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <5.5> not available
-(Font)              size <5> substituted on input line 81.
+(Font)              size <5> substituted on input line 80.
 
 
 LaTeX Font Warning: Font shape `OML/cmm/m/it' in size <5.5> not available
-(Font)              size <5> substituted on input line 81.
+(Font)              size <5> substituted on input line 80.
 
 
 LaTeX Font Warning: Font shape `OMS/cmsy/m/n' in size <5.5> not available
-(Font)              size <5> substituted on input line 81.
+(Font)              size <5> substituted on input line 80.
 
 [1
 Non-PDF special ignored!
 
-{C:/Users/jep2963/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [1
+{C:/Users/jep2963/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}]
+Overfull \hbox (10.33064pt too wide) in paragraph at lines 111--118
+\OT1/cmr/m/n/12 re-gres-sion model, es-ti-mated by or-di-nary or weighted least
+ squares (OLS/WLS)
+ []
+
+[1
 
 ]
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -682,7 +688,7 @@ Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
 
 [4]
-Underfull \vbox (badness 5475) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
@@ -695,7 +701,7 @@ Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
 
 [6]
-Overfull \hbox (10.318pt too wide) in paragraph at lines 196--199
+Overfull \hbox (10.318pt too wide) in paragraph at lines 195--198
 []\OT1/cmr/m/n/12 Denote the full block-diagonal weight-ing ma-trix as $\OT1/cm
 r/bx/n/12 W \OT1/cmr/m/n/12 = [] []$.
  []
@@ -706,7 +712,7 @@ Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
 
 [7]
-Overfull \hbox (31.8188pt too wide) in paragraph at lines 209--211
+Overfull \hbox (31.8188pt too wide) in paragraph at lines 208--210
 \OT1/cmr/m/n/12 This es-ti-ma-tor is al-ge-braically iden-ti-cal to the LSDV es
 -ti-ma-tor, $[] = \OT1/cmr/bx/n/12 K[][]X[]Wy$\OT1/cmr/m/n/12 ,
  []
@@ -717,7 +723,7 @@ Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
 
 [8]
-Overfull \hbox (25.01532pt too wide) in paragraph at lines 234--240
+Overfull \hbox (25.01532pt too wide) in paragraph at lines 233--239
 []\OT1/cmr/m/n/12 The form of these ad-just-ment ma-tri-ces par-al-lels those o
 f the heteroskedasticity-
  []
@@ -771,13 +777,13 @@ Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
 
 [17]
-Overfull \hbox (19.62788pt too wide) in paragraph at lines 416--419
+Overfull \hbox (19.62788pt too wide) in paragraph at lines 411--414
 []\OT1/cmr/m/n/12 Little re-search has con-sid-ered small-sample cor-rec-tions 
 for multiple-constraint
  []
 
 
-Overfull \hbox (13.88544pt too wide) in paragraph at lines 420--420
+Overfull \hbox (13.88544pt too wide) in paragraph at lines 415--415
 []\OT1/cmr/m/n/12 Our ap-proach is to ap-prox-i-mate the sam-pling dis-tri-bu-t
 ion of $\OML/cmm/m/it/12 Q$ \OT1/cmr/m/n/12 by Hotelling's
  []
@@ -813,15 +819,20 @@ Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
 
 [23]
+Overfull \hbox (2.95166pt too wide) in paragraph at lines 514--515
+[]\OT1/cmr/m/n/12 Our dis-cus-sion of the sim-u-la-tion re-sults is fo-cused on
+ four trends. Through-
+ []
 
-Package xcolor Warning: Incompatible color definition on input line 526.
 
-<CR_fig/overview-1.pdf, id=106, 867.24pt x 614.295pt>
+Package xcolor Warning: Incompatible color definition on input line 519.
+
+<CR_fig/overview-1.pdf, id=106, 722.7pt x 361.35pt>
 File: CR_fig/overview-1.pdf Graphic file (type pdf)
 
 <use CR_fig/overview-1.pdf>
-Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 528.
-(pdftex.def)             Requested size: 588.0pt x 416.51527pt.
+Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 521.
+(pdftex.def)             Requested size: 588.0pt x 294.00417pt.
 
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
@@ -835,16 +846,15 @@ Overfull \hbox (2.75555pt too wide) has occurred while \output is active
 [25 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
 g/overview-1.pdf>]
 
-Package xcolor Warning: Incompatible color definition on input line 551.
+Package xcolor Warning: Incompatible color definition on input line 544.
 
-<CR_fig/balance-1.pdf, id=123, 867.24pt x 614.295pt>
+<CR_fig/balance-1.pdf, id=123, 722.7pt x 397.485pt>
 File: CR_fig/balance-1.pdf Graphic file (type pdf)
+ <use CR_fig/balance-1.pdf>
+Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 546.
+(pdftex.def)             Requested size: 588.0pt x 323.40459pt.
 
-<use CR_fig/balance-1.pdf>
-Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 553.
-(pdftex.def)             Requested size: 588.0pt x 416.51527pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 5475) has occurred while \output is active []
 
 
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
@@ -859,47 +869,39 @@ Overfull \hbox (2.75555pt too wide) has occurred while \output is active
 [27 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
 g/balance-1.pdf>]
 
-Package xcolor Warning: Incompatible color definition on input line 574.
+Package xcolor Warning: Incompatible color definition on input line 570.
 
-<CR_fig/misspecification-1.pdf, id=139, 867.24pt x 614.295pt>
-File: CR_fig/misspecification-1.pdf Graphic file (type pdf)
-
-<use CR_fig/misspecification-1.pdf>
-Package pdftex.def Info: CR_fig/misspecification-1.pdf used on input line 576.
-(pdftex.def)             Requested size: 588.0pt x 416.51527pt.
-
-
-Package xcolor Warning: Incompatible color definition on input line 594.
-
-<CR_fig/df-1.pdf, id=140, 722.7pt x 289.08pt>
+<CR_fig/df-1.pdf, id=139, 578.16pt x 216.81pt>
 File: CR_fig/df-1.pdf Graphic file (type pdf)
  <use CR_fig/df-1.pdf>
-Package pdftex.def Info: CR_fig/df-1.pdf used on input line 596.
-(pdftex.def)             Requested size: 384.0pt x 153.59982pt.
+Package pdftex.def Info: CR_fig/df-1.pdf used on input line 572.
+(pdftex.def)             Requested size: 384.0pt x 143.99818pt.
 
+Underfull \vbox (badness 3668) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[28 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
+g/df-1.pdf>]
+Underfull \vbox (badness 6741) has occurred while \output is active []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[29]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[30]
 Underfull \vbox (badness 5475) has occurred while \output is active []
 
 
-Overfull \hbox (2.75555pt too wide) has occurred while \output is active
- []
- []
-
-[28]
-Overfull \hbox (2.75555pt too wide) has occurred while \output is active
- []
- []
-
-[29 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
-g/misspecification-1.pdf>]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Overfull \hbox (2.75555pt too wide) has occurred while \output is active
- []
- []
-
-[30 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
-g/df-1.pdf>]
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
  []
@@ -920,33 +922,23 @@ Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
 
 [34]
+Underfull \vbox (badness 5475) has occurred while \output is active []
+
+
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
  []
 
 [35]
+Underfull \vbox (badness 1622) has occurred while \output is active []
+
+
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
  []
 
 [36]
-Underfull \vbox (badness 5475) has occurred while \output is active []
-
-
-Overfull \hbox (2.75555pt too wide) has occurred while \output is active
- []
- []
-
-[37]
-Underfull \vbox (badness 5475) has occurred while \output is active []
-
-
-Overfull \hbox (2.75555pt too wide) has occurred while \output is active
- []
- []
-
-[38]
-Overfull \hbox (31.11353pt too wide) in paragraph at lines 792--795
+Overfull \hbox (31.11353pt too wide) in paragraph at lines 763--766
 []\OT1/cmr/m/n/12 The Moore-Penrose in-verse of $\OT1/cmr/bx/n/12 B[]$ \OT1/cmr
 /m/n/12 can be com-puted from its eigen-decomposition.
  []
@@ -956,28 +948,28 @@ Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
  []
 
+[37]
+Overfull \hbox (9.447pt too wide) in paragraph at lines 798--798
+[] 
+ []
+
+
+Overfull \hbox (11.34514pt too wide) in paragraph at lines 822--822
+[] 
+ []
+
+
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[38]
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
 [39]
-Overfull \hbox (9.447pt too wide) in paragraph at lines 827--827
-[] 
- []
-
-
-Overfull \hbox (11.34514pt too wide) in paragraph at lines 851--851
-[] 
- []
-
-
-Overfull \hbox (2.75555pt too wide) has occurred while \output is active
- []
- []
-
-[40]
-Overfull \hbox (2.75555pt too wide) has occurred while \output is active
- []
- []
-
-[41]
-Overfull \hbox (4.65439pt too wide) in paragraph at lines 868--869
+Overfull \hbox (4.65439pt too wide) in paragraph at lines 839--840
 []\OT1/cmr/m/n/12 A bal-anced, cluster-randomized de-sign, in which units are n
 ested within
  []
@@ -985,14 +977,14 @@ ested within
 
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting_FE_models.bbl
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 3019) has occurred while \output is active []
 
 
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
  []
 
-[42]
+[40]
 Underfull \hbox (badness 2359) in paragraph at lines 41--44
 []\OT1/cmr/m/n/10 Bertrand, M., Du-flo, E. and Mul-lainathan, S. (2004), `How m
 uch should we
@@ -1018,7 +1010,7 @@ Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
  []
 
-[43]
+[41]
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no “ in font cmr10!
@@ -1030,12 +1022,12 @@ Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
  []
 
-[44])
+[42])
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
  []
 
-[45]
+[43]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting_FE_models.aux)
 
@@ -1044,10 +1036,10 @@ LaTeX Font Warning: Size substitutions with differences
 
  ) 
 Here is how much of TeX's memory you used:
- 14114 strings out of 493921
- 272066 string characters out of 3144871
- 314879 words of memory out of 3000000
- 17104 multiletter control sequences out of 15000+200000
+ 14102 strings out of 493921
+ 271742 string characters out of 3144871
+ 314790 words of memory out of 3000000
+ 17093 multiletter control sequences out of 15000+200000
  17684 words of font info for 62 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
  62i,14n,76p,1051b,695s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1077,9 +1069,9 @@ fonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfon
 ts/cm/cmti10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts
 /cm/cmti12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/c
 m/cmtt8.pfb>
-Output written on ClusterRobustTesting_FE_models.pdf (46 pages, 495476 bytes).
+Output written on ClusterRobustTesting_FE_models.pdf (44 pages, 469393 bytes).
 PDF statistics:
- 298 PDF objects out of 1000 (max. 8388607)
+ 282 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 33 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 28 words of extra memory for PDF output out of 10000 (max. 10000000)
 

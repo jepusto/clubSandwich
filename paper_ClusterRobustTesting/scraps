@@ -26,6 +26,9 @@ A further method is to use a bootstrap re-sampling technique that provides small
 \cite{Pan2002small} proposed to choose $\eta$ to minimize the squared differences between the covariances among the entries of $\eta \bs\Omega$ and the covariances of the Wishart distribution with $\eta$ degrees of freedom and scale matrix $\bm{C}\bm{V}^{CR}\bm{C}'$. 
 \citet{Zhang2012MANOVA} instead matches the mean and total variance of $\bm{C}\bm{V}^{CR}\bm{C}'$ (i.e., the sum of the variances of its entries), which avoids the need to calculate any covariances. 
 
+\citet{McCaffrey2006improved} also found that for single-parameter hypotheses, a saddlepoint approximation to the Wald test statistic provides even more accurate rejection rates than the Satterthwaite approximation given in Equation (\ref{eq:nu_model}). 
+It would be interesting to investigate whether the saddlepoint approximation could be extended to handle multiple-parameter constraints, although this appears to be far from straight-forward. 
+
 
 \section{DISTRIBUTION THEORY FOR $\bm{V}^{CR}$}
 \label{app:VCR_dist}
