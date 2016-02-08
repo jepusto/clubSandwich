@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  5 FEB 2016 15:39
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  8 FEB 2016 11:02
 entering extended mode
 **ClusterRobustTesting_FE_models.tex
 
@@ -783,17 +783,17 @@ for multiple-constraint
  []
 
 
+Overfull \hbox (2.75555pt too wide) has occurred while \output is active
+ []
+ []
+
+[18]
 Overfull \hbox (13.88544pt too wide) in paragraph at lines 415--415
 []\OT1/cmr/m/n/12 Our ap-proach is to ap-prox-i-mate the sam-pling dis-tri-bu-t
 ion of $\OML/cmm/m/it/12 Q$ \OT1/cmr/m/n/12 by Hotelling's
  []
 
 
-Overfull \hbox (2.75555pt too wide) has occurred while \output is active
- []
- []
-
-[18]
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
  []
@@ -827,7 +827,7 @@ Overfull \hbox (2.95166pt too wide) in paragraph at lines 514--515
 
 Package xcolor Warning: Incompatible color definition on input line 519.
 
-<CR_fig/overview-1.pdf, id=106, 722.7pt x 361.35pt>
+<CR_fig/overview-1.pdf, id=101, 722.7pt x 361.35pt>
 File: CR_fig/overview-1.pdf Graphic file (type pdf)
 
 <use CR_fig/overview-1.pdf>
@@ -848,7 +848,7 @@ g/overview-1.pdf>]
 
 Package xcolor Warning: Incompatible color definition on input line 544.
 
-<CR_fig/balance-1.pdf, id=123, 722.7pt x 397.485pt>
+<CR_fig/balance-1.pdf, id=118, 722.7pt x 397.485pt>
 File: CR_fig/balance-1.pdf Graphic file (type pdf)
  <use CR_fig/balance-1.pdf>
 Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 546.
@@ -871,7 +871,7 @@ g/balance-1.pdf>]
 
 Package xcolor Warning: Incompatible color definition on input line 570.
 
-<CR_fig/df-1.pdf, id=139, 578.16pt x 216.81pt>
+<CR_fig/df-1.pdf, id=134, 578.16pt x 216.81pt>
 File: CR_fig/df-1.pdf Graphic file (type pdf)
  <use CR_fig/df-1.pdf>
 Package pdftex.def Info: CR_fig/df-1.pdf used on input line 572.
@@ -886,9 +886,6 @@ Overfull \hbox (2.75555pt too wide) has occurred while \output is active
 
 [28 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
 g/df-1.pdf>]
-Underfull \vbox (badness 6741) has occurred while \output is active []
-
-
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
  []
@@ -899,9 +896,6 @@ Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
 
 [30]
-Underfull \vbox (badness 5475) has occurred while \output is active []
-
-
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
  []
@@ -930,7 +924,7 @@ Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
 
 [35]
-Underfull \vbox (badness 1622) has occurred while \output is active []
+Underfull \vbox (badness 5475) has occurred while \output is active []
 
 
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
@@ -944,6 +938,9 @@ Overfull \hbox (31.11353pt too wide) in paragraph at lines 763--766
  []
 
 
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
  []
@@ -954,9 +951,7 @@ Overfull \hbox (9.447pt too wide) in paragraph at lines 798--798
  []
 
 
-Overfull \hbox (11.34514pt too wide) in paragraph at lines 822--822
-[] 
- []
+Underfull \vbox (badness 6078) has occurred while \output is active []
 
 
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
@@ -964,6 +959,11 @@ Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
 
 [38]
+Overfull \hbox (11.34514pt too wide) in paragraph at lines 822--822
+[] 
+ []
+
+
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
  []
@@ -975,16 +975,13 @@ ested within
  []
 
 
-(C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
-bustTesting_FE_models.bbl
-Underfull \vbox (badness 3019) has occurred while \output is active []
-
-
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
  []
 
 [40]
+(C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
+bustTesting_FE_models.bbl
 Underfull \hbox (badness 2359) in paragraph at lines 41--44
 []\OT1/cmr/m/n/10 Bertrand, M., Du-flo, E. and Mul-lainathan, S. (2004), `How m
 uch should we
@@ -996,21 +993,18 @@ Underfull \hbox (badness 1997) in paragraph at lines 41--44
 0 Quar-terly Jour-nal of Eco-nomics
  []
 
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Ä in font cmr10!
-Missing character: There is no ú in font cmr10!
-Missing character: There is no ‚ in font cmr10!
-Missing character: There is no Ä in font cmr10!
-Missing character: There is no ù in font cmr10!
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
 
 Overfull \hbox (2.75555pt too wide) has occurred while \output is active
  []
  []
 
 [41]
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ú in font cmr10!
+Missing character: There is no ‚ in font cmr10!
+Missing character: There is no Ä in font cmr10!
+Missing character: There is no ù in font cmr10!
 Missing character: There is no ‚ in font cmr10!
 Missing character: There is no Ä in font cmr10!
 Missing character: There is no ì in font cmr10!
@@ -1036,42 +1030,37 @@ LaTeX Font Warning: Size substitutions with differences
 
  ) 
 Here is how much of TeX's memory you used:
- 14102 strings out of 493921
- 271742 string characters out of 3144871
- 314790 words of memory out of 3000000
- 17093 multiletter control sequences out of 15000+200000
+ 14007 strings out of 493921
+ 269444 string characters out of 3144871
+ 307750 words of memory out of 3000000
+ 16998 multiletter control sequences out of 15000+200000
  17684 words of font info for 62 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 62i,14n,76p,1051b,695s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 62i,14n,56p,1051b,420s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C
-:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx5.pfb><C:/P
-rogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx6.pfb><C:/Prog
-ram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/Program
- Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Program 
-Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Program Fi
-les (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program File
-s (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Program Files 
-(x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb><C:/Program Files (x8
-6)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files (x86)/
-MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Files (x86)/MiK
-TeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files (x86)/MiKTeX
- 2.9/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Program Files (x86)/MiKTeX 
-2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/MiKTeX 2.9
-/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fo
-nts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
-/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/typ
-e1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/p
-ublic/amsfonts/cm/cmr8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/publi
-c/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/
-amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/ams
-fonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfon
-ts/cm/cmti10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts
-/cm/cmti12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/c
-m/cmtt8.pfb>
-Output written on ClusterRobustTesting_FE_models.pdf (44 pages, 469393 bytes).
+:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx8.pfb><C:/P
+rogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmcsc10.pfb><C:/Pr
+ogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Prog
+ram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Progra
+m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Program 
+Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program Fil
+es (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files 
+(x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Program Files (
+x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86
+)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)/M
+iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files (x86)/MiKT
+eX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/MiKTeX 2
+.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files (x86)/MiKTeX 2.9/f
+onts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fon
+ts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/
+type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/typ
+e1/public/amsfonts/cm/cmti10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1
+/public/amsfonts/cm/cmti12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/p
+ublic/amsfonts/cm/cmtt8.pfb>
+Output written on ClusterRobustTesting_FE_models.pdf (44 pages, 421701 bytes).
 PDF statistics:
- 282 PDF objects out of 1000 (max. 8388607)
+ 262 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  28 words of extra memory for PDF output out of 10000 (max. 10000000)
 

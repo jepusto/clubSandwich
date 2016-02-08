@@ -59,7 +59,7 @@
 \usepackage{float}    % for fig.pos='H'
 \usepackage{rotfloat} % for sidewaysfigure
 
-\usepackage[textwidth=1in, textsize=tiny]{todonotes}
+\usepackage[textwidth=1in, textsize=tiny,disable]{todonotes}
 
 \newtheorem{thm}{Theorem}
 \newtheorem{lem}{Lemma}
@@ -340,7 +340,7 @@ The main implication of Theorem \ref{thm:absorb} is that the more computationall
 Following the working model suggested by \citet{Bell2002bias}, in which $\bs\Phi = \bm{I}$, the above theorem shows that the adjustment method is invariant to the choice of estimator so long as the model is estimated by OLS (i.e., with $\bm{W} = \bm{I}$).
 In this case, the CR2 adjustment matrices then simplify further to \[
 \bm{A}_i = \left(\bm{I}_i - \bm{\ddot{U}}_i\left(\bm{\ddot{U}}'\bm{\ddot{U}}\right)^{-1}\bm{\ddot{U}}_i'\right)^{+1/2}. \]
-In contrast, if the working model proposed by \citet{Imbens2015robust} is instead used, then the above theorem implies that the CR2 adjustments will differ if the model is estimated by LSDV versus by using absorption.
+In contrast, if the working model proposed by \citet{Imbens2015robust} is instead used (while still using OLS), then the above theorem implies that the CR2 adjustments will differ if the model is estimated by LSDV versus by using absorption.
 
 The two theorems of this section extend the BRL methodology described by \citet{Bell2002bias}, demonstrating how the CR2 adjustment can be computed efficiently---and from a coherent working model---for a broad range of commonly used regression models, including those with within- and between-cluster fixed effects.
 The next section addresses a final set of concerns: how to conduct single- and multiple-parameter hypothesis tests using the CR2 estimator. 
@@ -462,7 +462,7 @@ In the next section, we examine the behavior of the AHT test in a simulation des
 \section{Simulation study}
 \label{sec:simulation}
 
-Evidence from several large simulation studies indicates that hypothesis tests based on the CR2 adjustment and estimated degrees of freedom substantially out-perform the procedures that are most commonly used in empirical applications.
+Evidence from several large simulation studies indicates that hypothesis tests based on the CR2 adjustment and estimated degrees of freedom substantially out-perform the procedures that are most commonly used in empirical applications \citep{Cameron2015practitioners, Imbens2015robust,Bell2002bias,Tipton2015small-t,Tipton2015small-F}.
 However, existing simulations have focused almost entirely on single-parameter tests. 
 In this section, we describe the design and results of a new simulation study, which focused on the rejection rates of multiple-parameter tests.
 Throughout, we refer to tests employing the CR2-corrected CRVE and estimated degrees of freedom as the ``AHT'' test; for t-tests, the estimated degrees of freedom are equivalent to the Satterthwaite approximation given in Equation (\ref{eq:nu_model}). 
@@ -633,7 +633,7 @@ Finally, we conduct a joint test for whether program effects in either half of t
 
 
 % latex table generated in R 3.2.3 by xtable 1.8-0 package
-% Fri Feb 05 15:39:50 2016
+% Mon Feb 08 11:02:13 2016
 \begin{table}[bth]
 \centering
 \caption{Tests of treatment effects in the Achievement Awards Demonstration} 
@@ -677,7 +677,7 @@ In this model, time-point $t$ is nested within state $i$; the outcome $y_{it}$ i
 
 We apply both random effects (RE) and fixed effects (FE) approaches to estimate the effect of lowering the legal drinking age. 
 For the RE estimates, we use WLS with weights derived under the assumption that  $\mu_1,...,\mu_m$ are mutually independent, normally distributed, and independent of $\epsilon_{it}$ and $\bm{r}_{it}$.
-We also report an artificial Hausman test \citep{Arellano1993on, Wooldridge2002econometric} for correlation between the covariates $\bm{r}_{it}$ and the state effects $\mu_i$. Such correlation creates bias in the RE estimator of the policy effect, thus necessitating the use of the FE estimator.
+We also report an artificial Hausman test \citep{Arellano1993on, Wooldridge2010econometric} for correlation between the covariates $\bm{r}_{it}$ and the state effects $\mu_i$. Such correlation creates bias in the RE estimator of the policy effect, thus necessitating the use of the FE estimator.
 The artificial Hausman test amends model (\ref{eq:MLDA}) to include within-cluster deviations for the variables of interest, so that the estimating equation is
 \begin{equation}
 y_{it} = \bm{r}_{it}\beta + \bm{\ddot{r}}_{it}\bs\delta + \gamma_t + \mu_i + \epsilon_{it},
@@ -689,7 +689,7 @@ With this setup, the artificial Hausman test amounts to testing the null hypothe
 
 
 % latex table generated in R 3.2.3 by xtable 1.8-0 package
-% Fri Feb 05 15:39:50 2016
+% Mon Feb 08 11:02:13 2016
 \begin{table}[bth]
 \centering
 \caption{Tests of effects of minimum legal drink age and Hausman specification test} 
