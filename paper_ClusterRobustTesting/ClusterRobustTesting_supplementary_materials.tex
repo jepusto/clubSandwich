@@ -48,23 +48,125 @@
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
-\usepackage[margin=1in,landscape]{geometry}
+\usepackage[margin=1in]{geometry}
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{graphicx,psfrag,epsf}
+\renewcommand{\thesection}{S\arabic{section}}
 \renewcommand{\thefigure}{S\arabic{figure}}
+\RequirePackage[natbibapa]{apacite}
+\usepackage{caption}
+\usepackage{multirow}
+\usepackage{float}    % for fig.pos='H'
+\usepackage{rotfloat} % for sidewaysfigure
+\usepackage{pdflscape}
+
+\newcommand{\Prob}{\text{Pr}}
+\newcommand{\E}{\text{E}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\corr}{\text{corr}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\iid}{\stackrel{\text{iid}}{\sim}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\bm}{\mathbf}
+\newcommand{\bs}{\boldsymbol}
 
 \title{Supplementary materials for \textit{Small sample methods for cluster-robust variance estimation and hypothesis testing in fixed effects models}}
-\author{James E. Pustejovsky \& Elizabeth Tipton}
+%\author{James E. Pustejovsky \& Elizabeth Tipton}
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 \maketitle
 
+\section{Proof of Theorem 1}
+
+The Moore-Penrose inverse of $\bm{B}_i$ can be computed from its eigen-decomposition. Let $b \leq n_i$ denote the rank of $\bm{B}_i$. 
+Let $\bs\Lambda$ be the $b \times b$ diagonal matrix of the positive eigenvalues of $\bm{B}_i$ and $\bm{V}$ be the $n_i \times b$ matrix of corresponding eigen-vectors, so that $\bm{B}_i = \bm{V}\bs\Lambda\bm{V}'$. 
+Then $\bm{B}_i^+ = \bm{V}\bs\Lambda^{-1}\bm{V}'$ and $\bm{B}_i^{+1/2} = \bm{V}\bs\Lambda^{-1/2}\bm{V}'$. Now, observe that 
+\begin{equation}\begin{aligned}
+\label{eq:step1}
+\bm{\ddot{R}}_i' \bm{W}_i \bm{A}_i \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i' \bm{A}_i' \bm{W}_i \bm{\ddot{R}}_i &= \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{B}_i^{+1/2} \bm{B}_i \bm{B}_i^{+1/2} \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i \\
+&= \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{V}\bm{V}' \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i. 
+\end{aligned}\end{equation}
+
+Because $\bm{D}_i$, and $\bs\Phi$ are positive definite and $\bm{B}_i$ is symmetric, the eigen-vectors $\bm{V}$ define an orthonormal basis for the column span of $\left(\bm{I} - \bm{H_{\ddot{X}}}\right)_i$.
+We now show that $\bm{\ddot{U}}_i$ is in the column space of $\left(\bm{I} - \bm{H_X}\right)_i$. 
+Let $\bm{Z}_i$ be an $n_i \times (r + s)$ matrix of zeros. 
+Let $\bm{Z}_k = - \bm{\ddot{U}}_k \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1}$, for $k \neq j$ and take $\bm{Z} = \left(\bm{Z}_1',...,\bm{Z}_m'\right)'$. 
+Now observe that $\left(\bm{I} - \bm{H_T}\right) \bm{Z} = \bm{Z}$. 
+It follows that 
+\begin{align*}
+\left(\bm{I} - \bm{H_X}\right)_i \bm{Z} &= \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \left(\bm{I} - \bm{H_T}\right) \bm{Z} = \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \bm{Z} \\
+&= \bm{Z}_i - \bm{\ddot{U}}_i\bm{M_{\ddot{U}}}\sum_{k=1}^m \bm{\ddot{U}}_k'\bm{W}_k\bm{Z}_k \\
+&= \bm{\ddot{U}}_i\bm{M_{\ddot{U}}} \left(\sum_{k \neq j} \bm{\ddot{U}}_k' \bm{W}_k \bm{\ddot{U}} \right) \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1} = \bm{\ddot{U}}_i.
+\end{align*}
+Thus, there exists an $N \times (r + s)$ matrix $\bm{Z}$ such that $\left(\bm{I} - \bm{H_{\ddot{X}}}\right)_i \bm{Z} = \bm{\ddot{U}}_i$, i.e., $\bm{\ddot{U}}_i$ is in the column span of $\left(\bm{I} - \bm{H_X}\right)_i$. Because $\bm{D}_i \bm{W}_i$ is positive definite and $\bm{\ddot{R}}_i$ is a sub-matrix of $\bm{\ddot{U}}_i$, $\bm{D}_i\bm{W}_i\bm{\ddot{R}}_i$ is also in the column span of $\left(\bm{I} - \bm{H_X}\right)_i$. It follows that 
+\begin{equation}
+\label{eq:step2}
+\bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{V}\bm{V}' \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i = \bm{\ddot{R}}_i' \bm{W}_i \bs\Phi_i \bm{W}_i \bm{\ddot{R}}_i.
+\end{equation}
+Substituting (\ref{eq:step2}) into (\ref{eq:step1}) demonstrates that $\bm{A}_i$ satisfies criterion (\ref{eq:CR2_criterion}).
+
+Under the working model, the residuals from cluster $i$ have mean $\bm{0}$ and variance \[
+\Var\left(\bm{\ddot{e}}_i\right) = \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i',\] 
+It follows that 
+\begin{align*}
+\E\left(\bm{V}^{CR2}\right) &= \bm{M_{\ddot{R}}}\left[\sum_{i=1}^m \bm{\ddot{R}}_i' \bm{W}_i \bm{A}_i \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i' \bm{A}_i \bm{W}_i \bm{\ddot{R}}_i \right] \bm{M_{\ddot{R}}} \\
+&= \bm{M_{\ddot{R}}}\left[\sum_{i=1}^m \bm{\ddot{R}}_i' \bm{W}_i \bs\Phi_i \bm{W}_i \bm{\ddot{R}}_i \right] \bm{M_{\ddot{R}}} \\
+&= \Var\left(\bs{\hat\beta}\right)
+\end{align*}
+
+\section{Proof of Theorem 2}
+
+From the fact that $\bm{\ddot{U}}_i'\bm{W}_i\bm{T}_i = \bm{0}$ for $i = 1,...,m$, it follows that \begin{align*}
+\bm{B}_i &= \bm{D}_i \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \left(\bm{I} - \bm{H_T}\right) \bs\Phi \left(\bm{I} - \bm{H_T}\right)' \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i' \bm{D}_i'\\
+&= \bm{D}_i \left(\bm{I} - \bm{H_{\ddot{U}}} - \bm{H_T}\right)_i \bs\Phi \left(\bm{I} - \bm{H_{\ddot{U}}} - \bm{H_T}\right)_i' \bm{D}_i' \\
+&= \bm{D}_i \left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i' - \bm{T}_i \bm{M_T}\bm{T}_i'\right)\bm{D}_i'
+\end{align*}
+and 
+\begin{equation}
+\label{eq:B_i_inverse}
+\bm{B}_i^+ = \left(\bm{D}_i'\right)^{-1} \left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i' - \bm{T}_i \bm{M_T}\bm{T}_i'\right)^+ \bm{D}_i^{-1}.
+\end{equation}
+Let $\bs\Psi_i = \left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\right)^+$.
+Using a generalized Woodbury identity \citep{Henderson1981on}, \[
+\bs\Psi_i = \bm{W}_i + \bm{W}_i \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\left(\bm{M_{\ddot{U}}} - \bm{M_{\ddot{U}}} \bm{\ddot{U}}_i' \bm{W}_i \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\right)^+ \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\bm{W}_i. \]
+It follows that $\bs\Psi_i \bm{T}_i = \bm{W}_i \bm{T}_i$. 
+Another application of the generalized Woodbury identity gives 
+\begin{align*}
+\left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i' - \bm{T}_i \bm{M_T}\bm{T}_i'\right)^+ &= \bs\Psi_i + \bs\Psi_i \bm{T}_i \bm{M_T}\left(\bm{M_T} - \bm{M_T}\bm{T}_i' \bs\Psi_i \bm{T}_i \bm{M_T}\right)^+ \bm{M_T} \bm{T}_i' \bs\Psi_i \\
+&= \bs\Psi_i + \bm{W}_i \bm{T}_i \bm{M_T}\left(\bm{M_T} - \bm{M_T}\bm{T}_i' \bm{W}_i \bm{T}_i\bm{M_T}\right)^+ \bm{M_T} \bm{T}_i' \bm{W}_i \\
+&= \bs\Psi_i.
+\end{align*}
+The last equality follows from the fact that \[
+\bm{T}_i \bm{M_T}\left(\bm{M_T} - \bm{M_T}\bm{T}_i' \bm{W}_i \bm{T}_i\bm{M_T}\right)^{-} \bm{M_T} \bm{T}_i' = \bm{0} \]
+because the fixed effects are nested within clusters. 
+Substituting into (\ref{eq:B_i_inverse}), we then have that $\bm{B}_i^+ = \left(\bm{D}_i'\right)^{-1} \bs\Psi_i \bm{D}_i^{-1}$. 
+But \[
+\bm{\tilde{B}}_i = \bm{D}_i \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \bs\Phi \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i' \bm{D}_i' = \bm{D}_i \left(\bs\Phi_i - \bm{\ddot{U}}_i\bm{M_{\ddot{U}}} \bm{\ddot{U}}_i'\right) \bm{D}_i' = \bm{D}_i \bs\Psi_i^+ \bm{D}_i',
+\]
+and so $\bm{B}_i^+ = \bm{\tilde{B}}_i^+$. It follows that $\bm{A}_i = \bm{\tilde{A}}_i$ for $i = 1,...,m$. 
+
+\newpage
+\section{Details of simulation study}
+\label{sec:simulations}
+
+This section provides further details regarding the design of the simulations reported in Section 4 of the main text. The simulations examined six distinct study designs. Outcomes are measured for $n$ units (which may be individuals, as in a cluster-randomized or block-randomized design, or time-points, as in a difference-in-differences panel) in each of $m$ clusters under one of three treatment conditions. Suppose that there are $G$ sets of clusters, each of size $m_g$, where the clusters in each set have a distinct pattern of treatment assignments. Let $n_{ghi}$ denote the number of units at which cluster $i$ in group $g$ is observed under condition $h$, for $i=1,...,m$, $g = 1,...,G$, and $h = 1,2,3$. The following six designs were simulated:
+\begin{enumerate}
+\item A balanced, block-randomized design, with an un-equal allocation within each block. In the balanced design, the treatment allocation is identical for each block, with $G = 1$, $m_1 = m$, $n_{11i} = n / 2$, $n_{12i} = n / 3$, and $n_{13i} = n / 6$.
+\item An unbalanced, block-randomized design, with two different patterns of treatment allocation. Here, $G = 2$,  $m_1 = m_2 = m / 2$, $n_{11i} = n / 2$, $n_{12i} = n / 3$, $n_{13i} = n / 6$, $n_{21i} = n / 3$, $n_{22i} = 5 n / 9$, and $n_{23i} = n / 9$.
+\item A balanced, cluster-randomized design, in which units are nested within clusters and an equal number of clusters are assigned to each treatment condition. Here, $G = 3$, $m_g = m / 3$, and $n_{ghi} = n$ for $g = h$ and zero otherwise.
+\item An unbalanced, cluster-randomized design, in which units are nested within clusters but the number of clusters assigned to each condition is not equal. Here, $G = 3$; $m_1 = 0.5 m, m_2 = 0.3 m, m_3 = 0.2 m$; and $n_{ghi} = n$ for $g = h$ and zero otherwise. 
+\item A balanced difference-in-differences design, with two patterns of treatment allocation ($G = 2$) and clusters allocated equally to each pattern ($m_1 = m_2 = m / 2$). Here, half of the clusters are observed under the first treatment condition only ($n_{11i} = n$) and the remaining half are observed under all three conditions, with $n_{21i} = n / 2$, $n_{22i} = n / 3$, and $n_{23i} = n / 6$.
+\item An unbalanced difference-in-differences design, again with two patterns of treatment allocation ($G = 2$), but where $m_1 = 2 m / 3$ clusters are observed under the first treatment condition only ($n_{11i} = n$) and the remaining $m_2 = m / 3$ clusters are observed under all three conditions, with  $n_{21i} = n / 2$, $n_{22i} = n / 3$, and $n_{23i} = n / 6$.
+\end{enumerate}
+
+\begin{landscape}
+\section{Additional simulation results}
 
 
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/overview_01-1} 
 
@@ -77,7 +179,7 @@
 \end{knitrout}
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/overview_10-1} 
 
@@ -90,7 +192,7 @@
 \end{knitrout}
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_01_15-1} 
 
@@ -103,7 +205,7 @@
 \end{knitrout}
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_05_15-1} 
 
@@ -116,7 +218,7 @@
 \end{knitrout}
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_10_15-1} 
 
@@ -129,7 +231,7 @@
 \end{knitrout}
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_01_30-1} 
 
@@ -142,7 +244,7 @@
 \end{knitrout}
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_10_30-1} 
 
@@ -155,7 +257,7 @@
 \end{knitrout}
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_01_50-1} 
 
@@ -168,7 +270,7 @@
 \end{knitrout}
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_05_50-1} 
 
@@ -181,7 +283,7 @@
 \end{knitrout}
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_10_50-1} 
 
@@ -194,7 +296,7 @@
 \end{knitrout}
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/misspecification_01-1} 
 
@@ -207,7 +309,7 @@
 \end{knitrout}
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/misspecification_05-1} 
 
@@ -220,7 +322,7 @@
 \end{knitrout}
 
 \begin{knitrout}
-\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/misspecification_10-1} 
 
@@ -231,5 +333,9 @@
 
 
 \end{knitrout}
+\end{landscape}
+
+\bibliographystyle{agsm}
+\bibliography{bibliography}
 
 \end{document}

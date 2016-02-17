@@ -53,7 +53,7 @@
 \usepackage{graphicx,psfrag,epsf}
 \usepackage{enumerate}
 \usepackage{booktabs}
-\RequirePackage[natbibapa]{apacite}
+\RequirePackage[natbibapa, mask]{apacite}
 \usepackage{caption}
 \usepackage{multirow}
 
@@ -135,12 +135,12 @@ In longitudinal panels and other regression models with unobserved effects, fixe
 \section{INTRODUCTION}
 \label{sec:intro}
 
-In many economic analyses, interest centers on the parameters of a linear regression model, estimated by ordinary or weighted least squares (OLS/WLS) from a sample exhibiting within-group dependence. 
+In many economic analyses, interest centers on the parameters of a linear regression model, estimated by ordinary or weighted least squares (OLS/WLS) from data exhibiting within-group dependence. 
 Such dependence can arise from sampling aggregate units (e.g., counties, districts, villages), each of which contains multiple observations; from repeated measurement of an outcome on a common set of units, as in panel data; or from model misspecification, as in analysis of regression discontinuity designs \citep[e.g.,][]{Lee2008regression}. 
 A common approach to inference in these settings is to use a cluster-robust variance estimator \citep[CRVE;][]{Arellano1987computing, Liang1986longitudinal, white1984asymptotic}.
 The advantage of the CRVE is that it produces consistent standard errors and test statistics without imposing strong parametric assumptions about the correlation structure of the errors in the model.
 Instead, the method relies on the weaker assumption that units can be grouped into clusters that are mutually independent. 
-CRVE is an extension to another economic mainstay, heteroskedasticity-consistent variance estimators \citep{Huber1967behavior, White1980heteroskedasticity}, which are used to account for non-constant variance in regression models with uncorrelated errors.
+%CRVE is an extension to another economic mainstay, heteroskedasticity-consistent variance estimators \citep{Huber1967behavior, White1980heteroskedasticity}, which are used to account for non-constant variance in regression models with uncorrelated errors.
 In the past decade, use of CRVEs has become standard practice for micro-economic researchers, as evidenced by coverage in major textbooks and review articles \citep[e.g.,][]{Wooldridge2010econometric, Angrist2009mostly, Cameron2015practitioners}.
 
 As a leading example, consider a difference-in-differences analysis of state-by-year panel data, where the goal is to understand the effects on employment outcomes of several state-level policy shifts. 
@@ -158,7 +158,7 @@ In particular, they demonstrate that small-sample corrections for t-tests implem
 Their method, called bias-reduced linearization (BRL), entails adjusting the CRVE so that it is exactly unbiased under a working model specified by the analyst, while also remaining asymptotically consistent under arbitrary true variance structures. 
 Simulations reported by \citet{Bell2002bias} demonstrate that the BRL correction serves to reduce the bias of the CRVE even when the working model is misspecified. 
 The same authors also proposed and studied small-sample corrections to single-parameter hypothesis tests using the BRL variance estimator, based on Satterthwaite \citep{Bell2002bias} or saddlepoint approximations \citep{McCaffrey2006improved}. 
-\citet{Angrist2009effects} applied the BRL correction in an analysis of a longitudinal cluster-randomized trial with 35 clusters, observing that the bias correction makes a difference for inferences. 
+In an analysis of a longitudinal cluster-randomized trial with 35 clusters, \citet{Angrist2009effects} observed that the BRL correction makes a difference for inferences. 
 
 Despite a growing body of evidence that BRL performs well \citep[e.g.,][]{Imbens2015robust}, several problems with the method hinder its wider application. 
 First, \citet{Angrist2009mostly} noted that the BRL correction is undefined in some highly parameterized models, such as state-by-year panels that include fixed effects for states and for years.
@@ -173,10 +173,10 @@ Finally, we propose a procedure for testing multiple-parameter hypotheses by app
 
 Our work is related to a stream of recent literature that has examined methods for cluster-robust inference with a small number of clusters. 
 \citet{Conley2011inference} proposed methods for hypothesis testing in a difference-in-differences setting where the number of treated units is small and fixed, while the number of untreated units increases asymptotically. 
-\citet{Ibragimov2010tstatistic} proposed a method for constructing robust tests of scalar parameters that maintains the nominal Type-I error rate; however, their method requires that the target parameter be identified within each independent cluster and so it is not always applicable.  
+\citet{Ibragimov2010tstatistic} proposed a cluster-robust t-test that maintains the nominal Type-I error rate; however, their method requires that the target parameter be identified within each independent cluster and so it is not always applicable.  
 \citet{Cameron2008bootstrap} investigated a range of bootstrapping procedures that provide improved Type-I error control in small samples, finding that a cluster wild-bootstrap technique was particularly accurate in small samples. 
 Nearly all of this work has focused on single-parameter hypothesis tests only. 
-For multiple-parameter constraints, \citet{Cameron2015practitioners} suggest an ad-hoc degrees of freedom adjustment and note, as an alternative, that bootstrapping techniques can in principle be applied to multiple-parameter tests. 
+For multiple-parameter constraints, \citet{Cameron2015practitioners} suggested an ad-hoc degrees of freedom adjustment and noted, as an alternative, that bootstrapping techniques can in principle be applied to multiple-parameter tests. 
 However, little methodological work has examined the accuracy of multiple-parameter tests.
 
 The paper is organized as follows. The remainder of this section introduces our econometric framework and reviews the standard CRVE methods, as implemented in most software applications.
@@ -194,16 +194,16 @@ We consider a linear regression model of the form,
 \bm{y}_i = \bm{R}_i \bs\beta + \bm{S}_i \bs\gamma + \bm{T}_i \bs\mu + \bs\epsilon_i,
 \end{equation}
 where $\bm{y}_i$ is a vector of $n_i$ outcomes for cluster $i$,  $\bm{R}_i$ is an $n_i \times r$ matrix containing predictors of primary interest (e.g., policy variables) and any additional controls, $\bm{S}_i$ is an $n_i \times s$ matrix describing fixed effects that vary across clusters, and $\bm{T}_i$ is an $n_i \times t$ matrix describing fixed effects that are identified only within clusters.\footnote{The distinction between the covariates $\bm{R}_i$ versus the fixed effects $\bm{S}_i$ is arbitrary and depends on the analyst's inferential goals. However, the distinction between the two fixed effect matrices $\bm{S}_i$ and $\bm{T}_i$ is unambiguous, in that the within-cluster fixed effects satisfy $\bm{T}_h \bm{T}_i' = \bm{0}$ for $h \neq i$.}
-In the state-policy example described in the introduction, $\bm{R}_i$ would include indicator variables for each policy change, as well as additional demographic controls; $\bm{S}_i$ would include year fixed effects; and $\bm{T}_i$ would indicate state fixed effects. 
+In the state-by-year panel analysis described in the introduction, $\bm{R}_i$ would include indicator variables for each policy change, as well as additional demographic controls; $\bm{S}_i$ would include year fixed effects; and $\bm{T}_i$ would indicate state fixed effects. 
 Interest would center on testing hypotheses regarding the coefficients in $\bs\beta$ that correspond to the policy indicators, while $\bs\gamma$ and $\bs\mu$ would be treated as incidental. 
 
 We shall assume that $\E\left(\bs\epsilon_i\left|\bm{R}_i,\bm{S}_i, \bm{T}_i\right.\right) = \bm{0}$ and $\Var\left(\bs\epsilon_i\left|\bm{R}_i,\bm{S}_i,\bm{T}_i\right.\right) = \bs\Sigma_i$, for $i = 1,...,m$, where the form of $\bs\Sigma_1,...,\bs\Sigma_m$ may be unknown but the errors are independent across clusters. 
-For notational convenience, let $\bm{U}_i = \left[\bm{R}_i \ \bm{S}_i \right]$ denote the set of predictors that vary across clusters, $\bm{X}_i = \left[\bm{R}_i \ \bm{S}_i \ \bm{T}_i \right]$ denote the full set of predictors, $\bs\alpha = \left(\bs\beta', \bs\gamma', \bs\mu' \right)'$, and $p = r + s + t$.
+Let $\bm{U}_i = \left[\bm{R}_i \ \bm{S}_i \right]$ denote the set of predictors that vary across clusters, $\bm{X}_i = \left[\bm{R}_i \ \bm{S}_i \ \bm{T}_i \right]$ denote the full set of predictors, $\bs\alpha = \left(\bs\beta', \bs\gamma', \bs\mu' \right)'$, and $p = r + s + t$.
 Let $N = \sum_{i=1}^m n_i$ denote the total number of observations.
 Let $\bm{y}$, $\bm{R}$, $\bm{S}$, $\bm{T}$, $\bm{U}$, $\bm{X}$, and $\bs\epsilon$ denote the matrices obtained by stacking their corresponding components, as in $\bm{R} = \left(\bm{R}_1' \ \bm{R}_2' \ \cdots \ \bm{R}_m'\right)'$. 
 
 We assume that $\bs\beta$ is estimated by weighted least squares (WLS) using symmetric, full rank weighting matrices $\bm{W}_1,...,\bm{W}_m$. 
-Clearly, the WLS estimator includes OLS as a special case (where $\bm{W}_i = \bm{I}_i$, an identity matrix), as well as feasible GLS.\footnote{
+Clearly, the WLS estimator includes OLS as a special case, as well as feasible GLS.\footnote{
 The WLS estimator also encompasses the estimator proposed by \citet{Ibragimov2010tstatistic} for clustered data. 
 Assuming that $\bm{X}_i$ has rank $p$ for $i = 1,...,m$, their proposed approach involves estimating $\bs\beta$ separately within each cluster and taking the simple average of these estimates. 
 The resulting average is equivalent to the WLS estimator with weights $\bm{W}_i = \bm{X}_i \left(\bm{X}_i'\bm{X}_i\right)^{-2} \bm{X}_i$.} 
@@ -216,8 +216,7 @@ Finally, for analysis of data from complex survey designs, WLS may be used with 
 
 The goal of most analyses is to estimate and test hypotheses regarding the parameters in $\bs\beta$, while the fixed effects $\bs\gamma$ and $\bs\mu$ are not of inferential interest. Moreover, LSDV estimation becomes computationally intensive and numerically inaccurate if the model includes a large number of fixed effects (i.e., $s + t$ large). 
 A commonly implemented solution is to first absorb the fixed effects, which leaves only the $r$ parameters in $\bs\beta$ to be estimated. 
-Section \ref{sec:BRL} examines the implications of absorption for application of the BRL adjustment. 
-In order to do, we now formalize the absorption method.
+Because Section \ref{sec:BRL} examines the implications of absorption for application of the BRL adjustment, we now formalize the absorption procedure.
 
 Denote the full block-diagonal weighting matrix as $\bm{W} = \text{diag}\left(\bm{W}_1,...,\bm{W}_m\right)$.
 Let $\bm{K}$ be the $x \times r$ matrix that selects the covariates of interest, so that $\bm{X} \bm{K} = \bm{R}$ and $\bm{K}'\bs\alpha = \bs\beta$.
@@ -233,9 +232,8 @@ The WLS estimator of $\bs\beta$ can then be written as
 \label{eq:WLS}
 \bs{\hat\beta} = \bm{M_{\ddot{R}}} \sum_{i=1}^m \bm{\ddot{R}}_i' \bm{W}_i \bm{\ddot{y}}_i. 
 \end{equation}
-This estimator is algebraically identical to the LSDV estimator, $\bs{\hat\beta} = \bm{K}'\bm{M_X} \bm{X}' \bm{W} \bm{y}$, but avoids the need to solve a system of $p$ linear equations.
-
-In the remainder, we focus on the more general case in which fixed effects are absorbed before estimation of $\bs\beta$. For models that do not include within-cluster fixed effects, so that the full covariate matrix is $\bm{U} = \left[\bm{R} \ \bm{S}\right]$, all of the results hold after substituting $\bm{U}$ for $\bm{\ddot{R}}$. 
+This estimator is algebraically identical to the LSDV estimator, $\bs{\hat\beta} = \bm{K}'\bm{M_X} \bm{X}' \bm{W} \bm{y}$, but avoids the need to solve a system of $p$ linear equations. In the remainder, we focus on the more general case in which fixed effects are absorbed before estimation of $\bs\beta$. 
+%For models that do not include within-cluster fixed effects, so that the full covariate matrix is $\bm{U} = \left[\bm{R} \ \bm{S}\right]$, all of the results hold after substituting $\bm{U}$ for $\bm{\ddot{R}}$. 
 
 \subsection{Standard CRVE}
 
@@ -245,10 +243,9 @@ The WLS estimator $\bs{\hat\beta}$, has true variance
 \Var\left(\bs{\hat\beta}\right) = \bm{M_{\ddot{R}}}\left(\sum_{i=1}^m \bm{\ddot{R}}_i' \bm{W}_i \bs\Sigma_i \bm{W}_i\bm{\ddot{R}}_i\right) \bm{M_{\ddot{R}}},
 \end{equation}
 which depends upon the unknown variance matrices $\bs\Sigma_i$. 
-A model-based approach to estimating this variance would involve assuming that $\bm\Sigma_i$ follows a structure defined by some low-dimensional parameter; for example, it may be assumed that the structure was hierarchical or auto-regressive. 
-The model-based variance estimator would substitute estimates of $\bs\Sigma_i$ into (\ref{eq:var_WLS}).
-However, if the model is misspecified, this estimator will be inconsistent and inferences based upon it will be invalid.
-
+%A model-based approach to estimating this variance would involve assuming that $\bm\Sigma_i$ follows a structure defined by some low-dimensional parameter; for example, it may be assumed that the structure was hierarchical or auto-regressive. 
+%The model-based variance estimator would substitute estimates of $\bs\Sigma_i$ into (\ref{eq:var_WLS}).
+%However, if the model is misspecified, this estimator will be inconsistent and inferences based upon it will be invalid.
 The CRVE involves estimating $\Var\left(\bs{\hat\beta}\right)$ empirically, without imposing structural assumptions on $\bs\Sigma_i$. 
 While there are several versions of this approach, all can be written in the form
 \begin{equation}
@@ -262,7 +259,7 @@ The most basic CRVE, described by \citet{Liang1986longitudinal}, uses $\bm{A}_i 
 Following \citet{Cameron2015practitioners}, we refer to this estimator as CR0. 
 This estimator is biased towards zero because the cross-product of the residuals $\bm{e}_i \bm{e}_i'$ tends to under-estimate the true variance $\bs\Sigma_i$ in cluster $i$.
 A rough bias adjustment is to take $\bm{A}_i = c\bm{I}_i$, where $c = \sqrt{(m/(m-1))}$; we denote this adjusted estimator as CR1. Some functions in Stata use a slightly different correction factor $c_S = \sqrt{(m N)/[(m - 1)(N - p)]}$; we will refer to the adjusted estimator using $c_S$ as CR1S. When $N >> p$, $c_S \approx \sqrt{m/(m-1)}$ and so CR1 and CR1S will be very similar.
-The CR1 or CR1S estimator is now commonly used in empirical applications.
+These estimators are now commonly used in empirical applications.
 
 Use of these adjustments still tends to under-estimate the true variance of $\hat{\bs\beta}$ \citep{Cameron2015practitioners}. 
 Analytic work and simulation studies indicate that the degree of bias depends not only on the number of clusters $m$, but also on features of the covariates in $\bm{X}$. Specifically, 
@@ -279,12 +276,12 @@ The next section describes in detail the BRL approach, which makes adjustments t
 In contrast to the CR1 or CR3 estimators, the BRL correction is premised on a ``working'' model for the structure of the errors, which must be specified by the analyst. 
 Under a given working model, adjustment matrices $\bm{A}_i$ are defined so that the variance estimator is exactly unbiased.
 We refer to this correction as CR2 because it extends the HC2 variance estimator for regressions with uncorrelated errors, which is exactly unbiased when the errors are homoskedastic \citep{MacKinnon1985some}.
-The idea of specifying a model may seem antithetical to the purpose of using CRVE, yet extensive simulation studies have demonstrated that the method performs better in small samples than any of the other adjustments, even when the working model is incorrect \citep{Bell2002bias, Cameron2015practitioners, Imbens2015robust, Tipton2015small-t}. 
-Although the CR2 estimator may no longer be exactly unbiased when the working model is misspecified, its bias still tends to be greatly reduced compared to CR1 or CR0 (thus the name ``bias reduced linearization''). Furthermore, as the number of clusters increases, reliance on the working model diminishes. 
-In a sense, CR2 provides necessary scaffolding in the small-sample case, which falls away when there is sufficient data.
+The idea of specifying a model may seem antithetical to the purpose of using CRVE, yet extensive simulation studies have demonstrated that the method performs better in small samples than any of the other adjustments, even when the working model is incorrect \citep[][\maskcitealp{Tipton2015small-t}]{Bell2002bias, Cameron2015practitioners, Imbens2015robust}. 
+Although the CR2 estimator might not be exactly unbiased when the working model is misspecified, its bias still tends to be greatly reduced compared to CR1 or CR0 (thus the name ``bias reduced linearization''). Furthermore, as the number of clusters increases, reliance on the working model diminishes. 
+%In a sense, CR2 provides necessary scaffolding in the small-sample case, which falls away when there is sufficient data.
 
 Let $\bs\Phi = \text{diag}\left(\bs\Phi_1,...,\bs\Phi_m\right)$ denote a working model for the covariance structure (up to a scalar constant). 
-For example, we might assume that the errors are uncorrelated and homoskedastic, with $\bs\Phi_i = \bm{I}_i$. 
+For example, we might assume that the errors are uncorrelated and homoskedastic, with $\bs\Phi_i = \bm{I}_i$ for $i = 1,...,m$. 
 Alternatively, \citet{Imbens2015robust} suggested using a random effects (i.e., compound symmetric) structure, in which $\bs\Phi_i$ has unit diagonal entries and off-diagonal entries of $\rho$, with $\rho$ estimated using the OLS residuals \citep[see][p. 16]{Imbens2015robust}.
 
 In the original formulation of \citet{Bell2002bias}, the BRL adjustment matrices are chosen to satisfy the criterion
@@ -294,22 +291,20 @@ In the original formulation of \citet{Bell2002bias}, the BRL adjustment matrices
 \end{equation}
 for a given working model, where $\left(\bm{I} - \bm{H_X}\right)_i$ denotes the rows of $\bm{I} - \bm{H_X}$ corresponding to cluster $i$.
 If the working model and weight matrices are both taken to be identity matrices, then the adjustment matrices simplify to $\bm{A}_i = \left(\bm{I}_i - \bm{X}_i\bm{M_X} \bm{X}_i'\right)^{-1/2}$, where $\bm{Z}^{-1/2}$ denotes the symmetric square-root of the matrix $\bm{Z}$. 
-This formulation of $\bm{A}_i$ is problematic because, for some fixed effects models that are common in economic applications, Equation \ref{eq:CR2_criterion_BM} does not have any solution. 
-In the next two subsections, we address this and other issues that arise in applying BRL to fixed effects models.
 
-\subsection{Generalized Inverse}
+\subsection{A more general BRL criterion}
 
-The equality defining the $\bm{A}_i$ matrices cannot always be solved because it is possible that some of the matrices involved are not of full rank, and thus cannot be inverted. 
-\citet{Angrist2009mostly} note that this problem occurs in balanced state-by-year panel models that include fixed effects for states and for years. 
-However, an alternative criterion for the adjustment matrices can always be satisfied. 
-Instead of (\ref{eq:CR2_criterion_BM}), we seek adjustment matrices $\bm{A}_i$ that satisfy:
+The original formulation of $\bm{A}_i$ is problematic because, for some fixed effects models that are common in economic applications, Equation \ref{eq:CR2_criterion_BM} has no solution. 
+\citet{Angrist2009mostly} note that this problem occurs in balanced state-by-year panel models that include fixed effects for states and for years, in which case $\bm{I}_i - \bm{\ddot{R}}_i\bm{M_{\ddot{R}}} \bm{\ddot{R}}_i'$ is not of full rank. 
+This problem can be addressed by using an alternative criterion to define the adjustment matrices, for which a solution always exists. 
+Instead of (\ref{eq:CR2_criterion_BM}), we propose to use adjustment matrices $\bm{A}_i$ that satisfy:
 \begin{equation}
 \label{eq:CR2_criterion}
 \bm{\ddot{R}}_i' \bm{W}_i \bm{A}_i \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i' \bm{A}_i' \bm{W}_i \bm{\ddot{R}}_i = \bm{\ddot{R}}_i' \bm{W}_i \bs\Phi_i \bm{W}_i \bm{\ddot{R}}_i.
 \end{equation}
 A variance estimator that uses such adjustment matrices will be exactly unbiased when the working model is correctly specified.
 
-Criterion (\ref{eq:CR2_criterion}) does not uniquely define $\bm{A}_i$. One solution, which produces symmetric adjustment matrices, uses
+A symmetric solution to Equation (\ref{eq:CR2_criterion}) uses
 \begin{equation}
 \label{eq:CR2_adjustment}
 \bm{A}_i = \bm{D}_i' \bm{B}_i^{+1/2} \bm{D}_i,
@@ -319,7 +314,7 @@ where $\bm{D}_i$ is the upper-right triangular Cholesky factorization of $\bs\Ph
 \label{eq:CR2_Bmatrix}
 \bm{B}_i = \bm{D}_i\left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)' \bm{D}_i',
 \end{equation}
-and $\bm{B}_i^{+1/2}$ is the symmetric square root of the Moore-Penrose inverse of $\bm{B}_i $. 
+and $\bm{B}_i^{+1/2}$ is the symmetric square root of the Moore-Penrose inverse of $\bm{B}_i$. 
 The Moore-Penrose inverse is well-defined and unique even when $\bm{B}_i$ is not of full rank \citep[][Thm. 9.18]{Banerjee2014linear}. These adjustment matrices satisfy criterion (\ref{eq:CR2_criterion}), as stated in the following theorem.
 
 \begin{thm}
@@ -327,7 +322,7 @@ The Moore-Penrose inverse is well-defined and unique even when $\bm{B}_i$ is not
 Let $\bm{L}_i = \left(\bm{\ddot{U}}'\bm{\ddot{U}} - \bm{\ddot{U}}_i'\bm{\ddot{U}}_i\right)$, where $\bm{\ddot{U}} = \left(\bm{I} - \bm{H_T}\right)\bm{U}$, and assume that $\bm{L}_1,...,\bm{L}_m$ have full rank $r + s$. Further assume that $\Var\left(\bs\epsilon_i\left|\bm{X}_i\right.\right) = \sigma^2 \bs\Phi_i$, for $i = 1,...,m$. Then the adjustment matrix $\bm{A}_i$ defined in (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) satisfies criterion (\ref{eq:CR2_criterion}) and the CR2 variance estimator is exactly unbiased.
 \end{thm}
 
-Proof is given in Appendix \ref{app:theorems}. If $\bm{B}_i$ is of full rank, then the adjustment matrices also satisfy the original criterion (\ref{eq:CR2_criterion_BM}). The main implication of Theorem \ref{thm:BRL_FE} is that the CR2 variance estimator remains well-defined, even in models with large sets of fixed effects.
+Proof is given in Section S1 of the supplementary materials. If $\bm{B}_i$ is of full rank, then the adjustment matrices also satisfy the original criterion (\ref{eq:CR2_criterion_BM}). The main implication of Theorem \ref{thm:BRL_FE} is that the CR2 variance estimator remains well-defined, even in models with large sets of fixed effects.
 
 \subsection{Absorption and LSDV Equivalence}
 
@@ -335,18 +330,20 @@ A problem with existing small-sample adjustments to CRVEs is that they can resul
 For example, this problem arises with the CR1S estimator because it uses a multiplicative correction to the residuals that depends on the total number of covariates estimated in the model. 
 With the LSDV estimator, the constant is calculated as $c_S = \sqrt{(mN) / [(m - 1)(N - p)]}$, where $p$ is the total number of covariates, including fixed effects. 
 In contrast, if the fixed effects are absorbed, the constant is calculated as $c_S = \sqrt{(mN) / [(m - 1)(N - r)]}$, where $r$ is the number of covariates that are not absorbed. 
-\citet{Cameron2015practitioners} highlight that this discrepancy can be substantial if the clusters are small. For instance, if each cluster includes $n_i = 2$ units, then the CR1S estimator based on the LSDV estimator is over twice as large as the estimator based on the absorbed model.
-Such differences between the correction based on OLS estimation of the fixed effects and the correction based on the absorbed model are problematic because the magnitude of the variance estimator should not depend on how the model estimates are calculated. 
+\citet{Cameron2015practitioners} highlight that this discrepancy can be substantial if the clusters are small. 
+%For instance, if each cluster includes $n_i = 2$ units, then the CR1S estimator based on the LSDV estimator is over twice as large as the estimator based on the absorbed model.
+%Such differences between the correction based on OLS estimation of the fixed effects and the correction based on the absorbed model are problematic because the magnitude of the variance estimator should not depend on how the model estimates are calculated. 
 
 Similar discrepancies can arise when applying the BRL method in models with fixed effects. 
 Consider the scenario in which absorption is used to estimate $\bs\beta$; here, the analyst might choose to calculate the CR2 correction based on the absorbed covariate matrix $\bm{\ddot{R}}$---that is, by substituting $\bm{H_{\ddot{R}}}$ for $\bm{H_X}$ in (\ref{eq:CR2_Bmatrix})---in order to avoid calculating the full projection matrix $\bm{H_X}$. 
 However, this approach can lead to different adjustment matrices because it is based on a subtly different working model. 
-Essentially, calculating CR2 based on the absorbed model amounts to assuming that the working model $\bs\Phi$ applies not to the model errors $\bs\epsilon$, but rather to the errors from the regression of $\bm{\ddot{y}}$ on $\bm{\ddot{R}}$.
+Essentially, calculating CR2 based on $\bm{H_{\ddot{R}}}$ amounts to assuming that the working model $\bs\Phi$ applies not to the model errors $\bs\epsilon$, but rather to the errors from the regression of $\bm{\ddot{y}}$ on $\bm{\ddot{R}}$.
 We find this method of specifying the working model to be incoherent, and therefore recommend against taking it.
 Rather, the CR2 adjustment matrices should be calculated based on a working model for the errors in the full regression model, following Equations (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) as stated. 
 
-A drawback of using the CR2 adjustment matrices based on the full regression model is that it entails calculating the projection matrix $\bm{H_X}$ for the full set of $p$ covariates (i.e., including fixed effect indicators). Given that the entire advantage of using absorption to calculate $\hat{\bs\beta}$ is to avoid computations involving large, sparse matrices, it is of interest to find methods for more efficiently calculating the CR2 adjustment matrices. Some efficiency can be gained by using the fact that the residual projection matrix $\bm{I} - \bm{H_X}$ can be factored into components as $\left(\bm{I} - \bm{H_X}\right)_i = \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_i \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \left(\bm{I} - \bm{H_T}\right)$.
-
+A drawback of using the CR2 adjustment matrices based on the full regression model is that it entails calculating the projection matrix $\bm{H_X}$ for the full set of $p$ covariates (i.e., including fixed effect indicators). 
+%Given that the entire advantage of using absorption to calculate $\hat{\bs\beta}$ is to avoid computations involving large, sparse matrices, it is of interest to find methods for more efficiently calculating the CR2 adjustment matrices. 
+Some computational efficiency can be gained by using the fact that the residual projection matrix $\bm{I} - \bm{H_X}$ can be factored into components as $\left(\bm{I} - \bm{H_X}\right)_i = \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_i \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \left(\bm{I} - \bm{H_T}\right)$.
 In certain cases, further computational efficiency can be achieved by computing the adjustment matrices after absorbing the within-cluster fixed effects $\bm{T}$ (but not the between-cluster fixed effects $\bm{S}$). 
 Specifically, if the weights used for WLS estimation are the inverses of the working covariance model, so that $\bm{W}_i = \bs\Phi_i^{-1}$ for $i = 1,...,m$, then the adjustment matrices can be calculated without accounting for the within-cluster fixed effects. 
 This result is formalized in the following theorem.  
@@ -361,16 +358,14 @@ Let $\bm{\tilde{A}}_i = \bm{D}_i'\bm{\tilde{B}}_i^{+1/2} \bm{D}_i$, where
 If $\bm{T}_i \bm{T}_k' = \bm{0}$ for $j \neq k$ and $\bm{W} = \bs\Phi^{-1}$, then $\bm{A}_i = \bm{\tilde{A}}_i$. 
 \end{thm}
 
-Proof is given in Appendix A.
+Proof is given in the supplementary materials.
 The main implication of Theorem \ref{thm:absorb} is that the more computationally tractable formula $\bm{\tilde{B}}_i$ can be used in the common case that the weighting matrices are the inverse of the working covariance model.
-
 Following the working model suggested by \citet{Bell2002bias}, in which $\bs\Phi = \bm{I}$, the above theorem shows that the adjustment method is invariant to the choice of estimator so long as the model is estimated by OLS (i.e., with $\bm{W} = \bm{I}$).
-In this case, the CR2 adjustment matrices then simplify further to \[
-\bm{A}_i = \left(\bm{I}_i - \bm{\ddot{U}}_i\left(\bm{\ddot{U}}'\bm{\ddot{U}}\right)^{-1}\bm{\ddot{U}}_i'\right)^{+1/2}. \]
+In this case, the CR2 adjustment matrices then simplify further to $\bm{A}_i = \left(\bm{I}_i - \bm{\ddot{U}}_i\left(\bm{\ddot{U}}'\bm{\ddot{U}}\right)^{-1}\bm{\ddot{U}}_i'\right)^{+1/2}$.
 In contrast, if the working model proposed by \citet{Imbens2015robust} is instead used (while still using OLS), then the above theorem implies that the CR2 adjustments will differ if the model is estimated by LSDV versus by using absorption.
 
-The two theorems of this section extend the BRL methodology described by \citet{Bell2002bias}, demonstrating how the CR2 adjustment can be computed efficiently---and from a coherent working model---for a broad range of commonly used regression models, including those with within- and between-cluster fixed effects.
-The next section addresses a final set of concerns: how to conduct single- and multiple-parameter hypothesis tests using the CR2 estimator. 
+%The two theorems of this section extend the BRL methodology described by \citet{Bell2002bias}, demonstrating how the CR2 adjustment can be computed efficiently---and from a coherent working model---for a broad range of commonly used regression models, including those with within- and between-cluster fixed effects.
+%The next section addresses a final set of concerns: how to conduct single- and multiple-parameter hypothesis tests using the CR2 estimator. 
 
 \section{HYPOTHESIS TESTING}
 \label{sec:testing}
@@ -379,7 +374,7 @@ The CR2 correction produces a CRVE that has reduced bias (compared to other CRVE
 Cluster-robust Wald-type test statistics, which are a function of the parameter estimates $\bs{\hat\beta}$ and the corresponding CRVE, are justified on an asymptotic basis as the number of clusters grows large (i.e., as $m \to \infty$). 
 
 Like the research on the bias of the CRVE estimator, evidence from a wide variety of contexts indicates that the asymptotic limiting distribution of robust Wald statistics may be a poor approximation when the number of clusters is small, even if corrections such as CR2 or CR3 are employed \citep{Bell2002bias, Bertrand2004how, Cameron2008bootstrap}. 
-Like the bias of the CRVE estimator itself, the accuracy of the asymptotic approximations depends on design features such as the degree of imbalance across clusters, skewness or leverage of the covariates, and the similarity of cluster sizes \citep{McCaffrey2001generalizations, Tipton2015small-F, Webb2013wild, Carter2013asymptotic}. 
+Like the bias of the CRVE estimator itself, the accuracy of the asymptotic approximations depends on design features such as the degree of imbalance across clusters, skewness or leverage of the covariates, and the similarity of cluster sizes \citep[][\maskcitealp{Tipton2015small-F}]{McCaffrey2001generalizations, Webb2013wild, Carter2013asymptotic}. 
 This suggests that, if hypothesis tests are to achieve accurate rejection rates in small samples, they should account for features of the design matrix.
 
 In this section, we develop a general method for conducting hypothesis tests based on CRVEs. We consider linear constraints on $\bs\beta$, where the null hypothesis has the form $H_0: \bm{C}\bs\beta = \bm{d}$ for fixed $q \times r$ matrix $\bm{C}$ and $q \times 1$ vector $\bm{d}$. 
@@ -410,7 +405,6 @@ The Satterthwaite approximation \citep{Satterthwaite1946approximate} entails usi
 Theoretically, these degrees of freedom should be 
 $\nu = 2\left[\E\left(\bm{c}'\bm{V}^{CR2}\bm{c}\right)\right]^2 / \Var\left(\bm{c}'\bm{V}^{CR2}\bm{c}\right)$.
 Expressions for the first two moments of $\bm{c}'\bm{V}^{CR2}\bm{c}$ can be derived under the assumption that the errors $\bs\epsilon_1,...,\bs\epsilon_m$ are normally distributed. 
-
 In practice, both moments involve the variance structure $\bs\Sigma$, which is unknown. 
 \citet{Bell2002bias} proposed to estimate the moments based on the same working model that is used to derive the adjustment matrices. 
 This ``model-assisted'' estimate of the degrees of freedom is then calculated as 
@@ -418,19 +412,17 @@ This ``model-assisted'' estimate of the degrees of freedom is then calculated as
 \label{eq:nu_model}
 \nu_{M} = \frac{\left(\sum_{i=1}^m \bm{p}_i' \bs\Phi \bm{p}_i\right)^2}{\sum_{i=1}^m \sum_{j=1}^m \left(\bm{p}_i' \bs\Phi \bm{p}_j\right)^2},
 \end{equation}
-where $\bm{p}_i = \left(\bm{I} - \bm{H_X}\right)_i'\bm{A}_i \bm{W}_i\bm{\ddot{R}}_i\bm{M_{\ddot{R}}} \bm{c}$.
-\todo{Can we use $\bm{H_{\ddot{U}}}$ here instead?} 
-Alternately, for any of the CRVEs one could instead use an ``empirical'' estimate of the degrees of freedom, constructed by substituting $\bm{e}_i \bm{e}_i'$ in place of $\bs\Phi_i$. 
-However, \citet{Bell2002bias} found using simulation that this plug-in degrees of freedom estimate led to very conservative rejection rates. 
+where $\bm{p}_i = \left(\bm{I} - \bm{H_X}\right)_i'\bm{A}_i \bm{W}_i\bm{\ddot{R}}_i\bm{M_{\ddot{R}}} \bm{c}$.\footnote{Alternately, for any of the CRVEs one could instead use an ``empirical'' estimate of the degrees of freedom, constructed by substituting $\bm{e}_i \bm{e}_i'$ in place of $\bs\Phi_i$. 
+However, \citet{Bell2002bias} found using simulation that this plug-in degrees of freedom estimate led to very conservative rejection rates.}\todo{Can we use $\bm{H_{\ddot{U}}}$ here instead?} 
+This approximation works because the degrees of freedom account for covariate features that affect the distribution of the test statistic. 
+%When the covariate is balanced---as occurs in a balanced panel with the same proportion of treated units in each cluster---the degrees of freedom reduce to $m - 1$. 
+%However, when the covariate is highly unbalanced---as occurs when the panel is not balanced and the proportion of treated units varies from cluster to cluster---the degrees of freedom can be considerably smaller.
+%Similarly, covariates with large leverage points will tend to exhibit lower of degrees of freedom. 
 
-The Satterthwaite approximation works because the degrees of freedom account for covariate features that affect the distribution of the test statistic. When the covariate is balanced---as occurs in a balanced panel with the same proportion of treated units in each cluster---the degrees of freedom reduce to $m - 1$. 
-However, when the covariate is highly unbalanced---as occurs when the panel is not balanced and the proportion of treated units varies from cluster to cluster---the degrees of freedom can be considerably smaller.
-Similarly, covariates with large leverage points will tend to exhibit lower of degrees of freedom. 
-
-Previous simulation studies have studied the performance of t-tests based on the CR2 variance estimator and Satterthwaite approximation under a variety of conditions, including panel data models \citep{Cameron2015practitioners, Imbens2015robust}, analysis of multi-stage surveys \citep{Bell2002bias}, and meta-analysis \citep{Tipton2015small-t}. Across this range of data-generating processes, these studies found that the Type I error rate of the test is nearly always less than or equal to the nominal $\alpha$, so long as the degrees of freedom are larger than 4 or 5 \citep{Bell2002bias, Tipton2015small-t}.
-However, when the degrees of freedom are very small, the t-distribution approximation to the sampling distribution does not hold, and the Type I error can be higher than the stated $\alpha$ level. \footnote{When the degrees of freedom are smaller than 4 or 5, \citet{Tipton2015small-t} suggested using a smaller $\bs\alpha$ level for hypothesis testing in order to partially compensate. Another possibility would be to use the saddlepoint approximation proposed by \citet{McCaffrey2006improved}.}
+Previous simulation studies have studied the performance of t-tests based on the CR2 variance estimator and Satterthwaite approximation under a variety of conditions, including panel data models \citep{Cameron2015practitioners, Imbens2015robust}, analysis of multi-stage surveys \citep{Bell2002bias}, and meta-analysis \maskcitep{Tipton2015small-t}. Across this range of data-generating processes, these studies found that the Type I error rate of the test is nearly always less than or equal to the nominal $\alpha$, so long as the degrees of freedom are larger than 4 or 5 \citep[][\maskcitealp{Tipton2015small-t}]{Bell2002bias}.
+However, when the degrees of freedom are very small, the t-distribution approximation to the sampling distribution does not hold, and the Type I error can be higher than the stated $\alpha$ level.\footnote{When the degrees of freedom are smaller than 4 or 5, \maskcitet{Tipton2015small-t} suggested using a smaller $\bs\alpha$ level for hypothesis testing in order to partially compensate. Another possibility would be to use the saddlepoint approximation proposed by \citet{McCaffrey2006improved}.}
 Because the degrees of freedom are covariate-dependent, it is not possible to assess whether a small-sample correction is needed based solely on the total number of clusters in the data. 
-Consequently, \citet{Tipton2015small-t} and \citet{Imbens2015robust} have argued that t-tests based on CRVE should routinely use the CR2 variance estimator and the Satterthwaite degrees of freedom, even when $m$ appears to be large.
+Consequently, \maskcitet{Tipton2015small-t} and \citet{Imbens2015robust} have argued that t-tests based on CRVE should routinely use the CR2 variance estimator and the Satterthwaite degrees of freedom, even when $m$ appears to be large.
 
 \subsection{Small-sample corrections for F-tests}
 \label{subsec:F-tests}
@@ -439,10 +431,7 @@ Little research has considered small-sample corrections for multiple-constraint 
 Cameron and Miller highlight this problem, noting that some form of adjustment is clearly needed in light of the extensive work on single-parameter tests.
 We now describe an approach to multi-parameter testing that closely parallels the Satterthwaite correction for t-tests.
 
-Our approach is to approximate the sampling distribution of $Q$ by Hotelling's $T^2$ distribution (a multiple of an F distribution) with estimated degrees of freedom. To motivate the approximation, let $\bm{G} = \bm{C} \bm{M_{\ddot{R}}}\bm{\ddot{R}}'\bm{W}\bs\Phi\bm{W}\bm{\ddot{R}}\bm{M_{\ddot{R}}} \bm{C}'$ denote the variance of $\bm{C}\bs{\hat\beta}$ under the working model and observe that $Q$ can be written as \[
-Q = \bm{z}' \bs\Omega^{-1} \bm{z},
-\]
-where $\bm{z} = \bm{G}^{-1/2}\left(\bm{C}\bs{\hat\beta} - \bm{d}\right)$ and $\bs\Omega = \bm{G}^{-1/2} \bm{C} \bm{V}^{CR2}\bm{C}'\bm{G}^{-1/2}$. 
+Our approach is to approximate the sampling distribution of $Q$ by Hotelling's $T^2$ distribution (a multiple of an F distribution) with estimated degrees of freedom. To motivate the approximation, let $\bm{G} = \bm{C} \bm{M_{\ddot{R}}}\bm{\ddot{R}}'\bm{W}\bs\Phi\bm{W}\bm{\ddot{R}}\bm{M_{\ddot{R}}} \bm{C}'$ denote the variance of $\bm{C}\bs{\hat\beta}$ under the working model and observe that $Q$ can be written as $Q = \bm{z}' \bs\Omega^{-1} \bm{z}$, where $\bm{z} = \bm{G}^{-1/2}\left(\bm{C}\bs{\hat\beta} - \bm{d}\right)$ and $\bs\Omega = \bm{G}^{-1/2} \bm{C} \bm{V}^{CR2}\bm{C}'\bm{G}^{-1/2}$. 
 Now suppose that $\eta \times \bs\Omega$ follows a Wishart distribution with $\eta$ degrees of freedom and a $q$-dimensional identity scale matrix. It then follows that
 \begin{equation}
 \label{eq:AHT}
@@ -450,10 +439,10 @@ Now suppose that $\eta \times \bs\Omega$ follows a Wishart distribution with $\e
 \end{equation}
 We will refer to this as the approximate Hotelling's $T^2$ (AHT) test.
 We consider how to estimate $\eta$ below.
-This approximation is conceptually similar to the Satterthwaite approximation for one-dimensional constraints, and in fact reduces to the Satterthwaite approximation when $q = 1$. 
+Note that this approximation reduces to the Satterthwaite approximation when $q = 1$. 
 For $q > 1$, the test depends on the multivariate distribution of $\bm{V}^{CR2}$, including both variance and covariance terms. 
 
-\citet{Tipton2015small-F} recently introduced this test for the special case of CRVE in meta-regression models.
+\maskcitet{Tipton2015small-F} recently introduced this test for the special case of CRVE in meta-regression models.
 Wishart approximations have also been considered as approximations in several simpler models where special cases of CRVE are used.
 \citet{Nel1986solution} proposed an AHT-type test for testing equality of multivariate means across two samples with unequal variance-covariance matrices \citep[i.e., the multivariate Behrens-Fisher problem; see also][]{Krishnamoorthy2004modified}.
 \citet{Zhang2012twowayANOVA} followed a similar approach in developing a test for contrasts in multivariate analysis of variance models where the covariance of the errors differs across groups, a special case of model (\ref{eq:fixed_effects}) where the CR2 variance estimator has a particularly simple form. 
@@ -464,7 +453,7 @@ The contribution of the present paper is to extend the AHT test to the general s
 The remaining question is how to estimate the parameter $\eta$, which determines scalar multiplier and denominator degrees of freedom of the AHT test. 
 To do so, we match the mean and variance of $\bs\Omega$ to that of the approximating Wishart distribution under the working variance model $\bs\Phi$, just as in the degrees of freedom for the t-test. 
 However, it is not possible to exactly match both moments if $q > 1$.
-Following \citet{Tipton2015small-F}, we instead match the mean and total variance of $\bs\Omega$ (i.e., the sum of the variances of its entries).
+Following \maskcitet{Tipton2015small-F}, we instead match the mean and total variance of $\bs\Omega$ (i.e., the sum of the variances of its entries).
 
 Let $\bm{g}_1,...,\bm{g}_q$ denote the $q \times 1$ column vectors of $\bm{G}^{-1/2}$. 
 Let \[
@@ -489,7 +478,7 @@ In the next section, we examine the behavior of the AHT test in a simulation des
 \section{Simulation study}
 \label{sec:simulation}
 
-Evidence from several large simulation studies indicates that hypothesis tests based on the CR2 adjustment and estimated degrees of freedom substantially out-perform the procedures that are most commonly used in empirical applications \citep{Cameron2015practitioners, Imbens2015robust,Bell2002bias,Tipton2015small-t,Tipton2015small-F}.
+Evidence from several large simulation studies indicates that hypothesis tests based on the CR2 adjustment and estimated degrees of freedom substantially out-perform the procedures that are most commonly used in empirical applications \citep[][\maskcitealp{Tipton2015small-t, Tipton2015small-F}]{Cameron2015practitioners, Imbens2015robust,Bell2002bias}.
 However, existing simulations have focused almost entirely on single-parameter tests. 
 In this section, we describe the design and results of a new simulation study, which focused on the rejection rates of multiple-parameter tests.
 Throughout, we refer to tests employing the CR2-corrected CRVE and estimated degrees of freedom as the ``AHT'' test; for t-tests, the estimated degrees of freedom are equivalent to the Satterthwaite approximation given in Equation (\ref{eq:nu_model}). 
@@ -591,7 +580,7 @@ This trend is the strongest for CR and DD designs. At the smallest sample size, 
 Next, by simulating the errors across a variety of parameter combinations, we were also able to test the impact of misspecification of the working model on Type I error.
 Because the CR2 correction and AHT degrees of freedom are both based on a working model with independent, homoskedastic errors, model misspecification increases with the true level of treatment effect variance ($\sigma_\delta^2$) and intra-class correlation ($\tau^2$).
 Across the nine error structures, the range of rejection rates remains very similar for the AHT test, with no clear pattern related to the degree of mis-specification (see supplementary figures S11-S13). 
-These findings follow closely those from \citet{Tipton2015small-F}, which also found that the Type I error of the AHT test was close to nominal even when the working model was very discrepant from the data-generating model.
+These findings follow closely those from \maskcitet{Tipton2015small-F}, which also found that the Type I error of the AHT test was close to nominal even when the working model was very discrepant from the data-generating model.
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{figure}
@@ -659,8 +648,8 @@ Finally, we conduct a joint test for whether program effects in either half of t
 
 
 
-% latex table generated in R 3.2.3 by xtable 1.8-0 package
-% Tue Feb 16 15:42:24 2016
+% latex table generated in R 3.2.3 by xtable 1.7-4 package
+% Tue Feb 16 21:27:47 2016
 \begin{table}[bth]
 \centering
 \caption{Tests of treatment effects in the Achievement Awards Demonstration} 
@@ -715,8 +704,8 @@ With this setup, the artificial Hausman test amounts to testing the null hypothe
 
 
 
-% latex table generated in R 3.2.3 by xtable 1.8-0 package
-% Tue Feb 16 15:42:24 2016
+% latex table generated in R 3.2.3 by xtable 1.7-4 package
+% Tue Feb 16 21:27:47 2016
 \begin{table}[bth]
 \centering
 \caption{Tests of effects of minimum legal drink age and Hausman specification test} 
@@ -768,7 +757,7 @@ The estimated degrees of freedom are indicative of the precision of the standard
 We therefore recommend that the degrees of freedom be reported along with standard errors and $p$-values whenever the method is applied.
 
 The idea of developing small-sample adjustments based on a working model may seem strange to analysts accustomed to using CRVE---after all, the whole point of clustering standard errors is to avoid making assumptions about the error structure.
-However, simulation studies reported here and elsewhere \citep{Tipton2015small-t, Tipton2015small-F} have demonstrated that the approach is actually robust to a high degree of misspecification in the working model. 
+However, simulation studies reported here and elsewhere \maskcitep{Tipton2015small-t, Tipton2015small-F} have demonstrated that the approach is actually robust to a high degree of misspecification in the working model. 
 Furthermore, while the working model provides necessary ``scaffolding'' when the number of clusters is small, its  influence tends to fall away as the number of clusters increases, so that the CR2 estimator and AHT maintain the same asymptotic robustness as standard CRVE methods. 
 
 One outstanding problem with the CR2 variance estimator is that it can become computationally costly (or even infeasible) when the within-cluster sample sizes are large \citep{Mackinnon2014wild}. 
@@ -779,95 +768,6 @@ Methods for improving the computational efficiency of the CR2 variance estimator
 This paper has developed the CR2 estimator and AHT testing procedure for weighted least squares estimation of linear regression models. 
 Extensions to linear regression models with clustering in multiple, non-nested dimensions \citep[cf.][]{Cameron2011robust} appear to be possible, and their utility should be further investigated. 
 \citet{McCaffrey2006improved} have proposed extensions to bias-reduced linearization for use with generalized estimating equations, and future work should consider further extensions to other classes of estimators, including two-stage least squares and generalized method of moments. 
-
-\appendix
-
-\section{BRL adjustment matrices}
-\label{app:theorems}
-
-\subsection{Proof of Theorem \ref{thm:BRL_FE}}
-
-The Moore-Penrose inverse of $\bm{B}_i$ can be computed from its eigen-decomposition. Let $b \leq n_i$ denote the rank of $\bm{B}_i$. 
-Let $\bs\Lambda$ be the $b \times b$ diagonal matrix of the positive eigenvalues of $\bm{B}_i$ and $\bm{V}$ be the $n_i \times b$ matrix of corresponding eigen-vectors, so that $\bm{B}_i = \bm{V}\bs\Lambda\bm{V}'$. 
-Then $\bm{B}_i^+ = \bm{V}\bs\Lambda^{-1}\bm{V}'$ and $\bm{B}_i^{+1/2} = \bm{V}\bs\Lambda^{-1/2}\bm{V}'$. Now, observe that 
-\begin{equation}\begin{aligned}
-\label{eq:step1}
-\bm{\ddot{R}}_i' \bm{W}_i \bm{A}_i \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i' &\bm{A}_i' \bm{W}_i \bm{\ddot{R}}_i \\
-&= \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{B}_i^{+1/2} \bm{B}_i \bm{B}_i^{+1/2} \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i \\
-&= \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{V}\bm{V}' \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i. 
-\end{aligned}\end{equation}
-
-Because $\bm{D}_i$, and $\bs\Phi$ are positive definite and $\bm{B}_i$ is symmetric, the eigen-vectors $\bm{V}$ define an orthonormal basis for the column span of $\left(\bm{I} - \bm{H_{\ddot{X}}}\right)_i$.
-We now show that $\bm{\ddot{U}}_i$ is in the column space of $\left(\bm{I} - \bm{H_X}\right)_i$. 
-Let $\bm{Z}_i$ be an $n_i \times (r + s)$ matrix of zeros. 
-Let $\bm{Z}_k = - \bm{\ddot{U}}_k \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1}$, for $k \neq j$ and take $\bm{Z} = \left(\bm{Z}_1',...,\bm{Z}_m'\right)'$. 
-Now observe that $\left(\bm{I} - \bm{H_T}\right) \bm{Z} = \bm{Z}$. 
-It follows that 
-\begin{align*}
-\left(\bm{I} - \bm{H_X}\right)_i \bm{Z} &= \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \left(\bm{I} - \bm{H_T}\right) \bm{Z} = \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \bm{Z} \\
-&= \bm{Z}_i - \bm{\ddot{U}}_i\bm{M_{\ddot{U}}}\sum_{k=1}^m \bm{\ddot{U}}_k'\bm{W}_k\bm{Z}_k \\
-&= \bm{\ddot{U}}_i\bm{M_{\ddot{U}}} \left(\sum_{k \neq j} \bm{\ddot{U}}_k' \bm{W}_k \bm{\ddot{U}} \right) \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1} = \bm{\ddot{U}}_i.
-\end{align*}
-Thus, there exists an $N \times (r + s)$ matrix $\bm{Z}$ such that $\left(\bm{I} - \bm{H_{\ddot{X}}}\right)_i \bm{Z} = \bm{\ddot{U}}_i$, i.e., $\bm{\ddot{U}}_i$ is in the column span of $\left(\bm{I} - \bm{H_X}\right)_i$. Because $\bm{D}_i \bm{W}_i$ is positive definite and $\bm{\ddot{R}}_i$ is a sub-matrix of $\bm{\ddot{U}}_i$, $\bm{D}_i\bm{W}_i\bm{\ddot{R}}_i$ is also in the column span of $\left(\bm{I} - \bm{H_X}\right)_i$. It follows that 
-\begin{equation}
-\label{eq:step2}
-\bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{V}\bm{V}' \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i = \bm{\ddot{R}}_i' \bm{W}_i \bs\Phi_i \bm{W}_i \bm{\ddot{R}}_i.
-\end{equation}
-Substituting (\ref{eq:step2}) into (\ref{eq:step1}) demonstrates that $\bm{A}_i$ satisfies criterion (\ref{eq:CR2_criterion}).
-
-Under the working model, the residuals from cluster $i$ have mean $\bm{0}$ and variance \[
-\Var\left(\bm{\ddot{e}}_i\right) = \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i',\] 
-It follows that 
-\begin{align*}
-\E\left(\bm{V}^{CR2}\right) &= \bm{M_{\ddot{R}}}\left[\sum_{i=1}^m \bm{\ddot{R}}_i' \bm{W}_i \bm{A}_i \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i' \bm{A}_i \bm{W}_i \bm{\ddot{R}}_i \right] \bm{M_{\ddot{R}}} \\
-&= \bm{M_{\ddot{R}}}\left[\sum_{i=1}^m \bm{\ddot{R}}_i' \bm{W}_i \bs\Phi_i \bm{W}_i \bm{\ddot{R}}_i \right] \bm{M_{\ddot{R}}} \\
-&= \Var\left(\bs{\hat\beta}\right)
-\end{align*}
-
-\subsection{Proof of Theorem \ref{thm:absorb}}
-
-From the fact that $\bm{\ddot{U}}_i'\bm{W}_i\bm{T}_i = \bm{0}$ for $i = 1,...,m$, it follows that \begin{align*}
-\bm{B}_i &= \bm{D}_i \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \left(\bm{I} - \bm{H_T}\right) \bs\Phi \left(\bm{I} - \bm{H_T}\right)' \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i' \bm{D}_i'\\
-&= \bm{D}_i \left(\bm{I} - \bm{H_{\ddot{U}}} - \bm{H_T}\right)_i \bs\Phi \left(\bm{I} - \bm{H_{\ddot{U}}} - \bm{H_T}\right)_i' \bm{D}_i' \\
-&= \bm{D}_i \left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i' - \bm{T}_i \bm{M_T}\bm{T}_i'\right)\bm{D}_i'
-\end{align*}
-and 
-\begin{equation}
-\label{eq:B_i_inverse}
-\bm{B}_i^+ = \left(\bm{D}_i'\right)^{-1} \left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i' - \bm{T}_i \bm{M_T}\bm{T}_i'\right)^+ \bm{D}_i^{-1}.
-\end{equation}
-Let $\bs\Psi_i = \left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\right)^+$.
-Using a generalized Woodbury identity \citep{Henderson1981on}, \[
-\bs\Psi_i = \bm{W}_i + \bm{W}_i \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\left(\bm{M_{\ddot{U}}} - \bm{M_{\ddot{U}}} \bm{\ddot{U}}_i' \bm{W}_i \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\right)^+ \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\bm{W}_i. \]
-It follows that $\bs\Psi_i \bm{T}_i = \bm{W}_i \bm{T}_i$. 
-Another application of the generalized Woodbury identity gives 
-\begin{align*}
-&\left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i' - \bm{T}_i \bm{M_T}\bm{T}_i'\right)^+ \\
-&\qquad \qquad \qquad = \bs\Psi_i + \bs\Psi_i \bm{T}_i \bm{M_T}\left(\bm{M_T} - \bm{M_T}\bm{T}_i' \bs\Psi_i \bm{T}_i \bm{M_T}\right)^+ \bm{M_T} \bm{T}_i' \bs\Psi_i \\
-&\qquad \qquad \qquad = \bs\Psi_i + \bm{W}_i \bm{T}_i \bm{M_T}\left(\bm{M_T} - \bm{M_T}\bm{T}_i' \bm{W}_i \bm{T}_i\bm{M_T}\right)^+ \bm{M_T} \bm{T}_i' \bm{W}_i \\
-&\qquad \qquad \qquad = \bs\Psi_i.
-\end{align*}
-The last equality follows from the fact that \[
-\bm{T}_i \bm{M_T}\left(\bm{M_T} - \bm{M_T}\bm{T}_i' \bm{W}_i \bm{T}_i\bm{M_T}\right)^{-} \bm{M_T} \bm{T}_i' = \bm{0} \]
-because the fixed effects are nested within clusters. 
-Substituting into (\ref{eq:B_i_inverse}), we then have that $\bm{B}_i^+ = \left(\bm{D}_i'\right)^{-1} \bs\Psi_i \bm{D}_i^{-1}$. 
-But \[
-\bm{\tilde{B}}_i = \bm{D}_i \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \bs\Phi \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i' \bm{D}_i' = \bm{D}_i \left(\bs\Phi_i - \bm{\ddot{U}}_i\bm{M_{\ddot{U}}} \bm{\ddot{U}}_i'\right) \bm{D}_i' = \bm{D}_i \bs\Psi_i^+ \bm{D}_i',
-\]
-and so $\bm{B}_i^+ = \bm{\tilde{B}}_i^+$. It follows that $\bm{A}_i = \bm{\tilde{A}}_i$ for $i = 1,...,m$. 
-
-\section{Details of simulation study}
-\label{app:simulations}
-
-This appendix provides further details regarding the design of the simulations reported in Section \ref{sec:simulation}. The simulations examined six distinct study designs. Outcomes are measured for $n$ units (which may be individuals, as in a cluster-randomized or block-randomized design, or time-points, as in a difference-in-differences panel) in each of $m$ clusters under one of three treatment conditions. Suppose that there are $G$ sets of clusters, each of size $m_g$, where the clusters in each set have a distinct pattern of treatment assignments. Let $n_{ghi}$ denote the number of units at which cluster $i$ in group $g$ is observed under condition $h$, for $i=1,...,m$, $g = 1,...,G$, and $h = 1,2,3$. The following six designs were simulated:
-\begin{enumerate}
-\item A balanced, block-randomized design, with an un-equal allocation within each block. In the balanced design, the treatment allocation is identical for each block, with $G = 1$, $m_1 = m$, $n_{11i} = n / 2$, $n_{12i} = n / 3$, and $n_{13i} = n / 6$.
-\item An unbalanced, block-randomized design, with two different patterns of treatment allocation. Here, $G = 2$,  $m_1 = m_2 = m / 2$, $n_{11i} = n / 2$, $n_{12i} = n / 3$, $n_{13i} = n / 6$, $n_{21i} = n / 3$, $n_{22i} = 5 n / 9$, and $n_{23i} = n / 9$.
-\item A balanced, cluster-randomized design, in which units are nested within clusters and an equal number of clusters are assigned to each treatment condition. Here, $G = 3$, $m_g = m / 3$, and $n_{ghi} = n$ for $g = h$ and zero otherwise.
-\item An unbalanced, cluster-randomized design, in which units are nested within clusters but the number of clusters assigned to each condition is not equal. Here, $G = 3$; $m_1 = 0.5 m, m_2 = 0.3 m, m_3 = 0.2 m$; and $n_{ghi} = n$ for $g = h$ and zero otherwise. 
-\item A balanced difference-in-differences design, with two patterns of treatment allocation ($G = 2$) and clusters allocated equally to each pattern ($m_1 = m_2 = m / 2$). Here, half of the clusters are observed under the first treatment condition only ($n_{11i} = n$) and the remaining half are observed under all three conditions, with $n_{21i} = n / 2$, $n_{22i} = n / 3$, and $n_{23i} = n / 6$.
-\item An unbalanced difference-in-differences design, again with two patterns of treatment allocation ($G = 2$), but where $m_1 = 2 m / 3$ clusters are observed under the first treatment condition only ($n_{11i} = n$) and the remaining $m_2 = m / 3$ clusters are observed under all three conditions, with  $n_{21i} = n / 2$, $n_{22i} = n / 3$, and $n_{23i} = n / 6$.
-\end{enumerate}
 
 \bibliographystyle{agsm}
 \bibliography{bibliography}

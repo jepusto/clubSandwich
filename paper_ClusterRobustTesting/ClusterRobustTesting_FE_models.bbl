@@ -86,17 +86,6 @@ Hansen, C.~B.  \harvardyearleft 2007\harvardyearright , `{Asymptotic properties
   of a robust variance matrix estimator for panel data when T is large}', {\em
   Journal of Econometrics} {\bf 141},~597--620.
 
-\harvarditem{Henderson \harvardand\ Searle}{1981}{Henderson1981on}
-Henderson, H.~V. \harvardand\ Searle, S.~R.  \harvardyearleft
-  1981\harvardyearright , `{On deriving the inverse of a sum of matrices}',
-  {\em Siam Review} {\bf 23}(1),~53--60.
-
-\harvarditem{Huber}{1967}{Huber1967behavior}
-Huber, P.~J.  \harvardyearleft 1967\harvardyearright , {The behavior of maximum
-  likelihood estimates under nonstandard conditions}, {\em in} `Proceedings of
-  the fifth Berkeley symposium on Mathematical Statistics and Probability',
-  University of California Press, Berkeley, CA, pp.~221--233.
-
 \harvarditem{Ibragimov \harvardand\ M\"{u}ller}{2010}{Ibragimov2010tstatistic}
 Ibragimov, R. \harvardand\ M\"{u}ller, U.~K.  \harvardyearleft
   2010\harvardyearright , `{t-Statistic based correlation and heterogeneity
@@ -173,25 +162,9 @@ Satterthwaite, F.~E.  \harvardyearleft 1946\harvardyearright , `{An approximate
   distribution of estimates of variance components}', {\em Biometrics bulletin}
   {\bf 2}(6),~110--114.
 
-\harvarditem{Tipton}{2015}{Tipton2015small-t}
-Tipton, E.  \harvardyearleft 2015\harvardyearright , `{Small sample adjustments
-  for robust variance estimation with meta-regression.}', {\em Psychological
-  Methods} {\bf 20}(3),~375--393.
-
-\harvarditem{Tipton \harvardand\ Pustejovsky}{2015}{Tipton2015small-F}
-Tipton, E. \harvardand\ Pustejovsky, J.~E.  \harvardyearleft
-  2015\harvardyearright , `{Small-sample adjustments for tests of moderators
-  and model fit using robust variance estimation in meta-regression}', {\em
-  Journal of Educational and Behavioral Statistics} {\bf 40}(6),~604--634.
-
 \harvarditem{Webb \harvardand\ MacKinnon}{2013}{Webb2013wild}
 Webb, M. \harvardand\ MacKinnon, J.~G.  \harvardyearleft 2013\harvardyearright
   , {Wild Bootstrap Inference for Wildly Different Cluster Sizes}.
-
-\harvarditem{White}{1980}{White1980heteroskedasticity}
-White, H.  \harvardyearleft 1980\harvardyearright , `{A
-  heteroskedasticity-consistent covariance matrix estimator and a direct test
-  for heteroskedasticity}', {\em Econometrica} {\bf 48}(4),~817--838.
 
 \harvarditem{White}{1984}{white1984asymptotic}
 White, H.  \harvardyearleft 1984\harvardyearright , {\em Asymptotic theory for

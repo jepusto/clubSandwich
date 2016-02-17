@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  8 FEB 2016 11:03
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  16 FEB 2016 21:42
 entering extended mode
 **ClusterRobustTesting_supplementary_materials.tex
 
@@ -8,10 +8,10 @@ LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
 croatian, czech, danish, dutch, esperanto, estonian, farsi, finnish, french, ga
-lician, german, german-x-2012-05-30, greek, gujarati, hindi, hungarian, iceland
+lician, german, german-x-2013-05-26, greek, gujarati, hindi, hungarian, iceland
 ic, indonesian, interlingua, irish, italian, kannada, kurmanji, latin, latvian,
  lithuanian, malayalam, marathi, mongolian, mongolianlmc, monogreek, ngerman, n
-german-x-2012-05-30, nynorsk, oriya, panjabi, pinyin, polish, portuguese, roman
+german-x-2013-05-26, nynorsk, oriya, panjabi, pinyin, polish, portuguese, roman
 ian, russian, sanskrit, serbian, slovak, slovenian, spanish, swedish, swissgerm
 an, tamil, telugu, turkish, turkmen, ukenglish, ukrainian, uppersorbian, usengl
 ishmax, welsh, loaded.
@@ -198,38 +198,108 @@ This is `epsf.tex' v2.7.4 <14 February 2011>
 \epsfxsize=\dimen131
 \epsfysize=\dimen132
 \pspoints=\dimen133
-) (C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\latex\upquote\upquote.sty
+) ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\apacite\apacite.sty"
+Package: apacite 2013/07/21 v6.03 APA citation
+\c@BibCnt=\count105
+\bibleftmargin=\skip50
+\bibindent=\skip51
+\bibparsep=\skip52
+\bibitemsep=\skip53
+\biblabelsep=\skip54
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\natbib\natbib.sty"
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip55
+\bibsep=\skip56
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count106
+)
+LaTeX Info: Redefining \BBA on input line 58.
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\caption\caption.sty"
+Package: caption 2013/05/02 v3.3-89 Customizing captions (AR)
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\caption\caption3.sty"
+Package: caption3 2013/05/02 v1.6-88 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 57.
+\captionmargin=\dimen134
+\captionmargin@=\dimen135
+\captionwidth=\dimen136
+\caption@tempdima=\dimen137
+\caption@indent=\dimen138
+\caption@parindent=\dimen139
+\caption@hangindent=\dimen140
+)
+\c@ContinuedFloat=\count107
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\multirow\multirow.sty"
+\bigstrutjot=\dimen141
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\float\float.sty"
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count108
+\float@exts=\toks27
+\float@box=\box28
+\@float@everytoks=\toks28
+\@floatcapt=\box29
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\rotfloat\rotfloat.sty"
+Package: rotfloat 2004/01/04 v1.2 Combining float+rotating package (AS)
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\rotating\rotating.sty"
+Package: rotating 2009/03/28 v2.16a rotated objects in LaTeX
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\base\ifthen.sty"
+Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
+)
+\c@r@tfl@t=\count109
+\rotFPtop=\skip57
+\rotFPbot=\skip58
+\rot@float@box=\box30
+\rot@mess@toks=\toks29
+)
+Package rotfloat Info: float package v1.3 detected on input line 74.
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\oberdiek\pdflscape.sty"
+Package: pdflscape 2008/08/11 v0.10 Display of landscape pages in PDF (HO)
+
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\graphics\lscape.sty"
+Package: lscape 2000/10/22 v3.01 Landscape Pages (DPC)
+)
+Package pdflscape Info: Auto-detected driver: pdftex on input line 80.
+)
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\upquote\upquote.sty"
 Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verba
 tim
 )
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting_supplementary_materials.aux)
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 60.
-LaTeX Font Info:    ... okay on input line 60.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 77.
+LaTeX Font Info:    ... okay on input line 77.
 
-(C:\Users\jep2963\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
+("C:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count105
-\scratchdimen=\dimen134
-\scratchbox=\box28
-\nofMPsegments=\count106
-\nofMParguments=\count107
-\everyMPshowfont=\toks27
-\MPscratchCnt=\count108
-\MPscratchDim=\dimen135
-\MPnumerator=\count109
-\makeMPintoPDFobject=\count110
-\everyMPtoPDFconversion=\toks28
+\scratchcounter=\count110
+\scratchdimen=\dimen142
+\scratchbox=\box31
+\nofMPsegments=\count111
+\nofMParguments=\count112
+\everyMPshowfont=\toks30
+\MPscratchCnt=\count113
+\MPscratchDim=\dimen143
+\MPnumerator=\count114
+\makeMPintoPDFobject=\count115
+\everyMPtoPDFconversion=\toks31
 )
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -238,13 +308,13 @@ LaTeX Font Info:    ... okay on input line 60.
 * paper: <default>
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
-* modes: landscape 
-* h-part:(L,W,R)=(72.26999pt, 650.43001pt, 72.26999pt)
-* v-part:(T,H,B)=(72.26999pt, 469.75502pt, 72.26999pt)
-* \paperwidth=794.96999pt
-* \paperheight=614.295pt
-* \textwidth=650.43001pt
-* \textheight=469.75502pt
+* modes: 
+* h-part:(L,W,R)=(72.26999pt, 469.75502pt, 72.26999pt)
+* v-part:(T,H,B)=(72.26999pt, 650.43001pt, 72.26999pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=469.75502pt
+* \textheight=650.43001pt
 * \oddsidemargin=0.0pt
 * \evensidemargin=0.0pt
 * \topmargin=-37.0pt
@@ -265,163 +335,199 @@ LaTeX Font Info:    ... okay on input line 60.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-Package color Info: Redefining color shadecolor on input line 67.
-<CR_fig/overview_01-1.pdf, id=1, 722.7pt x 361.35pt>
-File: CR_fig/overview_01-1.pdf Graphic file (type pdf)
-
-<use CR_fig/overview_01-1.pdf>
-Package pdftex.def Info: CR_fig/overview_01-1.pdf used on input line 69.
-(pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
-Package color Info: Redefining color shadecolor on input line 80.
-
-<CR_fig/overview_10-1.pdf, id=2, 722.7pt x 361.35pt>
-File: CR_fig/overview_10-1.pdf Graphic file (type pdf)
-
-<use CR_fig/overview_10-1.pdf>
-Package pdftex.def Info: CR_fig/overview_10-1.pdf used on input line 82.
-(pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
-Package color Info: Redefining color shadecolor on input line 93.
-
-<CR_fig/balance_01_15-1.pdf, id=3, 722.7pt x 397.485pt>
-File: CR_fig/balance_01_15-1.pdf Graphic file (type pdf)
-
-<use CR_fig/balance_01_15-1.pdf>
-Package pdftex.def Info: CR_fig/balance_01_15-1.pdf used on input line 95.
-(pdftex.def)             Requested size: 650.43001pt x 357.73926pt.
-Package color Info: Redefining color shadecolor on input line 106.
-
-<CR_fig/balance_05_15-1.pdf, id=4, 722.7pt x 397.485pt>
-File: CR_fig/balance_05_15-1.pdf Graphic file (type pdf)
-
-<use CR_fig/balance_05_15-1.pdf>
-Package pdftex.def Info: CR_fig/balance_05_15-1.pdf used on input line 108.
-(pdftex.def)             Requested size: 650.43001pt x 357.73926pt.
-Package color Info: Redefining color shadecolor on input line 119.
-
-<CR_fig/balance_10_15-1.pdf, id=5, 722.7pt x 397.485pt>
-File: CR_fig/balance_10_15-1.pdf Graphic file (type pdf)
-
-<use CR_fig/balance_10_15-1.pdf>
-Package pdftex.def Info: CR_fig/balance_10_15-1.pdf used on input line 121.
-(pdftex.def)             Requested size: 650.43001pt x 357.73926pt.
-Package color Info: Redefining color shadecolor on input line 132.
-
-<CR_fig/balance_01_30-1.pdf, id=6, 722.7pt x 397.485pt>
-File: CR_fig/balance_01_30-1.pdf Graphic file (type pdf)
-
-<use CR_fig/balance_01_30-1.pdf>
-Package pdftex.def Info: CR_fig/balance_01_30-1.pdf used on input line 134.
-(pdftex.def)             Requested size: 650.43001pt x 357.73926pt.
-Package color Info: Redefining color shadecolor on input line 145.
-
-<CR_fig/balance_10_30-1.pdf, id=7, 722.7pt x 397.485pt>
-File: CR_fig/balance_10_30-1.pdf Graphic file (type pdf)
-
-<use CR_fig/balance_10_30-1.pdf>
-Package pdftex.def Info: CR_fig/balance_10_30-1.pdf used on input line 147.
-(pdftex.def)             Requested size: 650.43001pt x 357.73926pt.
-Package color Info: Redefining color shadecolor on input line 158.
-
-<CR_fig/balance_01_50-1.pdf, id=8, 722.7pt x 397.485pt>
-File: CR_fig/balance_01_50-1.pdf Graphic file (type pdf)
-
-<use CR_fig/balance_01_50-1.pdf>
-Package pdftex.def Info: CR_fig/balance_01_50-1.pdf used on input line 160.
-(pdftex.def)             Requested size: 650.43001pt x 357.73926pt.
-Package color Info: Redefining color shadecolor on input line 171.
-
-<CR_fig/balance_05_50-1.pdf, id=9, 722.7pt x 397.485pt>
-File: CR_fig/balance_05_50-1.pdf Graphic file (type pdf)
-
-<use CR_fig/balance_05_50-1.pdf>
-Package pdftex.def Info: CR_fig/balance_05_50-1.pdf used on input line 173.
-(pdftex.def)             Requested size: 650.43001pt x 357.73926pt.
-Package color Info: Redefining color shadecolor on input line 184.
-
-<CR_fig/balance_10_50-1.pdf, id=10, 722.7pt x 397.485pt>
-File: CR_fig/balance_10_50-1.pdf Graphic file (type pdf)
-
-<use CR_fig/balance_10_50-1.pdf>
-Package pdftex.def Info: CR_fig/balance_10_50-1.pdf used on input line 186.
-(pdftex.def)             Requested size: 650.43001pt x 357.73926pt.
-Package color Info: Redefining color shadecolor on input line 197.
-
-<CR_fig/misspecification_01-1.pdf, id=11, 867.24pt x 614.295pt>
-File: CR_fig/misspecification_01-1.pdf Graphic file (type pdf)
-
-<use CR_fig/misspecification_01-1.pdf>
-Package pdftex.def Info: CR_fig/misspecification_01-1.pdf used on input line 19
-9.
-(pdftex.def)             Requested size: 650.43001pt x 460.73886pt.
+\c@maskedRefs=\count116
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\apacite\english.apc"
+File: english.apc 2013/07/21 v6.03 apacite language file
+LaTeX Info: Redefining \BPBI on input line 129.
+LaTeX Info: Redefining \BHBI on input line 130.
+)
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: float package is loaded.
+Package caption Info: rotating package is loaded.
+Package caption Info: End \AtBeginDocument code.
 
 
-LaTeX Warning: Float too large for page by 14.92828pt on input line 204.
-
-Package color Info: Redefining color shadecolor on input line 210.
-<CR_fig/misspecification_05-1.pdf, id=12, 867.24pt x 614.295pt>
-File: CR_fig/misspecification_05-1.pdf Graphic file (type pdf)
-
-<use CR_fig/misspecification_05-1.pdf>
-Package pdftex.def Info: CR_fig/misspecification_05-1.pdf used on input line 21
-2.
-(pdftex.def)             Requested size: 650.43001pt x 460.73886pt.
+LaTeX Warning: No \author given.
 
 
-LaTeX Warning: Float too large for page by 14.92828pt on input line 217.
-
-Package color Info: Redefining color shadecolor on input line 223.
-<CR_fig/misspecification_10-1.pdf, id=13, 867.24pt x 614.295pt>
-File: CR_fig/misspecification_10-1.pdf Graphic file (type pdf)
-
-<use CR_fig/misspecification_10-1.pdf>
-Package pdftex.def Info: CR_fig/misspecification_10-1.pdf used on input line 22
-5.
-(pdftex.def)             Requested size: 650.43001pt x 460.73886pt.
-
-
-LaTeX Warning: Float too large for page by 14.92828pt on input line 230.
+LaTeX Warning: Reference `eq:CR2_criterion' on page 1 undefined on input line 1
+07.
 
 [1
 Non-PDF special ignored!
 
-{C:/Users/jep2963/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2 <C:/Us
-ers/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fig/overview
-_01-1.pdf>] [3 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTe
-sting/CR_fig/overview_10-1.pdf>] [4 <C:/Users/jep2963/Documents/R/clubSandwich/
-paper_ClusterRobustTesting/CR_fig/balance_01_15-1.pdf>] [5 <C:/Users/jep2963/Do
-cuments/R/clubSandwich/paper_ClusterRobustTesting/CR_fig/balance_05_15-1.pdf>] 
-[6 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fig
-/balance_10_15-1.pdf>] [7 <C:/Users/jep2963/Documents/R/clubSandwich/paper_Clus
-terRobustTesting/CR_fig/balance_01_30-1.pdf>] [8 <C:/Users/jep2963/Documents/R/
-clubSandwich/paper_ClusterRobustTesting/CR_fig/balance_10_30-1.pdf>] [9 <C:/Use
-rs/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fig/balance_0
-1_50-1.pdf>] [10 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobust
-Testing/CR_fig/balance_05_50-1.pdf>] [11 <C:/Users/jep2963/Documents/R/clubSand
-wich/paper_ClusterRobustTesting/CR_fig/balance_10_50-1.pdf>] [12 <C:/Users/jep2
-963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fig/misspecification
-_01-1.pdf>] [13 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustT
-esting/CR_fig/misspecification_05-1.pdf>] [14 <C:/Users/jep2963/Documents/R/clu
-bSandwich/paper_ClusterRobustTesting/CR_fig/misspecification_10-1.pdf>]
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
+[2] [3]
+Package color Info: Redefining color shadecolor on input line 169.
+ <CR_fig/overview_01-1.pdf, id=25, 722.7pt x 361.35pt>
+File: CR_fig/overview_01-1.pdf Graphic file (type pdf)
+
+<use CR_fig/overview_01-1.pdf>
+Package pdftex.def Info: CR_fig/overview_01-1.pdf used on input line 171.
+(pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
+Package color Info: Redefining color shadecolor on input line 182.
+
+<CR_fig/overview_10-1.pdf, id=26, 722.7pt x 361.35pt>
+File: CR_fig/overview_10-1.pdf Graphic file (type pdf)
+
+<use CR_fig/overview_10-1.pdf>
+Package pdftex.def Info: CR_fig/overview_10-1.pdf used on input line 184.
+(pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
+ [4
+
+ <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fig/o
+verview_01-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 195.
+
+<CR_fig/balance_01_15-1.pdf, id=39, 722.7pt x 397.485pt>
+File: CR_fig/balance_01_15-1.pdf Graphic file (type pdf)
+
+<use CR_fig/balance_01_15-1.pdf>
+Package pdftex.def Info: CR_fig/balance_01_15-1.pdf used on input line 197.
+(pdftex.def)             Requested size: 650.43001pt x 357.73926pt.
+ [5 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
+g/overview_10-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 208.
+
+<CR_fig/balance_05_15-1.pdf, id=52, 722.7pt x 397.485pt>
+File: CR_fig/balance_05_15-1.pdf Graphic file (type pdf)
+
+<use CR_fig/balance_05_15-1.pdf>
+Package pdftex.def Info: CR_fig/balance_05_15-1.pdf used on input line 210.
+(pdftex.def)             Requested size: 650.43001pt x 357.73926pt.
+ [6 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
+g/balance_01_15-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 221.
+
+<CR_fig/balance_10_15-1.pdf, id=65, 722.7pt x 397.485pt>
+File: CR_fig/balance_10_15-1.pdf Graphic file (type pdf)
+
+<use CR_fig/balance_10_15-1.pdf>
+Package pdftex.def Info: CR_fig/balance_10_15-1.pdf used on input line 223.
+(pdftex.def)             Requested size: 650.43001pt x 357.73926pt.
+ [7 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
+g/balance_05_15-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 234.
+
+<CR_fig/balance_01_30-1.pdf, id=79, 722.7pt x 397.485pt>
+File: CR_fig/balance_01_30-1.pdf Graphic file (type pdf)
+
+<use CR_fig/balance_01_30-1.pdf>
+Package pdftex.def Info: CR_fig/balance_01_30-1.pdf used on input line 236.
+(pdftex.def)             Requested size: 650.43001pt x 357.73926pt.
+ [8 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
+g/balance_10_15-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 247.
+
+<CR_fig/balance_10_30-1.pdf, id=92, 722.7pt x 397.485pt>
+File: CR_fig/balance_10_30-1.pdf Graphic file (type pdf)
+
+<use CR_fig/balance_10_30-1.pdf>
+Package pdftex.def Info: CR_fig/balance_10_30-1.pdf used on input line 249.
+(pdftex.def)             Requested size: 650.43001pt x 357.73926pt.
+ [9 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
+g/balance_01_30-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 260.
+
+<CR_fig/balance_01_50-1.pdf, id=105, 722.7pt x 397.485pt>
+File: CR_fig/balance_01_50-1.pdf Graphic file (type pdf)
+
+<use CR_fig/balance_01_50-1.pdf>
+Package pdftex.def Info: CR_fig/balance_01_50-1.pdf used on input line 262.
+(pdftex.def)             Requested size: 650.43001pt x 357.73926pt.
+ [10 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
+ig/balance_10_30-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 273.
+
+<CR_fig/balance_05_50-1.pdf, id=118, 722.7pt x 397.485pt>
+File: CR_fig/balance_05_50-1.pdf Graphic file (type pdf)
+
+<use CR_fig/balance_05_50-1.pdf>
+Package pdftex.def Info: CR_fig/balance_05_50-1.pdf used on input line 275.
+(pdftex.def)             Requested size: 650.43001pt x 357.73926pt.
+ [11 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
+ig/balance_01_50-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 286.
+
+<CR_fig/balance_10_50-1.pdf, id=131, 722.7pt x 397.485pt>
+File: CR_fig/balance_10_50-1.pdf Graphic file (type pdf)
+
+<use CR_fig/balance_10_50-1.pdf>
+Package pdftex.def Info: CR_fig/balance_10_50-1.pdf used on input line 288.
+(pdftex.def)             Requested size: 650.43001pt x 357.73926pt.
+ [12 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
+ig/balance_05_50-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 299.
+
+<CR_fig/misspecification_01-1.pdf, id=144, 867.24pt x 578.16pt>
+File: CR_fig/misspecification_01-1.pdf Graphic file (type pdf)
+
+<use CR_fig/misspecification_01-1.pdf>
+Package pdftex.def Info: CR_fig/misspecification_01-1.pdf used on input line 30
+1.
+(pdftex.def)             Requested size: 650.43001pt x 433.63658pt.
+ [13 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
+ig/balance_10_50-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 312.
+
+<CR_fig/misspecification_05-1.pdf, id=158, 867.24pt x 578.16pt>
+File: CR_fig/misspecification_05-1.pdf Graphic file (type pdf)
+
+<use CR_fig/misspecification_05-1.pdf>
+Package pdftex.def Info: CR_fig/misspecification_05-1.pdf used on input line 31
+4.
+(pdftex.def)             Requested size: 650.43001pt x 433.63658pt.
+ [14 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
+ig/misspecification_01-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 325.
+
+<CR_fig/misspecification_10-1.pdf, id=171, 867.24pt x 578.16pt>
+File: CR_fig/misspecification_10-1.pdf Graphic file (type pdf)
+
+<use CR_fig/misspecification_10-1.pdf>
+Package pdftex.def Info: CR_fig/misspecification_10-1.pdf used on input line 32
+7.
+(pdftex.def)             Requested size: 650.43001pt x 433.63658pt.
+ [15 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
+ig/misspecification_05-1.pdf>] [16 <C:/Users/jep2963/Documents/R/clubSandwich/p
+aper_ClusterRobustTesting/CR_fig/misspecification_10-1.pdf>]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
-bustTesting_supplementary_materials.aux) ) 
+bustTesting_supplementary_materials.bbl) [17
+
+]
+(C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
+bustTesting_supplementary_materials.aux)
+
+LaTeX Warning: There were undefined references.
+
+ ) 
 Here is how much of TeX's memory you used:
- 2644 strings out of 493921
- 36690 string characters out of 3144871
- 103045 words of memory out of 3000000
- 5904 multiletter control sequences out of 15000+200000
- 8150 words of font info for 30 fonts, out of 3000000 for 9000
+ 4689 strings out of 493921
+ 68925 string characters out of 3144871
+ 144425 words of memory out of 3000000
+ 7891 multiletter control sequences out of 15000+200000
+ 11858 words of font info for 42 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 27i,6n,32p,447b,261s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files (x86)/MiKTeX 2.9/fo
-nts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files (x86)/MiKTeX 2.9/font
-s/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/t
-ype1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type
-1/public/amsfonts/cm/cmr17.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/p
-ublic/amsfonts/cm/cmti12.pfb>
-Output written on ClusterRobustTesting_supplementary_materials.pdf (14 pages, 2
-08739 bytes).
+ 36i,14n,38p,807b,339s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb>
+<C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C
+:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx7.pfb><C:/P
+rogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Pro
+gram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Progr
+am Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Program 
+Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Program F
+iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program File
+s (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files (
+x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files (x86
+)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Program Files (x86)/Mi
+KTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files (x86)/MiKT
+eX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files (x86)/MiKTeX 
+2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files (x86)/MiKTeX 2.
+9/fonts/type1/public/amsfonts/cm/cmti12.pfb>
+Output written on ClusterRobustTesting_supplementary_materials.pdf (17 pages, 3
+18665 bytes).
 PDF statistics:
- 198 PDF objects out of 1000 (max. 8388607)
+ 247 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  66 words of extra memory for PDF output out of 10000 (max. 10000000)
 
