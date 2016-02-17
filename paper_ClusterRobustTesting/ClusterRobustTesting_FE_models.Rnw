@@ -4,12 +4,12 @@
 \usepackage{graphicx,psfrag,epsf}
 \usepackage{enumerate}
 \usepackage{booktabs}
-\RequirePackage[natbibapa, mask]{apacite}
+\RequirePackage[natbibapa]{apacite}
 \usepackage{caption}
 \usepackage{multirow}
 
 % NOTE: To produce blinded version, replace "0" with "1" below.
-\newcommand{\blind}{1}
+\newcommand{\blind}{0}
 
 % DON'T change margins - should be 1 inch all around.
 \addtolength{\oddsidemargin}{-.5in}%
@@ -46,15 +46,12 @@
 
 \if0\blind
 {
-  \title{\bf Small sample methods for cluster-robust variance estimation and hypothesis testing in fixed effects models}
-  \author{\\James E. Pustejovsky\thanks{
-    The authors thank Dan Knopf for helpful discussions about the linear algebra behind the cluster-robust variance estimator.}\hspace{.2cm}\\
-    Department of Educational Psychology \\ 
-    University of Texas at Austin\\ \\
-    and \\ \\
-    Elizabeth Tipton \\
-    Department of Human Development \\ 
-    Teachers College, Columbia University}
+  \title{\bf Small sample methods for cluster-robust variance estimation and hypothesis testing in fixed effects models\thanks{The authors thank Dan Knopf for helpful discussions about the linear algebra behind the cluster-robust variance estimator.}}
+  \author{\\James E. Pustejovsky\thanks{Department of Educational Psychology, University of Texas at Austin, 1912 Speedway, Stop D5800, Austin, TX 78712. Email: pusto@austin.utexas.edu}
+    \hspace{.2cm}and\hspace{.2cm}
+    Elizabeth Tipton\thanks{Department of Human Development, Teachers College, Columbia University, 425 W. 120th Street
+New York, NY, USA 10027. Email: tipton@tc.columbia.edu}
+    }
   \maketitle
 } \fi
 
@@ -77,7 +74,7 @@ In panel data models and other regressions with unobserved effects, fixed effect
 \end{abstract}
 
 \noindent%
-{\it Keywords:} Robust Standard Errors, Clustering, Fixed-Effects, Small Samples
+{\it Keywords:} Cluster dependence, Fixed Effects, Robust Standard Errors, Small Samples
 \vfill
 
 \newpage
