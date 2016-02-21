@@ -1,3 +1,6 @@
+[![Travis-CI Build Status](https://travis-ci.org/NA/NA.svg?branch=master)](https://travis-ci.org/NA/NA)
+[![Coverage Status](https://img.shields.io/codecov/c/github/NA/NA/master.svg)](https://codecov.io/github/NA/NA?branch=master)
+
 # clubSandwich
 
 `clubSandwich` provides several cluster-robust variance estimators 
