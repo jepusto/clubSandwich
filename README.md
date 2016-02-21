@@ -1,5 +1,5 @@
-[![Travis-CI Build Status](https://travis-ci.org/NA/NA.svg?branch=master)](https://travis-ci.org/NA/NA)
-[![Coverage Status](https://img.shields.io/codecov/c/github/NA/NA/master.svg)](https://codecov.io/github/NA/NA?branch=master)
+[![Travis-CI Build Status](https://travis-ci.org/jepusto/clubSandwich.svg?branch=master)](https://travis-ci.org/jepusto/clubSandwich)
+[![Coverage Status](https://img.shields.io/codecov/c/github/jepusto/clubSandwich/master.svg)](https://codecov.io/github/jepusto/clubSandwich?branch=master)
 
 # clubSandwich
 
