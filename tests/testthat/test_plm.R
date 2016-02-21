@@ -1,11 +1,11 @@
 context("plm objects")
-
+library(plm)
 data("Produc", package = "plm")
 Produc$cluster <- sample(LETTERS[1:10], size = nrow(Produc), replace=TRUE)
 Produc_scramble <- Produc[sample(nrow(Produc)),]
 
 test_that("individual effects agree with lm", {
-  plm_individual <- plm::plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+  plm_individual <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
                              data = Produc_scramble, index = c("state","year"), 
                              effect = "individual", model = "within")
   lm_individual <- lm(log(gsp) ~ 0 + state + log(pcap) + log(pc) + log(emp) + unemp, data = Produc)
@@ -21,7 +21,7 @@ test_that("individual effects agree with lm", {
 })
 
 test_that("time effects agree with lm", {
-  plm_time <- plm::plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+  plm_time <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
                        data = Produc_scramble, index = c("state","year"), 
                        effect = "time", model = "within")
   lm_time <- lm(log(gsp) ~ 0 + factor(year) + log(pcap) + log(pc) + log(emp) + unemp, data = Produc)
@@ -37,7 +37,7 @@ test_that("time effects agree with lm", {
 })
 
 test_that("two-way effects agree with lm", {
-  plm_twoways <- plm::plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+  plm_twoways <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
                           data = Produc_scramble, index = c("state","year"), 
                           effect = "twoways", model = "within")
   lm_twoways <- lm(log(gsp) ~ 0 + state + factor(year) + log(pcap) + log(pc) + log(emp) + unemp, data = Produc)
