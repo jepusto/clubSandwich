@@ -3,6 +3,7 @@ cache: packages
 
 r_packages: 
   - covr
+  - plm
   
 after_success:
   - Rscript -e 'covr::codecov()'
