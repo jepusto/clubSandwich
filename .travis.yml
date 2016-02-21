@@ -3,6 +3,7 @@ cache: packages
 
 r_packages: 
   - covr
+  - nlme
   - plm
   
 after_success:
