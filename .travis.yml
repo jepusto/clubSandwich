@@ -2,9 +2,7 @@ language: r
 
 r_packages: 
   - covr
-  - nlme
-  - plm
-  
+
 after_success:
   - Rscript -e 'covr::codecov()'
   
