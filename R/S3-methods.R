@@ -21,6 +21,16 @@ model_matrix.default <- function(obj) {
 }
 
 #----------------------------------------------
+# get projection matrix
+#----------------------------------------------
+
+projection_matrix <- function(obj) UseMethod("projection_matrix")
+
+projection_matrix.default <- function(obj) {
+  model_matrix(obj)
+}
+
+#----------------------------------------------
 # get augmented design matrix
 #----------------------------------------------
 

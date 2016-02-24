@@ -21,6 +21,7 @@ Suggests:
     knitr,
     metafor,
     nlme,
+    AER,
     plm,
     robumeta,
     testthat
