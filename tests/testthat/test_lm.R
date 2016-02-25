@@ -14,6 +14,11 @@ dat <- data.frame(y, X, cluster, w, row = 1:n)
 lm_fit <- lm(y ~ 0 + cluster + X1 + X2 + X3, data = dat)
 WLS_fit <- lm(y ~ 0 + cluster + X1 + X2 + X3, data = dat, weights = w)
 
+obj <- WLS_fit
+type <- "CR2" 
+target = NULL
+inverse_var = FALSE
+
 test_that("vcovCR options don't matter for CR0", {
   expect_error(vcovCR(lm_fit, type = "CR0"))
   CR0 <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR0")
