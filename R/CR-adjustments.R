@@ -11,16 +11,16 @@ IH_jj_list <- function(M, X_list, XW_list) {
 # Estimating function adjustments
 #---------------------------------------------
 
-CR0 <- function(XW_list, M) 
-  lapply(XW_list, function(xw) M %*% xw)
+CR0 <- function(XpW_list, M) 
+  lapply(XpW_list, function(xw) M %*% xw)
 
-CR1 <- function(XW_list, M, J) 
-  lapply(XW_list, function(xw) (M %*% xw) * sqrt(J / (J - 1)))
+CR1 <- function(XpW_list, M, J) 
+  lapply(XpW_list, function(xw) (M %*% xw) * sqrt(J / (J - 1)))
 
-CR1S <- function(XW_list, M, J, N, p) 
-  lapply(XW_list, function(xw) (M %*% xw) * sqrt(J * N / ((J - 1) * (N - p))))
+CR1S <- function(XpW_list, M, J, N, p) 
+  lapply(XpW_list, function(xw) (M %*% xw) * sqrt(J * N / ((J - 1) * (N - p))))
 
-CR2 <- function(M_U, U_list, UW_list, M, XW_list, Theta_list, inverse_var = FALSE) {
+CR2 <- function(M_U, U_list, UW_list, M, XpW_list, X_list, Theta_list, inverse_var = FALSE) {
   
   Theta_chol <- lapply(Theta_list, chol)
   

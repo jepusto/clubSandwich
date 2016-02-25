@@ -60,10 +60,10 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   
   alias <- is.na(coef_CR(obj))
   X <- model_matrix(obj)
-  P <- projection_matrix(obj)
+  Xp <- projection_matrix(obj)
   if (any(alias)) {
     X <- X[, !alias, drop = FALSE]
-    P <- P[, !alias, drop = FALSE]
+    Xp <- Xp[, !alias, drop = FALSE]
   }  
   
   p <- NCOL(X)
@@ -79,23 +79,23 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   J <- nlevels(cluster)
   
   X_list <- matrix_list(X, cluster, "row")
-  P_list <- matrix_list(P, cluster, "row")
+  Xp_list <- matrix_list(Xp, cluster, "row")
   
   W <- weightMatrix(obj)
   W_list <- matrix_list(W, cluster, "both")
-  XW_list <- mapply(function(x, w) as.matrix(t(x) %*% w), 
-                    x = X_list, w = W_list, SIMPLIFY = FALSE)
-  XW <- matrix(unlist(XW_list), p, N)[,order(order(cluster))]
-  M <- chol2inv(chol(XW %*% X))
+  XpW_list <- mapply(function(x, w) as.matrix(t(x) %*% w), 
+                    x = Xp_list, w = W_list, SIMPLIFY = FALSE)
+  XpW <- matrix(unlist(XpW_list), p, N)[,order(order(cluster))]
+  M <- chol2inv(chol(XpW %*% Xp))
   
   if (type=="CR2") {
     S <- augmented_model_matrix(obj, cluster, inverse_var)
     if (is.null(S)) {
-      U_list <- X_list
-      UW_list <- XW_list
+      U_list <- Xp_list
+      UW_list <- XpW_list
       M_U <- M
     } else {
-      U <- cbind(X, S)
+      U <- cbind(Xp, S)
       U_list <- matrix_list(U, cluster, "row")
       UW_list <- mapply(function(u, w) as.matrix(t(u) %*% w), 
                         u = U_list, w = W_list, SIMPLIFY = FALSE)
