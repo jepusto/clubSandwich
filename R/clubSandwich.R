@@ -60,7 +60,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   
   alias <- is.na(coef_CR(obj))
   X <- model_matrix(obj)
-  P <- model_matrix(obj)
+  P <- projection_matrix(obj)
   if (any(alias)) {
     X <- X[, !alias, drop = FALSE]
     P <- P[, !alias, drop = FALSE]
@@ -83,19 +83,19 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   
   W <- weightMatrix(obj)
   W_list <- matrix_list(W, cluster, "both")
-  PW_list <- mapply(function(x, w) as.matrix(t(x) %*% w), 
-                    x = P_list, w = W_list, SIMPLIFY = FALSE)
-  PW <- matrix(unlist(PW_list), p, N)[,order(order(cluster))]
-  M <- chol2inv(chol(PW %*% P))
+  XW_list <- mapply(function(x, w) as.matrix(t(x) %*% w), 
+                    x = X_list, w = W_list, SIMPLIFY = FALSE)
+  XW <- matrix(unlist(XW_list), p, N)[,order(order(cluster))]
+  M <- chol2inv(chol(XW %*% X))
   
   if (type=="CR2") {
     S <- augmented_model_matrix(obj, cluster, inverse_var)
     if (is.null(S)) {
-      U_list <- P_list
-      UW_list <- PW_list
+      U_list <- X_list
+      UW_list <- XW_list
       M_U <- M
     } else {
-      U <- cbind(P, S)
+      U <- cbind(X, S)
       U_list <- matrix_list(U, cluster, "row")
       UW_list <- mapply(function(u, w) as.matrix(t(u) %*% w), 
                         u = U_list, w = W_list, SIMPLIFY = FALSE)
@@ -114,14 +114,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
     Theta_list <- matrix_list(Theta, cluster, "both")
   }
   
-  E_list <- switch(type,
-                   CR0 = CR0(PW_list, M),
-                   CR1 = CR1(PW_list, M, J),
-                   CR1S = CR1S(PW_list, M, J, N, p),
-                   CR2 = CR2(M_U, U_list, UW_list, M, PW_list, Theta_list, inverse_var),
-                   CR3 = CR3(M, P_list, PW_list),
-                   CR4 = CR4(M, P_list, PW_list, Theta_list, inverse_var)
-                   )
+  E_list <- do.call(type, args = mget(names(formals(type))))
 
   resid <- residuals_CR(obj)
 
