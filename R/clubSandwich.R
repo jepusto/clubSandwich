@@ -191,7 +191,7 @@ chol_psd <- function(x) with(eigen(x), sqrt(pmax(values,0)) * t(vectors))
 
 Sj <- function(e, x, tc, cl, cluster, MXWTheta_cholT) {
   s <- -x %*% MXWTheta_cholT
-  s[,cluster==cl] <- tc
+  s[,cluster==cl] <- tc + s[,cluster==cl]
   e %*% s
 }
 

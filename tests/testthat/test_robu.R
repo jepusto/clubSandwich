@@ -1,5 +1,5 @@
 library(robumeta)
-context("robu objects: correlated effects")
+context("robu objects")
 
 data(corrdat)
 
@@ -30,6 +30,7 @@ test_that("CR2 t-tests agree with robumeta for correlated effects", {
   expect_equal(corr_small$reg_table$prob, CR2_ttests$p_Satt)
 })
 
+data(hierdat)
 
 test_that("CR0 z-tests agree with robumeta for hierarchical effects", {
   hier_large <- robu(effectsize ~ binge + followup + sreport + age,
@@ -47,33 +48,37 @@ test_that("CR0 z-tests agree with robumeta for hierarchical effects", {
 })
 
 test_that("CR2 t-tests agree with robumeta for hierarchical effects", {
-  corr_small <- robu(effectsize ~ binge + followup + sreport + age,
+  hier_small <- robu(effectsize ~ binge + followup + sreport + age,
                          data = hierdat, studynum = studyid,
                          var.eff.size = var, modelweights = "HIER")
-  robu_CR2 <- vcovCR(corr_small, type = "CR2")
-  CR2_ttests <- coef_test(corr_small, vcov = robu_CR2, test = "Satterthwaite")
+  robu_CR2 <- vcovCR(hier_small, type = "CR2")
+  CR2_ttests <- coef_test(hier_small, vcov = robu_CR2, test = "Satterthwaite")
   
-  expect_equivalent(corr_small$VR.r, as.matrix(robu_CR2))
-  expect_equal(corr_small$dfs, CR2_ttests$df)
-  expect_equal(corr_small$reg_table$prob, CR2_ttests$p_Satt)
+  expect_equivalent(hier_small$VR.r, as.matrix(robu_CR2))
+  expect_equal(hier_small$dfs, CR2_ttests$df)
+  expect_equal(hier_small$reg_table$prob, CR2_ttests$p_Satt)
 })
 
-test_that("CR0 z-tests agree with robumeta for hierarchical effects", {
-  hier_large <- robu(effectsize ~ binge + followup + sreport + age,
-                     data = hierdat, studynum = studyid,
-                     var.eff.size = var, modelweights = "HIER", small = FALSE)
-  p <- length(coef_CR(hier_large))
-  N <- hier_large$N
-  robu_CR0 <- vcovCR(hier_large, type = "CR0")
-  ztests <- coef_test(hier_large, vcov = robu_CR0 * N / (N - p), test = "z")
-  
-  expect_equivalent(hier_large$VR.r, as.matrix(robu_CR0))
-  expect_equivalent(hier_large$reg_table$SE, ztests$SE)
-  expect_equal(with(hier_large$reg_table, 2 * pnorm(abs(b.r / SE),lower.tail=FALSE)), 
-               ztests$p_z)
-})
+
 
 data(dropoutPrevention)
+
+obj <- robu(LOR1 ~ study_design + attrition + group_equivalence + adjusted
+                + outcome + evaluator_independence
+                + male_pct + white_pct + average_age
+                + implementation_quality + program_site + duration + service_hrs, 
+                data = dropoutPrevention, studynum = studyID, var.eff.size = varLOR, modelweights = "HIER")
+CR2 <- vcovCR(obj, cluster = dropoutPrevention$studyID, type = "CR2")
+contrast_list <- list("Study design" = 2:3, 
+                      "Outcome measure" = 7:9,
+                      "Evaluator independence" = 10:12,
+                      "Implmentation quality" = 16:17,
+                      "Program format" = 18:20)
+constraints = contrast_list$"Study design"
+vcov <- CR2
+test <- "Satterthwaite"
+Ex_method = "model"
+
 
 test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - full sample", {
   m3_hier <- robu(LOR1 ~ study_design + attrition + group_equivalence + adjusted
@@ -81,7 +86,13 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - full 
                   + male_pct + white_pct + average_age
                   + implementation_quality + program_site + duration + service_hrs, 
                   data = dropoutPrevention, studynum = studyID, var.eff.size = varLOR, modelweights = "HIER")
+  m3_hier_CR2 <- vcovCR(m3_hier, cluster = dropoutPrevention$studyID, type = "CR2")
+  CR2_ttests <- coef_test(m3_hier, vcov = m3_hier_CR2, test = "Satterthwaite")
   
+  expect_equivalent(m3_hier$VR.r, as.matrix(m3_hier_CR2))
+  expect_equal(m3_hier$dfs, CR2_ttests$df)
+  expect_equal(m3_hier$reg_table$prob, CR2_ttests$p_Satt)
+
   contrast_list <- list("Study design" = 2:3, 
                         "Outcome measure" = 7:9,
                         "Evaluator independence" = 10:12,
@@ -89,7 +100,7 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - full 
                         "Program format" = 18:20)
   
   dropout_tests <- Wald_test(m3_hier, constraints = contrast_list, 
-                             vcov = "CR2", test = c("Naive-F","HTZ"))
+                             vcov = m3_hier_CR2, test = c("Naive-F","HTZ"))
   
   Fstat_club <- sapply(dropout_tests, function(x) x$F)
   Fstat_paper <- matrix(c(0.23, 0.22, 0.91, 0.84, 3.11, 2.78, 14.15, 13.78, 3.85, 3.65), nrow = 2)
@@ -101,12 +112,18 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - full 
 })
 
 test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - reduced sample", {
+  dp_subset <- subset(dropoutPrevention, big_study==TRUE)
   m3_hier <- robu(LOR1 ~ study_design + attrition + group_equivalence + adjusted
                   + outcome + evaluator_independence
                   + male_pct + white_pct + average_age
                   + implementation_quality + program_site + duration + service_hrs, 
-                  data = subset(dropoutPrevention, big_study==TRUE),
-                  studynum = studyID, var.eff.size = varLOR, modelweights = "HIER")
+                  data = dp_subset, studynum = studyID, var.eff.size = varLOR, modelweights = "HIER")
+  m3_hier_CR2 <- vcovCR(m3_hier, cluster = dp_subset$studyID, type = "CR2")
+  CR2_ttests <- coef_test(m3_hier, vcov = m3_hier_CR2, test = "Satterthwaite")
+  
+  expect_equivalent(m3_hier$VR.r, as.matrix(m3_hier_CR2))
+  expect_equal(m3_hier$dfs, CR2_ttests$df)
+  expect_equal(m3_hier$reg_table$prob, CR2_ttests$p_Satt)
   
   contrast_list <- list("Study design" = 2:3, 
                         "Outcome measure" = 7:9,
@@ -126,6 +143,6 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - reduc
   expect_equivalent(df_paper, round(df_club, 1))
 })
 
-# test cluster specification
+# test user weighting
 # test target matrix specification
 # test inverse_var detection
