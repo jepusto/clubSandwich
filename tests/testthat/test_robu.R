@@ -59,8 +59,9 @@ test_that("CR2 t-tests agree with robumeta for hierarchical effects", {
   expect_equal(hier_small$reg_table$prob, CR2_ttests$p_Satt)
 })
 
+hierdat$user_wt <- rpois(nrow(hierdat), lambda = 3)
+
 test_that("CR0 z-tests agree with robumeta for user weighting", {
-  hierdat$user_wt <- rpois(nrow(hierdat), lambda = 3)
   hier_large <- robu(effectsize ~ binge + followup + sreport + age,
                      data = hierdat, studynum = studyid,
                      var.eff.size = var, userweights = user_wt, small = FALSE)
