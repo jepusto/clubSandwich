@@ -59,26 +59,41 @@ test_that("CR2 t-tests agree with robumeta for hierarchical effects", {
   expect_equal(hier_small$reg_table$prob, CR2_ttests$p_Satt)
 })
 
+test_that("CR0 z-tests agree with robumeta for user weighting", {
+  hierdat$user_wt <- rpois(nrow(hierdat), lambda = 3)
+  hier_large <- robu(effectsize ~ binge + followup + sreport + age,
+                     data = hierdat, studynum = studyid,
+                     var.eff.size = var, userweights = user_wt, small = FALSE)
+  p <- length(coef_CR(hier_large))
+  N <- hier_large$N
+  robu_CR0 <- vcovCR(hier_large, type = "CR0")
+  ztests <- coef_test(hier_large, vcov = robu_CR0 * N / (N - p), test = "z")
+  
+  expect_equivalent(hier_large$VR.r, as.matrix(robu_CR0))
+  expect_equivalent(hier_large$reg_table$SE, ztests$SE)
+  expect_equal(with(hier_large$reg_table, 2 * pnorm(abs(b.r / SE),lower.tail=FALSE)), 
+               ztests$p_z)
+})
+
+test_that("CR2 t-tests agree with robumeta for user weighting", {
+  hier_small <- robu(effectsize ~ binge + followup + sreport + age,
+                     data = hierdat, studynum = studyid,
+                     var.eff.size = var, userweights = user_wt)
+  hier_lm <- lm(effectsize ~ binge + followup + sreport + age, data = hierdat,
+                weights = user_wt)
+  expect_equivalent(coef_CR(hier_small), coef(hier_lm))
+  
+#   robu_CR2 <- vcovCR(hier_small, type = "CR2", inverse_var = TRUE)
+#   expect_equivalent(hier_small$VR.r, as.matrix(robu_CR2))
+#   
+#   CR2_ttests <- coef_test(hier_small, vcov = robu_CR2, test = "Satterthwaite")
+#   expect_equal(hier_small$dfs, CR2_ttests$df)
+#   expect_equal(hier_small$reg_table$prob, CR2_ttests$p_Satt)
+})
+
 
 
 data(dropoutPrevention)
-
-obj <- robu(LOR1 ~ study_design + attrition + group_equivalence + adjusted
-                + outcome + evaluator_independence
-                + male_pct + white_pct + average_age
-                + implementation_quality + program_site + duration + service_hrs, 
-                data = dropoutPrevention, studynum = studyID, var.eff.size = varLOR, modelweights = "HIER")
-CR2 <- vcovCR(obj, cluster = dropoutPrevention$studyID, type = "CR2")
-contrast_list <- list("Study design" = 2:3, 
-                      "Outcome measure" = 7:9,
-                      "Evaluator independence" = 10:12,
-                      "Implmentation quality" = 16:17,
-                      "Program format" = 18:20)
-constraints = contrast_list$"Study design"
-vcov <- CR2
-test <- "Satterthwaite"
-Ex_method = "model"
-
 
 test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - full sample", {
   m3_hier <- robu(LOR1 ~ study_design + attrition + group_equivalence + adjusted
