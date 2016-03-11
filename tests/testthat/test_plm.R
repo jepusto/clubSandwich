@@ -1,24 +1,27 @@
 context("plm objects")
-# data("Produc", package = "plm")
-# Produc$cluster <- sample(LETTERS[1:10], size = nrow(Produc), replace=TRUE)
-# Produc_scramble <- Produc[sample(nrow(Produc)),]
-# 
-# test_that("individual effects agree with lm", {
-#   plm_individual <- plm::plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
-#                              data = Produc_scramble, index = c("state","year"), 
-#                              effect = "individual", model = "within")
-#   lm_individual <- lm(log(gsp) ~ 0 + state + log(pcap) + log(pc) + log(emp) + unemp, data = Produc)
-#   coef_names <- names(coef(plm_individual)) 
-#   coef_index <- names(coef(lm_individual)) %in% coef_names
-#   
-#   expect_equal(vcovCR(plm_individual, type="CR0")[coef_names,coef_names], 
-#                vcovCR(lm_individual, cluster = Produc$state, type = "CR0")[coef_index,coef_index])
-#   expect_equal(vcovCR(plm_individual, type="CR1")[coef_names,coef_names], 
-#                vcovCR(lm_individual, cluster = Produc$state, type = "CR1")[coef_index,coef_index])
-#   expect_equal(vcovCR(plm_individual, type="CR2")[coef_names,coef_names], 
-#                vcovCR(lm_individual, cluster = Produc$state, type = "CR2")[coef_index,coef_index])
-# })
-# 
+
+library(plm)
+
+data("Produc", package = "plm")
+Produc$cluster <- sample(LETTERS[1:10], size = nrow(Produc), replace=TRUE)
+Produc_scramble <- Produc[sample(nrow(Produc)),]
+
+test_that("individual effects agree with lm", {
+  plm_individual <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+                             data = Produc_scramble, index = c("state","year"), 
+                             effect = "individual", model = "within")
+  lm_individual <- lm(log(gsp) ~ 0 + state + log(pcap) + log(pc) + log(emp) + unemp, data = Produc)
+  coef_names <- names(coef(plm_individual)) 
+  coef_index <- names(coef(lm_individual)) %in% coef_names
+  
+  expect_equal(vcovCR(plm_individual, type="CR0")[coef_names,coef_names], 
+               vcovCR(lm_individual, cluster = Produc$state, type = "CR0")[coef_index,coef_index])
+  expect_equal(vcovCR(plm_individual, type="CR1")[coef_names,coef_names], 
+               vcovCR(lm_individual, cluster = Produc$state, type = "CR1")[coef_index,coef_index])
+  expect_equal(vcovCR(plm_individual, type="CR2")[coef_names,coef_names], 
+               vcovCR(lm_individual, cluster = Produc$state, type = "CR2")[coef_index,coef_index])
+})
+
 # test_that("time effects agree with lm", {
 #   plm_time <- plm::plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
 #                        data = Produc_scramble, index = c("state","year"), 
