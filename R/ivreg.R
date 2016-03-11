@@ -5,7 +5,7 @@
 #' Cluster-robust variance-covariance matrix for an ivreg object.
 #' 
 #' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
-#' of a set of regression coefficient estimates from an \code{\link{ivreg}} object.
+#' of a set of regression coefficient estimates from an \code{\link[AER]{ivreg}} object.
 #' 
 #' @param cluster Expression or vector indicating which observations belong to
 #'   the same cluster. Required for \code{ivreg} objects.
