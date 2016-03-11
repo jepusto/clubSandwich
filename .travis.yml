@@ -3,6 +3,8 @@ sudo: false
 cache: packages
 
 r_packages: 
+  - SparseM
+  - MatrixModels
   - covr
 
 after_success:
