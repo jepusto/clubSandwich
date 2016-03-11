@@ -5,6 +5,9 @@ cache: packages
 r_packages: 
   - SparseM
   - MatrixModels
+  - lme4
+  - pbkrtest
+  - quantreg
   - covr
 
 after_success:
