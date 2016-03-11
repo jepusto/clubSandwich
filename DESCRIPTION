@@ -21,7 +21,7 @@ Suggests:
     knitr,
     metafor,
     robumeta,
-    nlme,
+    nlme (>= 3.1-123),
     AER,
     plm,
     testthat
