@@ -1,6 +1,6 @@
-library(robumeta)
 context("robu objects")
 
+library(robumeta)
 data(corrdat)
 
 test_that("CR0 z-tests agree with robumeta for correlated effects", {
@@ -59,37 +59,44 @@ test_that("CR2 t-tests agree with robumeta for hierarchical effects", {
   expect_equal(hier_small$reg_table$prob, CR2_ttests$p_Satt)
 })
 
-hierdat$user_wt <- rpois(nrow(hierdat), lambda = 3)
+hierdat$user_wt <- 1 + rpois(nrow(hierdat), lambda = 3)
 
 test_that("CR0 z-tests agree with robumeta for user weighting", {
-  hier_large <- robu(effectsize ~ binge + followup + sreport + age,
+  user_large <- robu(effectsize ~ binge + followup + sreport + age,
                      data = hierdat, studynum = studyid,
                      var.eff.size = var, userweights = user_wt, small = FALSE)
-  p <- length(coef_CR(hier_large))
-  N <- hier_large$N
-  robu_CR0 <- vcovCR(hier_large, type = "CR0")
-  ztests <- coef_test(hier_large, vcov = robu_CR0 * N / (N - p), test = "z")
+  p <- length(coef_CR(user_large))
+  N <- user_large$N
+  robu_CR0 <- vcovCR(user_large, type = "CR0")
+  ztests <- coef_test(user_large, vcov = robu_CR0 * N / (N - p), test = "z")
   
-  expect_equivalent(hier_large$VR.r, as.matrix(robu_CR0))
-  expect_equivalent(hier_large$reg_table$SE, ztests$SE)
-  expect_equal(with(hier_large$reg_table, 2 * pnorm(abs(b.r / SE),lower.tail=FALSE)), 
+  expect_equivalent(user_large$VR.r, as.matrix(robu_CR0))
+  expect_equivalent(user_large$reg_table$SE, ztests$SE)
+  expect_equal(with(user_large$reg_table, 2 * pnorm(abs(b.r / SE),lower.tail=FALSE)), 
                ztests$p_z)
 })
 
 test_that("CR2 t-tests agree with robumeta for user weighting", {
-  hier_small <- robu(effectsize ~ binge + followup + sreport + age,
+  user_small <- robu(effectsize ~ binge + followup + sreport + age,
                      data = hierdat, studynum = studyid,
                      var.eff.size = var, userweights = user_wt)
-  hier_lm <- lm(effectsize ~ binge + followup + sreport + age, data = hierdat,
+  user_lm <- lm(effectsize ~ binge + followup + sreport + age, data = hierdat,
                 weights = user_wt)
-  expect_equivalent(coef_CR(hier_small), coef(hier_lm))
+  expect_equivalent(coef_CR(user_lm), coef(user_lm))
   
-#   robu_CR2 <- vcovCR(hier_small, type = "CR2", inverse_var = TRUE)
-#   expect_equivalent(hier_small$VR.r, as.matrix(robu_CR2))
-#   
-#   CR2_ttests <- coef_test(hier_small, vcov = robu_CR2, test = "Satterthwaite")
-#   expect_equal(hier_small$dfs, CR2_ttests$df)
-#   expect_equal(hier_small$reg_table$prob, CR2_ttests$p_Satt)
+  robu_CR2 <- vcovCR(user_small, type = "CR2")
+  expect_equivalent(user_small$VR.r, as.matrix(robu_CR2))
+  lm_CR2 <- vcovCR(user_lm, cluster = hierdat$studyid, type = "CR2", target = user_small$data.full$avg.var.eff.size)
+  expect_equivalent(robu_CR2, lm_CR2)
+  
+  CR2_ttests <- coef_test(user_small, vcov = robu_CR2, test = "Satterthwaite")
+#   expect_equal(user_small$dfs, CR2_ttests$df)
+#   expect_equal(user_small$reg_table$prob, CR2_ttests$p_Satt)
+  lm_CR2_ttests <- coef_test(user_lm, vcov = "CR2", 
+                             cluster = hierdat$studyid, 
+                             target = user_small$data.full$avg.var.eff.size,
+                             test = "Satterthwaite")
+  expect_equivalent(CR2_ttests, lm_CR2_ttests)
 })
 
 

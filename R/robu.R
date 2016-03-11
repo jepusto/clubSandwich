@@ -48,7 +48,7 @@
 vcovCR.robu <- function(obj, cluster, type, target, inverse_var) {
   if (missing(cluster)) cluster <- obj$study_orig_id
   if (missing(target)) target <- NULL
-  if (missing(inverse_var)) inverse_var <- is.null(target)
+  if (missing(inverse_var)) inverse_var <- is.null(target) & (!obj$user_weighting)
   vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
 }
 
@@ -88,7 +88,11 @@ model_matrix.robu <- function(obj) {
 
 targetVariance.robu <- function(obj) {
   ord <- order(order(obj$study_orig_id))
-  1 / obj$data.full$r.weights[ord]
+  if (obj$user_weighting) {
+    obj$data.full$avg.var.eff.size[ord]
+  } else {
+    1 / obj$data.full$r.weights[ord]
+  }
 }
 
 #-------------------------------------
