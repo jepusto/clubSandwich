@@ -17,6 +17,7 @@ License: GPL-3
 VignetteBuilder: knitr
 LazyData: true
 Suggests: 
+    Formula,
     knitr,
     metafor,
     robumeta,
