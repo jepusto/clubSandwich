@@ -11,13 +11,14 @@ y <- X %*% c(.4, .3, -.3) + nu + e
 
 dat <- data.frame(y, X, cluster, w, row = 1:n)
 
-lm_fit <- lm(y ~ 0 + cluster + X1 + X2 + X3, data = dat)
-WLS_fit <- lm(y ~ 0 + cluster + X1 + X2 + X3, data = dat, weights = w)
+lm_fit <- lm(y ~ X1 + X2 + X3, data = dat)
+WLS_fit <- lm(y ~ X1 + X2 + X3, data = dat, weights = w)
 
-obj <- WLS_fit
-type <- "CR2" 
-target = NULL
-inverse_var = FALSE
+# obj <- WLS_fit
+# type <- "CR2" 
+# vcov <- vcovCR(obj, cluster = cluster, type = type)
+# target = NULL
+# inverse_var = FALSE
 
 test_that("vcovCR options don't matter for CR0", {
   expect_error(vcovCR(lm_fit, type = "CR0"))
@@ -70,6 +71,13 @@ test_that("vcovCR options work for CR2", {
   
 })
 
+test_that("CR2 is target-unbiased", {
+  expect_true(check_CR(lm_fit, vcov = "CR2", cluster = dat$cluster))
+  expect_true(check_CR(WLS_fit, vcov = "CR2", cluster = dat$cluster))
+  expect_true(check_CR(lm_fit, vcov = "CR4", cluster = dat$cluster))
+  expect_true(check_CR(WLS_fit, vcov = "CR4", cluster = dat$cluster))
+})
+
 test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
   library(sandwich)
   CR0 <- vcovCR(lm_fit, cluster = dat$row, type = "CR0")
@@ -81,7 +89,6 @@ test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
   CR3 <- vcovCR(lm_fit, cluster = dat$row, type = "CR3")
   expect_equal(vcovHC(lm_fit, type = "HC3"), as.matrix(CR3))
 })
-
 
 test_that("CR2 is equivalent to Welch t-test for DiD design", {
   m0 <- 4

@@ -18,13 +18,16 @@ test_that("CR0 z-tests agree with robumeta for correlated effects", {
                     ztests$p_z)
 })
 
+
 test_that("CR2 t-tests agree with robumeta for correlated effects", {
   corr_small <- robu(effectsize ~ males + college + binge, data = corrdat, 
-                         modelweights = "CORR", studynum = studyid,
-                         var.eff.size = var)
+                     modelweights = "CORR", studynum = studyid,
+                     var.eff.size = var)
   robu_CR2 <- vcovCR(corr_small, type = "CR2")
+  expect_true(check_CR(corr_small, vcov = robu_CR2))
+  # expect_true(check_CR(corr_small, vcov = "CR4"))
+
   CR2_ttests <- coef_test(corr_small, vcov = robu_CR2, test = "Satterthwaite")
-    
   expect_equivalent(corr_small$VR.r, as.matrix(robu_CR2))
   expect_equal(corr_small$dfs, CR2_ttests$df)
   expect_equal(corr_small$reg_table$prob, CR2_ttests$p_Satt)
@@ -52,6 +55,9 @@ test_that("CR2 t-tests agree with robumeta for hierarchical effects", {
                          data = hierdat, studynum = studyid,
                          var.eff.size = var, modelweights = "HIER")
   robu_CR2 <- vcovCR(hier_small, type = "CR2")
+  expect_true(check_CR(hier_small, vcov = robu_CR2))
+  # expect_true(check_CR(hier_small, vcov = "CR4"))
+
   CR2_ttests <- coef_test(hier_small, vcov = robu_CR2, test = "Satterthwaite")
   
   expect_equivalent(hier_small$VR.r, as.matrix(robu_CR2))
@@ -85,6 +91,9 @@ test_that("CR2 t-tests agree with robumeta for user weighting", {
   expect_equivalent(coef_CR(user_lm), coef(user_lm))
   
   robu_CR2 <- vcovCR(user_small, type = "CR2")
+  expect_true(check_CR(user_small, vcov = robu_CR2))
+  # expect_true(check_CR(user_small, vcov = "CR4"))
+  
   expect_equivalent(user_small$VR.r, as.matrix(robu_CR2))
   lm_CR2 <- vcovCR(user_lm, cluster = hierdat$studyid, type = "CR2", target = user_small$data.full$avg.var.eff.size)
   expect_equivalent(robu_CR2, lm_CR2)
@@ -100,7 +109,6 @@ test_that("CR2 t-tests agree with robumeta for user weighting", {
 })
 
 
-
 data(dropoutPrevention)
 
 test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - full sample", {
@@ -109,7 +117,10 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - full 
                   + male_pct + white_pct + average_age
                   + implementation_quality + program_site + duration + service_hrs, 
                   data = dropoutPrevention, studynum = studyID, var.eff.size = varLOR, modelweights = "HIER")
+  
   m3_hier_CR2 <- vcovCR(m3_hier, cluster = dropoutPrevention$studyID, type = "CR2")
+  expect_true(check_CR(m3_hier, vcov = m3_hier_CR2))
+  # expect_true(check_CR(m3_hier, vcov = "CR4"))
   CR2_ttests <- coef_test(m3_hier, vcov = m3_hier_CR2, test = "Satterthwaite")
   
   expect_equivalent(m3_hier$VR.r, as.matrix(m3_hier_CR2))
@@ -141,7 +152,11 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - reduc
                   + male_pct + white_pct + average_age
                   + implementation_quality + program_site + duration + service_hrs, 
                   data = dp_subset, studynum = studyID, var.eff.size = varLOR, modelweights = "HIER")
+  
   m3_hier_CR2 <- vcovCR(m3_hier, cluster = dp_subset$studyID, type = "CR2")
+  expect_true(check_CR(m3_hier, vcov = m3_hier_CR2))
+  # expect_true(check_CR(m3_hier, vcov = "CR4"))
+
   CR2_ttests <- coef_test(m3_hier, vcov = m3_hier_CR2, test = "Satterthwaite")
   
   expect_equivalent(m3_hier$VR.r, as.matrix(m3_hier_CR2))
@@ -166,6 +181,5 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - reduc
   expect_equivalent(df_paper, round(df_club, 1))
 })
 
-# test user weighting
 # test target matrix specification
 # test inverse_var detection
