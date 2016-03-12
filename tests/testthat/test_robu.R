@@ -181,5 +181,11 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - reduc
   expect_equivalent(df_paper, round(df_club, 1))
 })
 
+# test_that("clubSandwich works with dropped observations", {
+# })
+# 
+# test_that("order doesn't matter",{
+# })
+
 # test target matrix specification
 # test inverse_var detection

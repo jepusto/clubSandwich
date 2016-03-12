@@ -113,3 +113,24 @@ test_that("CR2 is equivalent to Welch t-test for DiD design", {
   expect_equal(as.numeric(-t_Welch$statistic), with(t_Satt, beta / SE))
   expect_is(all.equal(as.numeric(t_Welch$parameter), t_Satt$df), "character")
 })
+
+test_that("clubSandwich works with dropped observations", {
+  dat_miss <- dat
+  dat_miss$X1[sample.int(n, size = round(n / 10))] <- NA
+  lm_dropped <- lm(y ~ X1 + X2 + X3, data = dat_miss)
+  dat_complete <- subset(dat_miss, !is.na(X1))
+  lm_complete <- lm(y ~ X1 + X2 + X3, data = dat_complete)
+  
+  CR_types <- paste0("CR",0:4)
+  CR_drop <- lapply(CR_types, function(x) vcovCR(lm_dropped, cluster = dat_miss$cluster, type = x))
+  CR_complete <- lapply(CR_types, function(x) vcovCR(lm_complete, cluster = dat_complete$cluster, type = x))
+  expect_identical(CR_drop, CR_complete)
+  
+  test_drop <- lapply(CR_types, function(x) coef_test(lm_dropped, vcov = x, cluster = dat_miss$cluster, test = "All"))
+  test_complete <- lapply(CR_types, function(x) coef_test(lm_complete, vcov = x, cluster = dat_complete$cluster, test = "All"))
+  expect_identical(test_drop, test_complete)
+})
+
+# test_that("order doesn't matter",{
+#   
+# })
