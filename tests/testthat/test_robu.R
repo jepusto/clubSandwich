@@ -181,11 +181,67 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - reduc
   expect_equivalent(df_paper, round(df_club, 1))
 })
 
-# test_that("clubSandwich works with dropped observations", {
-# })
-# 
-# test_that("order doesn't matter",{
-# })
+test_that("order doesn't matter", {
+  corr_small <- robu(effectsize ~ males + college + binge, data = corrdat, 
+                     modelweights = "CORR", studynum = studyid,
+                     var.eff.size = var)
+  dat_scramble <- corrdat[sample(nrow(corrdat)),]
+  corr_scramble <-  robu(effectsize ~ males + college + binge, data = dat_scramble, 
+                         modelweights = "CORR", studynum = studyid,
+                         var.eff.size = var)
+  
+  CR_fit <- lapply(CR_types, function(x) vcovCR(corr_small, type = x))
+  CR_scramble <- lapply(CR_types, function(x) vcovCR(corr_scramble, type = x))
+  expect_equivalent(CR_fit, CR_scramble)
+  
+  test_fit <- lapply(CR_types, function(x) coef_test(corr_small, vcov = x, test = "All"))
+  test_scramble <- lapply(CR_types, function(x) coef_test(corr_scramble, vcov = x, test = "All"))
+  expect_equivalent(test_fit, test_scramble)
+  
+  constraints <- combn(length(coef(corr_small)), 2, simplify = FALSE)
+  Wald_fit <- Wald_test(corr_small, constraints = constraints, vcov = "CR2", test = "All")
+  Wald_scramble <- Wald_test(corr_scramble, constraints = constraints, vcov = "CR2", test = "All")
+  expect_equal(Wald_fit, Wald_scramble)
+})
 
-# test target matrix specification
-# test inverse_var detection
+test_that("clubSandwich works with dropped observations", {
+  dat_miss <- hierdat
+  dat_miss$binge[sample.int(nrow(hierdat), size = round(nrow(hierdat) / 10))] <- NA
+  dat_miss$followup[sample.int(nrow(hierdat), size = round(nrow(hierdat) / 20))] <- NA
+  hier_drop <- robu(effectsize ~ binge + followup + sreport + age,
+                     data = dat_miss, studynum = studyid,
+                     var.eff.size = var, modelweights = "HIER")
+  
+  dat_complete <- subset(dat_miss, !is.na(binge) & !is.na(followup))
+  hier_complete <- robu(effectsize ~ binge + followup + sreport + age,
+                    data = dat_complete, studynum = studyid,
+                    var.eff.size = var, modelweights = "HIER")
+  
+  CR_drop <- lapply(CR_types, function(x) vcovCR(hier_drop, type = x))
+  CR_complete <- lapply(CR_types, function(x) vcovCR(hier_complete, type = x))
+  expect_identical(CR_drop, CR_complete)
+  
+  test_drop <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, test = "All"))
+  test_complete <- lapply(CR_types, function(x) coef_test(hier_complete, vcov = x, test = "All"))
+  expect_identical(test_drop, test_complete)
+})
+
+test_that("vcovCR options work for CR2", {
+  dp_subset <- subset(dropoutPrevention, big_study==TRUE)
+  m3_hier <- robu(LOR1 ~ study_design + attrition + group_equivalence + adjusted
+                  + outcome + evaluator_independence
+                  + male_pct + white_pct + average_age
+                  + implementation_quality + program_site + duration + service_hrs, 
+                  data = dp_subset, studynum = studyID, var.eff.size = varLOR, modelweights = "HIER")
+  
+  iv <- 1 / m3_hier$data.full$r.weights
+  CR2_iv <- vcovCR(m3_hier, type = "CR2")
+  expect_identical(vcovCR(m3_hier, type = "CR2", inverse_var = TRUE), CR2_iv)
+  expect_identical(vcovCR(m3_hier, type = "CR2", target = iv, inverse_var = TRUE), CR2_iv)
+  
+  CR2_not <- vcovCR(m3_hier, type = "CR2", inverse_var = FALSE)
+  expect_equal(CR2_not, CR2_iv)
+  expect_identical(vcovCR(m3_hier, type = "CR2", target = iv), CR2_not)
+  expect_identical(vcovCR(m3_hier, type = "CR2", target = iv, inverse_var = FALSE), CR2_not)
+  expect_false(identical(vcovCR(m3_hier, type = "CR2", target = m3_hier$data.full$var.eff.size), CR2_not))
+})
