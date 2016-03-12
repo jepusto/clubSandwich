@@ -13,6 +13,7 @@ dat <- data.frame(y, X, cluster, w, row = 1:n)
 
 lm_fit <- lm(y ~ X1 + X2 + X3, data = dat)
 WLS_fit <- lm(y ~ X1 + X2 + X3, data = dat, weights = w)
+CR_types <- paste0("CR",0:4)
 
 # obj <- WLS_fit
 # type <- "CR2" 
@@ -114,6 +115,24 @@ test_that("CR2 is equivalent to Welch t-test for DiD design", {
   expect_is(all.equal(as.numeric(t_Welch$parameter), t_Satt$df), "character")
 })
 
+test_that("Order doesn't matter.",{
+  dat_scramble <- dat[sample(n),]
+  WLS_scramble <- update(WLS_fit, data = dat_scramble)
+  
+  CR_fit <- lapply(CR_types, function(x) vcovCR(WLS_fit, cluster = dat$cluster, type = x))
+  CR_scramble <- lapply(CR_types, function(x) vcovCR(WLS_scramble, cluster = dat_scramble$cluster, type = x))
+  expect_equivalent(CR_fit, CR_scramble)
+  
+  test_fit <- lapply(CR_types, function(x) coef_test(WLS_fit, vcov = x, cluster = dat$cluster, test = "All"))
+  test_scramble <- lapply(CR_types, function(x) coef_test(WLS_scramble, vcov = x, cluster = dat_scramble$cluster, test = "All"))
+  expect_equivalent(test_fit, test_scramble)
+  
+  constraints <- combn(length(coef(lm_fit)), 2, simplify = FALSE)
+  Wald_fit <- Wald_test(WLS_fit, constraints = constraints, vcov = "CR2", cluster = dat$cluster, test = "All")
+  Wald_scramble <- Wald_test(WLS_scramble, constraints = constraints, vcov = "CR2", cluster = dat_scramble$cluster, test = "All")
+  expect_equal(Wald_fit, Wald_scramble)
+})
+
 test_that("clubSandwich works with dropped observations", {
   dat_miss <- dat
   dat_miss$X1[sample.int(n, size = round(n / 10))] <- NA
@@ -121,7 +140,6 @@ test_that("clubSandwich works with dropped observations", {
   dat_complete <- subset(dat_miss, !is.na(X1))
   lm_complete <- lm(y ~ X1 + X2 + X3, data = dat_complete)
   
-  CR_types <- paste0("CR",0:4)
   CR_drop <- lapply(CR_types, function(x) vcovCR(lm_dropped, cluster = dat_miss$cluster, type = x))
   CR_complete <- lapply(CR_types, function(x) vcovCR(lm_complete, cluster = dat_complete$cluster, type = x))
   expect_identical(CR_drop, CR_complete)
@@ -130,7 +148,3 @@ test_that("clubSandwich works with dropped observations", {
   test_complete <- lapply(CR_types, function(x) coef_test(lm_complete, vcov = x, cluster = dat_complete$cluster, test = "All"))
   expect_identical(test_drop, test_complete)
 })
-
-# test_that("order doesn't matter",{
-#   
-# })
