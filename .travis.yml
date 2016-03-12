@@ -1,7 +1,9 @@
 language: r
 sudo: false
+cache: packages
 
 r_packages: 
+  - Formula
   - nlme
   - SparseM
   - MatrixModels
