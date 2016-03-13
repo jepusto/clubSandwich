@@ -49,11 +49,6 @@ sub_three <- function(arr, subset) {
   arr_sub
 }
 
-f <- function(x,...) {
-  m <- match.call(expand.dots = FALSE)
-  m[["..."]]
-}
-
 covariance_array <- function(S_array, Omega_nsqrt, q = nrow(Omega_nsqrt), J = dim(S_array)[3]) {
   B_array <- array(apply(S_array, 3, function(s) Omega_nsqrt %*% s), dim = dim(S_array))
   B_jk <- array(NA, dim = c(J, J, q, q))

@@ -19,6 +19,7 @@ LazyData: true
 Suggests: 
     Formula,
     knitr,
+    car,
     metafor,
     robumeta,
     nlme,
