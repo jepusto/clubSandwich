@@ -42,7 +42,7 @@ vcovCR.rma.uni <- function(obj, cluster, type, target, inverse_var) {
   if (missing(cluster)) stop("You must specify a clustering variable.")
   if (missing(target)) {
     target <- NULL
-    inverse_var <- is.null(obj$weights) & obj$weighted
+    if (missing(inverse_var)) inverse_var <- is.null(obj$weights) & obj$weighted
   } else {
     if (missing(inverse_var)) inverse_var <- FALSE
   }

@@ -105,7 +105,11 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   }
   
   if (is.null(target)) {
-    Theta <- targetVariance(obj)
+    if (inverse_var) {
+      Theta <- if (is.matrix(W)) chol2inv(chol(W)) else 1 / W
+    } else {
+      Theta <- targetVariance(obj)
+    }
   } else {
     Theta <- target
   }

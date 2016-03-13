@@ -181,6 +181,8 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - reduc
   expect_equivalent(df_paper, round(df_club, 1))
 })
 
+CR_types <- paste0("CR",0:4)
+
 test_that("order doesn't matter", {
   corr_small <- robu(effectsize ~ males + college + binge, data = corrdat, 
                      modelweights = "CORR", studynum = studyid,

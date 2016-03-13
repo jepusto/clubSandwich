@@ -7,7 +7,6 @@ check_CR <- function(obj, vcov, ...) {
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!("clubSandwich" %in% class(vcov))) stop("Variance-covariance matrix must be a clubSandwich.")
 
-  
   # calculate E(V^CR)  
   cluster <- attr(vcov, "cluster")
   E_list <- attr(vcov, "estmats")
