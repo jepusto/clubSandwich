@@ -85,8 +85,8 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   W_list <- matrix_list(W, cluster, "both")
   XpW_list <- mapply(function(x, w) as.matrix(t(x) %*% w), 
                     x = Xp_list, w = W_list, SIMPLIFY = FALSE)
-  XpW <- matrix(unlist(XpW_list), p, N)[,order(order(cluster))]
-  M <- chol2inv(chol(XpW %*% Xp))
+  XpWX_list <- mapply(function(xw, x) xw %*% x, xw = XpW_list, x = X_list, SIMPLIFY = FALSE)
+  M <- chol2inv(chol(Reduce("+",XpWX_list)))
   
   if (type=="CR2") {
     S <- augmented_model_matrix(obj, cluster, inverse_var)
@@ -99,8 +99,9 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
       U_list <- matrix_list(U, cluster, "row")
       UW_list <- mapply(function(u, w) as.matrix(t(u) %*% w), 
                         u = U_list, w = W_list, SIMPLIFY = FALSE)
-      UW <- matrix(unlist(UW_list), ncol(U), N)[,order(order(cluster))]
-      M_U <- chol2inv(chol(UW %*% U))
+      UWU_list <- mapply(function(uw, u) uw %*% u, 
+                         uw = UW_list, u = U_list, SIMPLIFY = FALSE)
+      M_U <- chol2inv(chol(Reduce("+",UWU_list)))
     }
   }
   

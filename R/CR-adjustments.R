@@ -47,7 +47,7 @@ CR2 <- function(M_U, U_list, UW_list, M, XpW_list, X_list, Theta_list, inverse_v
 
 CR3 <- function(M, X_list, XpW_list) {
   IH_jj <- IH_jj_list(M, X_list, XpW_list)
-  mapply(function(xw, ih) M %*% xw %*% chol2inv(chol(ih)), 
+  mapply(function(xw, ih) M %*% xw %*% solve(ih), 
          xw = XpW_list, ih = IH_jj, SIMPLIFY = FALSE)
 }
 
@@ -65,7 +65,7 @@ CR4 <- function(M, X_list, XpW_list, Theta_list, inverse_var = FALSE) {
     F_chol <- lapply(F_list, chol_psd)
     XWX_list <- mapply(function(xw, x) xw %*% x, 
                        xw = XpW_list, x = X_list, SIMPLIFY = FALSE)
-    MXWTWXM <- M %*% apply(array(unlist(F_list), dim = c(dim(M), length(F_list))), 1:2, sum) %*% M
+    MXWTWXM <- M %*% Reduce("+", F_list) %*% M
     G_list <- mapply(function(f, fc, xwx)
       as.matrix(fc %*% (f - xwx %*% M %*% f - f %*% M %*% xwx + xwx %*% MXWTWXM %*% xwx) %*% t(fc)),
       f = F_list, fc = F_chol, xwx = XWX_list, SIMPLIFY = FALSE)

@@ -72,7 +72,31 @@ test_that("vcovCR options work for CR2", {
   
 })
 
-test_that("CR2 is target-unbiased", {
+test_that("vcovCR options work for CR4", {
+  CR4_iv <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR4")
+  expect_identical(vcovCR(lm_fit, cluster = dat$cluster, type = "CR4", inverse_var = TRUE), CR4_iv)
+  expect_identical(vcovCR(lm_fit, cluster = dat$cluster, type = "CR4", target = rep(1, n), inverse_var = TRUE), CR4_iv)
+  
+  CR4_not <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR4", inverse_var = FALSE)
+  expect_equal(CR4_not, CR4_iv)
+  expect_identical(vcovCR(lm_fit, cluster = dat$cluster, type = "CR4", target = rep(1, n)), CR4_not)
+  expect_identical(vcovCR(lm_fit, cluster = dat$cluster, type = "CR4", target = rep(1, n), inverse_var = FALSE), CR4_not)
+  expect_false(identical(vcovCR(lm_fit, cluster = dat$cluster, type = "CR4", target = 1 / dat$w), CR4_not))
+  
+  wCR4_id <- vcovCR(WLS_fit, cluster = dat$cluster, type = "CR4")
+  expect_identical(vcovCR(WLS_fit, cluster = dat$cluster, type = "CR4", inverse_var = FALSE), wCR4_id)
+  expect_identical(vcovCR(WLS_fit, cluster = dat$cluster, type = "CR4", target = rep(1, n)), wCR4_id)
+  expect_identical(vcovCR(WLS_fit, cluster = dat$cluster, type = "CR4", target = rep(1, n), inverse_var = FALSE), wCR4_id)
+  
+  wCR4_iv <- vcovCR(WLS_fit, cluster = dat$cluster, type = "CR4", inverse_var = TRUE)
+  wCR4_target <- vcovCR(WLS_fit, cluster = dat$cluster, type = "CR4", target = 1 / dat$w, inverse_var = TRUE)
+  expect_false(identical(wCR4_target, wCR4_id))
+  #  expect_identical(matrix(wCR2_target, dim(wCR2_target)), matrix(wCR2_iv, dim(wCR2_iv)))
+  expect_equal(vcovCR(WLS_fit, cluster = dat$cluster, type = "CR4", target = 1 / dat$w, inverse_var = TRUE), wCR4_target)
+  
+})
+
+test_that("CR2 and CR4 are target-unbiased", {
   expect_true(check_CR(lm_fit, vcov = "CR2", cluster = dat$cluster))
   expect_true(check_CR(WLS_fit, vcov = "CR2", cluster = dat$cluster))
   expect_true(check_CR(lm_fit, vcov = "CR4", cluster = dat$cluster))
@@ -118,7 +142,7 @@ test_that("CR2 is equivalent to Welch t-test for DiD design", {
 test_that("Order doesn't matter.",{
   dat_scramble <- dat[sample(n),]
   WLS_scramble <- update(WLS_fit, data = dat_scramble)
-  
+
   CR_fit <- lapply(CR_types, function(x) vcovCR(WLS_fit, cluster = dat$cluster, type = x))
   CR_scramble <- lapply(CR_types, function(x) vcovCR(WLS_scramble, cluster = dat_scramble$cluster, type = x))
   expect_equivalent(CR_fit, CR_scramble)
