@@ -6,13 +6,6 @@ before_install:
   - Rscript -e 'install.packages("nlme", lib="/home/travis/R-bin/lib/R/library/")'
   
 r_packages: 
-  - Formula
-  - SparseM
-  - MatrixModels
-  - nlme
-  - lme4
-  - pbkrtest
-  - quantreg
   - covr
 
 after_success:
