@@ -11,15 +11,16 @@ test_that("constraint expressions are equivalent", {
   constraints_int <- which(constraints_logical)
   constraints_char <- coefs[constraints_logical]
   constraints_mat <- diag(1L, nrow = length(coefs))[constraints_logical,,drop=FALSE]
-  constraint_list <- list(logical = constraints_logical,
-                          integer = constraints_int,
+  Wald_logical <- Wald_test(duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
+                            constraints = constraints_logical, test = "All")
+  constraint_list <- list(integer = constraints_int,
                           char = constraints_char,
                           matrix = constraints_mat)
   Walds <- Wald_test(duncan_fit, vcov = "CR2", cluster = Duncan$cluster, 
                      constraints = constraint_list, test = "All")
-  expect_identical(Walds$logical, Walds$integer)
-  expect_identical(Walds$logical, Walds$char)
-  expect_identical(Walds$logical, Walds$matrix)
+  expect_identical(Wald_logical, Walds$integer)
+  expect_identical(Wald_logical, Walds$char)
+  expect_identical(Wald_logical, Walds$matrix)
 })
 
 test_that("Wald test is equivalent to Satterthwaite for q = 1.",{
