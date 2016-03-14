@@ -1,5 +1,4 @@
 language: r
-cache: packages
 
 before_install:
   - sudo rm -fvr /home/travis/R-bin/lib/R/library/nlme
