@@ -77,8 +77,8 @@ test_that("clubSandwich errors with dropped observations", {
   dat_miss <- hierdat
   dat_miss$binge[sample.int(nrow(hierdat), size = round(nrow(hierdat) / 10))] <- NA
   dat_miss$followup[sample.int(nrow(hierdat), size = round(nrow(hierdat) / 20))] <- NA
-  hier_drop <- rma(effectsize ~ binge + followup + sreport + age, 
-                   data = dat_miss, vi = var, method = "REML")
+  expect_warning(hier_drop <- rma(effectsize ~ binge + followup + sreport + age, 
+                                  data = dat_miss, vi = var, method = "REML"))
   expect_error(vcovCR(hier_drop, type = "CR0", cluster = dat_miss$studyid))
 })
 

@@ -12,8 +12,8 @@ check_CR <- function(obj, vcov, ...) {
   E_list <- attr(vcov, "estmats")
   target <- attr(vcov, "target")
   S_array <- get_S_array(obj, cluster, target, E_list)
-  E_CRj <- apply(S_array, 3, tcrossprod)
-  
+  E_CRj <- lapply(1:nlevels(cluster), function(j) tcrossprod(S_array[,,j]))
+         
   # calculate target
   X <- model_matrix(obj)
   alias <- is.na(coef_CR(obj))
@@ -26,12 +26,12 @@ check_CR <- function(obj, vcov, ...) {
   W <- weightMatrix(obj)
   W_list <- matrix_list(W, cluster, "both")
   Theta_list <- matrix_list(target, cluster, "both")
-  XW_list <- mapply(function(x, w) as.matrix(t(x) %*% w), 
-                     x = X_list, w = W_list, SIMPLIFY = FALSE)
-  XW <- matrix(unlist(XW_list), p, N)[,order(order(cluster))]
-  M <- chol2inv(chol(XW %*% X))
-  MXWTWXM <- mapply(function(x, w, t) M %*% as.matrix(t(x) %*% w %*% t %*% w %*% x) %*% M, 
-                    x = X_list, w = W_list, t = Theta_list, SIMPLIFY = TRUE)
+  XW_list <- Map(function(x, w) as.matrix(t(x) %*% w), x = X_list, w = W_list)
+  XWX_list <- Map(function(xw, x) xw %*% x, xw = XW_list, x = X_list)
+  M <- chol2inv(chol(Reduce("+", XWX_list)))
+  
+  MXWTWXM <- Map(function(xw, theta) M %*% as.matrix(xw %*% theta %*% t(xw)) %*% M, 
+                    xw = XW_list, theta = Theta_list)
   eq <- all.equal(E_CRj, MXWTWXM)
   if (eq==TRUE) TRUE else list(E_CRj = E_CRj, target = MXWTWXM)
 }

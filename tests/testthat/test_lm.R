@@ -96,6 +96,7 @@ test_that("vcovCR options work for CR4", {
   
 })
 
+
 test_that("CR2 and CR4 are target-unbiased", {
   expect_true(check_CR(lm_fit, vcov = "CR2", cluster = dat$cluster))
   expect_true(check_CR(WLS_fit, vcov = "CR2", cluster = dat$cluster))

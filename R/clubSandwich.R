@@ -83,10 +83,9 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   
   W <- weightMatrix(obj)
   W_list <- matrix_list(W, cluster, "both")
-  XpW_list <- mapply(function(x, w) as.matrix(t(x) %*% w), 
-                    x = Xp_list, w = W_list, SIMPLIFY = FALSE)
-  XpWX_list <- mapply(function(xw, x) xw %*% x, xw = XpW_list, x = X_list, SIMPLIFY = FALSE)
-  M <- chol2inv(chol(Reduce("+",XpWX_list)))
+  XpW_list <- Map(function(x, w) as.matrix(t(x) %*% w), x = Xp_list, w = W_list)
+  XpWX_list <- Map(function(xw, x) xw %*% x, xw = XpW_list, x = X_list)
+  M <- chol2inv(chol(Reduce("+", XpWX_list)))
   
   if (type=="CR2") {
     S <- augmented_model_matrix(obj, cluster, inverse_var)
@@ -97,10 +96,8 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
     } else {
       U <- cbind(Xp, S)
       U_list <- matrix_list(U, cluster, "row")
-      UW_list <- mapply(function(u, w) as.matrix(t(u) %*% w), 
-                        u = U_list, w = W_list, SIMPLIFY = FALSE)
-      UWU_list <- mapply(function(uw, u) uw %*% u, 
-                         uw = UW_list, u = U_list, SIMPLIFY = FALSE)
+      UW_list <- Map(function(u, w) as.matrix(t(u) %*% w), u = U_list, w = W_list)
+      UWU_list <- Map(function(uw, u) uw %*% u, uw = UW_list, u = U_list)
       M_U <- chol2inv(chol(Reduce("+",UWU_list)))
     }
   }
@@ -125,7 +122,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
 
   res_list <- split(resid, cluster)
   
-  components <- do.call(cbind, mapply(function(e, r) e %*% r, e = E_list, r = res_list, SIMPLIFY = FALSE))
+  components <- do.call(cbind, Map(function(e, r) e %*% r, e = E_list, r = res_list))
   vcov <- tcrossprod(components)
   rownames(vcov) <- colnames(vcov) <- colnames(X)
   attr(vcov, "type") <- type
@@ -214,23 +211,21 @@ get_S_array <- function(obj, cluster, target, E_list) {
   W <- weightMatrix(obj)
   W_list <- matrix_list(W, cluster, "both")
   
-  XW_list <- mapply(function(x, w) as.matrix(t(x) %*% w), 
-                    x = X_list, w = W_list, SIMPLIFY = FALSE)
-  XW <- matrix(unlist(XW_list), p, N)[,order(order(cluster))]
-  M <- chol2inv(chol(XW %*% X))
+  XW_list <- Map(function(x, w) as.matrix(t(x) %*% w), x = X_list, w = W_list)
+  XWX_list <- Map(function(xw, x) xw %*% x, xw = XW_list, x = X_list)
+  M <- chol2inv(chol(Reduce("+", XWX_list)))
   
   if (is.vector(target)) {
-    target_sqrt <- sqrt(target)
-    Theta_cholT <- matrix_list(target_sqrt, cluster, "both")
-    MXWTheta_cholT <- M %*% matrix(unlist(mapply(function(xw, tc) t(tc * t(xw)), 
-                                                 xw = XW_list, tc = split(target_sqrt, cluster), SIMPLIFY = FALSE)), 
-                                   p, N)
+    Theta_cholT <- split(sqrt(target), cluster)
+    XWThetaC_list <- Map(function(xw, tc) t(tc * t(xw)), xw = XW_list, tc = Theta_cholT)
+    Theta_cholT <- lapply(Theta_cholT, function(x) diag(x, nrow = length(x)))
   } else {
     Theta_list <- matrix_list(target, cluster, "both")
     Theta_cholT <- lapply(Theta_list, function(x) t(chol(x)))
-    MXWTheta_cholT <- M %*% matrix(unlist(mapply(function(xw, tc) xw %*% tc, xw = XW_list, tc = Theta_cholT, SIMPLIFY = FALSE)), p, N)
+    XWThetaC_list <- Map(function(xw, tc) xw %*% tc, xw = XW_list, tc = Theta_cholT)
   }
-
+  MXWTheta_cholT <- M %*% (matrix(unlist(XWThetaC_list), p, N)[,order(order(cluster))])
+  
   S_list <- mapply(Sj, e = E_list, x = X_list, tc = Theta_cholT, cl = levels(cluster),
                    MoreArgs = list(cluster=cluster, MXWTheta_cholT=MXWTheta_cholT), SIMPLIFY = FALSE)
 
