@@ -1,6 +1,6 @@
 library(testthat)
 library(clubSandwich)
 .libPaths()
-sapply(.libPaths(), packageVersion, pkg="nlme")
 install.packages("nlme",type="source")
+sapply(.libPaths(), packageVersion, pkg="nlme")
 test_check("clubSandwich")

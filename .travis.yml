@@ -2,13 +2,11 @@ language: r
 sudo: false
 cache: packages
 
-r_binary_packages: 
-  - nlme
-  
 r_packages: 
   - Formula
   - SparseM
   - MatrixModels
+  - nlme
   - lme4
   - pbkrtest
   - quantreg
