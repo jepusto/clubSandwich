@@ -1,3 +1,5 @@
 library(testthat)
 library(clubSandwich)
+.libPaths()
+sapply(.libPaths(), packageVersion, pkg="nlme")
 test_check("clubSandwich")
