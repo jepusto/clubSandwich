@@ -1,6 +1,6 @@
 library(testthat)
 library(clubSandwich)
 .libPaths()
-install.packages("nlme",type="source")
+install.packages("nlme",repos="https://cloud.r-project.org",type="source")
 sapply(.libPaths(), packageVersion, pkg="nlme")
 test_check("clubSandwich")
