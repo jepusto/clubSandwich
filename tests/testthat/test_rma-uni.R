@@ -65,7 +65,7 @@ test_that("order doesn't matter", {
   
   test_fit <- lapply(CR_types, function(x) coef_test(hier_meta, vcov = x, cluster = hierdat$studyid, test = "All"))
   test_scramble <- lapply(CR_types, function(x) coef_test(hier_scramble, vcov = x, cluster = dat_scramble$studyid, test = "All"))
-  expect_equivalent(test_fit, test_scramble)
+  expect_equal(test_fit, test_scramble, tolerance = 10^-6)
   
   constraints <- combn(length(coef(hier_scramble)), 2, simplify = FALSE)
   Wald_fit <- Wald_test(hier_meta, constraints = constraints, vcov = "CR2", cluster = hierdat$studyid, test = "All")

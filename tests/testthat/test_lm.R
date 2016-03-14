@@ -150,7 +150,7 @@ test_that("Order doesn't matter.",{
   
   test_fit <- lapply(CR_types, function(x) coef_test(WLS_fit, vcov = x, cluster = dat$cluster, test = "All"))
   test_scramble <- lapply(CR_types, function(x) coef_test(WLS_scramble, vcov = x, cluster = dat_scramble$cluster, test = "All"))
-  expect_equivalent(test_fit, test_scramble)
+  expect_equal(test_fit, test_scramble, tolerance = 10^-6)
   
   constraints <- combn(length(coef(lm_fit)), 2, simplify = FALSE)
   Wald_fit <- Wald_test(WLS_fit, constraints = constraints, vcov = "CR2", cluster = dat$cluster, test = "All")
