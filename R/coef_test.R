@@ -3,16 +3,11 @@
 # Satterthwaite approximation
 #---------------------------------------------
 
-Satterthwaite <- function(beta, SE, S_array, Ex_method = "model") {
+Satterthwaite <- function(beta, SE, S_array) {
   
   V_coef <- 2 * apply(S_array, 1, function(s) sum(crossprod(s)^2))
-  
-  if (Ex_method == "model") {
-    E_coef <- apply(S_array, 1, function(s) sum(s * s))
-  } else {
-    E_coef <- SE^2
-  }
-  
+  E_coef <- apply(S_array, 1, function(s) sum(s * s))
+
   df <- 2 * E_coef^2 / V_coef
   p_val <- 2 * pt(abs(beta / SE), df = df, lower.tail = FALSE)
   data.frame(df = df, p_Satt = p_val)
@@ -66,11 +61,6 @@ saddlepoint <- function(t_stats, S_array) {
 #'   1} degrees of freedom. \code{"Satterthwaite"} returns a Satterthwaite
 #'   correction. \code{"saddlepoint"} returns a saddlepoint correction. Default
 #'   is \code{"Satterthwaite"}.
-#' @param Ex_method Character string that controls how the expectation of the 
-#'   sandwich estimator is determined for use in the Satterthwaite 
-#'   approximation. The default, \code{"model"}, estimates the expectation based
-#'   on a working model. The other option, \code{"empirical"} uses the sandwich 
-#'   estimate itself.
 #' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only 
 #'   needed if \code{vcov} is a character string.
 #'   
@@ -83,7 +73,7 @@ saddlepoint <- function(t_stats, S_array) {
 #'   
 #' @export
 
-coef_test <- function(obj, vcov, test = "Satterthwaite", Ex_method = "model", ...) {
+coef_test <- function(obj, vcov, test = "Satterthwaite", ...) {
 
   beta <- coef_CR(obj)
   beta_NA <- is.na(beta)
@@ -94,8 +84,7 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", Ex_method = "model", ..
   all_tests <- c("z","naive-t","Satterthwaite","saddlepoint")
   if (all(test == "All")) test <- all_tests
   test <- match.arg(test, all_tests, several.ok = TRUE)
-  Ex_method <- match.arg(Ex_method, c("model","empirical"), several.ok = TRUE)
-  
+
   SE <- sqrt(diag(vcov))
   cluster <- attr(vcov, "cluster")
   J <- nlevels(cluster)
@@ -116,7 +105,7 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", Ex_method = "model", ..
     result$p_t[!beta_NA] <-  2 * pt(abs(beta[!beta_NA] / SE), df = J - 1, lower.tail = FALSE)
   }
   if ("Satterthwaite" %in% test) {
-    Satt <- Satterthwaite(beta = beta[!beta_NA], SE = SE, S_array = S_array, Ex_method = Ex_method)
+    Satt <- Satterthwaite(beta = beta[!beta_NA], SE = SE, S_array = S_array)
     result$df[!beta_NA] <- Satt$df
     result$p_Satt[!beta_NA] <- Satt$p_Satt
   }
