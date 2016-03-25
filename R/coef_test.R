@@ -21,7 +21,7 @@ saddlepoint_pval <- function(t, Q) {
   eig <- pmax(0, eigen(Q, symmetric = TRUE, only.values=TRUE)$values)
   g <- c(1, -t^2 * eig / sum(eig))
   s_eq <- function(s) sum(g / (1 - 2 * g * s))
-  s_range <- if (s_eq(0) > 0) c(1 / (2 * min(g)), 0) else c(0, 1 / (2 * max(g)))
+  s_range <- if (t^2 < 1) c(1 / (2 * min(g)), 0) else c(0, 1 / (2 * max(g)))
   s <- uniroot(s_eq, s_range)$root
   if (s != 0) {
     r <- sign(s) * sqrt(sum(log(1 - 2 * g * s)))
