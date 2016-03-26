@@ -54,6 +54,5 @@ test_that("Satterthwaite df work for special cases", {
   expect_equivalent(t_tests$df[2:3], df)
   lm_fit <- lm(y ~ 0 + cluster + X_wth, data = dat)
   t_tests <- coef_test(lm_fit, vcov = "CR2", cluster = dat$cluster, test = "Satterthwaite")
-  expect_equal(t_tests$df[m + 1], m - 1)
-  c(m = m, n=n, m = mg)
+  expect_equal(t_tests$df[m + 1], m - 1) 
 })

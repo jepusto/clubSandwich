@@ -4,7 +4,7 @@
 \alias{coef_test}
 \title{Test all regression coefficients in a fitted model}
 \usage{
-coef_test(obj, vcov, test = "Satterthwaite", Ex_method = "model", ...)
+coef_test(obj, vcov, test = "Satterthwaite", ...)
 }
 \arguments{
 \item{obj}{Fitted model for which to calculate t-tests.}
@@ -19,12 +19,6 @@ reference distribution). \code{"naive-t"} returns a t test with \code{m -
 1} degrees of freedom. \code{"Satterthwaite"} returns a Satterthwaite
 correction. \code{"saddlepoint"} returns a saddlepoint correction. Default
 is \code{"Satterthwaite"}.}
-
-\item{Ex_method}{Character string that controls how the expectation of the
-sandwich estimator is determined for use in the Satterthwaite
-approximation. The default, \code{"model"}, estimates the expectation based
-on a working model. The other option, \code{"empirical"} uses the sandwich
-estimate itself.}
 
 \item{...}{Further arguments passed to \code{\link{vcovCR}}, which are only
   needed if \code{vcov} is a character string.}
