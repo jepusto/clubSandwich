@@ -35,7 +35,7 @@ CR2 <- function(M_U, U_list, UW_list, M, XpW_list, X_list, Theta_list, inverse_v
                     uw = UW_list, th = Theta_list, SIMPLIFY = TRUE)
     MUWTWUM <- M_U %*% matrix(rowSums(uwTwu), nrow(M), ncol(M)) %*% M_U
     G_list <- mapply(function(thet, h, u, v) 
-      as.matrix(v %*% (thet - h %*% thet - thet %*% t(h) + u %*% MUWTWUM %*% t(u)) %*% v),
+      as.matrix(v %*% (thet - h %*% thet - thet %*% t(h) + u %*% MUWTWUM %*% t(u)) %*% t(v)),
       thet = Theta_list, h = H_jj, u = U_list, v = Theta_chol, SIMPLIFY = FALSE)
   }
   
