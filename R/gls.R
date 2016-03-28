@@ -39,8 +39,34 @@ vcovCR.gls <- function(obj, cluster, type, target, inverse_var) {
 # model_matrix()
 #-------------------------------------
 
+getData <- function (object) {
+  mCall <- object$call
+  dat_name <- if ("data" %in% names(object)) object$data else mCall$data
+  envir_names <- sys.frames()
+  ind <- sapply(envir_names, function(e) exists(as.character(dat_name), envir = e))
+  e <- envir_names[[min(which(ind))]]
+  data <- eval(dat_name, envir = e)
+  if (is.null(data)) return(data)
+  naAct <- object[["na.action"]]
+  if (!is.null(naAct)) {
+    data <- if (inherits(naAct, "omit")) {
+      data[-naAct, ]
+      
+    } else if (inherits(naAct, "exclude")) {
+      data
+    } else eval(mCall$na.action)(data)
+  }
+  subset <- mCall$subset
+  if (!is.null(subset)) {
+    subset <- eval(asOneSidedFormula(subset)[[2]], data)
+    data <- data[subset, ]
+  }
+  data
+}
+
 model_matrix.gls <- function(obj) {
-  model.matrix(formula(obj), data = nlme::getData(obj))
+  dat <- getData(obj)
+  model.matrix(formula(obj), data = dat)
 }
 
 #-------------------------------------

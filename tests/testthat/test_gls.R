@@ -2,12 +2,23 @@ context("gls objects")
 
 library(nlme)
 
+rm(list=ls())
 data(Ovary, package = "nlme")
 
 Ovary$time_int <- 1:nrow(Ovary)
-lm_AR1 <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), Ovary,
+lm_AR1 <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), data = Ovary,
               correlation = corAR1(form = ~ time_int | Mare))
 lm_AR1_power <- update(lm_AR1, weights = varPower())
+
+
+test_that("getData works.", {
+  re_order <- sample(nrow(Ovary))
+  egg_scramble <- Ovary[re_order,]
+  gls_scramble <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), 
+                      data = egg_scramble)
+  dat <- getData(gls_scramble)
+  expect_identical(egg_scramble, dat)
+})
 
 test_that("vcovCR options work for CR2", {
   CR2_AR1 <- vcovCR(lm_AR1, type = "CR2")
@@ -58,6 +69,7 @@ test_that("CR2 and CR4 are target-unbiased", {
   expect_true(check_CR(lm_AR1_power, vcov = "CR4"))
 })
 
+
 CR_types <- paste0("CR",0:4)
 
 test_that("Order doesn't matter.", {
@@ -67,16 +79,17 @@ test_that("Order doesn't matter.", {
   CR_fit <- lapply(CR_types, function(x) vcovCR(lm_AR1, type = x))
   CR_scramble <- lapply(CR_types, function(x) vcovCR(lm_scramble, type = x))
   expect_equivalent(CR_fit, CR_scramble)
-
+  
   test_fit <- lapply(CR_types, function(x) coef_test(lm_AR1, vcov = x, test = "All"))
   test_scramble <- lapply(CR_types, function(x) coef_test(lm_scramble, vcov = x, test = "All"))
   expect_equal(test_fit, test_scramble, tolerance = 10^-6)
-
+  
   constraints <- combn(length(coef(lm_AR1)), 2, simplify = FALSE)
   Wald_fit <- Wald_test(lm_AR1, constraints = constraints, vcov = "CR2", test = "All")
   Wald_scramble <- Wald_test(lm_scramble, constraints = constraints, vcov = "CR2", test = "All")
   expect_equal(Wald_fit, Wald_scramble)
 })
+
 
 test_that("clubSandwich works with dropped observations", {
   dat_miss <- Ovary
