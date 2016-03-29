@@ -72,8 +72,6 @@ test_that("two-way effects agree with lm", {
   
 })
 
-# test random effects models
-
 # test for equality with HC when cluster = rownames(data)
 # test cluster specification
 # test target matrix specification

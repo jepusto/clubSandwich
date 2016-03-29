@@ -171,13 +171,13 @@ weightMatrix.plm <- function(obj) {
     if (obj$args$effect=="twoway") stop("Weight matrix is not block diagonal.")
     ind <- switch(obj$args$effect,
                   individual = attr(model.frame(obj), "index")[[1]],
-                  time = attr(model.frame(obj), "index")[[1]])
+                  time = attr(model.frame(obj), "index")[[2]])
     Z <- model.matrix(~ ind - 1)
     n_j <- colSums(Z)
-    sigma_sq <- obj$ercomp$sigma2[[2]]
-    tau_sq <- obj$ercomp$sigma2[[3]]
-    theta_j <- tau_sq / ((n_j * tau_sq + sigma_sq) * sigma_sq)
-    W <- diag(1 / sigma_sq, nrow = nobs(obj)) -  Z %*% (theta_j * t(Z))
+    sigma_sq <- obj$ercomp$sigma2$idios
+    tau_sq <- obj$ercomp$sigma2$id
+    theta_j <- tau_sq / ((n_j * tau_sq + sigma_sq))
+    W <- diag(1, nrow = nobs(obj)) -  Z %*% (theta_j * t(Z))
   } else {
     W <- rep(1, nobs(obj))
   }
