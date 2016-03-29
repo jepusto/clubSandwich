@@ -52,7 +52,8 @@ coef_CR.lme <- function(obj)
 #-------------------------------------
 
 model_matrix.lme <- function(obj) {
-  model.matrix(formula(obj), data = nlme::getData(obj))
+  dat <- getData(obj)
+  model.matrix(formula(obj), data = dat)
 }
 
 #-------------------------------------

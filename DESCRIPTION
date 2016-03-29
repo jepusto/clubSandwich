@@ -23,6 +23,7 @@ Suggests:
     metafor,
     robumeta,
     nlme,
+    mlmRev,
     AER,
     plm,
     testthat

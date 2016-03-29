@@ -2,23 +2,12 @@ context("gls objects")
 
 library(nlme)
 
-rm(list=ls())
 data(Ovary, package = "nlme")
 
 Ovary$time_int <- 1:nrow(Ovary)
 lm_AR1 <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), data = Ovary,
               correlation = corAR1(form = ~ time_int | Mare))
 lm_AR1_power <- update(lm_AR1, weights = varPower())
-
-
-test_that("getData works.", {
-  re_order <- sample(nrow(Ovary))
-  egg_scramble <- Ovary[re_order,]
-  gls_scramble <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), 
-                      data = egg_scramble)
-  dat <- getData(gls_scramble)
-  expect_identical(egg_scramble, dat)
-})
 
 test_that("vcovCR options work for CR2", {
   CR2_AR1 <- vcovCR(lm_AR1, type = "CR2")
@@ -67,6 +56,17 @@ test_that("CR2 and CR4 are target-unbiased", {
   expect_true(check_CR(lm_AR1_power, vcov = "CR2"))
   expect_true(check_CR(lm_AR1, vcov = "CR4"))
   expect_true(check_CR(lm_AR1_power, vcov = "CR4"))
+})
+
+
+
+test_that("getData works.", {
+  re_order <- sample(nrow(Ovary))
+  egg_scramble <- Ovary[re_order,]
+  gls_scramble <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), 
+                      data = egg_scramble)
+  dat <- getData(gls_scramble)
+  expect_identical(egg_scramble, dat)
 })
 
 

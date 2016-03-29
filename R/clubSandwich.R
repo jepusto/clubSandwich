@@ -185,7 +185,7 @@ Sym_power <- function(x, p, tol = -12) {
   with(eig, vectors %*% (val_p * t(vectors)))
 }
 
-chol_psd <- function(x) with(eigen(x), sqrt(pmax(values,0)) * t(vectors))
+chol_psd <- function(x) with(eigen(x, symmetric=TRUE), sqrt(pmax(values,0)) * t(vectors))
 
 #--------------------------
 # get S array
