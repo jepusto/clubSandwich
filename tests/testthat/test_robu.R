@@ -112,6 +112,7 @@ test_that("CR2 t-tests agree with robumeta for user weighting", {
 data(dropoutPrevention)
 
 test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - full sample", {
+  skip_on_cran("Skip Tipton & Pusto (2015) replication.")
   m3_hier <- robu(LOR1 ~ study_design + attrition + group_equivalence + adjusted
                   + outcome + evaluator_independence
                   + male_pct + white_pct + average_age
@@ -146,6 +147,7 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - full 
 })
 
 test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - reduced sample", {
+  skip_on_cran("Skip Tipton & Pusto (2015) replication.")
   dp_subset <- subset(dropoutPrevention, big_study==TRUE)
   m3_hier <- robu(LOR1 ~ study_design + attrition + group_equivalence + adjusted
                   + outcome + evaluator_independence
