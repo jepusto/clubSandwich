@@ -8,8 +8,15 @@ corr_robu <- robu(effectsize ~ males + college + binge, data = corrdat,
                    modelweights = "CORR", studynum = studyid,
                    var.eff.size = var)
 corrdat$wt <- corr_robu$data.full$r.weights
-corr_meta <- rma(effectsize ~ males + college + binge, data = corrdat, 
-                 weights = wt, vi = var, method = "FE")
+corr_meta <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
+                    V = var, W = wt, method = "FE")
+
+# obj <- corr_meta
+# cluster <- corrdat$studyid
+# type <- "CR4"
+# target <- 1 / corrdat$wt
+# inverse_var <- FALSE
+# vcov <- vcovCR(obj, cluster, type, target, inverse_var)
 
 test_that("CR2 t-tests agree with robumeta for correlated effects", {
   
@@ -17,8 +24,9 @@ test_that("CR2 t-tests agree with robumeta for correlated effects", {
   expect_true(check_CR(corr_meta, vcov = robu_CR2))
   # expect_true(check_CR(corr_meta, vcov = "CR4", cluster = corrdat$studyid))
   expect_equivalent(as.matrix(robu_CR2), corr_robu$VR.r)
-  expect_equivalent(as.matrix(vcovCR(corr_meta, cluster = corrdat$studyid, 
-                                     inverse_var = TRUE, type = "CR2")), corr_robu$VR.r)
+  expect_that(all.equal(as.matrix(vcovCR(corr_meta, cluster = corrdat$studyid, 
+                                     inverse_var = TRUE, type = "CR2")), corr_robu$VR.r),
+                    is_a("character"))
   
   CR2_ttests <- coef_test(corr_meta, vcov = robu_CR2, test = "Satterthwaite")
   expect_equal(corr_robu$dfs, CR2_ttests$df)
@@ -26,38 +34,39 @@ test_that("CR2 t-tests agree with robumeta for correlated effects", {
 })
 
 data(hierdat)
-hier_meta <- rma(effectsize ~ binge + followup + sreport + age, data = hierdat, 
-                 vi = var, method = "REML")
-hierdat$wt <- weightMatrix(hier_meta)
+hier_meta <- rma.mv(effectsize ~ binge + followup + sreport + age, data = hierdat, 
+                    random = list(~ 1 | esid, ~ 1 | studyid),
+                    V = var, method = "REML")
 hier_robu <- robu(effectsize ~ binge + followup + sreport + age,
                    data = hierdat, studynum = studyid,
-                   var.eff.size = var, userweights = wt)
+                   var.eff.size = var, modelweights = "HIER")
 
-test_that("CR2 t-tests agree with robumeta for user weighting", {
+test_that("CR2 t-tests do not exactly agree with robumeta for hierarchical weighting", {
   
   robu_CR2_iv <- vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid)
   robu_CR2_not <- vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid,
                          target = hier_robu$data.full$avg.var.eff.size)
   expect_true(check_CR(hier_meta, vcov = robu_CR2_iv))
-  # expect_true(check_CR(hier_meta, vcov = "CR4", cluster = hierdat$studyid))
+  # expect_true(check_CR(hier_meta, vcov = "CR4"))
   expect_true(check_CR(hier_meta, vcov = robu_CR2_not))
-  # expect_true(check_CR(hier_meta, vcov = "CR4", cluster = hierdat$studyid,
+  # expect_true(check_CR(hier_meta, vcov = "CR4", 
   #                      target = hier_robu$data.full$avg.var.eff.size))
-
-  expect_that(all.equal(hier_robu$VR.r, as.matrix(robu_CR2_iv)), is_a("character"))
-  expect_equivalent(hier_robu$VR.r, as.matrix(robu_CR2_not))
+  
+  expect_that(all.equal(hier_robu$VR.r, as.matrix(robu_CR2_iv), check.attributes=FALSE), is_a("character"))
+  expect_that(all.equal(hier_robu$VR.r, as.matrix(robu_CR2_not), check.attributes=FALSE), is_a("character"))
   
   CR2_ttests <- coef_test(hier_meta, vcov = robu_CR2_not, test = "Satterthwaite")
-  # expect_equal(hier_robu$dfs, CR2_ttests$df)
-  # expect_equal(hier_robu$reg_table$prob, CR2_ttests$p_Satt)
+  expect_that(all.equal(hier_robu$dfs, CR2_ttests$df), is_a("character"))
+  expect_that(all.equal(hier_robu$reg_table$prob, CR2_ttests$p_Satt), is_a("character"))
 })
 
 CR_types <- paste0("CR",0:4)
 
 test_that("order doesn't matter", {
   dat_scramble <- hierdat[sample(nrow(hierdat)),]
-  hier_scramble <-  rma(effectsize ~ binge + followup + sreport + age, 
-                        data = dat_scramble, vi = var, method = "REML")
+  hier_scramble <-  rma.mv(effectsize ~ binge + followup + sreport + age, 
+                           random = list(~ 1 | esid, ~ 1 | studyid),
+                           data = dat_scramble, V = var, method = "REML")
   
   CR_fit <- lapply(CR_types, function(x) vcovCR(hier_meta, type = x, cluster = hierdat$studyid))
   CR_scramble <- lapply(CR_types, function(x) vcovCR(hier_scramble, type = x, cluster = dat_scramble$studyid))
@@ -77,34 +86,33 @@ test_that("clubSandwich errors with dropped observations", {
   dat_miss <- hierdat
   dat_miss$binge[sample.int(nrow(hierdat), size = round(nrow(hierdat) / 10))] <- NA
   dat_miss$followup[sample.int(nrow(hierdat), size = round(nrow(hierdat) / 20))] <- NA
-  expect_warning(hier_drop <- rma(effectsize ~ binge + followup + sreport + age, 
-                                  data = dat_miss, vi = var, method = "REML"))
+  expect_warning(hier_drop <- rma.mv(effectsize ~ binge + followup + sreport + age, 
+                                     random = list(~ 1 | esid, ~ 1 | studyid),
+                                     data = dat_miss, V = var, method = "REML"))
+  expect_error(vcovCR(hier_drop, type = "CR0", cluster = dat_miss$studyid))
   
+  hier_complete <- rma.mv(effectsize ~ binge + followup + sreport + age, 
+                          random = list(~ 1 | esid, ~ 1 | studyid),
+                          subset = !is.na(binge) & !is.na(followup),
+                          data = dat_miss, V = var, method = "REML")
   
-  subset_ind <- with(dat_miss, !is.na(binge) & !is.na(followup))
-  hier_complete <- rma(effectsize ~ binge + followup + sreport + age, 
-                       subset = !is.na(binge) & !is.na(followup),
-                       data = dat_miss, vi = var, method = "REML")
-  expect_error(vcovCR(hier_complete, type = "CR0", cluster = dat_miss$studyid))
-  
-  CR_drop <- lapply(CR_types, function(x) vcovCR(hier_drop, type = x, cluster = dat_miss$studyid))
-  CR_complete <- lapply(CR_types, function(x) vcovCR(hier_complete, type = x, cluster = dat_miss$studyid[subset_ind]))
+  CR_drop <- lapply(CR_types, function(x) vcovCR(hier_drop, type = x))
+  CR_complete <- lapply(CR_types, function(x) vcovCR(hier_complete, type = x))
   expect_equal(CR_drop, CR_complete)
   
-  test_drop <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, cluster = dat_miss$studyid, test = "All"))
-  test_complete <- lapply(CR_types, function(x) coef_test(hier_complete, vcov = x, dat_miss$studyid[subset_ind], test = "All"))
+  test_drop <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, test = "All"))
+  test_complete <- lapply(CR_types, function(x) coef_test(hier_complete, vcov = x, test = "All"))
   expect_equal(test_drop, test_complete)
 })
 
-
 test_that("vcovCR options work for CR2", {
-  RE_var <- hier_meta$tau2 + hierdat$var
+  RE_var <- targetVariance(hier_meta)
   CR2_iv <- vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid)
   expect_identical(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, inverse_var = TRUE), CR2_iv)
 
   CR2_not <- vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, inverse_var = FALSE)
   expect_equal(CR2_not, CR2_iv)
-  expect_identical(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = RE_var), CR2_not)
-  expect_identical(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = RE_var, inverse_var = FALSE), CR2_not)
+  expect_equivalent(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = RE_var), CR2_not)
+  expect_equivalent(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = RE_var, inverse_var = FALSE), CR2_not)
   expect_false(identical(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = hierdat$var), CR2_not))
 })

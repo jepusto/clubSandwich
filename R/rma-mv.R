@@ -1,7 +1,3 @@
-# coef()
-# residuals_CR()
-# vcov()
-# model_matrix
 
 #-------------------------------------
 # vcovCR with defaults
@@ -57,6 +53,11 @@ vcovCR.rma.mv <- function(obj, cluster, type, target, inverse_var) {
   }
   vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
 }
+
+# coef()
+# residuals_CR()
+# vcov()
+# model_matrix
 
 #-------------------------------------
 # Get (model-based) working variance matrix 
