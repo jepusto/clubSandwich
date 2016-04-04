@@ -152,10 +152,10 @@ targetVariance.plm <- function(obj) {
     if (obj$args$effect=="twoway") stop("Target variance is not block diagonal.")
     ind <- switch(obj$args$effect,
             individual = attr(model.frame(obj), "index")[[1]],
-            time = attr(model.frame(obj), "index")[[1]])
+            time = attr(model.frame(obj), "index")[[2]])
     Z <- model.matrix(~ ind - 1)
-    V <- tcrossprod(sqrt(obj$ercomp$sigma2[[3]]) * Z)
-    diag(V) <- diag(V) + obj$ercomp$sigma2[[2]]
+    V <- tcrossprod(obj$ercomp$sigma2$id * Z, Z)
+    diag(V) <- diag(V) + obj$ercomp$sigma2$idios
   } else {
     V <- rep(1, nobs(obj))
   }
