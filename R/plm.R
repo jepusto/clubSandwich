@@ -90,37 +90,34 @@ augmented_model_matrix.plm <- function(obj, cluster, inverse_var) {
   effect <- obj$args$effect
   
   if (obj$args$model=="within") {
-    if (inverse_var) {
-      if (effect=="individual") {
-        if (identical(individual, cluster)) {
-          S <- NULL
-        } else {
-          S <- model.matrix(~ 0 + individual)
-        }
-      } else if (effect=="time") {
-        if (identical(time, cluster)) {
-          S <- NULL 
-        } else {
-          S <- model.matrix(~ 0 + time)
-        }
-      } else if (effect=="twoways") {
-        if (identical(individual, cluster)) {
-          S <- model.matrix(~ 0 + time)
-        } else if (identical(time, cluster)) {
-          S <- model.matrix(~ 0 + individual)
-        } else {
-          S <- model.matrix(~ 0 + individual + time)
-        }
-      } 
-    } else {
-      S <- model.matrix(~ 0 + individual + time)
-    }
+    if (effect=="individual") {
+      if (inverse_var & identical(individual, cluster)) {
+        S <- NULL
+      } else {
+        S <- model.matrix(~ 0 + individual)
+      }
+    } else if (effect=="time") {
+      if (inverse_var & identical(time, cluster)) {
+        S <- NULL 
+      } else {
+        S <- model.matrix(~ 0 + time)
+      }
+    } else if (effect=="twoways") {
+      if (inverse_var & identical(individual, cluster)) {
+        S <- model.matrix(~ 0 + time)
+      } else if (inverse_var & identical(time, cluster)) {
+        S <- model.matrix(~ 0 + individual)
+      } else {
+        S <- model.matrix(~ 0 + individual + time)
+      }
+    } 
   } else {
     S <- NULL
   }
   
   return(S)
 }
+
 #-------------------------------------
 # unadjusted residuals
 #-------------------------------------
