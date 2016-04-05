@@ -87,21 +87,6 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   XpWX_list <- Map(function(xw, x) xw %*% x, xw = XpW_list, x = X_list)
   M <- chol2inv(chol(Reduce("+", XpWX_list)))
   
-  if (type=="CR2") {
-    S <- augmented_model_matrix(obj, cluster, inverse_var)
-    if (is.null(S)) {
-      U_list <- Xp_list
-      UW_list <- XpW_list
-      M_U <- M
-    } else {
-      U <- cbind(Xp, S)
-      U_list <- matrix_list(U, cluster, "row")
-      UW_list <- Map(function(u, w) as.matrix(t(u) %*% w), u = U_list, w = W_list)
-      UWU_list <- Map(function(uw, u) uw %*% u, uw = UW_list, u = U_list)
-      M_U <- chol2inv(chol(Reduce("+",UWU_list)))
-    }
-  }
-  
   if (is.null(target)) {
     if (inverse_var) {
       Theta <- if (is.matrix(W)) chol2inv(chol(W)) else 1 / W
@@ -114,6 +99,20 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   
   if (type %in% c("CR2","CR4")) {
     Theta_list <- matrix_list(Theta, cluster, "both")
+    
+    S <- augmented_model_matrix(obj, cluster, inverse_var)
+    
+    if (is.null(S)) {
+      U_list <- Xp_list
+      UW_list <- XpW_list
+      M_U <- M
+    } else {
+      U <- cbind(Xp, S)
+      U_list <- matrix_list(U, cluster, "row")
+      UW_list <- Map(function(u, w) as.matrix(t(u) %*% w), u = U_list, w = W_list)
+      UWU_list <- Map(function(uw, u) uw %*% u, uw = UW_list, u = U_list)
+      M_U <- chol2inv(chol(Reduce("+",UWU_list)))
+    }
   }
   
   E_list <- do.call(type, args = mget(names(formals(type))))
@@ -191,8 +190,8 @@ chol_psd <- function(x) with(eigen(x, symmetric=TRUE), sqrt(pmax(values,0)) * t(
 # get S array
 #--------------------------
 
-Sj <- function(e, x, tc, cl, cluster, MXWTheta_cholT) {
-  s <- -x %*% MXWTheta_cholT
+Sj <- function(e, u, tc, cl, cluster, MUWTheta_cholT) {
+  s <- -u %*% MUWTheta_cholT
   s[,cluster==cl] <- tc + s[,cluster==cl]
   e %*% s
 }
@@ -206,28 +205,38 @@ get_S_array <- function(obj, cluster, target, E_list) {
   alias <- is.na(coef_CR(obj))
   if (any(alias)) X <- X[, !alias, drop = FALSE]
   p <- ncol(X)
-  X_list <- matrix_list(X, cluster, "row")
+  
+  S <- augmented_model_matrix(obj, cluster, inverse_var)
+  
+  if (is.null(S)) {
+    U <- X
+  } else {
+    U <- cbind(X, S)
+  }
+  
+  U_list <- matrix_list(U, cluster, "row")
   
   W <- weightMatrix(obj)
   W_list <- matrix_list(W, cluster, "both")
   
-  XW_list <- Map(function(x, w) as.matrix(t(x) %*% w), x = X_list, w = W_list)
-  XWX_list <- Map(function(xw, x) xw %*% x, xw = XW_list, x = X_list)
-  M <- chol2inv(chol(Reduce("+", XWX_list)))
-  
+  UW_list <- Map(function(u, w) as.matrix(t(u) %*% w), u = U_list, w = W_list)
+  UWU_list <- Map(function(uw, u) uw %*% u, uw = UW_list, u = U_list)
+  M_U <- chol2inv(chol(Reduce("+",UWU_list)))
+
   if (is.vector(target)) {
     Theta_cholT <- split(sqrt(target), cluster)
-    XWThetaC_list <- Map(function(xw, tc) t(tc * t(xw)), xw = XW_list, tc = Theta_cholT)
+    UWThetaC_list <- Map(function(uw, tc) t(tc * t(uw)), uw = UW_list, tc = Theta_cholT)
     Theta_cholT <- lapply(Theta_cholT, function(x) diag(x, nrow = length(x)))
   } else {
     Theta_list <- matrix_list(target, cluster, "both")
     Theta_cholT <- lapply(Theta_list, function(x) t(chol(x)))
-    XWThetaC_list <- Map(function(xw, tc) xw %*% tc, xw = XW_list, tc = Theta_cholT)
+    UWThetaC_list <- Map(function(uw, tc) uw %*% tc, uw = UW_list, tc = Theta_cholT)
   }
-  MXWTheta_cholT <- M %*% (matrix(unlist(XWThetaC_list), p, N)[,order(order(cluster))])
   
-  S_list <- mapply(Sj, e = E_list, x = X_list, tc = Theta_cholT, cl = levels(cluster),
-                   MoreArgs = list(cluster=cluster, MXWTheta_cholT=MXWTheta_cholT), SIMPLIFY = FALSE)
+  MUWTheta_cholT <- M_U %*% (matrix(unlist(UWThetaC_list), ncol(U), N)[,order(order(cluster))])
+  
+  S_list <- mapply(Sj, e = E_list, u = U_list, tc = Theta_cholT, cl = levels(cluster),
+                   MoreArgs = list(cluster=cluster, MUWTheta_cholT=MUWTheta_cholT), SIMPLIFY = FALSE)
 
   array(unlist(S_list), dim = c(p, N, J))
 }

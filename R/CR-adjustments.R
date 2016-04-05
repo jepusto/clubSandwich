@@ -20,7 +20,7 @@ CR1 <- function(XpW_list, M, J)
 CR1S <- function(XpW_list, M, J, N, p) 
   lapply(XpW_list, function(xw) (M %*% xw) * sqrt(J * N / ((J - 1) * (N - p))))
 
-CR2 <- function(M_U, U_list, UW_list, M, XpW_list, X_list, Theta_list, inverse_var = FALSE) {
+CR2 <- function(M_U, U_list, UW_list, M, XpW_list, Theta_list, inverse_var = FALSE) {
   
   Theta_chol <- lapply(Theta_list, chol)
   
@@ -51,22 +51,25 @@ CR3 <- function(M, X_list, XpW_list) {
          xw = XpW_list, ih = IH_jj)
 }
 
-CR4 <- function(M, X_list, XpW_list, Theta_list, inverse_var = FALSE) {
+CR4 <- function(M_U, U_list, UW_list, M, Xp_list, XpW_list, Theta_list, inverse_var = FALSE) {
   
   if (inverse_var) {
-    F_list <- Map(function(xw, x) xw %*% x, xw = XpW_list, x= X_list)
+    F_list <- Map(function(xw, x) xw %*% x, xw = XpW_list, x = Xp_list)
+    UWX_list <- Map(function(uw, x) uw %*% x, uw = UW_list, x = Xp_list)
     F_chol <- lapply(F_list, chol_psd)
-    G_list <- Map(function(fc, fm) fc %*% (fm - fm %*% M %*% fm) %*% t(fc), 
-                  fc = F_chol, fm = F_list)
+    G_list <- Map(function(fc, fm, uwx) fc %*% (fm - t(uwx) %*% M_U %*% uwx) %*% t(fc), 
+                  fc = F_chol, fm = F_list, uwx = UWX_list)
   } else {
     F_list <- Map(function(xw, theta) xw %*% theta %*% t(xw), 
                      xw = XpW_list, theta = Theta_list)
     F_chol <- lapply(F_list, chol_psd)
-    XWX_list <- Map(function(xw, x) xw %*% x, xw = XpW_list, x = X_list)
-    MXWTWXM <- M %*% Reduce("+", F_list) %*% M
-    G_list <- Map(function(fm, fc, xwx)
-      as.matrix(fc %*% (fm - xwx %*% M %*% fm - fm %*% M %*% xwx + xwx %*% MXWTWXM %*% xwx) %*% t(fc)),
-      fm = F_list, fc = F_chol, xwx = XWX_list)
+    UWX_list <- Map(function(uw, x) uw %*% x, uw = UW_list, x = Xp_list)
+    UWTWX_list <- Map(function(uw, xw, theta) uw %*% theta %*% t(xw), uw = UW_list, xw = XpW_list, theta = Theta_list)
+    UWTWU_list <- Map(function(uw, theta) uw %*% theta %*% t(uw), uw = UW_list, theta = Theta_list)
+    MUWTWUM <- M_U %*% Reduce("+", UWTWU_list) %*% M_U
+    G_list <- Map(function(fc, fm, uwx, uwtwx)
+      as.matrix(fc %*% (fm - t(uwx) %*% M_U %*% uwtwx - t(uwtwx) %*% M_U %*% uwx + t(uwx) %*% MUWTWUM %*% uwx) %*% t(fc)),
+      fc = F_chol, fm = F_list, uwx = UWX_list, uwtwx = UWTWX_list)
   }
   
   D_list <- Map(function(fc, g) as.matrix(t(fc) %*% Sym_power(g, -1/2) %*% fc), 
