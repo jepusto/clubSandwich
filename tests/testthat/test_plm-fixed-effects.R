@@ -74,6 +74,27 @@ test_that("two-way effects agree with lm", {
   
 })
 
+test_that("CR0 and CR1S agree with arellano vcov", {
+  expect_equal(vcovHC(plm_individual, method="arellano", type = "HC0", cluster = "group"), 
+               as.matrix(vcovCR(plm_individual, type = "CR0")))
+  expect_equal(vcovHC(plm_individual, method="arellano", type = "sss", cluster = "group"), 
+               as.matrix(vcovCR(plm_individual, type = "CR1S")))
+  
+  expect_equal(vcovHC(plm_time, method="arellano", type = "HC0", cluster = "time"), 
+               as.matrix(vcovCR(plm_time, type = "CR0")))
+  expect_equal(vcovHC(plm_time, method="arellano", type = "sss", cluster = "time"), 
+               as.matrix(vcovCR(plm_time, type = "CR1S")))
+  
+  expect_equal(vcovHC(plm_twoways, method="arellano", type = "HC0", cluster = "group"), 
+               as.matrix(vcovCR(plm_twoways, cluster = "individual", type = "CR0")))
+  expect_equal(vcovHC(plm_twoways, method="arellano", type = "sss", cluster = "group"), 
+               as.matrix(vcovCR(plm_twoways, cluster = "individual", type = "CR1S")))
+  expect_equal(vcovHC(plm_twoways, method="arellano", type = "HC0", cluster = "time"), 
+               as.matrix(vcovCR(plm_twoways, cluster = "time", type = "CR0")))
+  expect_equal(vcovHC(plm_twoways, method="arellano", type = "sss", cluster = "time"), 
+               as.matrix(vcovCR(plm_twoways, cluster = "time", type = "CR1S")))
+})
+
 test_that("vcovCR options work for CR2", {
   CR2_iv <- vcovCR(plm_individual, type = "CR2")
   expect_identical(vcovCR(plm_individual, cluster = Produc_scramble$state, type = "CR2"), CR2_iv)
