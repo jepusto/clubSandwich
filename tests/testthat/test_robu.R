@@ -1,6 +1,6 @@
 context("robu objects")
 
-library(robumeta)
+library(robumeta, quietly=TRUE)
 data(corrdat)
 
 test_that("CR0 z-tests agree with robumeta for correlated effects", {
@@ -243,6 +243,7 @@ test_that("vcovCR options work for CR2", {
   expect_identical(vcovCR(m3_hier, type = "CR2", inverse_var = TRUE), CR2_iv)
   expect_identical(vcovCR(m3_hier, type = "CR2", target = iv, inverse_var = TRUE), CR2_iv)
   
+  attr(CR2_iv, "inverse_var") <- FALSE
   CR2_not <- vcovCR(m3_hier, type = "CR2", inverse_var = FALSE)
   expect_equal(CR2_not, CR2_iv)
   expect_identical(vcovCR(m3_hier, type = "CR2", target = iv), CR2_not)

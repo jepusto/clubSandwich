@@ -1,5 +1,5 @@
 context("ivreg objects")
-# library(AER)
+# library(AER, quietly=TRUE)
 # data("CigarettesSW", package = "AER")
 # CigarettesSW <- within(CigarettesSW, {
 #   rprice <- price/cpi

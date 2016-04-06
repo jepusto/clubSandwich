@@ -25,26 +25,34 @@ test_that("vcovCR options don't matter for CR0", {
   expect_error(vcovCR(lm_fit, type = "CR0"))
   CR0 <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR0")
   attr(CR0, "target") <- NULL
+  attr(CR0, "inverse_var") <- NULL
   CR0_A <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR0", target = 1 / dat$w)
   attr(CR0_A, "target") <- NULL
+  attr(CR0_A, "inverse_var") <- NULL
   expect_identical(CR0_A, CR0)
   CR0_B <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR0", target = 1 / dat$w, inverse_var = FALSE)
   attr(CR0_B, "target") <- NULL
+  attr(CR0_B, "inverse_var") <- NULL
   expect_identical(CR0_A, CR0)
   CR0_C <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR0", target = 1 / dat$w, inverse_var = TRUE)
   attr(CR0_C, "target") <- NULL
+  attr(CR0_C, "inverse_var") <- NULL
   expect_identical(CR0_C, CR0)
   
   wCR0 <- vcovCR(WLS_fit, cluster = dat$cluster, type = "CR0")
   attr(wCR0, "target") <- NULL
+  attr(wCR0, "inverse_var") <- NULL
   wCR0_A <- vcovCR(WLS_fit, cluster = dat$cluster, type = "CR0", target = 1 / dat$w)
   attr(wCR0_A, "target") <- NULL
+  attr(wCR0_A, "inverse_var") <- NULL
   expect_identical(wCR0_A, wCR0)
   wCR0_B <- vcovCR(WLS_fit, cluster = dat$cluster, type = "CR0", target = 1 / dat$w, inverse_var = FALSE)
   attr(wCR0_B, "target") <- NULL
+  attr(wCR0_B, "inverse_var") <- NULL
   expect_identical(wCR0_B, wCR0)
   wCR0_C <- vcovCR(WLS_fit, cluster = dat$cluster, type = "CR0", target = 1 / dat$w, inverse_var = TRUE)
   attr(wCR0_C, "target") <- NULL
+  attr(wCR0_C, "inverse_var") <- NULL
   expect_identical(wCR0_C, wCR0)
 })
 
@@ -53,6 +61,7 @@ test_that("vcovCR options work for CR2", {
   expect_identical(vcovCR(lm_fit, cluster = dat$cluster, type = "CR2", inverse_var = TRUE), CR2_iv)
   expect_identical(vcovCR(lm_fit, cluster = dat$cluster, type = "CR2", target = rep(1, n), inverse_var = TRUE), CR2_iv)
 
+  attr(CR2_iv, "inverse_var") <- FALSE
   CR2_not <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR2", inverse_var = FALSE)
   expect_equal(CR2_not, CR2_iv)
   expect_identical(vcovCR(lm_fit, cluster = dat$cluster, type = "CR2", target = rep(1, n)), CR2_not)
@@ -67,9 +76,8 @@ test_that("vcovCR options work for CR2", {
   wCR2_iv <- vcovCR(WLS_fit, cluster = dat$cluster, type = "CR2", inverse_var = TRUE)
   wCR2_target <- vcovCR(WLS_fit, cluster = dat$cluster, type = "CR2", target = 1 / dat$w, inverse_var = TRUE)
   expect_false(identical(wCR2_target, wCR2_id))
-#  expect_identical(matrix(wCR2_target, dim(wCR2_target)), matrix(wCR2_iv, dim(wCR2_iv)))
+  expect_identical(matrix(wCR2_target, dim(wCR2_target)), matrix(wCR2_iv, dim(wCR2_iv)))
   expect_equal(vcovCR(WLS_fit, cluster = dat$cluster, type = "CR2", target = 1 / dat$w, inverse_var = TRUE), wCR2_target)
-  
 })
 
 test_that("vcovCR options work for CR4", {
@@ -77,6 +85,7 @@ test_that("vcovCR options work for CR4", {
   expect_identical(vcovCR(lm_fit, cluster = dat$cluster, type = "CR4", inverse_var = TRUE), CR4_iv)
   expect_identical(vcovCR(lm_fit, cluster = dat$cluster, type = "CR4", target = rep(1, n), inverse_var = TRUE), CR4_iv)
   
+  attr(CR4_iv, "inverse_var") <- FALSE
   CR4_not <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR4", inverse_var = FALSE)
   expect_equal(CR4_not, CR4_iv)
   expect_identical(vcovCR(lm_fit, cluster = dat$cluster, type = "CR4", target = rep(1, n)), CR4_not)
@@ -91,7 +100,7 @@ test_that("vcovCR options work for CR4", {
   wCR4_iv <- vcovCR(WLS_fit, cluster = dat$cluster, type = "CR4", inverse_var = TRUE)
   wCR4_target <- vcovCR(WLS_fit, cluster = dat$cluster, type = "CR4", target = 1 / dat$w, inverse_var = TRUE)
   expect_false(identical(wCR4_target, wCR4_id))
-  #  expect_identical(matrix(wCR2_target, dim(wCR2_target)), matrix(wCR2_iv, dim(wCR2_iv)))
+  expect_identical(matrix(wCR4_target, dim(wCR4_target)), matrix(wCR4_iv, dim(wCR4_iv)))
   expect_equal(vcovCR(WLS_fit, cluster = dat$cluster, type = "CR4", target = 1 / dat$w, inverse_var = TRUE), wCR4_target)
   
 })
@@ -105,7 +114,7 @@ test_that("CR2 and CR4 are target-unbiased", {
 })
 
 test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
-  library(sandwich)
+  library(sandwich, quietly=TRUE)
   CR0 <- vcovCR(lm_fit, cluster = dat$row, type = "CR0")
   expect_equal(vcovHC(lm_fit, type = "HC0"), as.matrix(CR0))
   CR1 <- vcovCR(lm_fit, cluster = dat$row, type = "CR1S")

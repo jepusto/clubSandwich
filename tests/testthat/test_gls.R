@@ -1,6 +1,6 @@
 context("gls objects")
 
-library(nlme)
+library(nlme, quietly=TRUE, warn.conflicts=FALSE)
 
 data(Ovary, package = "nlme")
 
@@ -17,6 +17,7 @@ test_that("vcovCR options work for CR2", {
   
   target <- targetVariance(lm_AR1)
   expect_equal(vcovCR(lm_AR1, type = "CR2", target = target, inverse_var = TRUE), CR2_AR1)
+  attr(CR2_AR1, "inverse_var") <- FALSE
   expect_equal(vcovCR(lm_AR1, type = "CR2", target = target, inverse_var = FALSE), CR2_AR1)
 
   CR2_power <- vcovCR(lm_AR1_power, type = "CR2")
@@ -26,6 +27,7 @@ test_that("vcovCR options work for CR2", {
   
   target <- targetVariance(lm_AR1_power)
   expect_equal(vcovCR(lm_AR1_power, type = "CR2", target = target, inverse_var = TRUE), CR2_power)
+  attr(CR2_power, "inverse_var") <- FALSE
   expect_equal(vcovCR(lm_AR1_power, type = "CR2", target = target, inverse_var = FALSE), CR2_power)
 })
 
@@ -38,6 +40,7 @@ test_that("vcovCR options work for CR4", {
   
   target <- targetVariance(lm_AR1)
   expect_equal(vcovCR(lm_AR1, type = "CR4", target = target, inverse_var = TRUE), CR4_AR1)
+  attr(CR4_AR1, "inverse_var") <- FALSE
   expect_equal(vcovCR(lm_AR1, type = "CR4", target = target, inverse_var = FALSE), CR4_AR1)
   
   CR4_power <- vcovCR(lm_AR1_power, type = "CR4")
@@ -47,6 +50,7 @@ test_that("vcovCR options work for CR4", {
   
   target <- targetVariance(lm_AR1_power)
   expect_equal(vcovCR(lm_AR1_power, type = "CR4", target = target, inverse_var = TRUE), CR4_power)
+  attr(CR4_power, "inverse_var") <- FALSE
   expect_equal(vcovCR(lm_AR1_power, type = "CR4", target = target, inverse_var = FALSE), CR4_power)
 })
 

@@ -1,7 +1,7 @@
 context("rma.uni objects")
 
-library(robumeta)
-library(metafor)
+library(robumeta, quietly=TRUE)
+suppressMessages(library(metafor, quietly=TRUE))
 
 data(corrdat)
 corr_robu <- robu(effectsize ~ males + college + binge, data = corrdat, 
@@ -93,7 +93,7 @@ test_that("clubSandwich errors with dropped observations", {
   
   test_drop <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, cluster = dat_miss$studyid, test = "All"))
   test_complete <- lapply(CR_types, function(x) coef_test(hier_complete, vcov = x, dat_miss$studyid[subset_ind], test = "All"))
-  expect_equal(test_drop, test_complete)
+  expect_equal(test_drop, test_complete, tolerance = 10^-6)
 })
 
 
@@ -102,6 +102,7 @@ test_that("vcovCR options work for CR2", {
   CR2_iv <- vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid)
   expect_identical(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, inverse_var = TRUE), CR2_iv)
 
+  attr(CR2_iv, "inverse_var") <- FALSE
   CR2_not <- vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, inverse_var = FALSE)
   expect_equal(CR2_not, CR2_iv)
   expect_identical(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = RE_var), CR2_not)

@@ -1,6 +1,7 @@
 context("lme objects")
-library(nlme)
-library(mlmRev)
+suppressMessages(library(lme4, quietly=TRUE))
+library(nlme, quietly=TRUE, warn.conflicts=FALSE)
+library(mlmRev, quietly=TRUE, warn.conflicts=FALSE)
 
 obj_A <- lme(weight ~ Time * Diet, data=BodyWeight, ~ Time | Rat)
 obj_A2 <- update(obj_A, weights = varPower())
@@ -16,6 +17,7 @@ test_that("vcovCR options work for CR2", {
   
   target <- targetVariance(obj_A)
   expect_equal(vcovCR(obj_A, type = "CR2", target = target, inverse_var = TRUE), CR2_A)
+  attr(CR2_A, "inverse_var") <- FALSE
   expect_equal(vcovCR(obj_A, type = "CR2", target = target, inverse_var = FALSE), CR2_A)
   
   CR2_A2 <- vcovCR(obj_A2, type = "CR2")
@@ -25,6 +27,7 @@ test_that("vcovCR options work for CR2", {
   
   target <- targetVariance(obj_A2)
   expect_equal(vcovCR(obj_A2, type = "CR2", target = target, inverse_var = TRUE), CR2_A2)
+  attr(CR2_A2, "inverse_var") <- FALSE
   expect_equal(vcovCR(obj_A2, type = "CR2", target = target, inverse_var = FALSE), CR2_A2)
   
   CR2_A3 <- vcovCR(obj_A3, type = "CR2")
@@ -34,16 +37,8 @@ test_that("vcovCR options work for CR2", {
   
   target <- targetVariance(obj_A3)
   expect_equal(vcovCR(obj_A3, type = "CR2", target = target, inverse_var = TRUE), CR2_A3)
+  attr(CR2_A3, "inverse_var") <- FALSE
   expect_equal(vcovCR(obj_A3, type = "CR2", target = target, inverse_var = FALSE), CR2_A3)
-
-  CR2_A <- vcovCR(obj_A, type = "CR2")
-  expect_identical(vcovCR(obj_A, cluster = BodyWeight$Rat, type = "CR2"), CR2_A)
-  expect_identical(vcovCR(obj_A, type = "CR2", inverse_var = TRUE), CR2_A)
-  expect_false(identical(vcovCR(obj_A, type = "CR2", inverse_var = FALSE), CR2_A))
-  
-  target <- targetVariance(obj_A)
-  expect_equal(vcovCR(obj_A, type = "CR2", target = target, inverse_var = TRUE), CR2_A)
-  expect_equal(vcovCR(obj_A, type = "CR2", target = target, inverse_var = FALSE), CR2_A)
 
   CR2_B <- vcovCR(obj_B, type = "CR2")
   expect_identical(vcovCR(obj_B, cluster = Orthodont$Subject, type = "CR2"), CR2_B)
@@ -52,6 +47,7 @@ test_that("vcovCR options work for CR2", {
   
   target <- targetVariance(obj_B)
   expect_equal(vcovCR(obj_B, type = "CR2", target = target, inverse_var = TRUE), CR2_B)
+  attr(CR2_B, "inverse_var") <- FALSE
   expect_equal(vcovCR(obj_B, type = "CR2", target = target, inverse_var = FALSE), CR2_B)
 })
 
@@ -63,6 +59,7 @@ test_that("vcovCR options work for CR4", {
   
   target <- targetVariance(obj_A)
   expect_equal(vcovCR(obj_A, type = "CR4", target = target, inverse_var = TRUE), CR4_A)
+  attr(CR4_A, "inverse_var") <- FALSE
   expect_equal(vcovCR(obj_A, type = "CR4", target = target, inverse_var = FALSE), CR4_A)
   
   CR4_B <- vcovCR(obj_B, type = "CR4")
@@ -72,6 +69,7 @@ test_that("vcovCR options work for CR4", {
   
   target <- targetVariance(obj_B)
   expect_equal(vcovCR(obj_B, type = "CR4", target = target, inverse_var = TRUE), CR4_B)
+  attr(CR4_B, "inverse_var") <- FALSE
   expect_equal(vcovCR(obj_B, type = "CR4", target = target, inverse_var = FALSE), CR4_B)
 })
 
