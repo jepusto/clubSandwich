@@ -99,7 +99,9 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   
   if (type %in% c("CR2","CR4")) {
     Theta_list <- matrix_list(Theta, cluster, "both")
-    
+  }
+  
+  if (type %in% c("CR2","CR3","CR4")) {
     S <- augmented_model_matrix(obj, cluster, inverse_var)
     
     if (is.null(S)) {
@@ -127,7 +129,8 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   attr(vcov, "type") <- type
   attr(vcov, "cluster") <- cluster
   attr(vcov, "estmats") <- E_list
-  attr(vcov, "target") <- Theta 
+  attr(vcov, "target") <- Theta
+  attr(vcov, "inverse_var") <- inverse_var
   class(vcov) <- c("vcovCR","clubSandwich")
   return(vcov)
 }
@@ -143,6 +146,7 @@ as.matrix.clubSandwich <- function(x, ...) {
   attr(x, "cluster") <- NULL
   attr(x, "estmats") <- NULL
   attr(x, "target") <- NULL
+  attr(x, "inverse_var") <- NULL
   class(x) <- "matrix"
   x
 }
@@ -196,7 +200,12 @@ Sj <- function(e, u, tc, cl, cluster, MUWTheta_cholT) {
   e %*% s
 }
 
-get_S_array <- function(obj, cluster, target, E_list) {
+get_S_array <- function(obj, vcov) {
+  
+  cluster <- attr(vcov, "cluster")
+  E_list <- attr(vcov, "estmats")
+  target <- attr(vcov, "target")
+  inverse_var <- attr(vcov, "inverse_var")
   
   N <- length(cluster)
   J <- nlevels(cluster)

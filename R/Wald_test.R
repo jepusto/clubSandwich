@@ -150,13 +150,7 @@ Wald_test <- function(obj, constraints, vcov, test = "HTZ", ...) {
   
   beta <- na.omit(coef_CR(obj))
   
-  p <- length(beta)
-  
-  cluster <- attr(vcov, "cluster")
-  E_list <- attr(vcov, "estmats")
-  target <- attr(vcov, "target")
-  
-  S_array <- get_S_array(obj, cluster, target, E_list)
+  S_array <- get_S_array(obj, vcov)
   
   if (is.list(constraints)) {
     C_mats <- lapply(constraints, get_constraint_mat, obj = obj)

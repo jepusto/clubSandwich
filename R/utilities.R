@@ -9,9 +9,8 @@ check_CR <- function(obj, vcov, ...) {
 
   # calculate E(V^CR)  
   cluster <- attr(vcov, "cluster")
-  E_list <- attr(vcov, "estmats")
   target <- attr(vcov, "target")
-  S_array <- get_S_array(obj, cluster, target, E_list)
+  S_array <- get_S_array(obj, vcov)
   E_CRj <- lapply(1:nlevels(cluster), function(j) tcrossprod(S_array[,,j]))
          
   # calculate target

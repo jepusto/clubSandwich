@@ -86,13 +86,9 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", ...) {
   test <- match.arg(test, all_tests, several.ok = TRUE)
 
   SE <- sqrt(diag(vcov))
-  cluster <- attr(vcov, "cluster")
-  J <- nlevels(cluster)
   
   if (any(c("Satterthwaite","saddlepoint") %in% test)) {
-    E_list <- attr(vcov, "estmats")
-    target <- attr(vcov, "target")
-    S_array <- get_S_array(obj, cluster, target, E_list)
+    S_array <- get_S_array(obj, vcov)
   }
   
   result <- data.frame(beta = beta)
@@ -102,6 +98,7 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", ...) {
     result$p_z[!beta_NA] <-  2 * pnorm(abs(beta[!beta_NA] / SE), lower.tail = FALSE)
   }
   if ("naive-t" %in% test) {
+    J <- nlevels(attr(vcov, "cluster"))
     result$p_t[!beta_NA] <-  2 * pt(abs(beta[!beta_NA] / SE), df = J - 1, lower.tail = FALSE)
   }
   if ("Satterthwaite" %in% test) {
