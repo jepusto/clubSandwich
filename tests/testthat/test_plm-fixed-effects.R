@@ -1,10 +1,11 @@
 context("plm objects - fixed effects")
 
-library(plm)
+library(plm, quietly=TRUE)
 
 data("Produc", package = "plm")
 Produc$cluster <- sample(LETTERS[1:10], size = nrow(Produc), replace=TRUE)
 Produc_scramble <- Produc[sample(nrow(Produc)),]
+n <- nrow(Produc_scramble)
 
 plm_individual <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
                       data = Produc_scramble, index = c("state","year"), 
@@ -45,7 +46,6 @@ lm_twoways <- lm(log(gsp) ~ 0 + state + factor(year) + log(pcap) + log(pc) + log
 twoway_names <- names(coef(plm_twoways)) 
 twoway_index <- names(coef(lm_twoways)) %in% twoway_names
 
-
 test_that("two-way effects agree with lm", {
   
  # clustering on individual
@@ -75,8 +75,6 @@ test_that("two-way effects agree with lm", {
 })
 
 test_that("vcovCR options work for CR2", {
-  n <- nrow(Produc_scramble)
-  
   CR2_iv <- vcovCR(plm_individual, type = "CR2")
   expect_identical(vcovCR(plm_individual, cluster = Produc_scramble$state, type = "CR2"), CR2_iv)
   expect_identical(vcovCR(plm_individual, type = "CR2", inverse_var = TRUE), CR2_iv)
@@ -121,16 +119,20 @@ test_that("CR2 and CR4 are target-unbiased", {
 })
 
 test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
-  library(sandwich)
-  CR_individual <- lapply(CR_types[1:4], function(t) as.matrix(vcovCR(plm_individual, cluster = 1:n, type = t)))
-  HC_individual <- lapply(paste0("HC",0:3), function(t) vcovHC(lm_individual, type = t)[individual_index,individual_index])
+  library(sandwich, quietly=TRUE)
+
+  CR_types <- paste0("CR",c(0,2,3))
+  HC_types <- paste0("HC",c(0,2,3))
+
+  CR_individual <- lapply(CR_types, function(t) as.matrix(vcovCR(plm_individual, cluster = 1:n, type = t)))
+  HC_individual <- lapply(HC_types, function(t) vcovHC(lm_individual, type = t)[individual_index,individual_index])
   expect_equal(CR_individual, HC_individual)
   
-  CR_time <- lapply(CR_types[1:4], function(t) as.matrix(vcovCR(plm_time, cluster = 1:n, type = t)))
-  HC_time <- lapply(paste0("HC",0:3), function(t) vcovHC(lm_time, type = t)[time_index,time_index])
+  CR_time <- lapply(CR_types, function(t) as.matrix(vcovCR(plm_time, cluster = 1:n, type = t)))
+  HC_time <- lapply(HC_types, function(t) vcovHC(lm_time, type = t)[time_index,time_index])
   expect_equal(CR_time, HC_time)
   
-  CR_twoways <- lapply(CR_types[1:4], function(t) as.matrix(vcovCR(plm_twoways, cluster = 1:n, type = t)))
-  HC_twoways <- lapply(paste0("HC",0:3), function(t) vcovHC(lm_twoways, type = t)[twoway_index,twoway_index])
+  CR_twoways <- lapply(CR_types, function(t) as.matrix(vcovCR(plm_twoways, cluster = 1:n, type = t)))
+  HC_twoways <- lapply(HC_types, function(t) vcovHC(lm_twoways, type = t)[twoway_index,twoway_index])
   expect_equal(CR_twoways, HC_twoways)
 })
