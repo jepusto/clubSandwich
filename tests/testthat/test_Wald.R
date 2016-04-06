@@ -9,16 +9,21 @@ Duncan_CR2 <- vcovCR(duncan_fit, type = "CR2", cluster = Duncan$cluster)
 test_that("constraint expressions are equivalent", {
   constraints_logical <- grepl("typeprof:", coefs)  
   constraints_int <- which(constraints_logical)
+  constraints_num <- as.numeric(constraints_int)
   constraints_char <- coefs[constraints_logical]
   constraints_mat <- diag(1L, nrow = length(coefs))[constraints_logical,,drop=FALSE]
   Wald_logical <- Wald_test(duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
                             constraints = constraints_logical, test = "All")
+  expect_output(Wald_logical, "")
+  
   constraint_list <- list(integer = constraints_int,
+                          numeric = constraints_num, 
                           char = constraints_char,
                           matrix = constraints_mat)
   Walds <- Wald_test(duncan_fit, vcov = "CR2", cluster = Duncan$cluster, 
                      constraints = constraint_list, test = "All")
   expect_identical(Wald_logical, Walds$integer)
+  expect_identical(Wald_logical, Walds$numeric)
   expect_identical(Wald_logical, Walds$char)
   expect_identical(Wald_logical, Walds$matrix)
 })
