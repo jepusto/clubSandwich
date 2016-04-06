@@ -45,8 +45,8 @@ CR2 <- function(M_U, U_list, UW_list, M, XpW_list, Theta_list, inverse_var = FAL
   Map(function(xw, a) M %*% xw %*% a, xw = XpW_list, a = A_list)  
 }
 
-CR3 <- function(M, X_list, XpW_list) {
-  IH_jj <- IH_jj_list(M, X_list, XpW_list)
+CR3 <- function(M_U, U_list, UW_list, M, XpW_list) {
+  IH_jj <- IH_jj_list(M_U, U_list, UW_list)
   Map(function(xw, ih) M %*% xw %*% solve(ih), 
          xw = XpW_list, ih = IH_jj)
 }
