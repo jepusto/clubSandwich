@@ -142,8 +142,13 @@ test_that("lme agrees with gls", {
 })
 
 
+test_that("Errors with 3-level hlm or cross-classified model", {
+  hlm_3level <- lme(math ~ year * size + female, 
+                    random = ~ 1 | schoolid / childid, 
+                    data = egsingle)
+  expect_error(vcovCR(hlm_3level), "vcovCR.lme does not work for models with multiple levels of random effects.")
+})
+
 test_that("CR2 is equivalent to Welch t-test for DiD design", {
 })
 
-test_that("Works with 3-level hlm", {
-})
