@@ -118,7 +118,7 @@ test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
   CR0 <- vcovCR(lm_fit, cluster = dat$row, type = "CR0")
   expect_equal(vcovHC(lm_fit, type = "HC0"), as.matrix(CR0))
   CR1 <- vcovCR(lm_fit, cluster = dat$row, type = "CR1S")
-  expect_equal(vcovHC(lm_fit, type = "HC1"), as.matrix(CR1) * (n - 1) / n)
+  expect_equal(vcovHC(lm_fit, type = "HC1"), as.matrix(CR1))
   CR2 <- vcovCR(lm_fit, cluster = dat$row, type = "CR2")
   expect_equal(vcovHC(lm_fit, type = "HC2"), as.matrix(CR2))
   CR3 <- vcovCR(lm_fit, cluster = dat$row, type = "CR3")
