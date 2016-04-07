@@ -62,7 +62,7 @@ model_matrix.lme <- function(obj) {
 #-------------------------------------
 
 targetVariance.lme <- function(obj, cluster) {
-  groups <- levels(nlme::getGroups(obj), level = 1)
+  groups <- levels(nlme::getGroups(obj, level = 1))
   V <- nlme::getVarCov(obj, individuals = groups, type = "marginal")
   lapply(V, function(v) matrix(v, dim(v)))
 }
