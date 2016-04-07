@@ -21,9 +21,9 @@ test_that("individual effects agree with gls", {
   
   expect_equal(model_matrix(plm_individual), model_matrix(gls_individual))
   expect_identical(nobs(plm_individual), nobs(gls_individual))
-  V_ratio <- targetVariance(plm_individual) / targetVariance(gls_individual)
-  V_ratio <- V_ratio[is.finite(V_ratio)]
-  expect_equal(min(V_ratio), max(V_ratio))
+  V_ratio <- Map("/", targetVariance(plm_individual, cluster = Grunfeld$firm),
+                 targetVariance(gls_individual, cluster = Grunfeld$firm))
+  expect_equal(lapply(V_ratio, min), lapply(V_ratio, max))
   expect_equivalent(residuals_CR(plm_individual), residuals_CR(gls_individual))
 
   CR_plm <- lapply(CR_types, function(x) vcovCR(plm_individual, type = x))
@@ -48,9 +48,9 @@ test_that("time effects agree with gls", {
   
   expect_equal(model_matrix(plm_time), model_matrix(gls_time))
   expect_identical(nobs(plm_time), nobs(gls_time))
-  V_ratio <- targetVariance(plm_time) / targetVariance(gls_time)
-  V_ratio <- V_ratio[is.finite(V_ratio)]
-  expect_equal(min(V_ratio), max(V_ratio))
+  V_ratio <- Map("/", targetVariance(plm_time, cluster = Produc$year),
+                 targetVariance(gls_time, cluster = Produc$year))
+  expect_equal(lapply(V_ratio, min), lapply(V_ratio, max))
   expect_equivalent(residuals_CR(plm_time), residuals_CR(gls_time))
   
   CR_plm <- lapply(CR_types, function(x) vcovCR(plm_time, type = x))
@@ -75,7 +75,7 @@ test_that("vcovCR options work for CR2", {
   CR2_iv <- vcovCR(plm_individual, type = "CR2")
   expect_identical(vcovCR(plm_individual, cluster = Grunfeld$firm, type = "CR2"), CR2_iv)
   expect_identical(vcovCR(plm_individual, type = "CR2", inverse_var = TRUE), CR2_iv)
-  tgt <- targetVariance(plm_individual)
+  tgt <- targetVariance(plm_individual, cluster = Grunfeld$firm)
   expect_equivalent(vcovCR(plm_individual, type = "CR2", target = tgt, inverse_var = TRUE), CR2_iv)
   
   CR2_not <- vcovCR(plm_individual, type = "CR2", inverse_var = FALSE)
@@ -89,7 +89,7 @@ test_that("vcovCR options work for CR4", {
   CR4_iv <- vcovCR(plm_individual, type = "CR4")
   expect_identical(vcovCR(plm_individual, cluster = Grunfeld$firm, type = "CR4"), CR4_iv)
   expect_identical(vcovCR(plm_individual, type = "CR4", inverse_var = TRUE), CR4_iv)
-  tgt <- targetVariance(plm_individual)
+  tgt <- targetVariance(plm_individual, cluster = Grunfeld$firm)
   expect_equivalent(vcovCR(plm_individual, type = "CR4", target = tgt, inverse_var = TRUE), CR4_iv)
   
   CR4_not <- vcovCR(plm_individual, type = "CR4", inverse_var = FALSE)

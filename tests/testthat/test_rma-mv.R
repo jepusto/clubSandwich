@@ -11,12 +11,6 @@ corrdat$wt <- corr_robu$data.full$r.weights
 corr_meta <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
                     V = var, W = wt, method = "FE")
 
-# obj <- corr_meta
-# cluster <- corrdat$studyid
-# type <- "CR4"
-# target <- 1 / corrdat$wt
-# inverse_var <- FALSE
-# vcov <- vcovCR(obj, cluster, type, target, inverse_var)
 
 test_that("CR2 t-tests agree with robumeta for correlated effects", {
   
@@ -106,7 +100,7 @@ test_that("clubSandwich errors with dropped observations", {
 })
 
 test_that("vcovCR options work for CR2", {
-  RE_var <- targetVariance(hier_meta)
+  RE_var <- targetVariance(hier_meta, cluster = factor(hierdat$studyid))
   CR2_iv <- vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid)
   expect_identical(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, inverse_var = TRUE), CR2_iv)
 

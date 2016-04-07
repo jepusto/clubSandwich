@@ -81,24 +81,23 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   X_list <- matrix_list(X, cluster, "row")
   Xp_list <- matrix_list(Xp, cluster, "row")
   
-  W <- weightMatrix(obj)
-  W_list <- matrix_list(W, cluster, "both")
+  W_list <- weightMatrix(obj, cluster)
   XpW_list <- Map(function(x, w) as.matrix(t(x) %*% w), x = Xp_list, w = W_list)
   XpWX_list <- Map(function(xw, x) xw %*% x, xw = XpW_list, x = X_list)
   M <- chol2inv(chol(Reduce("+", XpWX_list)))
   
   if (is.null(target)) {
     if (inverse_var) {
-      Theta <- if (is.matrix(W)) chol2inv(chol(W)) else 1 / W
+      Theta_list <- lapply(W_list, function(w) chol2inv(chol(w)))
     } else {
-      Theta <- targetVariance(obj)
+      Theta_list <- targetVariance(obj, cluster)
     }
   } else {
-    Theta <- target
-  }
-  
-  if (type %in% c("CR2","CR4")) {
-    Theta_list <- matrix_list(Theta, cluster, "both")
+    if (!is.list(target)) {
+      Theta_list <- matrix_list(target, cluster, "both")
+    } else {
+      Theta_list <- target
+    }
   }
   
   if (type %in% c("CR2","CR3","CR4")) {
@@ -129,7 +128,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   attr(vcov, "type") <- type
   attr(vcov, "cluster") <- cluster
   attr(vcov, "estmats") <- E_list
-  attr(vcov, "target") <- Theta
+  attr(vcov, "target") <- Theta_list
   attr(vcov, "inverse_var") <- inverse_var
   class(vcov) <- c("vcovCR","clubSandwich")
   return(vcov)
@@ -176,7 +175,8 @@ sub_f <- function(x, fac, dim) {
 matrix_list <- function(x, fac, dim) {
   if (is.vector(x)) {
     if (dim != "both") stop(paste0("Object must be a matrix in order to subset by ",dim,"."))
-    tapply(x, fac, function(x) diag(x, nrow = length(x)))  
+    x_list <- split(x, fac)
+    lapply(x_list, function(x) diag(x, nrow = length(x)))
   } else {
     lapply(levels(fac), sub_f(x, fac, dim)) 
   }
@@ -225,23 +225,14 @@ get_S_array <- function(obj, vcov) {
   
   U_list <- matrix_list(U, cluster, "row")
   
-  W <- weightMatrix(obj)
-  W_list <- matrix_list(W, cluster, "both")
+  W_list <- weightMatrix(obj, cluster)
   
   UW_list <- Map(function(u, w) as.matrix(t(u) %*% w), u = U_list, w = W_list)
   UWU_list <- Map(function(uw, u) uw %*% u, uw = UW_list, u = U_list)
   M_U <- chol2inv(chol(Reduce("+",UWU_list)))
 
-  if (is.vector(target)) {
-    Theta_cholT <- split(sqrt(target), cluster)
-    UWThetaC_list <- Map(function(uw, tc) t(tc * t(uw)), uw = UW_list, tc = Theta_cholT)
-    Theta_cholT <- lapply(Theta_cholT, function(x) diag(x, nrow = length(x)))
-  } else {
-    Theta_list <- matrix_list(target, cluster, "both")
-    Theta_cholT <- lapply(Theta_list, function(x) t(chol(x)))
-    UWThetaC_list <- Map(function(uw, tc) uw %*% tc, uw = UW_list, tc = Theta_cholT)
-  }
-  
+  Theta_cholT <- lapply(target, function(x) t(chol(x)))
+  UWThetaC_list <- Map(function(uw, tc) uw %*% tc, uw = UW_list, tc = Theta_cholT)
   MUWTheta_cholT <- M_U %*% (matrix(unlist(UWThetaC_list), ncol(U), N)[,order(order(cluster))])
   
   S_list <- mapply(Sj, e = E_list, u = U_list, tc = Theta_cholT, cl = levels(cluster),

@@ -28,7 +28,7 @@ test_that("CR2 t-tests agree with robumeta for correlated effects", {
 data(hierdat)
 hier_meta <- rma(effectsize ~ binge + followup + sreport + age, data = hierdat, 
                  vi = var, method = "REML")
-hierdat$wt <- weightMatrix(hier_meta)
+hierdat$wt <- with(hier_meta, 1 / (vi + tau2))
 hier_robu <- robu(effectsize ~ binge + followup + sreport + age,
                    data = hierdat, studynum = studyid,
                    var.eff.size = var, userweights = wt)

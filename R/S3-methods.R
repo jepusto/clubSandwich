@@ -2,13 +2,13 @@
 # get "working" variance-covariance matrix
 #----------------------------------------------
 
-targetVariance <- function(obj) UseMethod("targetVariance")
+targetVariance <- function(obj, cluster) UseMethod("targetVariance")
 
 #----------------------------------------------
 # get weighting matrix
 #----------------------------------------------
 
-weightMatrix <- function(obj) UseMethod("weightMatrix")
+weightMatrix <- function(obj, cluster) UseMethod("weightMatrix")
 
 #----------------------------------------------
 # get X matrix

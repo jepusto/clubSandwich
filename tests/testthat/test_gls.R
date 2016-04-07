@@ -15,7 +15,7 @@ test_that("vcovCR options work for CR2", {
   expect_identical(vcovCR(lm_AR1, type = "CR2", inverse_var = TRUE), CR2_AR1)
   expect_false(identical(vcovCR(lm_AR1, type = "CR2", inverse_var = FALSE), CR2_AR1))
   
-  target <- targetVariance(lm_AR1)
+  target <- targetVariance(lm_AR1, cluster = Ovary$Mare)
   expect_equal(vcovCR(lm_AR1, type = "CR2", target = target, inverse_var = TRUE), CR2_AR1)
   attr(CR2_AR1, "inverse_var") <- FALSE
   expect_equal(vcovCR(lm_AR1, type = "CR2", target = target, inverse_var = FALSE), CR2_AR1)
@@ -25,7 +25,7 @@ test_that("vcovCR options work for CR2", {
   expect_identical(vcovCR(lm_AR1_power, type = "CR2", inverse_var = TRUE), CR2_power)
   expect_false(identical(vcovCR(lm_AR1_power, type = "CR2", inverse_var = FALSE), CR2_power))
   
-  target <- targetVariance(lm_AR1_power)
+  target <- targetVariance(lm_AR1_power, cluster = Ovary$Mare)
   expect_equal(vcovCR(lm_AR1_power, type = "CR2", target = target, inverse_var = TRUE), CR2_power)
   attr(CR2_power, "inverse_var") <- FALSE
   expect_equal(vcovCR(lm_AR1_power, type = "CR2", target = target, inverse_var = FALSE), CR2_power)

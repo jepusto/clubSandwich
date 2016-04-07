@@ -62,15 +62,15 @@ vcovCR.rma.uni <- function(obj, cluster, type, target, inverse_var) {
 # Get (model-based) working variance matrix 
 #-------------------------------------
 
-targetVariance.rma.uni <- function(obj) {
-  obj$vi + obj$tau2
+targetVariance.rma.uni <- function(obj, cluster) {
+  matrix_list(obj$vi + obj$tau2, cluster, "both")
 }
 
 #-------------------------------------
 # Get weighting matrix
 #-------------------------------------
 
-weightMatrix.rma.uni <- function(obj) {
+weightMatrix.rma.uni <- function(obj, cluster) {
   if (obj$weighted) {
     if (is.null(obj$weights)) {
       wi <- 1 / (obj$vi + obj$tau2)  
@@ -80,5 +80,5 @@ weightMatrix.rma.uni <- function(obj) {
   } else {
     wi <- rep(1, obj$k)
   }
-  wi
+  matrix_list(wi, cluster, "both")
 }

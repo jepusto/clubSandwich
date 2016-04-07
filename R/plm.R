@@ -144,39 +144,35 @@ nobs.plm <- function(object, ...) {
 # Get (model-based) working variance matrix 
 #-------------------------------------
 
-targetVariance.plm <- function(obj) {
+targetVariance.plm <- function(obj, cluster) {
   if (obj$args$model=="random") {
-    if (obj$args$effect=="twoway") stop("Target variance is not block diagonal.")
-    ind <- switch(obj$args$effect,
-            individual = attr(model.frame(obj), "index")[[1]],
-            time = attr(model.frame(obj), "index")[[2]])
-    Z <- model.matrix(~ ind - 1)
-    V <- tcrossprod(obj$ercomp$sigma2$id * Z, Z)
-    diag(V) <- diag(V) + obj$ercomp$sigma2$idios
+    block_mat <- function(nj) {
+      Vj <- matrix(obj$ercomp$sigma2$id, nj, nj)
+      diag(Vj) <- obj$ercomp$sigma2$idios + obj$ercomp$sigma2$id
+      Vj
+    }
+    lapply(table(cluster), block_mat)
   } else {
-    V <- rep(1, nobs(obj))
+    matrix_list(rep(1, nobs(obj)), cluster, "both")
   }
-  V
 }
 
 #-------------------------------------
 # Get weighting matrix
 #-------------------------------------
 
-weightMatrix.plm <- function(obj) {
+weightMatrix.plm <- function(obj, cluster) {
   if (obj$args$model=="random") {
-    if (obj$args$effect=="twoway") stop("Weight matrix is not block diagonal.")
-    ind <- switch(obj$args$effect,
-                  individual = attr(model.frame(obj), "index")[[1]],
-                  time = attr(model.frame(obj), "index")[[2]])
-    Z <- model.matrix(~ ind - 1)
-    n_j <- colSums(Z)
     sigma_sq <- obj$ercomp$sigma2$idios
     tau_sq <- obj$ercomp$sigma2$id
-    theta_j <- tau_sq / ((n_j * tau_sq + sigma_sq))
-    W <- diag(1, nrow = nobs(obj)) -  Z %*% (theta_j * t(Z))
+    block_mat <- function(nj) {
+      theta <- tau_sq / ((nj * tau_sq + sigma_sq))
+      Wj <- matrix(-theta, nj, nj)
+      diag(Wj) <- 1 - theta
+      Wj
+    }
+    lapply(table(cluster), block_mat)
   } else {
-    W <- rep(1, nobs(obj))
+    matrix_list(rep(1, nobs(obj)), cluster, "both")
   }
-  W
 }

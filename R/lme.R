@@ -60,26 +60,17 @@ model_matrix.lme <- function(obj) {
 # Get (model-based) working variance matrix 
 #-------------------------------------
 
-targetVariance.lme <- function(obj) {
-  groups <- nlme::getGroups(obj)
-  N <- nobs(obj)
-  V <- matrix(0, N, N)
-  for (i in levels(groups)) {
-    V[groups == i, groups == i] <- nlme::getVarCov(obj, individual = i, type = "marginal")[[1]]
-  }
-  V
+targetVariance.lme <- function(obj, cluster) {
+  groups <- levels(nlme::getGroups(obj))
+  V <- nlme::getVarCov(obj, individuals = groups, type = "marginal")
+  lapply(V, function(v) matrix(v, dim(v)))
 }
 
 #-------------------------------------
 # Get weighting matrix
 #-------------------------------------
 
-weightMatrix.lme <- function(obj) {
-  groups <- nlme::getGroups(obj)
-  N <- nobs(obj)
-  W <- matrix(0, N, N)
-  for (i in levels(groups)) {
-    W[groups == i, groups == i] <- chol2inv(chol(nlme::getVarCov(obj, individual = i, type = "marginal")[[1]]))
-  }
-  W
+weightMatrix.lme <- function(obj, cluster) {
+  V_list <- targetVariance(obj, cluster)
+  lapply(V_list, function(v) chol2inv(chol(v)))
 }
