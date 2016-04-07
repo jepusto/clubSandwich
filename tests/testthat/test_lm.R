@@ -24,6 +24,7 @@ CR_types <- paste0("CR",0:4)
 test_that("vcovCR options don't matter for CR0", {
   expect_error(vcovCR(lm_fit, type = "CR0"))
   CR0 <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR0")
+  expect_output(CR0, "")
   attr(CR0, "target") <- NULL
   attr(CR0, "inverse_var") <- NULL
   CR0_A <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR0", target = 1 / dat$w)
@@ -118,7 +119,7 @@ test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
   CR0 <- vcovCR(lm_fit, cluster = dat$row, type = "CR0")
   expect_equal(vcovHC(lm_fit, type = "HC0"), as.matrix(CR0))
   CR1 <- vcovCR(lm_fit, cluster = dat$row, type = "CR1S")
-  expect_equal(vcovHC(lm_fit, type = "HC1"), as.matrix(CR1) * (n - 1) / n)
+  expect_equal(vcovHC(lm_fit, type = "HC1"), as.matrix(CR1))
   CR2 <- vcovCR(lm_fit, cluster = dat$row, type = "CR2")
   expect_equal(vcovHC(lm_fit, type = "HC2"), as.matrix(CR2))
   CR3 <- vcovCR(lm_fit, cluster = dat$row, type = "CR3")
@@ -180,5 +181,20 @@ test_that("clubSandwich works with dropped observations", {
   
   test_drop <- lapply(CR_types, function(x) coef_test(lm_dropped, vcov = x, cluster = dat_miss$cluster, test = "All"))
   test_complete <- lapply(CR_types, function(x) coef_test(lm_complete, vcov = x, cluster = dat_complete$cluster, test = "All"))
+  expect_identical(test_drop, test_complete)
+})
+
+
+
+test_that("clubSandwich works with aliased predictors", {
+  npk_alias <- lm(yield ~ block + N*P*K, npk)
+  npk_drop <- lm(yield ~ block + N + P + K + N:P + N:K + P:K, npk)
+  
+  CR_alias <- lapply(CR_types, function(x) vcovCR(npk_alias, cluster = npk$block, type = x))
+  CR_drop <- lapply(CR_types, function(x) vcovCR(npk_drop, cluster = npk$block, type = x))
+  expect_identical(CR_alias, CR_drop)
+  
+  test_drop <- lapply(CR_types, function(x) coef_test(npk_alias, vcov = x, cluster = npk$block, test = c("z","naive-t","Satterthwaite"))[-13,])
+  test_complete <- lapply(CR_types, function(x) coef_test(npk_drop, vcov = x, cluster = npk$block, test = c("z","naive-t","Satterthwaite")))
   expect_identical(test_drop, test_complete)
 })

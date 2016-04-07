@@ -25,7 +25,8 @@
 #' @export
 
 vcovCR.lme <- function(obj, cluster, type, target, inverse_var) {
-  if (missing(cluster)) cluster <- nlme::getGroups(obj)
+  if (length(obj$groups) > 1) stop("vcovCR.lme does not work for models with multiple levels of random effects.")
+  if (missing(cluster)) cluster <- nlme::getGroups(obj, level = 1)
   if (missing(target)) target <- NULL
   if (missing(inverse_var)) inverse_var <- is.null(target)
   vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
@@ -61,7 +62,7 @@ model_matrix.lme <- function(obj) {
 #-------------------------------------
 
 targetVariance.lme <- function(obj, cluster) {
-  groups <- levels(nlme::getGroups(obj))
+  groups <- levels(nlme::getGroups(obj), level = 1)
   V <- nlme::getVarCov(obj, individuals = groups, type = "marginal")
   lapply(V, function(v) matrix(v, dim(v)))
 }

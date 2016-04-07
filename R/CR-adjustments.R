@@ -18,7 +18,7 @@ CR1 <- function(XpW_list, M, J)
   lapply(XpW_list, function(xw) (M %*% xw) * sqrt(J / (J - 1)))
 
 CR1S <- function(XpW_list, M, J, N, p) 
-  lapply(XpW_list, function(xw) (M %*% xw) * sqrt(J * N / ((J - 1) * (N - p))))
+  lapply(XpW_list, function(xw) (M %*% xw) * sqrt(J * (N - 1) / ((J - 1) * (N - p))))
 
 CR2 <- function(M_U, U_list, UW_list, M, XpW_list, Theta_list, inverse_var = FALSE) {
   

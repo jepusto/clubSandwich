@@ -63,13 +63,28 @@ test_that("time effects agree with gls", {
   
 })
 
+
+plm_twoways <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+                   data = Produc, index = c("state","year"), 
+                   effect = "twoways", model = "random")
+
 test_that("two-way effects throws error", {
-  plm_twoways <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
-                          data = Produc, index = c("state","year"), 
-                          effect = "twoways", model = "random")
-  
   expect_error(vcovCR(plm_twoways, type = "CR2"))
 })
+
+
+test_that("CR0 and CR1S agree with arellano vcov", {
+  expect_equal(vcovHC(plm_individual, method="arellano", type = "HC0", cluster = "group"), 
+               as.matrix(vcovCR(plm_individual, type = "CR0")))
+  expect_equal(vcovHC(plm_individual, method="arellano", type = "sss", cluster = "group"), 
+               as.matrix(vcovCR(plm_individual, type = "CR1S")))
+  
+  expect_equal(vcovHC(plm_time, method="arellano", type = "HC0", cluster = "time"), 
+               as.matrix(vcovCR(plm_time, type = "CR0")))
+  expect_equal(vcovHC(plm_time, method="arellano", type = "sss", cluster = "time"), 
+               as.matrix(vcovCR(plm_time, type = "CR1S")))
+})
+
 
 test_that("vcovCR options work for CR2", {
   CR2_iv <- vcovCR(plm_individual, type = "CR2")
