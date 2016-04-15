@@ -63,19 +63,20 @@ vcovCR.rma.mv <- function(obj, cluster, type, target, inverse_var) {
 # Get (model-based) working variance matrix 
 #-------------------------------------
 
-targetVariance.rma.mv <- function(obj) {
-  obj$M
+targetVariance.rma.mv <- function(obj, cluster) {
+  matrix_list(obj$M, cluster, "both")
 }
 
 #-------------------------------------
 # Get weighting matrix
 #-------------------------------------
 
-weightMatrix.rma.mv <- function(obj) {
-  if (is.null(obj$W)) { 
-    chol2inv(chol(obj$M))
+weightMatrix.rma.mv <- function(obj, cluster) {
+  if (is.null(obj$W)) {
+    V_list <- targetVariance(obj, cluster)
+    lapply(V_list, function(v) chol2inv(chol(v)))
   } else{
-    obj$W
+    matrix_list(obj$W, cluster, "both")
   }
 }
 

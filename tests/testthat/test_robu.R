@@ -241,7 +241,7 @@ test_that("vcovCR options work for CR2", {
   iv <- 1 / m3_hier$data.full$r.weights
   CR2_iv <- vcovCR(m3_hier, type = "CR2")
   expect_identical(vcovCR(m3_hier, type = "CR2", inverse_var = TRUE), CR2_iv)
-  expect_identical(vcovCR(m3_hier, type = "CR2", target = iv, inverse_var = TRUE), CR2_iv)
+  expect_equal(vcovCR(m3_hier, type = "CR2", target = iv, inverse_var = TRUE), CR2_iv)
   
   attr(CR2_iv, "inverse_var") <- FALSE
   CR2_not <- vcovCR(m3_hier, type = "CR2", inverse_var = FALSE)

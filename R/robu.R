@@ -86,24 +86,26 @@ model_matrix.robu <- function(obj) {
 # Get (model-based) working variance matrix 
 #-------------------------------------
 
-targetVariance.robu <- function(obj) {
+targetVariance.robu <- function(obj, cluster) {
   ord <- order(order(obj$study_orig_id))
   if (obj$user_weighting) {
-    obj$data.full$avg.var.eff.size[ord]
+    V <- obj$data.full$avg.var.eff.size[ord]
   } else {
-    1 / obj$data.full$r.weights[ord]
+    V <- 1 / obj$data.full$r.weights[ord]
   }
+  matrix_list(V, cluster, "both")
 }
 
 #-------------------------------------
 # Get weighting matrix
 #-------------------------------------
 
-weightMatrix.robu <- function(obj) {
+weightMatrix.robu <- function(obj, cluster) {
   ord <- order(order(obj$study_orig_id))
   if (obj$user_weighting) { 
-    obj$data.full$userweights[ord]
+    W <- obj$data.full$userweights[ord]
   } else{
-    obj$data.full$r.weights[ord]
+    W <- obj$data.full$r.weights[ord]
   }
+  matrix_list(W, cluster, "both")
 }

@@ -61,7 +61,7 @@ test_that("vcovCR options work for CR2", {
   CR2_iv <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR2")
   expect_identical(vcovCR(lm_fit, cluster = dat$cluster, type = "CR2", inverse_var = TRUE), CR2_iv)
   expect_identical(vcovCR(lm_fit, cluster = dat$cluster, type = "CR2", target = rep(1, n), inverse_var = TRUE), CR2_iv)
-
+  
   attr(CR2_iv, "inverse_var") <- FALSE
   CR2_not <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR2", inverse_var = FALSE)
   expect_equal(CR2_not, CR2_iv)
@@ -77,7 +77,7 @@ test_that("vcovCR options work for CR2", {
   wCR2_iv <- vcovCR(WLS_fit, cluster = dat$cluster, type = "CR2", inverse_var = TRUE)
   wCR2_target <- vcovCR(WLS_fit, cluster = dat$cluster, type = "CR2", target = 1 / dat$w, inverse_var = TRUE)
   expect_false(identical(wCR2_target, wCR2_id))
-  expect_identical(matrix(wCR2_target, dim(wCR2_target)), matrix(wCR2_iv, dim(wCR2_iv)))
+  expect_equal(matrix(wCR2_target, dim(wCR2_target)), matrix(wCR2_iv, dim(wCR2_iv)))
   expect_equal(vcovCR(WLS_fit, cluster = dat$cluster, type = "CR2", target = 1 / dat$w, inverse_var = TRUE), wCR2_target)
 })
 
