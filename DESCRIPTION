@@ -16,7 +16,7 @@ Depends: R (>= 3.2.0)
 License: GPL-3
 VignetteBuilder: knitr
 LazyData: true
-Suggests: 
+Suggests:
     Formula,
     knitr,
     car,
@@ -26,4 +26,5 @@ Suggests:
     mlmRev,
     AER,
     plm,
-    testthat
+    testthat,
+    rmarkdown
