@@ -1,5 +1,5 @@
 Package: clubSandwich
-Title: Cluster-robust (sandwich) variance estimators with small-sample corrections
+Title: Cluster-Robust (Sandwich) Variance Estimators with Small-Sample Corrections
 Version: 0.0.1.9000
 Authors@R: person("James", "Pustejovsky", email = "jepusto@gmail.com", role = c("aut", "cre"))
 Description: clubSandwich provides several cluster-robust variance estimators 
