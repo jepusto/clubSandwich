@@ -151,6 +151,5 @@ print.coef_test_clubSandwich <- function(x, digits = 3, ...) {
 
   } 
   print(format(res, digits = 3))
-  res
 }
 

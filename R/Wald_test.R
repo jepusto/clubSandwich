@@ -274,5 +274,4 @@ print.Wald_test_clubSandwich <- function(x, digits = 3, ...) {
   #, "Sig." = sig)
   
   print(format(res, digits = 3), row.names = FALSE)
-  res
 }
