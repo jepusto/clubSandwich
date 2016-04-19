@@ -14,7 +14,7 @@ test_that("constraint expressions are equivalent", {
   constraints_mat <- diag(1L, nrow = length(coefs))[constraints_logical,,drop=FALSE]
   Wald_logical <- Wald_test(duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
                             constraints = constraints_logical, test = "All")
-  expect_output(Wald_logical, "")
+  expect_output(print(Wald_logical))
   
   constraint_list <- list(integer = constraints_int,
                           numeric = constraints_num, 

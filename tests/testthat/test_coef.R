@@ -30,7 +30,7 @@ test_that("printing works", {
   dat <- balanced_dat(m = 15, n = 8)
   lm_fit <- lm(y ~ X_btw + X_wth, data = dat)
   t_tests <- coef_test(lm_fit, vcov = "CR2", cluster = dat$cluster, test = "All")
-  expect_output(t_tests, regexp = "")
+  expect_output(print(t_tests))
 })
 
 test_that("p-values are ordered", {

@@ -24,7 +24,7 @@ CR_types <- paste0("CR",0:4)
 test_that("vcovCR options don't matter for CR0", {
   expect_error(vcovCR(lm_fit, type = "CR0"))
   CR0 <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR0")
-  expect_output(CR0, "")
+  expect_output(print(CR0))
   attr(CR0, "target") <- NULL
   attr(CR0, "inverse_var") <- NULL
   CR0_A <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR0", target = 1 / dat$w)
