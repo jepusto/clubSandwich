@@ -19,6 +19,8 @@ Depends:
 License: GPL-3
 VignetteBuilder: knitr
 LazyData: true
+Imports:
+    stats
 Suggests:
     Formula,
     knitr,

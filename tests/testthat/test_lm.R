@@ -187,6 +187,7 @@ test_that("clubSandwich works with dropped observations", {
 
 
 test_that("clubSandwich works with aliased predictors", {
+  data(npk, package = "datasets")
   npk_alias <- lm(yield ~ block + N*P*K, npk)
   npk_drop <- lm(yield ~ block + N + P + K + N:P + N:K + P:K, npk)
   

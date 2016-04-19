@@ -42,6 +42,7 @@
 #'   \code{\link{vcovCR.rma.mv}}
 #'   
 #' @export
+#' @import stats
 
 vcovCR <- function(obj, cluster, type, target, inverse_var) UseMethod("vcovCR")
 
