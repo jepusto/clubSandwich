@@ -1,7 +1,7 @@
 bibentry("Manual",
    title = "clubSandwich: Cluster-robust (sandwich) variance estimators with small-sample corrections",
    author = "James E. Pustejovsky",
-   year   = version$year,
+   year   = "2016",
    note   = paste("R package version", sessionInfo(package="clubSandwich")$otherPkgs$clubSandwich$Version),
    mheader = "To cite clubSandwich in publications use:",
    url = "https://github.com/jepusto/clubSandwich"
