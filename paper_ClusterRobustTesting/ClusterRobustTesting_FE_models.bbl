@@ -118,6 +118,16 @@ MacKinnon, J.~G.  \harvardyearleft 2013\harvardyearright , {Thirty years of
   Swanson, eds, `Recent Advances and Future Directions in Causality,
   Prediction, and Specification Analysis', Springer New York, New York, NY.
 
+\harvarditem{MacKinnon}{2015}{Mackinnon2015wildCIs}
+MacKinnon, J.~G.  \harvardyearleft 2015\harvardyearright , `{Wild cluster
+  bootstrap confidence intervals}', {\em L'Actualite economique, Revue
+  d'analyse economique} {\bf 91}(1-2),~11--33.
+
+\harvarditem{Mackinnon \harvardand\ Webb}{2016}{MacKinnon2016wild}
+Mackinnon, J.~G. \harvardand\ Webb, M.~D.  \harvardyearleft
+  2016\harvardyearright , `{Wild bootstrap inference for wildly different
+  cluster sizes}', {\em Journal of Applied Econometrics} .
+
 \harvarditem{MacKinnon \harvardand\ White}{1985}{MacKinnon1985some}
 MacKinnon, J.~G. \harvardand\ White, H.  \harvardyearleft 1985\harvardyearright
   , `{Some heteroskedasticity-consistent covariance matrix estimators with
@@ -169,10 +179,6 @@ Tipton, E. \harvardand\ Pustejovsky, J.~E.  \harvardyearleft
   and model fit using robust variance estimation in meta-regression}', {\em
   Journal of Educational and Behavioral Statistics} {\bf 40}(6),~604--634.
 
-\harvarditem{Webb \harvardand\ MacKinnon}{2013}{Webb2013wild}
-Webb, M. \harvardand\ MacKinnon, J.~G.  \harvardyearleft 2013\harvardyearright
-  , {Wild Bootstrap Inference for Wildly Different Cluster Sizes}.
-
 \harvarditem{White}{1984}{white1984asymptotic}
 White, H.  \harvardyearleft 1984\harvardyearright , {\em Asymptotic theory for
   econometricians}, Academic Press, Inc., Orlando, FL.
@@ -186,6 +192,11 @@ Wooldridge, J.~M.  \harvardyearleft 2003\harvardyearright , `{Cluster-sample
 Wooldridge, J.~M.  \harvardyearleft 2010\harvardyearright , {\em {Econometric
   Analysis of Cross Section and Panel Data}}, 2nd edn, MIT Press, Cambridge,
   MA.
+
+\harvarditem{Young}{2016}{Young2016improved}
+Young, A.  \harvardyearleft 2016\harvardyearright , {Improved, nearly exact,
+  statistical inference with robust and clustered covariance matrices using
+  effective degrees of freedom corrections}.
 
 \harvarditem{Zhang}{2012}{Zhang2012twowayANOVA}
 Zhang, J.-T.  \harvardyearleft 2012\harvardyearright , `{An approximate degrees

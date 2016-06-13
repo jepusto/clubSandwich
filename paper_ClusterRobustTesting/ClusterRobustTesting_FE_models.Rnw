@@ -74,7 +74,7 @@ In panel data models and other regressions with unobserved effects, fixed effect
 \end{abstract}
 
 \noindent%
-{\it Keywords:} Cluster dependence, Fixed Effects, Robust Standard Errors, Small Samples
+{\it Keywords:} cluster dependence, fixed effects, robust standard Errors, small samples
 \vfill
 
 \newpage
@@ -99,7 +99,7 @@ Standard errors would then be clustered by state to account for residual depende
 The need to cluster the standard errors by state, even when including state fixed effects, was highlighted by \citet{Bertrand2004how}, who showed that to do otherwise can lead to inappropriately small standard errors and hypothesis tests with incorrect rejection rates. 
 
 The consistency property of CRVEs is asymptotic in the number of independent clusters \citep{Wooldridge2003cluster}.
-Recent methodological work has demonstrated that CRVEs can be biased downward and associated hypothesis tests can have Type-I error rates considerably in excess of nominal levels when based on a small or moderate number of clusters \citep[e.g.,][]{Webb2013wild}.
+Recent methodological work has demonstrated that CRVEs can be biased downward and associated hypothesis tests can have Type-I error rates considerably in excess of nominal levels when based on a small or moderate number of clusters \citep[e.g.,][]{MacKinnon2016wild}.
 \citet{Cameron2015practitioners} provide an extensive review of this literature, including a discussion of current practice, possible solutions, and open problems. 
 In particular, they demonstrate that small-sample corrections for t-tests implemented in common software packages such as Stata and SAS do not provide adequate control of Type-I error. 
 
@@ -110,19 +110,20 @@ The same authors also proposed and studied small-sample corrections to single-pa
 In an analysis of a longitudinal cluster-randomized trial with 35 clusters, \citet{Angrist2009effects} observed that the BRL correction makes a difference for inferences. 
 
 Despite a growing body of evidence that BRL performs well \citep[e.g.,][]{Imbens2015robust}, several problems with the method hinder its wider application. 
-First, \citet{Angrist2009mostly} noted that the BRL correction is undefined in some highly parameterized models, such as state-by-year panels that include fixed effects for states and for years.
-Second, in models with fixed effects, the magnitude of the BRL adjustment depends on whether it is computed based on the full design matrix (i.e., the LSDV estimator) or after absorbing the fixed effects.%\footnote{\citet{Cameron2015practitioners} noted that other methods of small-sample correction, including the correction used in Stata, suffer from the same problem.}  
+First, \citet{Angrist2009mostly} noted that the BRL correction is undefined in some highly parameterized models, such as state-by-year panels that include fixed effects for states and for years \citep[see also][]{Young2016improved}.
+Second, in models with fixed effects, the magnitude of the BRL adjustment depends on whether it is computed based on the full design matrix (i.e., the LSDV estimator) or after absorbing the fixed effects.  
 Third, extant methods for hypothesis testing based on BRL are limited to single-parameter constraints \citep{Bell2002bias, McCaffrey2006improved} and small-sample methods for multiple-parameter hypothesis tests remain lacking.
 %Multiple-parameter tests are used in a range of applications, including in panel data settings (e.g., Hausman tests for consistency of random effects estimators), seemingly unrelated regression models, and analysis of field experiments with multiple treatment groups.
 
 This paper addresses each of these concerns in turn, with the aim of extending the BRL method so that is suitable for general application. 
-First, we describe an extension to the BRL adjustment that is well-defined in models with arbitrary sets of fixed effects, where existing BRL adjustments break down. 
+First, we describe a simple modification of the BRL adjustment that remains well-defined in models with arbitrary sets of fixed effects, where existing BRL adjustments break down. 
 Second, we demonstrate how to calculate the BRL adjustments based on the fixed effects estimator and identify conditions under which first-stage absorption of the fixed effects can be ignored.
 Finally, we propose a procedure for testing multiple-parameter hypotheses by approximating the sampling distribution of the Wald statistic using Hotelling's $T^2$ distribution with estimated degrees of freedom. The method is a generalization of the Satterthwaite correction proposed by \citet{Bell2002bias} for single parameter constraints.
 
 Our work is related to a stream of recent literature that has examined methods for cluster-robust inference with a small number of clusters. 
 \citet{Conley2011inference} proposed methods for hypothesis testing in a difference-in-differences setting where the number of treated units is small and fixed, while the number of untreated units increases asymptotically. 
-\citet{Ibragimov2010tstatistic} proposed a cluster-robust t-test that maintains the nominal Type-I error rate; however, their method requires that the target parameter be identified within each independent cluster and so it is not always applicable.  
+\citet{Ibragimov2010tstatistic} proposed a cluster-robust t-test that maintains the nominal Type-I error rate; however, their method requires that the target parameter be identified within each independent cluster and so it is not always applicable.
+\citet{Young2016improved} proposed a Satterthwaite correction for t-tests based on a different type of bias correction to the CRVE, where the bias correction term is derived under a working model.
 \citet{Cameron2008bootstrap} investigated a range of bootstrapping procedures that provide improved Type-I error control in small samples, finding that a cluster wild-bootstrap technique was particularly accurate in small samples. 
 Nearly all of this work has focused on single-parameter hypothesis tests only. 
 For multiple-parameter constraints, \citet{Cameron2015practitioners} suggested an ad-hoc degrees of freedom adjustment and noted, as an alternative, that bootstrapping techniques can in principle be applied to multiple-parameter tests. 
@@ -142,7 +143,7 @@ We consider a linear regression model of the form,
 \label{eq:fixed_effects}
 \bm{y}_i = \bm{R}_i \bs\beta + \bm{S}_i \bs\gamma + \bm{T}_i \bs\mu + \bs\epsilon_i,
 \end{equation}
-where $\bm{y}_i$ is a vector of $n_i$ outcomes for cluster $i$,  $\bm{R}_i$ is an $n_i \times r$ matrix containing predictors of primary interest (e.g., policy variables) and any additional controls, $\bm{S}_i$ is an $n_i \times s$ matrix describing fixed effects that vary across clusters, and $\bm{T}_i$ is an $n_i \times t$ matrix describing fixed effects that are identified only within clusters.\footnote{The distinction between the covariates $\bm{R}_i$ versus the fixed effects $\bm{S}_i$ is arbitrary and depends on the analyst's inferential goals. However, the distinction between the two fixed effect matrices $\bm{S}_i$ and $\bm{T}_i$ is unambiguous, in that the within-cluster fixed effects satisfy $\bm{T}_h \bm{T}_i' = \bm{0}$ for $h \neq i$.}
+where $\bm{y}_i$ is a vector of $n_i$ outcomes for cluster $i$,  $\bm{R}_i$ is an $n_i \times r$ matrix containing predictors of primary interest (e.g., policy variables) and any additional controls, $\bm{S}_i$ is an $n_i \times s$ matrix describing fixed effects that vary across clusters, and $\bm{T}_i$ is an $n_i \times t$ matrix describing fixed effects that are identified only within clusters.\footnote{The distinction between the covariates $\bm{R}_i$ versus the fixed effects $\bm{S}_i$ is arbitrary and depends on the analyst's inferential goals. However, the distinction between the two fixed effect matrices $\bm{S}_i$ and $\bm{T}_i$ is unambiguous, in that the within-cluster fixed effects must satisfy $\bm{T}_h \bm{T}_i' = \bm{0}$ for $h \neq i$.}
 In a fixed effects model for state-by-year panel data, $\bm{R}_i$ would include indicator variables for policy changes, as well as additional demographic controls; $\bm{S}_i$ would include year fixed effects; and $\bm{T}_i$ would indicate state fixed effects. 
 Interest would center on testing hypotheses regarding the coefficients in $\bs\beta$ that correspond to the policy indicators, while $\bs\gamma$ and $\bs\mu$ would be treated as incidental. 
 
@@ -209,9 +210,9 @@ This estimator is biased towards zero because the cross-product of the residuals
 A rough bias adjustment is to take $\bm{A}_i = c\bm{I}_i$, where $c = \sqrt{(m/(m-1))}$; we denote this adjusted estimator as CR1. Some functions in Stata use a slightly different correction factor $c_S = \sqrt{(m N)/[(m - 1)(N - p)]}$; we will refer to the adjusted estimator using $c_S$ as CR1S. When $N >> p$, $c_S \approx \sqrt{m/(m-1)}$ and so CR1 and CR1S will be very similar.
 The CR1 and CR1S estimators are now commonly used in empirical applications.
 
-Use of these adjustments still tends to under-estimate the true variance of $\hat{\bs\beta}$ because the degree of bias depends not only on the number of clusters $m$, but also on skewness of the covariates and unbalance across clusters \citep{Carter2013asymptotic, MacKinnon2013thirty, Cameron2015practitioners}. 
+Use of these adjustments still tends to under-estimate the true variance of $\hat{\bs\beta}$ because the degree of bias depends not only on the number of clusters $m$, but also on skewness of the covariates and unbalance across clusters \citep{Carter2013asymptotic, MacKinnon2013thirty, Cameron2015practitioners, Young2016improved}. 
 A more principled approach to bias correction would take into account the features of the covariates in $\bm{X}$. 
-One such estimator uses adjustment matrices given by $\bm{A}_i = \left(\bm{I} - \bm{\ddot{R}}_i \bm{M_{\ddot{R}}}\bm{\ddot{R}}_i'\bm{W}_i\right)^{-1}$. This estimator, denoted CR3, closely approximates the jackknife re-sampling variance estimator \citep{Bell2002bias, Mancl2001covariance}.  
+One such estimator uses adjustment matrices given by $\bm{A}_i = \left(\bm{I} - \bm{\ddot{R}}_i \bm{M_{\ddot{R}}}\bm{\ddot{R}}_i'\bm{W}_i\right)^{-1}$. This estimator, denoted CR3, closely approximates the jackknife re-sampling estimator \citep{Bell2002bias, Mancl2001covariance}.  
 However, CR3 tends to over-correct the bias of CR0, while the CR1 estimator tends to under-correct. 
 The next section describes in detail the BRL approach, which makes adjustments that are intermediate in magnitude between CR1 and CR3. 
 
@@ -242,7 +243,9 @@ If the working model and weight matrices are both taken to be identity matrices,
 
 The original formulation of $\bm{A}_i$ is problematic because, for some fixed effects models that are common in economic applications, Equation \ref{eq:CR2_criterion_BM} has no solution. 
 \citet{Angrist2009mostly} note that this problem occurs in balanced state-by-year panel models that include fixed effects for states and for years, where $\bm{I}_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}} \bm{\ddot{U}}_i'$ is not of full rank. 
-This problem can be addressed by using an alternative criterion to define the adjustment matrices, for which a solution always exists. 
+\citet{Young2016improved} reported that this problem occurred frequently when applying BRL to a large corpus of fitted regression models drawn from published studies.
+
+This issue can be solved by using an alternative criterion to define the adjustment matrices, for which a solution always exists. 
 Instead of (\ref{eq:CR2_criterion_BM}), we propose to use adjustment matrices $\bm{A}_i$ that satisfy:
 \begin{equation}
 \label{eq:CR2_criterion}
@@ -286,7 +289,8 @@ Using the more general definition of BRL, the CR2 adjustment matrices should be 
 A drawback of using the CR2 adjustment matrices is that it entails calculating the projection matrix $\bm{H_X}$ for the full set of $p$ covariates (i.e., including fixed effect indicators). 
 Given that the entire advantage of using absorption to calculate $\hat{\bs\beta}$ is to avoid computations involving large, sparse matrices, it is of interest to find methods for more efficiently calculating the CR2 adjustment matrices. 
 Some computational efficiency can be gained by using the fact that the residual projection matrix $\bm{I} - \bm{H_X}$ can be factored into components as $\left(\bm{I} - \bm{H_X}\right)_i = \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_i \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \left(\bm{I} - \bm{H_T}\right)$.
-In certain cases, further computational efficiency can be achieved by computing the adjustment matrices after absorbing the within-cluster fixed effects $\bm{T}$ (but not the between-cluster fixed effects $\bm{S}$). 
+
+In certain circumstances, further computational efficiency can be achieved by computing the adjustment matrices after absorbing the within-cluster fixed effects $\bm{T}$ (but not the between-cluster fixed effects $\bm{S}$). 
 Specifically, if the weights used for WLS estimation are the inverses of the working covariance model, so that $\bm{W}_i = \bs\Phi_i^{-1}$ for $i = 1,...,m$, then the adjustment matrices can be calculated without accounting for the within-cluster fixed effects. 
 This result is formalized in the following theorem.  
 
@@ -312,9 +316,11 @@ In contrast, if the working model proposed by \citet{Imbens2015robust} is instea
 \section{HYPOTHESIS TESTING}
 \label{sec:testing}
 
-The CR2 correction produces a CRVE that has reduced bias (compared to other CRVEs) when the number of clusters is small, leading to more accurate standard errors. However, standard errors are of limited inherent interest. Rather, their main use is for the construction of hypothesis tests and confidence intervals, which are typically based on cluster-robust Wald tests that are justified on an asymptotic basis as the number of clusters grows large (i.e., as $m \to \infty$). 
+The CR2 correction produces a CRVE that has reduced bias (compared to other CRVEs) when the number of clusters is small, leading to more accurate standard errors. However, standard errors are of limited inherent interest. Rather, their main use is for the construction of hypothesis tests and confidence intervals, which are typically based on Wald-type test statistics.
+
+Cluster-robust Wald tests are justified on an asymptotic basis as the number of clusters grows large (i.e., as $m \to \infty$). 
 Like the research on the bias of the CRVE estimator, evidence from a wide variety of contexts indicates that the asymptotic limiting distribution of robust Wald statistics may be a poor approximation when the number of clusters is small, even if corrections such as CR2 or CR3 are employed \citep{Bell2002bias, Bertrand2004how, Cameron2008bootstrap}. 
-Like the bias of the CRVE estimator itself, the accuracy of the asymptotic approximations depends on design features such as the degree of imbalance across clusters, skewness or leverage of the covariates, and the similarity of cluster sizes \citep[][\maskcitealp{Tipton2015small-F}]{McCaffrey2001generalizations, Webb2013wild, Carter2013asymptotic}. 
+Like the bias of the CRVE estimator itself, the accuracy of the asymptotic approximations depends on design features such as the degree of imbalance across clusters, skewness or leverage of the covariates, and the similarity of cluster sizes \citep[][\maskcitealp{Tipton2015small-F}]{McCaffrey2001generalizations, MacKinnon2016wild, Carter2013asymptotic}. 
 This suggests that, if hypothesis tests are to achieve accurate rejection rates in small samples, they should account for features of the design matrix.
 
 In this section, we develop a general method for conducting hypothesis tests based on CRVEs. We consider linear constraints on $\bs\beta$, where the null hypothesis has the form $H_0: \bm{C}\bs\beta = \bm{d}$ for fixed $q \times r$ matrix $\bm{C}$ and $q \times 1$ vector $\bm{d}$. 
@@ -899,7 +905,7 @@ For the artificial Hausman test, the AHT test has fewer than \Sexpr{round(Haus2_
 Empirical studies in economics often involve modeling data with a correlated error structure. 
 %Correlated errors arise in the analysis of multi-stage samples, cluster-randomized trials, panel data, and regression discontinuities with discrete forcing variables, among other study designs. 
 It is now routine to handle dependent error structures by using cluster-robust variance estimation, which provides asymptotically valid standard errors and hypothesis tests without making strong parametric assumptions about the error structure. 
-However, a growing body of recent work has drawn attention to the shortcomings of CRVE methods when the data include only a small or moderate number of independent clusters \citep{Cameron2008bootstrap, Cameron2015practitioners, Imbens2015robust, Webb2013wild}. 
+However, a growing body of recent work has drawn attention to the shortcomings of CRVE methods when the data include only a small or moderate number of independent clusters \citep{Cameron2008bootstrap, Cameron2015practitioners, Imbens2015robust, MacKinnon2016wild}. 
 In particular, Wald tests based on CRVE can have rejection rates far in excess of the nominal Type I error. 
 This problem is compounded by the fact that the performance of standard Wald tests depends on features of the study design beyond just the total number of clusters, which can make it difficult to determine whether standard, asymptotic valid CRVE methods are accurate. 
 
@@ -921,10 +927,10 @@ The idea of developing small-sample adjustments based on a working model may see
 However, simulation studies reported here and elsewhere \maskcitep{Tipton2015small-t, Tipton2015small-F} have demonstrated that the approach is actually robust to a high degree of misspecification in the working model. 
 Furthermore, while the working model provides necessary scaffolding when the number of clusters is small, its  influence tends to fall away as the number of clusters increases, so that the CR2 estimator and AHT maintain the same asymptotic robustness as standard CRVE methods. 
 
-%One outstanding problem with the CR2 variance estimator is that it can become computationally costly (or even infeasible) when the within-cluster sample sizes are large \citep{Mackinnon2014wild}. 
-%For example, \citet{Bertrand2004how} analyzed micro-level data from a 21-year panel of current population survey data, with clustering by state. Their data included some state-level clusters with over $n_i = 10,000$ individual observations. 
-%The CR2 adjustment matrices have dimension $n_i \times n_i$, and would be very expensive to compute in this application. 
-%Methods for improving the computational efficiency of the CR2 variance estimator (or alternative estimators that have similar performance to CR2), should be investigated further. 
+One outstanding problem with the CR2 variance estimator is that it can become computationally costly (or even infeasible) when the within-cluster sample sizes are large \citep{Mackinnon2015wildCIs}. 
+For example, \citet{Bertrand2004how} analyzed micro-level data from a 21-year panel of current population survey data, with clustering by state. Their data included some state-level clusters with over $n_i = 10,000$ individual observations. 
+The CR2 adjustment matrices have dimension $n_i \times n_i$, and would be very expensive to compute in this application. 
+Methods for improving the computational efficiency of the CR2 variance estimator (or alternative estimators that have similar performance to CR2), should be investigated further. 
 
 This paper has developed the CR2 estimator and AHT testing procedure for weighted least squares estimation of linear regression models. 
 Extensions to linear regression models with clustering in multiple, non-nested dimensions \citep[cf.][]{Cameron2011robust} appear to be possible, and their utility should be further investigated. 
