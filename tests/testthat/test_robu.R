@@ -200,7 +200,7 @@ test_that("order doesn't matter", {
   
   test_fit <- lapply(CR_types, function(x) coef_test(corr_small, vcov = x, test = "All"))
   test_scramble <- lapply(CR_types, function(x) coef_test(corr_scramble, vcov = x, test = "All"))
-  expect_equal(test_fit, test_scramble, tolerance = 10^-6)
+  expect_equal(test_fit, test_scramble, tolerance = 10^-5)
   
   constraints <- combn(length(coef_CR(corr_small)), 2, simplify = FALSE)
   Wald_fit <- Wald_test(corr_small, constraints = constraints, vcov = "CR2", test = "All")
