@@ -39,23 +39,23 @@ Then $\bm{B}_i^+ = \bm{V}\bs\Lambda^{-1}\bm{V}'$ and $\bm{B}_i^{+1/2} = \bm{V}\b
 &= \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{V}\bm{V}' \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i. 
 \end{aligned}\end{equation}
 
-Because $\bm{D}_i$, and $\bs\Phi$ are positive definite and $\bm{B}_i$ is symmetric, the eigen-vectors $\bm{V}$ define an orthonormal basis for the column span of $\left(\bm{I} - \bm{H_{\ddot{X}}}\right)_i$.
+Because $\bm{D}_i$, and $\bs\Phi$ are positive definite and $\bm{B}_i$ is symmetric, the eigen-vectors $\bm{V}$ define an orthonormal basis for the column span of $\left(\bm{I} - \bm{H_X}\right)_i$.
 We now show that $\bm{\ddot{U}}_i$ is in the column space of $\left(\bm{I} - \bm{H_X}\right)_i$. 
 Let $\bm{Z}_i$ be an $n_i \times (r + s)$ matrix of zeros. 
-Let $\bm{Z}_k = - \bm{\ddot{U}}_k \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1}$, for $k \neq j$ and take $\bm{Z} = \left(\bm{Z}_1',...,\bm{Z}_m'\right)'$. 
+Let $\bm{Z}_k = - \bm{\ddot{U}}_k \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1}$, for $k \neq i$ and take $\bm{Z} = \left(\bm{Z}_1',...,\bm{Z}_m'\right)'$. 
 Now observe that $\left(\bm{I} - \bm{H_T}\right) \bm{Z} = \bm{Z}$. 
 It follows that 
 \begin{align*}
 \left(\bm{I} - \bm{H_X}\right)_i \bm{Z} &= \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \left(\bm{I} - \bm{H_T}\right) \bm{Z} = \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \bm{Z} \\
 &= \bm{Z}_i - \bm{\ddot{U}}_i\bm{M_{\ddot{U}}}\sum_{k=1}^m \bm{\ddot{U}}_k'\bm{W}_k\bm{Z}_k \\
-&= \bm{\ddot{U}}_i\bm{M_{\ddot{U}}} \left(\sum_{k \neq j} \bm{\ddot{U}}_k' \bm{W}_k \bm{\ddot{U}} \right) \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1} = \bm{\ddot{U}}_i.
+&= \bm{\ddot{U}}_i\bm{M_{\ddot{U}}} \left(\sum_{k \neq i} \bm{\ddot{U}}_k' \bm{W}_k \bm{\ddot{U}} \right) \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1} = \bm{\ddot{U}}_i.
 \end{align*}
 Thus, there exists an $N \times (r + s)$ matrix $\bm{Z}$ such that $\left(\bm{I} - \bm{H_{\ddot{X}}}\right)_i \bm{Z} = \bm{\ddot{U}}_i$, i.e., $\bm{\ddot{U}}_i$ is in the column span of $\left(\bm{I} - \bm{H_X}\right)_i$. Because $\bm{D}_i \bm{W}_i$ is positive definite and $\bm{\ddot{R}}_i$ is a sub-matrix of $\bm{\ddot{U}}_i$, $\bm{D}_i\bm{W}_i\bm{\ddot{R}}_i$ is also in the column span of $\left(\bm{I} - \bm{H_X}\right)_i$. It follows that 
 \begin{equation}
 \label{eq:step2}
 \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{V}\bm{V}' \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i = \bm{\ddot{R}}_i' \bm{W}_i \bs\Phi_i \bm{W}_i \bm{\ddot{R}}_i.
 \end{equation}
-Substituting (\ref{eq:step2}) into (\ref{eq:step1}) demonstrates that $\bm{A}_i$ satisfies criterion (\ref{eq:CR2_criterion}).
+Substituting (\ref{eq:step2}) into (\ref{eq:step1}) demonstrates that $\bm{A}_i$ satisfies the generalized BRL criterion (Eq. 6 of the main paper).
 
 Under the working model, the residuals from cluster $i$ have mean $\bm{0}$ and variance \[
 \Var\left(\bm{\ddot{e}}_i\right) = \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i',\] 
@@ -141,6 +141,7 @@ ggplot(aes(m_fac, reject)) +
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.01)) + 
   facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate") + 
   theme_bw() + theme(legend.position = "none")
@@ -157,6 +158,7 @@ ggplot(aes(m_fac, reject)) +
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.10)) + 
   facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate") + 
   theme_bw() + theme(legend.position = "none")
@@ -171,6 +173,7 @@ filter(results_long, alpha==0.01 & m==15) %>%
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.01)) + 
   facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
@@ -185,6 +188,7 @@ filter(results_long, alpha==0.05 & m==15) %>%
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.05)) + 
   facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
@@ -199,6 +203,7 @@ filter(results_long, alpha==0.10 & m==15) %>%
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.10)) + 
   facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
@@ -213,6 +218,7 @@ filter(results_long, alpha==0.01 & m==30) %>%
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.01)) + 
   facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
@@ -227,6 +233,7 @@ filter(results_long, alpha==0.10 & m==30) %>%
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.10)) + 
   facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
@@ -241,6 +248,7 @@ filter(results_long, alpha==0.01 & m==50) %>%
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.01)) + 
   facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
@@ -254,6 +262,7 @@ filter(results_long, alpha==0.05 & m==50) %>%
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.05)) + 
   facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
@@ -267,6 +276,7 @@ filter(results_long, alpha==0.10 & m==50) %>%
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.10)) + 
   facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
@@ -280,6 +290,7 @@ filter(results_long, alpha==0.01 & test=="AHT") %>%
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.01)) + 
   facet_grid(m ~ q, labeller = "label_both", scales = "free") + 
   labs(x = "treatment effect variance", y = "Rejection rate", fill = "intra-class correlation", color = "intra-class correlation") + 
   theme_bw() + theme(legend.position = "bottom")
@@ -294,6 +305,7 @@ filter(results_long, alpha==0.05 & test=="AHT") %>%
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.05)) + 
   facet_grid(m ~ q, labeller = "label_both", scales = "free") + 
   labs(x = "treatment effect variance", y = "Rejection rate", fill = "intra-class correlation", color = "intra-class correlation") + 
   theme_bw() + theme(legend.position = "bottom")
@@ -308,6 +320,7 @@ filter(results_long, alpha==0.10 & test=="AHT") %>%
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.10)) + 
   facet_grid(m ~ q, labeller = "label_both", scales = "free") + 
   labs(x = "treatment effect variance", y = "Rejection rate", fill = "intra-class correlation", color = "intra-class correlation") + 
   theme_bw() + theme(legend.position = "bottom")

@@ -49,6 +49,11 @@ filter(results_compare, m==15 & n==18 & icc==0.05 &
 
 alpha_val <- 0.4
 
+breaks_cut <- function(alpha) {
+  function(limits) { c(pretty(limits, 4),alpha)}
+}
+
+
 # Figure 1
 
 filter(results_long, alpha == .05) %>%
@@ -82,3 +87,4 @@ filter(results_long, alpha==0.05 & test=="AHT" & icc == 0.25 & rho == 0.8 & trt_
   facet_wrap(~ m_lab, scales = "free") + 
   labs(x = "Study design", y = "Denominator degrees of freedom") + 
   theme_bw() + theme(legend.position = "none")
+

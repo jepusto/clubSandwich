@@ -21,7 +21,7 @@
 \usepackage{float}    % for fig.pos='H'
 \usepackage{rotfloat} % for sidewaysfigure
 
-\usepackage[textwidth=1in, textsize=tiny, disable]{todonotes}
+\usepackage[textwidth=1in, textsize=tiny]{todonotes}
 
 \newtheorem{thm}{Theorem}
 \newtheorem{lem}{Lemma}
@@ -70,11 +70,17 @@ New York, NY, USA 10027. Email: tipton@tc.columbia.edu}
 
 
 \begin{abstract}
-In panel data models and other regressions with unobserved effects, fixed effects estimation is often paired with cluster-robust variance estimation (CRVE) in order to account for heteroskedasticity and un-modeled dependence among the errors. Although asymptotically consist, CRVE can be biased downward when the number of clusters is small, leading to hypothesis tests with overly liberal rejection rates. More accurate tests can be constructed using bias-reduced linearization (BRL), which corrects the CRVE based on a working model, in conjunction with a Satterthwaite approximation for t-tests. We propose a generalization of BRL that can be applied in models with arbitrary sets of fixed effects, where the original BRL method is undefined, and describe how to apply the method when the regression is estimated after absorbing the fixed effects. We also propose a small-sample test for multiple-parameter hypotheses, which generalizes the Satterthwaite approximation for t-tests. In simulations covering a wide range of scenarios, we find that conventional cluster-robust Wald tests can severely over-reject while the proposed small-sample test maintains Type I error close to nominal levels. 
+In panel data models and other regressions with unobserved effects, fixed effects estimation is often paired with cluster-robust variance estimation (CRVE) in order to account for heteroskedasticity and un-modeled dependence among the errors. 
+Although asymptotically consist, CRVE can be biased downward when the number of clusters is small, leading to hypothesis tests with rejection rates that are too high. 
+More accurate tests can be constructed using bias-reduced linearization (BRL), which corrects the CRVE based on a working model, in conjunction with a Satterthwaite approximation for t-tests. 
+We propose a generalization of BRL that can be applied in models with arbitrary sets of fixed effects, where the original BRL method is undefined, and describe how to apply the method when the regression is estimated after absorbing the fixed effects. 
+We also propose a small-sample test for multiple-parameter hypotheses, which generalizes the Satterthwaite approximation for t-tests. 
+In simulations covering a wide range of scenarios, we find that conventional cluster-robust Wald tests can severely over-reject while the proposed small-sample test maintains Type I error close to nominal levels. 
+An R package implementing the proposed methods is available on the Comprehensive R Archive Network. 
 \end{abstract}
 
 \noindent%
-{\it Keywords:} cluster dependence, fixed effects, robust standard Errors, small samples
+{\it Keywords:} cluster dependence, fixed effects, robust standard errors, small samples
 \vfill
 
 \newpage
@@ -118,7 +124,9 @@ Third, extant methods for hypothesis testing based on BRL are limited to single-
 This paper addresses each of these concerns in turn, with the aim of extending the BRL method so that is suitable for general application. 
 First, we describe a simple modification of the BRL adjustment that remains well-defined in models with arbitrary sets of fixed effects, where existing BRL adjustments break down. 
 Second, we demonstrate how to calculate the BRL adjustments based on the fixed effects estimator and identify conditions under which first-stage absorption of the fixed effects can be ignored.
-Finally, we propose a procedure for testing multiple-parameter hypotheses by approximating the sampling distribution of the Wald statistic using Hotelling's $T^2$ distribution with estimated degrees of freedom. The method is a generalization of the Satterthwaite correction proposed by \citet{Bell2002bias} for single parameter constraints.
+Finally, we propose a procedure for testing multiple-parameter hypotheses by approximating the sampling distribution of the Wald statistic using Hotelling's $T^2$ distribution with estimated degrees of freedom. 
+The method is a generalization of the Satterthwaite correction proposed by \citet{Bell2002bias} for single parameter constraints. 
+The proposed methods are implemented in an R package, available on the Comprehensive R Archive Network.\todo{Cite package clubSandwich.} 
 
 Our work is related to a stream of recent literature that has examined methods for cluster-robust inference with a small number of clusters. 
 \citet{Conley2011inference} proposed methods for hypothesis testing in a difference-in-differences setting where the number of treated units is small and fixed, while the number of untreated units increases asymptotically. 
@@ -126,7 +134,7 @@ Our work is related to a stream of recent literature that has examined methods f
 \citet{Young2016improved} proposed a Satterthwaite correction for t-tests based on a different type of bias correction to the CRVE, where the bias correction term is derived under a working model.
 \citet{Cameron2008bootstrap} investigated a range of bootstrapping procedures that provide improved Type-I error control in small samples, finding that a cluster wild-bootstrap technique was particularly accurate in small samples. 
 Nearly all of this work has focused on single-parameter hypothesis tests only. 
-For multiple-parameter constraints, \citet{Cameron2015practitioners} suggested an ad-hoc degrees of freedom adjustment and noted, as an alternative, that bootstrapping techniques can in principle be applied to multiple-parameter tests. 
+For multiple-parameter constraints, \citet{Cameron2015practitioners} suggested an ad hoc degrees of freedom adjustment and noted, as an alternative, that bootstrapping techniques can in principle be applied to multiple-parameter tests. 
 However, little methodological work has examined the accuracy of multiple-parameter tests.
 
 The paper is organized as follows. The remainder of this section introduces our econometric framework and reviews the standard CRVE methods, as implemented in most software applications.
@@ -143,21 +151,19 @@ We consider a linear regression model of the form,
 \label{eq:fixed_effects}
 \bm{y}_i = \bm{R}_i \bs\beta + \bm{S}_i \bs\gamma + \bm{T}_i \bs\mu + \bs\epsilon_i,
 \end{equation}
-where $\bm{y}_i$ is a vector of $n_i$ outcomes for cluster $i$,  $\bm{R}_i$ is an $n_i \times r$ matrix containing predictors of primary interest (e.g., policy variables) and any additional controls, $\bm{S}_i$ is an $n_i \times s$ matrix describing fixed effects that vary across clusters, and $\bm{T}_i$ is an $n_i \times t$ matrix describing fixed effects that are identified only within clusters.\footnote{The distinction between the covariates $\bm{R}_i$ versus the fixed effects $\bm{S}_i$ is arbitrary and depends on the analyst's inferential goals. However, the distinction between the two fixed effect matrices $\bm{S}_i$ and $\bm{T}_i$ is unambiguous, in that the within-cluster fixed effects must satisfy $\bm{T}_h \bm{T}_i' = \bm{0}$ for $h \neq i$.}
-In a fixed effects model for state-by-year panel data, $\bm{R}_i$ would include indicator variables for policy changes, as well as additional demographic controls; $\bm{S}_i$ would include year fixed effects; and $\bm{T}_i$ would indicate state fixed effects. 
+where $\bm{y}_i$ is a vector of $n_i$ outcomes for cluster $i$,  $\bm{R}_i$ is an $n_i \times r$ matrix containing predictors of primary interest (e.g., policy variables) and any additional controls, $\bm{S}_i$ is an $n_i \times s$ matrix describing fixed effects that vary across clusters, and $\bm{T}_i$ is an $n_i \times t$ matrix describing cluster-specific fixed effects, which must satisfy $\bm{T}_h \bm{T}_i' = \bm{0}$ for $h \neq i$.
+Note that the distinction between the covariates $\bm{R}_i$ versus the fixed effects $\bm{S}_i$ is arbitrary and depends on the analyst's inferential goals.
+In a fixed effects model for state-by-year panel data, $\bm{R}_i$ would include indicator variables for policy changes, as well as additional demographic controls; $\bm{S}_i$ would include year fixed effects; and $\bm{T}_i$ would indicate state fixed effects (or perhaps also state-specific time trends). 
 Interest would center on testing hypotheses regarding the coefficients in $\bs\beta$ that correspond to the policy indicators, while $\bs\gamma$ and $\bs\mu$ would be treated as incidental. 
 
 We shall assume that $\E\left(\bs\epsilon_i\left|\bm{R}_i,\bm{S}_i, \bm{T}_i\right.\right) = \bm{0}$ and $\Var\left(\bs\epsilon_i\left|\bm{R}_i,\bm{S}_i,\bm{T}_i\right.\right) = \bs\Sigma_i$, for $i = 1,...,m$, where the form of $\bs\Sigma_1,...,\bs\Sigma_m$ may be unknown but the errors are independent across clusters. 
-Let $\bm{U}_i = \left[\bm{R}_i \ \bm{S}_i \right]$ denote the set of predictors that vary across clusters, $\bm{X}_i = \left[\bm{R}_i \ \bm{S}_i \ \bm{T}_i \right]$ denote the full set of predictors, $\bs\alpha = \left(\bs\beta', \bs\gamma', \bs\mu' \right)'$, and $p = r + s + t$.
+Let $\bm{U}_i = \left[\bm{R}_i \ \bm{S}_i \right]$ denote the set of predictors that vary across clusters\todo{Clarify this?}, $\bm{X}_i = \left[\bm{R}_i \ \bm{S}_i \ \bm{T}_i \right]$ denote the full set of predictors, $\bs\alpha = \left(\bs\beta', \bs\gamma', \bs\mu' \right)'$, and $p = r + s + t$.
 Let $N = \sum_{i=1}^m n_i$ denote the total number of observations.
 Let $\bm{y}$, $\bm{R}$, $\bm{S}$, $\bm{T}$, $\bm{U}$, $\bm{X}$, and $\bs\epsilon$ denote the matrices obtained by stacking their corresponding components, as in $\bm{R} = \left(\bm{R}_1' \ \bm{R}_2' \ \cdots \ \bm{R}_m'\right)'$. 
 
 We assume that $\bs\beta$ is estimated by weighted least squares (WLS) using symmetric, full rank weighting matrices $\bm{W}_1,...,\bm{W}_m$. 
-Clearly, the WLS estimator includes OLS as a special case.\footnote{
-The WLS estimator also encompasses the estimator proposed by \citet{Ibragimov2010tstatistic} for clustered data. 
-Assuming that $\bm{X}_i$ has rank $p$ for $i = 1,...,m$, their proposed approach involves estimating $\bs\beta$ separately within each cluster and taking the simple average of these estimates. 
-The resulting average is equivalent to the WLS estimator with weights $\bm{W}_i = \bm{X}_i \left(\bm{X}_i'\bm{X}_i\right)^{-2} \bm{X}_i$.} 
-The WLS estimator also encompasses feasible GLS, where it is assumed that $\Var\left(\bm{e}_i\left|\bm{X}_i\right.\right) = \bs\Phi_i$, a known function of a low-dimensional parameter. 
+Clearly, the WLS estimator includes OLS as a special case.
+More generally, the WLS estimator encompasses feasible GLS, where it is assumed that $\Var\left(\bm{e}_i\left|\bm{X}_i\right.\right) = \bs\Phi_i$, a known function of a low-dimensional parameter. 
 For example, an auto-regressive error structure might be posited to describe repeated measures on an individual over time. 
 The weighting matrices are then taken to be $\bm{W}_i = \hat{\bs\Phi}_i^{-1}$, where the $\hat{\bs\Phi}_i$ are constructed from estimates of the variance parameter.
 Finally, for analysis of data from complex survey designs, WLS may be used with sampling weights in order to account for unequal selection probabilities.
@@ -268,7 +274,7 @@ The Moore-Penrose inverse is well-defined and unique even when $\bm{B}_i$ is not
 
 \begin{thm}
 \label{thm:BRL_FE}
-Let $\bm{L}_i = \left(\bm{\ddot{U}}'\bm{\ddot{U}} - \bm{\ddot{U}}_i'\bm{\ddot{U}}_i\right)$, where $\bm{\ddot{U}} = \left(\bm{I} - \bm{H_T}\right)\bm{U}$, and assume that $\bm{L}_1,...,\bm{L}_m$ have full rank $r + s$. Further assume that $\Var\left(\bs\epsilon_i\left|\bm{X}_i\right.\right) = \sigma^2 \bs\Phi_i$, for $i = 1,...,m$. Then the adjustment matrix $\bm{A}_i$ defined in (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) satisfies criterion (\ref{eq:CR2_criterion}) and the CR2 variance estimator is exactly unbiased.
+Let $\bm{L}_i = \left(\bm{\ddot{U}}'\bm{W}\bm{\ddot{U}} - \bm{\ddot{U}}_i'\bm{W}_i\bm{\ddot{U}}_i\right)$, where $\bm{\ddot{U}} = \left(\bm{I} - \bm{H_T}\right)\bm{U}$, and assume that $\bm{L}_1,...,\bm{L}_m$ have full rank $r + s$. Further assume that $\Var\left(\bs\epsilon_i\left|\bm{X}_i\right.\right) = \sigma^2 \bs\Phi_i$, for $i = 1,...,m$. Then the adjustment matrix $\bm{A}_i$ defined in (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) satisfies criterion (\ref{eq:CR2_criterion}) and the CR2 variance estimator is exactly unbiased.
 \end{thm}
 
 Proof is given in Section S1 of the supplementary materials. If $\bm{B}_i$ is of full rank, then the adjustment matrices also satisfy the original criterion (\ref{eq:CR2_criterion_BM}). The main implication of Theorem \ref{thm:BRL_FE} is that the CR2 variance estimator remains well-defined, even in models with large sets of fixed effects.
@@ -458,7 +464,8 @@ For the difference-in-differences design, we used the analytic model
 y_{hijk} = \mu_{hk} + \alpha_i + \gamma_j + \epsilon_{ijk},
 \end{equation}
 where $\mu_{hk}$ is the mean of outcome $k$ under condition $h$, $\alpha_i$ is a fixed effect for each cluster, $\gamma_j$ is a fixed effect for each unit within the cluster (i.e., per time-point), and $\epsilon_{ijk}$ is residual error. 
-For the cluster-randomized designs, fixed effects for clusters were omitted because the clusters are nested within treatment conditions. For the randomized block designs, the fixed effects for time-points were omitted for simplicity.
+For the cluster-randomized designs, fixed effects for clusters were omitted because the clusters are nested within treatment conditions. 
+For the randomized block designs, treatments were blocked by cluster and the fixed effects for time-points were omitted for simplicity.
 The analytic model was estimated by OLS after absorbing any fixed effects, and so the ``working'' model amounts to assuming that the errors are independent and identically distributed. 
 Note that the working model departs from the true data generating model both because of correlation among the outcomes ($\rho > 0$) and because of treatment effect variability ($\sigma_\delta^2 > 0$). 
 The range of parameter combinations used in the true data generating model thus allows us to examine the performance of the AHT test under both small and large degrees of working model misspecification. 
@@ -509,13 +516,13 @@ filter(results_compare, m==15 & n==18 & icc==0.05 &
 
 <<overview, fig.width = 10, fig.height = 5, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT and standard tests for $\\alpha = .05$, by dimension of hypothesis ($q$) and sample size ($m$). The solid horizontal line indicates the stated $\\alpha$ level and the dashed line indicates an upper confidence bound on simulation error.", fig.env = "sidewaysfigure">>=
 
-
 filter(results_long, alpha == .05) %>%
 ggplot(aes(m_fac, reject)) + 
   geom_boxplot(coef = Inf, alpha = alpha_val, fill = "blue", color = "blue") + 
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.05)) + 
   facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate") + 
   theme_bw() + theme(legend.position = "none")
@@ -554,9 +561,11 @@ filter(results_long, alpha==0.05 & m==30) %>%
   geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.05)) + 
   facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
-  theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
+  theme_bw() + 
+  theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
 
 filter(results_long, m == 30 & test == "AHT" & alpha == .05) %>%
   summarise(min = min(reject), max = max(reject)) ->
@@ -577,7 +586,7 @@ Because the CR2 correction and AHT degrees of freedom are both based on a workin
 Across the nine error structures, the range of rejection rates remains very similar for the AHT test, with no clear pattern related to the degree of mis-specification (see supplementary figures S11-S13). 
 These findings follow closely those from \maskcitet{Tipton2015small-F}, which also found that the Type I error of the AHT test was close to nominal even when the working model was very discrepant from the data-generating model.
 
-<<df, fig.width = 8, fig.height = 3, out.width = "\\linewidth", fig.cap = "Range of denominator degrees of freedom for AHT test, by number of clusters and study design. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
+<<df, fig.width = 8, fig.height = 3.3, out.width = "\\linewidth", fig.cap = "Range of denominator degrees of freedom for AHT test, by number of clusters and study design. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
 
 filter(results_long, alpha==0.05 & test=="AHT" & icc == 0.25 & rho == 0.8 & trt_var == 0.04) %>%
   mutate(m_lab = paste("m =", m)) %>%
@@ -585,7 +594,8 @@ filter(results_long, alpha==0.05 & test=="AHT" & icc == 0.25 & rho == 0.8 & trt_
   geom_boxplot(coef = Inf, alpha = alpha_val) + 
   facet_wrap(~ m_lab, scales = "free") + 
   labs(x = "Study design", y = "Denominator degrees of freedom") + 
-  theme_bw() + theme(legend.position = "none")
+  theme_bw() + 
+  theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
 
 @
 
