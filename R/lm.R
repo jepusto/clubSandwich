@@ -32,22 +32,6 @@ vcovCR.lm <- function(obj, cluster, type, target = NULL, inverse_var = NULL) {
 # model_matrix()
 # residuals_CR()
 # coef()
-
-#-------------------------------------
-# Get (model-based) working variance matrix 
-#-------------------------------------
-
-targetVariance.lm <- function(obj, cluster) {
-  matrix_list(rep(1, nobs(obj)), cluster, "both")
-}
-
-#-------------------------------------
-# Get weighting matrix
-#-------------------------------------
-
-weightMatrix.lm <- function(obj, cluster) {
-  weights <- weights(obj)
-  if (is.null(weights)) weights <- 1
-  W <- rep(weights, length.out = nobs(obj))
-  matrix_list(W, cluster, "both")
-}
+# nobs()
+# targetVariance()
+# weightMatrix()

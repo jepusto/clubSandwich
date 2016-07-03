@@ -4,11 +4,22 @@
 
 targetVariance <- function(obj, cluster) UseMethod("targetVariance")
 
+targetVariance.default <- function(obj, cluster) {
+  matrix_list(rep(1, nobs(obj)), cluster, "both")
+}
+
 #----------------------------------------------
 # get weighting matrix
 #----------------------------------------------
 
 weightMatrix <- function(obj, cluster) UseMethod("weightMatrix")
+
+weightMatrix.default <- function(obj, cluster) {
+  weights <- weights(obj)
+  if (is.null(weights)) weights <- 1
+  W <- rep(weights, length.out = nobs(obj))
+  matrix_list(W, cluster, "both")
+}
 
 #----------------------------------------------
 # get X matrix
