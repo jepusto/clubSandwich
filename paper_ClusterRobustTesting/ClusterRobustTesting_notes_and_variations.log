@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  25 AUG 2015 11:56
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  5 JUL 2016 09:32
 entering extended mode
 **ClusterRobustTesting_notes_and_variations.tex
 
@@ -543,6 +543,18 @@ File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 134.
 
+
+Package natbib Warning: Citation `Imbens2012robust' on page 2 undefined on inpu
+t line 139.
+
+
+Package natbib Warning: Citation `Webb2013wild' on page 2 undefined on input li
+ne 143.
+
+
+Package natbib Warning: Citation `Kline2012score' on page 2 undefined on input 
+line 144.
+
 [2] [3] [4] [5] [6] [7]
 Overfull \hbox (27.76999pt too wide) in paragraph at lines 320--320
 [][][] 
@@ -563,6 +575,14 @@ Overfull \hbox (27.76999pt too wide) in paragraph at lines 345--345
 [][][] 
  []
 
+
+Package natbib Warning: Citation `Tipton2015small' on page 9 undefined on input
+ line 353.
+
+
+Package natbib Warning: Citation `Webb2013wild' on page 9 undefined on input li
+ne 353.
+
 [9] [10]
 Overfull \hbox (27.76999pt too wide) in paragraph at lines 399--399
 [][][] 
@@ -572,6 +592,10 @@ Overfull \hbox (27.76999pt too wide) in paragraph at lines 399--399
 Overfull \hbox (27.76999pt too wide) in paragraph at lines 399--399
 [][][] 
  []
+
+
+Package natbib Warning: Citation `Webb2013wild' on page 11 undefined on input l
+ine 409.
 
 [11]
 Overfull \hbox (27.76999pt too wide) in paragraph at lines 425--425
@@ -584,16 +608,25 @@ Overfull \hbox (27.76999pt too wide) in paragraph at lines 425--425
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 432--432
-[][][] 
- []
+Package natbib Warning: Citation `Webb2013wild' on page 12 undefined on input l
+ine 432.
 
 
 Overfull \hbox (27.76999pt too wide) in paragraph at lines 432--432
 [][][] 
  []
 
-[12] [13]
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 432--432
+[][][] 
+ []
+
+[12]
+
+Package natbib Warning: Citation `Zhang2012two-wayANOVA' on page 13 undefined o
+n input line 447.
+
+[13]
 Overfull \hbox (27.76999pt too wide) in paragraph at lines 473--473
 [][][] 
  []
@@ -656,14 +689,18 @@ at $\OT1/cmr/bx/n/12 S[][]S[] \OT1/cmr/m/n/12 =$
 
 
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
-bustTesting_notes_and_variations.bbl [17] [18] [19]) [20]
+bustTesting_notes_and_variations.bbl [17] [18])
+
+Package natbib Warning: There were undefined citations.
+
+[19]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting_notes_and_variations.aux) ) 
 Here is how much of TeX's memory you used:
- 12908 strings out of 493921
- 255261 string characters out of 3144871
- 315643 words of memory out of 3000000
- 15949 multiletter control sequences out of 15000+200000
+ 12898 strings out of 493921
+ 254995 string characters out of 3144871
+ 315502 words of memory out of 3000000
+ 15939 multiletter control sequences out of 15000+200000
  15855 words of font info for 56 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
  62i,14n,76p,768b,698s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -687,10 +724,10 @@ rogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Prog
 ram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Progra
 m Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Program 
 Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on ClusterRobustTesting_notes_and_variations.pdf (20 pages, 2986
-81 bytes).
+Output written on ClusterRobustTesting_notes_and_variations.pdf (19 pages, 2968
+55 bytes).
 PDF statistics:
- 150 PDF objects out of 1000 (max. 8388607)
+ 147 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  13 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -1,3 +1,14 @@
+\footnote{ 
+\citet{Cameron2015practitioners} highlight that this problem also arises with the CR1S estimator because it uses a multiplicative correction to the residuals that depends on the total number of covariates estimated in the model. 
+With the LSDV estimator, the constant is calculated as $c_S = \sqrt{(mN) / [(m - 1)(N - p)]}$, where $p$ is the total number of covariates, including fixed effects. 
+In contrast, if the fixed effects are absorbed, the constant is calculated as $c_S = \sqrt{(mN) / [(m - 1)(N - r)]}$, where $r$ is the number of covariates that are not absorbed. 
+The difference between the correction factors can be substantial if the clusters are small.}
+
+\footnote{Alternately, for any of the CRVEs one could instead use an ``empirical'' estimate of the degrees of freedom, constructed by substituting $\bm{e}_i \bm{e}_i'$ in place of $\bs\Phi_i$. 
+However, \citet{Bell2002bias} found using simulation that this plug-in degrees of freedom estimate led to very conservative rejection rates.}
+
+However, when the degrees of freedom are very small, the t-distribution approximation to the sampling distribution does not hold, and the Type I error can be higher than the stated $\alpha$ level.\footnote{When the degrees of freedom are smaller than 4 or 5, \maskcitet{Tipton2015small-t} suggested using a smaller $\bs\alpha$ level for hypothesis testing in order to partially compensate. Another possibility would be to use the saddlepoint approximation proposed by \citet{McCaffrey2006improved}.}
+
 \footnote{Working in a panel data setting, \citet{Hansen2007asymptotic} and \citet{Donald2007inference} identified conditions under which cluster-robust test statistics converge to a limiting $t$-distribution as the number of measurement occasions increases, holding the number of independent units fixed.}
 
 We further assume that $\left(\bm{U}'\bm{U} - \bm{U}_i'\bm{U}_i\right)$ is of full rank for $i = 1,...,m$.
