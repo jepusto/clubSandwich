@@ -187,7 +187,7 @@ The WLS estimator of $\bs\beta$ can then be written as
 \label{eq:WLS}
 \bs{\hat\beta} = \bm{M_{\ddot{R}}} \sum_{i=1}^m \bm{\ddot{R}}_i' \bm{W}_i \bm{\ddot{y}}_i. 
 \end{equation}
-This estimator is algebraically identical to the LSDV estimator, $\bs{\hat\beta} = \bm{K}'\bm{M_X} \bm{X}' \bm{W} \bm{y}$, but avoids the need to solve a system of $p$ linear equations. In the remainder, we focus on the more general case in which fixed effects are absorbed before estimation of $\bs\beta$. 
+This estimator is algebraically identical to the LSDV estimator, $\bs{\hat\beta} = \bm{K}'\bm{M_X} \bm{X}' \bm{W} \bm{y}$, but avoids the need to solve a system of $p$ linear equations. In the remainder, we assume that fixed effects are absorbed before estimation of $\bs\beta$. 
 %For models that do not include within-cluster fixed effects, so that the full covariate matrix is $\bm{U} = \left[\bm{R} \ \bm{S}\right]$, all of the results hold after substituting $\bm{U}$ for $\bm{\ddot{R}}$. 
 
 \subsection{Standard CRVE}
@@ -202,7 +202,7 @@ which depends upon the unknown variance matrices $\bs\Sigma_i$.
 %The model-based variance estimator would substitute estimates of $\bs\Sigma_i$ into (\ref{eq:var_WLS}).
 %However, if the model is misspecified, this estimator will be inconsistent and inferences based upon it will be invalid.
 The CRVE involves estimating $\Var\left(\bs{\hat\beta}\right)$ empirically, without imposing structural assumptions on $\bs\Sigma_i$. 
-While there are several versions of this approach, all can be written in the form
+There are several versions of this approach, all of which can be written as
 \begin{equation}
 \label{eq:V_small}
 \bm{V}^{CR} = \bm{M_{\ddot{R}}}\left(\sum_{i=1}^m \bm{\ddot{R}}_i'\bm{W}_i \bm{A}_i \bm{e}_i \bm{e}_i' \bm{A}_i' \bm{W}_i \bm{\ddot{R}}_i\right) \bm{M_{\ddot{R}}},
@@ -210,7 +210,7 @@ While there are several versions of this approach, all can be written in the for
 where $\bm{e}_i = \bm{Y}_i - \bm{X}_i \bs{\hat\beta}$ is the vector of residuals from cluster $i$ and $\bm{A}_i$ is some $n_i$ by $n_i$ adjustment matrix. 
 
 The form of the adjustment matrices parallels those of the heteroskedasticity-consistent variance estimators proposed by \citet*{MacKinnon1985some}. 
-The most basic CRVE, described by \citet{Liang1986longitudinal}, uses $\bm{A}_i = \bm{I}_i$, an $n_i \times n_i$ identity matrix. 
+The original and most basic CRVE, described by \citet{Liang1986longitudinal}, uses $\bm{A}_i = \bm{I}_i$, an $n_i \times n_i$ identity matrix. 
 Following \citet{Cameron2015practitioners}, we refer to this estimator as CR0. 
 This estimator is biased towards zero because the cross-product of the residuals $\bm{e}_i \bm{e}_i'$ tends to under-estimate the true variance $\bs\Sigma_i$ in cluster $i$.
 A rough bias adjustment is to take $\bm{A}_i = c\bm{I}_i$, where $c = \sqrt{(m/(m-1))}$; we denote this adjusted estimator as CR1. Some functions in Stata use a slightly different correction factor $c_S = \sqrt{(m N)/[(m - 1)(N - p)]}$; we will refer to the adjusted estimator using $c_S$ as CR1S. When $N >> p$, $c_S \approx \sqrt{m/(m-1)}$ and so CR1 and CR1S will be very similar.
@@ -307,10 +307,10 @@ Let $\bm{\tilde{A}}_i = \bm{D}_i'\bm{\tilde{B}}_i^{+1/2} \bm{D}_i$, where
 \label{eq:CR2_B_tilde}
 \bm{\tilde{B}}_i = \bm{D}_i\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_i \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \bs\Phi \left(\bm{I} - \bm{H_{\ddot{S}}}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_i' \bm{D}_i'.
 \end{equation}
-If $\bm{T}_i \bm{T}_k' = \bm{0}$ for $j \neq k$ and $\bm{W} = \bs\Phi^{-1}$, then $\bm{A}_i = \bm{\tilde{A}}_i$. 
+If $\bm{T}_i \bm{T}_k' = \bm{0}$ for $i \neq k$ and $\bm{W} = \bs\Phi^{-1}$, then $\bm{A}_i = \bm{\tilde{A}}_i$. 
 \end{thm}
 
-Proof is given in the supplementary materials.
+Proof is given in Section S2 of the supplementary materials.
 The main implication of Theorem \ref{thm:absorb} is that the more computationally tractable formula $\bm{\tilde{B}}_i$ can be used in the common case that the weighting matrices are the inverse of the working covariance model.
 Following the working model suggested by \citet{Bell2002bias}, in which $\bs\Phi = \bm{I}$, the above theorem shows that the adjustment method is invariant to the choice of estimator so long as the model is estimated by OLS (i.e., with $\bm{W} = \bm{I}$).
 %In this case, the CR2 adjustment matrices then simplify further to $\bm{A}_i = \left(\bm{I}_i - \bm{\ddot{U}}_i\left(\bm{\ddot{U}}'\bm{\ddot{U}}\right)^{-1}\bm{\ddot{U}}_i'\right)^{+1/2}$.
