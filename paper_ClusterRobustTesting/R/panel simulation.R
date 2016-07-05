@@ -485,7 +485,7 @@ constraints <- list(t_B = "outcome1:trtB",
 # design parameters
 
 design_factors <- list(design = 1:length(designs),
-                       iterations = 10000,
+                       iterations = 50000,
                        m = c(15,30,50), 
                        n = c(18,30), 
                        icc = c(0.05, 0.15, 0.25), 
@@ -506,18 +506,18 @@ lengths(design_factors)
 nrow(params)
 head(params)
 
-# p_row <- nrow(params) 
-# test_params <- params[p_row,]
-# iters <- 10^(1:6)
+# test_nrows <- 5
+# test_params <- params[sample(nrow(params), size = test_nrows),]
+# iters <- 10^(1:5)
 # times <- sapply(iters[1:4], function(t) {
 #   test_params$iterations <- t
-#   system.time(plyr::splat(run_sim)(test_params))
+#   system.time(plyr::mdply(test_params, .fun = run_sim))
 # })
 # 
 # (time_dat <- data.frame(iters, rbind(t(times[1:3,]), matrix(NA, length(iters) - ncol(times), 3))))
 # summary(time_lm <- lm(elapsed ~ iters, data = time_dat))
 # 
-# predict(time_lm, newdata = time_dat) / 60^2
+# predict(time_lm, newdata = time_dat) * nrow(params) / test_nrows / 60^2 / 7
 
 #--------------------------------------------------------
 # run simulations in parallel
@@ -525,8 +525,8 @@ head(params)
 library(Pusto)
 library(plyr)
 
-cluster <- start_parallel(source_obj, libraries = c("mvtnorm","stringr"))
-clusterEvalQ(cluster, devtools::load_all("clubSandwich"))
+cluster <- start_parallel(source_obj = source_obj, libraries = c("mvtnorm","stringr"))
+clusterEvalQ(cluster, devtools::load_all())
 
 system.time(results <- mdply(params, .fun = run_sim, .parallel = TRUE))
 
