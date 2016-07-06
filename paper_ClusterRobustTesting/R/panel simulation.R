@@ -501,15 +501,15 @@ params$seed <- round(runif(nrow(params)) * 2^30)
 
 
 
-# All look right?
-lengths(design_factors)
-nrow(params)
-head(params)
-
-# test_nrows <- 5
+# # All look right?
+# lengths(design_factors)
+# nrow(params)
+# head(params)
+# 
+# test_nrows <- 10
 # test_params <- params[sample(nrow(params), size = test_nrows),]
-# iters <- 10^(1:5)
-# times <- sapply(iters[1:4], function(t) {
+# iters <- c(10,50,100,500,1000,5000,10000,50000)
+# times <- sapply(iters[1:5], function(t) {
 #   test_params$iterations <- t
 #   system.time(plyr::mdply(test_params, .fun = run_sim))
 # })
@@ -540,16 +540,3 @@ results_clean <- within(results, {
 head(results_clean, 30)
 
 save(designs, constraints, params, results, file = "paper_ClusterRobustTesting/R/Panel simulation results.Rdata")
-
-library(mailR)
-send.mail(from = "jepusto@gmail.com",
-          to = "pusto@austin.utexas.edu",
-          subject = "all done",
-          body = "Here you go!",
-          attach.files = "paper_ClusterRobustTesting/R/Panel simulation results.Rdata",
-          smtp = list(host.name = "smtp.gmail.com", 
-                      port = 465, 
-                      user.name = "jepusto", 
-                      passwd = "xiqzdlacycwuksdf", 
-                      ssl = TRUE),
-          authenticate = TRUE)
