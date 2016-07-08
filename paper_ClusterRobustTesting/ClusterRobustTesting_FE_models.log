@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  5 JUL 2016 15:30
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  8 JUL 2016 16:14
 entering extended mode
 **ClusterRobustTesting_FE_models.tex
 
@@ -643,17 +643,7 @@ Overfull \hbox (27.76999pt too wide) in paragraph at lines 175--175
 [][][] 
  []
 
-[4]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 206--206
-[][][] 
- []
-
-
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 206--206
-[][][] 
- []
-
-[5] [6] [7] [8] [9] [10] [11] [12]
+[4] [5] [6] [7] [8] [9] [10] [11] [12]
 Overfull \hbox (27.76999pt too wide) in paragraph at lines 407--407
 [][][] 
  []
@@ -677,51 +667,55 @@ Overfull \hbox (27.76999pt too wide) in paragraph at lines 449--449
 
 Package xcolor Warning: Incompatible color definition on input line 522.
 
-<CR_fig/overview-1.pdf, id=77, 722.7pt x 361.35pt>
+<CR_fig/overview-1.pdf, id=77, 578.16pt x 686.565pt>
 File: CR_fig/overview-1.pdf Graphic file (type pdf)
- <use CR_fig/overview-1.pdf>
+
+<use CR_fig/overview-1.pdf>
 Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 524.
-(pdftex.def)             Requested size: 642.45122pt x 321.22556pt.
+(pdftex.def)             Requested size: 462.26999pt x 548.93846pt.
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 547--547
+[][][] 
+ []
+
+
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 547--547
+[][][] 
+ []
 
 [18] [19 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/
 CR_fig/overview-1.pdf>]
 
-Package xcolor Warning: Incompatible color definition on input line 549.
+Package xcolor Warning: Incompatible color definition on input line 550.
 
-<CR_fig/balance-1.pdf, id=94, 722.7pt x 397.485pt>
+<CR_fig/balance-1.pdf, id=94, 578.16pt x 722.7pt>
 File: CR_fig/balance-1.pdf Graphic file (type pdf)
  <use CR_fig/balance-1.pdf>
-Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 551.
-(pdftex.def)             Requested size: 642.45122pt x 353.3481pt.
+Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 552.
+(pdftex.def)             Requested size: 462.26999pt x 577.82996pt.
 
 
-Package xcolor Warning: Incompatible color definition on input line 575.
+LaTeX Warning: Float too large for page by 50.50346pt on input line 557.
 
-<CR_fig/df-1.pdf, id=95, 578.16pt x 237.88875pt>
+[20] [21 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/
+CR_fig/balance-1.pdf>]
+
+Package xcolor Warning: Incompatible color definition on input line 578.
+
+<CR_fig/df-1.pdf, id=110, 578.16pt x 237.88875pt>
 File: CR_fig/df-1.pdf Graphic file (type pdf)
  <use CR_fig/df-1.pdf>
-Package pdftex.def Info: CR_fig/df-1.pdf used on input line 577.
+Package pdftex.def Info: CR_fig/df-1.pdf used on input line 580.
 (pdftex.def)             Requested size: 462.26999pt x 190.20235pt.
- [20]
-[21 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
-g/balance-1.pdf>] [22 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterR
-obustTesting/CR_fig/df-1.pdf>] [23] [24]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 681--681
+
+[22 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
+g/df-1.pdf>] [23] [24] [25] [26] [27] [28]
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 765--765
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 681--681
-[][][] 
- []
-
-[25] [26] [27] [28]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 762--762
-[][][] 
- []
-
-
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 762--762
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 765--765
 [][][] 
  []
 
@@ -734,20 +728,21 @@ Missing character: There is no ú in font cmr12!
 Missing character: There is no ‚ in font cmr12!
 Missing character: There is no Ä in font cmr12!
 Missing character: There is no ù in font cmr12!
+ [30]
 Missing character: There is no ‚ in font cmr12!
 Missing character: There is no Ä in font cmr12!
 Missing character: There is no ì in font cmr12!
- [30] [31]) [32]
+ [31]) [32]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting_FE_models.aux) ) 
 Here is how much of TeX's memory you used:
- 14713 strings out of 493921
- 285289 string characters out of 3144871
- 326635 words of memory out of 3000000
- 17714 multiletter control sequences out of 15000+200000
+ 14706 strings out of 493921
+ 285139 string characters out of 3144871
+ 325550 words of memory out of 3000000
+ 17707 multiletter control sequences out of 15000+200000
  14894 words of font info for 52 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 62i,13n,76p,709b,698s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 62i,13n,76p,697b,698s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/publ
 ic/amsfonts/cm/cmbx10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public
 /amsfonts/cm/cmbx12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/a
@@ -767,7 +762,7 @@ iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Fil
 es (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files 
 (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files (x8
 6)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on ClusterRobustTesting_FE_models.pdf (32 pages, 352880 bytes).
+Output written on ClusterRobustTesting_FE_models.pdf (32 pages, 355617 bytes).
 PDF statistics:
  214 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

@@ -13,15 +13,13 @@ results <- within(results, {
 })
 head(results)
 
-gather(results, "alpha", "reject", alpha1:alpha10) %>%
-  mutate(alpha = as.numeric(substring(alpha, 6)) / 100) ->
+gather(results, "alpha", "reject", alpha0.005:alpha0.1) %>%
+  mutate(alpha = as.numeric(substring(alpha, 6))) ->
   results_long_all
 
-filter(results_long_all, test %in% c("CR1 Naive-F", "CR2 HTZ") 
-       & design %in% c("CR-balanced","CR-unbalanced","DD-balanced-unbalanced",
-                       "DD-unbalanced-unbalanced","RB-balanced-unequal","RB-unbalanced-unequal")) %>%
+filter(results_long_all, test %in% c("CR1 Naive-F", "CR1 HTZ","CR2 Naive-F","CR2 HTZ", "CR2A HTZ")) %>%
   within({
-    test <- factor(ifelse(test=="CR1 Naive-F", "Naive", "AHZ"), levels = c("Naive","AHZ"))
+    test <- gsub("Naive-F","ad hoc", gsub("HTZ","AHT", test))
     UB <- alpha + qnorm(0.95) * sqrt(alpha * (1 - alpha) / iterations)
     m_fac <- paste0("m = ",m)
     q <- hypothesis
@@ -31,28 +29,29 @@ filter(results_long_all, test %in% c("CR1 Naive-F", "CR2 HTZ")
     alpha_q <- paste0("alpha = ", alpha, ", q = ", q)
     alpha_m <- paste0("alpha = ", alpha, ", m = ", m)
     m_test <- factor(paste0(test, " test, m = ", m))
-    m_test <- factor(m_test, levels = levels(m_test)[c(4:6,1:3)])
+    #m_test <- factor(m_test, levels = levels(m_test)[c(4:6,1:3)])
   }) ->
   results_long
 head(results_long)
 
-select(results_long, -df) %>%
+select(results_long, -df, -m_test) %>%
+  mutate(test = gsub(" ","",test)) %>%
   spread(test, reject) ->
   results_compare
 head(results_compare)
 
 
-filter(results_long, n==18 & icc==0.05 & 
-         trt_var==0 & rho==0.2 & design=="CR-balanced") %>%
+filter(results_long, n==18 & icc==0.05 & trt_var==0 & rho==0.2 & design=="CR-balanced") %>%
   mutate(reject=0) -> 
   zeros_long
 
 filter(results_compare, m==15 & n==18 & icc==0.05 & 
          trt_var==0 & rho==0.2 & design=="CR-balanced") %>%
-  mutate(Naive = 0, AHZ = 0) -> 
+  mutate(CR1adhoc = 0, CR1AHT = 0, CR2AAHT = 0, CR2adhoc = 0, CR2AHT = 0) -> 
   zeros_compare
 
 alpha_val <- 0.4
+
 #--------------------------
 # Overview
 #--------------------------
@@ -63,18 +62,18 @@ alpha_val <- 0.4
 
 # boxplots
 
-ggplot(results_long, aes(m_fac, reject, fill = test, color = test)) + 
-  geom_boxplot(coef = Inf, alpha = alpha_val) + 
-  geom_blank(data = zeros_long) + 
-  geom_hline(aes(yintercept = alpha)) + 
-  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
-  facet_wrap(~ alpha_q, ncol = 4, scales = "free") + 
-  labs(x = NULL, y = "Rejection rate", fill = "Test", color = "Test") + 
-  theme_bw() + theme(legend.position = "bottom")
+  ggplot(results_long, aes(m_fac, reject, fill = test, color = test)) + 
+    geom_boxplot(coef = Inf, alpha = alpha_val) + 
+    geom_blank(data = zeros_long) + 
+    geom_hline(aes(yintercept = alpha)) + 
+    geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+    facet_wrap(~ alpha_q, ncol = 4, scales = "free") + 
+    labs(x = NULL, y = "Rejection rate", fill = "Test", color = "Test") + 
+    theme_bw() + theme(legend.position = "bottom")
 
 # head-to-head, separate plots by alpha and q
 
-ggplot(results_compare, aes(Naive, AHZ, color = m_fac, shape = m_fac)) + 
+ggplot(results_compare, aes(CR1AHT, CR2AHT, color = m_fac, shape = m_fac)) + 
   geom_point() + 
   geom_blank(data = zeros_compare) + 
   geom_hline(aes(yintercept = alpha)) + 
@@ -85,16 +84,15 @@ ggplot(results_compare, aes(Naive, AHZ, color = m_fac, shape = m_fac)) +
   labs(color = NULL, shape = NULL) + 
   theme_bw()
 
-# head-to-head, separate plots by alpha and m
 
-ggplot(results_compare, aes(Naive, AHZ, color = factor(q), shape = factor(q))) + 
+ggplot(results_compare, aes(CR2AAHT, CR2AHT, color = m_fac, shape = m_fac)) + 
   geom_point() + 
   geom_blank(data = zeros_compare) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_vline(aes(xintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
   geom_vline(aes(xintercept = UB), linetype = "dashed") + 
-  facet_wrap(~ alpha_m, ncol = 3, scales = "free") + 
+  facet_wrap(~ alpha_q, ncol = 4, scales = "free") + 
   labs(color = NULL, shape = NULL) + 
   theme_bw()
 
@@ -118,17 +116,6 @@ filter(results_long, alpha==0.05) %>%
 
 
 # alpha = .05, squished boxplots
-
-filter(results_long, alpha==0.05) %>%
-  ggplot(aes(design, reject, color = factor(q), fill = factor(q))) + 
-  geom_boxplot(coef = Inf, alpha = alpha_val) + 
-  geom_blank(data = zeros_long) + 
-  geom_hline(aes(yintercept = alpha)) + 
-  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
-  facet_wrap(~ m_test, scales = "free") + 
-  labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
-  theme_bw() + theme(legend.position = "bottom", axis.text.x = element_text(angle = 90, hjust = 1))
-
 
 # alpha = .05, boxplot excluding q = 6
 
@@ -154,13 +141,16 @@ filter(results_long, alpha==0.05 & q == 6) %>%
   labs(x = NULL, y = "Rejection rate", fill = NULL) + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
 
+filter(results_long, alpha==.05 & q==6 & m==15 & test %in% c("CR2 AHT","CR2A AHT")) %>%
+  select(design, n, icc, trt_var, rho, ar, test, df, reject)
+
 #--------------------------
 # Model mis-specification
 #--------------------------
 
 # Take-away: Model mis-specification doesn't matter for AHZ. 
 
-filter(results_long, alpha==0.05 & test=="AHZ") %>%
+filter(results_long, alpha==0.05 & test=="CR2 AHT") %>%
   ggplot(aes(factor(trt_var), reject, fill = factor(icc), color = factor(icc))) + 
   geom_boxplot(coef = Inf, alpha = alpha_val) + 
   geom_blank(data = zeros_long) + 
@@ -171,3 +161,25 @@ filter(results_long, alpha==0.05 & test=="AHZ") %>%
   theme_bw() + theme(legend.position = "bottom")
 
 # Look at whether adding icc/correlation structure improves rejection rate accuracy for very small sample sizes
+
+#--------------------------
+# Degrees of freedom
+#--------------------------
+
+filter(results_long, alpha==0.05 & test=="CR2 AHT" & icc == 0.25 & rho == 0.8 & trt_var == 0.04) %>%
+  mutate(m_lab = paste("m =", m)) %>%
+  ggplot(aes(design, df)) + 
+  geom_boxplot(coef = Inf, alpha = alpha_val, fill = "grey") + 
+  facet_wrap(~ m_lab, scales = "free") + 
+  labs(x = "Study design", y = "Denominator degrees of freedom") + 
+  theme_bw() + 
+  theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
+
+filter(results_long, alpha==0.05 & test %in% c("CR1 AHT", "CR2 AHT") & icc == 0.25 & rho == 0.8 & trt_var == 0.04) %>%
+  mutate(m_lab = paste("m =", m)) %>%
+  ggplot(aes(design, df, fill = test, color = test)) + 
+  geom_boxplot(coef = Inf, alpha = alpha_val) + 
+  facet_wrap(~ m_lab, scales = "free") + 
+  labs(x = "Study design", y = "Denominator degrees of freedom") + 
+  theme_bw() + 
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 90, hjust = 1))

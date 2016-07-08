@@ -485,7 +485,7 @@ constraints <- list(t_B = "outcome1:trtB",
 # design parameters
 
 design_factors <- list(design = 1:length(designs),
-                       iterations = 50000,
+                       iterations = 20000,
                        m = c(15,30,50), 
                        n = c(18,30), 
                        icc = c(0.05, 0.15, 0.25), 

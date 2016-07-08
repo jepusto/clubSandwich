@@ -111,7 +111,6 @@ This section provides further details regarding the design of the simulations re
 \item An unbalanced difference-in-differences design, again with two patterns of treatment allocation ($G = 2$), but where $m_1 = 2 m / 3$ clusters are observed under the first treatment condition only ($n_{11i} = n$) and the remaining $m_2 = m / 3$ clusters are observed under all three conditions, with  $n_{21i} = n / 2$, $n_{22i} = n / 3$, and $n_{23i} = n / 6$.
 \end{enumerate}
 
-\begin{landscape}
 \section{Additional simulation results}
 
 <<setup, include=FALSE, warning=FALSE, cache=FALSE>>=
@@ -129,165 +128,257 @@ opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache = FALSE,
                fig.path='CR_fig/', fig.align='center', fig.show='hold', fig.pos = "H")
 
 source("R/format results for figures.R")
-@
-
-<<overview_01, fig.width = 10, fig.height = 5, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT and standard tests for $\\alpha = .01$, by dimension of hypothesis ($q$) and sample size ($m$).">>=
 
 alpha_val <- 0.4
+@
 
-filter(results_long, alpha == .01) %>%
-ggplot(aes(m_fac, reject)) + 
+<<overview_005, fig.width = 8, fig.height = 9.5, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests for $\\alpha = .005$, by dimension of hypothesis ($q$) and sample size ($m$).">>=
+
+filter(results_long, alpha == .005 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
+  ggplot(aes(m_fac, reject)) + 
   geom_boxplot(coef = Inf, alpha = alpha_val, fill = "blue", color = "blue") + 
-  geom_blank(data = zeros_long) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
-  scale_y_continuous(breaks = breaks_cut(.01)) + 
-  facet_wrap(~ test_q, ncol = 4, scales = "free") + 
+  scale_y_continuous(breaks = breaks_cut(.005)) + 
+  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
   labs(x = NULL, y = "Rejection rate") + 
   theme_bw() + theme(legend.position = "none")
 
 @
 
-<<overview_10, fig.width = 10, fig.height = 5, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT and standard tests for $\\alpha = .10$, by dimension of hypothesis ($q$) and sample size ($m$).">>=
+<<overview_01, fig.width = 8, fig.height = 9.5, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests for $\\alpha = .01$, by dimension of hypothesis ($q$) and sample size ($m$).">>=
 
-alpha_val <- 0.4
-
-filter(results_long, alpha == .10) %>%
-ggplot(aes(m_fac, reject)) + 
+filter(results_long, alpha == .01 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
+  ggplot(aes(m_fac, reject)) + 
   geom_boxplot(coef = Inf, alpha = alpha_val, fill = "blue", color = "blue") + 
-  geom_blank(data = zeros_long) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
-  scale_y_continuous(breaks = breaks_cut(.10)) + 
-  facet_wrap(~ test_q, ncol = 4, scales = "free") + 
+  scale_y_continuous(breaks = breaks_cut(.01)) + 
+  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
   labs(x = NULL, y = "Rejection rate") + 
   theme_bw() + theme(legend.position = "none")
 
 @
 
-<<balance_01_15, fig.width = 10, fig.height = 5.5, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .01$ and $m = 15$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
+<<overview_10, fig.width = 8, fig.height = 9.5, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests for $\\alpha = .10$, by dimension of hypothesis ($q$) and sample size ($m$).">>=
 
-filter(results_long, alpha==0.01 & m==15) %>%
-  ggplot(aes(design, reject, color = factor(design), fill = factor(design))) + 
-  geom_boxplot(coef = 1000, alpha = alpha_val) + 
-  geom_blank(data = zeros_long) + 
+filter(results_long, alpha == .10 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
+  ggplot(aes(m_fac, reject)) + 
+  geom_boxplot(coef = Inf, alpha = alpha_val, fill = "blue", color = "blue") + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
-  scale_y_continuous(breaks = breaks_cut(.01)) + 
-  facet_wrap(~ test_q, ncol = 4, scales = "free") + 
-  labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
+  scale_y_continuous(breaks = breaks_cut(.10)) + 
+  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  labs(x = NULL, y = "Rejection rate") + 
+  theme_bw() + theme(legend.position = "none")
+
+@
+
+<<balance_005_15, fig.width = 8, fig.height = 10, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .005$ and $m = 15$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
+
+filter(results_long, alpha==0.005 & m==15 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
+  group_by(design, test, q, test_q, alpha, UB) %>%
+  summarise(min = min(reject), lower = quantile(reject, .25), middle = median(reject), 
+            upper = quantile(reject, .75), max = max(reject)) %>%
+  ggplot(aes(design, color = factor(design), fill = factor(design))) + 
+  geom_boxplot(aes(ymin = min, lower = lower, middle = middle, upper = upper, ymax = max), 
+               stat = "identity", alpha = alpha_val) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
+  geom_hline(aes(yintercept = alpha)) + 
+  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.005)) + 
+  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  labs(x = NULL, y = "Rejection rate") + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
 
 @
 
-<<balance_05_15, fig.width = 10, fig.height = 5.5, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .05$ and $m = 15$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
+<<balance_01_15, fig.width = 8, fig.height = 10, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .01$ and $m = 15$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
 
-filter(results_long, alpha==0.05 & m==15) %>%
+filter(results_long, alpha==0.01 & m==15 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
+  group_by(design, test, q, test_q, alpha, UB) %>%
+  summarise(min = min(reject), lower = quantile(reject, .25), middle = median(reject), 
+            upper = quantile(reject, .75), max = max(reject)) %>%
+  ggplot(aes(design, color = factor(design), fill = factor(design))) + 
+  geom_boxplot(aes(ymin = min, lower = lower, middle = middle, upper = upper, ymax = max), 
+               stat = "identity", alpha = alpha_val) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
+  geom_hline(aes(yintercept = alpha)) + 
+  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.005)) + 
+  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  labs(x = NULL, y = "Rejection rate") + 
+  theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
+
+@
+
+<<balance_05_15, fig.width = 8, fig.height = 10, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .05$ and $m = 15$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
+
+filter(results_long, alpha==0.05 & m==15 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
+  group_by(design, test, q, test_q, alpha, UB) %>%
+  summarise(min = min(reject), lower = quantile(reject, .25), middle = median(reject), 
+            upper = quantile(reject, .75), max = max(reject)) %>%
+  ggplot(aes(design, color = factor(design), fill = factor(design))) + 
+  geom_boxplot(aes(ymin = min, lower = lower, middle = middle, upper = upper, ymax = max), 
+               stat = "identity", alpha = alpha_val) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
+  geom_hline(aes(yintercept = alpha)) + 
+  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.005)) + 
+  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  labs(x = NULL, y = "Rejection rate") + 
+  theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
+
+@
+
+<<balance_10_15, fig.width = 8, fig.height = 10, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .10$ and $m = 15$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
+
+filter(results_long, alpha==0.10 & m==15 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
+  group_by(design, test, q, test_q, alpha, UB) %>%
+  summarise(min = min(reject), lower = quantile(reject, .25), middle = median(reject), 
+            upper = quantile(reject, .75), max = max(reject)) %>%
+  ggplot(aes(design, color = factor(design), fill = factor(design))) + 
+  geom_boxplot(aes(ymin = min, lower = lower, middle = middle, upper = upper, ymax = max), 
+               stat = "identity", alpha = alpha_val) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
+  geom_hline(aes(yintercept = alpha)) + 
+  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.005)) + 
+  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  labs(x = NULL, y = "Rejection rate") + 
+  theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
+
+@
+
+<<balance_005_30, fig.width = 8, fig.height = 10, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .005$ and $m = 30$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
+
+filter(results_long, alpha==0.005 & m==30 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
   ggplot(aes(design, reject, color = factor(design), fill = factor(design))) + 
   geom_boxplot(coef = Inf, alpha = alpha_val) + 
-  geom_blank(data = zeros_long) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
+  geom_hline(aes(yintercept = alpha)) + 
+  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.005)) + 
+  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  labs(x = NULL, y = "Rejection rate") + 
+  theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
+
+@
+
+<<balance_01_30, fig.width = 8, fig.height = 10, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .01$ and $m = 30$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
+
+filter(results_long, alpha==0.01 & m==30 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
+  ggplot(aes(design, reject, color = factor(design), fill = factor(design))) + 
+  geom_boxplot(coef = Inf, alpha = alpha_val) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
+  geom_hline(aes(yintercept = alpha)) + 
+  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.01)) + 
+  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  labs(x = NULL, y = "Rejection rate") + 
+  theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
+
+@
+
+<<balance_05_30, fig.width = 8, fig.height = 10, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .05$ and $m = 30$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
+
+filter(results_long, alpha==0.05 & m==30 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
+  ggplot(aes(design, reject, color = factor(design), fill = factor(design))) + 
+  geom_boxplot(coef = Inf, alpha = alpha_val) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
   scale_y_continuous(breaks = breaks_cut(.05)) + 
-  facet_wrap(~ test_q, ncol = 4, scales = "free") + 
-  labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
+  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  labs(x = NULL, y = "Rejection rate") + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
 
 @
 
-<<balance_10_15, fig.width = 10, fig.height = 5.5, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .10$ and $m = 15$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
+<<balance_10_30, fig.width = 8, fig.height = 10, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .10$ and $m = 30$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
 
-filter(results_long, alpha==0.10 & m==15) %>%
+filter(results_long, alpha==0.10 & m==30 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
   ggplot(aes(design, reject, color = factor(design), fill = factor(design))) + 
   geom_boxplot(coef = Inf, alpha = alpha_val) + 
-  geom_blank(data = zeros_long) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
   scale_y_continuous(breaks = breaks_cut(.10)) + 
-  facet_wrap(~ test_q, ncol = 4, scales = "free") + 
-  labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
+  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  labs(x = NULL, y = "Rejection rate") + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
 
 @
 
-<<balance_01_30, fig.width = 10, fig.height = 5.5, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .01$ and $m = 30$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
+<<balance_005_50, fig.width = 8, fig.height = 10, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .005$ and $m = 50$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
 
-filter(results_long, alpha==0.01 & m==30) %>%
+filter(results_long, alpha==0.005 & m==50 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
   ggplot(aes(design, reject, color = factor(design), fill = factor(design))) + 
   geom_boxplot(coef = Inf, alpha = alpha_val) + 
-  geom_blank(data = zeros_long) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
+  geom_hline(aes(yintercept = alpha)) + 
+  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.005)) + 
+  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  labs(x = NULL, y = "Rejection rate") + 
+  theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
+
+@
+
+<<balance_01_50, fig.width = 8, fig.height = 10, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .01$ and $m = 50$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
+
+filter(results_long, alpha==0.01 & m==50 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
+  ggplot(aes(design, reject, color = factor(design), fill = factor(design))) + 
+  geom_boxplot(coef = Inf, alpha = alpha_val) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
   scale_y_continuous(breaks = breaks_cut(.01)) + 
-  facet_wrap(~ test_q, ncol = 4, scales = "free") + 
-  labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
+  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  labs(x = NULL, y = "Rejection rate") + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
 
 @
 
-<<balance_10_30, fig.width = 10, fig.height = 5.5, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .10$ and $m = 30$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
+<<balance_05_50, fig.width = 8, fig.height = 10, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .05$ and $m = 50$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
 
-filter(results_long, alpha==0.10 & m==30) %>%
+filter(results_long, alpha==0.05 & m==50 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
   ggplot(aes(design, reject, color = factor(design), fill = factor(design))) + 
   geom_boxplot(coef = Inf, alpha = alpha_val) + 
-  geom_blank(data = zeros_long) + 
-  geom_hline(aes(yintercept = alpha)) + 
-  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
-  scale_y_continuous(breaks = breaks_cut(.10)) + 
-  facet_wrap(~ test_q, ncol = 4, scales = "free") + 
-  labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
-  theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
-
-@
-
-<<balance_01_50, fig.width = 10, fig.height = 5.5, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .01$ and $m = 50$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
-
-filter(results_long, alpha==0.01 & m==50) %>%
-  ggplot(aes(design, reject, color = factor(design), fill = factor(design))) + 
-  geom_boxplot(coef = Inf, alpha = alpha_val) + 
-  geom_blank(data = zeros_long) + 
-  geom_hline(aes(yintercept = alpha)) + 
-  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
-  scale_y_continuous(breaks = breaks_cut(.01)) + 
-  facet_wrap(~ test_q, ncol = 4, scales = "free") + 
-  labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
-  theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
-@
-
-<<balance_05_50, fig.width = 10, fig.height = 5.5, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .05$ and $m = 50$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
-
-filter(results_long, alpha==0.05 & m==50) %>%
-  ggplot(aes(design, reject, color = factor(design), fill = factor(design))) + 
-  geom_boxplot(coef = Inf, alpha = alpha_val) + 
-  geom_blank(data = zeros_long) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
   scale_y_continuous(breaks = breaks_cut(.05)) + 
-  facet_wrap(~ test_q, ncol = 4, scales = "free") + 
-  labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
+  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  labs(x = NULL, y = "Rejection rate") + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
+
 @
 
-<<balance_10_50, fig.width = 10, fig.height = 5.5, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .10$ and $m = 50$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
+<<balance_10_50, fig.width = 8, fig.height = 10, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .10$ and $m = 50$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
 
-filter(results_long, alpha==0.10 & m==50) %>%
+filter(results_long, alpha==0.10 & m==50 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
   ggplot(aes(design, reject, color = factor(design), fill = factor(design))) + 
   geom_boxplot(coef = Inf, alpha = alpha_val) + 
-  geom_blank(data = zeros_long) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
   scale_y_continuous(breaks = breaks_cut(.10)) + 
-  facet_wrap(~ test_q, ncol = 4, scales = "free") + 
-  labs(x = NULL, y = "Rejection rate", color = "q", fill = "q") + 
+  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  labs(x = NULL, y = "Rejection rate") + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
+
 @
 
-<<misspecification_01, fig.width = 12, fig.height = 8, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT test, by treatment effect variance and intra-class correlation for $\\alpha = .01$.">>=
+\begin{landscape}
+<<misspecification_005, fig.width = 12, fig.height = 8, out.width = "\\linewidth", fig.cap = "Rejection rates of CR2 AHT test, by treatment effect variance and intra-class correlation for $\\alpha = .005$.">>=
 
-filter(results_long, alpha==0.01 & test=="AHT") %>%
+filter(results_long, alpha==0.005 & test=="CR2 AHT") %>%
   ggplot(aes(factor(trt_var), reject, fill = factor(icc), color = factor(icc))) + 
   geom_boxplot(coef = Inf, alpha = alpha_val) + 
-  geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
   scale_y_continuous(breaks = breaks_cut(.01)) + 
@@ -297,12 +388,25 @@ filter(results_long, alpha==0.01 & test=="AHT") %>%
 
 @
 
-<<misspecification_05, fig.width = 12, fig.height = 8, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT test, by treatment effect variance and intra-class correlation for $\\alpha = .05$.">>=
+<<misspecification_01, fig.width = 12, fig.height = 8, out.width = "\\linewidth", fig.cap = "Rejection rates of CR2 AHT test, by treatment effect variance and intra-class correlation for $\\alpha = .01$.">>=
 
-filter(results_long, alpha==0.05 & test=="AHT") %>%
+filter(results_long, alpha==0.01 & test=="CR2 AHT") %>%
   ggplot(aes(factor(trt_var), reject, fill = factor(icc), color = factor(icc))) + 
   geom_boxplot(coef = Inf, alpha = alpha_val) + 
-  geom_blank(data = zeros_long) + 
+  geom_hline(aes(yintercept = alpha)) + 
+  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.01)) + 
+  facet_grid(m ~ q, labeller = "label_both", scales = "free") + 
+  labs(x = "treatment effect variance", y = "Rejection rate", fill = "intra-class correlation", color = "intra-class correlation") + 
+  theme_bw() + theme(legend.position = "bottom")
+
+@
+
+<<misspecification_05, fig.width = 12, fig.height = 8, out.width = "\\linewidth", fig.cap = "Rejection rates of CR2 AHT test, by treatment effect variance and intra-class correlation for $\\alpha = .05$.">>=
+
+filter(results_long, alpha==0.05 & test=="CR2 AHT") %>%
+  ggplot(aes(factor(trt_var), reject, fill = factor(icc), color = factor(icc))) + 
+  geom_boxplot(coef = Inf, alpha = alpha_val) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
   scale_y_continuous(breaks = breaks_cut(.05)) + 
@@ -312,12 +416,11 @@ filter(results_long, alpha==0.05 & test=="AHT") %>%
 
 @
 
-<<misspecification_10, fig.width = 12, fig.height = 8, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT test, by treatment effect variance and intra-class correlation for $\\alpha = .10$.">>=
+<<misspecification_10, fig.width = 12, fig.height = 8, out.width = "\\linewidth", fig.cap = "Rejection rates of CR2 AHT test, by treatment effect variance and intra-class correlation for $\\alpha = .10$.">>=
 
-filter(results_long, alpha==0.10 & test=="AHT") %>%
+filter(results_long, alpha==0.10 & test=="CR2 AHT") %>%
   ggplot(aes(factor(trt_var), reject, fill = factor(icc), color = factor(icc))) + 
   geom_boxplot(coef = Inf, alpha = alpha_val) + 
-  geom_blank(data = zeros_long) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
   scale_y_continuous(breaks = breaks_cut(.10)) + 
