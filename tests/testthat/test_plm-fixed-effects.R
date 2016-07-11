@@ -157,3 +157,30 @@ test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
   HC_twoways <- lapply(HC_types, function(t) vcovHC(lm_twoways, type = t)[twoway_index,twoway_index])
   expect_equal(CR_twoways, HC_twoways)
 })
+
+test_that("CR2 is equivalent to Welch t-test for DiD design", {
+  m0 <- 4
+  m1 <- 9
+  m <- m0 + m1
+  cluster <- factor(rep(LETTERS[1:m], each = 2))
+  n <- length(cluster)
+  time <- rep(c(1,2), m)
+  trt_clusters <- c(rep(0,m0), rep(1,m1))
+  trt <- (time - 1) * rep(trt_clusters, each = 2)
+  nu <- rnorm(m)[cluster]
+  e <- rnorm(n)
+  y <- 0.4 * trt + nu + e
+  
+  dat <- data.frame(y, time, trt, cluster)
+  plm_DID <- plm(y ~ trt, data = dat, index = c("cluster","time"), 
+                 effect = "twoways", model = "within")
+  plm_Satt <- coef_test(plm_DID, vcov = "CR2", cluster = dat$cluster)["trt",]
+  df <- m^2 * (m0 - 1) * (m1 - 1) / (m0^2 * (m0 - 1) + m1^2 * (m1 - 1))
+  y_diff <- apply(matrix(y, nrow = 2), 2, diff)
+  t_Welch <- t.test(y_diff ~ trt_clusters)
+  
+  expect_equal(with(t_Welch, estimate[[2]] - estimate[[1]]), plm_Satt$beta)
+  expect_equal(as.numeric(-t_Welch$statistic), with(plm_Satt, beta / SE))
+  expect_is(all.equal(as.numeric(t_Welch$parameter), plm_Satt$df), "character")
+  expect_equal(plm_Satt$df, df)
+})

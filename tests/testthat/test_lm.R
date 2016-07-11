@@ -142,12 +142,16 @@ test_that("CR2 is equivalent to Welch t-test for DiD design", {
   dat <- data.frame(y, time, trt, cluster)
   lm_DID <- lm(y ~ cluster + factor(time) + trt, data = dat)
   t_Satt <- coef_test(lm_DID, vcov = "CR2", cluster = dat$cluster)["trt",]
+  
   y_diff <- apply(matrix(y, nrow = 2), 2, diff)
   t_Welch <- t.test(y_diff ~ trt_clusters)
   
   expect_equal(with(t_Welch, estimate[[2]] - estimate[[1]]), t_Satt$beta)
   expect_equal(as.numeric(-t_Welch$statistic), with(t_Satt, beta / SE))
   expect_is(all.equal(as.numeric(t_Welch$parameter), t_Satt$df), "character")
+  
+  df <- m^2 * (m0 - 1) * (m1 - 1) / (m0^2 * (m0 - 1) + m1^2 * (m1 - 1))
+  expect_equal(plm_Satt$df, df)
 })
 
 test_that("Order doesn't matter.",{

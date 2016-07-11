@@ -357,7 +357,7 @@ Proof is given in Section S2 of the supplementary materials.
 The main implication of Theorem \ref{thm:absorb} is that the more computationally tractable formula $\bm{\tilde{B}}_i$ can be used in the common case that the weighting matrices are the inverse of the working covariance model.
 Following the working model suggested by \citet{Bell2002bias}, in which $\bs\Phi = \bm{I}$, the above theorem shows that the adjustment method is invariant to the choice of estimator so long as the model is estimated by OLS (i.e., with $\bm{W} = \bm{I}$).
 %In this case, the CR2 adjustment matrices then simplify further to $\bm{A}_i = \left(\bm{I}_i - \bm{\ddot{U}}_i\left(\bm{\ddot{U}}'\bm{\ddot{U}}\right)^{-1}\bm{\ddot{U}}_i'\right)^{+1/2}$.
-In contrast, if the working model proposed by \citet{Imbens2015robust} is instead used (while still using OLS), then the above theorem implies that the CR2 adjustments will differ depending on whether LSDV or the fixed effects estimator is used.
+In contrast, if the working model proposed by \citet{Imbens2015robust} is instead used (while still using OLS), then the above theorem implies that the CR2 adjustments might differ depending on whether LSDV or the fixed effects estimator is used.
 
 \section{HYPOTHESIS TESTING}
 \label{sec:testing}
@@ -640,8 +640,8 @@ Finally, we conduct a joint test for whether program effects in either half of t
 
 
 
-% latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Fri Jul 08 16:14:11 2016
+% latex table generated in R 3.2.5 by xtable 1.7-4 package
+% Sun Jul 10 22:16:02 2016
 \begin{table}[bth]
 \centering
 \caption{Tests of treatment effects in the Achievement Awards Demonstration} 
@@ -696,8 +696,8 @@ With this setup, the artificial Hausman test amounts to testing the null hypothe
 
 
 
-% latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Fri Jul 08 16:14:12 2016
+% latex table generated in R 3.2.5 by xtable 1.7-4 package
+% Sun Jul 10 22:16:02 2016
 \begin{table}[bth]
 \centering
 \caption{Tests of effects of minimum legal drink age and Hausman specification test} 
