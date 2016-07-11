@@ -282,7 +282,7 @@ Proof is given in Section S1 of the supplementary materials. The main implicatio
 
 In fixed effects regression models, a problem with the original definition of BRL is that it can result in a different estimator depending upon which design matrix is used.
 If $\bs\beta$ is estimated using LSDV, then it is natural to calculate the CR2 adjustment matrices based on the full covariate design matrix, $\bm{X}$. However, if $\bs\beta$ is estimated after absorbing the fixed effects, the analyst might choose to calculate the CR2 correction based on the absorbed covariate matrix $\bm{\ddot{R}}$---that is, by substituting $\bm{H_{\ddot{R}}}$ for $\bm{H_X}$ in (\ref{eq:CR2_Bmatrix})---in order to avoid calculating the full projection matrix $\bm{H_X}$. 
-This approach will lead to different adjustment matrices because it is based on a subtly different working model. 
+This approach can lead to different adjustment matrices because it is based on a subtly different working model. 
 Essentially, calculating CR2 based on $\bm{H_{\ddot{R}}}$ amounts to assuming that the working model $\bs\Phi$ applies not to the model errors $\bs\epsilon$, but rather to the errors from the regression of $\bm{\ddot{y}}$ on $\bm{\ddot{R}}$.
 We find this method of specifying the working model to be incoherent, and therefore recommend against taking it.
 Using the more general definition of BRL, the CR2 adjustment matrices should be calculated based on a working model for the errors in the full regression model, following Equations (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) as stated. 
@@ -307,9 +307,9 @@ If $\bm{T}_i \bm{T}_k' = \bm{0}$ for $i \neq k$ and $\bm{W} = \bs\Phi^{-1}$, the
 
 Proof is given in Section S2 of the supplementary materials.
 The main implication of Theorem \ref{thm:absorb} is that the more computationally tractable formula $\bm{\tilde{B}}_i$ can be used in the common case that the weighting matrices are the inverse of the working covariance model.
-Following the working model suggested by \citet{Bell2002bias}, in which $\bs\Phi = \bm{I}$, the above theorem shows that the adjustment method is invariant to the choice of estimator so long as the model is estimated by OLS (i.e., with $\bm{W} = \bm{I}$).
+Following the working model suggested by \citet{Bell2002bias}, in which $\bs\Phi = \bm{I}$, the theorem shows that the adjustment method is invariant to the choice of estimator so long as the model is estimated by OLS (i.e., with $\bm{W} = \bm{I}$).
 %In this case, the CR2 adjustment matrices then simplify further to $\bm{A}_i = \left(\bm{I}_i - \bm{\ddot{U}}_i\left(\bm{\ddot{U}}'\bm{\ddot{U}}\right)^{-1}\bm{\ddot{U}}_i'\right)^{+1/2}$.
-In contrast, if the working model proposed by \citet{Imbens2015robust} is instead used (while still using OLS), then the above theorem implies that the CR2 adjustments might differ depending on whether LSDV or the fixed effects estimator is used.
+In contrast, if the working model proposed by \citet{Imbens2015robust} is instead used (while still using OLS), then the the CR2 adjustments might differ depending on whether LSDV or the fixed effects estimator is used.
 
 \section{HYPOTHESIS TESTING}
 \label{sec:testing}
@@ -538,7 +538,7 @@ The first finding is that the AHT test based on the CR2 estimator has Type I err
 Figure \ref{fig:overview} illustrates this pattern at the nominal type I error rate of $\alpha = .05$, for constraints of varying dimension (from $q = 1$, in the first row, to $q = 6$, in the final row) and varying number of clusters.
 It can be seen that the AHT test has Type I error near the stated $\alpha$ level, even with a small number of clusters.
 When the number of clusters is very small, the Type I error can be smaller than the stated $\alpha$ level. 
-Although there exist situations in which the error is above the simulation bound, the departures are typically small. For example, when $m = 15$ the rejection rates do not exceed \Sexpr{fmt(AHT_max_reject[1,"reject"],3)} for $\alpha = .01$, \Sexpr{fmt(AHT_max_reject[2,"reject"],3)} for $\alpha = .05$, and \Sexpr{fmt(AHT_max_reject[3,"reject"],3)} for $\alpha = .10$.
+Although there exist situations in which the error is above the simulation bound, the departures are typically small. For example, when $m = 15$ the rejection rates do not exceed \Sexpr{fmt(AHT_max_reject[2,"reject"],3)} for $\alpha = .01$, \Sexpr{fmt(AHT_max_reject[3,"reject"],3)} for $\alpha = .05$, and \Sexpr{fmt(AHT_max_reject[4,"reject"],3)} for $\alpha = .10$.
 The rejection rates are even closer to nominal for lower-dimensional constraints.
 
 In comparison to the AHT test, the Type I error for the ad hoc test based on CR1 can be markedly higher than the stated $\alpha$ level, particularly when the number of clusters is small or the dimension of the hypothesis is large. 

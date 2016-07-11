@@ -1,3 +1,5 @@
+library(dplyr)
+library(tidyr)
 load("R/Panel simulation results.Rdata")
 
 results <- within(results, {

@@ -6,6 +6,7 @@
 \renewcommand{\thesection}{S\arabic{section}}
 \renewcommand{\thefigure}{S\arabic{figure}}
 \RequirePackage[natbibapa]{apacite}
+\usepackage{booktabs}
 \usepackage{caption}
 \usepackage{multirow}
 \usepackage{float}    % for fig.pos='H'
@@ -131,10 +132,9 @@ After absorption, $\bm{\ddot{R}}_i = \left(T_{i1} - m_1 / m\right) / 2 \left[\be
 \bm{e}_i = \frac{d_i - \bar{d}_0}{2} \left[\begin{array}{c} 1 \\ 1 \end{array}\right] \quad \text{for} \quad i = 1,...,m_0, \qquad \bm{e}_i = \frac{d_i - \bar{d}_1}{2} \left[\begin{array}{c} 1 \\ 1 \end{array}\right], \quad \text{for} \quad i = m_0 + 1,...,m.
 \]
 If the CR2 adjustment matrices are calculated based on the absorbed model only, then 
-\begin{equation}
-\label{eq:A_matrix}
+\[
 \bm{A}_i = \left(\bm{I}_i - \bm{\ddot{R}}_i \bm{M_{\ddot{R}}} \bm{\ddot{R}}_i'\right)^{+1/2} = \left[\begin{array}{cc} 1 + a_i & - a_i \\ -a_i & 1 + a_i \end{array}\right],
-\end{equation}
+\]
 where
 \begin{align*}
 a_i &= \frac{1}{2}\left(\sqrt{\frac{m_0 m}{m_0 m - m_1}} - 1\right) \qquad i = 1,...,m_0 \\
@@ -151,10 +151,9 @@ which will be slightly smaller than $V_\Delta$, with Satterthwaite degrees of fr
 which will be slightly larger than $\nu_{\Delta}$.
 
 Now consider calculating the adjustment matrices using the full design matrix, as recommended in the paper. Theorem 2 implies that the adjustment matrices can be calculated from $\bm{\ddot{U}}$, ignoring the cluster-specific effects. We then have
-\begin{equation}
-\label{eq:A_matrix}
+\[
 \bm{A}_i = \left(\bm{I}_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}} \bm{\ddot{U}}_i'\right)^{+1/2} = \left[\begin{array}{cc} 1 + b_i & - b_i \\ -b_i & 1 + b_i \end{array}\right],
-\end{equation}
+\]
 where
 \begin{align*}
 b_i &= \frac{1}{2}\left(\sqrt{\frac{m_0}{m_0 - 1}} - 1\right) \qquad i = 1,...,m_0 \\
@@ -162,29 +161,55 @@ b_i &= \frac{1}{2}\left(\sqrt{\frac{m_1}{m_1 - 1}} - 1\right) \qquad i = m_0 + 1
 \end{align*}
 It can be verified that using these adjustment matrices yields a variance estimator that is exactly equivalent to $V_{\Delta}$, with degrees of freedom equal to $\nu_\Delta$.
 
+\newpage
+
 \section{Details of simulation study}
 \label{sec:simulations}
 
-This section provides further details regarding the design of the simulations reported in Section 4 of the main text. The simulations examined six distinct study designs. Outcomes are measured for $n$ units (which may be individuals, as in a cluster-randomized or block-randomized design, or time-points, as in a difference-in-differences panel) in each of $m$ clusters under one of three treatment conditions. Suppose that there are $G$ sets of clusters, each of size $m_g$, where the clusters in each set have a distinct pattern of treatment assignments. Let $n_{ghi}$ denote the number of units at which cluster $i$ in group $g$ is observed under condition $h$, for $i=1,...,m$, $g = 1,...,G$, and $h = 1,2,3$. The following six designs were simulated:
+This section provides further details regarding the design of the simulations reported in Section 4 of the main text. The simulations examined six distinct study designs. Outcomes are measured for $n$ units (which may be individuals, as in a cluster-randomized or block-randomized design, or time-points, as in a difference-in-differences panel) in each of $m$ clusters under one of three treatment conditions. Suppose that there are $G$ sets of clusters, each of size $m_g$, where the clusters in each set have a distinct configuration of treatment assignments. Let $n_{ghi}$ denote the number of units at which cluster $i$ in configuration $g$ is observed under condition $h$, for $i=1,...,m$, $g = 1,...,G$, and $h = 1,2,3$. Table \ref{tab:simulation_designs} summarizes the cluster-level sample sizes and unit-level patterns of treatment allocation for each of the six designs. The simulated designs included the following:  
 \begin{enumerate}
-\item A balanced, block-randomized design, with an un-equal allocation within each block. In the balanced design, the treatment allocation is identical for each block, with $G = 1$, $m_1 = m$, $n_{11i} = n / 2$, $n_{12i} = n / 3$, and $n_{13i} = n / 6$.
-\item An unbalanced, block-randomized design, with two different patterns of treatment allocation. Here, $G = 2$,  $m_1 = m_2 = m / 2$, $n_{11i} = n / 2$, $n_{12i} = n / 3$, $n_{13i} = n / 6$, $n_{21i} = n / 3$, $n_{22i} = 5 n / 9$, and $n_{23i} = n / 9$.
-\item A balanced, cluster-randomized design, in which units are nested within clusters and an equal number of clusters are assigned to each treatment condition. Here, $G = 3$, $m_g = m / 3$, and $n_{ghi} = n$ for $g = h$ and zero otherwise.
-\item An unbalanced, cluster-randomized design, in which units are nested within clusters but the number of clusters assigned to each condition is not equal. Here, $G = 3$; $m_1 = 0.5 m, m_2 = 0.3 m, m_3 = 0.2 m$; and $n_{ghi} = n$ for $g = h$ and zero otherwise. 
-\item A balanced difference-in-differences design, with two patterns of treatment allocation ($G = 2$) and clusters allocated equally to each pattern ($m_1 = m_2 = m / 2$). Here, half of the clusters are observed under the first treatment condition only ($n_{11i} = n$) and the remaining half are observed under all three conditions, with $n_{21i} = n / 2$, $n_{22i} = n / 3$, and $n_{23i} = n / 6$.
-\item An unbalanced difference-in-differences design, again with two patterns of treatment allocation ($G = 2$), but where $m_1 = 2 m / 3$ clusters are observed under the first treatment condition only ($n_{11i} = n$) and the remaining $m_2 = m / 3$ clusters are observed under all three conditions, with  $n_{21i} = n / 2$, $n_{22i} = n / 3$, and $n_{23i} = n / 6$.
+\item A balanced, block-randomized design, with an un-equal allocation within each block. In the balanced design, the treatment allocation is identical for each block, so $G = 1$.
+\item An unbalanced, block-randomized design, with two different patterns of treatment allocation ($G = 2$).
+\item A balanced, cluster-randomized design, in which units are nested within clusters and an equal number of clusters are assigned to each treatment condition.
+\item An unbalanced, cluster-randomized design, in which units are nested within clusters but the number of clusters assigned to each condition is not equal. 
+\item A balanced difference-in-differences design with two patterns of treatment allocation ($G = 2$), in which half of the clusters are observed under the first treatment condition only and the remaining half are observed under all three conditions.
+\item An unbalanced difference-in-differences design, again with two patterns of treatment allocation ($G = 2$), but where 2/3 of the clusters are observed under the first treatment condition only and the remaining $1 / 3$ of clusters are observed under all three conditions.
 \end{enumerate}
 
+\begin{table}[htb]
+\centering
+\caption{Study designs used for simulation} 
+\label{tab:simulation_designs}
+\begin{tabular}{llccc}
+\toprule
+Study design & Balance & Configuration & Clusters & Treatment allocation \\ 
+\midrule
+Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3, n_{13i} = n / 6$ \\ \midrule
+\multirow{2}{*}{Randomized Block} & \multirow{2}{*}{Unbalanced} & 1 & $m_1 = m / 2$ & $n_{11i} = n / 2, n_{12i} = n / 3, n_{13i} = n / 6$ \\
+& & 2 & $m_2 = m / 2$ & $n_{21i} = n / 3, n_{22i} = 5n / 9, n_{23i} = n / 9$ \\ \midrule
+\multirow{3}{*}{Cluster-Randomized} & \multirow{3}{*}{Balanced} & 1 & $m_1 = m / 3$ & $n_{11i} = n$ \\
+& & 2 & $m_2 = m / 3$ & $n_{22i} = n$ \\ 
+& & 3 & $m_3 = m / 3$ & $n_{33i} = n$ \\ \midrule
+\multirow{3}{*}{Cluster-Randomized} & \multirow{3}{*}{Unbalanced} & 1 & $m_1 = m / 2$ & $n_{11i} = n$ \\
+& & 2 & $m_2 = 3 m / 10$ & $n_{22i} = n$ \\ 
+& & 3 & $m_3 = m / 5$ & $n_{33i} = n$ \\ \midrule
+\multirow{2}{*}{Difference-in-Differences} & \multirow{2}{*}{Balanced} & 1 & $m_1 = m / 2$ & $n_{11i} = n$ \\
+& & 2 & $m_2 = m / 2$ & $n_{21i} = n / 2, n_{22i} = n / 3, n_{23i} = n / 6$ \\ \midrule
+\multirow{2}{*}{Difference-in-Differences} & \multirow{2}{*}{Unbalanced} & 1 & $m_1 = 2m / 3$ & $n_{11i} = n$ \\
+& & 2 & $m_2 = m / 3$ & $n_{21i} = n / 2, n_{22i} = n / 3, n_{23i} = n / 6$ \\ 
+\bottomrule
+\end{tabular}
+\end{table}
+
+\newpage
 \section{Additional simulation results}
 
 <<setup, include=FALSE, warning=FALSE, cache=FALSE>>=
 # setwd("paper_ClusterRobustTesting")
 library(knitr)
-library(plyr)
 library(tidyr)
 library(dplyr)
 library(stringr)
-library(lubridate)
 library(ggplot2)
 
 # set global chunk options
@@ -193,7 +218,6 @@ opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache = FALSE,
 
 source("R/format results for figures.R")
 
-alpha_val <- 0.4
 @
 
 <<overview_005, fig.width = 8, fig.height = 9.5, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests for $\\alpha = .005$, by dimension of hypothesis ($q$) and sample size ($m$).">>=
@@ -438,6 +462,34 @@ filter(results_long, alpha==0.10 & m==50 & test %in% c("CR1 ad hoc", "CR1 AHT","
 @
 
 \begin{landscape}
+
+<<absorption, fig.width = 12, fig.height = 7.5, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT test using CR2, calculated with and without accounting for absorption of fixed effects, by sample size ($m$), dimension of hypothesis ($q$), and $\\alpha $-level. Results for the balanced and unbalanced randomized block designs are excluded because accounting for absorption of fixed effects has no consequence for these designs.">>=
+
+zeros_long_temp <- 
+  filter(zeros_long, test %in% c("CR2 AHT","CR2A AHT")) %>%
+  mutate(test = ifelse(test=="CR2 AHT", "Accounting for absorption", "Ignoring absorption"))
+
+filter(results_long, 
+         test %in% c("CR2 AHT","CR2A AHT") &
+         design %in% c("CR-B","CR-U","DD-B","DD-U")) %>%
+  mutate(test = ifelse(test=="CR2 AHT", "Accounting for absorption", "Ignoring absorption")) %>%
+  group_by(m_fac, test, q, alpha, UB) %>%
+  summarise(min = min(reject), lower = quantile(reject, .25), middle = median(reject), 
+            upper = quantile(reject, .75), max = max(reject)) %>%
+  ggplot(aes(m_fac, fill = test, color = test)) + 
+  geom_boxplot(aes(ymin = min, lower = lower, middle = middle, upper = upper, ymax = max), 
+               stat = "identity", alpha = alpha_val) + 
+  geom_hline(aes(yintercept = alpha)) + 
+  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  geom_blank(data = zeros_long_temp) + 
+  scale_y_continuous(breaks = breaks_cut(.05)) + 
+  scale_fill_brewer(type = "qual", palette = 6) + 
+  facet_grid(alpha ~ q, scales = "free_y", labeller = "label_both") + 
+  labs(x = NULL, y = "Rejection rate", fill = "CR2 adjustment", color = "CR2 adjustment") + 
+  theme_bw() + theme(legend.position = "bottom")
+
+@
+
 <<misspecification_005, fig.width = 12, fig.height = 8, out.width = "\\linewidth", fig.cap = "Rejection rates of CR2 AHT test, by treatment effect variance and intra-class correlation for $\\alpha = .005$.">>=
 
 filter(results_long, alpha==0.005 & test=="CR2 AHT") %>%

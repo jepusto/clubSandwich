@@ -1,5 +1,6 @@
 library(tidyr)
 library(dplyr)
+library(stringr)
 library(ggplot2)
 
 rm(list=ls())
@@ -51,6 +52,16 @@ filter(results_compare, m==15 & n==18 & icc==0.05 &
   zeros_compare
 
 alpha_val <- 0.4
+
+breaks_cut <- function(alpha) {
+  function(limits) { 
+    if (max(limits) < 6 * alpha) {
+      c(pretty(limits, 4), alpha) 
+    } else {
+      pretty(limits, 4)
+    }
+  }
+}
 
 #--------------------------
 # Overview
@@ -183,3 +194,52 @@ filter(results_long, alpha==0.05 & test %in% c("CR1 AHT", "CR2 AHT") & icc == 0.
   labs(x = "Study design", y = "Denominator degrees of freedom") + 
   theme_bw() + 
   theme(legend.position = "bottom", axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+
+
+#--------------------------
+# CR2A figures
+#--------------------------
+
+filter(results_long, alpha==0.01 & 
+         test %in% c("CR2 AHT","CR2A AHT") &
+         design %in% c("CR-balanced","CR-unbalanced","DD-balanced","DD-unbalanced")) %>%
+  mutate(test = ifelse(test=="CR2 AHT", "Accounting for absorption", "Ignoring absorption")) %>%
+  group_by(m_fac, design, test, q, alpha, UB) %>%
+  summarise(min = min(reject), lower = quantile(reject, .25), middle = median(reject), 
+            upper = quantile(reject, .75), max = max(reject)) %>%
+  ggplot(aes(m_fac, fill = test, color = test)) + 
+  geom_boxplot(aes(ymin = min, lower = lower, middle = middle, upper = upper, ymax = max), 
+               stat = "identity", alpha = alpha_val) + 
+  geom_hline(aes(yintercept = alpha)) + 
+  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.05)) + 
+  scale_fill_brewer(type = "qual", palette = 6) + 
+  facet_grid(q ~ design, scales = "free_y") + 
+  labs(x = NULL, y = "Rejection rate") + 
+  theme_bw() + theme(legend.position = "bottom")
+
+
+zeros_long_temp <- 
+  filter(zeros_long, test %in% c("CR2 AHT","CR2A AHT")) %>%
+  mutate(test = ifelse(test=="CR2 AHT", "Accounting for absorption", "Ignoring absorption"))
+
+filter(results_long, 
+         test %in% c("CR2 AHT","CR2A AHT") &
+         design %in% c("CR-balanced","CR-unbalanced","DD-balanced","DD-unbalanced")) %>%
+  mutate(test = ifelse(test=="CR2 AHT", "Accounting for absorption", "Ignoring absorption")) %>%
+  group_by(m_fac, test, q, alpha, q_alpha, UB) %>%
+  summarise(min = min(reject), lower = quantile(reject, .25), middle = median(reject), 
+            upper = quantile(reject, .75), max = max(reject)) %>%
+  ggplot(aes(m_fac, fill = test, color = test)) + 
+  geom_boxplot(aes(ymin = min, lower = lower, middle = middle, upper = upper, ymax = max), 
+               stat = "identity", alpha = alpha_val) + 
+  geom_hline(aes(yintercept = alpha)) + 
+  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  geom_blank(data = zeros_long_temp) + 
+  scale_y_continuous(breaks = breaks_cut(.05)) + 
+  scale_fill_brewer(type = "qual", palette = 6) + 
+  facet_grid(alpha ~ q, scales = "free_y", labeller = "label_both") + 
+  labs(x = NULL, y = "Rejection rate", fill = "CR2 adjustment", color = "CR2 adjustment") + 
+  theme_bw() + theme(legend.position = "bottom")
