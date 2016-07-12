@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  11 JUL 2016 15:26
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  12 JUL 2016 10:59
 entering extended mode
 **ClusterRobustTesting_FE_models.tex
 
@@ -710,12 +710,12 @@ Package pdftex.def Info: CR_fig/df-1.pdf used on input line 580.
 
 [22 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
 g/df-1.pdf>] [23] [24] [25] [26] [27] [28]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 765--765
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 766--766
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 765--765
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 766--766
 [][][] 
  []
 
@@ -762,7 +762,7 @@ iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Fil
 es (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files 
 (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files (x8
 6)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on ClusterRobustTesting_FE_models.pdf (32 pages, 355593 bytes).
+Output written on ClusterRobustTesting_FE_models.pdf (32 pages, 355916 bytes).
 PDF statistics:
  214 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

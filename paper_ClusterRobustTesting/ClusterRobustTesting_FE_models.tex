@@ -638,27 +638,29 @@ Second, we test for whether the program was effective in either half of the prio
 Third, we test for whether program effects in the upper half of the prior achievement distribution are moderated by school sector ($H_0: \beta_{21} = \beta_{22} = \beta_{23}$, with $q = 3$). 
 Finally, we conduct a joint test for whether program effects in either half of the prior achievement distribution are moderated by school sector ($H_0: \bs\beta_1 = \bs\beta_2 = \bs\beta_3$, with $q = 4$). 
 
-
-
 % latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Mon Jul 11 15:26:00 2016
-\begin{table}[bth]
+% Tue Jul 12 10:59:21 2016
+\begin{table}[tbh]
 \centering
 \caption{Tests of treatment effects in the Achievement Awards Demonstration} 
 \label{tab:AAD}
 \begin{tabular}{lcrrr}
   \toprule
-Hypothesis & Test & F & df & p \\ 
+Hypothesis & Test & Fstat & df & p \\ 
   \midrule
-ATE - upper half (q = 1) & Standard & 5.746 & 34.00 & 0.02217 \\ 
-   & AHT & 5.169 & 15.86 & 0.03726 \\ 
-  ATE - joint (q = 2) & Standard & 3.848 & 34.00 & 0.03116 \\ 
-   & AHT & 3.371 & 15.46 & 0.06096 \\ 
+ATE - upper half (q = 1) & ad hoc & 5.746 & 34.00 & 0.02217 \\ 
+   & AHT & 5.169 & 18.13 & 0.03539 \\ 
+   & AHT* & 4.825 & 19.38 & 0.04040 \\ 
+  ATE - joint (q = 2) & ad hoc & 3.848 & 34.00 & 0.03116 \\ 
+   & AHT & 3.389 & 16.97 & 0.05775 \\ 
+   & AHT* & 3.307 & 17.67 & 0.06026 \\ 
    \midrule
-Moderation - upper half (q = 2) & Standard & 3.186 & 34.00 & 0.05393 \\ 
-   & AHT & 0.091 & 3.19 & 0.91520 \\ 
-  Moderation - joint (q = 4) & Standard & 8.213 & 34.00 & 0.00010 \\ 
-   & AHT & 2.895 & 3.21 & 0.19446 \\ 
+Moderation - upper half (q = 2) & ad hoc & 3.186 & 34.00 & 0.05393 \\ 
+   & AHT & 1.665 & 7.84 & 0.24959 \\ 
+   & AHT* & 2.058 & 2.27 & 0.30916 \\ 
+  Moderation - joint (q = 4) & ad hoc & 8.213 & 34.00 & 0.00010 \\ 
+   & AHT & 3.091 & 3.69 & 0.16057 \\ 
+   & AHT* & 1.587 & 1.46 & 0.46896 \\ 
    \bottomrule
 \end{tabular}
 \end{table}
@@ -694,10 +696,8 @@ where $\bm{\ddot{r}}_{it}$ denotes the within-cluster deviations of the covariat
 The parameter $\bs\delta$ captures the difference between the between-cluster and within-cluster estimates of $\bs\beta$. 
 With this setup, the artificial Hausman test amounts to testing the null hypothesis that $\bs\delta = \bm{0}$, where $\bs\delta$ is estimated using RE.  
 
-
-
 % latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Mon Jul 11 15:26:00 2016
+% Tue Jul 12 10:59:26 2016
 \begin{table}[bth]
 \centering
 \caption{Tests of effects of minimum legal drink age and Hausman specification test} 
@@ -707,12 +707,13 @@ With this setup, the artificial Hausman test amounts to testing the null hypothe
 Hypothesis & Test & F & df & p \\ 
   \midrule
 Random effects & Standard & 8.261 & 49.00 & 0.00598 \\ 
-   & AHT & 7.785 & 24.74 & 0.00999 \\ 
+   & AHT & 7.785 & 26.69 & 0.00960 \\ 
   Fixed effects & Standard & 9.660 & 49.00 & 0.00313 \\ 
-   & AHT & 9.116 & 22.72 & 0.00616 \\ 
+   & AHT & 9.116 & 24.58 & 0.00583 \\ 
+   & AHT* & 6.969 & 24.75 & 0.01414 \\ 
    \midrule
 Hausman test & Standard & 2.930 & 49.00 & 0.06283 \\ 
-   & AHT & 2.489 & 8.69 & 0.13980 \\ 
+   & AHT & 2.560 & 11.91 & 0.11886 \\ 
    \bottomrule
 \end{tabular}
 \end{table}
@@ -721,7 +722,7 @@ Hausman test & Standard & 2.930 & 49.00 & 0.06283 \\
 Table \ref{tab:MLDA} displays the results of the tests for the policy variable and the Hausman tests for each model specification. 
 The results of the policy effect tests are quite similar across specifications and versions of the test. 
 Of note is that, for both the RE and FE estimates, the AHT tests have only half the degrees of freedom of the corresponding standard tests. 
-For the artificial Hausman test, the AHT test has fewer than 9 degrees of freedom, which leads to a much larger p-value compared to using the standard test based on CR1. 
+For the artificial Hausman test, the AHT test has fewer than 12 degrees of freedom, which leads to a much larger p-value compared to using the standard test based on CR1. 
 
 \section{Conclusion}
 \label{sec:conclusion}

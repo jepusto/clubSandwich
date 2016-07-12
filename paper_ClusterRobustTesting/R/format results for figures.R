@@ -1,5 +1,7 @@
 library(dplyr)
 library(tidyr)
+library(stringr)
+library(ggplot2)
 load("R/Panel simulation results.Rdata")
 
 results <- within(results, {

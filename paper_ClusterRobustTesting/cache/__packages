@@ -1,13 +1,12 @@
 base
 knitr
-xtable
-plyr
-tidyr
+clubSandwich
 dplyr
+tidyr
 stringr
+ggplot2
+xtable
 foreign
 Formula
 plm
-clubSandwich
 nlme
-lubridate

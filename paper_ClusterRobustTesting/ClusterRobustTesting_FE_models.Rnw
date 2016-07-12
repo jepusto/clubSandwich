@@ -461,36 +461,23 @@ The range of parameter combinations used in the true data generating model thus 
 <<setup, include=FALSE, warning=FALSE, cache=FALSE>>=
 # setwd("paper_ClusterRobustTesting")
 library(knitr)
-library(xtable)
-
-library(foreign)
-library(plyr)
-library(tidyr)
-library(dplyr)
-library(stringr)
-library(lubridate)
-library(ggplot2)
-library(plm)
-
-#library(clubSandwich)
-devtools::load_all()
-
 # set global chunk options
 opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache = FALSE, 
                fig.path='CR_fig/', fig.align='center', fig.show='hold')
 
+# library(foreign)
+# library(plyr)
+# library(tidyr)
+# library(dplyr)
+# library(stringr)
+# library(lubridate)
+# library(plm)
+
+#library(clubSandwich)
+devtools::load_all()
+
 source("R/format results for figures.R")
 iterations <- unique(params$iterations)
-
-filter(results_long, n==18 & icc==0.05 & 
-         trt_var==0 & rho==0.2 & design=="CR-B") %>%
-  mutate(reject=0) -> 
-  zeros_long
-
-filter(results_compare, m==15 & n==18 & icc==0.05 & 
-         trt_var==0 & rho==0.2 & design=="CR-B") %>%
-  mutate(Naive = 0, AHT = 0) -> 
-  zeros_compare
 
 fmt <- function(x, digits = 4) format(round(x, digits), nsmall = digits, scientific = FALSE)
 @
@@ -644,141 +631,10 @@ Second, we test for whether the program was effective in either half of the prio
 Third, we test for whether program effects in the upper half of the prior achievement distribution are moderated by school sector ($H_0: \beta_{21} = \beta_{22} = \beta_{23}$, with $q = 3$). 
 Finally, we conduct a joint test for whether program effects in either half of the prior achievement distribution are moderated by school sector ($H_0: \bs\beta_1 = \bs\beta_2 = \bs\beta_3$, with $q = 4$). 
 
-<<Angrist_Lavy, cache=TRUE>>=
-library(foreign)
-library(plm)
+<<Angrist_Lavy, cache = TRUE, results = "asis">>=
+library(xtable)
 
-#-----------------------------------------
-# read in and munge data
-#-----------------------------------------
-filenames <- paste0("data/AngristLavy_AERdata/base",c("99","00","01","02"), ".dta")
-panel_dat_list <- lapply(filenames, read.dta)
-panel_dat <- bind_rows(panel_dat_list)
-
-panel_dat <- within(panel_dat, {
-  yr <- factor(year, levels = c(99,0,1,2), labels = 1999:2002)
-  school_type <- factor(ifelse(semrel, "Religious", ifelse(semarab, "Arab","Secular")))
-  student_id <- paste0(yr, "-", student_id)
-  treated2001 <- (yr=="2001") * treated
-  sex <- ifelse(boy==1, "Boy","Girl")
-  ah4 <- m_ahim >= 4
-})
-
-panel_dat <- cbind(panel_dat, model.matrix(~ 0 + yr, data = panel_dat))
-
-qntl <- function(x, groups = 4) {
-  qtl <- quantile(x, (0:groups) / groups)
-  cut(x, qtl, labels = 1:groups, include.lowest = TRUE, right = FALSE, ordered_result = TRUE)
-}
-
-filter(panel_dat, yr!=1999) %>%
-  group_by(yr, sex) %>%
-  mutate(qrtl = qntl(lagscore, 4),
-         half = qntl(lagscore, 2)) %>%
-  ungroup() %>%
-  filter(sex=="Girl") %>%
-  select(-yr1999, -boy, -sex) %>%
-  arrange(school_id, student_id) ->
-  panel_dat
-
-panel_fit <- plm(zakaibag ~ yr2000:school_type + yr2001:school_type + 
-                   educav + educem + ole5 + ah4 + qrtl + treated2001:half, 
-             data = panel_dat, index = c("school_id","student_id"))
-panel_constraints <<- grepl("treated2001", names(coef(panel_fit)))
-
-# test ATE by half
-t_CR1 <- coef_test(panel_fit, vcov="CR1", test = "naive-t")[panel_constraints,]
-t_CR2 <- coef_test(panel_fit, vcov="CR2", test = c("naive-t","Satterthwaite"))[panel_constraints,]
-
-joint_CR1 <- Wald_test(panel_fit, constraints = panel_constraints, vcov = "CR1", test = "Naive-F")
-joint_CR2 <- Wald_test(panel_fit, constraints = panel_constraints, vcov = "CR2", test = c("Naive-F","HTZ"))
-
-
-panel_school <- plm(zakaibag ~ yr2000:school_type + yr2001:school_type + educav + educem + ole5 + ah4 + qrtl 
-             + treated2001:half + treated2001:half:school_type, 
-             data = panel_dat, index = c("school_id","student_id"))
-school_constraints <- grepl("school_type.*treated2001", names(coef(panel_school)))
-
-# test moderation
-constraint_list <- list(lower = 16:17, upper = 18:19, joint = 16:19)
-mod_CR1 <- Wald_test(panel_school, constraint_list, vcov = "CR1", test = "Naive-F")
-mod_CR2 <- Wald_test(panel_school, constraint_list, vcov = "CR2", test = c("Naive-F","HTZ"))
-@
-
-<<AL_ATEs, results = "asis">>=
-t_CR1 <- within(t_CR1, {
-  df <- 34
-  hypothesis <- rownames(t_CR1)
-  CR <- "CR1"
-  test <- "Naive-F"
-  p_val <- p_t
-})
-t_CR2A <- within(t_CR2, {
-  hypothesis <- rownames(t_CR2)
-  CR <- "CR2"
-  df <- 34
-  test <- "Naive-F"
-  p_val <- p_t
-})
-t_CR2B <- within(t_CR2, {
-  hypothesis <- rownames(t_CR2)
-  CR <- "CR2"
-  test <- "HTZ"
-  p_val <- p_Satt
-})
-
-t_tests <- as.data.frame(rbind(select(t_CR1, hypothesis, CR, test, beta, SE, df, p_val),
-                               select(t_CR2A, hypothesis, CR, test, beta, SE, df, p_val), 
-                               select(t_CR2B, hypothesis, CR, test, beta, SE, df, p_val)))
-
-t_tests$Fstat <- with(t_tests, (beta / SE)^2)
-            
-      
-joint_CR1_df <- within(joint_CR1, {
-  hypothesis <- "Joint"
-  test <- rownames(joint_CR1)
-  CR <- "CR1"
-})
-joint_CR2_df <- within(joint_CR2, {
-  hypothesis <- "Joint"
-  test <- rownames(joint_CR2)
-  CR <- "CR2"
-})
-
-mod_CR1_df <- within(bind_rows(mod_CR1), {
-  hypothesis <- paste("Moderation", names(mod_CR1), sep = " - ")
-  test <- rownames(mod_CR1[[1]])
-  CR <- "CR1"
-})
-mod_CR2_df <- within(bind_rows(mod_CR2), {
-  hypothesis <- paste("Moderation", names(mod_CR2), sep = " - ")
-  test <- rownames(mod_CR2[[1]])
-  CR <- "CR2"
-})
-
-AL_results <- rbind(select(t_tests, Hypothesis = hypothesis, Correction = CR, Test = test, F = Fstat, df, p = p_val), 
-                 select(bind_rows(joint_CR1_df, joint_CR2_df, mod_CR1_df, mod_CR2_df), 
-                        Hypothesis = hypothesis, Correction = CR, Test = test, F = Fstat, df, p = p_val))
-rownames(AL_results) <- NULL
-
-AL_results <- within(AL_results, {
-  Hypothesis <- factor(Hypothesis, 
-                             levels = c("treated2001:half1","treated2001:half2","Joint",
-                                        paste("Moderation", c("lower","upper","joint"), sep = " - ")),
-                             labels = c("ATE - lower half (q = 1)", "ATE - upper half (q = 1)", 
-                                        "ATE - joint (q = 2)", "Moderation - lower half (q = 2)", 
-                                        "Moderation - upper half (q = 2)", "Moderation - joint (q = 4)"))
-  Test <- factor(Test, levels = c("Naive-F", "HTZ"), labels = c("Standard","AHT"))
-  df <- round(df, 2)
-  p <- round(p, 5)
-})
-
-arrange(AL_results, Hypothesis, Correction, Test) %>%
-  filter(Correction=="CR1" | Test=="AHT", !grepl("lower", Hypothesis)) %>%
-  select(-Correction) ->
-  AL_results
-
-AL_results$Hypothesis[-seq(1,8,2)] <- NA
+source("R/Angrist & Lavy example.R")
 
 print(xtable(AL_results, 
              caption = "Tests of treatment effects in the Achievement Awards Demonstration",
@@ -787,9 +643,9 @@ print(xtable(AL_results,
              digits = c(0,0,0,3,2,5)
              ), 
       include.rownames=FALSE, 
-      hline.after = c(-1,0,4,8),
+      hline.after = c(-1,0,6,12),
       booktabs = TRUE,
-      table.placement = "bth", 
+      table.placement = "tbh", 
       caption.placement = "top")
 @
 
@@ -823,51 +679,10 @@ where $\bm{\ddot{r}}_{it}$ denotes the within-cluster deviations of the covariat
 The parameter $\bs\delta$ captures the difference between the between-cluster and within-cluster estimates of $\bs\beta$. 
 With this setup, the artificial Hausman test amounts to testing the null hypothesis that $\bs\delta = \bm{0}$, where $\bs\delta$ is estimated using RE.  
 
-<<MLDA_models, cache = TRUE>>=
-library(foreign)
-library(nlme)
-deaths <- read.dta("data/deaths.dta") 
+<<MLDA_table, cache = TRUE, results="asis">>=
+library(xtable)
 
-filter(deaths, agegr=="18-20 yrs" & year <= 1983 & dtype == "MVA" & !is.na(beertaxa)) %>%
-  select(-agegr, -dtype) %>%
-  group_by(state) %>%
-  mutate(legal_s = legal - mean(legal),
-         beertaxa_s = beertaxa - mean(beertaxa)) ->
-  death_dat
-
-# Random effects
-
-RE1_fit <- lme(mrate ~ legal + factor(year), data = death_dat, random = ~ 1 | state)
-RE1_CR1 <- Wald_test(RE1_fit, constraints = 2, vcov = "CR1", test = "Naive-F")
-RE1_CR2 <- Wald_test(RE1_fit, constraints = 2, vcov = "CR2", test = c("Naive-F", "HTZ"))
-
-RE2_fit <- lme(mrate ~ legal + beertaxa + factor(year), data = death_dat, random = ~ 1 | state)
-RE2_CR1 <- Wald_test(RE2_fit, constraints = 2, vcov = "CR1", test = "Naive-F")
-RE2_CR2 <- Wald_test(RE2_fit, constraints = 2, vcov = "CR2", test = c("Naive-F","HTZ"))
-
-# Fixed effects
-
-FE1_fit <- lm(mrate ~ 0 + legal + factor(year) + factor(state), data = death_dat)
-FE1_CR1 <- Wald_test(FE1_fit, constraints = 1, vcov = "CR1", cluster = death_dat$state, test = "Naive-F")
-FE1_CR2 <- Wald_test(FE1_fit, constraints = 1, vcov = "CR2", cluster = death_dat$state, test = c("Naive-F", "HTZ"))
-
-FE2_fit <- lm(mrate ~ 0 + legal + beertaxa + factor(year) + factor(state), data = death_dat)
-FE2_CR1 <- Wald_test(FE2_fit, constraints = 1, vcov = "CR1", cluster = death_dat$state, test = "Naive-F")
-FE2_CR2 <- Wald_test(FE2_fit, constraints = 1, vcov = "CR2", cluster = death_dat$state, test = c("Naive-F","HTZ"))
-
-# Hausmann tests
-
-RE1_Hausman <- lme(mrate ~ legal + legal_s + factor(year), data = death_dat, random = ~ 1 | state)
-Haus1_CR1 <- Wald_test(RE1_Hausman, constraints = 3, vcov = "CR1", test = "Naive-F")
-Haus1_CR2 <- Wald_test(RE1_Hausman, constraints = 3, vcov = "CR2", test = c("Naive-F", "HTZ"))
-
-RE2_Hausman <- lme(mrate ~ legal + beertaxa + legal_s + beertaxa_s + factor(year), data = death_dat, random = ~ 1 | state)
-Haus2_CR1 <- Wald_test(RE2_Hausman, constraints = 4:5, vcov = "CR1", test = "Naive-F")
-Haus2_CR2 <- Wald_test(RE2_Hausman, constraints = 4:5, vcov = "CR2", test = c("Naive-F","HTZ"))
-
-@
-
-<<MLDA_table, results="asis">>=
+source("R/MLDA example.R")
 
 M1 <- as.data.frame(rbind(RE1_CR1, RE1_CR2, FE1_CR1, FE1_CR2, Haus1_CR1, Haus1_CR2))
 rownames(M1) <- NULL
@@ -875,13 +690,13 @@ M1$Correction <- c("CR1","CR2","CR2")
 M1$Test <- c("F","F","AHT")
 M1$Hypothesis <- c("Random effects",NA,NA,"Fixed effects",NA,NA,"Hausman test",NA,NA)
 
-M2 <- as.data.frame(rbind(RE2_CR1, RE2_CR2, FE2_CR1, FE2_CR2, Haus2_CR1, Haus2_CR2))
+M2 <- as.data.frame(rbind(RE2_CR1, RE2_CR2, FE2_CR1, FE2_CR2, FE2_CR2A, Haus2_CR1, Haus2_CR2))
 rownames(M2) <- NULL
-M2$Correction <- c("CR1","CR2","CR2")
-M2$Test <- c("Standard","Standard","AHT")
-M2$Hypothesis <- c("Random effects",NA,NA,"Fixed effects",NA,NA,"Hausman test",NA,NA)
+M2$Correction <- c(c("CR1","CR2","CR2"),c("CR1","CR2","CR2","CR2","CR2"),c("CR1","CR2","CR2"))
+M2$Test <- c(c("Standard","Standard","AHT"),c("Standard","Standard","AHT","Standard","AHT*"),c("Standard","Standard","AHT"))
+M2$Hypothesis <- c("Random effects",NA,NA,"Fixed effects",NA,NA,NA,NA,"Hausman test",NA,NA)
 
-filter(M2, Correction=="CR1" | Test=="AHT") %>%
+filter(M2, Correction=="CR1" | Test %in% c("AHT","AHT*")) %>%
   select(Hypothesis, Test, "F" = Fstat, df, p = p_val) ->
   MLDA_results
 
@@ -891,7 +706,7 @@ print(xtable(MLDA_results,
              align = "llcrrr",
              digits = c(0,0,0,3,2,5)), 
       include.rownames=FALSE, 
-      hline.after = c(-1,0,4,6),
+      hline.after = c(-1,0,5,7),
       booktabs = TRUE,
       table.placement = "bth", 
       caption.placement = "top")

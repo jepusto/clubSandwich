@@ -1,0 +1,4 @@
+\contentsline {section}{\numberline {S1}Proof of Theorem 1}{2}
+\contentsline {section}{\numberline {S2}Proof of Theorem 2}{3}
+\contentsline {section}{\numberline {S3}Details of simulation study}{4}
+\contentsline {section}{\numberline {S4}Additional simulation results}{5}

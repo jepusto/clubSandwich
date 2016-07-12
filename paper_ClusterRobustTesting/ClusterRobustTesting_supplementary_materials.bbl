@@ -5,9 +5,4 @@ Henderson, H.~V. \harvardand\ Searle, S.~R.  \harvardyearleft
   1981\harvardyearright , `{On deriving the inverse of a sum of matrices}',
   {\em Siam Review} {\bf 23}(1),~53--60.
 
-\harvarditem{Imbens \harvardand\ Kolesar}{2015}{Imbens2015robust}
-Imbens, G.~W. \harvardand\ Kolesar, M.  \harvardyearleft 2015\harvardyearright
-  , {Robust Standard Errors in Small Samples: Some Practical Advice}.
-\newline\harvardurl{https://www.princeton.edu/{~}mkolesar/papers/small-robust.pdf}
-
 \end{thebibliography}
