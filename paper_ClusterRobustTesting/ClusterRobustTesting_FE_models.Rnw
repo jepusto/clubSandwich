@@ -4,6 +4,7 @@
 \usepackage{graphicx,psfrag,epsf}
 \usepackage{enumerate}
 \usepackage{booktabs}
+\usepackage{longtable}
 \RequirePackage[natbibapa]{apacite}
 \usepackage{caption}
 \usepackage{multirow}
@@ -420,8 +421,8 @@ We thus expect that using the AHT degrees of freedom, which take into account fe
 Evidence from several large simulation studies indicates that hypothesis tests based on the CR2 adjustment and estimated degrees of freedom substantially out-perform the procedures that are most commonly used in empirical applications \citep[][\maskcitealp{Tipton2015small-t, Tipton2015small-F}]{Cameron2015practitioners, Imbens2015robust,Bell2002bias}.
 However, existing simulations have focused almost entirely on single-parameter tests. 
 In this section, we describe the design and results of a new simulation study, which focused on the rejection rates of multiple-parameter tests.
-Throughout, we refer to tests employing estimated degrees of freedom as ``AHT'' tests; for t-tests, the estimated degrees of freedom are equivalent to the Satterthwaite approximation given in Equation (\ref{eq:nu_model}). 
-We refer to tests employing $m - 1$ degrees of freedom as ``ad hoc'' tests. 
+Throughout, we refer to tests employing the CR2-corrected CRVE and estimated degrees of freedom as ``AHT'' tests; for t-tests, the estimated degrees of freedom are equivalent to the Satterthwaite approximation given in Equation (\ref{eq:nu_model}). 
+We refer to tests employing the CR1 correction and $m - 1$ degrees of freedom as ``standard'' tests. 
 
 \subsection{Design}
 
@@ -429,8 +430,8 @@ The simulation study focused on testing hypotheses about the relative effects of
 First, we considered a randomized block (RB) design in which every policy condition is observed in every cluster. 
 Second, we considered a cluster-randomized (CR) design in which each cluster is observed under a single policy condition. 
 Third, we considered a difference-in-differences (DD) design in which some clusters are observed under all three policy conditions while other clusters are observed under a single condition. 
-For each design, we simulated both balanced and unbalanced configurations; 
-the supplementary materials provide the exact specifications of each design. For each design, we simulated studies with $m = 15$, 30, or 50 clusters, each with $n = 18$ or 30 units. Table \ref{tab:simulation_parameters} summarizes the design of the simulation study.
+For each design, we simulated both balanced and unbalanced configurations, with $m = 15$, 30, or 50 cluster and $n = 18$ or 30 units per cluster; 
+the supplementary materials provide the exact specifications used. Table \ref{tab:simulation_parameters} summarizes the design of the simulation study, which included a total of \Sexpr{3 * 2 * 3 * 2 * 3 * 6} unique conditions.
 
 \begin{table}[tb]
 \centering
@@ -460,8 +461,7 @@ where $\nu_{hi}$ is a random effect for unit $i$ under condition $h$ and $\epsil
 The random effects for unit $i$ were taken to follow a compound symmetric distribution with $\Var\left(\nu_{hi}\right) = \tau^2$ and $\text{Var}\left(\nu_{gi} - \nu_{hi}\right) = \sigma_\delta^2$ for $g \neq h$, $g,h = 1,2,3$. 
 This had the effect of inducing variability in the cluster-specific treatment effects and thus a degree of misspecification into the working models described below. 
 The errors at a given time point were assumed to be correlated, with $\Var\left(\epsilon_{ijk}\right) = 1 - \tau^2$ and $\text{corr}\left(\epsilon_{ijk}, \epsilon_{ijl}\right) = \rho$ for $k\neq l$, $k,l = 1,2,3$. 
-Under this data-generating process, we simulated three different levels of intra-class correlation; three levels of treatment effect variability ($\sigma_\delta^2$), and outcomes that were either weakly ($\rho = .2$) or strongly correlated ($\rho = .8$).
-Each combination of sample sizes and parameter levels was simulated for balanced and unbalanced versions of each of the three study designs, yielding a total of \Sexpr{3 * 2 * 3 * 2 * 3 * 6} unique conditions.
+Under this data-generating process, we simulated three different levels of intra-class correlation; three levels of treatment effect variability, and outcomes that were either weakly ($\rho = .2$) or strongly correlated ($\rho = .8$).
 
 Given a set of simulated data, we estimated the effects of the second and third policy conditions (relative to the first) on each outcome using a seemingly unrelated regression. 
 For the difference-in-differences design, we used the analytic model
@@ -474,7 +474,7 @@ For the cluster-randomized designs, fixed effects for clusters were omitted beca
 For the randomized block designs, treatments were blocked by cluster and the fixed effects for time-points were omitted for simplicity.
 The analytic model was estimated by OLS after absorbing any fixed effects, and so the ``working'' model amounts to assuming that the errors are independent and identically distributed. 
 Note that the working model departs from the true data generating model both because of correlation among the outcomes ($\rho > 0$) and because of treatment effect variability ($\sigma_\delta^2 > 0$). 
-The range of parameter combinations used in the true data generating model thus allows us to examine the performance of AHT tests under both small and large degrees of working model misspecification. 
+The range of parameter combinations used in the true data generating model thus allows us to examine the performance of AHT tests under varying degrees of working model misspecification. 
 
 <<setup, include=FALSE, warning=FALSE, cache=FALSE>>=
 # setwd("paper_ClusterRobustTesting")
@@ -503,23 +503,23 @@ fmt <- function(x, digits = 4) format(round(x, digits), nsmall = digits, scienti
 We tested several single- and multi-parameter constraints on analytic model (\ref{eq:sim_analytic_model}). 
 We first tested the single-dimensional null hypotheses that a given policy condition had no average effect on the first outcome ($H_0: \mu_{11} = \mu_{12}$ or $H_0: \mu_{11} = \mu_{13}$). 
 We also tested the null hypothesis of no differences among policy conditions on the first outcome ($H_0: \mu_{11} = \mu_{12} = \mu_{13}$), which has dimension $q = 2$. 
-We then tested the multi-variate versions of the above tests, which involve all three outcome measures jointly; the multi-variate versions of the tests thus have dimension $q = 3$ or $q = 6$. 
+We then tested the multi-variate versions of the above tests, which involve all three outcome measures jointly and so have dimension $q = 3$ or $q = 6$. 
 %($H_0: \mu_{11} = \mu_{1h}, \mu_{21} = \mu_{2h}, \mu_{31} = \mu_{3h}$, for $h = 2$ or $h = 3$) or $q = 6$ %($H_0: \mu_{11} = \mu_{12} = \mu_{13}, \mu_{21} = \mu_{22} = \mu_{23}, \mu_{31} = \mu_{32} = \mu_{33}$). 
-For a given combination of sample sizes, parameter levels, and study design, we simulated \Sexpr{format(iterations, big.mark = ",")} datasets from model (\ref{eq:data_generating_model}), estimated model (\ref{eq:sim_analytic_model}) on each dataset, and computed all of the hypothesis tests. 
+For a given combination of study design, sample sizes, and parameter values, we simulated \Sexpr{format(iterations, big.mark = ",")} datasets from model (\ref{eq:data_generating_model}), estimated model (\ref{eq:sim_analytic_model}) on each dataset, and computed all of the hypothesis tests. 
 Simulated Type I error rates therefore have standard errors of approximately \Sexpr{fmt(sqrt(.01 * .99 / iterations))} for $\alpha = .01$, \Sexpr{fmt(sqrt(.05 * .95 / iterations))} for $\alpha = .05$, and \Sexpr{fmt(sqrt(.1 * .9 / iterations))} for $\alpha = .10$. 
 
 \subsection{Simulation Results}
 
-<<overview, fig.width = 8, fig.height = 9.5, out.width = "\\linewidth", fig.cap = "Rejection rates of ad hoc and AHT tests for $\\alpha = .05$, by dimension of hypothesis ($q$) and sample size ($m$). The solid horizontal line indicates the stated $\\alpha$ level and the dashed line indicates an upper confidence bound on simulation error.">>=
+<<overview, fig.width = 10, fig.height = 5, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT and standard tests for $\\alpha = .05$, by dimension of hypothesis ($q$) and sample size ($m$). The solid horizontal line indicates the stated $\\alpha$ level and the dashed line indicates an upper confidence bound on simulation error.", fig.env = "sidewaysfigure">>=
 
-filter(results_long, alpha == .05 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
+filter(results_long, alpha == .05 & test %in% c("CR1 standard", "CR2 AHT")) %>%
   ggplot(aes(m_fac, reject)) + 
   geom_boxplot(coef = Inf, alpha = alpha_val, fill = "grey") + 
-  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 standard", "CR2 AHT"))) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
   scale_y_continuous(breaks = breaks_cut(.05)) + 
-  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate") + 
   theme_bw() + theme(legend.position = "none")
 
@@ -528,7 +528,7 @@ filter(results_long, m == 15 & test == "CR2 AHT") %>%
   summarise(reject = max(reject)) ->
   AHT_max_reject
 
-filter(results_long, alpha == .05 & test == "CR1 ad hoc") %>%
+filter(results_long, alpha == .05 & test == "CR1 standard") %>%
   group_by(m, q) %>%
   summarise(reject = max(reject)) %>%
   spread(m, reject) ->
@@ -536,31 +536,30 @@ filter(results_long, alpha == .05 & test == "CR1 ad hoc") %>%
 
 @
 
-We discuss four main findings from the simulation results.
-Throughout, we present results for the nominal Type I error rate of $\alpha = .05$; figures presenting results for other $\alpha$ levels are available in the supplementary materials, along with complete numerical results and replication code.
+We discuss five main findings from the simulation results.
+Throughout, we present results for the nominal Type I error rate of $\alpha = .05$; results for other $\alpha$ levels are available in the supplementary materials, along with complete numerical results and replication code.
 
-The first finding is that the AHT test based on the CR2 estimator has Type I error close to the stated $\alpha$ level for all parameter combinations studied, whereas the standard, ad hoc test based on CR1 does not. 
-Figure \ref{fig:overview} illustrates this pattern at the nominal type I error rate of $\alpha = .05$, for constraints of varying dimension (from $q = 1$, in the first row, to $q = 6$, in the final row) and varying number of clusters.
+\paragraph{Overall performance.} The first finding is that the AHT test has Type I error close to the stated $\alpha$ level for all parameter combinations studied, whereas the standard test based on CR1 does not. 
+Figure \ref{fig:overview} illustrates this pattern at the nominal type I error rate of $\alpha = .05$, for constraints of varying dimension (from $q = 1$, in the first column, to $q = 6$, in the final column) and varying number of clusters.
 It can be seen that the AHT test has Type I error near the stated $\alpha$ level, even with a small number of clusters.
-When the number of clusters is very small, the Type I error can be smaller than the stated $\alpha$ level. 
-Although there exist situations in which the error is above the simulation bound, the departures are typically small. For example, when $m = 15$ the rejection rates do not exceed \Sexpr{fmt(AHT_max_reject[2,"reject"],3)} for $\alpha = .01$, \Sexpr{fmt(AHT_max_reject[3,"reject"],3)} for $\alpha = .05$, and \Sexpr{fmt(AHT_max_reject[4,"reject"],3)} for $\alpha = .10$.
+When the number of clusters is very small, the Type I error can be smaller $\alpha$. 
+Although the error is above the simulation bound under some conditions, the departures are typically small. For example, when $m = 15$ the rejection rates do not exceed \Sexpr{fmt(AHT_max_reject[2,"reject"],3)} for $\alpha = .01$, \Sexpr{fmt(AHT_max_reject[3,"reject"],3)} for $\alpha = .05$, and \Sexpr{fmt(AHT_max_reject[4,"reject"],3)} for $\alpha = .10$.
 The rejection rates are even closer to nominal for lower-dimensional constraints.
 
-In comparison to the AHT test, the Type I error for the ad hoc test based on CR1 can be markedly higher than the stated $\alpha$ level, particularly when the number of clusters is small or the dimension of the hypothesis is large. 
+In comparison to the AHT test, the Type I error for the standard test can be markedly higher than the stated $\alpha$ level, particularly when the number of clusters is small or the dimension of the hypothesis is large. 
 For example, the maximum Type I error ranges from \Sexpr{fmt(standard_max_reject[1,"15"],3)} ($q = 1$) to \Sexpr{fmt(standard_max_reject[4,"15"],3)} ($q = 6$) for data sets with 15 clusters.
-Perhaps even more important for practice, the rejection rate of the ad hoc test can be far above the stated $\alpha$ level even when there are 50 clusters, with maximum error ranging from \Sexpr{fmt(standard_max_reject[1,"50"],3)} ($q = 1$) to \Sexpr{fmt(standard_max_reject[4,"50"],3)} ($q = 6$). 
-Using the AHT degrees of freedom with the CR1 variance estimator (middle row of Figure \ref{fig:overview}) leads to a drastic improvement, although the rejection rates still exceed the nominal level under some conditions.\todo{Comment on absorption-only adjustments.} 
+Perhaps even more important for practice, the rejection rate of the standard test can be far above the stated $\alpha$ level even when there are 50 clusters, with maximum error ranging from \Sexpr{fmt(standard_max_reject[1,"50"],3)} ($q = 1$) to \Sexpr{fmt(standard_max_reject[4,"50"],3)} ($q = 6$). 
 
-<<balance, fig.width = 8, fig.height = 10, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .05$ and $m = 30$. The solid horizontal line indicates the stated $\\alpha$ level and the dashed line indicates an upper confidence bound on simulation error. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
+<<balance, fig.width = 10, fig.height = 5.5, out.width = "\\linewidth", fig.cap = "Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\\alpha = .05$ and $m = 30$. The solid horizontal line indicates the stated $\\alpha$ level and the dashed line indicates an upper confidence bound on simulation error. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.", fig.env = "sidewaysfigure">>=
 
-filter(results_long, alpha==0.05 & m==30 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
+filter(results_long, alpha==0.05 & m==30 & test %in% c("CR1 standard", "CR2 AHT")) %>%
   ggplot(aes(design, reject)) + 
   geom_boxplot(coef = Inf, alpha = alpha_val, fill = "grey") + 
-  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 standard", "CR2 AHT"))) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
   scale_y_continuous(breaks = breaks_cut(.05)) + 
-  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate") + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
 
@@ -570,20 +569,13 @@ filter(results_long, m == 30 & test == "CR2 AHT" & alpha == .05) %>%
 
 @
 
-Figure \ref{fig:balance} breaks out the rejection rates by study design, focusing on a sample size of $m = 30$. 
-In the left-most column, it can be seen that the rejection rate of the ad hoc test increases with the dimension of the test ($q$) and the degree of unbalance in the study design.
+\paragraph{Role of balance.} Figure \ref{fig:balance} breaks out the rejection rates by study design, focusing on a sample size of $m = 30$. 
+In the bottom row, it can be seen that the rejection rate of the standard test increases with the dimension of the test ($q$) and the degree of unbalance in the study design.
 Differences between the balanced and unbalanced designs are largest for the CR and DD designs, with smaller discrepancies in RB designs.
-The middle and right columns of Figure \ref{fig:balance} displays results for the AHT test with the CR1 and CR2 estimators, respectively.
-For studies with at least 30 clusters, rejection rates of the AHT test with CR2 are very close to nominal (between \Sexpr{round(AHT_range_m30$min, 3)} and \Sexpr{round(AHT_range_m30$max, 3)}) across all conditions studied.
+In the top row, rejection rates of the AHT test are very close to nominal (between \Sexpr{round(AHT_range_m30$min, 3)} and \Sexpr{round(AHT_range_m30$max, 3)}) across all conditions with at least 30 clusters.
 Unbalanced designs led to rejection rates that were usually below the nominal $\alpha$---just the opposite of how the standard test is affected by unbalance. 
 This trend is the strongest for CR and DD designs. 
-The rejection rates of the AHT test with the CR1 variance estimator sometimes exceeds the nominal levels, particularly for cluster-randomized designs.
-At the smallest sample size, the rejection rates of the AHT tests are close to 0 in unbalanced CR and DD designs (see supplementary figures S4-S7). 
-
-By simulating the errors across a variety of parameter combinations, we were also able to test the impact of misspecification of the working model on Type I error.
-Because the CR2 correction and AHT degrees of freedom are both based on a working model with independent, homoskedastic errors, model misspecification increases with the true level of treatment effect variance ($\sigma_\delta^2$) and intra-class correlation ($\tau^2$).
-Across the nine error structures, the range of rejection rates remains very similar for the AHT test, with no clear pattern related to the degree of mis-specification (see supplementary figures S16-S19). 
-These findings follow closely those from \maskcitet{Tipton2015small-F}, which also found that the Type I error of the AHT test was close to nominal even when the working model was quite discrepant from the data-generating model.
+At the smallest sample size, the rejection rates of the AHT test are close to 0 in unbalanced CR and DD designs (see supplementary figures S4-S7). 
 
 <<df, fig.width = 8, fig.height = 3.3, out.width = "\\linewidth", fig.cap = "Range of denominator degrees of freedom for AHT test, by number of clusters and study design. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.">>=
 
@@ -598,17 +590,28 @@ filter(results_long, alpha==0.05 & test=="CR2 AHT" & icc == 0.25 & rho == 0.8 & 
 
 @
 
-Finally, Figure \ref{fig:df} depicts the range of estimated degrees of freedom for the AHT test (with CR2) as a function of the study design and number of clusters ($m$). 
+\paragraph{Degrees of freedom.} Figure \ref{fig:df} depicts the range of estimated degrees of freedom for the AHT test (with CR2) as a function of the study design and number of clusters ($m$). 
 Within each box plot, the degrees of freedom vary depending on the hypothesis tested, with constraints of larger dimension having lower degrees of freedom. 
 It can be seen that the AHT degrees of freedom are often far less than $m - 1$ and that they are strongly affected by the pattern of treatment assignment and the degree of balance. The balanced and unbalanced RB designs have AHT degrees of freedom closest to $m - 1$ because the treatment effects being tested are all identified within each cluster. 
 The balanced DD design usually had the next largest degrees of freedom because it involved contrasts between two patterns of treatment configuration, followed by the balanced CR design, which involved contrasts between three patterns of treatment configurations. 
 For both of these designs, unbalance led to sharply reduced degrees of freedom.
 
+\paragraph{Other correction factors.} 
+In principle, the AHT test could be applied with other forms of CRVEs, or could be calculated without accounting for absorption of the fixed effects. 
+Figures S16-S19 in the supplementary materials depicts the rejection rates of two variants of the AHT test, including the test based on the CR1 adjustment matrices and the test based on CR2, but without accounting for absorption. 
+Using the AHT degrees of freedom with the CR1 variance estimator leads to a drastic improvement compared to the standard test with $m - 1$ degrees of freedom, although the rejection rates still exceed the nominal level under some conditions.
+The test based on CR2 without accounting for absorption has quite accurate rejection rates, although they exceed nominal levels more often than those of the test that does account for absorption---particularly for lower-dimensional hypotheses. 
+
+\paragraph{Misspecification.} By simulating the errors across a variety of parameter combinations, we were also able to test the impact of misspecification of the working model on Type I error.
+Because the CR2 correction and AHT degrees of freedom are both based on a working model with independent, homoskedastic errors, model misspecification increases with the true level of treatment effect variance ($\sigma_\delta^2$) and intra-class correlation ($\tau^2$).
+Across the nine error structures, the range of rejection rates remains very similar for the AHT test, with no clear pattern related to the degree of mis-specification (see supplementary figures S20-S23). 
+These findings follow closely those from \maskcitet{Tipton2015small-F}, which indicated that the Type I error of the AHT test was close to nominal even when the working model was quite discrepant from the data-generating model.
+
 In summary, these results demonstrate that the standard robust Wald test, using the CR1 correction and $m - 1$ degrees of freedom, produces a wide range of rejection rates, often far in excess of the nominal Type I error. 
 In contrast, the rejection rates of the AHT tests are below or at most slightly above nominal, across all of the conditions examined. 
 This is because the AHT test incorporates information about the covariate features into its estimated degrees of freedom, whereas the standard test does not.
-Compared to using the AHT test with the CR1 variance estimator, using the AHT with CR2 leads to rejection rates that are closer to maintaining the nominal level, although the differences are often fairly small. 
-An important question that remains is how much the standard, ad hoc test and AHT test diverge in actual application.
+Compared to using the AHT test with the CR1 variance estimator or the modified CR2 estimator that ignores absorption of fixed effects, the AHT test based on CR2 leads to rejection rates that are closer to maintaining the nominal level, although the differences are often fairly small. 
+An important question that remains is how much the standard test and AHT test diverge in actual application.
 
 \section{EXAMPLES}
 \label{sec:examples}
@@ -616,7 +619,7 @@ An important question that remains is how much the standard, ad hoc test and AHT
 This section presents two examples that illustrate the performance of CRVE in different applied contexts. 
 In the first example, the effects of substantive interest involve between-cluster contrasts. 
 The second example involves a cluster-robust Hausman test for differences between within- and across-cluster information. 
-In each example, we demonstrate the proposed AHT test for single- and multiple-parameter hypotheses and compare the results to the standard test based on the CR1 variance estimator and $m - 1$ degrees of freedom. 
+In each example, we demonstrate the proposed AHT test for single- and multiple-parameter hypotheses and compare the results to the standard test based on the CR1 variance estimator and $m - 1$ degrees of freedom, as well as the AHT test based on the CR2 estimator calculated without accounting for absorption. 
 The focus here is on providing insight into the conditions under which the methods diverge in terms of three quantities of interest: the standard error estimates, the degrees of freedom estimates, and the stated p-values. 
 Data files and replication code are available in the supplementary materials.
 
@@ -654,6 +657,10 @@ library(xtable)
 
 source("R/Angrist & Lavy example.R")
 
+add_to_row <- paste0("\\bottomrule\n",
+                     "\\multicolumn{5}{l}",
+                     "{\\small{* AHT test calculated without accounting for absorption of fixed effects}}\n")
+
 print(xtable(AL_results, 
              caption = "Tests of treatment effects in the Achievement Awards Demonstration",
              label = "tab:AAD",
@@ -661,10 +668,11 @@ print(xtable(AL_results,
              digits = c(0,0,0,3,2,5)
              ), 
       include.rownames=FALSE, 
-      hline.after = c(-1,0,6,12),
+      hline.after = c(-1,0,6),
       booktabs = TRUE,
-      table.placement = "tbh", 
-      caption.placement = "top")
+      caption.placement = "top",
+      table.placement = "bth",
+      add.to.row = list(pos = list(nrow(AL_results)), command = add_to_row))
 @
 
 Table \ref{tab:AAD} reports the results of all four hypothesis tests. 
@@ -673,7 +681,10 @@ These differences in degrees of freedom arise because the treatment was assigned
 In contrast, the AHT and standard tests diverge markedly for the third and fourth hypotheses tests, which compared treatment effects across sectors and subgroups.
 For these cases, the AHT test statistic and degrees of freedom are both considerably smaller than those from the standard test. 
 This reflects the degree of unbalance in allocations across sectors (19 Jewish secular, 7 Jewish religious, and 9 Arab religious schools), combined with cluster-level randomization. 
-In combination, these smaller test statistics and degrees of freedom result in larger p-values for the AHT test when compared to the standard test.
+In combination, these smaller test statistics and degrees of freedom result in larger p-values for the AHT test when compared to the standard test. 
+For the first two hypotheses, the modified AHT test calculated without accounting for absorption of fixed effects leads to inferences that are largely consistent with the test that does account for absorption. 
+However for the latter two hypotheses, the modified test has lower degrees of freedom, which leads to larger differences in p-values.
+In light of the simulation results, we would suggest that the test that accounts for absorption should be prefered in this application.\todo{Do we believe this?} 
 
 \subsection{Effects of minimum legal drinking age on mortality} 
 
@@ -724,16 +735,18 @@ print(xtable(MLDA_results,
              align = "llcrrr",
              digits = c(0,0,0,3,2,5)), 
       include.rownames=FALSE, 
-      hline.after = c(-1,0,5,7),
+      hline.after = c(-1,0,5),
       booktabs = TRUE,
       table.placement = "bth", 
-      caption.placement = "top")
+      caption.placement = "top",
+      add.to.row = list(pos = list(nrow(MLDA_results)), command = add_to_row))
 
 @
 
 Table \ref{tab:MLDA} displays the results of the tests for the policy variable and the Hausman tests for each model specification. 
 The results of the policy effect tests are quite similar across specifications and versions of the test. 
 Of note is that, for both the RE and FE estimates, the AHT tests have only half the degrees of freedom of the corresponding standard tests. 
+For the FE estimates, The modified AHT test that ignores absorption produces similar degrees of freedom but a lower estimate of sampling variance, which leads to a smaller value for the test statistic and a larger p-value.
 For the artificial Hausman test, the AHT test has fewer than \Sexpr{round(Haus2_CR2["HTZ","df"])} degrees of freedom, which leads to a much larger p-value compared to using the standard test based on CR1. 
 
 \section{Conclusion}

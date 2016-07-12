@@ -85,7 +85,7 @@ t_CR1 <- within(t_CR1, {
     df <- 34
     hypothesis <- rownames(t_CR1)
     CR <- "CR1"
-    Test <- "ad hoc"
+    Test <- "Standard"
     p_val <- p_t
   })
 t_CR2 <- within(t_CR2, {
@@ -111,7 +111,7 @@ t_tests <-
   select(Hypothesis, Test, Fstat, df, p = p_val)
 
 joint_tests <- 
-  bind_rows("ad hoc" = joint_CR1, 
+  bind_rows("Standard" = joint_CR1, 
             "AHT" = joint_CR2, 
             "AHT*" = joint_CR2A, .id = "Test") %>%
   mutate(Hypothesis = "ATE - joint (q = 2)") %>%
@@ -119,17 +119,19 @@ joint_tests <-
 
 
 mod_tests <- 
-  bind_rows("ad hoc" = bind_rows(mod_CR1, .id = "hypothesis"),
+  bind_rows("Standard" = bind_rows(mod_CR1, .id = "hypothesis"),
             "AHT" = bind_rows(mod_CR2, .id = "hypothesis"),
             "AHT*" = bind_rows(mod_CR2A, .id = "hypothesis"), .id = "Test") %>%
   filter(hypothesis %in% c("upper","joint")) %>%
-  arrange(desc(hypothesis), Test) %>%
+  mutate(test = factor(Test, levels = c("Standard", "AHT","AHT*"))) %>%
+  arrange(desc(hypothesis), test) %>%
   mutate(Hypothesis = ifelse(hypothesis=="upper", "Moderation - upper half (q = 2)", "Moderation - joint (q = 4)")) %>%
   select(Hypothesis, Test, Fstat, df, p = p_val)
 
 AL_results <- 
   bind_rows(t_tests, joint_tests, mod_tests) %>%
   mutate(df = round(df, 2),
-         p = round(p, 5))
+         p = round(p, 5)) %>%
+  rename(F = Fstat)
 
 AL_results$Hypothesis[-seq(1,12,3)] <- NA

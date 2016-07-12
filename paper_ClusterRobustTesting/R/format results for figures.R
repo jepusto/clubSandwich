@@ -17,7 +17,8 @@ gather(results, "alpha", "reject", alpha0.005, alpha0.01, alpha0.05, alpha0.1) %
 
 filter(results_long_all, test %in% c("CR1 Naive-F", "CR1 HTZ","CR2 Naive-F","CR2 HTZ", "CR2A HTZ")) %>%
   within({
-    test <- gsub("Naive-F","ad hoc", gsub("HTZ","AHT", test))
+    test <- gsub("Naive-F","standard", gsub("HTZ","AHT", test))
+    test_lab <- ifelse(str_detect(test, "standard"), "Standard", ifelse(str_detect(test, "AHT"), "AHT",test))
     UB <- alpha + qnorm(0.95) * sqrt(alpha * (1 - alpha) / iterations)
     m_fac <- paste0("m = ",m)
     q <- hypothesis
@@ -26,7 +27,7 @@ filter(results_long_all, test %in% c("CR1 Naive-F", "CR1 HTZ","CR2 Naive-F","CR2
     q_alpha <- paste0("q = ", q, ", alpha = ", alpha)
     alpha_q <- paste0("alpha = ", alpha, ", q = ", q)
     alpha_m <- paste0("alpha = ", alpha, ", m = ", m)
-    test_q <- paste0(test, " test, q = ", q)
+    test_q <- paste0(test_lab, " test, q = ", q)
     m_test <- factor(paste0(test, " test, m = ", m))
   }) ->
   results_long
@@ -62,14 +63,14 @@ breaks_cut <- function(alpha) {
 
 # Figure 1
 
-filter(results_long, alpha == .05 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
+filter(results_long, alpha == .05 & test %in% c("CR1 standard", "CR2 AHT")) %>%
   ggplot(aes(m_fac, reject)) + 
   geom_boxplot(coef = Inf, alpha = alpha_val, fill = "grey") + 
-  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 standard", "CR2 AHT"))) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
   scale_y_continuous(breaks = breaks_cut(.05)) + 
-  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate") + 
   theme_bw() + theme(legend.position = "none")
 
@@ -78,7 +79,7 @@ filter(results_long, m == 15 & test == "CR2 AHT") %>%
   summarise(reject = max(reject)) ->
   AHT_max_reject
 
-filter(results_long, alpha == .05 & test == "CR1 ad hoc") %>%
+filter(results_long, alpha == .05 & test == "CR1 standard") %>%
   group_by(m, q) %>%
   summarise(reject = max(reject)) %>%
   spread(m, reject) ->
@@ -86,14 +87,14 @@ filter(results_long, alpha == .05 & test == "CR1 ad hoc") %>%
 
 # Figure 2
 
-filter(results_long, alpha==0.05 & m==30 & test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT")) %>%
+filter(results_long, alpha==0.05 & m==30 & test %in% c("CR1 standard", "CR2 AHT")) %>%
   ggplot(aes(design, reject)) + 
   geom_boxplot(coef = Inf, alpha = alpha_val, fill = "grey") + 
-  geom_blank(data = filter(zeros_long, test %in% c("CR1 ad hoc", "CR1 AHT","CR2 AHT"))) + 
+  geom_blank(data = filter(zeros_long, test %in% c("CR1 standard", "CR2 AHT"))) + 
   geom_hline(aes(yintercept = alpha)) + 
   geom_hline(aes(yintercept = UB), linetype = "dashed") + 
   scale_y_continuous(breaks = breaks_cut(.05)) + 
-  facet_wrap(~ test_q, nrow = 4, scales = "free", dir = "v") + 
+  facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate") + 
   theme_bw() + theme(legend.position = "none", axis.text.x = element_text(angle = 90, hjust = 1))
 
