@@ -120,3 +120,45 @@ m_ * m / (m_ * m - rev(m_))
 V_U * m_i^2 / e_d^2
 m_ / (m_ - 1)
 
+#------------------------------
+# Stepped wedge DID
+#------------------------------
+
+m <- 12
+n <- m + 1
+cluster <- factor(rep(LETTERS[1:m], each = n))
+N <- length(cluster)
+time <- factor(rep(1:n, m))
+trt <- as.vector(sapply(1:m, function(x) c(rep(0,x), rep(1, n - x))))
+nu <- rnorm(m)[cluster]
+e <- rnorm(N)
+y <- 0.4 * trt + nu + e
+
+dat <- data.frame(y, time, trt, cluster)
+R <- model.matrix(~ 0 + trt, data = dat)
+S <- model.matrix(~ 0 + time, data = dat)
+T <- model.matrix(~ 0 + cluster, data = dat)
+U <- model.matrix(~ 0 + time + trt, data = dat)
+
+Sp <- residuals(lm.fit(T, S))
+Up <- residuals(lm.fit(T, U))
+Rp1 <- as.matrix(residuals(lm.fit(T, R)))
+Rp2 <- as.matrix(residuals(lm.fit(Sp, Rp1)))
+yp1 <- residuals(lm.fit(T, y))
+yp2 <- residuals(lm.fit(Sp, yp1))
+lm_R <- lm(yp2 ~ 0 + Rp2)
+lm_U <- lm(yp1 ~ 0 + Up)
+lm_full <- lm(y ~ 0 + cluster + time + trt, data = dat)
+
+all.equal(coef(lm_R)[["Rp2"]], 
+          coef(lm_U)[["Uptrt"]], 
+          coef(lm_full)[["trt"]])
+(SE_R <- coef_test(lm_R, vcov = "CR2", cluster = cluster)$SE)
+(SE_U <- coef_test(lm_U, vcov = "CR2", cluster = cluster)["Uptrt","SE"])
+coef_test(lm_full, vcov = "CR2", cluster = cluster)["trt","SE"]
+SE_U / SE_R
+
+(df_R <- coef_test(lm_R, vcov = "CR2", cluster = cluster)$df)
+(df_U <- coef_test(lm_U, vcov = "CR2", cluster = cluster)["Uptrt","df"])
+coef_test(lm_full, vcov = "CR2", cluster = cluster)["trt","df"]
+df_R / df_U
