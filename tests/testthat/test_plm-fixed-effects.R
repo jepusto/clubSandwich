@@ -127,17 +127,28 @@ test_that("CR2 and CR4 are target-unbiased", {
   
   expect_true(check_CR(plm_individual, vcov = "CR2"))
   expect_true(check_CR(plm_individual, vcov = "CR4"))
+  expect_true(check_CR(plm_individual, vcov = "CR2", inverse_var = FALSE))
+  expect_true(check_CR(plm_individual, vcov = "CR4", inverse_var = FALSE))
   
   expect_true(check_CR(plm_time, vcov = "CR2"))
   expect_true(check_CR(plm_time, vcov = "CR4"))
+  expect_true(check_CR(plm_time, vcov = "CR2", inverse_var = FALSE))
+  expect_true(check_CR(plm_time, vcov = "CR4", inverse_var = FALSE))
   
   expect_true(check_CR(plm_twoways, vcov = "CR2", cluster = "individual"))
   expect_true(check_CR(plm_twoways, vcov = "CR4", cluster = "individual"))
+  expect_true(check_CR(plm_twoways, vcov = "CR2", cluster = "individual", inverse_var = FALSE))
+  expect_true(check_CR(plm_twoways, vcov = "CR4", cluster = "individual", inverse_var = FALSE))
   expect_true(check_CR(plm_twoways, vcov = "CR2", cluster = "time"))
   expect_true(check_CR(plm_twoways, vcov = "CR4", cluster = "time"))
+  expect_true(check_CR(plm_twoways, vcov = "CR2", cluster = "time", inverse_var = FALSE))
+  expect_true(check_CR(plm_twoways, vcov = "CR4", cluster = "time", inverse_var = FALSE))
   expect_true(check_CR(plm_twoways, vcov = "CR2", cluster = Produc_scramble$cluster))
   expect_true(check_CR(plm_twoways, vcov = "CR4", cluster = Produc_scramble$cluster))
+  expect_true(check_CR(plm_twoways, vcov = "CR2", cluster = Produc_scramble$cluster, inverse_var = FALSE))
+  expect_true(check_CR(plm_twoways, vcov = "CR4", cluster = Produc_scramble$cluster, inverse_var = FALSE))
 })
+
 
 test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
   library(sandwich, quietly=TRUE)

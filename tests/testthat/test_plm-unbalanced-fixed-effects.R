@@ -2,6 +2,10 @@ context("plm objects - unbalanced fixed effects")
 
 library(plm, quietly=TRUE)
 
+#-------------------------------------
+# Produc example
+#-------------------------------------
+
 data("Produc", package = "plm")
 Produc$gsp[sample(nrow(Produc), size = 75)] <- NA
 Produc$cluster <- sample(LETTERS[1:10], size = nrow(Produc), replace=TRUE)
@@ -146,19 +150,29 @@ test_that("vcovCR options work for CR4", {
 test_that("CR2 and CR4 are target-unbiased", {
   
   expect_true(check_CR(plm_individual, vcov = "CR2"))
-  expect_true(check_CR(plm_individual, vcov = "CR2"))
   expect_true(check_CR(plm_individual, vcov = "CR4"))
+  expect_true(check_CR(plm_individual, vcov = "CR2", inverse_var = FALSE))
+  expect_true(check_CR(plm_individual, vcov = "CR4", inverse_var = FALSE))
   
   expect_true(check_CR(plm_time, vcov = "CR2"))
   expect_true(check_CR(plm_time, vcov = "CR4"))
+  expect_true(check_CR(plm_time, vcov = "CR2", inverse_var = FALSE))
+  expect_true(check_CR(plm_time, vcov = "CR4", inverse_var = FALSE))
   
   expect_true(check_CR(plm_twoways, vcov = "CR2", cluster = "individual"))
   expect_true(check_CR(plm_twoways, vcov = "CR4", cluster = "individual"))
+  expect_true(check_CR(plm_twoways, vcov = "CR2", cluster = "individual", inverse_var = FALSE))
+  expect_true(check_CR(plm_twoways, vcov = "CR4", cluster = "individual", inverse_var = FALSE))
   expect_true(check_CR(plm_twoways, vcov = "CR2", cluster = "time"))
   expect_true(check_CR(plm_twoways, vcov = "CR4", cluster = "time"))
+  expect_true(check_CR(plm_twoways, vcov = "CR2", cluster = "time", inverse_var = FALSE))
+  expect_true(check_CR(plm_twoways, vcov = "CR4", cluster = "time", inverse_var = FALSE))
   expect_true(check_CR(plm_twoways, vcov = "CR2", cluster = Produc$cluster))
   expect_true(check_CR(plm_twoways, vcov = "CR4", cluster = Produc$cluster))
+  expect_true(check_CR(plm_twoways, vcov = "CR2", cluster = Produc$cluster, inverse_var = FALSE))
+  expect_true(check_CR(plm_twoways, vcov = "CR4", cluster = Produc$cluster, inverse_var = FALSE))
 })
+
 
 test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
   library(sandwich, quietly=TRUE)
@@ -178,3 +192,34 @@ test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
   HC_twoways <- lapply(HC_types, function(t) vcovHC(lm_twoways, type = t)[twoway_index,twoway_index])
   expect_equal(CR_twoways, HC_twoways)
 })
+
+
+
+#-------------------------------------
+# MLDA example
+#-------------------------------------
+
+# deaths <- read.dta("paper_ClusterRobustTesting/data/deaths.dta") 
+# 
+# filter(deaths, agegr=="18-20 yrs" & year <= 1983 & dtype == "MVA" & !is.na(beertaxa)) %>%
+#   select(-agegr, -dtype) %>%
+#   group_by(state) %>%
+#   mutate(legal_s = legal - mean(legal),
+#          beertaxa_s = beertaxa - mean(beertaxa)) %>%
+#   as.data.frame() ->
+#   death_dat
+# 
+# death_dat$mrate_miss <- death_dat$mrate
+# death_dat$mrate_miss[sample(nrow(death_dat), size = 100)] <- NA
+# 
+# var_names <- c("legal","beertaxa")
+# lm_fit <- lm(mrate_miss ~ 0 + legal + beertaxa + factor(state) + factor(year), data = death_dat)
+# CR2_iv_lm <- vcovCR(lm_fit, cluster = death_dat$state, type = "CR2")
+# CR2_iv_lm[var_names, var_names]
+# vcovCR(lm_fit, cluster = death_dat$state, type = "CR2", inverse_var = FALSE)[var_names, var_names]
+# plm_fit <- plm(mrate_miss ~ legal + beertaxa, data = death_dat, 
+#                index = c("state", "year"), effect = "twoways", model = "within")
+# coef(lm_fit)[var_names]
+# coef(plm_fit)
+# vcovCR(plm_fit, cluster = "individual", type = "CR2")
+# vcovCR(plm_fit, cluster = death_dat$state, type = "CR2", inverse_var = FALSE)

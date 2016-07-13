@@ -113,7 +113,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
       U_list <- matrix_list(U, cluster, "row")
       UW_list <- Map(function(u, w) as.matrix(t(u) %*% w), u = U_list, w = W_list)
       UWU_list <- Map(function(uw, u) uw %*% u, uw = UW_list, u = U_list)
-      M_U <- chol2inv(chol(Reduce("+",UWU_list)))
+      M_U <- Sym_power(Reduce("+",UWU_list), p = -1)
     }
   }
   

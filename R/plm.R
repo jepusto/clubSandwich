@@ -106,9 +106,9 @@ augmented_model_matrix.plm <- function(obj, cluster, inverse_var) {
       }
     } else if (effect=="twoways") {
       if (inverse_var & identical(individual, cluster)) {
-        S <- model.matrix(~ 0 + time)
+        S <- residuals(lm.fit(model.matrix(~ 0 + individual), model.matrix(~ 0 + time)[,-1]))
       } else if (inverse_var & identical(time, cluster)) {
-        S <- model.matrix(~ 0 + individual)
+        S <- residuals(lm.fit(model.matrix(~ 0 + time), model.matrix(~ 0 + individual)[,-1]))
       } else {
         S <- model.matrix(~ 0 + individual + time)
       }

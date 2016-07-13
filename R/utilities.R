@@ -30,5 +30,5 @@ check_CR <- function(obj, vcov, ...) {
   MXWTWXM <- Map(function(xw, theta) M %*% as.matrix(xw %*% theta %*% t(xw)) %*% M, 
                     xw = XpW_list, theta = Theta_list)
   eq <- all.equal(E_CRj, MXWTWXM)
-  if (eq==TRUE) TRUE else list(E_CRj = E_CRj, target = MXWTWXM)
+  if (all(eq==TRUE)) TRUE else list(E_CRj = E_CRj, target = MXWTWXM)
 }
