@@ -151,7 +151,7 @@ test_that("CR2 is equivalent to Welch t-test for DiD design", {
   expect_is(all.equal(as.numeric(t_Welch$parameter), t_Satt$df), "character")
   
   df <- m^2 * (m0 - 1) * (m1 - 1) / (m0^2 * (m0 - 1) + m1^2 * (m1 - 1))
-  expect_equal(plm_Satt$df, df)
+  expect_equal(t_Satt$df, df)
 })
 
 test_that("Order doesn't matter.",{

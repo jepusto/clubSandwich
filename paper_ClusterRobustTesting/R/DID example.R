@@ -1,3 +1,5 @@
+library(ggplot2)
+
 rm(list=ls())
 m0 <- 4
 m1 <- 14
@@ -157,6 +159,59 @@ all.equal(coef(lm_R)[["Rp2"]],
 (SE_U <- coef_test(lm_U, vcov = "CR2", cluster = cluster)["Uptrt","SE"])
 coef_test(lm_full, vcov = "CR2", cluster = cluster)["trt","SE"]
 SE_U / SE_R
+
+(df_R <- coef_test(lm_R, vcov = "CR2", cluster = cluster)$df)
+(df_U <- coef_test(lm_U, vcov = "CR2", cluster = cluster)["Uptrt","df"])
+coef_test(lm_full, vcov = "CR2", cluster = cluster)["trt","df"]
+df_R / df_U
+
+
+
+#------------------------------
+# Rotating panel DID
+#------------------------------
+
+m <- 12
+n0 <- 2
+n1 <- 4
+n <- n0 + n1
+cluster <- factor(rep(LETTERS[1:m], each = n))
+N <- length(cluster)
+time <- as.vector(sapply(1:m, function(x) x + 0:(n-1)))
+trt <- as.vector(sapply(1:m, function(x) c(rep(0,n0), rep(1, n1))))
+nu <- rnorm(m)[cluster]
+eta <- rnorm(max(time))[time]
+e <- rnorm(N)
+y <- 0.4 * trt + nu + eta + e
+
+dat <- data.frame(y, time, trt, cluster)
+ggplot(dat, aes(time, y, color = cluster)) + 
+  geom_line() + 
+  facet_wrap(~ cluster, ncol = 1)
+
+R <- model.matrix(~ 0 + trt, data = dat)
+S <- model.matrix(~ 0 + factor(time), data = dat)[,-1]
+T <- model.matrix(~ 0 + cluster, data = dat)
+U <- model.matrix(~ 0 + factor(time) + trt, data = dat)[,-1]
+X <- model.matrix(~ 0 + cluster + factor(time) + trt, data = dat)
+
+Sp <- residuals(lm.fit(T, S))
+Up <- residuals(lm.fit(T, U))
+Rp1 <- as.matrix(residuals(lm.fit(T, R)))
+Rp2 <- as.matrix(residuals(lm.fit(Sp, Rp1)))
+yp1 <- residuals(lm.fit(T, y))
+yp2 <- residuals(lm.fit(Sp, yp1))
+lm_R <- lm(yp2 ~ 0 + Rp2)
+lm_U <- lm(yp1 ~ 0 + Up)
+lm_full <- lm(y ~ 0 + cluster + factor(time) + trt, data = dat)
+
+all.equal(coef(lm_R)[["Rp2"]], 
+          coef(lm_U)[["Uptrt"]], 
+          coef(lm_full)[["trt"]])
+(SE_R <- coef_test(lm_R, vcov = "CR2", cluster = cluster)$SE)
+(SE_U <- coef_test(lm_U, vcov = "CR2", cluster = cluster)["Uptrt","SE"])
+coef_test(lm_full, vcov = "CR2", cluster = cluster)["trt","SE"]
+SE_R / SE_U
 
 (df_R <- coef_test(lm_R, vcov = "CR2", cluster = cluster)$df)
 (df_U <- coef_test(lm_U, vcov = "CR2", cluster = cluster)["Uptrt","df"])

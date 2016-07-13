@@ -55,7 +55,9 @@ vcovCR.plm <- function(obj, cluster, type, target, inverse_var) {
   }
   
   if (missing(target)) target <- NULL
-  if (missing(inverse_var) ) inverse_var <- is.null(target)
+  if (missing(inverse_var)) inverse_var <- is.null(target)
+  obj$na.action <- attr(obj$model, "na.action")
+  
   vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
 }
 
