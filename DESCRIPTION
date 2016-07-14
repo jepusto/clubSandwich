@@ -15,7 +15,7 @@ Description: Provides several cluster-robust variance estimators
     gls and lme (from nlme), robu (from robumeta), and rma.uni and rma.mv (from
     metafor).
 Depends:
-    R (>= 3.2.0)
+    R (>= 3.0.0)
 License: GPL-3
 VignetteBuilder: knitr
 LazyData: true

@@ -101,7 +101,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
     }
   }
   
-  if (type %in% c("CR2","CR3","CR4")) {
+  if (type %in% c("CR2","CR4")) {
     S <- augmented_model_matrix(obj, cluster, inverse_var)
     
     if (is.null(S)) {
@@ -113,7 +113,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
       U_list <- matrix_list(U, cluster, "row")
       UW_list <- Map(function(u, w) as.matrix(t(u) %*% w), u = U_list, w = W_list)
       UWU_list <- Map(function(uw, u) uw %*% u, uw = UW_list, u = U_list)
-      M_U <- Sym_power(Reduce("+",UWU_list), p = -1)
+      M_U <- matrix_power(Reduce("+",UWU_list), p = -1)
     }
   }
   
@@ -183,8 +183,8 @@ matrix_list <- function(x, fac, dim) {
   }
 }
 
-Sym_power <- function(x, p, tol = -12) {
-  eig <- eigen(x, symmetric = TRUE)
+matrix_power <- function(x, p, symmetric = TRUE, tol = -12) {
+  eig <- eigen(x, symmetric = symmetric)
   val_p <- with(eig, ifelse(values > 10^tol, values^p, 0))
   with(eig, vectors %*% (val_p * t(vectors)))
 }

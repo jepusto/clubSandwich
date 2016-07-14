@@ -153,8 +153,8 @@ test_that("CR2 and CR4 are target-unbiased", {
 test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
   library(sandwich, quietly=TRUE)
 
-  CR_types <- paste0("CR",c(0,2,3))
-  HC_types <- paste0("HC",c(0,2,3))
+  CR_types <- paste0("CR",c(0,2))
+  HC_types <- paste0("HC",c(0,2))
 
   CR_individual <- lapply(CR_types, function(t) as.matrix(vcovCR(plm_individual, cluster = 1:n, type = t)))
   HC_individual <- lapply(HC_types, function(t) vcovHC(lm_individual, type = t)[individual_index,individual_index])

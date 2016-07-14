@@ -171,7 +171,7 @@ Wald_testing <- function(C_mat, beta, vcov, test, S_array) {
     J <- dim(S_array)[3]
     S_array <- array(apply(S_array, 3, function(s) C_mat %*% s), dim = c(q, N, J))
     Omega <- apply(array(apply(S_array, 3, tcrossprod), dim = c(q,q,J)), 1:2, sum)
-    Omega_nsqrt <- Sym_power(Omega, -1/2)
+    Omega_nsqrt <- matrix_power(Omega, -1/2)
   }
   
   # Wald statistic
