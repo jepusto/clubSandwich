@@ -399,11 +399,6 @@ params$design <- designs
 params$constraints <- list(constraints)
 params$seed <- round(runif(1) * 2^30) + 1:nrow(params)
 
-# All look right?
-lengths(design_factors)
-nrow(params)
-head(params)
-
 #--------------------------------------------------------
 # run simulations in parallel
 #--------------------------------------------------------

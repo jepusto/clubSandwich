@@ -47,8 +47,12 @@ panel_constraints <<- grepl("treated2001", names(coef(panel_fit)))
 # fit model after absorbing year effects
 X1_mat <- model.matrix(panel_fit)
 R1_coefs <- c(1:7,14:15)
-R1_mat <- residuals(lm(X1_mat[,R1_coefs] ~ X1_mat[,-R1_coefs]))
-absorb_fit1 <- lm(panel_dat$zakaibag ~ 0 + R1_mat)
+R_mat <- X1_mat[,R1_coefs]
+S_mat <- X1_mat[,-R1_coefs]
+T_mat <- model.matrix(~ 0 + factor(school_id), data = panel_dat)
+Sp <- residuals(lm.fit(T_mat, S_mat))
+Rp <- residuals(lm.fit(Sp, residuals(lm.fit(T_mat, R_mat))))
+absorb_fit1 <- lm(panel_dat$zakaibag ~ 0 + Rp)
 # cbind(coef(absorb_fit1), coef(panel_fit)[R1_coefs])
 # all.equal(coef(absorb_fit1), coef(panel_fit)[R1_coefs], check.attributes = FALSE)
 
@@ -69,8 +73,12 @@ school_constraints <- grepl("school_type.*treated2001", names(coef(panel_school)
 # fit model after absorbing year effects
 X2_mat <- model.matrix(panel_school)
 R2_coefs <- c(1:7,14:19)
-R2_mat <- residuals(lm(X2_mat[,R2_coefs] ~ X2_mat[,-R2_coefs]))
-absorb_fit2 <- lm(panel_dat$zakaibag ~ 0 + R2_mat)
+R_mat <- X2_mat[,R2_coefs]
+S_mat <- X2_mat[,-R2_coefs]
+T_mat <- model.matrix(~ 0 + factor(school_id), data = panel_dat)
+Sp <- residuals(lm.fit(T_mat, S_mat))
+R2p <- residuals(lm.fit(Sp, residuals(lm.fit(T_mat, R_mat))))
+absorb_fit2 <- lm(panel_dat$zakaibag ~ 0 + R2p)
 # cbind(coef(absorb_fit2), coef(panel_school)[R2_coefs])
 # all.equal(coef(absorb_fit2), coef(panel_school)[R2_coefs], check.attributes = FALSE)
 

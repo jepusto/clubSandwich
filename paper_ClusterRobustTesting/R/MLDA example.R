@@ -31,9 +31,16 @@ FE2_CR1 <- Wald_test(FE2_fit, constraints = 1, vcov = "CR1", cluster = death_dat
 FE2_CR2 <- Wald_test(FE2_fit, constraints = 1, vcov = "CR2", cluster = death_dat$state, test = c("Naive-F","HTZ"))
 
 X <- model.matrix(FE2_fit)
-R <- residuals(lm.fit(X[,-(1:2)], X[,1:2]))
-FE2_absorb <- lm(death_dat$mrate ~ 0 + R)
+T_mat <- model.matrix(~ 0 + state, data = death_dat)
+S_mat <- X[,-(1:2)]
+Sp <- residuals(lm.fit(T_mat, S_mat))
+R_mat <- X[,1:2]
+Rp <- residuals(lm.fit(Sp, residuals(lm.fit(T_mat, R_mat))))
+FE2_absorb <- lm(death_dat$mrate ~ 0 + Rp)
 FE2_CR2A <- Wald_test(FE2_absorb, constraints = 1, vcov = "CR2", cluster = death_dat$state, test = c("Naive-F","HTZ"))
+
+# coef_test(FE2_fit, vcov = "CR2", cluster = death_dat$state)[1:2,]
+# coef_test(FE2_absorb, vcov = "CR2", cluster = death_dat$state)
 
 # Hausmann tests
 
