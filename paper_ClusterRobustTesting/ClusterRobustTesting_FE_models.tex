@@ -431,15 +431,15 @@ We consider how to estimate $\eta$ below.
 Note that this approximation reduces to the Satterthwaite approximation when $q = 1$. 
 For $q > 1$, the test depends on the multivariate distribution of $\bm{V}^{CR2}$, including both variance and covariance terms. 
 
-\maskcitet{Tipton2015small-F} recently introduced this test for the special case of CRVE in regression models in used in meta-analysis.
+\maskcitet{Tipton2015small-F} recently introduced this test for the special case of CRVE for regression models used in meta-analysis.
 Wishart approximations have also been considered as approximations in several simpler models where special cases of CRVE are used.
 \citet{Nel1986solution} proposed an AHT-type test for equality of multivariate means across two samples with unequal variance-covariance matrices \citep[i.e., the multivariate Behrens-Fisher problem; see also][]{Krishnamoorthy2004modified}.
 \citet{Zhang2012twowayANOVA} followed a similar approach in developing a test for contrasts in multivariate analysis of variance models where the covariance of the errors differs across groups, a special case of model (\ref{eq:fixed_effects}) where the CR2 variance estimator has a particularly simple form. 
 In each of these special cases, the robust variance estimator is a mixture of Wishart distributions that is well-approximated by a Wishart distribution with estimated degrees of freedom.
 Additionally, \citet{Pan2002small} described an F-test for use in GEE models, which uses the Wishart approximation to the distribution of $\bm{V}^{CR0}$ but estimates the degrees of freedom using a different method than the one we describe below.
-\maskcitet{Tipton2015small-F} developed five tests and compared them in a large simulation study. 
-These tests include versions of those introduced by \citet{Pan2002small} and \citet{Zhang2012twowayANOVA}, as well as eigen-decomposition approaches (extensions to methods provided in Fai \& Cornelius, 1996; Cai \& Hayes, 2008).
-They show that the AHT test presented here has Type I error closer to nominal than any of the other tests under a wide range of parameter values, covariate types, and tests.
+
+In an extensive simulation, \maskcitet{Tipton2015small-F} compared the performance of the AHT test to several other possible approximate F-tests, including adaptations of the tests introduced by \citet{Pan2002small} and \citet{Zhang2012twowayANOVA}, as well as adaptations of tests based on eigen-decompositions proposed by \citep{Fai1996approximate} and \citep{Cai2008new}.
+Simulation results indicated that the AHT test presented here has Type I error closer to nominal than any of the other tests under a wide range of parameter values, covariate types, and hypotheses.
 The contribution of the present paper is to extend the AHT test to the general setting of linear models with fixed effects and clustered errors. 
 
 The remaining question is how to estimate the parameter $\eta$, which determines the scalar multiplier and denominator degrees of freedom of the AHT test. 
