@@ -1,7 +1,3 @@
-library(clubSandwich)
-library(mvtnorm)
-library(stringr)
-
 rm(list = ls())
 
 #------------------------------------------------------
@@ -59,7 +55,7 @@ error_series <- function(m, n, k, rho, ar) {
 simulate_outcome <- function(m, n, k, trt, cluster, outcome_id, icc, rho, ar, trt_var, outcome_mean) {
   
   if (nlevels(trt) != length(outcome_mean)) outcome_mean <- rep_len(outcome_mean, length.out = nlevels(trt))
-
+  
   trt <- trt[outcome_id == levels(outcome_id)[1]]
   cluster <- cluster[outcome_id == levels(outcome_id)[1]]
   
@@ -164,7 +160,7 @@ full_fit <- function(dat, cluster_effects, time_effects, constraints,
   
   V_CR3 <- vcovCR.default(lm_fit, cluster = dat$cluster, type = "CR3", inverse_var = TRUE)
   Walds_CR3 <- Wald_test(lm_fit, constraints = constraints, vcov = V_CR3, test = tests)
-
+  
   V_CR2A <- vcovCR.default(lm_absorb, cluster = dat$cluster, type = "CR2", inverse_var = TRUE)
   Walds_CR2A <- Wald_test(lm_absorb, constraints = constraints, vcov = V_CR2A, test = tests)
   
@@ -256,9 +252,9 @@ quick_fit <- function(res, y) {
                          E_list = res$CR2A_estmats)
   
   Walds_CR2A <- Wald_test_quick(beta = coef(lm_fit),
-                               vcov = V_CR2A,
-                               constraints = res$constraints,
-                               adjustments = res$CR2A_adjustments)
+                                vcov = V_CR2A,
+                                constraints = res$constraints,
+                                adjustments = res$CR2A_adjustments)
   
   result <- rbind(Walds_CR1, Walds_CR2, Walds_CR3, Walds_CR2A)
   rownames(result) <- paste(c(rep("CR1", nrow(res$CR1_adjustments[[1]])),
@@ -269,129 +265,9 @@ quick_fit <- function(res, y) {
   return(result)
 }
 
-# #---------------------------------
-# # Test the estimation functions
-# #---------------------------------
-# 
-# # generate data
-# m = 50
-# n = 12
-# k = 3
-# cluster_balance = c(A = 1/2, ABC = 1/2)
-# time_balance = list(A = 1, ABC = c(1/2,1/3,1/6))
-# cluster_effects = TRUE
-# time_effects = TRUE
-# rotating = TRUE
-# rho = 0.8
-# ar = 0.0
-# icc = 0.2
-# trt_var = 0.01
-# outcome_mean = rep(0, 3)
-# constraints <- list(t_B = "outcome1:trtB",
-#                     t_C = "outcome1:trtC",
-#                     F_1 = c("outcome1:trtB", "outcome1:trtC"),
-#                     F_B = c("outcome1:trtB","outcome2:trtB","outcome3:trtB"),
-#                     F_C = c("outcome1:trtC","outcome2:trtC","outcome3:trtC"),
-#                     F_all = c("outcome1:trtB","outcome2:trtB","outcome3:trtB",
-#                               "outcome1:trtC","outcome2:trtC","outcome3:trtC"))
-# tests <- c("Naive-F","HTA","HTB","HTZ")
-# 
-# dat <- simulate_panel(m, n, k, cluster_balance, time_balance, rotating, 
-#                       rho, ar, icc, trt_var, outcome_mean)
-# 
-# # compare full fit and quick fit
-# 
-# res <- full_fit(dat, cluster_effects, time_effects, constraints)
-# quick_res <- quick_fit(res, dat$y)
-# all.equal(dplyr::bind_rows(res$CR1_adjustments)$p_val, as.vector(quick_res[1:4,]), tol = 10^-14)
-# all.equal(dplyr::bind_rows(res$CR2_adjustments)$p_val, as.vector(quick_res[5:8,]), tol = 10^-14)
-# all.equal(dplyr::bind_rows(res$CR3_adjustments)$p_val, as.vector(quick_res[9:12,]), tol = 10^-14)
-# all.equal(dplyr::bind_rows(res$CR2A_adjustments)$p_val, as.vector(quick_res[13:16,]), tol = 10^-14)
-# 
-# 
-# # compare full fit and quick fit on new data
-# 
-# y <- simulate_outcome(m, n, k, trt = res$trt, cluster = res$cluster, outcome_id = dat$outcome,
-#                       icc, rho, ar, trt_var, outcome_mean)
-# quick_new <- quick_fit(res, y)
-# 
-# dat_new <- dat
-# dat_new$y <- y
-# res_new <- full_fit(dat_new, cluster_effects, time_effects, constraints)
-# identical(dplyr::bind_rows(res$CR1_adjustments)[,c("delta","df")], 
-#           dplyr::bind_rows(res_new$CR1_adjustments)[,c("delta","df")])
-# identical(dplyr::bind_rows(res$CR2_adjustments)[,c("delta","df")], 
-#           dplyr::bind_rows(res_new$CR2_adjustments)[,c("delta","df")])
-# identical(dplyr::bind_rows(res$CR3_adjustments)[,c("delta","df")], 
-#           dplyr::bind_rows(res_new$CR3_adjustments)[,c("delta","df")])
-# identical(dplyr::bind_rows(res$CR2A_adjustments)[,c("delta","df")], 
-#           dplyr::bind_rows(res_new$CR2A_adjustments)[,c("delta","df")])
-# 
-# all.equal(dplyr::bind_rows(res_new$CR1_adjustments)$p_val, as.vector(quick_new[1:4,]), tol = 10^-14)
-# all.equal(dplyr::bind_rows(res_new$CR2_adjustments)$p_val, as.vector(quick_new[5:8,]), tol = 10^-14)
-# all.equal(dplyr::bind_rows(res_new$CR3_adjustments)$p_val, as.vector(quick_new[9:12,]), tol = 10^-14)
-# all.equal(dplyr::bind_rows(res_new$CR2A_adjustments)$p_val, as.vector(quick_new[13:16,]), tol = 10^-14)
-# 
-# # check against lm fit
-# 
-# if (cluster_effects & time_effects) {
-#   lm1 <- lm(y ~ 0 + factor(cluster) + factor(time) + outcome + trt:outcome, data = dat)
-# } else if (time_effects) {
-#   lm1 <- lm(y ~ 0 + factor(time) + outcome + trt:outcome, data = dat)
-# } else if (cluster_effects) {
-#   lm1 <- lm(y ~ 0 + factor(cluster) + outcome + trt:outcome, data = dat)
-# } else {
-#   lm1 <- lm(y ~ 0 + outcome + trt:outcome, data = dat)
-# }
-# 
-# coef(lm1)
-# Wald_CR1 <- Wald_test(lm1, constraints = constraints, vcov = "CR1", cluster = dat$cluster, test = tests)
-# dplyr::bind_rows(res$CR1_adjustments)
-# dplyr::bind_rows(Wald_CR1)
-# all.equal(res$CR1_adjustments, Wald_CR1, tol = 10^-12)
-# 
-# Wald_CR2 <- Wald_test(lm1, constraints = constraints, vcov = "CR2", cluster = dat$cluster, test = tests)
-# cbind(dplyr::bind_rows(res$CR2_adjustments), dplyr::bind_rows(Wald_CR2))
-# all.equal(res$CR2_adjustments, Wald_CR2, tol = 10^-12)
-
 #------------------------------------------------------
 # Simulation Driver
 #------------------------------------------------------
-
-bind_rows <- function(x) do.call(rbind, x)
-
-run_initial <- function(m, n, k, design, constraints, 
-                    rho, ar, icc, trt_var, outcome_mean = 0, seed = NULL) {
-  
-  if (!is.null(seed)) set.seed(seed)
-  
-  # get balance parameters
-  if (length(design)==1) design <- design[[1]]
-  cluster_balance <- design[["cluster_balance"]]
-  time_balance <- design[["time_balance"]]
-  cluster_effects <- design[["cluster_effects"]]
-  time_effects <- design[["time_effects"]]
-  rotating <- design$rotating
-  if (is.null(rotating)) rotating <- FALSE
-  
-  # get constraint list
-  if (length(constraints) == 1 & is.null(names(constraints))) constraints <- constraints[[1]]
-  
-  # setup: simulate data and fit model  
-  dat <- simulate_panel(m, n, k, cluster_balance, time_balance, rotating,
-                        rho, ar, icc, trt_var, outcome_mean)
-  initial_fit <- full_fit(dat, cluster_effects, time_effects, constraints)
-  
-  # get degrees of freedom
-  res <- with(initial_fit, rbind(bind_rows(CR1_adjustments), bind_rows(CR2_adjustments), 
-                                 bind_rows(CR3_adjustments), bind_rows(CR2A_adjustments)))
-  row.names(res) <- NULL
-  
-  data.frame(expand.grid(test = row.names(initial_fit$CR1_adjustments$t_B),
-                         hypothesis = names(initial_fit$CR1_adjustments), 
-                         adjustment = c("CR1","CR2","CR3","CR2A")), 
-             res)
-}
 
 run_sim <- function(iterations, m, n, k, design, constraints, 
                     rho, ar, icc, trt_var, outcome_mean = 0, 
@@ -430,7 +306,7 @@ run_sim <- function(iterations, m, n, k, design, constraints,
   CR2A_df <- sapply(initial_fit$CR2A_adjustments, function(x) x$df)
   rownames(CR2_df) <- rownames(initial_fit$CR2_adjustments[[1]])
   df <- rbind(CR1_df, CR2_df, CR3_df, CR2A_df)
-
+  
   # calculate rejection rates
   error_rate <- sapply(alpha_levels, function(a) as.vector(apply(results < a, 1:2, mean)))
   colnames(error_rate) <- paste0("alpha", alpha_levels)
@@ -440,47 +316,6 @@ run_sim <- function(iterations, m, n, k, design, constraints,
              error_rate, 
              df = as.vector(df))
 }
-
-# # demonstrate the simulation driver
-# 
-# design <- list(
-#   cluster_balance = c(A = 1/2, ABC1 = 1/4, ABC2 = 1/4),
-#   time_balance = list(A = 1, ABC1 = c(1/3, 1/3, 1/3), ABC2 = c(1/2, 1/4, 1/4)),
-#   cluster_effects = TRUE,
-#   time_effects = TRUE,
-#   rotating = TRUE
-# )
-# 
-# constraints <- list(t_B = "outcome1:trtB",
-#                     t_C = "outcome1:trtC",
-#                     F_1 = c("outcome1:trtB", "outcome1:trtC"),
-#                     F_B = c("outcome1:trtB","outcome2:trtB","outcome3:trtB"),
-#                     F_C = c("outcome1:trtC","outcome2:trtC","outcome3:trtC"),
-#                     F_all = c("outcome1:trtB","outcome2:trtB","outcome3:trtB",
-#                               "outcome1:trtC","outcome2:trtC","outcome3:trtC"))
-# 
-# initial_res <- run_initial(m = 80, n = 12, k = 3, design = design, constraints,
-#                            rho = 0.8, ar = 0, icc = 0.2, trt_var = 0.01, outcome_mean = rep(0,3))
-# 
-# library(tidyr)
-# library(dplyr)
-# initial_res %>%
-#   filter(test=="HTZ" & adjustment %in% c("CR2","CR2A")) %>%
-#   mutate(Fstat = Fstat / delta) %>%
-#   select(hypothesis, adjustment, Fstat, df) %>%
-#   gather("stat", "val", Fstat, df) %>%
-#   spread(adjustment, val) %>%
-#   mutate(ratio = CR2 / CR2A) %>%
-#   select(hypothesis, stat, ratio) %>%
-#   spread(stat, ratio)
-# 
-# system.time(
-#   sim_res <- run_sim(iterations = 1000, m = 15, n = 30, k = 3,
-#                      design = design, constraints,
-#                      rho = 0.8, ar = 0, icc = 0.2, trt_var = 0.01, outcome_mean = rep(0,3))
-# )
-# sim_res %>%
-#   filter(test %in% c("CR2 HTZ","CR2A HTZ"))
 
 #-------------------------------------
 # Experimental Design
@@ -569,27 +404,24 @@ lengths(design_factors)
 nrow(params)
 head(params)
 
-test_nrows <- 50
-test_params <- params[sample(nrow(params), size = test_nrows),]
-iters <- c(10,50,100,500,1000,5000,10000,50000)
-times <- sapply(iters[1:4], function(t) {
-  test_params$iterations <- t
-  system.time(plyr::mdply(test_params, .fun = run_sim))
-})
-
-(time_dat <- data.frame(iters, rbind(t(times[1:3,]), matrix(NA, length(iters) - ncol(times), 3))))
-summary(time_lm <- lm(elapsed ~ iters, data = time_dat))
-row.names(time_dat) <- iters
-predict(time_lm, newdata = time_dat) * nrow(params) / test_nrows / 60^2 / 128
-
 #--------------------------------------------------------
 # run simulations in parallel
 #--------------------------------------------------------
-library(Pusto)
+library(Rmpi)
+library(snow)
+library(foreach)
+library(iterators)
+library(doSNOW)
 library(plyr)
 
-cluster <- start_parallel(source_obj = source_obj, libraries = c("mvtnorm","stringr","clubSandwich"))
-clusterEvalQ(cluster, devtools::load_all())
+# set up parallel processing
+cluster <- getMPIcluster()
+registerDoSNOW(cluster)
+
+clusterEvalQ(cluster, library(mvtnorm))
+clusterEvalQ(cluster, library(stringr))
+clusterEvalQ(cluster, library(clubSandwich))
+clusterExport(cluster, source_obj) 
 
 system.time(results <- mdply(params, .fun = run_sim, .parallel = TRUE))
 
@@ -602,4 +434,4 @@ results_clean <- within(results, {
 })
 head(results_clean, 30)
 
-save(designs, constraints, params, results, file = "paper_ClusterRobustTesting/R/Panel simulation results.Rdata")
+save(designs, constraints, params, results, file = "Panel simulation results.Rdata")
