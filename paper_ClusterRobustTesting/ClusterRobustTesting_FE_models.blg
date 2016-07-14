@@ -1,0 +1,52 @@
+This is BibTeX, Version 0.99d (TeX Live 2015)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: ClusterRobustTesting_FE_models.aux
+The style file: agsm.bst
+Database file #1: bibliography.bib
+Warning--empty note in Cameron2015practitioners
+Warning--empty note in Carter2013asymptotic
+Warning--empty note in Imbens2015robust
+Warning--there's a number but no series in McCaffrey2001generalizations
+Warning--empty note in Young2016improved
+You've used 39 entries,
+            2909 wiz_defined-function locations,
+            906 strings with 11742 characters,
+and the built_in function-call counts, 132247 in all, are:
+= -- 21341
+> -- 1656
+< -- 1
++ -- 9850
+- -- 492
+* -- 11274
+:= -- 27055
+add.period$ -- 39
+call.type$ -- 39
+change.case$ -- 542
+chr.to.int$ -- 39
+cite$ -- 44
+duplicate$ -- 598
+empty$ -- 1278
+format.name$ -- 659
+if$ -- 23657
+int.to.chr$ -- 5
+int.to.str$ -- 0
+missing$ -- 40
+newline$ -- 121
+num.names$ -- 397
+pop$ -- 148
+preamble$ -- 1
+purify$ -- 585
+quote$ -- 0
+skip$ -- 474
+stack$ -- 0
+substring$ -- 29764
+swap$ -- 91
+text.length$ -- 547
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 146
+warning$ -- 5
+while$ -- 874
+width$ -- 0
+write$ -- 485
+(There were 5 warnings)

@@ -383,12 +383,15 @@ We consider how to estimate $\eta$ below.
 Note that this approximation reduces to the Satterthwaite approximation when $q = 1$. 
 For $q > 1$, the test depends on the multivariate distribution of $\bm{V}^{CR2}$, including both variance and covariance terms. 
 
-\maskcitet{Tipton2015small-F} recently introduced this test for the special case of CRVE in meta-regression models.
+\maskcitet{Tipton2015small-F} recently introduced this test for the special case of CRVE in regression models in used in meta-analysis.
 Wishart approximations have also been considered as approximations in several simpler models where special cases of CRVE are used.
 \citet{Nel1986solution} proposed an AHT-type test for equality of multivariate means across two samples with unequal variance-covariance matrices \citep[i.e., the multivariate Behrens-Fisher problem; see also][]{Krishnamoorthy2004modified}.
 \citet{Zhang2012twowayANOVA} followed a similar approach in developing a test for contrasts in multivariate analysis of variance models where the covariance of the errors differs across groups, a special case of model (\ref{eq:fixed_effects}) where the CR2 variance estimator has a particularly simple form. 
 In each of these special cases, the robust variance estimator is a mixture of Wishart distributions that is well-approximated by a Wishart distribution with estimated degrees of freedom.
 Additionally, \citet{Pan2002small} described an F-test for use in GEE models, which uses the Wishart approximation to the distribution of $\bm{V}^{CR0}$ but estimates the degrees of freedom using a different method than the one we describe below.
+\maskcitet{Tipton2015small-F} developed five tests and compared them in a large simulation study. 
+These tests include versions of those introduced by \citet{Pan2002small} and \citet{Zhang2012twowayANOVA}, as well as eigen-decomposition approaches (extensions to methods provided in Fai & Cornelius, 1996; Cai & Hayes, 2008).
+They show that the AHT test presented here has Type I error closer to nominal than any of the other tests under a wide range of parameter values, covariate types, and tests.
 The contribution of the present paper is to extend the AHT test to the general setting of linear models with fixed effects and clustered errors. 
 
 The remaining question is how to estimate the parameter $\eta$, which determines the scalar multiplier and denominator degrees of freedom of the AHT test. 
@@ -640,11 +643,11 @@ Following the original analysis of \citet{Angrist2009effects}, we allow the prog
 Letting $h = 1,2,3$ index the sector of each school (Arab religious, Jewish religious, or Jewish secular), we consider the following analytic model: 
 \begin{equation}
 \label{eq:AL_ATE}
-y_{hitj} = z_{hit}\bm{r}_{hitj}'\bs\beta_h + \bm{s}_{hitj}'\bs\gamma + \gamma_{ht} + \mu_{hi} + \epsilon_{hitj}
+y_{hitj} = z_{hit}\bm{r}_{hitj}'\bs\beta_h + \bm{s}_{hitj}'\bs\gamma + \gamma_{ht} + \mu_{i} + \epsilon_{hitj}
 \end{equation}
 In this model for student $j$ in year $t$ in school $i$ in sector $h$, $z_{hit}$ is an indicator equal to one in the treatment schools for the 2001 school year and otherwise equal to zero; $\bm{r}_{hitj}$ is a vector of indicators for whether the student is in the lower or upper half of the distribution of prior academic performance; and $\bs\beta_h = \left(\beta_{1h}, \beta_{2h}\right)$ is a vector of average treatment effects for schools in sector $h$. 
 The vector $\bm{s}_{hitj}$ includes the following individual student demographic measures: mother's and father's education, immigration status, number of siblings, and indicators for each quartile in the distribution of prior-year academic performance. 
-The model also includes fixed effects $\gamma_{ht}$ for each sector in each year and $\mu_{hi}$ for each school. 
+The model also includes fixed effects $\gamma_{ht}$ for each sector in each year and $\mu_{i}$ for each school. 
 
 Based on Model (\ref{eq:AL_ATE}), we test four hypotheses.
 First, we assume that the program effects are constant across sector (i.e., $\bs\beta_1 = \bs\beta_2 = \bs\beta_3 = \bs\beta$) and test for whether the program affected completion rates for students in the upper half of the prior achievement distribution ($H_0: \beta_2 = 0$, with $q = 1$).
@@ -788,7 +791,7 @@ Extensions to linear regression models with clustering in multiple, non-nested d
 
 \section*{ACKNOWLEDGMENTS}
 
-This article has benefited from the feedback of seminar participants at New York University, the University of Texas Population Research Center, and the American Institutes for Research, as well as an associate editor and referees.\todo{Beth, anything to add?} The authors thank Dan Knopf for helpful discussions about the linear algebra behind the cluster-robust variance estimator.
+This article has benefited from the feedback of seminar participants at the PRIISM Center at New York University, the University of Texas Population Research Center, and the American Institutes for Research, as well as an associate editor and referees. The authors thank Dan Knopf for helpful discussions about the linear algebra behind the cluster-robust variance estimator, and David Figlio and Coady Wing for advice about empirical applications and context.
 
 \bibliographystyle{agsm}
 \bibliography{bibliography}
