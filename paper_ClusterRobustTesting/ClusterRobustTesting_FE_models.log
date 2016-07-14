@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  12 JUL 2016 16:18
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=pdflatex 2013.9.5)  13 JUL 2016 15:38
 entering extended mode
 **ClusterRobustTesting_FE_models.tex
 
@@ -665,31 +665,11 @@ Overfull \hbox (27.76999pt too wide) in paragraph at lines 176--176
 [][][] 
  []
 
-[4] [5] [6] [7] [8] [9] [10] [11] [12]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 408--408
-[][][] 
- []
-
-
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 408--408
-[][][] 
- []
-
-[13] [14]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 450--450
-[][][] 
- []
-
-
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 450--450
-[][][] 
- []
-
-[15] [16] [17]
+[4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15] [16] [17]
 
 Package xcolor Warning: Incompatible color definition on input line 540.
 
-<CR_fig/overview-1.pdf, id=77, 722.7pt x 361.35pt>
+<CR_fig/overview-1.pdf, id=73, 722.7pt x 361.35pt>
 File: CR_fig/overview-1.pdf Graphic file (type pdf)
  <use CR_fig/overview-1.pdf>
 Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 542.
@@ -700,7 +680,7 @@ CR_fig/overview-1.pdf>]
 
 Package xcolor Warning: Incompatible color definition on input line 567.
 
-<CR_fig/balance-1.pdf, id=94, 722.7pt x 397.485pt>
+<CR_fig/balance-1.pdf, id=90, 722.7pt x 397.485pt>
 File: CR_fig/balance-1.pdf Graphic file (type pdf)
  <use CR_fig/balance-1.pdf>
 Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 569.
@@ -709,7 +689,7 @@ Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 569.
 
 Package xcolor Warning: Incompatible color definition on input line 588.
 
-<CR_fig/df-1.pdf, id=95, 578.16pt x 237.88875pt>
+<CR_fig/df-1.pdf, id=91, 578.16pt x 237.88875pt>
 File: CR_fig/df-1.pdf Graphic file (type pdf)
  <use CR_fig/df-1.pdf>
 Package pdftex.def Info: CR_fig/df-1.pdf used on input line 590.
@@ -754,35 +734,31 @@ Missing character: There is no “ in font cmr12!
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting_FE_models.aux) ) 
 Here is how much of TeX's memory you used:
- 14826 strings out of 493921
- 286815 string characters out of 3144871
- 329593 words of memory out of 3000000
- 17822 multiletter control sequences out of 15000+200000
- 14894 words of font info for 52 fonts, out of 3000000 for 9000
+ 14814 strings out of 493921
+ 286516 string characters out of 3144871
+ 327431 words of memory out of 3000000
+ 17811 multiletter control sequences out of 15000+200000
+ 14585 words of font info for 51 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 62i,13n,76p,697b,698s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 62i,13n,76p,697b,695s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/publ
 ic/amsfonts/cm/cmbx10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public
 /amsfonts/cm/cmbx12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/a
-msfonts/cm/cmbx5.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsf
-onts/cm/cmbx6.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfont
-s/cm/cmbx8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/c
-m/cmex10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/
-cmmi12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
-mi5.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6
-.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pf
-b><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmib10.pfb
-><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C
-:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/P
-rogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Progr
-am Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program F
-iles (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Fil
-es (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files 
-(x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files (x8
-6)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on ClusterRobustTesting_FE_models.pdf (33 pages, 354607 bytes).
+msfonts/cm/cmbx8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsf
+onts/cm/cmex10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfon
+ts/cm/cmmi12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts
+/cm/cmmi8.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
+/cmmib10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/
+cmr10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr
+12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.p
+fb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><
+C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:
+/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Pr
+ogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Progr
+am Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb>
+Output written on ClusterRobustTesting_FE_models.pdf (33 pages, 320463 bytes).
 PDF statistics:
- 217 PDF objects out of 1000 (max. 8388607)
+ 201 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  28 words of extra memory for PDF output out of 10000 (max. 10000000)
 

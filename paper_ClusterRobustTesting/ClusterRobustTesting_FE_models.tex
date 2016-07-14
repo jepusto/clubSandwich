@@ -405,7 +405,7 @@ This ``model-assisted'' estimate of the degrees of freedom is then calculated as
 \label{eq:nu_model}
 \nu_{M} = \frac{\left(\sum_{i=1}^m \bm{p}_i' \bs\Phi \bm{p}_i\right)^2}{\sum_{i=1}^m \sum_{j=1}^m \left(\bm{p}_i' \bs\Phi \bm{p}_j\right)^2},
 \end{equation}
-where $\bm{p}_i = \left(\bm{I} - \bm{H_X}\right)_i'\bm{A}_i \bm{W}_i\bm{\ddot{R}}_i\bm{M_{\ddot{R}}} \bm{c}$.\todo{Can we use $\bm{H_{\ddot{U}}}$ here instead?}
+where $\bm{p}_i = \left(\bm{I} - \bm{H_X}\right)_i'\bm{A}_i \bm{W}_i\bm{\ddot{R}}_i\bm{M_{\ddot{R}}} \bm{c}$.
 This approximation works because the degrees of freedom account for covariate features that affect the distribution of the test statistic. 
 
 Previous simulation studies have examined the performance of t-tests based on the CR2 variance estimator and Satterthwaite approximation under a variety of conditions, including panel data models \citep{Cameron2015practitioners, Imbens2015robust}, analysis of multi-stage surveys \citep{Bell2002bias}, and meta-analysis \maskcitep{Tipton2015small-t}. Across this range of data-generating processes, these studies found that the Type I error rate of the test is nearly always less than or equal to the nominal $\alpha$, so long as the degrees of freedom are larger than 4 or 5 \citep[][\maskcitealp{Tipton2015small-t}]{Bell2002bias}.
@@ -447,7 +447,7 @@ Following \maskcitet{Tipton2015small-F}, we instead match the mean and total var
 Let $\bm{g}_1,...,\bm{g}_q$ denote the $q \times 1$ column vectors of $\bm{G}^{-1/2}$. 
 Let \[
 \bm{p}_{si} = \left(\bm{I} - \bm{H_X}\right)_i' \bm{A}_i \bm{W}_i \bm{\ddot{R}}_i \bm{M_{\ddot{R}}}\bm{C} \bm{g}_s \]
-for $s = 1,...,q$ and $i = 1,...,m$\todo{Possible to simplify $p_{si}$ by ignoring within-cluster fixed effects?}.
+for $s = 1,...,q$ and $i = 1,...,m$.
 Under the working model, the degrees of freedom are then approximated as
 \begin{equation}
 \label{eq:eta_model}
