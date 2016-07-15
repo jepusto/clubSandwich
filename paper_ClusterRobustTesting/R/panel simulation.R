@@ -156,16 +156,16 @@ full_fit <- function(dat, cluster_effects, time_effects, constraints,
   
   C_mats <- lapply(constraints, clubSandwich:::get_constraint_mat, obj = lm_fit)
   
-  V_CR1 <- vcovCR.default(lm_fit, cluster = dat$cluster, type = "CR1")
+  V_CR1 <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR1")
   Walds_CR1 <- Wald_test(lm_fit, constraints = constraints, vcov = V_CR1, test = tests)
   
-  V_CR2 <- vcovCR.default(lm_fit, cluster = dat$cluster, type = "CR2", inverse_var = TRUE)
+  V_CR2 <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR2", inverse_var = TRUE)
   Walds_CR2 <- Wald_test(lm_fit, constraints = constraints, vcov = V_CR2, test = tests)
   
-  V_CR3 <- vcovCR.default(lm_fit, cluster = dat$cluster, type = "CR3", inverse_var = TRUE)
+  V_CR3 <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR3", inverse_var = TRUE)
   Walds_CR3 <- Wald_test(lm_fit, constraints = constraints, vcov = V_CR3, test = tests)
 
-  V_CR2A <- vcovCR.default(lm_absorb, cluster = dat$cluster, type = "CR2", inverse_var = TRUE)
+  V_CR2A <- vcovCR(lm_absorb, cluster = dat$cluster, type = "CR2", inverse_var = TRUE)
   Walds_CR2A <- Wald_test(lm_absorb, constraints = constraints, vcov = V_CR2A, test = tests)
   
   result <- list(lm_fit = lm_fit, 
