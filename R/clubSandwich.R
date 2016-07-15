@@ -46,6 +46,14 @@
 
 vcovCR <- function(obj, cluster, type, target, inverse_var) UseMethod("vcovCR")
 
+#' Cluster-robust variance-covariance matrix
+#' 
+#' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
+#' of a set of regression coefficient estimates.
+#' 
+#' @rdname vcovCR
+#' @export
+
 vcovCR.default <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) 
   vcov_CR(obj, cluster, type, target, inverse_var)
 

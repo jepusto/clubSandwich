@@ -2,9 +2,13 @@
 % Please edit documentation in R/clubSandwich.R
 \name{vcovCR}
 \alias{vcovCR}
+\alias{vcovCR.default}
 \title{Cluster-robust variance-covariance matrix}
 \usage{
 vcovCR(obj, cluster, type, target, inverse_var)
+
+\method{vcovCR}{default}(obj, cluster, type, target = NULL,
+  inverse_var = FALSE)
 }
 \arguments{
 \item{obj}{Fitted model for which to calcualte the variance-covariance matrix}
@@ -41,6 +45,9 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
 This is a generic function, with specific methods defined for 
 \code{\link[stats]{lm}}, \code{\link[plm]{plm}}, \code{\link[nlme]{gls}},
 \code{\link[nlme]{lme}}, \code{\link[robumeta]{robu}}, \code{\link[metafor]{rma.uni}}, and \code{\link[metafor]{rma.mv}} objects.
+
+\code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
+of a set of regression coefficient estimates.
 }
 \details{
 \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
