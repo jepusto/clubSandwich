@@ -33,10 +33,10 @@ FE2_CR2 <- Wald_test(FE2_fit, constraints = 1, vcov = "CR2", cluster = death_dat
 X <- model.matrix(FE2_fit)
 T_mat <- model.matrix(~ 0 + state, data = death_dat)
 S_mat <- X[,-(1:2)]
-Sp <- residuals(lm.fit(T_mat, S_mat))
 R_mat <- X[,1:2]
-Rp <- residuals(lm.fit(Sp, residuals(lm.fit(T_mat, R_mat))))
-FE2_absorb <- lm(death_dat$mrate ~ 0 + Rp)
+Rp <- residuals(lm.fit(cbind(S_mat, T_mat), R_mat))
+yp <- residuals(lm.fit(cbind(S_mat, T_mat), death_dat$mrate))
+FE2_absorb <- lm(yp ~ 0 + Rp)
 FE2_CR2A <- Wald_test(FE2_absorb, constraints = 1, vcov = "CR2", cluster = death_dat$state, test = c("Naive-F","HTZ"))
 
 # coef_test(FE2_fit, vcov = "CR2", cluster = death_dat$state)[1:2,]
@@ -53,3 +53,21 @@ RE2_Hausman <- lme(mrate ~ legal + beertaxa + legal_s + beertaxa_s + factor(year
 Haus2_CR1 <- Wald_test(RE2_Hausman, constraints = 4:5, vcov = "CR1", test = "Naive-F")
 Haus2_CR2 <- Wald_test(RE2_Hausman, constraints = 4:5, vcov = "CR2", test = c("Naive-F","HTZ"))
 
+
+# Assemble table
+
+M1 <- as.data.frame(rbind(RE1_CR1, RE1_CR2, FE1_CR1, FE1_CR2, Haus1_CR1, Haus1_CR2))
+rownames(M1) <- NULL
+M1$Correction <- c("CR1","CR2","CR2")
+M1$Test <- c("F","F","AHT")
+M1$Hypothesis <- c("Random effects",NA,NA,"Fixed effects",NA,NA,"Hausman test",NA,NA)
+
+M2 <- as.data.frame(rbind(RE2_CR1, RE2_CR2, FE2_CR1, FE2_CR2, Haus2_CR1, Haus2_CR2))
+rownames(M2) <- NULL
+M2$Correction <- c("CR1","CR2","CR2")
+M2$Test <- c("Standard","Standard","AHT")
+M2$Hypothesis <- c("Random effects",NA,NA,"Fixed effects",NA,NA,"Hausman test",NA,NA)
+
+filter(M2, Correction=="CR1" | Test == "AHT") %>%
+  select(Hypothesis, Test, "F" = Fstat, df, p = p_val) ->
+  MLDA_results

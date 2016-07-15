@@ -662,8 +662,8 @@ Second, we test for whether the program was effective in either half of the prio
 Third, we test for whether program effects in the upper half of the prior achievement distribution are moderated by school sector ($H_0: \beta_{21} = \beta_{22} = \beta_{23}$, with $q = 3$). 
 Finally, we conduct a joint test for whether program effects in either half of the prior achievement distribution are moderated by school sector ($H_0: \bs\beta_1 = \bs\beta_2 = \bs\beta_3$, with $q = 4$). 
 
-% latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Tue Jul 12 16:07:20 2016
+% latex table generated in R 3.2.5 by xtable 1.7-4 package
+% Thu Jul 14 20:52:46 2016
 \begin{table}[bth]
 \centering
 \caption{Tests of treatment effects in the Achievement Awards Demonstration} 
@@ -674,19 +674,14 @@ Hypothesis & Test & F & df & p \\
   \midrule
 ATE - upper half (q = 1) & Standard & 5.746 & 34.00 & 0.02217 \\ 
    & AHT & 5.169 & 18.13 & 0.03539 \\ 
-   & AHT* & 4.825 & 19.38 & 0.04040 \\ 
   ATE - joint (q = 2) & Standard & 3.848 & 34.00 & 0.03116 \\ 
    & AHT & 3.389 & 16.97 & 0.05775 \\ 
-   & AHT* & 3.307 & 17.67 & 0.06026 \\ 
    \midrule
 Moderation - upper half (q = 2) & Standard & 3.186 & 34.00 & 0.05393 \\ 
    & AHT & 1.665 & 7.84 & 0.24959 \\ 
-   & AHT* & 2.058 & 2.27 & 0.30916 \\ 
   Moderation - joint (q = 4) & Standard & 8.213 & 34.00 & 0.00010 \\ 
    & AHT & 3.091 & 3.69 & 0.16057 \\ 
-   & AHT* & 1.587 & 1.46 & 0.46896 \\ 
    \bottomrule
-\multicolumn{5}{l}{\small{* AHT test calculated without accounting for absorption of fixed effects}}
 \end{tabular}
 \end{table}
 
@@ -698,9 +693,6 @@ In contrast, the AHT and standard tests diverge markedly for the third and fourt
 For these cases, the AHT test statistic and degrees of freedom are both considerably smaller than those from the standard test. 
 This reflects the degree of unbalance in allocations across sectors (19 Jewish secular, 7 Jewish religious, and 9 Arab religious schools), combined with cluster-level randomization. 
 In combination, these smaller test statistics and degrees of freedom result in larger p-values for the AHT test when compared to the standard test. 
-For the first two hypotheses, the modified AHT test calculated without accounting for absorption of fixed effects leads to inferences that are largely consistent with the test that does account for absorption. 
-However for the latter two hypotheses, the modified test has lower degrees of freedom, which leads to larger differences in p-values.
-In light of the simulation results, we would suggest that the test that accounts for absorption should be prefered in this application.\todo{Do we believe this?} 
 
 \subsection{Effects of minimum legal drinking age on mortality} 
 
@@ -724,8 +716,8 @@ where $\bm{\ddot{r}}_{it}$ denotes the within-cluster deviations of the covariat
 The parameter $\bs\delta$ captures the difference between the between-cluster and within-cluster estimates of $\bs\beta$. 
 With this setup, the artificial Hausman test amounts to testing the null hypothesis that $\bs\delta = \bm{0}$, where $\bs\delta$ is estimated using RE.  
 
-% latex table generated in R 3.2.5 by xtable 1.8-2 package
-% Tue Jul 12 16:02:11 2016
+% latex table generated in R 3.2.5 by xtable 1.7-4 package
+% Thu Jul 14 20:36:13 2016
 \begin{table}[bth]
 \centering
 \caption{Tests of effects of minimum legal drink age and Hausman specification test} 
@@ -738,12 +730,10 @@ Random effects & Standard & 8.261 & 49.00 & 0.00598 \\
    & AHT & 7.785 & 26.69 & 0.00960 \\ 
   Fixed effects & Standard & 9.660 & 49.00 & 0.00313 \\ 
    & AHT & 9.116 & 24.58 & 0.00583 \\ 
-   & AHT* & 6.969 & 24.75 & 0.01414 \\ 
    \midrule
 Hausman test & Standard & 2.930 & 49.00 & 0.06283 \\ 
    & AHT & 2.560 & 11.91 & 0.11886 \\ 
    \bottomrule
-\multicolumn{5}{l}{\small{* AHT test calculated without accounting for absorption of fixed effects}}
 \end{tabular}
 \end{table}
 
@@ -751,7 +741,6 @@ Hausman test & Standard & 2.930 & 49.00 & 0.06283 \\
 Table \ref{tab:MLDA} displays the results of the tests for the policy variable and the Hausman tests for each model specification. 
 The results of the policy effect tests are quite similar across specifications and versions of the test. 
 Of note is that, for both the RE and FE estimates, the AHT tests have only half the degrees of freedom of the corresponding standard tests. 
-For the FE estimates, The modified AHT test that ignores absorption produces similar degrees of freedom but a lower estimate of sampling variance, which leads to a smaller value for the test statistic and a larger p-value.
 For the artificial Hausman test, the AHT test has fewer than 12 degrees of freedom, which leads to a much larger p-value compared to using the standard test based on CR1. 
 
 \section{Conclusion}

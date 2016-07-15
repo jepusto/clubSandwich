@@ -50,9 +50,9 @@ R1_coefs <- c(1:7,14:15)
 R_mat <- X1_mat[,R1_coefs]
 S_mat <- X1_mat[,-R1_coefs]
 T_mat <- model.matrix(~ 0 + factor(school_id), data = panel_dat)
-Sp <- residuals(lm.fit(T_mat, S_mat))
-Rp <- residuals(lm.fit(Sp, residuals(lm.fit(T_mat, R_mat))))
-absorb_fit1 <- lm(panel_dat$zakaibag ~ 0 + Rp)
+Rp <- residuals(lm.fit(cbind(S_mat, T_mat), R_mat))
+yp <- residuals(lm.fit(cbind(S_mat, T_mat), panel_dat$zakaibag))
+absorb_fit1 <- lm(yp ~ 0 + Rp)
 # cbind(coef(absorb_fit1), coef(panel_fit)[R1_coefs])
 # all.equal(coef(absorb_fit1), coef(panel_fit)[R1_coefs], check.attributes = FALSE)
 
@@ -65,6 +65,10 @@ joint_CR1 <- Wald_test(panel_fit, constraints = panel_constraints, vcov = "CR1",
 joint_CR2 <- Wald_test(panel_fit, constraints = panel_constraints, vcov = "CR2", test = "HTZ")
 joint_CR2A <- Wald_test(absorb_fit1, constraints = 8:9, vcov = "CR2", cluster = panel_dat$school_id, test = "HTZ")
 
+#---------------------------------------------
+# Model with school-by-sector interactions
+#---------------------------------------------
+
 panel_school <- plm(zakaibag ~ yr2000:school_type + yr2001:school_type + educav + educem + ole5 + ah4 + qrtl 
                     + treated2001:half + treated2001:half:school_type, 
                     data = panel_dat, index = c("school_id","student_id"), effect = "individual")
@@ -76,17 +80,20 @@ R2_coefs <- c(1:7,14:19)
 R_mat <- X2_mat[,R2_coefs]
 S_mat <- X2_mat[,-R2_coefs]
 T_mat <- model.matrix(~ 0 + factor(school_id), data = panel_dat)
-Sp <- residuals(lm.fit(T_mat, S_mat))
-R2p <- residuals(lm.fit(Sp, residuals(lm.fit(T_mat, R_mat))))
-absorb_fit2 <- lm(panel_dat$zakaibag ~ 0 + R2p)
+Rp <- residuals(lm.fit(cbind(S_mat, T_mat), R_mat))
+yp <- residuals(lm.fit(cbind(S_mat, T_mat), panel_dat$zakaibag))
+absorb_fit2 <- lm(yp ~ 0 + Rp)
 # cbind(coef(absorb_fit2), coef(panel_school)[R2_coefs])
 # all.equal(coef(absorb_fit2), coef(panel_school)[R2_coefs], check.attributes = FALSE)
+# coef_test(panel_school, vcov = "CR2")[14:19,]
+# coef_test(absorb_fit2, vcov = "CR2", cluster = panel_dat$school_id)[8:13,]
 
 # test moderation
 constraint_list <- list(lower = 16:17, upper = 18:19, joint = 16:19)
 mod_CR1 <- Wald_test(panel_school, constraint_list, vcov = "CR1", test = "Naive-F")
 mod_CR2 <- Wald_test(panel_school, constraint_list, vcov = "CR2", test = "HTZ")
-mod_CR2A <- Wald_test(absorb_fit2, constraints = list(lower = 10:11, upper = 12:13, joint = 10:13), 
+mod_CR2A <- Wald_test(absorb_fit2, 
+                      constraints = list(lower = 10:11, upper = 12:13, joint = 10:13), 
                      vcov = "CR2", cluster = panel_dat$school_id, test = "HTZ")
 
 t_CR1 <- within(t_CR1, {
@@ -119,9 +126,8 @@ t_tests <-
   select(Hypothesis, Test, Fstat, df, p = p_val)
 
 joint_tests <- 
-  bind_rows("Standard" = joint_CR1, 
-            "AHT" = joint_CR2, 
-            "AHT*" = joint_CR2A, .id = "Test") %>%
+  bind_rows("Standard" = joint_CR1, "AHT" = joint_CR2, "AHT*" = joint_CR2A, 
+            .id = "Test") %>%
   mutate(Hypothesis = "ATE - joint (q = 2)") %>%
   select(Hypothesis, Test, Fstat, df, p = p_val)
 
@@ -140,6 +146,7 @@ AL_results <-
   bind_rows(t_tests, joint_tests, mod_tests) %>%
   mutate(df = round(df, 2),
          p = round(p, 5)) %>%
-  rename(F = Fstat)
+  rename(F = Fstat) %>%
+  filter(Test != "AHT*")
 
-AL_results$Hypothesis[-seq(1,12,3)] <- NA
+AL_results$Hypothesis[-seq(1,8,2)] <- NA

@@ -660,10 +660,6 @@ library(xtable)
 
 source("R/Angrist & Lavy example.R")
 
-add_to_row <- paste0("\\bottomrule\n",
-                     "\\multicolumn{5}{l}",
-                     "{\\small{* AHT test calculated without accounting for absorption of fixed effects}}\n")
-
 print(xtable(AL_results, 
              caption = "Tests of treatment effects in the Achievement Awards Demonstration",
              label = "tab:AAD",
@@ -671,11 +667,10 @@ print(xtable(AL_results,
              digits = c(0,0,0,3,2,5)
              ), 
       include.rownames=FALSE, 
-      hline.after = c(-1,0,6),
+      hline.after = c(-1,0,4,8),
       booktabs = TRUE,
       caption.placement = "top",
-      table.placement = "bth",
-      add.to.row = list(pos = list(nrow(AL_results)), command = add_to_row))
+      table.placement = "bth")
 @
 
 Table \ref{tab:AAD} reports the results of all four hypothesis tests. 
@@ -685,9 +680,6 @@ In contrast, the AHT and standard tests diverge markedly for the third and fourt
 For these cases, the AHT test statistic and degrees of freedom are both considerably smaller than those from the standard test. 
 This reflects the degree of unbalance in allocations across sectors (19 Jewish secular, 7 Jewish religious, and 9 Arab religious schools), combined with cluster-level randomization. 
 In combination, these smaller test statistics and degrees of freedom result in larger p-values for the AHT test when compared to the standard test. 
-For the first two hypotheses, the modified AHT test calculated without accounting for absorption of fixed effects leads to inferences that are largely consistent with the test that does account for absorption. 
-However for the latter two hypotheses, the modified test has lower degrees of freedom, which leads to larger differences in p-values.
-In light of the simulation results, we would suggest that the test that accounts for absorption should be prefered in this application.\todo{Do we believe this?} 
 
 \subsection{Effects of minimum legal drinking age on mortality} 
 
@@ -716,40 +708,22 @@ library(xtable)
 
 source("R/MLDA example.R")
 
-M1 <- as.data.frame(rbind(RE1_CR1, RE1_CR2, FE1_CR1, FE1_CR2, Haus1_CR1, Haus1_CR2))
-rownames(M1) <- NULL
-M1$Correction <- c("CR1","CR2","CR2")
-M1$Test <- c("F","F","AHT")
-M1$Hypothesis <- c("Random effects",NA,NA,"Fixed effects",NA,NA,"Hausman test",NA,NA)
-
-M2 <- as.data.frame(rbind(RE2_CR1, RE2_CR2, FE2_CR1, FE2_CR2, FE2_CR2A, Haus2_CR1, Haus2_CR2))
-rownames(M2) <- NULL
-M2$Correction <- c(c("CR1","CR2","CR2"),c("CR1","CR2","CR2","CR2","CR2"),c("CR1","CR2","CR2"))
-M2$Test <- c(c("Standard","Standard","AHT"),c("Standard","Standard","AHT","Standard","AHT*"),c("Standard","Standard","AHT"))
-M2$Hypothesis <- c("Random effects",NA,NA,"Fixed effects",NA,NA,NA,NA,"Hausman test",NA,NA)
-
-filter(M2, Correction=="CR1" | Test %in% c("AHT","AHT*")) %>%
-  select(Hypothesis, Test, "F" = Fstat, df, p = p_val) ->
-  MLDA_results
-
 print(xtable(MLDA_results, 
              caption = "Tests of effects of minimum legal drink age and Hausman specification test",
              label = "tab:MLDA",
              align = "llcrrr",
              digits = c(0,0,0,3,2,5)), 
       include.rownames=FALSE, 
-      hline.after = c(-1,0,5),
+      hline.after = c(-1,0,4,6),
       booktabs = TRUE,
       table.placement = "bth", 
-      caption.placement = "top",
-      add.to.row = list(pos = list(nrow(MLDA_results)), command = add_to_row))
+      caption.placement = "top")
 
 @
 
 Table \ref{tab:MLDA} displays the results of the tests for the policy variable and the Hausman tests for each model specification. 
 The results of the policy effect tests are quite similar across specifications and versions of the test. 
 Of note is that, for both the RE and FE estimates, the AHT tests have only half the degrees of freedom of the corresponding standard tests. 
-For the FE estimates, The modified AHT test that ignores absorption produces similar degrees of freedom but a lower estimate of sampling variance, which leads to a smaller value for the test statistic and a larger p-value.
 For the artificial Hausman test, the AHT test has fewer than \Sexpr{round(Haus2_CR2["HTZ","df"])} degrees of freedom, which leads to a much larger p-value compared to using the standard test based on CR1. 
 
 \section{Conclusion}
