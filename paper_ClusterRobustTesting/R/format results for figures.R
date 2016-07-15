@@ -2,6 +2,7 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 library(ggplot2)
+
 load("R/Panel simulation results.Rdata")
 
 results <- within(results, {
@@ -15,7 +16,9 @@ gather(results, "alpha", "reject", alpha0.005, alpha0.01, alpha0.05, alpha0.1) %
   mutate(alpha = as.numeric(substring(alpha, 6))) ->
   results_long_all
 
-filter(results_long_all, test %in% c("CR1 Naive-F", "CR1 HTZ","CR2 Naive-F","CR2 HTZ", "CR2A HTZ")) %>%
+filter(results_long_all, 
+       test %in% c("CR1 Naive-F", "CR1 HTZ","CR2 Naive-F","CR2 HTZ", "CR2A HTZ") & 
+         design %in% c("CR-balanced","CR-unbalanced","RB-balanced","RB-unbalanced","DD-balanced","DD-unbalanced")) %>%
   within({
     test <- gsub("Naive-F","standard", gsub("HTZ","AHT", test))
     test_lab <- ifelse(str_detect(test, "standard"), "Standard", ifelse(str_detect(test, "AHT"), "AHT",test))

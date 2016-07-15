@@ -433,8 +433,8 @@ The simulation study focused on testing hypotheses about the relative effects of
 First, we considered a randomized block (RB) design in which every policy condition is observed in every cluster. 
 Second, we considered a cluster-randomized (CR) design in which each cluster is observed under a single policy condition. 
 Third, we considered a difference-in-differences (DD) design in which some clusters are observed under all three policy conditions while other clusters are observed under a single condition. 
-For each design, we simulated both balanced and unbalanced configurations, with $m = 15$, 30, or 50 cluster and $n = 18$ or 30 units per cluster; 
-the supplementary materials provide the exact specifications used. Table \ref{tab:simulation_parameters} summarizes the design of the simulation study, which included a total of \Sexpr{3 * 2 * 3 * 2 * 3 * 6} unique conditions.
+For each design, we simulated both balanced and unbalanced configurations, with $m = 15$, 30, or 50 cluster and $n = 6$, 18, or 30 units per cluster; 
+the supplementary materials provide the exact specifications used. Table \ref{tab:simulation_parameters} summarizes the design of the simulation study, which included a total of \Sexpr{3 * 2 * 3 * 3 * 3 * 2 * 3} unique conditions.
 
 \begin{table}[tb]
 \centering
@@ -446,10 +446,10 @@ Parameter & levels \\ \midrule
 Design & RB, CR, DD \\
 Balance & Balanced, Unbalanced \\
 Clusters ($m$) & 15, 30, 50 \\
-Units per cluster ($n$) & 18, 30 \\
+Units per cluster ($n$) & 12, 18, 30 \\
 Intra-class correlation ($\tau^2$) & .05, .15, .25 \\
 Correlation among outcomes ($\rho$) & .2, .8 \\
-Treatment effect variability ($\sigma_\delta^2$) & .00, .01, .04 \\ 
+Treatment effect variability ($\sigma_\delta^2$) & .00, .04, .09 \\ 
 \bottomrule
 \end{tabular}
 \end{table}
@@ -476,12 +476,13 @@ where $\mu_{hk}$ is the mean of outcome $k$ under condition $h$, $\alpha_i$ is a
 For the cluster-randomized designs, fixed effects for clusters were omitted because the clusters are nested within treatment conditions. 
 For the randomized block designs, treatments were blocked by cluster and the fixed effects for time-points were omitted for simplicity.
 The analytic model was estimated by OLS after absorbing any fixed effects, and so the ``working'' model amounts to assuming that the errors are independent and identically distributed. 
-Note that the working model departs from the true data generating model both because of correlation among the outcomes ($\rho > 0$) and because of treatment effect variability ($\sigma_\delta^2 > 0$). 
+Note that the true data generating model departs from the working model because of correlation among the outcomes ($\rho > 0$) and because of treatment effect variability ($\sigma_\delta^2 > 0$); in the cluster-randomized designs, working model misspecification also arises from the intra-class correlation ($\tau^2 > 0$). 
 The range of parameter combinations used in the true data generating model thus allows us to examine the performance of AHT tests under varying degrees of working model misspecification. 
 
 <<setup, include=FALSE, warning=FALSE, cache=FALSE>>=
 # setwd("paper_ClusterRobustTesting")
 library(knitr)
+
 # set global chunk options
 opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache = FALSE, 
                fig.path='CR_fig/', fig.align='center', fig.show='hold')

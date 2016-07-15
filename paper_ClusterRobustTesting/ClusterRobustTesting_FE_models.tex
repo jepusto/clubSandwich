@@ -481,8 +481,8 @@ The simulation study focused on testing hypotheses about the relative effects of
 First, we considered a randomized block (RB) design in which every policy condition is observed in every cluster. 
 Second, we considered a cluster-randomized (CR) design in which each cluster is observed under a single policy condition. 
 Third, we considered a difference-in-differences (DD) design in which some clusters are observed under all three policy conditions while other clusters are observed under a single condition. 
-For each design, we simulated both balanced and unbalanced configurations, with $m = 15$, 30, or 50 cluster and $n = 18$ or 30 units per cluster; 
-the supplementary materials provide the exact specifications used. Table \ref{tab:simulation_parameters} summarizes the design of the simulation study, which included a total of 648 unique conditions.
+For each design, we simulated both balanced and unbalanced configurations, with $m = 15$, 30, or 50 cluster and $n = 6$, 18, or 30 units per cluster; 
+the supplementary materials provide the exact specifications used. Table \ref{tab:simulation_parameters} summarizes the design of the simulation study, which included a total of 972 unique conditions.
 
 \begin{table}[tb]
 \centering
@@ -494,10 +494,10 @@ Parameter & levels \\ \midrule
 Design & RB, CR, DD \\
 Balance & Balanced, Unbalanced \\
 Clusters ($m$) & 15, 30, 50 \\
-Units per cluster ($n$) & 18, 30 \\
+Units per cluster ($n$) & 12, 18, 30 \\
 Intra-class correlation ($\tau^2$) & .05, .15, .25 \\
 Correlation among outcomes ($\rho$) & .2, .8 \\
-Treatment effect variability ($\sigma_\delta^2$) & .00, .01, .04 \\ 
+Treatment effect variability ($\sigma_\delta^2$) & .00, .04, .09 \\ 
 \bottomrule
 \end{tabular}
 \end{table}
@@ -524,7 +524,7 @@ where $\mu_{hk}$ is the mean of outcome $k$ under condition $h$, $\alpha_i$ is a
 For the cluster-randomized designs, fixed effects for clusters were omitted because the clusters are nested within treatment conditions. 
 For the randomized block designs, treatments were blocked by cluster and the fixed effects for time-points were omitted for simplicity.
 The analytic model was estimated by OLS after absorbing any fixed effects, and so the ``working'' model amounts to assuming that the errors are independent and identically distributed. 
-Note that the working model departs from the true data generating model both because of correlation among the outcomes ($\rho > 0$) and because of treatment effect variability ($\sigma_\delta^2 > 0$). 
+Note that the true data generating model departs from the working model because of correlation among the outcomes ($\rho > 0$) and because of treatment effect variability ($\sigma_\delta^2 > 0$); in the cluster-randomized designs, working model misspecification also arises from the intra-class correlation ($\tau^2 > 0$). 
 The range of parameter combinations used in the true data generating model thus allows us to examine the performance of AHT tests under varying degrees of working model misspecification. 
 
 
@@ -534,8 +534,8 @@ We first tested the single-dimensional null hypotheses that a given policy condi
 We also tested the null hypothesis of no differences among policy conditions on the first outcome ($H_0: \mu_{11} = \mu_{12} = \mu_{13}$), which has dimension $q = 2$. 
 We then tested the multi-variate versions of the above tests, which involve all three outcome measures jointly and so have dimension $q = 3$ or $q = 6$. 
 %($H_0: \mu_{11} = \mu_{1h}, \mu_{21} = \mu_{2h}, \mu_{31} = \mu_{3h}$, for $h = 2$ or $h = 3$) or $q = 6$ %($H_0: \mu_{11} = \mu_{12} = \mu_{13}, \mu_{21} = \mu_{22} = \mu_{23}, \mu_{31} = \mu_{32} = \mu_{33}$). 
-For a given combination of study design, sample sizes, and parameter values, we simulated 20,000 datasets from model (\ref{eq:data_generating_model}), estimated model (\ref{eq:sim_analytic_model}) on each dataset, and computed all of the hypothesis tests. 
-Simulated Type I error rates therefore have standard errors of approximately 0.0007 for $\alpha = .01$, 0.0015 for $\alpha = .05$, and 0.0021 for $\alpha = .10$. 
+For a given combination of study design, sample sizes, and parameter values, we simulated 50,000 datasets from model (\ref{eq:data_generating_model}), estimated model (\ref{eq:sim_analytic_model}) on each dataset, and computed all of the hypothesis tests. 
+Simulated Type I error rates therefore have standard errors of approximately 0.0004 for $\alpha = .01$, 0.0010 for $\alpha = .05$, and 0.0013 for $\alpha = .10$. 
 
 \subsection{Simulation Results}
 
@@ -559,12 +559,12 @@ Throughout, we present results for the nominal Type I error rate of $\alpha = .0
 Figure \ref{fig:overview} illustrates this pattern at the nominal type I error rate of $\alpha = .05$, for constraints of varying dimension (from $q = 1$, in the first column, to $q = 6$, in the final column) and varying number of clusters.
 It can be seen that the AHT test has Type I error near the stated $\alpha$ level, even with a small number of clusters.
 When the number of clusters is very small, the Type I error can be smaller $\alpha$. 
-Although the error is above the simulation bound under some conditions, the departures are typically small. For example, when $m = 15$ the rejection rates do not exceed 0.013 for $\alpha = .01$, 0.055 for $\alpha = .05$, and 0.109 for $\alpha = .10$.
+Although the error is above the simulation bound under some conditions, the departures are typically small. For example, when $m = 15$ the rejection rates do not exceed 0.011 for $\alpha = .01$, 0.053 for $\alpha = .05$, and 0.106 for $\alpha = .10$.
 The rejection rates are even closer to nominal for lower-dimensional constraints.
 
 In comparison to the AHT test, the Type I error for the standard test can be markedly higher than the stated $\alpha$ level, particularly when the number of clusters is small or the dimension of the hypothesis is large. 
-For example, the maximum Type I error ranges from 0.121 ($q = 1$) to 0.689 ($q = 6$) for data sets with 15 clusters.
-Perhaps even more important for practice, the rejection rate of the standard test can be far above the stated $\alpha$ level even when there are 50 clusters, with maximum error ranging from 0.072 ($q = 1$) to 0.181 ($q = 6$). 
+For example, the maximum Type I error ranges from 0.122 ($q = 1$) to 0.717 ($q = 6$) for data sets with 15 clusters.
+Perhaps even more important for practice, the rejection rate of the standard test can be far above the stated $\alpha$ level even when there are 50 clusters, with maximum error ranging from 0.070 ($q = 1$) to 0.188 ($q = 6$). 
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{sidewaysfigure}
@@ -582,7 +582,7 @@ Perhaps even more important for practice, the rejection rate of the standard tes
 \paragraph{Role of balance.} Figure \ref{fig:balance} breaks out the rejection rates by study design, focusing on a sample size of $m = 30$. 
 In the bottom row, it can be seen that the rejection rate of the standard test increases with the dimension of the test ($q$) and the degree of unbalance in the study design.
 Differences between the balanced and unbalanced designs are largest for the CR and DD designs, with smaller discrepancies in RB designs.
-In the top row, rejection rates of the AHT test are very close to nominal (between 0.029 and 0.056) across all conditions with at least 30 clusters.
+In the top row, rejection rates of the AHT test are very close to nominal (between 0.03 and 0.056) across all conditions with at least 30 clusters.
 Unbalanced designs led to rejection rates that were usually below the nominal $\alpha$---just the opposite of how the standard test is affected by unbalance. 
 This trend is the strongest for CR and DD designs. 
 At the smallest sample size, the rejection rates of the AHT test are close to 0 in unbalanced CR and DD designs (see supplementary figures S4-S7). 
