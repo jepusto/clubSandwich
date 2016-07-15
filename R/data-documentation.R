@@ -45,3 +45,42 @@
 #'   
 
 "dropoutPrevention"
+
+
+#' Achievement Awards Demonstration program
+#' 
+#' A dataset containing data from a randomized trial of the Achievement Awards
+#' Demonstration program, reported in Angrist & Lavy (2009).
+#' 
+#' @format A data frame with 16526 rows and 21 variables: \describe{ 
+#'   \item{school_id}{Fictitious school identification number}
+#'   \item{school_type}{Factor identifying the school type (Arab religious, Jewish religious, Jewish secular)}
+#'   \item{pair}{Number of treatment pair. Note that 7 is a triple.} 
+#'   \item{treated}{Indicator for whether school was in treatment group}
+#'   \item{year}{Cohort year}
+#'   \item{student_id}{Fictitious student identification number}
+#'   \item{sex}{Factor identifying student sex}
+#'   \item{siblings}{Number of siblings}
+#'   \item{immigrant}{Indicator for immigrant status}
+#'   \item{father_ed}{Father's level of education}
+#'   \item{mother_ed}{Mother's level of education}
+#'   \item{Bagrut_status}{Indicator for Bagrut attainment}
+#'   \item{attempted}{Number of Bagrut units attempted}
+#'   \item{awarded}{Number of Bagrut units awarded}
+#'   \item{achv_math}{Indicator for satisfaction of math requirement}
+#'   \item{achv_english}{Indicator for satisfaction of English requirement}
+#'   \item{achv_hebrew}{Indicator for satisfaction of Hebrew requirement}
+#'   \item{lagscore}{Lagged Bagrut score}
+#'   \item{qrtl}{Quartile within distribution of lagscore, calculated by cohort and sex}
+#'   \item{half}{Lower or upper half within distribution of lagscore, calculated by cohort and sex}
+#'   }
+#'   
+#' @source \href{http://economics.mit.edu/faculty/angrist/data1/data/angrist}{Angrist Data Archive}
+#'   
+#' @references Angrist, J. D., & Lavy, V. (2009). The effects of high stakes 
+#'   high school achievement awards : Evidence from a randomized trial.
+#'   \emph{American Economic Review, 99}(4), 1384–1414.
+#'   doi:\href{http://dx.doi.org/10.1257/aer.99.4.1384}{10.1257/aer.99.4.1384}
+#'   
+
+"AchievementAwardsRCT"
