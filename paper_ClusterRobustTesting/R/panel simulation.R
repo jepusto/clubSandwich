@@ -444,11 +444,13 @@ run_sim <- function(iterations, m, n, k, design, constraints,
   df <- rbind(CR1_df, CR2_df, CR3_df, CR2A_df)
 
   # calculate rejection rates
-  error_rate <- sapply(alpha_levels, function(a) as.vector(apply(results < a, 1:2, mean)))
-  colnames(error_rate) <- paste0("alpha", alpha_levels)
+  pNA <- apply(results, 1:2, function(x) mean(is.na(x)))
+  error_rate <- sapply(alpha_levels, function(a) as.vector(apply(results < a, 1:2, mean, na.rm = TRUE)))
+  colnames(error_rate) <- paste0("p", alpha_levels)
   
   # format output
   data.frame(expand.grid(test = rownames(results), hypothesis = colnames(results)), 
+             pNA = as.vector(pNA),
              error_rate, 
              df = as.vector(df))
 }
