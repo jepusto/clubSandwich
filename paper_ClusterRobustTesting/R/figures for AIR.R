@@ -27,5 +27,4 @@ filter(results_long, alpha == .05 & test %in% c("CR1 standard", "CR2 AHT")) %>%
   facet_wrap(~ test_q, ncol = 4, scales = "free") + 
   labs(x = NULL, y = "Rejection rate") + 
   theme_bw() + theme(legend.position = "none")
-
 ggsave("AIR AHT test.wmf", width = 10, height = 5)
