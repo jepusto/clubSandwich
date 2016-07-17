@@ -559,12 +559,12 @@ Throughout, we present results for the nominal Type I error rate of $\alpha = .0
 Figure \ref{fig:overview} illustrates this pattern at the nominal type I error rate of $\alpha = .05$, for constraints of varying dimension (from $q = 1$, in the first column, to $q = 6$, in the final column) and varying number of clusters.
 It can be seen that the AHT test has Type I error near the stated $\alpha$ level, even with a small number of clusters.
 When the number of clusters is very small, the Type I error can be smaller $\alpha$. 
-Although the error is above the simulation bound under some conditions, the departures are typically small. For example, when $m = 15$ the rejection rates do not exceed 0.011 for $\alpha = .01$, 0.053 for $\alpha = .05$, and 0.106 for $\alpha = .10$.
+Although the error is above the simulation bound under some conditions, the departures are typically small. For example, when $m = 15$ the rejection rates do not exceed 0.012 for $\alpha = .01$, 0.055 for $\alpha = .05$, and 0.106 for $\alpha = .10$.
 The rejection rates are even closer to nominal for lower-dimensional constraints.
 
 In comparison to the AHT test, the Type I error for the standard test can be markedly higher than the stated $\alpha$ level, particularly when the number of clusters is small or the dimension of the hypothesis is large. 
-For example, the maximum Type I error ranges from 0.122 ($q = 1$) to 0.717 ($q = 6$) for data sets with 15 clusters.
-Perhaps even more important for practice, the rejection rate of the standard test can be far above the stated $\alpha$ level even when there are 50 clusters, with maximum error ranging from 0.070 ($q = 1$) to 0.188 ($q = 6$). 
+For example, the maximum Type I error ranges from 0.127 ($q = 1$) to 0.687 ($q = 6$) for data sets with 15 clusters.
+Perhaps even more important for practice, the rejection rate of the standard test can be far above the stated $\alpha$ level even when there are 50 clusters, with maximum error ranging from 0.071 ($q = 1$) to 0.186 ($q = 6$). 
 
 \begin{knitrout}
 \definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{sidewaysfigure}
@@ -582,7 +582,7 @@ Perhaps even more important for practice, the rejection rate of the standard tes
 \paragraph{Role of balance.} Figure \ref{fig:balance} breaks out the rejection rates by study design, focusing on a sample size of $m = 30$. 
 In the bottom row, it can be seen that the rejection rate of the standard test increases with the dimension of the test ($q$) and the degree of unbalance in the study design.
 Differences between the balanced and unbalanced designs are largest for the CR and DD designs, with smaller discrepancies in RB designs.
-In the top row, rejection rates of the AHT test are very close to nominal (between 0.03 and 0.056) across all conditions with at least 30 clusters.
+In the top row, rejection rates of the AHT test are very close to nominal (between 0.019 and 0.054) across all conditions with at least 30 clusters.
 Unbalanced designs led to rejection rates that were usually below the nominal $\alpha$---just the opposite of how the standard test is affected by unbalance. 
 This trend is the strongest for CR and DD designs. 
 At the smallest sample size, the rejection rates of the AHT test are close to 0 in unbalanced CR and DD designs (see supplementary figures S4-S7). 

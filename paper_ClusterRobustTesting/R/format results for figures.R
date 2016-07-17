@@ -12,8 +12,9 @@ results <- within(results, {
 })
 head(results)
 
-gather(results, "alpha", "reject", alpha0.005, alpha0.01, alpha0.05, alpha0.1) %>%
-  mutate(alpha = as.numeric(substring(alpha, 6))) ->
+gather(results, "alpha", "reject", p0.005, p0.01, p0.05, p0.1) %>%
+  mutate(alpha = as.numeric(substring(alpha, 2)),
+         reject = ifelse(pNA==1, 0, reject)) ->
   results_long_all
 
 filter(results_long_all, 

@@ -13,8 +13,9 @@ results <- within(results, {
 })
 head(results)
 
-gather(results, "alpha", "reject", alpha0.005, alpha0.01, alpha0.05, alpha0.1) %>%
-  mutate(alpha = as.numeric(substring(alpha, 6))) ->
+gather(results, "alpha", "reject", p0.005, p0.01, p0.05, p0.1) %>%
+  mutate(alpha = as.numeric(substring(alpha, 2)),
+         reject = ifelse(pNA==1, 0, reject)) ->
   results_long_all
 
 filter(results_long_all, test %in% c("CR1 Naive-F", "CR1 HTZ","CR2 Naive-F","CR2 HTZ", "CR2A HTZ")) %>%
@@ -156,6 +157,27 @@ filter(results_long, alpha==0.05 & q == 6) %>%
 filter(results_long, alpha==.05 & q==6 & m==15 & test %in% c("CR2 AHT","CR2A AHT")) %>%
   select(design, n, icc, trt_var, rho, ar, test, df, reject)
 
+#--------------------------------------
+# balance induced by missingness
+#--------------------------------------
+
+filter(results_long, alpha==0.05 & test == "CR2 AHT") %>%
+  mutate(frac_missing = factor(frac_missing, levels = c(0,0.15), labels = c("Complete","15% MCAR"))) %>%
+  group_by(design, frac_missing, test, m_fac, q, test_q, alpha, UB) %>%
+  summarise(min = min(reject), lower = quantile(reject, .25), middle = median(reject), 
+            upper = quantile(reject, .75), max = max(reject)) %>%
+  ggplot(aes(design, fill = frac_missing)) + 
+  geom_boxplot(aes(ymin = min, lower = lower, middle = middle, upper = upper, ymax = max), 
+               stat = "identity", alpha = alpha_val) + 
+  #geom_blank(data = filter(zeros_long, test =="CR2 AHT")) + 
+  geom_hline(aes(yintercept = alpha)) + 
+  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
+  scale_y_continuous(breaks = breaks_cut(.05)) + 
+  facet_grid(m_fac ~ q, scales = "free_y") + 
+  labs(x = NULL, y = "Rejection rate", fill = "") + 
+  theme_bw() + 
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 90, hjust = 1))
+
 #--------------------------
 # Model mis-specification
 #--------------------------
@@ -242,87 +264,5 @@ filter(results_long,
   scale_y_continuous(breaks = breaks_cut(.05)) + 
   scale_fill_brewer(type = "qual", palette = 6) + 
   facet_grid(alpha ~ q, scales = "free_y", labeller = "label_both") + 
-  labs(x = NULL, y = "Rejection rate", fill = "CR2 adjustment", color = "CR2 adjustment") + 
-  theme_bw() + theme(legend.position = "bottom")
-
-
-#----------------------------------------------
-# Staggered panel results
-#----------------------------------------------
-
-rm(list=ls())
-load("paper_ClusterRobustTesting/R/Panel simulation results-SD.Rdata")
-
-results <- within(results, {
-  constraints <- NULL
-  seed <- NULL
-  design <- names(design)
-})
-head(results)
-
-gather(results, "alpha", "reject", alpha0.005, alpha0.01, alpha0.05, alpha0.1) %>%
-  mutate(alpha = as.numeric(substring(alpha, 6))) ->
-  results_long_all
-
-filter(results_long_all, test %in% c("CR1 Naive-F", "CR1 HTZ","CR2 Naive-F","CR2 HTZ", "CR2A HTZ")) %>%
-  within({
-    test <- gsub("Naive-F","standard", gsub("HTZ","AHT", test))
-    test_lab <- ifelse(str_detect(test, "standard"), "Standard", ifelse(str_detect(test, "AHT"), "AHT",test))
-    UB <- alpha + qnorm(0.95) * sqrt(alpha * (1 - alpha) / iterations)
-    m_fac <- paste0("m = ",m)
-    q <- hypothesis
-    levels(q) <- c(1,1,2,3,3,6)
-    design <- str_to_upper(str_extract(design, "[A-Z]+-[a-z]"))
-    q_alpha <- paste0("q = ", q, ", alpha = ", alpha)
-    alpha_q <- paste0("alpha = ", alpha, ", q = ", q)
-    alpha_m <- paste0("alpha = ", alpha, ", m = ", m)
-    test_q <- paste0(test_lab, " test, q = ", q)
-    m_test <- factor(paste0(test, " test, m = ", m))
-  }) ->
-  results_long
-head(results_long)
-
-select(results_long, -df, -m_test) %>%
-  mutate(test = gsub(" ","",test)) %>%
-  spread(test, reject) ->
-  results_compare
-head(results_compare)
-
-
-filter(results_long, n==18 & icc==0.05 & trt_var==0 & rho==0.2 & design=="CR-B") %>%
-  mutate(reject=0) -> 
-  zeros_long
-
-filter(results_compare, m==15 & n==18 & icc==0.05 & 
-         trt_var==0 & rho==0.2 & design=="CR-balanced") %>%
-  mutate(CR1adhoc = 0, CR1AHT = 0, CR2AAHT = 0, CR2adhoc = 0, CR2AHT = 0) -> 
-  zeros_compare
-
-alpha_val <- 0.4
-
-breaks_cut <- function(alpha) {
-  function(limits) { 
-    if (max(limits) < 6 * alpha) {
-      c(pretty(limits, 4), alpha) 
-    } else {
-      pretty(limits, 4)
-    }
-  }
-}
-
-filter(results_long, 
-       test %in% c("CR2 AHT","CR2A AHT") & alpha==.05) %>%
-  mutate(test = ifelse(test=="CR2 AHT", "Accounting for absorption", "Ignoring absorption")) %>%
-  group_by(m_fac, n, test, q, alpha, design, q_alpha, UB) %>%
-  summarise(min = min(reject), lower = quantile(reject, .25), middle = median(reject), 
-            upper = quantile(reject, .75), max = max(reject)) %>%
-  ggplot(aes(m_fac, fill = test, color = test)) + 
-  geom_boxplot(aes(ymin = min, lower = lower, middle = middle, upper = upper, ymax = max), 
-               stat = "identity", alpha = alpha_val) + 
-  geom_hline(aes(yintercept = alpha)) + 
-  geom_hline(aes(yintercept = UB), linetype = "dashed") + 
-  scale_y_continuous(breaks = breaks_cut(.05)) + 
-  scale_fill_brewer(type = "qual", palette = 6) + 
-  facet_grid(design + n ~ q, scales = "free_y", labeller = "label_both") + 
   labs(x = NULL, y = "Rejection rate", fill = "CR2 adjustment", color = "CR2 adjustment") + 
   theme_bw() + theme(legend.position = "bottom")
