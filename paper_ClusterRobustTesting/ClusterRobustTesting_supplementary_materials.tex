@@ -155,7 +155,28 @@ and so $\bm{B}_i^+ = \bm{\tilde{B}}_i^+$. It follows that $\bm{A}_i = \bm{\tilde
 \section{Details of simulation study}
 \label{sec:simulations}
 
-This section provides further details regarding the design of the simulations reported in Section 4 of the main text. The simulations examined six distinct study designs. Outcomes are measured for $n$ units (which may be individuals, as in a cluster-randomized or block-randomized design, or time-points, as in a difference-in-differences panel) in each of $m$ clusters under one of three treatment conditions. Suppose that there are $G$ sets of clusters, each of size $m_g$, where the clusters in each set have a distinct configuration of treatment assignments. Let $n_{ghi}$ denote the number of units at which cluster $i$ in configuration $g$ is observed under condition $h$, for $i=1,...,m$, $g = 1,...,G$, and $h = 1,2,3$. Table \ref{tab:simulation_designs} summarizes the cluster-level sample sizes and unit-level patterns of treatment allocation for each of the six designs. The simulated designs included the following:  
+This section provides further details regarding the design of the simulations reported in Section 4 of the main text. Table \ref{tab:simulation_parameters} summarizes the factors manipulated in the simulation.  
+
+\begin{table}[tb]
+\centering
+\caption{Simulation design parameters} 
+\label{tab:simulation_parameters}
+\begin{tabular}{lc}
+\toprule
+Parameter & levels \\ \midrule
+Design & RB, CR, DD \\
+Balance & Balanced, Unbalanced \\
+Outcome missingness & Complete data, 15\% missing \\
+Clusters ($m$) & 15, 30, 50 \\
+Units per cluster ($n$) & 12, 18, 30 \\
+Intra-class correlation ($\tau^2$) & .05, .15, .25 \\
+Treatment effect variability ($\sigma_\delta^2$) & .00, .04, .09 \\ 
+Correlation among outcomes ($\rho$) & .2, .8 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The simulations examined six distinct study designs. Outcomes are measured for $n$ units (which may be individuals, as in a cluster-randomized or block-randomized design, or time-points, as in a difference-in-differences panel) in each of $m$ clusters under one of three treatment conditions. Suppose that there are $G$ sets of clusters, each of size $m_g$, where the clusters in each set have a distinct configuration of treatment assignments. Let $n_{ghi}$ denote the number of units at which cluster $i$ in configuration $g$ is observed under condition $h$, for $i=1,...,m$, $g = 1,...,G$, and $h = 1,2,3$. Table \ref{tab:simulation_designs} summarizes the cluster-level sample sizes and unit-level patterns of treatment allocation for each of the six designs. The simulated designs included the following:  
 \begin{enumerate}
 \item A balanced, block-randomized design, with an un-equal allocation within each block. In the balanced design, the treatment allocation is identical for each block, so $G = 1$.
 \item An unbalanced, block-randomized design, with two different patterns of treatment allocation ($G = 2$).
@@ -165,7 +186,9 @@ This section provides further details regarding the design of the simulations re
 \item An unbalanced difference-in-differences design, again with two patterns of treatment allocation ($G = 2$), but where 2/3 of the clusters are observed under the first treatment condition only and the remaining $1 / 3$ of clusters are observed under all three conditions.
 \end{enumerate}
 
-\begin{table}[htb]
+\begin{landscape}
+
+\begin{table}[H]
 \centering
 \caption{Study designs used for simulation} 
 \label{tab:simulation_designs}
@@ -192,7 +215,6 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 
 \newpage
 
-\begin{landscape}
 \section{Additional simulation results}
 
 

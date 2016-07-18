@@ -1,3 +1,12 @@
+
+We see three disadvantages to specifying the working model in this fashion. First, it depends on an arbitrary choice of which predictors to include in $\bm{R}$ and which to absorb in $\bm{S}$. Second, we find it more difficult to specify a coherent working model for the final-stage regression than for the full regression. 
+Finally, the simulation evidence presented in Section \ref{sec:simulation} indicates that ignoring absorption of fixed effects leads to tests that tend to reject at slightly higher rates, which exceed the nominal level under a wider range of conditions than tests constructed under a working model for the full regression. 
+Although the differences between these approaches 
+
+Using the more general definition of BRL, the CR2 adjustment matrices should be calculated based on a working model for the errors in the full regression model, following Equations (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) as stated. 
+
+
+
 \footnote{ 
 \citet{Cameron2015practitioners} highlight that this problem also arises with the CR1S estimator because it uses a multiplicative correction to the residuals that depends on the total number of covariates estimated in the model. 
 With the LSDV estimator, the constant is calculated as $c_S = \sqrt{(mN) / [(m - 1)(N - p)]}$, where $p$ is the total number of covariates, including fixed effects. 

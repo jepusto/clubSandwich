@@ -1,8 +1,8 @@
 \contentsline {section}{\numberline {S1}Proof of Theorem 1}{2}
 \contentsline {section}{\numberline {S2}Proof of Theorem 2}{3}
 \contentsline {section}{\numberline {S3}Details of simulation study}{4}
-\contentsline {section}{\numberline {S4}Additional simulation results}{5}
-\contentsline {subsection}{\numberline {S4.1}Rejection rates of AHT and standard tests}{5}
-\contentsline {subsection}{\numberline {S4.2}Rejection rates of AHT and standard tests by study design}{8}
-\contentsline {subsection}{\numberline {S4.3}Rejection rates of AHT test using CR1 or CR2, with and without accounting for absorption}{20}
-\contentsline {subsection}{\numberline {S4.4}Rejection rates of AHT test by degree of working model misspecification}{24}
+\contentsline {section}{\numberline {S4}Additional simulation results}{6}
+\contentsline {subsection}{\numberline {S4.1}Rejection rates of AHT and standard tests}{6}
+\contentsline {subsection}{\numberline {S4.2}Rejection rates of AHT and standard tests by study design}{9}
+\contentsline {subsection}{\numberline {S4.3}Rejection rates of AHT test using CR1 or CR2, with and without accounting for absorption}{21}
+\contentsline {subsection}{\numberline {S4.4}Rejection rates of AHT test by degree of working model misspecification}{25}
