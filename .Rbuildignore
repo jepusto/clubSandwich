@@ -4,3 +4,4 @@ auxilliary
 paper_ClusterRobustTesting
 SUMMER_2015
 ^\.travis\.yml$
+cran-comments.md
