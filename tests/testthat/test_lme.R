@@ -150,5 +150,30 @@ test_that("Errors with 3-level hlm or cross-classified model", {
 })
 
 test_that("CR2 is equivalent to Welch t-test for DiD design", {
+  
 })
 
+
+
+test_that("Emply levels are dropped in model_matrix", {
+  
+  data(AchievementAwardsRCT)
+  
+  AA_RCT_females <- subset(AchievementAwardsRCT, sex=="Girl" & year != "1999")
+  
+  AA_RCT_females <- within(AA_RCT_females, {
+    sibs_4 <- siblings >= 4
+    treated2001 <- treated * (year=="2001")
+  })
+  
+  lme_fit <- lme(Bagrut_status ~ year * school_type + 
+                   father_ed + mother_ed + immigrant + sibs_4 + 
+                   qrtl + treated2001:half, 
+                 random = ~ 1 | school_id, 
+                 data = AA_RCT_females)
+  
+  betas <- fixef(lme_fit)
+  X <- model_matrix(lme_fit)
+  expect_identical(names(betas), colnames(X))
+  
+})

@@ -53,7 +53,7 @@ coef_CR.lme <- function(obj)
 #-------------------------------------
 
 model_matrix.lme <- function(obj) {
-  dat <- getData(obj)
+  dat <- droplevels(getData(obj))
   model.matrix(formula(obj), data = dat)
 }
 
