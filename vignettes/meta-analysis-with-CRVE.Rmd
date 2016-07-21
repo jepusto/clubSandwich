@@ -1,0 +1,104 @@
+---
+title: "Meta-analysis with cluster-robust variance estimation"
+author: "James E. Pustejovsky"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This vignette dimeonstrates how to use the `clubSandwich` package to conduct a meta-analysis of dependent effect sizes with robust variance estimation. 
+Tests of meta-regression coefficients and F-tests of multiple-coefficient hypotheses are calculated using small-sample corrections proposed by Tipton (2015) and Tipton and Pustejovsky (2015). 
+The example uses a dataset of effect sizes from a Campbell Collaboration systematic review of dropout prevention programs, conducted by Sandra Jo Wilson and colleagues (2011).
+
+The original analysis included a meta-regression with covariates that capture methodological, participant, and program characteristics. 
+The regression specification used here is similar to Model III from Wilson et al. (2011), but treats the `evaluator_independence` and `implementation_quality` variables as categorical rather than interval-level. 
+Also, the original analysis clustered at the level of the sample (some studies reported results from multiple samples), whereas here we cluster at the study level. 
+The meta-regression can be fit in several different ways. We first demonstrate using the `robumeta` package (Fisher & Tipton, 2015) and then using the `metafor` package (Viechtbauer, 2010).
+
+# robumeta model
+
+```{r, include=FALSE}
+options(width = 100)
+```
+
+```{r, message = FALSE}
+library(clubSandwich)
+library(robumeta)
+data(dropoutPrevention)
+
+# clean formatting
+names(dropoutPrevention)[7:8] <- c("eval","implement")
+levels(dropoutPrevention$eval) <- c("independent","indirect","planning","delivery")
+levels(dropoutPrevention$implement) <- c("low","medium","high")
+levels(dropoutPrevention$program_site) <- c("community","mixed","classroom","school")
+levels(dropoutPrevention$study_design) <- c("matched","unmatched","RCT")
+levels(dropoutPrevention$adjusted) <- c("no","yes")
+
+m3_robu <- robu(LOR1 ~ study_design + attrition + group_equivalence + adjusted
+                + outcome + eval + male_pct + white_pct + average_age
+                + implement + program_site + duration + service_hrs, 
+                data = dropoutPrevention, studynum = studyID, var.eff.size = varLOR, 
+                modelweights = "HIER")
+print(m3_robu)
+```
+
+Note that `robumeta` produces small-sample corrected standard errors and t-tests, and so there is no need to repeat those calculations with `clubSandwich`. 
+The `eval` variable has four levels, and it might be of interest to test whether the average program effects differ by the degree of evaluator independence. 
+The null hypothesis in this case is that the 10th, 11th, and 12th regression coefficients are all equal to zero. 
+A small-sample adjusted F-test for this hypothesis can be obtained as follows. 
+The `vcov = "CR2"` option means that the standard errors will be corrected using the bias-reduced linearization estimator described in Tipton and Pustejovsky (2015).
+
+```{r}
+Wald_test(m3_robu, constraints = 10:12, vcov = "CR2")
+```
+
+By default, the `Wald_test` function provides an F-type test with degrees of freedom estimated using the approximate Hotelling's $T^2_Z$ method. The test has less than 17 degrees of freedom, even though there are 152 independent studies in the data, and has a p-value that is not quite significant at conventional levels. The low degrees of freedom are a consequence of the fact that one of the levels of `evaluator independence` has only a few effect sizes in it:
+
+```{r}
+table(dropoutPrevention$eval)
+```
+
+# metafor model
+
+`clubSandwich` also works with models fit using the `metafor` package. Here we re-fit the same regression specification, but use REML to estimate the variance components (`robumeta` uses a method-of-moments estimator), as well as a somewhat different weighting scheme than that used in `robumeta`. 
+
+```{r, message = FALSE}
+library(metafor)
+m3_metafor <- rma.mv(LOR1 ~ study_design + attrition + group_equivalence + adjusted
+                      + outcome + eval
+                      + male_pct + white_pct + average_age
+                      + implement + program_site + duration + service_hrs, 
+                      V = varLOR, random = list(~ 1 | studyID, ~ 1 | studySample),
+                     data = dropoutPrevention)
+summary(m3_metafor)
+```
+
+`metafor` produces model-based standard errors, t-tests, and confidence intervals. The `coef_test` function from `clubSandwich` will calculate robust standard errors and robust t-tests for each of the coefficients:
+
+```{r}
+coef_test(m3_metafor, vcov = "CR2")
+```
+
+Note that `coef_test` assumed that it should cluster based on `studyID`, which is the outer-most random effect in the metafor model. This can be specified explicitly by including the option `cluster = dropoutPrevention$studyID` in the call. 
+
+The F-test for degree of evaluator independence uses the same syntax as before:
+```{r}
+Wald_test(m3_metafor, constraints = 10:12, vcov = "CR2")
+```
+
+Despite some differences in weighting schemes, the p-value is very close to the result obtained using `robumeta`.
+
+# References 
+
+Fisher, Z., & Tipton, E. (2015). robumeta: An R-package for robust variance estimation in meta-analysis. [arXiv:1503.02220](http://arxiv.org/abs/1503.02220)
+
+Tipton, E. (2015). Small sample adjustments for robust variance estimation with meta-regression. _Psychological Methods, 20_(3), 375-393. doi: [10.1037/met0000011](http://dx.doi.org/10.1037/met0000011)
+
+Tipton, E., & Pustejovsky, J. E. (2015). Small-sample adjustments for tests of moderators and model fit using robust variance estimation in meta-regression. _Journal of Educational and Behavioral Statistics, 40_(6), 604-634. doi: [10.3102/1076998615606099](http://dx.doi.org/10.3102/1076998615606099)
+
+Viechtbauer, W. (2010). Conducting meta-analyses in R with the metafor package. _Journal of Statistical Software, 36_(3), 1-48. URL: http://www.jstatsoft.org/v36/i03/
+  
+Wilson, S. J., Lipsey, M. W., Tanner-Smith, E., Huang, C. H., & Steinka-Fry, K. T. (2011). Dropout prevention and intervention programs: Effects on school completion and dropout Among school-aged children and youth: A systematic review. _Campbell Systematic Reviews, 7_(8). URL: http://www.campbellcollaboration.org/lib/project/158/
