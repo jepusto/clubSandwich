@@ -4,7 +4,7 @@ author: "James E. Pustejovsky"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Cluster-robust standard errors and hypothesis tests in panel data models}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -192,7 +192,7 @@ Angrist, J. D., & Pischke, J. (2009). _Mostly harmless econometrics: An empirici
 
 Angrist, J. D., and Pischke, J. S. (2014). _Mastering'metrics: the path from cause to effect_. Princeton, NJ: Princeton University Press.
 
-Arellano, M. (1993). On the testing of correlated effects with panel data. Journal of Econometrics, 59(1-2), 87-97. doi: [10.1016/0304-4076(93)90040-C](http://dx.doi.org/10.1016/0304-4076(93)90040-C) 
+Arellano, M. (1993). On the testing of correlated effects with panel data. Journal of Econometrics, 59(1-2), 87-97. doi: [10.1016/0304-4076(93)90040-C](http://www.sciencedirect.com/science/article/pii/030440769390040C) 
 
 Bell, R. M., & McCaffrey, D. F. (2002). Bias reduction in standard errors for linear regression with multi-stage samples. _Survey Methodology, 28_(2), 169-181.
 
