@@ -38,5 +38,5 @@ with(AchievementAwardsRCT, table(year, sex))
 with(AchievementAwardsRCT, table(year, qrtl, sex))
 with(AchievementAwardsRCT, table(year, half, sex))
 
-save(AchievementAwardsRCT, file = "data/AchievementAwardsRCT.RData")
+save(AchievementAwardsRCT, file = "data/AchievementAwardsRCT.RData", compress = "xz")
 head(AchievementAwardsRCT)

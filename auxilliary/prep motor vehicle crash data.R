@@ -8,6 +8,6 @@ MortalityRates <-
   mutate(cause = factor(dtype, labels = c("All","Motor Vehicle","Suicide","Internal"))) %>%
   select(-dtype, -agegr, -age, -legal1820)
 
-save(MortalityRates, file = "data/MortalityRates.RData")
+save(MortalityRates, file = "data/MortalityRates.RData", compress = "xz")
 dim(MortalityRates)
 head(MortalityRates)

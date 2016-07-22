@@ -41,7 +41,7 @@ big_studies <- subset(ES_per_study, V1 > 2)$studyID
 Wilson$big_study <- Wilson$studyID %in% big_studies
 
 dropoutPrevention <- Wilson
-save(dropoutPrevention, file = "data/dropoutPrevention.RData")
+save(dropoutPrevention, file = "data/dropoutPrevention.RData", compress = "xz")
 
 names(dropoutPrevention)
 table(dropoutPrevention$study_design)
