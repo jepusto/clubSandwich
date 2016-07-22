@@ -18,7 +18,7 @@ The regression specification used here is similar to Model III from Wilson et al
 Also, the original analysis clustered at the level of the sample (some studies reported results from multiple samples), whereas here we cluster at the study level. 
 The meta-regression can be fit in several different ways. We first demonstrate using the `robumeta` package (Fisher & Tipton, 2015) and then using the `metafor` package (Viechtbauer, 2010).
 
-# robumeta model
+## robumeta model
 
 ```{r, include=FALSE}
 options(width = 100)
@@ -61,7 +61,7 @@ By default, the `Wald_test` function provides an F-type test with degrees of fre
 table(dropoutPrevention$eval)
 ```
 
-# metafor model
+## metafor model
 
 `clubSandwich` also works with models fit using the `metafor` package. Here we re-fit the same regression specification, but use REML to estimate the variance components (`robumeta` uses a method-of-moments estimator), as well as a somewhat different weighting scheme than that used in `robumeta`. 
 
@@ -91,7 +91,7 @@ Wald_test(m3_metafor, constraints = 10:12, vcov = "CR2")
 
 Despite some differences in weighting schemes, the p-value is very close to the result obtained using `robumeta`.
 
-# References 
+## References 
 
 Fisher, Z., & Tipton, E. (2015). robumeta: An R-package for robust variance estimation in meta-analysis. [arXiv:1503.02220](http://arxiv.org/abs/1503.02220)
 
