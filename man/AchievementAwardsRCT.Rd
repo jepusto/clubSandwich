@@ -33,7 +33,7 @@
 AchievementAwardsRCT
 }
 \description{
-A dataset containing data from a randomized trial of the Achievement Awards
+Data from a randomized trial of the Achievement Awards
 Demonstration program, reported in Angrist & Lavy (2009).
 }
 \references{

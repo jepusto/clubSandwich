@@ -106,6 +106,7 @@
 #'   \item{totpercap}{Total alcohol consumption per capita} 
 #'   \item{mrate}{Mortality rate per 10,000} 
 #'   \item{cause}{Cause of death} 
+#'   }
 #'   
 #' @source
 #'   \href{http://masteringmetrics.com/wp-content/uploads/2015/01/deaths.dta}{Mastering
