@@ -78,6 +78,7 @@ We propose a generalization of BRL that can be applied in models with arbitrary 
 We also propose a small-sample test for multiple-parameter hypotheses, which generalizes the Satterthwaite approximation for t-tests. 
 In simulations covering a wide range of scenarios, we find that conventional cluster-robust Wald tests can severely over-reject while the proposed small-sample test maintains Type I error close to nominal levels. 
 The proposed methods are implemented in an R package called clubSandwich. 
+This article has online supplementary materials.
 \end{abstract}
 
 \noindent%
@@ -746,6 +747,10 @@ Extensions to linear regression models with clustering in multiple, non-nested d
 \section*{ACKNOWLEDGMENTS}
 
 This article has benefited from the feedback of seminar participants at the PRIISM Center at New York University, the University of Texas Population Research Center, and the American Institutes for Research, as well as an associate editor and referees. The authors thank Dan Knopf for helpful discussions about the linear algebra behind the cluster-robust variance estimator, and David Figlio and Coady Wing for advice about empirical applications and context.
+
+\section*{SUPPLEMENTARY MATERIALS}
+
+Supplementary materials include proofs of Theorems 1 and 2; additional details, results, and replication code from the simulation study; and replication code for the examples in Section \ref{sec:examples}.
 
 \bibliographystyle{agsm}
 \bibliography{bibliography}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  23 JUL 2016 11:41
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  23 JUL 2016 16:19
 entering extended mode
 **ClusterRobustTesting_FE_models.tex
 
@@ -657,43 +657,43 @@ Non-PDF special ignored!
 
 {C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
 [2] [3]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 176--176
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 177--177
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 176--176
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 177--177
 [][][] 
  []
 
 [4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15] [16] [17]
 
-Package xcolor Warning: Incompatible color definition on input line 523.
+Package xcolor Warning: Incompatible color definition on input line 524.
 
 <CR_fig/overview-1.pdf, id=74, 722.7pt x 361.35pt>
 File: CR_fig/overview-1.pdf Graphic file (type pdf)
  <use CR_fig/overview-1.pdf>
-Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 525.
+Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 526.
 (pdftex.def)             Requested size: 642.45122pt x 321.22556pt.
 
 [18] [19 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/
 CR_fig/overview-1.pdf>]
 
-Package xcolor Warning: Incompatible color definition on input line 550.
+Package xcolor Warning: Incompatible color definition on input line 551.
 
 <CR_fig/balance-1.pdf, id=91, 722.7pt x 397.485pt>
 File: CR_fig/balance-1.pdf Graphic file (type pdf)
  <use CR_fig/balance-1.pdf>
-Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 552.
+Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 553.
 (pdftex.def)             Requested size: 642.45122pt x 353.3481pt.
 
 
-Package xcolor Warning: Incompatible color definition on input line 571.
+Package xcolor Warning: Incompatible color definition on input line 572.
 
 <CR_fig/df-1.pdf, id=92, 578.16pt x 237.88875pt>
 File: CR_fig/df-1.pdf Graphic file (type pdf)
  <use CR_fig/df-1.pdf>
-Package pdftex.def Info: CR_fig/df-1.pdf used on input line 573.
+Package pdftex.def Info: CR_fig/df-1.pdf used on input line 574.
 (pdftex.def)             Requested size: 462.26999pt x 190.20235pt.
  [20]
 [21 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
@@ -738,7 +738,7 @@ C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:
 ogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Progr
 am Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Program
  Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on ClusterRobustTesting_FE_models.pdf (33 pages, 321491 bytes).
+Output written on ClusterRobustTesting_FE_models.pdf (33 pages, 321760 bytes).
 PDF statistics:
  205 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
