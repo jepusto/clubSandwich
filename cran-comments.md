@@ -1,3 +1,13 @@
+## Resubmission
+
+This is a resubmission. In this version I have:
+
+* Removed leading zeros from the version number.
+
+* Corrected misspellings in the DESCRIPTION by 
+  - adding () after function calls 
+  - single-quoting package names
+  
 ## Test environments
 
 * local Windows 7 Enterprise, R 3.2.5
@@ -14,9 +24,12 @@ There was 1 NOTE:
 Maintainer: 'James Pustejovsky <jepusto@gmail.com>'
 
 New submission
-Version contains leading zeroes (0.2.0000)
-Possibly mis-spelled words in DESCRIPTION
 
-  This is the initial release and a new submission to CRAN.
-  I have reviewed and agree to the CRAN submission policies.
+  This is a new submission to CRAN. I have reviewed and agree to the CRAN submission policies.
+
+Possibly mis-spelled words in DESCRIPTION:
+  Hotelling's (13:29)
+  Satterthwaite (12:5)
+  covariance (10:5)
+
   All of the identified words are spelled correctly. 
