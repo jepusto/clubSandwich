@@ -47,7 +47,7 @@
 
 \if0\blind
 {
-  \title{\bf Small sample methods for cluster-robust variance estimation and hypothesis testing in fixed effects models}
+  \title{\bf Small sample methods for cluster-robust variance estimation and hypothesis testing in fixed effects models}                     
   \author{\\James E. Pustejovsky\thanks{Department of Educational Psychology, University of Texas at Austin, 1912 Speedway, Stop D5800, Austin, TX 78712. Email: pusto@austin.utexas.edu}
     \hspace{.2cm}and\hspace{.2cm}
     Elizabeth Tipton\thanks{Department of Human Development, Teachers College, Columbia University, 425 W. 120th Street
@@ -126,7 +126,7 @@ First, we describe a simple modification of the BRL adjustment that remains well
 Second, we demonstrate how to calculate the BRL adjustments based on the fixed effects estimator and identify conditions under which first-stage absorption of the fixed effects can be ignored.
 Finally, we propose a procedure for testing multiple-parameter hypotheses by approximating the sampling distribution of the Wald statistic using Hotelling's $T^2$ distribution with estimated degrees of freedom. 
 The method is a generalization of the Satterthwaite correction proposed by \citet{Bell2002bias} for single parameter constraints. 
-The proposed methods are implemented in the R package \texttt{clubSandwich}, which is available on the Comprehensive R Archive Network.\todo{Cite clubSandwich}
+The proposed methods are implemented in the R package \texttt{clubSandwich}, which is available on the Comprehensive R Archive Network.
 
 Our work is related to a stream of recent literature that has examined methods for cluster-robust inference with a small number of clusters. 
 \citet{Conley2011inference} proposed methods for hypothesis testing in a difference-in-differences setting where the number of treated units is small and fixed, while the number of untreated units increases asymptotically. 
@@ -744,9 +744,12 @@ This paper has developed the CR2 estimator and AHT testing procedure for weighte
 Extensions to linear regression models with clustering in multiple, non-nested dimensions \citep[cf.][]{Cameron2011robust} appear to be possible, and their utility should be further investigated. 
 \citet{McCaffrey2006improved} have proposed extensions to bias-reduced linearization for use with generalized estimating equations, and future work should consider further extensions to other classes of estimators, including two-stage least squares and generalized method of moments. 
 
+\if0\blind
+{
 \section*{ACKNOWLEDGMENTS}
 
 This article has benefited from the feedback of seminar participants at the PRIISM Center at New York University, the University of Texas Population Research Center, and the American Institutes for Research, as well as an associate editor and referees. The authors thank Dan Knopf for helpful discussions about the linear algebra behind the cluster-robust variance estimator, and David Figlio and Coady Wing for advice about empirical applications and context.
+} \fi
 
 \section*{SUPPLEMENTARY MATERIALS}
 
