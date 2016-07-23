@@ -119,7 +119,7 @@ Ibragimov, R. \harvardand\ M{\"{u}}ller, U.~K.  \harvardyearleft
 \harvarditem{Imbens \harvardand\ Kolesar}{2016}{Imbens2015robust}
 Imbens, G.~W. \harvardand\ Kolesar, M.  \harvardyearleft 2016\harvardyearright
   , `{Robust Standard Errors in Small Samples: Some Practical Advice}', {\em
-  Review of Economics and Statistics} p.~forthcoming.
+  Review of Economics and Statistics} {\bf forthcoming}.
 
 \harvarditem{Krishnamoorthy \harvardand\ Yu}{2004}{Krishnamoorthy2004modified}
 Krishnamoorthy, K. \harvardand\ Yu, J.  \harvardyearleft 2004\harvardyearright
@@ -150,7 +150,7 @@ MacKinnon, J.~G.  \harvardyearleft 2015\harvardyearright , `{Wild cluster
 \harvarditem{Mackinnon \harvardand\ Webb}{2016}{MacKinnon2016wild}
 Mackinnon, J.~G. \harvardand\ Webb, M.~D.  \harvardyearleft
   2016\harvardyearright , `{Wild bootstrap inference for wildly different
-  cluster sizes}', {\em Journal of Applied Econometrics} .
+  cluster sizes}', {\em Journal of Applied Econometrics} {\bf forthcoming}.
 
 \harvarditem{MacKinnon \harvardand\ White}{1985}{MacKinnon1985some}
 MacKinnon, J.~G. \harvardand\ White, H.  \harvardyearleft 1985\harvardyearright
@@ -221,6 +221,7 @@ Wooldridge, J.~M.  \harvardyearleft 2010\harvardyearright , {\em {Econometric
 Young, A.  \harvardyearleft 2016\harvardyearright , {Improved, nearly exact,
   statistical inference with robust and clustered covariance matrices using
   effective degrees of freedom corrections}.
+\newline\harvardurl{http://personal.lse.ac.uk/YoungA/Improved.pdf}
 
 \harvarditem{Zhang}{2012}{Zhang2012twowayANOVA}
 Zhang, J.-T.  \harvardyearleft 2012\harvardyearright , `{An approximate degrees
