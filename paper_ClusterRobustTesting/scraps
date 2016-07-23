@@ -1,9 +1,15 @@
+For models that do not include within-cluster fixed effects, so that the full covariate matrix is $\bm{U} = \left[\bm{R} \ \bm{S}\right]$, all of the results hold after substituting $\bm{U}$ for $\bm{\ddot{R}}$. 
+
+
+, finding that specifying the working model in terms of the full regression better maintains the Type-I error of tests based on CR2. 
+Thus, we recommend specifying a working model in terms of the full regression, at least when it is computationally feasible to do so. 
 
 We see three disadvantages to specifying the working model in this fashion. First, it depends on an arbitrary choice of which predictors to include in $\bm{R}$ and which to absorb in $\bm{S}$. Second, we find it more difficult to specify a coherent working model for the final-stage regression than for the full regression. 
 Finally, the simulation evidence presented in Section \ref{sec:simulation} indicates that ignoring absorption of fixed effects leads to tests that tend to reject at slightly higher rates, which exceed the nominal level under a wider range of conditions than tests constructed under a working model for the full regression. 
 Although the differences between these approaches 
 
 Using the more general definition of BRL, the CR2 adjustment matrices should be calculated based on a working model for the errors in the full regression model, following Equations (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}) as stated. 
+
 
 
 

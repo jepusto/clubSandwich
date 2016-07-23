@@ -42,6 +42,12 @@ Bertrand, M., Duflo, E. \harvardand\ Mullainathan, S.  \harvardyearleft
   2004\harvardyearright , `{How much should we trust differences-in-differences
   estimates?}', {\em Quarterly Journal of Economics} {\bf 119}(1),~249--275.
 
+\harvarditem{Cai \harvardand\ Hayes}{2008}{Cai2008new}
+Cai, L. \harvardand\ Hayes, A.~F.  \harvardyearleft 2008\harvardyearright , `{A
+  new test of linear hypotheses in OLS regression under heteroscedasticity of
+  unknown form}', {\em Journal of Educational and Behavioral Statistics} {\bf
+  33}(1),~21--40.
+
 \harvarditem[Cameron et~al.]{Cameron, Gelbach \harvardand\
   Miller}{2008}{Cameron2008bootstrap}
 Cameron, A.~C., Gelbach, J.~B. \harvardand\ Miller, D.  \harvardyearleft
@@ -57,7 +63,8 @@ Cameron, A.~C., Gelbach, J.~B. \harvardand\ Miller, D.~L.  \harvardyearleft
 
 \harvarditem{Cameron \harvardand\ Miller}{2015}{Cameron2015practitioners}
 Cameron, A.~C. \harvardand\ Miller, D.~L.  \harvardyearleft
-  2015\harvardyearright , {A practitioner's guide to cluster-robust inference}.
+  2015\harvardyearright , `{A Practitioner's Guide to Cluster-Robust
+  Inference}', {\em Journal of Human Resources} {\bf 50}(2),~317--372.
 
 \harvarditem{Carpenter \harvardand\ Dobkin}{2011}{Carpenter2011minimum}
 Carpenter, C. \harvardand\ Dobkin, C.  \harvardyearleft 2011\harvardyearright ,
@@ -86,6 +93,13 @@ Donald, S.~G. \harvardand\ Lang, K.  \harvardyearleft 2007\harvardyearright ,
   `{Inference with difference-in-differences and other panel data}', {\em
   Review of Economics and Statistics} {\bf 89}(2),~221--233.
 
+\harvarditem{Fai \harvardand\ Cornelius}{1996}{Fai1996approximate}
+Fai, A. H.-T. \harvardand\ Cornelius, P.  \harvardyearleft
+  1996\harvardyearright , `{Approximate F-tests of multiple degree of freedom
+  hypotheses in generalized least squares analyses of unbalanced split-plot
+  experiments}', {\em Journal of Statistical Computation and Simulation} {\bf
+  54}(4),~363--378.
+
 \harvarditem{Hansen}{2007}{Hansen2007asymptotic}
 Hansen, C.~B.  \harvardyearleft 2007\harvardyearright , `{Asymptotic properties
   of a robust variance matrix estimator for panel data when T is large}', {\em
@@ -97,10 +111,15 @@ Ibragimov, R. \harvardand\ M\"{u}ller, U.~K.  \harvardyearleft
   robust inference}', {\em Journal of Business \& Economic Statistics} {\bf
   28}(4),~453--468.
 
-\harvarditem{Imbens \harvardand\ Kolesar}{2015}{Imbens2015robust}
-Imbens, G.~W. \harvardand\ Kolesar, M.  \harvardyearleft 2015\harvardyearright
-  , {Robust Standard Errors in Small Samples: Some Practical Advice}.
-\newline\harvardurl{https://www.princeton.edu/{~}mkolesar/papers/small-robust.pdf}
+\harvarditem{Ibragimov \harvardand\ M{\"{u}}ller}{2016}{Ibragimov2016inference}
+Ibragimov, R. \harvardand\ M{\"{u}}ller, U.~K.  \harvardyearleft
+  2016\harvardyearright , `{Inference with few heterogeneous clusters}', {\em
+  Review of Economics and Statistics} {\bf 98}(1),~83--96.
+
+\harvarditem{Imbens \harvardand\ Kolesar}{2016}{Imbens2015robust}
+Imbens, G.~W. \harvardand\ Kolesar, M.  \harvardyearleft 2016\harvardyearright
+  , `{Robust Standard Errors in Small Samples: Some Practical Advice}', {\em
+  Review of Economics and Statistics} p.~forthcoming.
 
 \harvarditem{Krishnamoorthy \harvardand\ Yu}{2004}{Krishnamoorthy2004modified}
 Krishnamoorthy, K. \harvardand\ Yu, J.  \harvardyearleft 2004\harvardyearright

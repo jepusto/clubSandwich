@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  18 JUL 2016 11:00
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  23 JUL 2016 10:58
 entering extended mode
 **ClusterRobustTesting_FE_models.tex
 
@@ -656,79 +656,49 @@ ABD: EveryShipout initializing macros [1
 Non-PDF special ignored!
 
 {C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
-[2] [3] [4] [5] [6] [7] [8] [9]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 338--338
+[2] [3]
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 176--176
 [][][] 
  []
 
 
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 338--338
+Overfull \hbox (27.76999pt too wide) in paragraph at lines 176--176
 [][][] 
  []
 
-[10] [11] [12] [13] [14] [15] [16]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 497--497
-[][][] 
- []
+[4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15] [16] [17]
 
-
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 497--497
-[][][] 
- []
-
-[17]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 510--510
-[][][] 
- []
-
-
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 510--510
-[][][] 
- []
-
-
-Package xcolor Warning: Incompatible color definition on input line 525.
+Package xcolor Warning: Incompatible color definition on input line 523.
 
 <CR_fig/overview-1.pdf, id=74, 722.7pt x 361.35pt>
 File: CR_fig/overview-1.pdf Graphic file (type pdf)
  <use CR_fig/overview-1.pdf>
-Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 527.
+Package pdftex.def Info: CR_fig/overview-1.pdf used on input line 525.
 (pdftex.def)             Requested size: 642.45122pt x 321.22556pt.
 
 [18] [19 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/
 CR_fig/overview-1.pdf>]
 
-Package xcolor Warning: Incompatible color definition on input line 552.
+Package xcolor Warning: Incompatible color definition on input line 550.
 
 <CR_fig/balance-1.pdf, id=91, 722.7pt x 397.485pt>
 File: CR_fig/balance-1.pdf Graphic file (type pdf)
  <use CR_fig/balance-1.pdf>
-Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 554.
+Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 552.
 (pdftex.def)             Requested size: 642.45122pt x 353.3481pt.
 
-[20] [21 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/
-CR_fig/balance-1.pdf>]
 
-Package xcolor Warning: Incompatible color definition on input line 573.
+Package xcolor Warning: Incompatible color definition on input line 571.
 
-<CR_fig/df-1.pdf, id=107, 578.16pt x 237.88875pt>
+<CR_fig/df-1.pdf, id=92, 578.16pt x 237.88875pt>
 File: CR_fig/df-1.pdf Graphic file (type pdf)
  <use CR_fig/df-1.pdf>
-Package pdftex.def Info: CR_fig/df-1.pdf used on input line 575.
+Package pdftex.def Info: CR_fig/df-1.pdf used on input line 573.
 (pdftex.def)             Requested size: 462.26999pt x 190.20235pt.
-
-[22 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
-g/df-1.pdf>]
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 606--606
-[][][] 
- []
-
-
-Overfull \hbox (27.76999pt too wide) in paragraph at lines 606--606
-[][][] 
- []
-
-[23] [24] [25] [26] [27] [28] [29]
+ [20]
+[21 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
+g/balance-1.pdf>] [22 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterR
+obustTesting/CR_fig/df-1.pdf>] [23] [24] [25] [26] [27] [28] [29]
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting_FE_models.bbl [30]
 Missing character: There is no â in font cmr12!
@@ -745,10 +715,10 @@ Missing character: There is no “ in font cmr12!
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting_FE_models.aux) ) 
 Here is how much of TeX's memory you used:
- 14820 strings out of 493921
- 286350 string characters out of 3144871
- 327500 words of memory out of 3000000
- 17816 multiletter control sequences out of 15000+200000
+ 14817 strings out of 493921
+ 286215 string characters out of 3144871
+ 322375 words of memory out of 3000000
+ 17813 multiletter control sequences out of 15000+200000
  14754 words of font info for 52 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
  62i,13n,76p,697b,695s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -768,7 +738,7 @@ C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:
 ogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Progr
 am Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Program
  Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on ClusterRobustTesting_FE_models.pdf (33 pages, 324280 bytes).
+Output written on ClusterRobustTesting_FE_models.pdf (33 pages, 320816 bytes).
 PDF statistics:
  205 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

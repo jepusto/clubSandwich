@@ -91,7 +91,7 @@ The proposed methods are implemented in an R package called clubSandwich.
 \section{INTRODUCTION}
 \label{sec:intro}
 
-In many economic analyses, interest centers on the parameters of a linear regression model, estimated by ordinary or weighted least squares (OLS/WLS) from data exhibiting within-group dependence. 
+In many economic analyses, interest centers on the parameters of a linear regression model estimated by ordinary or weighted least squares from data exhibiting within-group dependence. 
 Such dependence can arise from sampling or random assignment of aggregate units (e.g., counties, districts, villages), each of which contains multiple observations; from repeated measurement of an outcome on a common set of units, as in panel data; or from model misspecification, as in analysis of regression discontinuity designs \citep[e.g.,][]{Lee2008regression}. 
 A common approach to inference in these settings is to use a cluster-robust variance estimator \citep[CRVE;][]{Arellano1987computing, Liang1986longitudinal, white1984asymptotic}.
 The advantage of the CRVE is that it produces consistent standard errors and test statistics without imposing strong parametric assumptions about the correlation structure of the errors in the model.
@@ -99,24 +99,24 @@ Instead, the method relies on the weaker assumption that units can be grouped in
 In the past decade, use of CRVEs has become standard practice for micro-economic researchers, as evidenced by coverage in major textbooks and review articles \citep[e.g.,][]{Wooldridge2010econometric, Angrist2009mostly, Cameron2015practitioners}.
 
 As a leading example, consider a difference-in-differences analysis of state-by-year panel data, where the goal is to understand the effects on employment outcomes of several state-level policy shifts. 
-Each policy effect would be parameterized as a dummy variable in a regression model, which might also include other demographic controls. It is also common to include fixed effects for each state and each time-point in order to control for unobserved confounding in each dimension. 
+Each policy effect would be parameterized as a dummy variable in a regression model, which might also include other demographic controls. It is also common to include fixed effects for states and time-points in order to control for unobserved confounding in each dimension. 
 The model could be estimated by least squares with the fixed effects included as dummy variables (or what we will call the LSDV estimator). More commonly, the effects of the policy indicators would be estimated after absorbing the fixed effects, a computational technique that is also known as the fixed effects estimator or ``within transformation'' \citep{Wooldridge2010econometric}. 
 Standard errors would then be clustered by state to account for residual dependence in the errors from a given state, and these clustered standard errors would be used to test hypotheses about the set of policies.
 The need to cluster the standard errors by state, even when including state fixed effects, was highlighted by \citet{Bertrand2004how}, who showed that to do otherwise can lead to inappropriately small standard errors and hypothesis tests with incorrect rejection rates. 
 
 The consistency property of CRVEs is asymptotic in the number of independent clusters \citep{Wooldridge2003cluster}.
 Recent methodological work has demonstrated that CRVEs can be biased downward and associated hypothesis tests can have Type-I error rates considerably in excess of nominal levels when based on a small or moderate number of clusters \citep[e.g.,][]{MacKinnon2016wild}.
-\citet{Cameron2015practitioners} provide an extensive review of this literature, including a discussion of current practice, possible solutions, and open problems. 
-In particular, they demonstrate that small-sample corrections for t-tests implemented in common software packages such as Stata and SAS do not provide adequate control of Type-I error. 
+\citet{Cameron2015practitioners} provided an extensive review of this literature, including a discussion of current practice, possible solutions, and open problems. 
+In particular, they demonstrated that small-sample corrections for t-tests implemented in common software packages such as Stata and SAS do not provide adequate control of Type-I error. 
 
 \citet{Bell2002bias} proposed a method that improves the small-sample properties of CRVEs \citep[see also][]{McCaffrey2001generalizations}. 
-Their method, called bias-reduced linearization (BRL), entails adjusting the CRVE so that it is exactly unbiased under a working model specified by the analyst, while also remaining asymptotically consistent under arbitrary true variance structures. 
+The method, called bias-reduced linearization (BRL), entails adjusting the CRVE so that it is exactly unbiased under a working model specified by the analyst, while also remaining asymptotically consistent under arbitrary true variance structures. 
 Simulations reported by \citet{Bell2002bias} demonstrate that the BRL correction serves to reduce the bias of the CRVE even when the working model is misspecified. 
 The same authors also proposed and studied small-sample corrections to single-parameter hypothesis tests using the BRL variance estimator, based on Satterthwaite \citep{Bell2002bias} or saddlepoint approximations \citep{McCaffrey2006improved}. 
 In an analysis of a longitudinal cluster-randomized trial with 35 clusters, \citet{Angrist2009effects} observed that the BRL correction makes a difference for inferences. 
 
 Despite a growing body of evidence that BRL performs well \citep[e.g.,][]{Imbens2015robust}, several problems with the method hinder its wider application. 
-First, \citet{Angrist2009mostly} noted that the BRL correction is undefined in some highly parameterized models, such as state-by-year panels that include fixed effects for states and for years \citep[see also][]{Young2016improved}.
+First, \citet{Angrist2009mostly} noted that the BRL correction is undefined in some commonly used models, such as state-by-year panels that include fixed effects for states and for years \citep[see also][]{Young2016improved}.
 Second, in models with fixed effects, the magnitude of the BRL adjustment depends on whether it is computed based on the full design matrix (i.e., the LSDV estimator) or after absorbing the fixed effects.  
 Third, extant methods for hypothesis testing based on BRL are limited to single-parameter constraints \citep{Bell2002bias, McCaffrey2006improved} and small-sample methods for multiple-parameter hypothesis tests remain lacking.
 
@@ -125,11 +125,11 @@ First, we describe a simple modification of the BRL adjustment that remains well
 Second, we demonstrate how to calculate the BRL adjustments based on the fixed effects estimator and identify conditions under which first-stage absorption of the fixed effects can be ignored.
 Finally, we propose a procedure for testing multiple-parameter hypotheses by approximating the sampling distribution of the Wald statistic using Hotelling's $T^2$ distribution with estimated degrees of freedom. 
 The method is a generalization of the Satterthwaite correction proposed by \citet{Bell2002bias} for single parameter constraints. 
-The proposed methods are implemented in the R package \texttt{clubSandwich}, which is available on the Comprehensive R Archive Network.
+The proposed methods are implemented in the R package \texttt{clubSandwich}, which is available on the Comprehensive R Archive Network.\todo{Cite clubSandwich}
 
 Our work is related to a stream of recent literature that has examined methods for cluster-robust inference with a small number of clusters. 
 \citet{Conley2011inference} proposed methods for hypothesis testing in a difference-in-differences setting where the number of treated units is small and fixed, while the number of untreated units increases asymptotically. 
-\citet{Ibragimov2010tstatistic} proposed a cluster-robust t-test that maintains the nominal Type-I error rate; however, their method requires that the target parameter be identified within each independent cluster and so it is not always applicable.
+Ibragimov and M\"{u}ller \citeyearpar{Ibragimov2010tstatistic, Ibragimov2016inference} proposed cluster-robust t-tests that maintain the nominal Type-I error rate by re-weighting within-cluster estimators of the target parameter.
 \citet{Young2016improved} proposed a Satterthwaite correction for t-tests based on a different type of bias correction to the CRVE, where the bias correction term is derived under a working model.
 \citet{Cameron2008bootstrap} investigated a range of bootstrapping procedures that provide improved Type-I error control in small samples, finding that a cluster wild-bootstrap technique was particularly accurate in small samples. 
 Nearly all of this work has focused on single-parameter hypothesis tests only. 
@@ -152,7 +152,7 @@ We consider a linear regression model of the form,
 \end{equation}
 where $\bm{y}_i$ is a vector of $n_i$ outcomes for cluster $i$,  $\bm{R}_i$ is an $n_i \times r$ matrix containing predictors of primary interest (e.g., policy variables) and any additional controls, $\bm{S}_i$ is an $n_i \times s$ matrix describing fixed effects that are identified across multiple clusters, and $\bm{T}_i$ is an $n_i \times t$ matrix describing cluster-specific fixed effects, which must satisfy $\bm{T}_h \bm{T}_i' = \bm{0}$ for $h \neq i$.
 Note that the distinction between the covariates $\bm{R}_i$ versus the fixed effects $\bm{S}_i$ is arbitrary and depends on the analyst's inferential goals.
-In a fixed effects model for state-by-year panel data, $\bm{R}_i$ would include indicator variables for policy changes, as well as additional demographic controls; $\bm{S}_i$ would include year fixed effects; and $\bm{T}_i$ would indicate state fixed effects (and perhaps also state-specific time trends). 
+In a fixed effects model for state-by-year panel data, $\bm{R}_i$ would include variables describing policy changes, as well as additional demographic controls; $\bm{S}_i$ would include year fixed effects; and $\bm{T}_i$ would indicate state fixed effects (and perhaps also state-specific time trends). 
 Interest would center on testing hypotheses regarding the coefficients in $\bs\beta$ that correspond to the policy indicators, while $\bs\gamma$ and $\bs\mu$ would be treated as incidental. 
 
 We shall assume that $\E\left(\bs\epsilon_i\left|\bm{R}_i,\bm{S}_i, \bm{T}_i\right.\right) = \bm{0}$ and $\Var\left(\bs\epsilon_i\left|\bm{R}_i,\bm{S}_i,\bm{T}_i\right.\right) = \bs\Sigma_i$, for $i = 1,...,m$, where the form of $\bs\Sigma_1,...,\bs\Sigma_m$ may be unknown but the errors are independent across clusters. 
@@ -161,8 +161,8 @@ Let $N = \sum_{i=1}^m n_i$ denote the total number of observations.
 Let $\bm{y}$, $\bm{R}$, $\bm{S}$, $\bm{T}$, $\bm{U}$, $\bm{X}$, and $\bs\epsilon$ denote the matrices obtained by stacking their corresponding components, as in $\bm{R} = \left(\bm{R}_1' \ \bm{R}_2' \ \cdots \ \bm{R}_m'\right)'$. 
 
 We assume that $\bs\beta$ is estimated by weighted least squares (WLS) using symmetric, full rank weighting matrices $\bm{W}_1,...,\bm{W}_m$. 
-Clearly, the WLS estimator includes OLS as a special case.
-More generally, the WLS estimator encompasses feasible GLS, where it is assumed that $\Var\left(\bm{e}_i\left|\bm{X}_i\right.\right) = \bs\Phi_i$, a known function of a low-dimensional parameter. 
+Clearly, the WLS estimator includes ordinary least squares (OLS) as a special case.
+More generally, the WLS estimator encompasses feasible generalized least squares, where it is assumed that $\Var\left(\bm{e}_i\left|\bm{X}_i\right.\right) = \bs\Phi_i$, a known function of a low-dimensional parameter. 
 For example, an auto-regressive error structure might be posited to describe repeated measures on an individual over time. 
 The weighting matrices are then taken to be $\bm{W}_i = \hat{\bs\Phi}_i^{-1}$, where the $\hat{\bs\Phi}_i$ are constructed from estimates of the variance parameter.
 Finally, for analysis of data from complex survey designs, WLS may be used with sampling weights in order to account for unequal selection probabilities.
@@ -187,7 +187,6 @@ The WLS estimator of $\bs\beta$ can then be written as
 \bs{\hat\beta} = \bm{M_{\ddot{R}}} \sum_{i=1}^m \bm{\ddot{R}}_i' \bm{W}_i \bm{\ddot{y}}_i. 
 \end{equation}
 This estimator is algebraically identical to the LSDV estimator, $\bs{\hat\beta} = \bm{K}'\bm{M_X} \bm{X}' \bm{W} \bm{y}$, but avoids the need to solve a system of $p$ linear equations. For further details on sequential absorption, see \citet{Davis2002estimating}. In the remainder, we assume that fixed effects are absorbed before estimation of $\bs\beta$. 
-%For models that do not include within-cluster fixed effects, so that the full covariate matrix is $\bm{U} = \left[\bm{R} \ \bm{S}\right]$, all of the results hold after substituting $\bm{U}$ for $\bm{\ddot{R}}$. 
 
 \subsection{Standard CRVE}
 
@@ -207,7 +206,7 @@ There are several versions of this approach, all of which can be written as
 where $\bm{e}_i = \bm{Y}_i - \bm{X}_i \bs{\hat\beta}$ is the vector of residuals from cluster $i$ and $\bm{A}_i$ is some $n_i$ by $n_i$ adjustment matrix. 
 
 The form of the adjustment matrices parallels those of the heteroskedasticity-consistent variance estimators proposed by \citet*{MacKinnon1985some}. 
-The original and most basic CRVE, described by \citet{Liang1986longitudinal}, uses $\bm{A}_i = \bm{I}_i$, an $n_i \times n_i$ identity matrix. 
+The original CRVE, described by \citet{Liang1986longitudinal}, uses $\bm{A}_i = \bm{I}_i$, an $n_i \times n_i$ identity matrix. 
 Following \citet{Cameron2015practitioners}, we refer to this estimator as CR0. 
 This estimator is biased towards zero because the cross-product of the residuals $\bm{e}_i \bm{e}_i'$ tends to under-estimate the true variance $\bs\Sigma_i$ in cluster $i$.
 A rough bias adjustment is to take $\bm{A}_i = c\bm{I}_i$, where $c = \sqrt{(m/(m-1))}$; we denote this adjusted estimator as CR1. Some functions in Stata use a slightly different correction factor $c_S = \sqrt{(m N)/[(m - 1)(N - p)]}$; we will refer to the adjusted estimator using $c_S$ as CR1S. When $N >> p$, $c_S \approx \sqrt{m/(m-1)}$ and so CR1 and CR1S will be very similar.
@@ -232,7 +231,7 @@ Although the CR2 estimator might not be exactly unbiased when the working model 
 
 Let $\bs\Phi = \text{diag}\left(\bs\Phi_1,...,\bs\Phi_m\right)$ denote a working model for the covariance structure (up to a scalar constant). 
 For example, we might assume that the errors are uncorrelated and homoskedastic, with $\bs\Phi_i = \bm{I}_i$ for $i = 1,...,m$. 
-Alternatively, \citet{Imbens2015robust} suggested using a random effects (i.e., compound symmetric) structure, in which $\bs\Phi_i$ has unit diagonal entries and off-diagonal entries of $\rho$, with $\rho$ estimated using the OLS residuals \citep[see][p. 16]{Imbens2015robust}.
+Alternatively, \citet{Imbens2015robust} suggested using a random effects (i.e., compound symmetric) structure, in which $\bs\Phi_i$ has unit diagonal entries and off-diagonal entries of $\rho$, with $\rho$ estimated using the OLS residuals.
 
 In the original formulation of \citet{Bell2002bias}, the BRL adjustment matrices are chosen to satisfy the criterion
 \begin{equation}
@@ -286,8 +285,7 @@ If $\bs\beta$ is estimated using LSDV, then it is natural to calculate the CR2 a
 This approach can lead to different adjustment matrices because it is based on a subtly different working model. 
 Essentially, calculating CR2 based on $\bm{H_{\ddot{R}}}$ amounts to assuming that the working model $\bs\Phi$ applies not to the model errors $\bs\epsilon$, but rather to the errors from the final-stage regression of $\bm{\ddot{y}}$ on $\bm{\ddot{R}}$.
 Because the CR2 adjustment is relatively insensitive to the working model, the difference between accounting for or ignoring absorption will in many instances be small. 
-Nonetheless, we find it more coherent to specify a working model in terms of the full regression, and thus prefer this approach when it is computationally feasible to do so. 
-We investigate the differences between the approaches as part of the simulation study in Section \ref{sec:simulation}.\todo{Beth does this work for answering the reviewer's point?}
+We investigate the differences between the approaches as part of the simulation study in Section \ref{sec:simulation}.
 
 When based on the full regression model, a drawback of using the CR2 adjustment matrices is that it entails calculating the projection matrix $\bm{H_X}$ for the full set of $p$ covariates (i.e., including fixed effect indicators). 
 Given that the entire advantage of using absorption to calculate $\hat{\bs\beta}$ is to avoid computations involving large, sparse matrices, it is of interest to find methods for more efficiently calculating the CR2 adjustment matrices. 
@@ -391,7 +389,7 @@ Wishart approximations have also been considered as approximations in several si
 In each of these special cases, the robust variance estimator is a mixture of Wishart distributions that is well-approximated by a Wishart distribution with estimated degrees of freedom.
 Additionally, \citet{Pan2002small} described an F-test for use in GEE models, which uses the Wishart approximation to the distribution of $\bm{V}^{CR0}$ but estimates the degrees of freedom using a different method than the one we describe below.
 
-In an extensive simulation, \maskcitet{Tipton2015small-F} compared the performance of the AHT test to several other possible approximate F-tests, including adaptations of the tests introduced by \citet{Pan2002small} and \citet{Zhang2012twowayANOVA}, and several others.
+In an extensive simulation, \maskcitet{Tipton2015small-F} compared the performance of the AHT test to several other possible approximate F-tests, including adaptations of the tests introduced by \citet{Pan2002small} and \citet{Zhang2012twowayANOVA}, as well as adaptations of tests based on eigen-decompositions proposed by \citep{Fai1996approximate} and \citep{Cai2008new}.
 Simulation results indicated that the AHT test presented here has Type I error closer to nominal than any of the other tests across a wide range of parameter values, covariate types, and hypotheses.
 The contribution of the present paper is to extend the AHT test to the general setting of linear models with fixed effects and clustered errors. 
 
@@ -436,7 +434,7 @@ For each design, we simulated both balanced and unbalanced configurations, with 
 the supplementary materials provide the exact specifications used. To induce further imbalance into the designs, we also manipulated whether the outcomes were fully observed or were missing for 15\% of observations (completely at random). Supplementary Table S1 summarizes the design of the simulation.
 
 In order to examine the performance of the proposed testing procedures for constraints of varying dimension, we simulated tri-variate outcome data. 
-Letting $y_{hijk}$ denote the measurement of outcome $k$ at time point $j$ for unit $i$ under condition $h$, for $h = 1,...,3$, $i = 1,...,m$, $j = 1,...,n$, and $k = 1,...,3$, we generated data according to 
+Letting $y_{hijk}$ denote the measurement of outcome $k$ at time point $j$ for unit $i$ under condition $h$, for $h = 1,2,3$, $i = 1,...,m$, $j = 1,...,n$, and $k = 1,2,3$, we generated data according to 
 \begin{equation}
 \label{eq:data_generating_model}
 y_{hijk} = \mu_{i} + \delta_{hi} + \epsilon_{ijk},
@@ -446,7 +444,7 @@ The means $\mu_1,...,\mu_m$ were sampled from a normal distribution with mean 0 
 The unit-specific treatment effects $\delta_{2i},\delta_{3i}$ were taken to follow a bivariate normal distribution with mean zero, $\Var\left(\delta_{hi}\right) = \sigma_\delta^2$ for $h = 2,3$, and $\corr\left(\delta_{2i},\delta_{3i}\right) = 0.9$.  
 The errors at a given time point were assumed to be correlated, with $\Var\left(\epsilon_{ijk}\right) = 1 - \tau^2$ and $\text{corr}\left(\epsilon_{ijk}, \epsilon_{ijl}\right) = \rho$ for $k\neq l$, $k,l = 1,2,3$. 
 Under this data-generating process, we simulated data with intra-class correlations of $\tau^2 = 0.05$, 0.15, or 0.25; treatment effect variability of $\sigma_\delta^2 = 0.00$, 0.04, or 0.09; and outcomes that were either weakly ($\rho = .2$) or strongly correlated ($\rho = .8$). 
-In combination with the study design factors, the simulation therefore included a total of \Sexpr{3 * 2 * 2 * 3 * 3 * 3 * 2 * 3} unique conditions.\todo{Beth can you look this over to make sure it's clear?}
+In combination with the study design factors, the simulation therefore included a total of \Sexpr{3 * 2 * 2 * 3 * 3 * 3 * 2 * 3} unique conditions.
 
 Given a set of simulated data, we estimated the effects of the second and third policy conditions (relative to the first) on each outcome using a seemingly unrelated regression. 
 For the difference-in-differences design, we used the analytic model
@@ -459,7 +457,7 @@ For the cluster-randomized designs, fixed effects for clusters were omitted beca
 For the randomized block designs, treatments were blocked by cluster and the fixed effects for time-points were omitted for simplicity.
 The analytic model was estimated by OLS after absorbing any fixed effects, and so the ``working'' model amounts to assuming that the errors are independent and identically distributed. 
 Note that the true data generating model departs from the working model because of correlation among the outcomes ($\rho > 0$) and because of treatment effect variability ($\sigma_\delta^2 > 0$); in the cluster-randomized designs, working model misspecification also arises from the intra-class correlation ($\tau^2 > 0$). 
-The range of parameter combinations used in the true data generating model thus allows us to examine the performance of AHT tests under varying degrees of working model misspecification.\todo{This too?} 
+The range of parameter combinations used in the true data generating model thus allows us to examine the performance of AHT tests under varying degrees of working model misspecification.
 
 <<setup, include=FALSE, warning=FALSE, cache=FALSE>>=
 # setwd("paper_ClusterRobustTesting")
@@ -527,8 +525,8 @@ Throughout, we present results for the nominal Type I error rate of $\alpha = .0
 
 \paragraph{Overall performance.} The first finding is that the AHT test has Type I error close to the stated $\alpha$ level for all parameter combinations studied, whereas the standard test based on CR1 does not. 
 Figure \ref{fig:overview} illustrates this pattern at the nominal type I error rate of $\alpha = .05$, for constraints of varying dimension (from $q = 1$, in the first column, to $q = 6$, in the final column) and varying number of clusters.
-It can be seen that the AHT test has Type I error near the stated $\alpha$ level, even with a small number of clusters.
-When the number of clusters is very small, the Type I error can be smaller $\alpha$. 
+It can be seen that the AHT test nearly always has Type I error less than or equal to the stated $\alpha$ level, even with a small number of clusters.
+When the number of clusters is very small and the dimension of the test is large, the Type I error can be much smaller than $\alpha$. 
 Although the error is above the simulation bound under some conditions, the departures are typically small. For example, when $m = 15$ the rejection rates do not exceed \Sexpr{fmt(AHT_max_reject[2,"reject"],3)} for $\alpha = .01$, \Sexpr{fmt(AHT_max_reject[3,"reject"],3)} for $\alpha = .05$, and \Sexpr{fmt(AHT_max_reject[4,"reject"],3)} for $\alpha = .10$.
 The rejection rates are even closer to nominal for lower-dimensional constraints.
 
@@ -597,7 +595,7 @@ In summary, these results demonstrate that the standard robust Wald test, using 
 In contrast, the rejection rates of the AHT tests are below or at most slightly above nominal, across all of the conditions examined. 
 This is because the AHT test incorporates information about the covariate features into its estimated degrees of freedom, whereas the standard test does not.
 Compared to using the AHT test with the CR1 variance estimator or the modified CR2 estimator that ignores absorption of fixed effects, the AHT test based on CR2 leads to rejection rates that are closer to maintaining the nominal level, although the differences are often fairly small. 
-An important question that remains is how much the standard test and AHT test diverge in actual application.\todo{Beth anything we should add here?}
+An important question that remains is how much the standard test and AHT test diverge in actual application.
 
 \section{EXAMPLES}
 \label{sec:examples}
