@@ -1,7 +1,7 @@
 Package: clubSandwich
 Title: Cluster-Robust (Sandwich) Variance Estimators with Small-Sample
     Corrections
-Version: 0.2.1
+Version: 0.2.1.9000
 Authors@R: person("James", "Pustejovsky", email = "jepusto@gmail.com", role = c("aut", "cre"))
 Description: Provides several cluster-robust variance estimators
     (i.e., sandwich estimators) for ordinary and weighted least squares linear
@@ -14,6 +14,8 @@ Description: Provides several cluster-robust variance estimators
     provided for a variety of fitted models, including lm(), plm() (from package 'plm'),
     gls() and lme() (from 'nlme'), robu() (from 'robumeta'), and rma.uni() and rma.mv() (from
     'metafor').
+URL: https://github.com/jepusto/clubSandwich
+BugReports: https://github.com/jepusto/clubSandwich/issues
 Depends:
     R (>= 3.0.0)
 License: GPL-3
