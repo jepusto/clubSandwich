@@ -2,7 +2,7 @@ library(dplyr)
 library(tidyr)
 library(foreign)
 
-filenames <- paste0("paper_ClusterRobustTesting/data/AngristLavy_AERdata/base",c("99","00","01","02"), ".dta")
+filenames <- paste0("auxilliary/AngristLavy_AERdata/base",c("99","00","01","02"), ".dta")
 
 possible_units <- c(0,18,20,22,24)
 

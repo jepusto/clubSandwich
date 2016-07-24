@@ -637,10 +637,10 @@ Second, we test for whether the program was effective in either half of the prio
 Third, we test for whether program effects in the upper half of the prior achievement distribution are moderated by school sector ($H_0: \beta_{21} = \beta_{22} = \beta_{23}$, with $q = 3$). 
 Finally, we conduct a joint test for whether program effects in either half of the prior achievement distribution are moderated by school sector ($H_0: \bs\beta_1 = \bs\beta_2 = \bs\beta_3$, with $q = 4$). 
 
-<<Angrist_Lavy, cache = TRUE, results = "asis">>=
+<<Angrist_Lavy, cache = FALSE, results = "asis">>=
 library(xtable)
 
-source("R/Angrist & Lavy example.R")
+source("R/Achievement-Awards-example.R")
 
 print(xtable(AL_results, 
              caption = "Tests of treatment effects in the Achievement Awards Demonstration",
@@ -685,10 +685,10 @@ where $\bm{\ddot{r}}_{it}$ denotes the within-cluster deviations of the covariat
 The parameter $\bs\delta$ captures the difference between the between-cluster and within-cluster estimates of $\bs\beta$. 
 With this setup, the artificial Hausman test amounts to testing the null hypothesis that $\bs\delta = \bm{0}$, where $\bs\delta$ is estimated using RE.  
 
-<<MLDA_table, cache = TRUE, results="asis">>=
+<<MLDA_table, cache = FALSE, results="asis">>=
 library(xtable)
 
-source("R/MLDA example.R")
+source("R/MLDA-example.R")
 
 print(xtable(MLDA_results, 
              caption = "Tests of effects of minimum legal drink age and Hausman specification test",
@@ -706,7 +706,7 @@ print(xtable(MLDA_results,
 Table \ref{tab:MLDA} displays the results of the tests for the policy variable and the Hausman tests for each model specification. 
 The results of the policy effect tests are quite similar across specifications and versions of the test. 
 Of note is that, for both the RE and FE estimates, the AHT tests have only half the degrees of freedom of the corresponding standard tests. 
-For the artificial Hausman test, the AHT test has fewer than \Sexpr{round(Haus2_CR2["HTZ","df"])} degrees of freedom, which leads to a much larger p-value compared to using the standard test based on CR1. 
+For the artificial Hausman test, the AHT test has fewer than \Sexpr{round(Haus_CR2["HTZ","df"])} degrees of freedom, which leads to a much larger p-value compared to using the standard test based on CR1. 
 
 \section{Conclusion}
 \label{sec:conclusion}
