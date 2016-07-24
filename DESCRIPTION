@@ -5,8 +5,8 @@ Version: 0.2.1.9000
 Authors@R: person("James", "Pustejovsky", email = "jepusto@gmail.com", role = c("aut", "cre"))
 Description: Provides several cluster-robust variance estimators
     (i.e., sandwich estimators) for ordinary and weighted least squares linear
-    regression models. Several adjustments are incorporated to improve small-
-    sample performance. The package includes functions for estimating the variance-
+    regression models, including the bias-reduced linearization estimator of Bell and McCaffrey (2002). 
+    The package includes functions for estimating the variance-
     covariance matrix and for testing single- and multiple-contrast hypotheses
     based on Wald test statistics. Tests of single regression coefficients use
     Satterthwaite or saddle-point corrections. Tests of multiple-contrast hypotheses 
