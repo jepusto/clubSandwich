@@ -26,3 +26,8 @@ To install the latest development version directly from Github, type:
 install.packages("devtools")
 devtools::install_github("jepusto/clubSandwich")
 ```
+
+Once installed, have a look at the available vignettes by typing:
+```{r}
+browseVignettes(package="clubSandwich")
+```
