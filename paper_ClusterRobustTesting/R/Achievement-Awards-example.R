@@ -50,7 +50,7 @@ school_mod <- plm(Bagrut_status ~ year * school_type +
 school_effects <- grepl("school_type.*treated2001", names(coef(school_mod)))
 
 school_constraints <- list("Moderation - upper half (q = 2)" = which(school_effects)[3:4], 
-                        "Moderation - joint (q = 3)" = which(school_effects))
+                        "Moderation - joint (q = 4)" = which(school_effects))
 
 # standard CRVE (CR1)
 mod_CR1 <- Wald_test(school_mod, constraints = school_constraints, 
