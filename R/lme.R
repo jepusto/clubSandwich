@@ -35,17 +35,17 @@ vcovCR.lme <- function(obj, cluster, type, target, inverse_var) {
 # nobs()
 
 #-------------------------------------
-# residuals_CR()
+# residuals_CS()
 #-------------------------------------
 
-residuals_CR.lme <- function(obj) 
+residuals_CS.lme <- function(obj) 
   residuals(obj, level = 0)
 
 #-------------------------------------
-# coef_CR()
+# coef_CS()
 #-------------------------------------
 
-coef_CR.lme <- function(obj)
+coef_CS.lme <- function(obj)
   nlme::fixef(obj)
 
 #-------------------------------------

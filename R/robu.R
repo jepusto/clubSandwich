@@ -56,7 +56,7 @@ vcovCR.robu <- function(obj, cluster, type, target, inverse_var) {
 # coefficients
 #-----------------------------------------------
 
-coef_CR.robu <- function(obj) {
+coef_CS.robu <- function(obj) {
   beta <- as.vector(obj$b.r)
   labs <- obj$reg_table$labels
   names(beta) <- levels(labs)[labs]
@@ -67,7 +67,7 @@ coef_CR.robu <- function(obj) {
 # residuals
 #-----------------------------------------------
 
-residuals_CR.robu <- function(obj) {
+residuals_CS.robu <- function(obj) {
   ord <- order(order(obj$study_orig_id))
   obj$data.full$e.r[ord]
 }

@@ -124,7 +124,7 @@ augmented_model_matrix.plm <- function(obj, cluster, inverse_var) {
 # unadjusted residuals
 #-------------------------------------
 
-residuals_CR.plm <- function(obj) {
+residuals_CS.plm <- function(obj) {
   if (obj$args$model=="random") {
     y <- plm::pmodel.response(formula(obj), model.frame(obj), model = "pooling")
     Xb <- as.numeric(model_matrix(obj) %*% coef(obj))

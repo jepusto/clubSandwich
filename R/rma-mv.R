@@ -55,7 +55,7 @@ vcovCR.rma.mv <- function(obj, cluster, type, target, inverse_var) {
 }
 
 # coef()
-# residuals_CR()
+# residuals_CS()
 # vcov()
 # model_matrix
 

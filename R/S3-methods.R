@@ -55,9 +55,9 @@ augmented_model_matrix.default <- function(obj, cluster, inverse_var) {
 # get residuals
 #----------------------------------------------
 
-residuals_CR <- function(obj) UseMethod("residuals_CR") 
+residuals_CS <- function(obj) UseMethod("residuals_CS") 
 
-residuals_CR.default <- function(obj) {
+residuals_CS.default <- function(obj) {
   residuals(obj)
 }
 
@@ -65,9 +65,9 @@ residuals_CR.default <- function(obj) {
 # get coefficient estimates
 #----------------------------------------------
 
-coef_CR <- function(obj) UseMethod("coef_CR") 
+coef_CS <- function(obj) UseMethod("coef_CS") 
 
-coef_CR.default <- function(obj) {
+coef_CS.default <- function(obj) {
   coef(obj)
 }
 

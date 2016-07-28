@@ -30,7 +30,7 @@ vcovCR.lm <- function(obj, cluster, type, target = NULL, inverse_var = NULL) {
 }
 
 # model_matrix()
-# residuals_CR()
+# residuals_CS()
 # coef()
 # nobs()
 # targetVariance()

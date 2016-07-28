@@ -7,7 +7,7 @@ test_that("CR0 z-tests agree with robumeta for correlated effects", {
   corr_large <- robu(effectsize ~ males + college + binge, data = corrdat, 
                          modelweights = "CORR", studynum = studyid,
                          var.eff.size = var, small = FALSE)
-  p <- length(coef_CR(corr_large))
+  p <- length(coef_CS(corr_large))
   N <- corr_large$N
   robu_CR0 <- vcovCR(corr_large, type = "CR0")
   ztests <- coef_test(corr_large, vcov = robu_CR0 * N / (N - p), test = "z")
@@ -39,7 +39,7 @@ test_that("CR0 z-tests agree with robumeta for hierarchical effects", {
   hier_large <- robu(effectsize ~ binge + followup + sreport + age,
                          data = hierdat, studynum = studyid,
                          var.eff.size = var, modelweights = "HIER", small = FALSE)
-  p <- length(coef_CR(hier_large))
+  p <- length(coef_CS(hier_large))
   N <- hier_large$N
   robu_CR0 <- vcovCR(hier_large, type = "CR0")
   ztests <- coef_test(hier_large, vcov = robu_CR0 * N / (N - p), test = "z")
@@ -71,7 +71,7 @@ test_that("CR0 z-tests agree with robumeta for user weighting", {
   user_large <- robu(effectsize ~ binge + followup + sreport + age,
                      data = hierdat, studynum = studyid,
                      var.eff.size = var, userweights = user_wt, small = FALSE)
-  p <- length(coef_CR(user_large))
+  p <- length(coef_CS(user_large))
   N <- user_large$N
   robu_CR0 <- vcovCR(user_large, type = "CR0")
   ztests <- coef_test(user_large, vcov = robu_CR0 * N / (N - p), test = "z")
@@ -88,7 +88,7 @@ test_that("CR2 t-tests agree with robumeta for user weighting", {
                      var.eff.size = var, userweights = user_wt)
   user_lm <- lm(effectsize ~ binge + followup + sreport + age, data = hierdat,
                 weights = user_wt)
-  expect_equivalent(coef_CR(user_lm), coef(user_lm))
+  expect_equivalent(coef_CS(user_lm), coef(user_lm))
   
   robu_CR2 <- vcovCR(user_small, type = "CR2")
   expect_true(check_CR(user_small, vcov = robu_CR2))
@@ -202,7 +202,7 @@ test_that("order doesn't matter", {
   test_scramble <- lapply(CR_types, function(x) coef_test(corr_scramble, vcov = x, test = "All"))
   expect_equal(test_fit, test_scramble, tolerance = 10^-5)
   
-  constraints <- combn(length(coef_CR(corr_small)), 2, simplify = FALSE)
+  constraints <- combn(length(coef_CS(corr_small)), 2, simplify = FALSE)
   Wald_fit <- Wald_test(corr_small, constraints = constraints, vcov = "CR2", test = "All")
   Wald_scramble <- Wald_test(corr_scramble, constraints = constraints, vcov = "CR2", test = "All")
   expect_equal(Wald_fit, Wald_scramble)

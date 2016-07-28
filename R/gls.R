@@ -31,7 +31,7 @@ vcovCR.gls <- function(obj, cluster, type, target, inverse_var) {
   vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
 }
 
-# residuals_CR()
+# residuals_CS()
 # coef()
 # nobs()
 

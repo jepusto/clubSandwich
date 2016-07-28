@@ -29,7 +29,7 @@ vcovCR.ivreg <- function(obj, cluster, type, target = NULL, inverse_var = NULL) 
   vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
 }
 
-# residuals_CR()
+# residuals_CS()
 # coef()
 
 #----------------------------------------------
