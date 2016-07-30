@@ -225,7 +225,7 @@ Wald_testing <- function(C_mat, beta, vcov, test, S_array) {
   
   if ("EDF" %in% test | "EDT" %in% test) {
     spec <- eigen(Omega_nsqrt %*% C_mat %*% vcov %*% t(C_mat) %*% t(Omega_nsqrt))
-    D_array <- array(apply(S_array, 3, function(s) t(spec$vector) %*% Omega_nsqrt %*% s), dim = dim(S_array))
+    D_array <- array(apply(S_array, 3, function(s) t(spec$vectors) %*% Omega_nsqrt %*% s), dim = dim(S_array))
     df_eig <- 1 / apply(D_array, 1, function(d) sum(crossprod(d)^2))
     
     if ("EDF" %in% test) {
@@ -240,7 +240,7 @@ Wald_testing <- function(C_mat, beta, vcov, test, S_array) {
     }
     
     if ("EDT" %in% test) {
-      t_j <- t(spec$vector) %*% Omega_nsqrt %*% C_mat %*% beta / sqrt(spec$values)
+      t_j <- t(spec$vectors) %*% Omega_nsqrt %*% C_mat %*% beta / sqrt(spec$values)
       a_j <- df_eig - 1 / 2
       b_j <- 48 * a_j^2
       c_j <- sqrt(a_j * log(1 + t_j^2 / df_eig))
