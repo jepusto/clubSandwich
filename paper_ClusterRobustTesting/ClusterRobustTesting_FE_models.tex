@@ -199,7 +199,7 @@ We consider a linear regression model of the form,
 \label{eq:fixed_effects}
 \bm{y}_i = \bm{R}_i \bs\beta + \bm{S}_i \bs\gamma + \bm{T}_i \bs\mu + \bs\epsilon_i,
 \end{equation}
-where $\bm{y}_i$ is a vector of $n_i$ outcomes for cluster $i$,  $\bm{R}_i$ is an $n_i \times r$ matrix containing predictors of primary interest (e.g., policy variables) and any additional controls, $\bm{S}_i$ is an $n_i \times s$ matrix describing fixed effects that are identified across multiple clusters, and $\bm{T}_i$ is an $n_i \times t$ matrix describing cluster-specific fixed effects, which must satisfy $\bm{T}_h \bm{T}_i' = \bm{0}$ for $h \neq i$.
+where there are a total of $m$ clusters; cluster $i$ contains $n_i$ units; $\bm{y}_i$ is a vector of the $n_i$ values of the outcome for units in cluster $i$;  $\bm{R}_i$ is an $n_i \times r$ matrix containing predictors of primary interest (e.g., policy variables) and any additional controls; $\bm{S}_i$ is an $n_i \times s$ matrix describing fixed effects that are identified across multiple clusters; and $\bm{T}_i$ is an $n_i \times t$ matrix describing cluster-specific fixed effects, which must satisfy $\bm{T}_h \bm{T}_i' = \bm{0}$ for $h \neq i$.
 Note that the distinction between the covariates $\bm{R}_i$ versus the fixed effects $\bm{S}_i$ is arbitrary and depends on the analyst's inferential goals.
 In a fixed effects model for state-by-year panel data, $\bm{R}_i$ would include variables describing policy changes, as well as additional demographic controls; $\bm{S}_i$ would include year fixed effects; and $\bm{T}_i$ would indicate state fixed effects (and perhaps also state-specific time trends). 
 Interest would center on testing hypotheses regarding the coefficients in $\bs\beta$ that correspond to the policy indicators, while $\bs\gamma$ and $\bs\mu$ would be treated as incidental. 
@@ -644,7 +644,7 @@ Third, we test for whether program effects in the upper half of the prior achiev
 Finally, we conduct a joint test for whether program effects in either half of the prior achievement distribution are moderated by school sector ($H_0: \bs\beta_1 = \bs\beta_2 = \bs\beta_3$, with $q = 4$). 
 
 % latex table generated in R 3.2.5 by xtable 1.7-4 package
-% Sat Jul 23 20:44:41 2016
+% Tue Aug 02 13:42:58 2016
 \begin{table}[bth]
 \centering
 \caption{Tests of treatment effects in the Achievement Awards Demonstration} 
@@ -698,7 +698,7 @@ The parameter $\bs\delta$ captures the difference between the between-cluster an
 With this setup, the artificial Hausman test amounts to testing the null hypothesis that $\bs\delta = \bm{0}$, where $\bs\delta$ is estimated using RE.  
 
 % latex table generated in R 3.2.5 by xtable 1.7-4 package
-% Sat Jul 23 20:44:42 2016
+% Tue Aug 02 13:43:00 2016
 \begin{table}[bth]
 \centering
 \caption{Tests of effects of minimum legal drink age and Hausman specification test} 
