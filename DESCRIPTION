@@ -22,7 +22,8 @@ License: GPL-3
 VignetteBuilder: knitr
 LazyData: true
 Imports:
-    stats
+    stats,
+    sandwich
 Suggests:
     Formula,
     knitr,

@@ -52,6 +52,11 @@ test_that("CR2 t-tests agree with robumeta for user weighting", {
   # expect_equal(hier_robu$reg_table$prob, CR2_ttests$p_Satt)
 })
 
+test_that("bread works", {
+  expect_equal(vcov(corr_meta), bread(corr_meta) / nobs(corr_meta))
+  expect_equal(vcov(hier_meta), bread(hier_meta) / nobs(hier_meta))
+})
+
 CR_types <- paste0("CR",0:4)
 
 test_that("order doesn't matter", {

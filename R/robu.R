@@ -109,3 +109,20 @@ weightMatrix.robu <- function(obj, cluster) {
   }
   matrix_list(W, cluster, "both")
 }
+
+#---------------------------------------
+# Get bread matrix and scaling constant
+#---------------------------------------
+
+bread.robu <- function(x, ...) {
+  if (x$user_weighting) { 
+    W <- x$data.full$userweights
+  } else{
+    W <- x$data.full$r.weights
+  }
+  x$N * chol2inv(chol(crossprod(x$Xreg, W * x$Xreg)))
+}
+
+v_scale.robu <- function(obj) {
+  obj$N
+}

@@ -9,6 +9,13 @@ obj_A3 <- update(obj_A2, correlation = corExp(form = ~ Time))
 obj_B <- lme(distance ~ age, random = ~ age, data = Orthodont)
 
 
+test_that("bread works", {
+  expect_equal(vcov(obj_A), bread(obj_A) / v_scale(obj_A))
+  expect_equal(vcov(obj_A2), bread(obj_A2) / v_scale(obj_A2))
+  expect_equal(vcov(obj_A3), bread(obj_A3) / v_scale(obj_A3))
+  expect_equal(vcov(obj_B), bread(obj_B) / v_scale(obj_B))
+})
+
 test_that("vcovCR options work for CR2", {
   CR2_A <- vcovCR(obj_A, type = "CR2")
   expect_identical(vcovCR(obj_A, cluster = BodyWeight$Rat, type = "CR2"), CR2_A)

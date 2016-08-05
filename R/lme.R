@@ -75,3 +75,17 @@ weightMatrix.lme <- function(obj, cluster) {
   V_list <- targetVariance(obj, cluster)
   lapply(V_list, function(v) chol2inv(chol(v)))
 }
+
+#---------------------------------------
+# Get bread matrix and scaling constant
+#---------------------------------------
+
+#' @export
+
+bread.lme <- function(x, ...) {
+  vcov(x) * v_scale(x)
+}
+
+v_scale.lme <- function(obj) {
+  nlevels(nlme::getGroups(obj))
+}

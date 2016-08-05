@@ -16,6 +16,11 @@ plm_FD <- plm(frate ~ beertax + drinkagec + miles + unemp + log(income),
 n_obs <- nobs(plm_FD)
 target <- with(Fatalities, 1 / pop[year != levels(year)[1]])
 
+test_that("bread works", {
+  sigma_sq <- with(plm_FD, sum(residuals^2) / df.residual) 
+  expect_equal(vcov(plm_FD), bread(plm_FD) * sigma_sq / v_scale(plm_FD))
+})
+
 test_that("CR0 and CR1S agree with arellano vcov", {
   
   expect_equal(vcovHC(plm_FD, method="arellano", type = "HC0", cluster = "group"), 

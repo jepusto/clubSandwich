@@ -82,3 +82,15 @@ weightMatrix.rma.uni <- function(obj, cluster) {
   }
   matrix_list(wi, cluster, "both")
 }
+
+#---------------------------------------
+# Get bread matrix and scaling constant
+#---------------------------------------
+
+bread.rma.uni <- function(x, ...) {
+ vcov(x) * nobs(x)
+}
+
+v_scale.robu <- function(obj) {
+  nobs(obj)
+}

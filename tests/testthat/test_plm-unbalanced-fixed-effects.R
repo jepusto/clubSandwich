@@ -95,6 +95,17 @@ test_that("two-way effects agree with lm", {
   
 })
 
+test_that("bread works", {
+  sigma_sq_ind <- with(plm_individual, sum(residuals^2) / df.residual) 
+  expect_equal(vcov(plm_individual), bread(plm_individual) * sigma_sq_ind / v_scale(plm_individual))
+  
+  sigma_sq_time <- with(plm_time, sum(residuals^2) / df.residual) 
+  expect_equal(vcov(plm_time), bread(plm_time) * sigma_sq_time / v_scale(plm_time))
+
+  sigma_sq_two <- with(plm_twoways, sum(residuals^2) / df.residual) 
+  expect_equal(vcov(plm_twoways), bread(plm_twoways) * sigma_sq_two / v_scale(plm_twoways))
+})
+
 test_that("CR0 and CR1S agree with arellano vcov", {
   expect_equal(vcovHC(plm_individual, method="arellano", type = "HC0", cluster = "group"), 
                as.matrix(vcovCR(plm_individual, type = "CR0")))

@@ -71,3 +71,17 @@ coef_CS.default <- function(obj) {
   coef(obj)
 }
 
+#----------------------------------------------
+# get bread matrix
+#----------------------------------------------
+
+# bread matrices imported from sandwich package or elsewhere
+#' @importFrom sandwich bread
+
+get_bread <- function(obj) bread(obj)
+
+v_scale <- function(obj) UseMethod("v_scale")
+
+v_scale.default <- function(obj) {
+  nobs(obj)
+}

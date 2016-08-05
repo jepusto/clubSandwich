@@ -95,3 +95,15 @@ findCluster.rma.mv <- function(obj) {
   }
   droplevels(as.factor(cluster))
 }
+
+#---------------------------------------
+# Get bread matrix and scaling constant
+#---------------------------------------
+
+bread.rma.mv <- function(x, ...) {
+  vcov(x) * nobs(x)
+}
+
+v_scale.mv <- function(obj) {
+  nobs(obj)
+}

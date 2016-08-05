@@ -182,3 +182,19 @@ weightMatrix.plm <- function(obj, cluster) {
     matrix_list(rep(1, nobs(obj)), cluster, "both")
   }
 }
+
+#---------------------------------------
+# Get bread matrix and scaling constant
+#---------------------------------------
+
+bread.plm <- function(x, ...) {
+  if (x$args$model=="random") {
+    return(v_scale(x) * vcov(x)) 
+  } else {
+    v_scale(x) * vcov(x) / with(x, sum(residuals^2) / df.residual) 
+  }
+}
+
+v_scale.plm <- function(obj) {
+  max(sapply(attr(obj$model, "index"), nlevels))
+}
