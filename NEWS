@@ -1,5 +1,7 @@
 clubSandwich 0.2.1.9000
 =======================
+* Bug fixes:
+  - updated nobs.plm method to handle first-differenced models 
 
 clubSandwich 0.2.1
 =======================
