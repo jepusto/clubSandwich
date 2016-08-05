@@ -16,39 +16,25 @@ plm_FD <- plm(frate ~ beertax + drinkagec + miles + unemp + log(income),
 n_obs <- nobs(plm_FD)
 target <- with(Fatalities, 1 / pop[year != levels(year)[1]])
 
-# obj <- plm_FD
-# vcov <- vcovCR(obj, type = "CR4")
-# type <- "CR4"
-# dim(model_matrix(obj))
-# 
-# index <- attr(model.frame(obj),"index")
-# cluster <- switch(obj$args$effect,
-#                   individual = index[[1]],
-#                   time = index[[2]])
-# sort_order <- get_index_order(obj)
-# cluster <- cluster[sort_order]
-# 
-# if (obj$args$model=="fd") {
-#   cluster <- cluster[index[[2]] != levels(index[[2]])[1]]
-# }
-# 
-# target <- NULL
-# inverse_var <- is.null(target)
-# obj$na.action <- attr(obj$model, "na.action")
-# 
-# vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
-
 test_that("CR0 and CR1S agree with arellano vcov", {
+  
   expect_equal(vcovHC(plm_FD, method="arellano", type = "HC0", cluster = "group"), 
                as.matrix(vcovCR(plm_FD, type = "CR0")))
   expect_equal(vcovHC(plm_FD, method="arellano", type = "sss", cluster = "group"), 
                as.matrix(vcovCR(plm_FD, type = "CR1S")))
   
-  expect_equal(vcovHC(plm_FD, method="arellano", type = "HC0", cluster = "time"),
-               as.matrix(vcovCR(plm_FD, cluster = "time", type = "CR0")))
-  expect_equal(vcovHC(plm_FD, method="arellano", type = "sss", cluster = "time"),
-               as.matrix(vcovCR(plm_FD, cluster = "time", type = "CR1S")))
+  X <- model_matrix(plm_FD)
+  e <- residuals(plm_FD)
+  index <- attr(model.frame(plm_FD), "index")
+  cluster <- index[[2]]
+  cluster <- cluster[index[[2]] != levels(index[[2]])[1]]
+  estmats <- sapply(split.data.frame(e * X, cluster, drop = TRUE), colSums)
+  meat <- tcrossprod(estmats)
+  bread <- chol2inv(chol(crossprod(X)))
+  vcov_time <- bread %*% meat %*% bread
+  attr(vcov_time, "dimnames") <- attr(meat, "dimnames")
   
+  expect_equal(vcov_time, as.matrix(vcovCR(plm_FD, cluster = "time", type = "CR0")))
 })
 
 test_that("vcovCR options work for CR2", {
