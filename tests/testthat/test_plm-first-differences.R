@@ -35,6 +35,12 @@ test_that("CR0 and CR1S agree with arellano vcov", {
   attr(vcov_time, "dimnames") <- attr(meat, "dimnames")
   
   expect_equal(vcov_time, as.matrix(vcovCR(plm_FD, cluster = "time", type = "CR0")))
+  
+  baloney <- tcrossprod(estmats[,-6])
+  vcov_baloney <- bread %*% baloney %*% bread
+  attr(vcov_baloney, "dimnames") <- attr(baloney, "dimnames")
+  expect_equal(vcov_baloney, 
+               vcovHC(plm_FD, method="arellano", type = "HC0", cluster = "time"))
 })
 
 test_that("vcovCR options work for CR2", {
