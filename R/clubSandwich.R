@@ -20,19 +20,30 @@
 #' @param inverse_var Optional logical indicating whether the weights used in 
 #'   fitting the model are inverse-variance. If not specified, \code{vcovCR} 
 #'   will attempt to infer a value.
+#' @param form Controls the form of the returned matrix. The default 
+#'   \code{"sandwich"} will return the sandwich variance-covariance matrix. 
+#'   Alternately, setting \code{form = "meat"} will return only the meat of the sandwich and 
+#'   setting \code{form = B}, where \code{B} is a matrix of appropriate 
+#'   dimension, will return the sandwich variance-covariance matrix calculated
+#'   using \code{B} as the bread.
 #'   
 #' @description This is a generic function, with specific methods defined for 
-#' \code{\link[stats]{lm}}, \code{\link[plm]{plm}}, \code{\link[nlme]{gls}},
-#' \code{\link[nlme]{lme}}, \code{\link[robumeta]{robu}}, \code{\link[metafor]{rma.uni}}, and \code{\link[metafor]{rma.mv}} objects.
-#' 
+#'   \code{\link[stats]{lm}}, \code{\link[plm]{plm}}, \code{\link[nlme]{gls}}, 
+#'   \code{\link[nlme]{lme}}, \code{\link[robumeta]{robu}}, 
+#'   \code{\link[metafor]{rma.uni}}, and \code{\link[metafor]{rma.mv}} objects.
+#'   
 #' @return An object of class \code{c("vcovCR","clubSandwich")}, which consists 
 #'   of a matrix of the estimated variance of and covariances between the 
 #'   regression coefficient estimates. The matrix has several attributes: 
-#'   \describe{ \item{type}{indicates which small-sample adjustment was used} 
+#'   \describe{ 
+#'   \item{type}{indicates which small-sample adjustment was used} 
 #'   \item{cluster}{contains the factor vector that defines independent 
-#'   clusters} \item{estmats}{contains a list of adjustment matrices used to 
+#'   clusters} 
+#'   \item{bread}{contains the bread matrix}
+#'   \item{estmats}{contains a list of adjustment matrices used to 
 #'   calculate the sandwich estimator, which are needed for calculating 
-#'   small-sample corrections for Wald tests} \item{target}{contains the working
+#'   small-sample corrections for Wald tests} 
+#'   \item{target}{contains the working
 #'   variance-covariance model used to calculate the adjustment matrices. This 
 #'   is also needed for calculating small-sample corrections for Wald tests.} }
 #'   
@@ -44,7 +55,7 @@
 #' @export
 #' @import stats
 
-vcovCR <- function(obj, cluster, type, target, inverse_var) UseMethod("vcovCR")
+vcovCR <- function(obj, cluster, type, target, inverse_var, form) UseMethod("vcovCR")
 
 #' Cluster-robust variance-covariance matrix
 #' 
@@ -54,16 +65,17 @@ vcovCR <- function(obj, cluster, type, target, inverse_var) UseMethod("vcovCR")
 #' @rdname vcovCR
 #' @export
 
-vcovCR.default <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) 
-  vcov_CR(obj, cluster, type, target, inverse_var)
+vcovCR.default <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form = "sandwich") 
+  vcov_CR(obj, cluster, type, target, inverse_var, form)
 
 #---------------------------------------------
 # Cluster-robust variance estimator
 #---------------------------------------------
 
-# uses methods residuals_CS(), model_matrix(), weightMatrix(), targetVariance()
+# uses methods residuals_CS(), model_matrix(), weightMatrix(), 
+# targetVariance(), bread(), v_scale()
 
-vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
+vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form = "sandwich") {
   
   cluster <- droplevels(as.factor(cluster))
   
@@ -89,11 +101,8 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   
   X_list <- matrix_list(X, cluster, "row")
   Xp_list <- matrix_list(Xp, cluster, "row")
-  
   W_list <- weightMatrix(obj, cluster)
   XpW_list <- Map(function(x, w) as.matrix(t(x) %*% w), x = Xp_list, w = W_list)
-  XpWX_list <- Map(function(xw, x) xw %*% x, xw = XpW_list, x = X_list)
-  M <- chol2inv(chol(Reduce("+", XpWX_list)))
   
   if (is.null(target)) {
     if (inverse_var) {
@@ -115,7 +124,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
     if (is.null(S)) {
       U_list <- Xp_list
       UW_list <- XpW_list
-      M_U <- M
+      M_U <- bread(obj) / v_scale(obj)
     } else {
       U <- cbind(Xp, S)
       U_list <- matrix_list(U, cluster, "row")
@@ -132,10 +141,25 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   res_list <- split(resid, cluster)
   
   components <- do.call(cbind, Map(function(e, r) e %*% r, e = E_list, r = res_list))
-  vcov <- tcrossprod(components)
+  
+  meat <- tcrossprod(components) / v_scale(obj)
+  
+  if (form == "sandwich") {
+    bread <- bread(obj)
+  } else if (form == "meat") {
+    bread <- NULL
+  } else if (is.matrix(form)) {
+    bread <- form
+    form <- "sandwich"
+  } 
+  
+  vcov <- switch(form, 
+                 sandwich = bread %*% meat %*% bread / v_scale(obj),
+                 meat = meat)
   rownames(vcov) <- colnames(vcov) <- colnames(X)
   attr(vcov, "type") <- type
   attr(vcov, "cluster") <- cluster
+  attr(vcov, "bread") <- bread
   attr(vcov, "estmats") <- E_list
   attr(vcov, "target") <- Theta_list
   attr(vcov, "inverse_var") <- inverse_var

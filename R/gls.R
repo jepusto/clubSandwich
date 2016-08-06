@@ -24,11 +24,12 @@
 #'   
 #' @export
 
-vcovCR.gls <- function(obj, cluster, type, target, inverse_var) {
+vcovCR.gls <- function(obj, cluster, type, target, inverse_var, form = "sandwich") {
   if (missing(cluster)) cluster <- nlme::getGroups(obj)
   if (missing(target)) target <- NULL
   if (missing(inverse_var) ) inverse_var <- is.null(target)
-  vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
+  vcov_CR(obj, cluster = cluster, type = type, 
+          target = target, inverse_var = inverse_var, form = form)
 }
 
 # residuals_CS()

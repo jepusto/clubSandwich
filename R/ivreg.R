@@ -23,10 +23,11 @@
 #'   
 #' @export
 
-vcovCR.ivreg <- function(obj, cluster, type, target = NULL, inverse_var = NULL) {
+vcovCR.ivreg <- function(obj, cluster, type, target = NULL, inverse_var = NULL, form = "sandwich") {
   if (missing(cluster)) stop("You must specify a clustering variable.")
   if (is.null(inverse_var)) inverse_var <- is.null(weights(obj)) & is.null(target)
-  vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
+  vcov_CR(obj, cluster = cluster, type = type, 
+          target = target, inverse_var = inverse_var, form = form)
 }
 
 # residuals_CS()
@@ -64,4 +65,14 @@ weightMatrix.ivreg <- function(obj) {
   weights <- weights(obj)
   if (is.null(weights)) weights <- 1
   rep(weights, length.out = nobs(obj))
+}
+
+#---------------------------------------
+# Get bread matrix and scaling constant
+#---------------------------------------
+
+# bread.ivreg() is in AER package
+
+v_scale.ivreg <- function(obj) {
+  obj$nobs
 }
