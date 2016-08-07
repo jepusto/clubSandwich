@@ -79,8 +79,16 @@ model_matrix.gls <- function(obj) {
 
 targetVariance.gls <- function(obj, cluster) {
   groups <- nlme::getGroups(obj)
-  V <- lapply(levels(groups), function(g) nlme::getVarCov(obj, individual = g))
-  lapply(V, function(v) matrix(v, dim(v)))
+  R_list <- corMatrix(obj$modelStruct$corStruct)
+  if (!is.null(obj$modelStruct$varStruct)) {
+    sd_vec <- obj$sigma / varWeights(obj$modelStruct$varStruct)[order(order(groups))]
+    sd_list <- split(sd_vec, groups)
+    V_list <- Map(function(R, s) tcrossprod(s) * R, R = R_list, s = sd_list)
+  } else {
+    s_sq <- obj$sigma^2
+    V_list <- lapply(R_list, function(R) s_sq * R)
+  }
+  V_list
 }
 
 #-------------------------------------

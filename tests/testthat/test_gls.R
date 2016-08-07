@@ -9,6 +9,23 @@ lm_AR1 <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), data = Ovary,
               correlation = corAR1(form = ~ time_int | Mare))
 lm_AR1_power <- update(lm_AR1, weights = varPower())
 
+test_that("coef and bread can be constructed from X, W, y", {
+  obj <- lm_AR1
+  cluster <- Ovary$Mare
+  X_list <- matrix_list(model_matrix(obj), cluster, "row")
+  W <- weightMatrix(obj)
+  XWX <- Reduce("+", Map(function(x,w) t(x) %*% w %*% x, x = X_list, w = W))
+  M <- chol2inv(chol(XWX))
+  attr(M, "dimnames") <- attr(vcov(obj), "dimnames")
+  expect_equal(M, vcov(obj))
+  expect_equal(M, bread(obj) / v_scale(obj))
+  y_list <- split(Ovary$follicles, cluster)
+  XWy <- Reduce("+", Map(function(x,w,y) t(x) %*% w %*% y, x = X_list, w = W, y = y_list))
+  beta <- as.vector(M %*% XWy)
+  names(beta) <- names(coef(obj))
+  expect_equal(beta, coef(obj))
+})
+
 test_that("bread works", {
   expect_equal(vcov(lm_AR1), bread(lm_AR1) / v_scale(lm_AR1))
   expect_equal(vcov(lm_AR1_power), bread(lm_AR1_power) / v_scale(lm_AR1_power))
@@ -20,7 +37,7 @@ test_that("vcovCR options work for CR2", {
   expect_identical(vcovCR(lm_AR1, type = "CR2", inverse_var = TRUE), CR2_AR1)
   expect_false(identical(vcovCR(lm_AR1, type = "CR2", inverse_var = FALSE), CR2_AR1))
   
-  target <- targetVariance(lm_AR1, cluster = Ovary$Mare)
+  target <- targetVariance(lm_AR1)
   expect_equal(vcovCR(lm_AR1, type = "CR2", target = target, inverse_var = TRUE), CR2_AR1)
   attr(CR2_AR1, "inverse_var") <- FALSE
   expect_equal(vcovCR(lm_AR1, type = "CR2", target = target, inverse_var = FALSE), CR2_AR1)
@@ -66,8 +83,6 @@ test_that("CR2 and CR4 are target-unbiased", {
   expect_true(check_CR(lm_AR1, vcov = "CR4"))
   expect_true(check_CR(lm_AR1_power, vcov = "CR4"))
 })
-
-
 
 test_that("getData works.", {
   re_order <- sample(nrow(Ovary))
