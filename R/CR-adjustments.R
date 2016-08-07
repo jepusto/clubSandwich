@@ -11,15 +11,13 @@ IH_jj_list <- function(M, X_list, XW_list) {
 # Estimating function adjustments
 #---------------------------------------------
 
-CR0 <- function(XpW_list) XpW_list 
+CR0 <- function(J) NULL
 
-CR1 <- function(XpW_list, J) 
-  lapply(XpW_list, function(xw) xw * sqrt(J / (J - 1)))
+CR1 <- function(J) sqrt(J / (J - 1))
 
-CR1S <- function(XpW_list, J, N, p) 
-  lapply(XpW_list, function(xw) xw * sqrt(J * (N - 1) / ((J - 1) * (N - p))))
+CR1S <- function(J, N, p) sqrt(J * (N - 1) / ((J - 1) * (N - p)))
 
-CR2 <- function(M_U, U_list, UW_list, XpW_list, Theta_list, inverse_var = FALSE) {
+CR2 <- function(M_U, U_list, UW_list, Theta_list, inverse_var = FALSE) {
   
   Theta_chol <- lapply(Theta_list, chol)
   
@@ -38,17 +36,15 @@ CR2 <- function(M_U, U_list, UW_list, XpW_list, Theta_list, inverse_var = FALSE)
       thet = Theta_list, h = H_jj, u = U_list, v = Theta_chol)
   }
   
-  A_list <- Map(function(v, g) as.matrix(t(v) %*% matrix_power(g, -1/2) %*% v), 
+  Map(function(v, g) as.matrix(t(v) %*% matrix_power(g, -1/2) %*% v), 
                    v = Theta_chol, g = G_list)
-  
-  Map(function(xw, a) xw %*% a, xw = XpW_list, a = A_list)  
 }
 
 CR3 <- function(Xp_list, XpW_list) {
   XpWX_list <- Map(function(xw, x) xw %*% x, xw = XpW_list, x = Xp_list)
   M <- chol2inv(chol(Reduce("+", XpWX_list)))
   IH_jj <- IH_jj_list(M, Xp_list, XpW_list)
-  Map(function(xw, ih) xw %*% solve(ih), xw = XpW_list, ih = IH_jj)
+  lapply(IH_jj, solve)
 }
 
 CR4 <- function(M_U, U_list, UW_list, Xp_list, XpW_list, Theta_list, inverse_var = FALSE) {
@@ -72,8 +68,6 @@ CR4 <- function(M_U, U_list, UW_list, Xp_list, XpW_list, Theta_list, inverse_var
       fc = F_chol, fm = F_list, uwx = UWX_list, uwtwx = UWTWX_list)
   }
   
-  D_list <- Map(function(fc, g) as.matrix(t(fc) %*% matrix_power(g, -1/2) %*% fc), 
+  Map(function(fc, g) as.matrix(t(fc) %*% matrix_power(g, -1/2) %*% fc), 
                    fc = F_chol, g = G_list)
-  
-  Map(function(d, xw) d %*% xw, d = D_list, xw = XpW_list)
 }

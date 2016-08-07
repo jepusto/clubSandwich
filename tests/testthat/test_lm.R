@@ -15,8 +15,8 @@ lm_fit <- lm(y ~ X1 + X2 + X3, data = dat)
 WLS_fit <- lm(y ~ X1 + X2 + X3, data = dat, weights = w)
 CR_types <- paste0("CR",0:4)
 
-# obj <- WLS_fit
-# type <- "CR2" 
+# obj <- lm_fit
+# type <- "CR2"
 # vcov <- vcovCR(obj, cluster = cluster, type = type)
 # target = NULL
 # inverse_var = FALSE
