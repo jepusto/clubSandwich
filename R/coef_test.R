@@ -73,7 +73,7 @@ saddlepoint <- function(t_stats, S_array) {
 
 coef_test <- function(obj, vcov, test = "Satterthwaite", ...) {
 
-  beta <- coef_CR(obj)
+  beta <- coef_CS(obj)
   beta_NA <- is.na(beta)
     
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)

@@ -9,6 +9,11 @@ lm_AR1 <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), data = Ovary,
               correlation = corAR1(form = ~ time_int | Mare))
 lm_AR1_power <- update(lm_AR1, weights = varPower())
 
+test_that("bread works", {
+  expect_equal(vcov(lm_AR1), bread(lm_AR1) / v_scale(lm_AR1))
+  expect_equal(vcov(lm_AR1_power), bread(lm_AR1_power) / v_scale(lm_AR1_power))
+})
+
 test_that("vcovCR options work for CR2", {
   CR2_AR1 <- vcovCR(lm_AR1, type = "CR2")
   expect_identical(vcovCR(lm_AR1, cluster = Ovary$Mare, type = "CR2"), CR2_AR1)

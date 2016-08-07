@@ -61,13 +61,13 @@ vcovCR.default <- function(obj, cluster, type, target = NULL, inverse_var = FALS
 # Cluster-robust variance estimator
 #---------------------------------------------
 
-# uses methods residuals_CR(), model_matrix(), weightMatrix(), targetVariance()
+# uses methods residuals_CS(), model_matrix(), weightMatrix(), targetVariance()
 
 vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   
   cluster <- droplevels(as.factor(cluster))
   
-  alias <- is.na(coef_CR(obj))
+  alias <- is.na(coef_CS(obj))
   X <- model_matrix(obj)
   Xp <- projection_matrix(obj)
   if (any(alias)) {
@@ -127,7 +127,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE) {
   
   E_list <- do.call(type, args = mget(names(formals(type))))
 
-  resid <- residuals_CR(obj)
+  resid <- residuals_CS(obj)
 
   res_list <- split(resid, cluster)
   
@@ -220,7 +220,7 @@ get_S_array <- function(obj, vcov) {
   J <- nlevels(cluster)
   
   X <- model_matrix(obj)
-  alias <- is.na(coef_CR(obj))
+  alias <- is.na(coef_CS(obj))
   if (any(alias)) X <- X[, !alias, drop = FALSE]
   p <- ncol(X)
   

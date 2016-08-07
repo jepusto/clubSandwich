@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  23 JUL 2016 20:44
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  2 AUG 2016 13:43
 entering extended mode
 **ClusterRobustTesting_FE_models.tex
 
@@ -671,7 +671,7 @@ CR_fig/overview-1.pdf>]
 
 Package xcolor Warning: Incompatible color definition on input line 551.
 
-<CR_fig/balance-1.pdf, id=90, 722.7pt x 397.485pt>
+<CR_fig/balance-1.pdf, id=89, 722.7pt x 397.485pt>
 File: CR_fig/balance-1.pdf Graphic file (type pdf)
  <use CR_fig/balance-1.pdf>
 Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 553.
@@ -680,7 +680,7 @@ Package pdftex.def Info: CR_fig/balance-1.pdf used on input line 553.
 
 Package xcolor Warning: Incompatible color definition on input line 572.
 
-<CR_fig/df-1.pdf, id=91, 578.16pt x 237.88875pt>
+<CR_fig/df-1.pdf, id=90, 578.16pt x 237.88875pt>
 File: CR_fig/df-1.pdf Graphic file (type pdf)
  <use CR_fig/df-1.pdf>
 Package pdftex.def Info: CR_fig/df-1.pdf used on input line 574.
@@ -727,9 +727,9 @@ fb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 :/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/P
 rogram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12.pfb><C:/Pro
 gram Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on ClusterRobustTesting_FE_models.pdf (33 pages, 311268 bytes).
+Output written on ClusterRobustTesting_FE_models.pdf (33 pages, 311028 bytes).
 PDF statistics:
- 201 PDF objects out of 1000 (max. 8388607)
+ 198 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  28 words of extra memory for PDF output out of 10000 (max. 10000000)
 

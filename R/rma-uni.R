@@ -54,7 +54,7 @@ vcovCR.rma.uni <- function(obj, cluster, type, target, inverse_var) {
 }
 
 # coef()
-# residuals_CR()
+# residuals_CS()
 # vcov()
 # model_matrix()
 
@@ -81,4 +81,16 @@ weightMatrix.rma.uni <- function(obj, cluster) {
     wi <- rep(1, obj$k)
   }
   matrix_list(wi, cluster, "both")
+}
+
+#---------------------------------------
+# Get bread matrix and scaling constant
+#---------------------------------------
+
+bread.rma.uni <- function(x, ...) {
+ vcov(x) * nobs(x)
+}
+
+v_scale.robu <- function(obj) {
+  nobs(obj)
 }

@@ -15,7 +15,7 @@ check_CR <- function(obj, vcov, ...) {
          
   # calculate target
   Xp <- projection_matrix(obj)
-  alias <- is.na(coef_CR(obj))
+  alias <- is.na(coef_CS(obj))
   if (any(alias)) Xp <- Xp[, !alias, drop = FALSE]
   p <- NCOL(Xp)
   N <- length(cluster)

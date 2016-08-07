@@ -55,7 +55,7 @@ vcovCR.rma.mv <- function(obj, cluster, type, target, inverse_var) {
 }
 
 # coef()
-# residuals_CR()
+# residuals_CS()
 # vcov()
 # model_matrix
 
@@ -94,4 +94,16 @@ findCluster.rma.mv <- function(obj) {
     stop("No clustering variable specified.")
   }
   droplevels(as.factor(cluster))
+}
+
+#---------------------------------------
+# Get bread matrix and scaling constant
+#---------------------------------------
+
+bread.rma.mv <- function(x, ...) {
+  vcov(x) * nobs(x)
+}
+
+v_scale.mv <- function(obj) {
+  nobs(obj)
 }

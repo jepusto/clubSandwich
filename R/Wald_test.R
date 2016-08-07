@@ -3,8 +3,8 @@
 #--------------------------------------------------
 
 get_constraint_mat <- function(obj, constraints) {
-  p <- length(coef_CR(obj))
-  beta_NA <- is.na(coef_CR(obj))
+  p <- length(coef_CS(obj))
+  beta_NA <- is.na(coef_CS(obj))
   
   C_mat <- switch(class(constraints),
         matrix = {
@@ -28,7 +28,7 @@ get_constraint_mat <- function(obj, constraints) {
           diag(1L, nrow = p)[constraints,,drop=FALSE]              
         },
         character = {
-          term_names <- names(coef_CR(obj))
+          term_names <- names(coef_CS(obj))
           if (any(!constraints %in% term_names)) stop("Constraint names not in model specification.")
           if (length(constraints) == 0) stop("You must specify at least one constraint.")
           diag(1L, nrow = p)[term_names %in% constraints,,drop=FALSE]
@@ -148,7 +148,7 @@ Wald_test <- function(obj, constraints, vcov, test = "HTZ", ...) {
 
   if (all(test == "All")) test <- c("chi-sq","Naive-F","HTA","HTB","HTZ","EDF","EDT")
   
-  beta <- na.omit(coef_CR(obj))
+  beta <- na.omit(coef_CS(obj))
   
   S_array <- get_S_array(obj, vcov)
   

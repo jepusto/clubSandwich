@@ -31,7 +31,7 @@ vcovCR.gls <- function(obj, cluster, type, target, inverse_var) {
   vcov_CR(obj, cluster = cluster, type = type, target = target, inverse_var = inverse_var)
 }
 
-# residuals_CR()
+# residuals_CS()
 # coef()
 # nobs()
 
@@ -90,3 +90,15 @@ weightMatrix.gls <- function(obj, cluster) {
   V_list <- targetVariance(obj, cluster)
   lapply(V_list, function(v) chol2inv(chol(v)))
 }
+
+#---------------------------------------
+# Get bread matrix and scaling constant
+#---------------------------------------
+
+#' @export
+
+bread.gls <- function(x, ...) {
+  vcov(x) * nobs(x)
+}
+
+# v_scale() is default

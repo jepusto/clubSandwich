@@ -54,6 +54,10 @@ vcovCR.plm <- function(obj, cluster, type, target, inverse_var) {
     cluster <- cluster[sort_order]
   }
   
+  if (obj$args$model=="fd") {
+    cluster <- cluster[index[[2]] != levels(index[[2]])[1]]
+  }
+  
   if (missing(target)) target <- NULL
   if (missing(inverse_var)) inverse_var <- is.null(target)
   obj$na.action <- attr(obj$model, "na.action")
@@ -77,7 +81,7 @@ model_matrix.plm <- function(obj) {
   if (obj$args$model=="random") {
     model.matrix(Formula::as.Formula(formula(obj)), model.frame(obj))  
   } else {
-    model.matrix(obj)
+    model.matrix(obj, model = obj$args$model, effects = obj$args$effect)
   }
 }
 
@@ -124,7 +128,7 @@ augmented_model_matrix.plm <- function(obj, cluster, inverse_var) {
 # unadjusted residuals
 #-------------------------------------
 
-residuals_CR.plm <- function(obj) {
+residuals_CS.plm <- function(obj) {
   if (obj$args$model=="random") {
     y <- plm::pmodel.response(formula(obj), model.frame(obj), model = "pooling")
     Xb <- as.numeric(model_matrix(obj) %*% coef(obj))
@@ -139,7 +143,7 @@ residuals_CR.plm <- function(obj) {
 #-------------------------------------
 
 nobs.plm <- function(object, ...) {
-  NROW(object$model)
+  length(object$residuals)
 }
 
 #-------------------------------------
@@ -177,4 +181,20 @@ weightMatrix.plm <- function(obj, cluster) {
   } else {
     matrix_list(rep(1, nobs(obj)), cluster, "both")
   }
+}
+
+#---------------------------------------
+# Get bread matrix and scaling constant
+#---------------------------------------
+
+bread.plm <- function(x, ...) {
+  if (x$args$model=="random") {
+    return(v_scale(x) * vcov(x)) 
+  } else {
+    v_scale(x) * vcov(x) / with(x, sum(residuals^2) / df.residual) 
+  }
+}
+
+v_scale.plm <- function(obj) {
+  max(sapply(attr(obj$model, "index"), nlevels))
 }

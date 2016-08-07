@@ -56,16 +56,15 @@ test_that("CR2 t-tests do not exactly agree with robumeta for hierarchical weigh
 
 CR_types <- paste0("CR",0:4)
 
+dat_long <- to.long(measure="OR", ai=tpos, bi=tneg, ci=cpos, di=cneg, data=dat.bcg)
+levels(dat_long$group) <- c("exp", "con")
+dat_long$group <- relevel(dat_long$group, ref="con")
+dat_long$esid <- factor(1:nrow(dat_long))
+dat_long <- escalc(measure="PLO", xi=out1, mi=out2, data=dat_long)
+rma_G <- rma.mv(yi, vi, mods = ~ group, random = ~ group | study, struct="CS", data=dat_long)
+rma_S <- rma.mv(yi, vi, mods = ~ group, random = list(~ 1 | esid, ~ 1 | study), data=dat_long)
 
 test_that("withS and withG model specifications agree.", {
-  dat_long <- to.long(measure="OR", ai=tpos, bi=tneg, ci=cpos, di=cneg, data=dat.bcg)
-  levels(dat_long$group) <- c("exp", "con")
-  dat_long$group <- relevel(dat_long$group, ref="con")
-  dat_long$esid <- factor(1:nrow(dat_long))
-  dat_long <- escalc(measure="PLO", xi=out1, mi=out2, data=dat_long)
-  rma_G <- rma.mv(yi, vi, mods = ~ group, random = ~ group | study, struct="CS", data=dat_long)
-  rma_S <- rma.mv(yi, vi, mods = ~ group, random = list(~ 1 | esid, ~ 1 | study), data=dat_long)
-
   CR_G <- lapply(CR_types, function(x) vcovCR(rma_G, type = x))
   CR_S <- lapply(CR_types, function(x) vcovCR(rma_S, type = x))
   expect_equivalent(CR_G, CR_S)
@@ -73,6 +72,13 @@ test_that("withS and withG model specifications agree.", {
   tests_G <- lapply(CR_types, function(x) coef_test(rma_G, vcov = x, test = "All"))
   tests_S <- lapply(CR_types, function(x) coef_test(rma_S, vcov = x, test = "All"))
   expect_equal(tests_G, tests_S, tolerance = 10^-6)
+})
+
+test_that("bread works", {
+  expect_equal(vcov(corr_meta), bread(corr_meta) / nobs(corr_meta))
+  expect_equal(vcov(hier_meta), bread(hier_meta) / nobs(hier_meta))
+  expect_equal(vcov(rma_G), bread(rma_G) / nobs(rma_G))
+  expect_equal(vcov(rma_S), bread(rma_S) / nobs(rma_S))
 })
 
 test_that("order doesn't matter", {

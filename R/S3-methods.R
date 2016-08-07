@@ -55,9 +55,9 @@ augmented_model_matrix.default <- function(obj, cluster, inverse_var) {
 # get residuals
 #----------------------------------------------
 
-residuals_CR <- function(obj) UseMethod("residuals_CR") 
+residuals_CS <- function(obj) UseMethod("residuals_CS") 
 
-residuals_CR.default <- function(obj) {
+residuals_CS.default <- function(obj) {
   residuals(obj)
 }
 
@@ -65,9 +65,23 @@ residuals_CR.default <- function(obj) {
 # get coefficient estimates
 #----------------------------------------------
 
-coef_CR <- function(obj) UseMethod("coef_CR") 
+coef_CS <- function(obj) UseMethod("coef_CS") 
 
-coef_CR.default <- function(obj) {
+coef_CS.default <- function(obj) {
   coef(obj)
 }
 
+#----------------------------------------------
+# get bread matrix
+#----------------------------------------------
+
+# bread matrices imported from sandwich package or elsewhere
+#' @importFrom sandwich bread
+
+get_bread <- function(obj) bread(obj)
+
+v_scale <- function(obj) UseMethod("v_scale")
+
+v_scale.default <- function(obj) {
+  nobs(obj)
+}

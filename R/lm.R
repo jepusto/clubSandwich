@@ -30,8 +30,19 @@ vcovCR.lm <- function(obj, cluster, type, target = NULL, inverse_var = NULL) {
 }
 
 # model_matrix()
-# residuals_CR()
+# residuals_CS()
 # coef()
 # nobs()
 # targetVariance()
 # weightMatrix()
+
+
+#---------------------------------------
+# Get bread matrix and scaling constant
+#---------------------------------------
+
+# bread.lm() is in sandwich package
+
+v_scale.lm <- function(obj) {
+  as.vector(sum(summary(obj)$df[1:2]))
+}

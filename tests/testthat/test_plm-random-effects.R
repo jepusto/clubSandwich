@@ -24,7 +24,7 @@ test_that("individual effects agree with gls", {
   V_ratio <- Map("/", targetVariance(plm_individual, cluster = Grunfeld$firm),
                  targetVariance(gls_individual, cluster = Grunfeld$firm))
   expect_equal(lapply(V_ratio, min), lapply(V_ratio, max))
-  expect_equivalent(residuals_CR(plm_individual), residuals_CR(gls_individual))
+  expect_equivalent(residuals_CS(plm_individual), residuals_CS(gls_individual))
 
   CR_plm <- lapply(CR_types, function(x) vcovCR(plm_individual, type = x))
   CR_gls <- lapply(CR_types, function(x) vcovCR(gls_individual, type = x))
@@ -51,7 +51,7 @@ test_that("time effects agree with gls", {
   V_ratio <- Map("/", targetVariance(plm_time, cluster = Produc$year),
                  targetVariance(gls_time, cluster = Produc$year))
   expect_equal(lapply(V_ratio, min), lapply(V_ratio, max))
-  expect_equivalent(residuals_CR(plm_time), residuals_CR(gls_time))
+  expect_equivalent(residuals_CS(plm_time), residuals_CS(gls_time))
   
   CR_plm <- lapply(CR_types, function(x) vcovCR(plm_time, type = x))
   CR_gls <- lapply(CR_types, function(x) vcovCR(gls_time, type = x))
@@ -72,6 +72,11 @@ test_that("two-way effects throws error", {
   expect_error(vcovCR(plm_twoways, type = "CR2"))
 })
 
+test_that("bread works", {
+  expect_equal(vcov(plm_individual), bread(plm_individual) / v_scale(plm_individual))
+  expect_equal(vcov(plm_time), bread(plm_time) / v_scale(plm_time))
+  expect_equal(vcov(plm_twoways), bread(plm_twoways) / v_scale(plm_twoways))
+})
 
 test_that("CR0 and CR1S agree with arellano vcov", {
   expect_equal(vcovHC(plm_individual, method="arellano", type = "HC0", cluster = "group"), 

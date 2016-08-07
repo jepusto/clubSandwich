@@ -35,17 +35,17 @@ vcovCR.lme <- function(obj, cluster, type, target, inverse_var) {
 # nobs()
 
 #-------------------------------------
-# residuals_CR()
+# residuals_CS()
 #-------------------------------------
 
-residuals_CR.lme <- function(obj) 
+residuals_CS.lme <- function(obj) 
   residuals(obj, level = 0)
 
 #-------------------------------------
-# coef_CR()
+# coef_CS()
 #-------------------------------------
 
-coef_CR.lme <- function(obj)
+coef_CS.lme <- function(obj)
   nlme::fixef(obj)
 
 #-------------------------------------
@@ -74,4 +74,18 @@ targetVariance.lme <- function(obj, cluster) {
 weightMatrix.lme <- function(obj, cluster) {
   V_list <- targetVariance(obj, cluster)
   lapply(V_list, function(v) chol2inv(chol(v)))
+}
+
+#---------------------------------------
+# Get bread matrix and scaling constant
+#---------------------------------------
+
+#' @export
+
+bread.lme <- function(x, ...) {
+  vcov(x) * v_scale(x)
+}
+
+v_scale.lme <- function(obj) {
+  nlevels(nlme::getGroups(obj))
 }

@@ -3,11 +3,12 @@ context("robu objects")
 library(robumeta, quietly=TRUE)
 data(corrdat)
 
+corr_large <- robu(effectsize ~ males + college + binge, data = corrdat, 
+                   modelweights = "CORR", studynum = studyid,
+                   var.eff.size = var, small = FALSE)
+
 test_that("CR0 z-tests agree with robumeta for correlated effects", {
-  corr_large <- robu(effectsize ~ males + college + binge, data = corrdat, 
-                         modelweights = "CORR", studynum = studyid,
-                         var.eff.size = var, small = FALSE)
-  p <- length(coef_CR(corr_large))
+  p <- length(coef_CS(corr_large))
   N <- corr_large$N
   robu_CR0 <- vcovCR(corr_large, type = "CR0")
   ztests <- coef_test(corr_large, vcov = robu_CR0 * N / (N - p), test = "z")
@@ -18,11 +19,11 @@ test_that("CR0 z-tests agree with robumeta for correlated effects", {
                     ztests$p_z)
 })
 
+corr_small <- robu(effectsize ~ males + college + binge, data = corrdat, 
+                   modelweights = "CORR", studynum = studyid,
+                   var.eff.size = var)
 
 test_that("CR2 t-tests agree with robumeta for correlated effects", {
-  corr_small <- robu(effectsize ~ males + college + binge, data = corrdat, 
-                     modelweights = "CORR", studynum = studyid,
-                     var.eff.size = var)
   robu_CR2 <- vcovCR(corr_small, type = "CR2")
   expect_true(check_CR(corr_small, vcov = robu_CR2))
   # expect_true(check_CR(corr_small, vcov = "CR4"))
@@ -35,11 +36,12 @@ test_that("CR2 t-tests agree with robumeta for correlated effects", {
 
 data(hierdat)
 
+hier_large <- robu(effectsize ~ binge + followup + sreport + age,
+                   data = hierdat, studynum = studyid,
+                   var.eff.size = var, modelweights = "HIER", small = FALSE)
+
 test_that("CR0 z-tests agree with robumeta for hierarchical effects", {
-  hier_large <- robu(effectsize ~ binge + followup + sreport + age,
-                         data = hierdat, studynum = studyid,
-                         var.eff.size = var, modelweights = "HIER", small = FALSE)
-  p <- length(coef_CR(hier_large))
+  p <- length(coef_CS(hier_large))
   N <- hier_large$N
   robu_CR0 <- vcovCR(hier_large, type = "CR0")
   ztests <- coef_test(hier_large, vcov = robu_CR0 * N / (N - p), test = "z")
@@ -50,10 +52,11 @@ test_that("CR0 z-tests agree with robumeta for hierarchical effects", {
                ztests$p_z)
 })
 
+hier_small <- robu(effectsize ~ binge + followup + sreport + age,
+                   data = hierdat, studynum = studyid,
+                   var.eff.size = var, modelweights = "HIER")
+
 test_that("CR2 t-tests agree with robumeta for hierarchical effects", {
-  hier_small <- robu(effectsize ~ binge + followup + sreport + age,
-                         data = hierdat, studynum = studyid,
-                         var.eff.size = var, modelweights = "HIER")
   robu_CR2 <- vcovCR(hier_small, type = "CR2")
   expect_true(check_CR(hier_small, vcov = robu_CR2))
   # expect_true(check_CR(hier_small, vcov = "CR4"))
@@ -67,11 +70,12 @@ test_that("CR2 t-tests agree with robumeta for hierarchical effects", {
 
 hierdat$user_wt <- 1 + rpois(nrow(hierdat), lambda = 3)
 
+user_large <- robu(effectsize ~ binge + followup + sreport + age,
+                   data = hierdat, studynum = studyid,
+                   var.eff.size = var, userweights = user_wt, small = FALSE)
+
 test_that("CR0 z-tests agree with robumeta for user weighting", {
-  user_large <- robu(effectsize ~ binge + followup + sreport + age,
-                     data = hierdat, studynum = studyid,
-                     var.eff.size = var, userweights = user_wt, small = FALSE)
-  p <- length(coef_CR(user_large))
+  p <- length(coef_CS(user_large))
   N <- user_large$N
   robu_CR0 <- vcovCR(user_large, type = "CR0")
   ztests <- coef_test(user_large, vcov = robu_CR0 * N / (N - p), test = "z")
@@ -82,13 +86,14 @@ test_that("CR0 z-tests agree with robumeta for user weighting", {
                ztests$p_z)
 })
 
+user_small <- robu(effectsize ~ binge + followup + sreport + age,
+                   data = hierdat, studynum = studyid,
+                   var.eff.size = var, userweights = user_wt)
+
 test_that("CR2 t-tests agree with robumeta for user weighting", {
-  user_small <- robu(effectsize ~ binge + followup + sreport + age,
-                     data = hierdat, studynum = studyid,
-                     var.eff.size = var, userweights = user_wt)
   user_lm <- lm(effectsize ~ binge + followup + sreport + age, data = hierdat,
                 weights = user_wt)
-  expect_equivalent(coef_CR(user_lm), coef(user_lm))
+  expect_equivalent(coef_CS(user_lm), coef(user_lm))
   
   robu_CR2 <- vcovCR(user_small, type = "CR2")
   expect_true(check_CR(user_small, vcov = robu_CR2))
@@ -106,6 +111,27 @@ test_that("CR2 t-tests agree with robumeta for user weighting", {
                              target = user_small$data.full$avg.var.eff.size,
                              test = "Satterthwaite")
   expect_equivalent(CR2_ttests, lm_CR2_ttests)
+})
+
+
+test_that("bread works", {
+  vcov_corr_large <- with(corr_large, chol2inv(chol(crossprod(Xreg, data.full$r.weights * Xreg))))
+  expect_equal(vcov_corr_large, bread(corr_large) / v_scale(corr_large))
+  
+  vcov_corr_small <- with(corr_small, chol2inv(chol(crossprod(Xreg, data.full$r.weights * Xreg))))
+  expect_equal(vcov_corr_small, bread(corr_small) / v_scale(corr_small))
+  
+  vcov_hier_large <- with(hier_large, chol2inv(chol(crossprod(Xreg, data.full$r.weights * Xreg))))
+  expect_equal(vcov_hier_large, bread(hier_large) / v_scale(hier_large))
+  
+  vcov_hier_small <- with(hier_small, chol2inv(chol(crossprod(Xreg, data.full$r.weights * Xreg))))
+  expect_equal(vcov_hier_small, bread(hier_small) / v_scale(hier_small))
+  
+  vcov_user_large <- with(user_large, chol2inv(chol(crossprod(Xreg, data.full$userweights * Xreg))))
+  expect_equal(vcov_user_large, bread(user_large) / v_scale(user_large))
+  
+  vcov_user_small <- with(user_small, chol2inv(chol(crossprod(Xreg, data.full$userweights * Xreg))))
+  expect_equal(vcov_user_small, bread(user_small) / v_scale(user_small))
 })
 
 
@@ -186,9 +212,6 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - reduc
 CR_types <- paste0("CR",0:4)
 
 test_that("order doesn't matter", {
-  corr_small <- robu(effectsize ~ males + college + binge, data = corrdat, 
-                     modelweights = "CORR", studynum = studyid,
-                     var.eff.size = var)
   dat_scramble <- corrdat[sample(nrow(corrdat)),]
   corr_scramble <-  robu(effectsize ~ males + college + binge, data = dat_scramble, 
                          modelweights = "CORR", studynum = studyid,
@@ -202,7 +225,7 @@ test_that("order doesn't matter", {
   test_scramble <- lapply(CR_types, function(x) coef_test(corr_scramble, vcov = x, test = "All"))
   expect_equal(test_fit, test_scramble, tolerance = 10^-5)
   
-  constraints <- combn(length(coef_CR(corr_small)), 2, simplify = FALSE)
+  constraints <- combn(length(coef_CS(corr_small)), 2, simplify = FALSE)
   Wald_fit <- Wald_test(corr_small, constraints = constraints, vcov = "CR2", test = "All")
   Wald_scramble <- Wald_test(corr_scramble, constraints = constraints, vcov = "CR2", test = "All")
   expect_equal(Wald_fit, Wald_scramble)

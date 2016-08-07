@@ -21,6 +21,11 @@ CR_types <- paste0("CR",0:4)
 # target = NULL
 # inverse_var = FALSE
 
+test_that("bread works", {
+  lm_vcov <- bread(lm_fit) * summary(lm_fit)$sigma^2 / v_scale(lm_fit)
+  expect_equal(vcov(lm_fit), lm_vcov)
+})
+
 test_that("vcovCR options don't matter for CR0", {
   expect_error(vcovCR(lm_fit, type = "CR0"))
   CR0 <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR0")
