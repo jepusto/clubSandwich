@@ -89,7 +89,20 @@ weightMatrix.rma.uni <- function(obj, cluster) {
 #---------------------------------------
 
 bread.rma.uni <- function(x, ...) {
- vcov(x) * nobs(x)
+  X_mat <- model_matrix(x)
+  if (x$weighted) {
+    if (is.null(x$weights)) {
+      wi <- 1 / (x$vi + x$tau2)  
+    } else {
+      wi <- x$weights
+    }
+    XWX <- crossprod(X_mat, wi * X_mat)
+  } else {
+    XWX <- crossprod(X_mat)
+  }
+  B <- chol2inv(chol(XWX)) * nobs(x)
+  rownames(B) <- colnames(B) <- colnames(X_mat)
+  B
 }
 
 v_scale.robu <- function(obj) {

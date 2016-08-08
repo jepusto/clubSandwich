@@ -5,14 +5,23 @@ library(mlmRev, quietly=TRUE, warn.conflicts=FALSE)
 
 obj_A <- lme(weight ~ Time * Diet, data=BodyWeight, ~ Time | Rat)
 obj_A2 <- update(obj_A, weights = varPower())
-obj_A3 <- update(obj_A2, correlation = corExp(form = ~ Time))
+obj_A3 <- update(obj_A, correlation = corExp(form = ~ Time))
+obj_A4 <- update(obj_A2, correlation = corExp(form = ~ Time))
 obj_B <- lme(distance ~ age, random = ~ age, data = Orthodont)
 
 
 test_that("bread works", {
+  expect_true(check_bread(obj_A, cluster = BodyWeight$Rat, y = BodyWeight$weight))
+  expect_true(check_bread(obj_A2, cluster = BodyWeight$Rat, y = BodyWeight$weight))
+  expect_true(check_bread(obj_A3, cluster = BodyWeight$Rat, y = BodyWeight$weight))
+  expect_true(check_bread(obj_A4, cluster = BodyWeight$Rat, y = BodyWeight$weight))
+  expect_true(check_bread(obj_B, cluster = Orthodont$Subject, y = Orthodont$distance))
+  
+  expect_equal(vcov(obj_A), bread(obj_A) / v_scale(obj_A))
   expect_equal(vcov(obj_A), bread(obj_A) / v_scale(obj_A))
   expect_equal(vcov(obj_A2), bread(obj_A2) / v_scale(obj_A2))
   expect_equal(vcov(obj_A3), bread(obj_A3) / v_scale(obj_A3))
+  expect_equal(vcov(obj_A4), bread(obj_A4) / v_scale(obj_A4))
   expect_equal(vcov(obj_B), bread(obj_B) / v_scale(obj_B))
 })
 

@@ -75,9 +75,21 @@ test_that("withS and withG model specifications agree.", {
 })
 
 test_that("bread works", {
-  expect_equal(vcov(corr_meta), bread(corr_meta) / nobs(corr_meta))
+  expect_true(check_bread(corr_meta, cluster = corrdat$studyid, y = corrdat$effectsize))
+  X <- model_matrix(corr_meta)
+  W <- corr_meta$W
+  V <- corr_meta$vi
+  vcov_corr <- bread(corr_meta) %*% t(X) %*% W %*% (V * W) %*% X %*% bread(corr_meta) / nobs(corr_meta)^2
+  attr(vcov_corr, "dimnames") <- attr(vcov(corr_meta), "dimnames")
+  expect_equal(vcov(corr_meta), vcov_corr)
+  
+  expect_true(check_bread(hier_meta, cluster = hierdat$studyid, y = hierdat$effectsize))
   expect_equal(vcov(hier_meta), bread(hier_meta) / nobs(hier_meta))
+  
+  expect_true(check_bread(rma_G, cluster = dat_long$study, y = dat_long$yi))
   expect_equal(vcov(rma_G), bread(rma_G) / nobs(rma_G))
+  
+  expect_true(check_bread(rma_S, cluster = dat_long$study, y = dat_long$yi))
   expect_equal(vcov(rma_S), bread(rma_S) / nobs(rma_S))
 })
 

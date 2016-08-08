@@ -17,6 +17,9 @@ n_obs <- nobs(plm_FD)
 target <- with(Fatalities, 1 / pop[year != levels(year)[1]])
 
 test_that("bread works", {
+  y <- na.omit(diff(plm_FD$model$frate))
+  cluster <- findCluster.plm(plm_FD)
+  expect_true(check_bread(plm_FD, cluster = cluster, y = y))
   sigma_sq <- with(plm_FD, sum(residuals^2) / df.residual) 
   expect_equal(vcov(plm_FD), bread(plm_FD) * sigma_sq / v_scale(plm_FD))
 })
@@ -102,3 +105,4 @@ test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
   expect_equal(CR_individual, HC_individual)
   
 })
+

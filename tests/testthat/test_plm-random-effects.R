@@ -73,9 +73,26 @@ test_that("two-way effects throws error", {
 })
 
 test_that("bread works", {
-  expect_equal(vcov(plm_individual), bread(plm_individual) / v_scale(plm_individual))
-  expect_equal(vcov(plm_time), bread(plm_time) / v_scale(plm_time))
-  expect_equal(vcov(plm_twoways), bread(plm_twoways) / v_scale(plm_twoways))
+  expect_true(check_bread(plm_individual, 
+                          cluster = findCluster.plm(plm_individual), 
+                          y = plm_individual$model$inv))
+  expect_equal(vcov(plm_individual), 
+               plm_individual$ercomp$sigma2$idios * bread(plm_individual) / v_scale(plm_individual))
+  
+  expect_true(check_bread(plm_time, 
+                          cluster = findCluster.plm(plm_time), 
+                          y = plm_time$model$inv))
+  expect_equal(vcov(plm_time), 
+               plm_time$ercomp$sigma2$idios * bread(plm_time) / v_scale(plm_time))
+  
+  expect_true(check_bread(plm_twoways, 
+                          cluster = findCluster.plm(plm_individual), 
+                          y = plm_twoways$model$inv))
+  expect_true(check_bread(plm_twoways, 
+                          cluster = findCluster.plm(plm_time), 
+                          y = plm_twoways$model$inv))
+  expect_equal(vcov(plm_twoways), 
+               plm_twoways$ercomp$sigma2$idios * bread(plm_twoways) / v_scale(plm_twoways))
 })
 
 test_that("CR0 and CR1S agree with arellano vcov", {

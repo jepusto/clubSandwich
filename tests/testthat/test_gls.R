@@ -5,30 +5,27 @@ library(nlme, quietly=TRUE, warn.conflicts=FALSE)
 data(Ovary, package = "nlme")
 
 Ovary$time_int <- 1:nrow(Ovary)
+
+lm_hom <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), data = Ovary)
+lm_power <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), data = Ovary,
+                weights = varPower())
 lm_AR1 <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), data = Ovary,
               correlation = corAR1(form = ~ time_int | Mare))
 lm_AR1_power <- update(lm_AR1, weights = varPower())
 
-test_that("coef and bread can be constructed from X, W, y", {
-  obj <- lm_AR1
-  cluster <- Ovary$Mare
-  X_list <- matrix_list(model_matrix(obj), cluster, "row")
-  W <- weightMatrix(obj)
-  XWX <- Reduce("+", Map(function(x,w) t(x) %*% w %*% x, x = X_list, w = W))
-  M <- chol2inv(chol(XWX))
-  attr(M, "dimnames") <- attr(vcov(obj), "dimnames")
-  expect_equal(M, vcov(obj))
-  expect_equal(M, bread(obj) / v_scale(obj))
-  y_list <- split(Ovary$follicles, cluster)
-  XWy <- Reduce("+", Map(function(x,w,y) t(x) %*% w %*% y, x = X_list, w = W, y = y_list))
-  beta <- as.vector(M %*% XWy)
-  names(beta) <- names(coef(obj))
-  expect_equal(beta, coef(obj))
-})
+obj <- lm_hom
+V <- targetVariance(obj, cluster = Ovary$Mare)
 
 test_that("bread works", {
-  expect_equal(vcov(lm_AR1), bread(lm_AR1) / v_scale(lm_AR1))
-  expect_equal(vcov(lm_AR1_power), bread(lm_AR1_power) / v_scale(lm_AR1_power))
+  expect_true(check_bread(lm_hom, cluster = Ovary$Mare, y = Ovary$follicles))
+  expect_true(check_bread(lm_power, cluster = Ovary$Mare, y = Ovary$follicles))
+  expect_true(check_bread(lm_AR1, cluster = Ovary$Mare, y = Ovary$follicles))
+  expect_true(check_bread(lm_AR1_power, cluster = Ovary$Mare, y = Ovary$follicles))
+  
+  expect_equal(vcov(lm_hom), lm_hom$sigma^2 * bread(lm_hom) / v_scale(lm_hom))
+  expect_equal(vcov(lm_power), lm_power$sigma^2 * bread(lm_power) / v_scale(lm_power))
+  expect_equal(vcov(lm_AR1), lm_AR1$sigma^2 * bread(lm_AR1) / v_scale(lm_AR1))
+  expect_equal(vcov(lm_AR1_power), lm_AR1_power$sigma^2 * bread(lm_AR1_power) / v_scale(lm_AR1_power))
 })
 
 test_that("vcovCR options work for CR2", {

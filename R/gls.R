@@ -79,15 +79,23 @@ model_matrix.gls <- function(obj) {
 
 targetVariance.gls <- function(obj, cluster) {
   groups <- nlme::getGroups(obj)
-  R_list <- corMatrix(obj$modelStruct$corStruct)
-  if (!is.null(obj$modelStruct$varStruct)) {
-    sd_vec <- obj$sigma / varWeights(obj$modelStruct$varStruct)[order(order(groups))]
-    sd_list <- split(sd_vec, groups)
-    V_list <- Map(function(R, s) tcrossprod(s) * R, R = R_list, s = sd_list)
+  if (is.null(obj$modelStruct$corStruct)) {
+    if (is.null(obj$modelStruct$varStruct)) {
+      V_list <- matrix_list(rep(1, length(cluster)), cluster, "both")
+    } else {
+      wts <- varWeights(obj$modelStruct$varStruct)
+      V_list <- matrix_list(1 / wts^2, cluster, "both")
+    } 
   } else {
-    s_sq <- obj$sigma^2
-    V_list <- lapply(R_list, function(R) s_sq * R)
-  }
+    R_list <- corMatrix(obj$modelStruct$corStruct)
+    if (is.null(obj$modelStruct$varStruct)) {
+      V_list <- R_list
+    } else {
+      sd_vec <- 1 / varWeights(obj$modelStruct$varStruct)[order(order(groups))]
+      sd_list <- split(sd_vec, groups)
+      V_list <- Map(function(R, s) tcrossprod(s) * R, R = R_list, s = sd_list)
+    } 
+  } 
   V_list
 }
 
@@ -107,7 +115,7 @@ weightMatrix.gls <- function(obj, cluster) {
 #' @export
 
 bread.gls <- function(x, ...) {
-  vcov(x) * nobs(x)
+  vcov(x) * nobs(x) / x$sigma^2
 }
 
 # v_scale() is default

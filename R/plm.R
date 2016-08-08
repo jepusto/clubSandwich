@@ -35,11 +35,32 @@ vcovCR.plm <- function(obj, cluster, type, target, inverse_var, form = "sandwich
   
   if (obj$args$model=="random" & obj$args$effect=="twoways") stop("Variance matrix is not block diagonal.")
   
-  index <- attr(model.frame(obj),"index")
+  if (missing(cluster)) {
+    cluster <- findCluster.plm(obj = obj)
+  } else {
+    cluster <- findCluster.plm(obj = obj, cluster = cluster)  
+  } 
   
+  if (missing(target)) target <- NULL
+  if (missing(inverse_var)) inverse_var <- is.null(target)
+  obj$na.action <- attr(obj$model, "na.action")
+  
+  vcov_CR(obj, cluster = cluster, type = type, 
+          target = target, inverse_var = inverse_var, form = form)
+}
+
+get_index_order <- function(obj) {
+  envir <- environment(obj$formula)
+  mf <- match.call(plm::plm, call = obj$call, envir = envir)
+  index_names <- names(attr(model.frame(obj), "index"))
+  index <- eval(mf$data, envir)[,index_names]
+  order(index[,1],index[,2])
+}
+
+findCluster.plm <- function(obj, cluster) {
+  index <- attr(model.frame(obj),"index")
   if (missing(cluster)) {
     if (obj$args$effect=="twoways") stop("You must specify a clustering variable.")
-    index <- attr(model.frame(obj),"index")
     cluster <- switch(obj$args$effect,
                       individual = index[[1]],
                       time = index[[2]])
@@ -58,20 +79,7 @@ vcovCR.plm <- function(obj, cluster, type, target, inverse_var, form = "sandwich
     cluster <- cluster[index[[2]] != levels(index[[2]])[1]]
   }
   
-  if (missing(target)) target <- NULL
-  if (missing(inverse_var)) inverse_var <- is.null(target)
-  obj$na.action <- attr(obj$model, "na.action")
-  
-  vcov_CR(obj, cluster = cluster, type = type, 
-          target = target, inverse_var = inverse_var, form = form)
-}
-
-get_index_order <- function(obj) {
-  envir <- environment(obj$formula)
-  mf <- match.call(plm::plm, call = obj$call, envir = envir)
-  index_names <- names(attr(model.frame(obj), "index"))
-  index <- eval(mf$data, envir)[,index_names]
-  order(index[,1],index[,2])
+  cluster
 }
 
 #-----------------------------------------------
@@ -154,8 +162,9 @@ nobs.plm <- function(object, ...) {
 targetVariance.plm <- function(obj, cluster) {
   if (obj$args$model=="random") {
     block_mat <- function(nj) {
-      Vj <- matrix(obj$ercomp$sigma2$id, nj, nj)
-      diag(Vj) <- obj$ercomp$sigma2$idios + obj$ercomp$sigma2$id
+      r <- with(obj$ercomp$sigma2, id / idios)
+      Vj <- matrix(r, nj, nj)
+      diag(Vj) <- 1 + r
       Vj
     }
     lapply(table(cluster), block_mat)
@@ -190,7 +199,7 @@ weightMatrix.plm <- function(obj, cluster) {
 
 bread.plm <- function(x, ...) {
   if (x$args$model=="random") {
-    return(v_scale(x) * vcov(x)) 
+    v_scale(x) * vcov(x) / x$ercomp$sigma2$idios
   } else {
     v_scale(x) * vcov(x) / with(x, sum(residuals^2) / df.residual) 
   }

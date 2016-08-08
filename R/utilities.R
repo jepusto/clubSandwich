@@ -1,3 +1,27 @@
+#-----------------------------------------------------
+# check that bread can be re-constructed from X and W
+#-----------------------------------------------------
+
+check_bread <- function(obj, cluster, y) {
+  cluster <- droplevels(as.factor(cluster))
+  B <- bread(obj) / v_scale(obj)
+  X_list <- matrix_list(model_matrix(obj), cluster, "row")
+  W_list <- weightMatrix(obj, cluster)
+  XWX <- Reduce("+", Map(function(x, w) t(x) %*% w %*% x, x = X_list, w = W_list))
+  M <- chol2inv(chol(XWX))
+  attr(M, "dimnames") <- attr(B, "dimnames")
+  
+  coef <- coef_CS(obj)
+  y_list <- split(y, cluster)
+  XWy <- Reduce("+", Map(function(x, w, y) t(x) %*% w %*% y, x = X_list, w = W_list, y = y_list))
+  beta <- as.vector(M %*% XWy)
+  names(beta) <- names(coef)
+  
+  eq_bread <- all.equal(M, B)
+  eq_coef <- all.equal(beta, coef)
+  if (all(c(eq_coef, eq_bread) == TRUE)) TRUE else list(M = M, B = B, beta = beta, coef = coef)
+}
+
 #----------------------------------------------
 # check that CR2 and CR4 are target-unbiased
 #----------------------------------------------

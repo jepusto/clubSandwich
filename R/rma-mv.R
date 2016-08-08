@@ -102,9 +102,17 @@ findCluster.rma.mv <- function(obj) {
 #---------------------------------------
 
 bread.rma.mv <- function(x, ...) {
-  vcov(x) * nobs(x)
+  if (is.null(x$W)) {
+    B <- vcov(x) * nobs(x)
+  } else{
+    X_mat <- model_matrix(x)
+    XWX <- t(X_mat) %*% x$W %*% X_mat
+    B <- chol2inv(chol(XWX)) * nobs(x)
+    rownames(B) <- colnames(B) <- colnames(X_mat)
+  }
+  B
 }
 
-v_scale.mv <- function(obj) {
+v_scale.rma.mv <- function(obj) {
   nobs(obj)
 }
