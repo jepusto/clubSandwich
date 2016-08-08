@@ -90,7 +90,7 @@ model_matrix.plm <- function(obj) {
   if (obj$args$model=="random") {
     model.matrix(Formula::as.Formula(formula(obj)), model.frame(obj))  
   } else {
-    model.matrix(obj, model = obj$args$model, effects = obj$args$effect)
+    model.matrix(obj, model = obj$args$model, effect = obj$args$effect)
   }
 }
 
