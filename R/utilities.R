@@ -2,7 +2,7 @@
 # check that bread can be re-constructed from X and W
 #-----------------------------------------------------
 
-check_bread <- function(obj, cluster, y) {
+check_bread <- function(obj, cluster, y, tol = .Machine$double.eps ^ 0.5) {
   cluster <- droplevels(as.factor(cluster))
   B <- bread(obj) / v_scale(obj)
   X_list <- matrix_list(model_matrix(obj), cluster, "row")
@@ -17,8 +17,8 @@ check_bread <- function(obj, cluster, y) {
   beta <- as.vector(M %*% XWy)
   names(beta) <- names(coef)
   
-  eq_bread <- all.equal(M, B)
-  eq_coef <- all.equal(beta, coef)
+  eq_bread <- all.equal(M, B, tol = tol)
+  eq_coef <- all.equal(beta, coef, tol = tol)
   if (all(c(eq_coef, eq_bread) == TRUE)) TRUE else list(M = M, B = B, beta = beta, coef = coef)
 }
 

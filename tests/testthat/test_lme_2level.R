@@ -1,4 +1,4 @@
-context("lme objects")
+context("2-level lme objects")
 suppressMessages(library(lme4, quietly=TRUE))
 library(nlme, quietly=TRUE, warn.conflicts=FALSE)
 library(mlmRev, quietly=TRUE, warn.conflicts=FALSE)
@@ -9,21 +9,22 @@ obj_A3 <- update(obj_A, correlation = corExp(form = ~ Time))
 obj_A4 <- update(obj_A2, correlation = corExp(form = ~ Time))
 obj_B <- lme(distance ~ age, random = ~ age, data = Orthodont)
 
+obj <- obj_A2
 
 test_that("bread works", {
   expect_true(check_bread(obj_A, cluster = BodyWeight$Rat, y = BodyWeight$weight))
-  expect_true(check_bread(obj_A2, cluster = BodyWeight$Rat, y = BodyWeight$weight))
+  expect_true(check_bread(obj_A2, cluster = BodyWeight$Rat, y = BodyWeight$weight, tol = 5 * 10^-5))
   expect_true(check_bread(obj_A3, cluster = BodyWeight$Rat, y = BodyWeight$weight))
   expect_true(check_bread(obj_A4, cluster = BodyWeight$Rat, y = BodyWeight$weight))
   expect_true(check_bread(obj_B, cluster = Orthodont$Subject, y = Orthodont$distance))
   
-  expect_equal(vcov(obj_A), bread(obj_A) / v_scale(obj_A))
-  expect_equal(vcov(obj_A), bread(obj_A) / v_scale(obj_A))
-  expect_equal(vcov(obj_A2), bread(obj_A2) / v_scale(obj_A2))
-  expect_equal(vcov(obj_A3), bread(obj_A3) / v_scale(obj_A3))
-  expect_equal(vcov(obj_A4), bread(obj_A4) / v_scale(obj_A4))
-  expect_equal(vcov(obj_B), bread(obj_B) / v_scale(obj_B))
-})
+  expect_equal(vcov(obj_A), obj_A$sigma^2 * bread(obj_A) / v_scale(obj_A))
+  expect_equal(vcov(obj_A2), obj_A2$sigma^2 * bread(obj_A2) / v_scale(obj_A2))
+  expect_equal(vcov(obj_A3), obj_A3$sigma^2 * bread(obj_A3) / v_scale(obj_A3))
+  expect_equal(vcov(obj_A4), obj_A4$sigma^2 * bread(obj_A4) / v_scale(obj_A4))
+  expect_equal(vcov(obj_B), obj_B$sigma^2 * bread(obj_B) / v_scale(obj_B))
+
+  })
 
 test_that("vcovCR options work for CR2", {
   CR2_A <- vcovCR(obj_A, type = "CR2")
@@ -157,13 +158,6 @@ test_that("lme agrees with gls", {
   expect_equal(Wald_lme, Wald_gls)
 })
 
-
-test_that("Errors with 3-level hlm or cross-classified model", {
-  hlm_3level <- lme(math ~ year * size + female, 
-                    random = ~ 1 | schoolid / childid, 
-                    data = egsingle)
-  expect_error(vcovCR(hlm_3level), "vcovCR.lme does not work for models with multiple levels of random effects.")
-})
 
 test_that("CR2 is equivalent to Welch t-test for DiD design", {
   
