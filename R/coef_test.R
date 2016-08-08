@@ -122,7 +122,7 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", ...) {
 #' @export
 
 print.coef_test_clubSandwich <- function(x, digits = 3, ...) {
-  res <- data.frame("Coef" = rownames(x), "Estimate" = x$beta, "Std. Error" = x$SE)
+  res <- data.frame("Coef" = rownames(x), "Estimate" = x$beta, "SE" = x$SE)
   if ("p_z" %in% names(x)) {
     p_z <- format.pval(x$p_z, digits = digits, eps = 10^-digits)
     Sig_z <- cut(x$p_z, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
