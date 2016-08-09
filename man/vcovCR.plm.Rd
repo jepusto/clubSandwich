@@ -4,7 +4,8 @@
 \alias{vcovCR.plm}
 \title{Cluster-robust variance-covariance matrix for a plm object.}
 \usage{
-\method{vcovCR}{plm}(obj, cluster, type, target, inverse_var)
+\method{vcovCR}{plm}(obj, cluster, type, target, inverse_var,
+  form = "sandwich")
 }
 \arguments{
 \item{obj}{Fitted model for which to calcualte the variance-covariance matrix}
@@ -30,6 +31,13 @@ matrix for fixed effect models or the estimated compound-symmetric covariance ma
 \item{inverse_var}{Optional logical indicating whether the weights used in 
 fitting the model are inverse-variance. If not specified, \code{vcovCR} 
 will attempt to infer a value.}
+
+\item{form}{Controls the form of the returned matrix. The default 
+\code{"sandwich"} will return the sandwich variance-covariance matrix. 
+Alternately, setting \code{form = "meat"} will return only the meat of the
+sandwich and setting \code{form = B}, where \code{B} is a matrix of
+appropriate dimension, will return the sandwich variance-covariance matrix
+calculated using \code{B} as the bread.}
 }
 \value{
 An object of class \code{c("vcovCR","clubSandwich")}, which consists 

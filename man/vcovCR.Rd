@@ -5,10 +5,10 @@
 \alias{vcovCR.default}
 \title{Cluster-robust variance-covariance matrix}
 \usage{
-vcovCR(obj, cluster, type, target, inverse_var)
+vcovCR(obj, cluster, type, target, inverse_var, form)
 
 \method{vcovCR}{default}(obj, cluster, type, target = NULL,
-  inverse_var = FALSE)
+  inverse_var = FALSE, form = "sandwich")
 }
 \arguments{
 \item{obj}{Fitted model for which to calcualte the variance-covariance matrix}
@@ -28,6 +28,13 @@ diagonal. If not specified, \code{vcovCR} will attempt to infer a value.}
 \item{inverse_var}{Optional logical indicating whether the weights used in 
 fitting the model are inverse-variance. If not specified, \code{vcovCR} 
 will attempt to infer a value.}
+
+\item{form}{Controls the form of the returned matrix. The default 
+\code{"sandwich"} will return the sandwich variance-covariance matrix. 
+Alternately, setting \code{form = "meat"} will return only the meat of the
+sandwich and setting \code{form = B}, where \code{B} is a matrix of
+appropriate dimension, will return the sandwich variance-covariance matrix
+calculated using \code{B} as the bread.}
 }
 \value{
 An object of class \code{c("vcovCR","clubSandwich")}, which consists 
@@ -35,16 +42,21 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
   regression coefficient estimates. The matrix has several attributes: 
   \describe{ \item{type}{indicates which small-sample adjustment was used} 
   \item{cluster}{contains the factor vector that defines independent 
-  clusters} \item{estmats}{contains a list of adjustment matrices used to 
-  calculate the sandwich estimator, which are needed for calculating 
-  small-sample corrections for Wald tests} \item{target}{contains the working
+  clusters} 
+  \item{bread}{contains the bread matrix} 
+  \item{v_scale}{constant used in scaling the sandwich estimator} 
+  \item{est_mats}{contains
+  a list of estimating matrices used to calculate the sandwich estimator} 
+  \item{adjustments}{contains a list of adjustment matrices used to calculate
+  the sandwich estimator} \item{target}{contains the working
   variance-covariance model used to calculate the adjustment matrices. This 
-  is also needed for calculating small-sample corrections for Wald tests.} }
+  is needed for calculating small-sample corrections for Wald tests.} }
 }
 \description{
 This is a generic function, with specific methods defined for 
-\code{\link[stats]{lm}}, \code{\link[plm]{plm}}, \code{\link[nlme]{gls}},
-\code{\link[nlme]{lme}}, \code{\link[robumeta]{robu}}, \code{\link[metafor]{rma.uni}}, and \code{\link[metafor]{rma.mv}} objects.
+  \code{\link[stats]{lm}}, \code{\link[plm]{plm}}, \code{\link[nlme]{gls}}, 
+  \code{\link[nlme]{lme}}, \code{\link[robumeta]{robu}}, 
+  \code{\link[metafor]{rma.uni}}, and \code{\link[metafor]{rma.mv}} objects.
 
 \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
 of a set of regression coefficient estimates.
