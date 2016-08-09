@@ -3,30 +3,26 @@ suppressMessages(library(lme4, quietly=TRUE))
 library(nlme, quietly=TRUE, warn.conflicts=FALSE)
 library(mlmRev, quietly=TRUE, warn.conflicts=FALSE)
 
+school_subset <- levels(egsingle$schoolid)
+school_subset <- sample(school_subset, size = 30)
+egsingle <- subset(egsingle, schoolid %in% school_subset)
+
 obj_A1 <- lme(math ~ year * size + female + black + hispanic,
-                  random = ~ 1 | schoolid / childid,
-                  data = egsingle)
+              random = list(~ year | schoolid, ~ 1 | childid),
+              data = egsingle)
 obj_A2 <- update(obj_A1, weights = varIdent(form = ~ 1 | female))
 obj_A3 <- update(obj_A1, correlation = corExp(form = ~ year))
 obj_A4 <- update(obj_A2, correlation = corExp(form = ~ year))
-
-obj_B1 <- update(obj_A1, random = list(~ year | schoolid, ~ 1 | childid))
-obj_B2 <- update(obj_B1, weights = varIdent(form = ~ 1 | female))
-obj_B3 <- update(obj_B1, correlation = corExp(form = ~ year))
-obj_B4 <- update(obj_B2, correlation = corExp(form = ~ year))
-
-objects <- list(A1 = obj_A1, A2 = obj_A2, A3 = obj_A3, A4 = obj_A4,
-                B1 = obj_B1, B2 = obj_B2, B3 = obj_B3, B4 = obj_B4)
+objects <- list(A1 = obj_A1, A2 = obj_A2, A3 = obj_A3, A4 = obj_A4)
 
 CR2_mats <- lapply(objects, vcovCR, type = "CR2")
-CR4_mats <- lapply(objects, vcovCR, type = "CR4")
 
 test_that("bread works", {
   bread_checks <- lapply(objects, check_bread, cluster = egsingle$schoolid, y = egsingle$math)
   expect_true(all(unlist(bread_checks)))
   
   obj_vcovs <- lapply(objects, vcov)
-  obj_bread <- lapply(objects, function(obj) obj$sigma^2 * bread(obj) / v_scale(obj))
+  obj_bread <- lapply(objects, function(obj) obj$sigma^2 * sandwich::bread(obj) / v_scale(obj))
   expect_equal(obj_vcovs, obj_bread)
 })
 
@@ -69,6 +65,7 @@ test_that("vcovCR options work for CR2", {
 
 test_that("vcovCR options work for CR4", {
   skip("Not worrying about CR4 for now.")
+  CR4_mats <- lapply(objects, vcovCR, type = "CR4")
   
   expect_identical(vcovCR(obj_A1, cluster = egsingle$schoolid, type = "CR4"), CR4_mats[["A1"]])
   expect_identical(vcovCR(obj_A1, type = "CR4", inverse_var = TRUE), CR4_mats[["A1"]])
@@ -154,16 +151,16 @@ test_that("Order doesn't matter.", {
   
   CR_fit <- lapply(CR_types, function(x) vcovCR(obj, type = x))
   CR_scramble <- lapply(CR_types, function(x) vcovCR(obj_scramble, type = x))
-  expect_equal(lapply(CR_fit, as.matrix), lapply(CR_scramble, as.matrix), tol = 10^-7)
+  expect_equal(lapply(CR_fit, as.matrix), lapply(CR_scramble, as.matrix), tol = 4 * 10^-7)
 
   test_fit <- lapply(CR_fit, function(x) coef_test(obj, vcov = x, test = "All"))
   test_scramble <- lapply(CR_scramble, function(x) coef_test(obj_scramble, vcov = x, test = "All"))
-  expect_equal(test_fit, test_scramble, tol = 5 * 10^-6)
+  expect_equal(test_fit, test_scramble, tol = 4 * 10^-5)
 
-  # constraints <- combn(length(coef(obj)), 2, simplify = FALSE)
-  # Wald_fit <- Wald_test(obj, constraints = constraints, vcov = "CR2", test = "All")
-  # Wald_scramble <- Wald_test(obj_scramble, constraints = constraints, vcov = "CR2", test = "All")
-  # expect_equal(Wald_fit, Wald_scramble, tol = 10^-6)
+  constraints <- combn(length(coef(obj)), 2, simplify = FALSE)[10:16]
+  Wald_fit <- Wald_test(obj, constraints = constraints, vcov = "CR2", test = "All")
+  Wald_scramble <- Wald_test(obj_scramble, constraints = constraints, vcov = "CR2", test = "All")
+  expect_equal(Wald_fit, Wald_scramble, tol = 10^-6)
 })
 
 
