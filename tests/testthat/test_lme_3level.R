@@ -160,7 +160,7 @@ test_that("Order doesn't matter.", {
   constraints <- combn(length(coef(obj)), 2, simplify = FALSE)[10:16]
   Wald_fit <- Wald_test(obj, constraints = constraints, vcov = "CR2", test = "All")
   Wald_scramble <- Wald_test(obj_scramble, constraints = constraints, vcov = "CR2", test = "All")
-  expect_equal(Wald_fit, Wald_scramble, tol = 10^-6)
+  expect_equal(Wald_fit, Wald_scramble, tol = 5 * 10^-6)
 })
 
 
