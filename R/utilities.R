@@ -4,7 +4,7 @@
 
 check_bread <- function(obj, cluster, y, tol = .Machine$double.eps ^ 0.5) {
   cluster <- droplevels(as.factor(cluster))
-  B <- bread(obj) / v_scale(obj)
+  B <- sandwich::bread(obj) / v_scale(obj)
   X_list <- matrix_list(model_matrix(obj), cluster, "row")
   W_list <- weightMatrix(obj, cluster)
   XWX <- Reduce("+", Map(function(x, w) t(x) %*% w %*% x, x = X_list, w = W_list))

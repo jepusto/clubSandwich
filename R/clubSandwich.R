@@ -157,7 +157,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   meat <- tcrossprod(components) / v_scale
   
   if (form == "sandwich") {
-    bread <- bread(obj)
+    bread <- sandwich::bread(obj)
   } else if (form == "meat") {
     bread <- NULL
   } else if (is.matrix(form)) {
