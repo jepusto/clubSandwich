@@ -83,15 +83,15 @@ targetVariance.gls <- function(obj, cluster) {
     if (is.null(obj$modelStruct$varStruct)) {
       V_list <- matrix_list(rep(1, length(cluster)), cluster, "both")
     } else {
-      wts <- varWeights(obj$modelStruct$varStruct)
+      wts <- nlme::varWeights(obj$modelStruct$varStruct)
       V_list <- matrix_list(1 / wts^2, cluster, "both")
     } 
   } else {
-    R_list <- corMatrix(obj$modelStruct$corStruct)
+    R_list <- nlme::corMatrix(obj$modelStruct$corStruct)
     if (is.null(obj$modelStruct$varStruct)) {
       V_list <- R_list
     } else {
-      sd_vec <- 1 / varWeights(obj$modelStruct$varStruct)[order(order(groups))]
+      sd_vec <- 1 / nlme::varWeights(obj$modelStruct$varStruct)[order(order(groups))]
       sd_list <- split(sd_vec, groups)
       V_list <- Map(function(R, s) tcrossprod(s) * R, R = R_list, s = sd_list)
     } 

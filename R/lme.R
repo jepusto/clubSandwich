@@ -80,18 +80,18 @@ targetVariance.lme <- function(obj, cluster) {
     if (is.null(obj$modelStruct$varStruct)) {
       V_list <- matrix_list(rep(1, length(smallest_groups)), smallest_groups, "both")
     } else {
-      wts <- varWeights(obj$modelStruct$varStruct)[order(do.call(order, all_groups))]
+      wts <- nlme::varWeights(obj$modelStruct$varStruct)[order(do.call(order, all_groups))]
       V_list <- matrix_list(1 / wts^2, smallest_groups, "both")
     } 
   } else {
     R_list <- as.list(rep(1, nlevels(smallest_groups)))
     names(R_list) <- levels(smallest_groups)
-    R_sublist <- corMatrix(obj$modelStruct$corStruct)
+    R_sublist <- nlme::corMatrix(obj$modelStruct$corStruct)
     R_list[names(R_sublist)] <- R_sublist
     if (is.null(obj$modelStruct$varStruct)) {
       V_list <- R_list
     } else {
-      sd_vec <- 1 / varWeights(obj$modelStruct$varStruct)[order(do.call(order, all_groups))]
+      sd_vec <- 1 / nlme::varWeights(obj$modelStruct$varStruct)[order(do.call(order, all_groups))]
       sd_list <- split(sd_vec, smallest_groups)
       V_list <- Map(function(R, s) tcrossprod(s) * R, R = R_list, s = sd_list)
     } 
