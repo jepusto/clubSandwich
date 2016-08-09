@@ -151,7 +151,7 @@ test_that("Order doesn't matter.", {
   
   CR_fit <- lapply(CR_types, function(x) vcovCR(obj, type = x))
   CR_scramble <- lapply(CR_types, function(x) vcovCR(obj_scramble, type = x))
-  expect_equal(lapply(CR_fit, as.matrix), lapply(CR_scramble, as.matrix), tol = 4 * 10^-7)
+  expect_equal(lapply(CR_fit, as.matrix), lapply(CR_scramble, as.matrix), tol = 10^-6)
 
   test_fit <- lapply(CR_fit, function(x) coef_test(obj, vcov = x, test = "All"))
   test_scramble <- lapply(CR_scramble, function(x) coef_test(obj_scramble, vcov = x, test = "All"))
