@@ -13,6 +13,7 @@ data("Produc", package = "plm")
 CR_types <- paste0("CR",0:4)
 
 plm_individual <- plm(inv ~ value + capital, data = Grunfeld, model="random")
+obj <- plm_individual
 
 test_that("individual effects agree with gls", {
   icc <- with(plm_individual$ercomp$sigma2, id / (id + idios))
@@ -76,23 +77,9 @@ test_that("bread works", {
   expect_true(check_bread(plm_individual, 
                           cluster = findCluster.plm(plm_individual), 
                           y = plm_individual$model$inv))
-  expect_equal(vcov(plm_individual), 
-               plm_individual$ercomp$sigma2$idios * bread(plm_individual) / v_scale(plm_individual))
-  
   expect_true(check_bread(plm_time, 
                           cluster = findCluster.plm(plm_time), 
-                          y = plm_time$model$inv))
-  expect_equal(vcov(plm_time), 
-               plm_time$ercomp$sigma2$idios * bread(plm_time) / v_scale(plm_time))
-  
-  expect_true(check_bread(plm_twoways, 
-                          cluster = findCluster.plm(plm_individual), 
-                          y = plm_twoways$model$inv))
-  expect_true(check_bread(plm_twoways, 
-                          cluster = findCluster.plm(plm_time), 
-                          y = plm_twoways$model$inv))
-  expect_equal(vcov(plm_twoways), 
-               plm_twoways$ercomp$sigma2$idios * bread(plm_twoways) / v_scale(plm_twoways))
+                          y = plm_time$model$"log(gsp)"))
 })
 
 test_that("CR0 and CR1S agree with arellano vcov", {

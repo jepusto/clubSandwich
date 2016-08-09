@@ -198,11 +198,12 @@ weightMatrix.plm <- function(obj, cluster) {
 #---------------------------------------
 
 bread.plm <- function(x, ...) {
-  if (x$args$model=="random") {
-    v_scale(x) * vcov(x) / x$ercomp$sigma2$idios
-  } else {
-    v_scale(x) * vcov(x) / with(x, sum(residuals^2) / df.residual) 
-  }
+  # if (x$args$model=="random") {
+  #   v_scale(x) * vcov(x) / x$ercomp$sigma2$idios
+  # } else {
+  #   v_scale(x) * vcov(x) / with(x, sum(residuals^2) / df.residual) 
+  # }
+  v_scale(x) * vcov(x) / with(x, sum(residuals^2) / df.residual)
 }
 
 v_scale.plm <- function(obj) {
