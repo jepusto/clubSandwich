@@ -42,6 +42,7 @@ Wilson$big_study <- Wilson$studyID %in% big_studies
 
 dropoutPrevention <- Wilson
 save(dropoutPrevention, file = "data/dropoutPrevention.RData", compress = "xz")
+write.csv(dropoutPrevention, file = "auxilliary/dropoutPrevention.csv")
 
 names(dropoutPrevention)
 table(dropoutPrevention$study_design)
@@ -58,3 +59,43 @@ summary(dropoutPrevention$average_age)
 summary(dropoutPrevention$duration)
 summary(dropoutPrevention$service_hrs)
 table(dropoutPrevention$big_study)
+
+
+library(robumeta)
+library(clubSandwich)
+data("dropoutPrevention")
+
+m3_hier_full <- robu(LOR1 ~ study_design + attrition + group_equivalence + adjusted
+                      + outcome + evaluator_independence
+                      + male_pct + white_pct + average_age
+                      + implementation_quality + program_site + duration + service_hrs, 
+                      data = dropoutPrevention, studynum = studyID, var.eff.size = varLOR, modelweights = "HIER")
+contrast_list <- list("Study design" = 2:3, 
+                      "Outcome measure" = 7:9,
+                      "Evaluator independence" = 10:12,
+                      "Implmentation quality" = 16:17,
+                      "Program format" = 18:20)
+
+dropout_full <- Wald_test(m3_hier_full, constraints = contrast_list, 
+                           vcov = "CR2", cluster = dropoutPrevention$studyID, 
+                          test = "HTZ")
+
+
+dp_subset <- subset(dropoutPrevention, big_study==TRUE)
+
+m3_hier_subset <- robu(LOR1 ~ study_design + attrition + group_equivalence + adjusted
+                        + outcome + evaluator_independence
+                        + male_pct + white_pct + average_age
+                        + implementation_quality + program_site + duration + service_hrs, 
+                        data = dp_subset, studynum = studyID, var.eff.size = varLOR, modelweights = "HIER")
+
+contrast_list <- list("Study design" = 2:3, 
+                      "Outcome measure" = 7:9,
+                      "Evaluator independence" = 10:11,
+                      "Implmentation quality" = 15:16,
+                      "Program format" = 17:19)
+
+dropout_subset <- Wald_test(m3_hier_subset, constraints = contrast_list, 
+                           vcov = "CR2", cluster = dp_subset$studyID,
+                           test = "HTZ")
+dropout_subset
