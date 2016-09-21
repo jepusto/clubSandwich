@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  18 JUL 2016 11:07
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.1.2)  20 SEP 2016 21:54
 entering extended mode
 **ClusterRobustTesting_supplementary_materials.tex
 
@@ -214,7 +214,7 @@ Package: natbib 2010/09/13 8.31b (PWD, AO)
 LaTeX Info: Redefining \cite on input line 694.
 \c@NAT@ctr=\count106
 )
-LaTeX Info: Redefining \BBA on input line 59.
+LaTeX Info: Redefining \BBA on input line 60.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\booktabs\booktabs.sty"
 Package: booktabs 2005/04/14 v1.61803 publication quality tables
@@ -294,18 +294,18 @@ tim
 )
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting_supplementary_materials.aux)
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 79.
-LaTeX Font Info:    ... okay on input line 79.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 80.
+LaTeX Font Info:    ... okay on input line 80.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 80.
+LaTeX Font Info:    ... okay on input line 80.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 80.
+LaTeX Font Info:    ... okay on input line 80.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 80.
+LaTeX Font Info:    ... okay on input line 80.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 80.
+LaTeX Font Info:    ... okay on input line 80.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 80.
+LaTeX Font Info:    ... okay on input line 80.
 
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -380,229 +380,229 @@ Non-PDF special ignored!
 [2] [3] [4] [5
 
 ]
-Package color Info: Redefining color shadecolor on input line 225.
+Package color Info: Redefining color shadecolor on input line 226.
  <CR_fig/overview_005-1.pdf, id=31, 722.7pt x 361.35pt>
 File: CR_fig/overview_005-1.pdf Graphic file (type pdf)
 
 <use CR_fig/overview_005-1.pdf>
-Package pdftex.def Info: CR_fig/overview_005-1.pdf used on input line 227.
+Package pdftex.def Info: CR_fig/overview_005-1.pdf used on input line 228.
 (pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
-Package color Info: Redefining color shadecolor on input line 238.
+Package color Info: Redefining color shadecolor on input line 239.
 
 <CR_fig/overview_01-1.pdf, id=32, 722.7pt x 361.35pt>
 File: CR_fig/overview_01-1.pdf Graphic file (type pdf)
 
 <use CR_fig/overview_01-1.pdf>
-Package pdftex.def Info: CR_fig/overview_01-1.pdf used on input line 240.
+Package pdftex.def Info: CR_fig/overview_01-1.pdf used on input line 241.
 (pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
  [6 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
 g/overview_005-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 251.
+Package color Info: Redefining color shadecolor on input line 252.
 
-<CR_fig/overview_10-1.pdf, id=45, 722.7pt x 361.35pt>
+<CR_fig/overview_10-1.pdf, id=44, 722.7pt x 361.35pt>
 File: CR_fig/overview_10-1.pdf Graphic file (type pdf)
 
 <use CR_fig/overview_10-1.pdf>
-Package pdftex.def Info: CR_fig/overview_10-1.pdf used on input line 253.
+Package pdftex.def Info: CR_fig/overview_10-1.pdf used on input line 254.
 (pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
  [7 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
 g/overview_01-1.pdf>] [8 <C:/Users/jep2963/Documents/R/clubSandwich/paper_Clust
 erRobustTesting/CR_fig/overview_10-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 267.
+Package color Info: Redefining color shadecolor on input line 268.
 
-<CR_fig/balance_005_15-1.pdf, id=71, 722.7pt x 361.35pt>
+<CR_fig/balance_005_15-1.pdf, id=68, 722.7pt x 361.35pt>
 File: CR_fig/balance_005_15-1.pdf Graphic file (type pdf)
 
 <use CR_fig/balance_005_15-1.pdf>
-Package pdftex.def Info: CR_fig/balance_005_15-1.pdf used on input line 269.
+Package pdftex.def Info: CR_fig/balance_005_15-1.pdf used on input line 270.
 (pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
-Package color Info: Redefining color shadecolor on input line 280.
+Package color Info: Redefining color shadecolor on input line 281.
 
-<CR_fig/balance_01_15-1.pdf, id=72, 722.7pt x 361.35pt>
+<CR_fig/balance_01_15-1.pdf, id=69, 722.7pt x 361.35pt>
 File: CR_fig/balance_01_15-1.pdf Graphic file (type pdf)
 
 <use CR_fig/balance_01_15-1.pdf>
-Package pdftex.def Info: CR_fig/balance_01_15-1.pdf used on input line 282.
+Package pdftex.def Info: CR_fig/balance_01_15-1.pdf used on input line 283.
 (pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
  [9 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_fi
 g/balance_005_15-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 293.
+Package color Info: Redefining color shadecolor on input line 294.
 
-<CR_fig/balance_05_15-1.pdf, id=85, 722.7pt x 361.35pt>
+<CR_fig/balance_05_15-1.pdf, id=81, 722.7pt x 361.35pt>
 File: CR_fig/balance_05_15-1.pdf Graphic file (type pdf)
 
 <use CR_fig/balance_05_15-1.pdf>
-Package pdftex.def Info: CR_fig/balance_05_15-1.pdf used on input line 295.
+Package pdftex.def Info: CR_fig/balance_05_15-1.pdf used on input line 296.
 (pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
  [10 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
 ig/balance_01_15-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 306.
+Package color Info: Redefining color shadecolor on input line 307.
 
-<CR_fig/balance_10_15-1.pdf, id=98, 722.7pt x 361.35pt>
+<CR_fig/balance_10_15-1.pdf, id=93, 722.7pt x 361.35pt>
 File: CR_fig/balance_10_15-1.pdf Graphic file (type pdf)
 
 <use CR_fig/balance_10_15-1.pdf>
-Package pdftex.def Info: CR_fig/balance_10_15-1.pdf used on input line 308.
+Package pdftex.def Info: CR_fig/balance_10_15-1.pdf used on input line 309.
 (pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
  [11 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
 ig/balance_05_15-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 319.
+Package color Info: Redefining color shadecolor on input line 320.
 
-<CR_fig/balance_005_30-1.pdf, id=111, 722.7pt x 361.35pt>
+<CR_fig/balance_005_30-1.pdf, id=105, 722.7pt x 361.35pt>
 File: CR_fig/balance_005_30-1.pdf Graphic file (type pdf)
 
 <use CR_fig/balance_005_30-1.pdf>
-Package pdftex.def Info: CR_fig/balance_005_30-1.pdf used on input line 321.
+Package pdftex.def Info: CR_fig/balance_005_30-1.pdf used on input line 322.
 (pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
  [12 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
 ig/balance_10_15-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 332.
+Package color Info: Redefining color shadecolor on input line 333.
 
-<CR_fig/balance_01_30-1.pdf, id=124, 722.7pt x 361.35pt>
+<CR_fig/balance_01_30-1.pdf, id=117, 722.7pt x 361.35pt>
 File: CR_fig/balance_01_30-1.pdf Graphic file (type pdf)
 
 <use CR_fig/balance_01_30-1.pdf>
-Package pdftex.def Info: CR_fig/balance_01_30-1.pdf used on input line 334.
+Package pdftex.def Info: CR_fig/balance_01_30-1.pdf used on input line 335.
 (pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
  [13 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
 ig/balance_005_30-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 345.
+Package color Info: Redefining color shadecolor on input line 346.
 
-<CR_fig/balance_05_30-1.pdf, id=138, 722.7pt x 361.35pt>
+<CR_fig/balance_05_30-1.pdf, id=130, 722.7pt x 361.35pt>
 File: CR_fig/balance_05_30-1.pdf Graphic file (type pdf)
 
 <use CR_fig/balance_05_30-1.pdf>
-Package pdftex.def Info: CR_fig/balance_05_30-1.pdf used on input line 347.
+Package pdftex.def Info: CR_fig/balance_05_30-1.pdf used on input line 348.
 (pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
  [14 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
 ig/balance_01_30-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 358.
+Package color Info: Redefining color shadecolor on input line 359.
 
-<CR_fig/balance_10_30-1.pdf, id=151, 722.7pt x 361.35pt>
+<CR_fig/balance_10_30-1.pdf, id=142, 722.7pt x 361.35pt>
 File: CR_fig/balance_10_30-1.pdf Graphic file (type pdf)
 
 <use CR_fig/balance_10_30-1.pdf>
-Package pdftex.def Info: CR_fig/balance_10_30-1.pdf used on input line 360.
+Package pdftex.def Info: CR_fig/balance_10_30-1.pdf used on input line 361.
 (pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
  [15 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
 ig/balance_05_30-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 371.
+Package color Info: Redefining color shadecolor on input line 372.
 
-<CR_fig/balance_005_50-1.pdf, id=164, 722.7pt x 361.35pt>
+<CR_fig/balance_005_50-1.pdf, id=154, 722.7pt x 361.35pt>
 File: CR_fig/balance_005_50-1.pdf Graphic file (type pdf)
 
 <use CR_fig/balance_005_50-1.pdf>
-Package pdftex.def Info: CR_fig/balance_005_50-1.pdf used on input line 373.
+Package pdftex.def Info: CR_fig/balance_005_50-1.pdf used on input line 374.
 (pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
  [16 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
 ig/balance_10_30-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 384.
+Package color Info: Redefining color shadecolor on input line 385.
 
-<CR_fig/balance_01_50-1.pdf, id=177, 722.7pt x 361.35pt>
+<CR_fig/balance_01_50-1.pdf, id=166, 722.7pt x 361.35pt>
 File: CR_fig/balance_01_50-1.pdf Graphic file (type pdf)
 
 <use CR_fig/balance_01_50-1.pdf>
-Package pdftex.def Info: CR_fig/balance_01_50-1.pdf used on input line 386.
+Package pdftex.def Info: CR_fig/balance_01_50-1.pdf used on input line 387.
 (pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
  [17 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
 ig/balance_005_50-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 397.
+Package color Info: Redefining color shadecolor on input line 398.
 
-<CR_fig/balance_05_50-1.pdf, id=190, 722.7pt x 361.35pt>
+<CR_fig/balance_05_50-1.pdf, id=178, 722.7pt x 361.35pt>
 File: CR_fig/balance_05_50-1.pdf Graphic file (type pdf)
 
 <use CR_fig/balance_05_50-1.pdf>
-Package pdftex.def Info: CR_fig/balance_05_50-1.pdf used on input line 399.
+Package pdftex.def Info: CR_fig/balance_05_50-1.pdf used on input line 400.
 (pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
  [18 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
 ig/balance_01_50-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 410.
+Package color Info: Redefining color shadecolor on input line 411.
 
-<CR_fig/balance_10_50-1.pdf, id=203, 722.7pt x 361.35pt>
+<CR_fig/balance_10_50-1.pdf, id=190, 722.7pt x 361.35pt>
 File: CR_fig/balance_10_50-1.pdf Graphic file (type pdf)
 
 <use CR_fig/balance_10_50-1.pdf>
-Package pdftex.def Info: CR_fig/balance_10_50-1.pdf used on input line 412.
+Package pdftex.def Info: CR_fig/balance_10_50-1.pdf used on input line 413.
 (pdftex.def)             Requested size: 650.43001pt x 325.21751pt.
  [19 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
 ig/balance_05_50-1.pdf>] [20 <C:/Users/jep2963/Documents/R/clubSandwich/paper_C
 lusterRobustTesting/CR_fig/balance_10_50-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 426.
- <CR_fig/absorption_005-1.pdf, id=229, 722.7pt x 433.62pt>
+Package color Info: Redefining color shadecolor on input line 427.
+ <CR_fig/absorption_005-1.pdf, id=214, 722.7pt x 433.62pt>
 File: CR_fig/absorption_005-1.pdf Graphic file (type pdf)
 
 <use CR_fig/absorption_005-1.pdf>
-Package pdftex.def Info: CR_fig/absorption_005-1.pdf used on input line 428.
+Package pdftex.def Info: CR_fig/absorption_005-1.pdf used on input line 429.
 (pdftex.def)             Requested size: 650.43001pt x 390.26102pt.
-Package color Info: Redefining color shadecolor on input line 439.
+Package color Info: Redefining color shadecolor on input line 440.
 
-<CR_fig/absorption_01-1.pdf, id=230, 722.7pt x 433.62pt>
+<CR_fig/absorption_01-1.pdf, id=215, 722.7pt x 433.62pt>
 File: CR_fig/absorption_01-1.pdf Graphic file (type pdf)
 
 <use CR_fig/absorption_01-1.pdf>
-Package pdftex.def Info: CR_fig/absorption_01-1.pdf used on input line 441.
+Package pdftex.def Info: CR_fig/absorption_01-1.pdf used on input line 442.
 (pdftex.def)             Requested size: 650.43001pt x 390.26102pt.
  [21 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
 ig/absorption_005-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 452.
+Package color Info: Redefining color shadecolor on input line 453.
 
-<CR_fig/absorption_05-1.pdf, id=243, 722.7pt x 433.62pt>
+<CR_fig/absorption_05-1.pdf, id=227, 722.7pt x 433.62pt>
 File: CR_fig/absorption_05-1.pdf Graphic file (type pdf)
 
 <use CR_fig/absorption_05-1.pdf>
-Package pdftex.def Info: CR_fig/absorption_05-1.pdf used on input line 454.
+Package pdftex.def Info: CR_fig/absorption_05-1.pdf used on input line 455.
 (pdftex.def)             Requested size: 650.43001pt x 390.26102pt.
  [22 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
 ig/absorption_01-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 465.
+Package color Info: Redefining color shadecolor on input line 466.
 
-<CR_fig/absorption_10-1.pdf, id=256, 722.7pt x 433.62pt>
+<CR_fig/absorption_10-1.pdf, id=239, 722.7pt x 433.62pt>
 File: CR_fig/absorption_10-1.pdf Graphic file (type pdf)
 
 <use CR_fig/absorption_10-1.pdf>
-Package pdftex.def Info: CR_fig/absorption_10-1.pdf used on input line 467.
+Package pdftex.def Info: CR_fig/absorption_10-1.pdf used on input line 468.
 (pdftex.def)             Requested size: 650.43001pt x 390.26102pt.
  [23 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
 ig/absorption_05-1.pdf>] [24 <C:/Users/jep2963/Documents/R/clubSandwich/paper_C
 lusterRobustTesting/CR_fig/absorption_10-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 481.
- <CR_fig/misspecification_005-1.pdf, id=281, 867.24pt x 542.025pt>
+Package color Info: Redefining color shadecolor on input line 482.
+ <CR_fig/misspecification_005-1.pdf, id=262, 867.24pt x 542.025pt>
 File: CR_fig/misspecification_005-1.pdf Graphic file (type pdf)
 
 <use CR_fig/misspecification_005-1.pdf>
 Package pdftex.def Info: CR_fig/misspecification_005-1.pdf used on input line 4
-83.
+84.
 (pdftex.def)             Requested size: 650.43001pt x 406.53429pt.
-Package color Info: Redefining color shadecolor on input line 494.
+Package color Info: Redefining color shadecolor on input line 495.
 
-<CR_fig/misspecification_01-1.pdf, id=282, 867.24pt x 578.16pt>
+<CR_fig/misspecification_01-1.pdf, id=263, 867.24pt x 578.16pt>
 File: CR_fig/misspecification_01-1.pdf Graphic file (type pdf)
 
 <use CR_fig/misspecification_01-1.pdf>
 Package pdftex.def Info: CR_fig/misspecification_01-1.pdf used on input line 49
-6.
+7.
 (pdftex.def)             Requested size: 650.43001pt x 433.63658pt.
  [25 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
 ig/misspecification_005-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 507.
+Package color Info: Redefining color shadecolor on input line 508.
 
-<CR_fig/misspecification_05-1.pdf, id=296, 867.24pt x 578.16pt>
+<CR_fig/misspecification_05-1.pdf, id=276, 867.24pt x 578.16pt>
 File: CR_fig/misspecification_05-1.pdf Graphic file (type pdf)
 
 <use CR_fig/misspecification_05-1.pdf>
-Package pdftex.def Info: CR_fig/misspecification_05-1.pdf used on input line 50
-9.
+Package pdftex.def Info: CR_fig/misspecification_05-1.pdf used on input line 51
+0.
 (pdftex.def)             Requested size: 650.43001pt x 433.63658pt.
  [26 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
 ig/misspecification_01-1.pdf>]
-Package color Info: Redefining color shadecolor on input line 520.
+Package color Info: Redefining color shadecolor on input line 521.
 
-<CR_fig/misspecification_10-1.pdf, id=309, 867.24pt x 578.16pt>
+<CR_fig/misspecification_10-1.pdf, id=288, 867.24pt x 578.16pt>
 File: CR_fig/misspecification_10-1.pdf Graphic file (type pdf)
 
 <use CR_fig/misspecification_10-1.pdf>
 Package pdftex.def Info: CR_fig/misspecification_10-1.pdf used on input line 52
-2.
+3.
 (pdftex.def)             Requested size: 650.43001pt x 433.63658pt.
  [27 <C:/Users/jep2963/Documents/R/clubSandwich/paper_ClusterRobustTesting/CR_f
 ig/misspecification_05-1.pdf>] [28 <C:/Users/jep2963/Documents/R/clubSandwich/p
@@ -614,10 +614,10 @@ bustTesting_supplementary_materials.bbl) [29
 (C:\Users\jep2963\Documents\R\clubSandwich\paper_ClusterRobustTesting\ClusterRo
 bustTesting_supplementary_materials.aux) ) 
 Here is how much of TeX's memory you used:
- 4814 strings out of 493921
- 71683 string characters out of 3144871
+ 4815 strings out of 493921
+ 71688 string characters out of 3144871
  142301 words of memory out of 3000000
- 7999 multiletter control sequences out of 15000+200000
+ 8000 multiletter control sequences out of 15000+200000
  12165 words of font info for 43 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
  36i,14n,38p,885b,339s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -638,9 +638,9 @@ msy7.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti
 10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti12
 .pfb>
 Output written on ClusterRobustTesting_supplementary_materials.pdf (29 pages, 4
-30190 bytes).
+27087 bytes).
 PDF statistics:
- 385 PDF objects out of 1000 (max. 8388607)
+ 362 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  116 words of extra memory for PDF output out of 10000 (max. 10000000)
 

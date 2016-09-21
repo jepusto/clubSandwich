@@ -147,8 +147,8 @@ MacKinnon, J.~G.  \harvardyearleft 2015\harvardyearright , `{Wild cluster
   bootstrap confidence intervals}', {\em L'Actualite economique, Revue
   d'analyse economique} {\bf 91}(1-2),~11--33.
 
-\harvarditem{Mackinnon \harvardand\ Webb}{2016}{MacKinnon2016wild}
-Mackinnon, J.~G. \harvardand\ Webb, M.~D.  \harvardyearleft
+\harvarditem{MacKinnon \harvardand\ Webb}{2016}{MacKinnon2016wild}
+MacKinnon, J.~G. \harvardand\ Webb, M.~D.  \harvardyearleft
   2016\harvardyearright , `{Wild bootstrap inference for wildly different
   cluster sizes}', {\em Journal of Applied Econometrics} {\bf forthcoming}.
 
@@ -175,6 +175,12 @@ McCaffrey, D.~F., Bell, R.~M. \harvardand\ Botts, C.~H.  \harvardyearleft
   2001\harvardyearright , {Generalizations of biased reduced linearization},
   {\em in} `Proceedings of the Annual Meeting of the American Statistical
   Association', number 1994.
+
+\harvarditem{Mehrotra}{1997}{Mehrotra1997improving}
+Mehrotra, D.~V.  \harvardyearleft 1997\harvardyearright , `{Improving the
+  brown-forsythe solution to the generalized behrens-fisher problem}', {\em
+  Communications in Statistics - Simulation and Computation} {\bf
+  26}(3),~1139--1145.
 
 \harvarditem{Nel \harvardand\ van~der Merwe}{1986}{Nel1986solution}
 Nel, D. \harvardand\ van~der Merwe, C.  \harvardyearleft 1986\harvardyearright
