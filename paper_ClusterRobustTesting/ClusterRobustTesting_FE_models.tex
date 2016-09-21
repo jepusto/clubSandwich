@@ -121,11 +121,11 @@ New York, NY, USA 10027. Email: tipton@tc.columbia.edu}
 
 \begin{abstract}
 In panel data models and other regressions with unobserved effects, fixed effects estimation is often paired with cluster-robust variance estimation (CRVE) in order to account for heteroskedasticity and un-modeled dependence among the errors. 
-Although asymptotically consist, CRVE can be biased downward when the number of clusters is small, leading to hypothesis tests with rejection rates that are too high. 
+Although asymptotically consistent, CRVE can be biased downward when the number of clusters is small, leading to hypothesis tests with rejection rates that are too high. 
 More accurate tests can be constructed using bias-reduced linearization (BRL), which corrects the CRVE based on a working model, in conjunction with a Satterthwaite approximation for t-tests. 
 We propose a generalization of BRL that can be applied in models with arbitrary sets of fixed effects, where the original BRL method is undefined, and describe how to apply the method when the regression is estimated after absorbing the fixed effects. 
 We also propose a small-sample test for multiple-parameter hypotheses, which generalizes the Satterthwaite approximation for t-tests. 
-In simulations covering a wide range of scenarios, we find that conventional cluster-robust Wald tests can severely over-reject while the proposed small-sample test maintains Type I error close to nominal levels. 
+In simulations covering a wide range of scenarios, we find that the conventional cluster-robust Wald test can severely over-reject while the proposed small-sample test maintains Type I error close to nominal levels. 
 The proposed methods are implemented in an R package called clubSandwich. 
 This article has online supplementary materials.
 \end{abstract}
@@ -162,7 +162,7 @@ In particular, they demonstrated that small-sample corrections for t-tests imple
 \citet{Bell2002bias} proposed a method that improves the small-sample properties of CRVEs \citep[see also][]{McCaffrey2001generalizations}. 
 The method, called bias-reduced linearization (BRL), entails adjusting the CRVE so that it is exactly unbiased under a working model specified by the analyst, while also remaining asymptotically consistent under arbitrary true variance structures. 
 Simulations reported by \citet{Bell2002bias} demonstrate that the BRL correction serves to reduce the bias of the CRVE even when the working model is misspecified. 
-The same authors also proposed and studied small-sample corrections to single-parameter hypothesis tests using the BRL variance estimator, based on Satterthwaite \citep{Bell2002bias} or saddlepoint approximations \citep{McCaffrey2006improved}. 
+The same authors also proposed small-sample corrections to single-parameter hypothesis tests using the BRL variance estimator, based on Satterthwaite \citep{Bell2002bias} or saddlepoint approximations \citep{McCaffrey2006improved}. 
 In an analysis of a longitudinal cluster-randomized trial with 35 clusters, \citet{Angrist2009effects} observed that the BRL correction makes a difference for inferences. 
 
 Despite a growing body of evidence that BRL performs well \citep[e.g.,][]{Imbens2015robust}, several problems with the method hinder its wider application. 
@@ -259,8 +259,9 @@ The form of the adjustment matrices parallels those of the heteroskedasticity-co
 The original CRVE, described by \citet{Liang1986longitudinal}, uses $\bm{A}_i = \bm{I}_i$, an $n_i \times n_i$ identity matrix. 
 Following \citet{Cameron2015practitioners}, we refer to this estimator as CR0. 
 This estimator is biased towards zero because the cross-product of the residuals $\bm{e}_i \bm{e}_i'$ tends to under-estimate the true variance $\bs\Sigma_i$ in cluster $i$.
-A rough bias adjustment is to take $\bm{A}_i = c\bm{I}_i$, where $c = \sqrt{(m/(m-1))}$; we denote this adjusted estimator as CR1. Some functions in Stata use a slightly different correction factor $c_S = \sqrt{(m N)/[(m - 1)(N - p)]}$; we will refer to the adjusted estimator using $c_S$ as CR1S. When $N >> p$, $c_S \approx \sqrt{m/(m-1)}$ and so CR1 and CR1S will be very similar.
-The CR1 and CR1S estimators are now commonly used in empirical applications.
+A rough bias adjustment is to take $\bm{A}_i = c\bm{I}_i$, where $c = \sqrt{(m/(m-1))}$; we denote this adjusted estimator as CR1. Some functions in Stata use a slightly different correction factor $c_S = \sqrt{(m N)/[(m - 1)(N - p)]}$; we will refer to the adjusted estimator using $c_S$ as CR1S. When $N >> p$, $c_S \approx \sqrt{m/(m-1)}$ and so CR1 and CR1S will be very similar. 
+However, CR1 and CR1S can differ quite substantially for models with a large number of fixed effects and small within-cluster sample size; recent guidance emphasizes that CR1S is not appropriate for this scenario \citep{Cameron2015practitioners}.
+The CR1 and CR1S estimators are commonly used in empirical applications.
 
 Use of these adjustments still tends to under-estimate the true variance of $\hat{\bs\beta}$ because the degree of bias depends not only on the number of clusters $m$, but also on skewness of the covariates and unbalance across clusters \citep{Carter2013asymptotic, MacKinnon2013thirty, Cameron2015practitioners, Young2016improved}. 
 A more principled approach to bias correction would take into account the features of the covariates in $\bm{X}$. 
@@ -364,14 +365,14 @@ In contrast, if the working model proposed by \citet{Imbens2015robust} is instea
 \section{HYPOTHESIS TESTING}
 \label{sec:testing}
 
-The CR2 correction produces a CRVE that has reduced bias (compared to other CRVEs) when the number of clusters is small, leading to more accurate standard errors. However, standard errors are of limited inherent interest. Rather, their main use is for the construction of hypothesis tests and confidence intervals, which are typically based on Wald-type test statistics.
+The CR2 correction produces a CRVE that has reduced bias (compared to other CRVEs) when the number of clusters is small, leading to more accurate standard errors. However, standard errors are of limited inherent interest. Rather, their main use is for the construction of hypothesis tests and confidence intervals, which are often based on Wald-type test statistics.
 
 Cluster-robust Wald tests are justified on an asymptotic basis as the number of clusters grows large. 
-Evidence from a wide variety of contexts indicates that the asymptotic limiting distribution of robust Wald statistics may be a poor approximation when the number of clusters is small, even if corrections such as CR2 or CR3 are employed \citep{Bell2002bias, Bertrand2004how, Cameron2008bootstrap}. 
+Evidence from a wide variety of contexts indicates that the asymptotic limiting distribution of robust Wald statistics can be a poor approximation when the number of clusters is small, even if corrections such as CR2 or CR3 are employed \citep{Bell2002bias, Bertrand2004how, Cameron2008bootstrap}. 
 Like the bias of the CRVE estimator itself, the accuracy of the asymptotic approximations depends on design features such as the degree of imbalance across clusters, skewness or leverage of the covariates, and the similarity of cluster sizes \citep[][\maskcitealp{Tipton2015small-F}]{McCaffrey2001generalizations, MacKinnon2016wild, Carter2013asymptotic}. 
 This suggests that, if hypothesis tests are to achieve accurate rejection rates in small samples, they should account for features of the design matrix.
 
-In this section, we develop a general method for conducting hypothesis tests based on CRVEs. We consider linear constraints on $\bs\beta$, where the null hypothesis has the form $H_0: \bm{C}\bs\beta = \bm{d}$ for fixed $q \times r$ matrix $\bm{C}$ and $q \times 1$ vector $\bm{d}$. 
+In this section, we develop a method for testing linear constraints on $\bs\beta$, where the null hypothesis has the form $H_0: \bm{C}\bs\beta = \bm{d}$ for fixed $q \times r$ matrix $\bm{C}$ and $q \times 1$ vector $\bm{d}$. 
 The cluster-robust Wald statistic is then
 \begin{equation}
 \label{eq:Wald_stat}
@@ -645,7 +646,7 @@ Third, we test for whether program effects in the upper half of the prior achiev
 Finally, we conduct a joint test for whether program effects in either half of the prior achievement distribution are moderated by school sector ($H_0: \bs\beta_1 = \bs\beta_2 = \bs\beta_3$, with $q = 4$). 
 
 % latex table generated in R 3.3.1 by xtable 1.8-2 package
-% Tue Sep 20 23:08:52 2016
+% Tue Sep 20 23:10:52 2016
 \begin{table}[bth]
 \centering
 \caption{Tests of treatment effects in the Achievement Awards Demonstration} 
@@ -699,7 +700,7 @@ The parameter $\bs\delta$ captures the difference between the between-cluster an
 With this setup, the artificial Hausman test amounts to testing the null hypothesis that $\bs\delta = \bm{0}$, where $\bs\delta$ is estimated using RE.  
 
 % latex table generated in R 3.3.1 by xtable 1.8-2 package
-% Tue Sep 20 23:08:53 2016
+% Tue Sep 20 23:10:52 2016
 \begin{table}[bth]
 \centering
 \caption{Tests of effects of minimum legal drink age and Hausman specification test} 
