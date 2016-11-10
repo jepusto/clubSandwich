@@ -3,10 +3,21 @@
 # Satterthwaite approximation
 #---------------------------------------------
 
-Satterthwaite <- function(beta, SE, S_array) {
+Satterthwaite_old <- function(beta, SE, S_array) {
   
   V_coef <- 2 * apply(S_array, 1, function(s) sum(crossprod(s)^2))
   E_coef <- apply(S_array, 1, function(s) sum(s * s))
+  
+  df <- 2 * E_coef^2 / V_coef
+  p_val <- 2 * pt(abs(beta / SE), df = df, lower.tail = FALSE)
+  data.frame(df = df, p_Satt = p_val)
+}
+
+Satterthwaite <- function(beta, SE, P_array) {
+  
+  p <- length(beta)
+  V_coef <- 2 * sapply(1:p, function(x) sum(P_array[x,x,,]^2))
+  E_coef <- sapply(1:p, function(x) sum(diag(P_array[x,x,,])))
 
   df <- 2 * E_coef^2 / V_coef
   p_val <- 2 * pt(abs(beta / SE), df = df, lower.tail = FALSE)
@@ -33,8 +44,13 @@ saddlepoint_pval <- function(t, Q) {
   c(s = s, p_val = p_val)
 }
 
-saddlepoint <- function(t_stats, S_array) {
+saddlepoint_old <- function(t_stats, S_array) {
   saddles <- sapply(1:length(t_stats), function(i) saddlepoint_pval(t = t_stats[i], Q = crossprod(S_array[i,,])))
+  data.frame(saddlepoint = saddles["s",], p_saddle = saddles["p_val",])
+}
+
+saddlepoint <- function(t_stats, P_array) {
+  saddles <- sapply(1:length(t_stats), function(i) saddlepoint_pval(t = t_stats[i], Q = P_array[i,i,,]))
   data.frame(saddlepoint = saddles["s",], p_saddle = saddles["p_val",])
 }
 
@@ -86,7 +102,7 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", ...) {
   SE <- sqrt(diag(vcov))
   
   if (any(c("Satterthwaite","saddlepoint") %in% test)) {
-    S_array <- get_S_array(obj, vcov)
+    P_array <- get_P_array(obj, vcov)
   }
   
   result <- data.frame(beta = beta)
@@ -100,12 +116,12 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", ...) {
     result$p_t[!beta_NA] <-  2 * pt(abs(beta[!beta_NA] / SE), df = J - 1, lower.tail = FALSE)
   }
   if ("Satterthwaite" %in% test) {
-    Satt <- Satterthwaite(beta = beta[!beta_NA], SE = SE, S_array = S_array)
+    Satt <- Satterthwaite(beta = beta[!beta_NA], SE = SE, P_array = P_array)
     result$df[!beta_NA] <- Satt$df
     result$p_Satt[!beta_NA] <- Satt$p_Satt
   }
   if ("saddlepoint" %in% test) {
-    saddle <- saddlepoint(t_stats = beta[!beta_NA] / SE, S_array = S_array)
+    saddle <- saddlepoint(t_stats = beta[!beta_NA] / SE, P_array = P_array)
     result$saddlepoint[!beta_NA] <- saddle$saddlepoint
     result$p_saddle[!beta_NA] <-saddle$p_saddle
   }
