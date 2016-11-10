@@ -25,11 +25,12 @@ dat <- within(dat, {
 
 obj <- plm(y ~ trt, data = dat, effect = "individual", index = c("matched","sid"))
 summary(obj)
+vcovHC(obj, method = "arellano", type = "HC0")
+vcovCR(obj, cluster = dat$match, type = "CR0")
 
 coef_test(obj, vcov = "CR0", cluster = dat$school, test = "z")
 coef_test(obj, vcov = "CR2", cluster = dat$school, test = "z")
 system.time(cr0_school <- coef_test(obj, vcov = "CR0", cluster = dat$school, test = "Satterthwaite"))
-system.time(cr0_match <- coef_test(obj, vcov = "CR0", cluster = "individual", test = "Satterthwaite"))
 
 vcr <- vcovCR(obj, cluster = dat$school, type = "CR2")
 
