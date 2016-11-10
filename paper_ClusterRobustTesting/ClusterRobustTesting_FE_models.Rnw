@@ -10,7 +10,7 @@
 \usepackage{multirow}
 
 % NOTE: To produce blinded version, replace "0" with "1" below.
-\newcommand{\blind}{0}
+\newcommand{\blind}{1}
 
 % DON'T change margins - should be 1 inch all around.
 \addtolength{\oddsidemargin}{-.5in}%
@@ -725,6 +725,10 @@ We join \citet{Imbens2015robust} in arguing that the CR2 estimator and correspon
 Because the performance of standard CRVE methods depends on features of the study design, the total number of clusters in the data is an insufficient guide to whether small-sample corrections are needed. 
 Instead, the clearest way to determine whether small-sample corrections are needed is simply to calculate them.
 
+The idea of developing small-sample adjustments based on a working model may seem strange to analysts accustomed to using CRVE---after all, the whole point of clustering standard errors is to avoid making assumptions about the error structure.
+However, simulation studies reported here and elsewhere \maskcitep{Tipton2015small-t, Tipton2015small-F} have demonstrated that the approach is actually robust to a high degree of misspecification in the working model. 
+Furthermore, while the working model provides necessary scaffolding when the number of clusters is small, its  influence tends to fall away as the number of clusters increases, so that the CR2 estimator and AHT maintain the same asymptotic robustness as standard CRVE methods. 
+
 The proposed AHT test involves two adjustments: use of the CR2 adjustment for the variance estimator and use of estimated degrees of freedom. 
 Our simulation results and empirical examples illustrate that the degrees of freedom adjustment has a relatively larger influence on small-sample performance.
 Even when used with the CR1 adjustment matrices, the degrees of freedom adjustment leads to much more accurate rejection rates, although using the CR2 estimator (and accounting for absorption of fixed effects) appears to be necessary to fully maintain the nominal level of the test. 
@@ -733,20 +737,16 @@ The estimated degrees of freedom are indicative of the precision of the standard
 We therefore recommend that the degrees of freedom be reported along with standard errors and $p$-values whenever the method is applied.
 
 It is interesting to note that the consequences of accounting for fixed effects estimation with CR2 runs counter to how fixed effects enter into other small-sample corrections. 
-In particular, including the fixed effect parameter dimension in the CR1S small sample adjustment can lead to bias when the per-cluster sample size is small \citep{Cameron2015practitioners}, whereas accounting for the fixed effects with the CR2 estimator \textit{improves} the accuracy of test rejection rates, although the differences are comparatively minor. 
-Accounting for fixed effects also makes hypothesis test results invariant to how the regression is calculated (whether by LSDV or after absorption), which we see as a useful feature for ensuring the replicability of an analysis. 
-
-The idea of developing small-sample adjustments based on a working model may seem strange to analysts accustomed to using CRVE---after all, the whole point of clustering standard errors is to avoid making assumptions about the error structure.
-However, simulation studies reported here and elsewhere \maskcitep{Tipton2015small-t, Tipton2015small-F} have demonstrated that the approach is actually robust to a high degree of misspecification in the working model. 
-Furthermore, while the working model provides necessary scaffolding when the number of clusters is small, its  influence tends to fall away as the number of clusters increases, so that the CR2 estimator and AHT maintain the same asymptotic robustness as standard CRVE methods. 
+In particular, including the fixed effect parameter dimension in the CR1S small sample adjustment can lead to bias when the per-cluster sample size is small \citep{Cameron2015practitioners}, whereas accounting for the fixed effects with the CR2 estimator \textit{improves} the accuracy of test rejection rates, although the difference is comparatively minor. 
+Accounting for fixed effects also makes hypothesis test results invariant to how the regression is calculated (whether by LSDV or after absorption), which we see as a useful feature for ensuring the replicability of one's analysis. 
 
 One limitation of our approach is that the rejection rates of the AHT tests tend to fall below nominal levels when the number of clusters is very small and the design is unbalanced. 
 The under-rejection can be severe for tests of multi-dimensional constraints (e.g., $q = 3$-dimensional hypotheses with $m = 15$ clusters in an unbalanced difference-in-differences design). 
-In principle, this problem could arise either because the proposed degrees of freedom estimator becomes less accurate or because the sampling distribution of the test statistic is no longer well-approximated by Hotelling's $T^2$ distribution at all. 
+In principle, this problem could arise either because the proposed degrees of freedom estimator loses accuracy under these conditions or because the sampling distribution of the test statistic is no longer well-approximated by Hotelling's $T^2$ distribution at all. 
 In previous work, we investigated several other methods of approximating the degrees of freedom, but found none that were more accurate than the method describe in the present paper \citep{Tipton2015small-F}. 
-Thus, future work may need to focus on other approximations to the reference distribution itself, such as an F distribution in which both the numerator and denominator degrees of freedom are estimated \citep[cf.][]{Mehrotra1997improving} or computationally intensive approximations such as the cluster-wild bootstrap \citep{MacKinnon2016wild}.   
+Thus, future work may need to focus on other approximations to the reference distribution itself, such as an F distribution in which both the numerator and denominator degrees of freedom are estimated \citep[cf.][]{Mehrotra1997improving} or computational approximations such as the cluster-wild bootstrap \citep{MacKinnon2016wild}.   
 
-Another outstanding limitation of the CR2 variance estimator is that it can become computationally costly (or even infeasible) when the within-cluster sample sizes are large \citep{Mackinnon2015wildCIs}. 
+Another outstanding limitation of the CR2 variance estimator is that it is costly (or even infeasible) to compute when the within-cluster sample sizes are large \citep{Mackinnon2015wildCIs}. 
 For example, \citet{Bertrand2004how} analyzed micro-level data from a 21-year panel of current population survey data, with clustering by state. Their data included some state-level clusters with over $n_i = 10,000$ individual observations. 
 The CR2 adjustment matrices have dimension $n_i \times n_i$, and would be very expensive to compute in this application. 
 Methods for improving the computational efficiency of the CR2 variance estimator (or alternative estimators that have similar performance to CR2), should be investigated further. 

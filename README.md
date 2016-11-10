@@ -1,7 +1,7 @@
 [![Travis-CI Build Status](https://travis-ci.org/jepusto/clubSandwich.svg?branch=master)](https://travis-ci.org/jepusto/clubSandwich)
 [![Coverage Status](https://img.shields.io/codecov/c/github/jepusto/clubSandwich/master.svg)](https://codecov.io/github/jepusto/clubSandwich?branch=master)
-[![](http://www.r-pkg.org/badges/version/clubSandwich)](http://cran.rstudio.com/web/packages/clubSandwich/index.html)
-[![](http://cranlogs.r-pkg.org/badges/grand-total/clubSandwich)](http://cran.rstudio.com/web/packages/clubSandwich/index.html)
+[![](http://www.r-pkg.org/badges/version/clubSandwich)](https://CRAN.R-project.org/package=clubSandwich)
+[![](http://cranlogs.r-pkg.org/badges/grand-total/clubSandwich)](https://CRAN.R-project.org/package=clubSandwich)
 
 # clubSandwich
 
