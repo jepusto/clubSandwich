@@ -4,7 +4,7 @@ devtools::load_all()
 rm(list=ls())
 set.seed(20161109)
 
-Nt <- 500
+Nt <- 200
 Cper <- 50
 N <- (1 + Cper) * Nt
 
@@ -13,36 +13,79 @@ dat <- data.frame(
   sid = 1:51,
   trt = rep(c(1, rep(0,Cper)), Nt),
   matched = rep(1:Nt, each = Cper + 1),
-  school = sample(5:1000, size = N, replace = TRUE)
+  school = sample(5:100, size = N, replace = TRUE)
 )
 
 dat <- within(dat, {
   school[trt==1] <- sample(1:4, size = Nt, replace = TRUE)
   matched <- factor(matched)
   school <- factor(school)
+  x <- rnorm(N)
+  sex <- sample(0:1, size = N, replace = TRUE)
   y <- trt + rnorm(nlevels(school))[school] + rnorm(N)
 })
 
-obj <- plm(y ~ trt, data = dat, effect = "individual", index = c("matched","sid"))
+obj <- plm(y ~ trt + x, data = dat, effect = "individual", index = c("matched","sid"))
 summary(obj)
-vcovHC(obj, method = "arellano", type = "HC0")
-vcovCR(obj, cluster = dat$match, type = "CR0")
+system.time(V_cr2 <- vcovCR(obj, cluster = dat$school, type = "CR2"))
+system.time(coef_test(obj, vcov = V_cr2, test = "Satterthwaite"))
 
-coef_test(obj, vcov = "CR0", cluster = dat$school, test = "z")
-coef_test(obj, vcov = "CR2", cluster = dat$school, test = "z")
-system.time(cr0_school <- coef_test(obj, vcov = "CR0", cluster = dat$school, test = "Satterthwaite"))
-
-vcr <- vcovCR(obj, cluster = dat$school, type = "CR2")
 
 cluster <- dat$school
 type <- "CR2"
 target <- NULL
 inverse_var <- is.null(target)
 form <- "sandwich"
+test <- "Satterthwaite"
+
 obj$na.action <- attr(obj$model, "na.action")
 vcov <- vcov_CR(obj, cluster = cluster, 
                 type = type, 
                 target = target, 
                 inverse_var = inverse_var, 
                 form = form)
-test <- "Satterthwaite"
+
+beta <- coef_CS(obj)
+beta_NA <- is.na(beta)
+SE <- sqrt(diag(vcov))
+
+system.time(S_array <- get_S_array(obj, vcov))
+
+system.time(P_array <- get_P_array(obj, vcov))
+attr(vcov, "inverse_var") <- FALSE
+system.time(get_P_array(obj, vcov))
+attr(vcov, "inverse_var") <- TRUE
+
+Satterthwaite_old(beta, SE, S_array)
+Satterthwaite(beta, SE, P_array)
+
+saddlepoint_old(t_stats = beta[!beta_NA] / SE, S_array = S_array)
+saddlepoint(t_stats = beta[!beta_NA] / SE, P_array = P_array)
+
+
+constraints <- 1:2
+C_mat <- get_constraint_mat(obj, constraints)
+test <- c("chi-sq","Naive-F","HTA","HTB","HTZ","EDF","EDT")
+q <- nrow(C_mat)
+N <- dim(S_array)[2]
+J <- dim(S_array)[3]
+S_array <- array(apply(S_array, 3, function(s) C_mat %*% s), dim = c(q, N, J))
+Omega <- apply(array(apply(S_array, 3, tcrossprod), dim = c(q,q,J)), 1:2, sum)
+Omega_nsqrt <- matrix_power(Omega, -1/2)
+
+Cov_arr_old <- covariance_array_old(S_array, Omega_nsqrt, q = q, J = J)
+Cov_arr <- covariance_array(P_array, Omega_nsqrt)
+identical(Cov_arr, Cov_arr_old)
+all.equal(Cov_arr, Cov_arr_old)
+
+tot_var_old <- total_variance_mat_old(S_array, Omega_nsqrt, q = q, J = J)
+tot_var <- total_variance_mat(P_array, Omega_nsqrt)
+identical(tot_var, tot_var_old)
+all.equal(tot_var, tot_var_old)
+tot_var / tot_var_old
+
+Wald_testing(C_mat, beta, vcov, test, P_array)
+
+obj <- plm(y ~ trt * sex + x, data = dat, effect = "individual", index = c("matched","sid"))
+summary(obj)
+coef_test(obj, vcov = "CR2", cluster = dat$school)
