@@ -198,6 +198,7 @@ Wald_test <- function(obj, constraints, vcov, test = "HTZ", ...) {
 }
 
 Wald_testing <- function(C_mat, beta, vcov, test, P_array) {
+  
   q <- nrow(C_mat)
   
   if (any(c("chi-sq","Naive-F","HTA","HTB","HTZ","EDF","EDT") %in% test)) {
@@ -258,9 +259,10 @@ Wald_testing <- function(C_mat, beta, vcov, test, P_array) {
   
   if ("EDF" %in% test | "EDT" %in% test) {
     spec <- eigen(Omega_nsqrt %*% C_mat %*% vcov %*% t(C_mat) %*% t(Omega_nsqrt))
-    D_array <- array(apply(S_array, 3, function(s) t(spec$vectors) %*% Omega_nsqrt %*% s), dim = dim(S_array))
-    df_eig <- 1 / apply(D_array, 1, function(d) sum(crossprod(d)^2))
-    
+    df_eig <- 1 / apply(t(spec$vectors) %*% Omega_nsqrt, 1, 
+                        function(x) sum(apply(P_array, 3:4, 
+                                              function(P) (t(x) %*% P %*% x)^2)))
+
     if ("EDF" %in% test) {
       df4 <- pmax(df_eig, 4.1)
       EQ <- sum(df4 / (df4 - 2))

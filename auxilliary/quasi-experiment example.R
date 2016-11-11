@@ -27,6 +27,9 @@ dat <- within(dat, {
 
 obj <- plm(y ~ trt + x, data = dat, effect = "individual", index = c("matched","sid"))
 summary(obj)
+system.time(V_cr2 <- vcovCR(obj, cluster = dat$school, type = "CR2"))
+system.time(coef_test(obj, vcov = V_cr2, test = "Satterthwaite"))
+
 
 cluster <- dat$school
 type <- "CR2"
@@ -46,7 +49,7 @@ beta <- coef_CS(obj)
 beta_NA <- is.na(beta)
 SE <- sqrt(diag(vcov))
 
-S_array <- get_S_array(obj, vcov)
+system.time(S_array <- get_S_array(obj, vcov))
 
 system.time(P_array <- get_P_array(obj, vcov))
 attr(vcov, "inverse_var") <- FALSE
@@ -69,6 +72,7 @@ J <- dim(S_array)[3]
 S_array <- array(apply(S_array, 3, function(s) C_mat %*% s), dim = c(q, N, J))
 Omega <- apply(array(apply(S_array, 3, tcrossprod), dim = c(q,q,J)), 1:2, sum)
 Omega_nsqrt <- matrix_power(Omega, -1/2)
+
 Cov_arr_old <- covariance_array_old(S_array, Omega_nsqrt, q = q, J = J)
 Cov_arr <- covariance_array(P_array, Omega_nsqrt)
 identical(Cov_arr, Cov_arr_old)
@@ -80,6 +84,7 @@ identical(tot_var, tot_var_old)
 all.equal(tot_var, tot_var_old)
 tot_var / tot_var_old
 
+Wald_testing(C_mat, beta, vcov, test, P_array)
 
 obj <- plm(y ~ trt * sex + x, data = dat, effect = "individual", index = c("matched","sid"))
 summary(obj)
