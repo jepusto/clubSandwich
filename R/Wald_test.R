@@ -122,7 +122,7 @@ Hotelling_Tsq <- function(Q, q, nu) {
 #'   
 #' @export
 
-Wald_test <- function(obj, constraints, vcov, test = "HTZ", ...) {
+Wald_test <- function(obj, constraints, vcov, test = "HTZ", verbose = FALSE, ...) {
   
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!("clubSandwich" %in% class(vcov))) stop("Variance-covariance matrix must be a clubSandwich.")
@@ -131,7 +131,7 @@ Wald_test <- function(obj, constraints, vcov, test = "HTZ", ...) {
   
   beta <- na.omit(coef_CS(obj))
   
-  P_array <- get_P_array(obj, vcov)
+  P_array <- get_P_array(obj, vcov, verbose = verbose)
   
   if (is.list(constraints)) {
     C_mats <- lapply(constraints, get_constraint_mat, obj = obj)

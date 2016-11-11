@@ -72,7 +72,7 @@ saddlepoint <- function(t_stats, P_array) {
 #'   
 #' @export
 
-coef_test <- function(obj, vcov, test = "Satterthwaite", ...) {
+coef_test <- function(obj, vcov, test = "Satterthwaite", verbose = FALSE, ...) {
 
   beta <- coef_CS(obj)
   beta_NA <- is.na(beta)
@@ -87,7 +87,7 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", ...) {
   SE <- sqrt(diag(vcov))
   
   if (any(c("Satterthwaite","saddlepoint") %in% test)) {
-    P_array <- get_P_array(obj, vcov)
+    P_array <- get_P_array(obj, vcov, verbose = verbose)
   }
   
   result <- data.frame(beta = beta)

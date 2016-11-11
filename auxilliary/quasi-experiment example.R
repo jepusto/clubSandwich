@@ -4,6 +4,7 @@ devtools::load_all()
 rm(list=ls())
 set.seed(20161109)
 
+Nschools <- 600
 Nt <- 500
 Cper <- 50
 N <- (1 + Cper) * Nt
@@ -13,7 +14,7 @@ dat <- data.frame(
   sid = 1:51,
   trt = rep(c(1, rep(0,Cper)), Nt),
   matched = rep(1:Nt, each = Cper + 1),
-  school = sample(5:100, size = N, replace = TRUE)
+  school = sample(5:Nschools, size = N, replace = TRUE)
 )
 
 dat <- within(dat, {
@@ -22,18 +23,20 @@ dat <- within(dat, {
   school <- factor(school)
   x <- rnorm(N)
   sex <- sample(0:1, size = N, replace = TRUE)
-  y <- trt + rnorm(nlevels(school))[school] + rnorm(N)
+  y <- trt + rnorm(Nschools)[school] + rnorm(N)
 })
+table(table(dat$school))
 
 obj <- plm(y ~ trt + x, data = dat, effect = "individual", index = c("matched","sid"))
+
 summary(obj)
 system.time(coef_test(obj, vcov = "CR1", cluster = dat$school, test = "naive-t"))
 system.time(coef_test(obj, vcov = "CR2", cluster = dat$school, test = "naive-t"))
-system.time(coef_test(obj, vcov = "CR1", cluster = dat$school, test = "Satterthwaite"))
-system.time(coef_test(obj, vcov = "CR2", cluster = dat$school, test = "Satterthwaite"))
+system.time(coef_test(obj, vcov = "CR1", cluster = dat$school, test = "Satterthwaite", verbose = TRUE))
+system.time(coef_test(obj, vcov = "CR2", cluster = dat$school, test = "Satterthwaite", verbose = TRUE))
 
 system.time(V_cr2 <- vcovCR(obj, cluster = dat$school, type = "CR2"))
-system.time(coef_test(obj, vcov = V_cr2, test = "Satterthwaite"))
+system.time(coef_test(obj, vcov = V_cr2, test = "Satterthwaite", verbose = TRUE))
 
 
 cluster <- dat$school
@@ -56,7 +59,7 @@ SE <- sqrt(diag(vcov))
 
 system.time(S_array <- get_S_array(obj, vcov))
 
-system.time(P_array <- get_P_array(obj, vcov))
+system.time(P_array <- get_P_array(obj, vcov, verbose = TRUE))
 attr(vcov, "inverse_var") <- FALSE
 system.time(get_P_array(obj, vcov))
 attr(vcov, "inverse_var") <- TRUE
