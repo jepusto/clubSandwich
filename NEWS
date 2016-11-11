@@ -3,6 +3,7 @@ clubSandwich 0.2.1.9000
 * vcovCR() gains a 'form' argument to obtain just the meat of the sandwich, or to use a user-specified bread matrix. 
 * vcovCR() is now calculated using bread(), and carries attributes for bread, est_mat, and adjustment matrices.
 * Added bread() methods for all supported model classes.
+* Refactored internal functions for degrees of freedom calculation to improve speed and memory usage.
 * Bug fixes:
   - updated nobs.plm method to handle first-differenced models
   

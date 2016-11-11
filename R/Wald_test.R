@@ -42,42 +42,6 @@ get_constraint_mat <- function(obj, constraints) {
 # calculate a covariance array
 #--------------------------------------------------
 
-sub_three <- function(arr, subset) {
-  arr_sub <- arr[,,subset]
-  dim_three <- if (length(subset)==1) NULL else length(subset)
-  arr_dim <- c(dim(arr)[1:2], dim_three)
-  dim(arr_sub) <- arr_dim
-  arr_sub
-}
-
-covariance_array_old <- function(S_array, Omega_nsqrt, q = nrow(Omega_nsqrt), J = dim(S_array)[3]) {
-  
-  B_array <- array(apply(S_array, 3, function(s) Omega_nsqrt %*% s), dim = dim(S_array))
-  B_jk <- array(NA, dim = c(J, J, q, q))
-  
-  if (q > 1) {
-    for (j in 1:J) for (k in 1:j) {
-      L <- sub_three(B_array,j) %*% t(sub_three(B_array,k))
-      B_jk[j,k,,] <- L
-      B_jk[k,j,,] <- t(L)
-    }
-  } else B_jk[,,1,1] <- crossprod(B_array[1,,])
-  
-  Cov_arr <- array(NA, dim = rep(q, 4))
-  for (s in 1:q) for (t in 1:s) for (u in 1:s) for (v in 1:(ifelse(u==s,t,u))) {
-    temp <- sum(B_jk[,,s,v] * B_jk[,,t,u]) + sum(B_jk[,,s,u] * B_jk[,,t,v])
-    Cov_arr[s,t,u,v] <- temp
-    Cov_arr[s,t,v,u] <- temp
-    Cov_arr[t,s,u,v] <- temp
-    Cov_arr[t,s,v,u] <- temp
-    Cov_arr[u,v,s,t] <- temp
-    Cov_arr[u,v,t,s] <- temp
-    Cov_arr[v,u,s,t] <- temp
-    Cov_arr[v,u,t,s] <- temp
-  }
-  Cov_arr
-}
-
 covariance_array <- function(P_array, Omega_nsqrt, q = nrow(Omega_nsqrt)) {
   
   B_jk <- array(apply(P_array, 3:4, function(p) Omega_nsqrt %*% p %*% Omega_nsqrt), dim = dim(P_array))
@@ -100,23 +64,6 @@ covariance_array <- function(P_array, Omega_nsqrt, q = nrow(Omega_nsqrt)) {
 #---------------------------------------------------------
 # calculate total variance of clubSandwich estimator
 #---------------------------------------------------------
-
-total_variance_mat_old <- function(S_array, Omega_nsqrt, q = nrow(Omega_nsqrt), J = dim(S_array)[3]) {
-  B_array <- array(apply(S_array, 3, function(s) Omega_nsqrt %*% s), dim = dim(S_array))
-  B_jk <- array(NA, dim = c(J, J, q, q))
-  for (j in 1:J) for (k in 1:j) {
-    L <- sub_three(B_array,j) %*% t(sub_three(B_array,k))
-    B_jk[j,k,,] <- L
-    B_jk[k,j,,] <- t(L)
-  }
-  var_mat <- matrix(NA, q, q)
-  for (s in 1:q) for (t in 1:s) {
-    temp <- sum(B_jk[,,s,t] * B_jk[,,t,s]) + sum(B_jk[,,s,s] * B_jk[,,t,t])
-    var_mat[s,t] <- temp
-    var_mat[t,s] <- temp
-  }
-  var_mat
-}
 
 total_variance_mat <- function(P_array, Omega_nsqrt, q = nrow(Omega_nsqrt)) {
   B_jk <- array(apply(P_array, 3:4, function(p) Omega_nsqrt %*% p %*% Omega_nsqrt), dim = dim(P_array))

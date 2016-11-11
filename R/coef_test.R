@@ -3,16 +3,6 @@
 # Satterthwaite approximation
 #---------------------------------------------
 
-Satterthwaite_old <- function(beta, SE, S_array) {
-  
-  V_coef <- 2 * apply(S_array, 1, function(s) sum(crossprod(s)^2))
-  E_coef <- apply(S_array, 1, function(s) sum(s * s))
-  
-  df <- 2 * E_coef^2 / V_coef
-  p_val <- 2 * pt(abs(beta / SE), df = df, lower.tail = FALSE)
-  data.frame(df = df, p_Satt = p_val)
-}
-
 Satterthwaite <- function(beta, SE, P_array) {
   
   p <- length(beta)
@@ -42,11 +32,6 @@ saddlepoint_pval <- function(t, Q) {
     p_val <- 0.5 - sum(g^3) / (3 * sqrt(pi) * sum(g^2)^(3/2))
   }
   c(s = s, p_val = p_val)
-}
-
-saddlepoint_old <- function(t_stats, S_array) {
-  saddles <- sapply(1:length(t_stats), function(i) saddlepoint_pval(t = t_stats[i], Q = crossprod(S_array[i,,])))
-  data.frame(saddlepoint = saddles["s",], p_saddle = saddles["p_val",])
 }
 
 saddlepoint <- function(t_stats, P_array) {

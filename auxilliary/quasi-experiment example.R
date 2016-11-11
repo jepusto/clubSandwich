@@ -4,7 +4,7 @@ devtools::load_all()
 rm(list=ls())
 set.seed(20161109)
 
-Nt <- 200
+Nt <- 500
 Cper <- 50
 N <- (1 + Cper) * Nt
 
@@ -27,6 +27,11 @@ dat <- within(dat, {
 
 obj <- plm(y ~ trt + x, data = dat, effect = "individual", index = c("matched","sid"))
 summary(obj)
+system.time(coef_test(obj, vcov = "CR1", cluster = dat$school, test = "naive-t"))
+system.time(coef_test(obj, vcov = "CR2", cluster = dat$school, test = "naive-t"))
+system.time(coef_test(obj, vcov = "CR1", cluster = dat$school, test = "Satterthwaite"))
+system.time(coef_test(obj, vcov = "CR2", cluster = dat$school, test = "Satterthwaite"))
+
 system.time(V_cr2 <- vcovCR(obj, cluster = dat$school, type = "CR2"))
 system.time(coef_test(obj, vcov = V_cr2, test = "Satterthwaite"))
 
