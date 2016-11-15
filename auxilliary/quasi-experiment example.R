@@ -1,7 +1,7 @@
 library(plm)
 devtools::load_all()
 rm(list=ls())
-load("auxilliary/quasi-experiment.Rdat")
+load("auxilliary/quasi-experiment.Rdata")
 
 d_p <- plm.data(d, indexes=c("sgrp"))
 
