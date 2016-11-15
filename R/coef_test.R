@@ -2,13 +2,23 @@
 #---------------------------------------------
 # Satterthwaite approximation
 #---------------------------------------------
+  
+Satterthwaite_old <- function(beta, SE, S_array) {
+  
+  V_coef <- 2 * apply(S_array, 1, function(s) sum(crossprod(s)^2))
+  E_coef <- apply(S_array, 1, function(s) sum(s * s))
+  
+  df <- 2 * E_coef^2 / V_coef
+  p_val <- 2 * pt(abs(beta / SE), df = df, lower.tail = FALSE)
+  data.frame(df = df, p_Satt = p_val)
+}
 
+  
 Satterthwaite <- function(beta, SE, P_array) {
   
-  p <- length(beta)
-  V_coef <- 2 * sapply(1:p, function(x) sum(P_array[x,x,,]^2))
-  E_coef <- sapply(1:p, function(x) sum(diag(P_array[x,x,,])))
-
+  V_coef <- 2 * apply(P_array, 3, function(x) sum(x^2))
+  E_coef <- apply(P_array, 3, function(x) sum(diag(x)))
+  
   df <- 2 * E_coef^2 / V_coef
   p_val <- 2 * pt(abs(beta / SE), df = df, lower.tail = FALSE)
   data.frame(df = df, p_Satt = p_val)
@@ -34,8 +44,13 @@ saddlepoint_pval <- function(t, Q) {
   c(s = s, p_val = p_val)
 }
 
+saddlepoint_old <- function(t_stats, S_array) {
+  saddles <- sapply(1:length(t_stats), function(i) saddlepoint_pval(t = t_stats[i], Q = crossprod(S_array[i,,])))
+  data.frame(saddlepoint = saddles["s",], p_saddle = saddles["p_val",])
+}
+
 saddlepoint <- function(t_stats, P_array) {
-  saddles <- sapply(1:length(t_stats), function(i) saddlepoint_pval(t = t_stats[i], Q = P_array[i,i,,]))
+  saddles <- sapply(1:length(t_stats), function(i) saddlepoint_pval(t = t_stats[i], Q = P_array[,,i]))
   data.frame(saddlepoint = saddles["s",], p_saddle = saddles["p_val",])
 }
 
@@ -72,22 +87,22 @@ saddlepoint <- function(t_stats, P_array) {
 #'   
 #' @export
 
-coef_test <- function(obj, vcov, test = "Satterthwaite", verbose = FALSE, ...) {
-
+coef_test <- function(obj, vcov, test = "Satterthwaite", ...) {
+  
   beta <- coef_CS(obj)
   beta_NA <- is.na(beta)
-    
+  
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!("clubSandwich" %in% class(vcov))) stop("Variance-covariance matrix must be a clubSandwich.")
-
+  
   all_tests <- c("z","naive-t","Satterthwaite","saddlepoint")
   if (all(test == "All")) test <- all_tests
   test <- match.arg(test, all_tests, several.ok = TRUE)
-
+  
   SE <- sqrt(diag(vcov))
   
   if (any(c("Satterthwaite","saddlepoint") %in% test)) {
-    P_array <- get_P_array(obj, vcov, verbose = verbose)
+    P_array <- get_P_array(get_GH(obj, vcov))
   }
   
   result <- data.frame(beta = beta)
@@ -107,6 +122,50 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", verbose = FALSE, ...) {
   }
   if ("saddlepoint" %in% test) {
     saddle <- saddlepoint(t_stats = beta[!beta_NA] / SE, P_array = P_array)
+    result$saddlepoint[!beta_NA] <- saddle$saddlepoint
+    result$p_saddle[!beta_NA] <-saddle$p_saddle
+  }
+  
+  class(result) <- c("coef_test_clubSandwich", class(result))
+  attr(result, "type") <- attr(vcov, "type")
+  result
+}
+
+coef_test_old <- function(obj, vcov, test = "Satterthwaite", ...) {
+  
+  beta <- coef_CS(obj)
+  beta_NA <- is.na(beta)
+  
+  if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
+  if (!("clubSandwich" %in% class(vcov))) stop("Variance-covariance matrix must be a clubSandwich.")
+  
+  all_tests <- c("z","naive-t","Satterthwaite","saddlepoint")
+  if (all(test == "All")) test <- all_tests
+  test <- match.arg(test, all_tests, several.ok = TRUE)
+  
+  SE <- sqrt(diag(vcov))
+  
+  if (any(c("Satterthwaite","saddlepoint") %in% test)) {
+    S_array <- get_S_array(obj, vcov)
+  }
+  
+  result <- data.frame(beta = beta)
+  result$SE[!beta_NA] <- SE
+  
+  if ("z" %in% test) {
+    result$p_z[!beta_NA] <-  2 * pnorm(abs(beta[!beta_NA] / SE), lower.tail = FALSE)
+  }
+  if ("naive-t" %in% test) {
+    J <- nlevels(attr(vcov, "cluster"))
+    result$p_t[!beta_NA] <-  2 * pt(abs(beta[!beta_NA] / SE), df = J - 1, lower.tail = FALSE)
+  }
+  if ("Satterthwaite" %in% test) {
+    Satt <- Satterthwaite_old(beta = beta[!beta_NA], SE = SE, S_array = S_array)
+    result$df[!beta_NA] <- Satt$df
+    result$p_Satt[!beta_NA] <- Satt$p_Satt
+  }
+  if ("saddlepoint" %in% test) {
+    saddle <- saddlepoint_old(t_stats = beta[!beta_NA] / SE, S_array = S_array)
     result$saddlepoint[!beta_NA] <- saddle$saddlepoint
     result$p_saddle[!beta_NA] <-saddle$p_saddle
   }
