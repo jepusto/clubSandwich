@@ -43,7 +43,7 @@
 #' Wald_test(mfor_fit, constraints = c(2,4), vcov = mfor_CR2)
 #' Wald_test(mfor_fit, constraints = 2:5, vcov = mfor_CR2)
 
-vcovCR.rma.mv <- function(obj, cluster, type, target, inverse_var, form = "sandwich") {
+vcovCR.rma.mv <- function(obj, cluster, type, target, inverse_var, form = "sandwich", ...) {
   if (missing(cluster)) cluster <- findCluster.rma.mv(obj)
   if (missing(target)) {
     target <- NULL

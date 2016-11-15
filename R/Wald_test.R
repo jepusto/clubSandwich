@@ -177,6 +177,28 @@ Wald_test <- function(obj, constraints, vcov, test = "HTZ", ...) {
   
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!("clubSandwich" %in% class(vcov))) stop("Variance-covariance matrix must be a clubSandwich.")
+  
+  if (all(test == "All")) test <- c("chi-sq","Naive-F","HTA","HTB","HTZ","EDF","EDT")
+  
+  beta <- na.omit(coef_CS(obj))
+  
+  S_array <- get_S_array(obj, vcov)
+  
+  if (is.list(constraints)) {
+    C_mats <- lapply(constraints, get_constraint_mat, obj = obj)
+    results <- lapply(C_mats, Wald_testing_old, beta = beta, vcov = vcov, test = test, S_array = S_array)
+  } else {
+    C_mat <- get_constraint_mat(obj, constraints)
+    results <- Wald_testing_old(C_mat, beta = beta, vcov = vcov, test = test, S_array = S_array) 
+  }
+  
+  results
+}
+
+Wald_test_new <- function(obj, constraints, vcov, test = "HTZ", ...) {
+  
+  if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
+  if (!("clubSandwich" %in% class(vcov))) stop("Variance-covariance matrix must be a clubSandwich.")
 
   if (all(test == "All")) test <- c("chi-sq","Naive-F","HTA","HTB","HTZ","EDF","EDT")
   

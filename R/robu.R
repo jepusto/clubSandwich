@@ -45,7 +45,7 @@
 
 
 
-vcovCR.robu <- function(obj, cluster, type, target, inverse_var, form = "sandwich") {
+vcovCR.robu <- function(obj, cluster, type, target, inverse_var, form = "sandwich", ...) {
   if (missing(cluster)) cluster <- obj$study_orig_id
   if (missing(target)) target <- NULL
   if (missing(inverse_var)) inverse_var <- is.null(target) & (!obj$user_weighting)

@@ -4,8 +4,8 @@ devtools::load_all()
 rm(list=ls())
 set.seed(20161109)
 
-Nschools <- 1200
-Nt <- 500
+Nschools <- 100
+Nt <- 30
 Cper <- 50
 N <- (1 + Cper) * Nt
 

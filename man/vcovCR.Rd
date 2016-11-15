@@ -5,10 +5,10 @@
 \alias{vcovCR.default}
 \title{Cluster-robust variance-covariance matrix}
 \usage{
-vcovCR(obj, cluster, type, target, inverse_var, form)
+vcovCR(obj, cluster, type, target, inverse_var, form, ...)
 
 \method{vcovCR}{default}(obj, cluster, type, target = NULL,
-  inverse_var = FALSE, form = "sandwich")
+  inverse_var = FALSE, form = "sandwich", ...)
 }
 \arguments{
 \item{obj}{Fitted model for which to calcualte the variance-covariance matrix}
@@ -31,10 +31,12 @@ will attempt to infer a value.}
 
 \item{form}{Controls the form of the returned matrix. The default 
 \code{"sandwich"} will return the sandwich variance-covariance matrix. 
-Alternately, setting \code{form = "meat"} will return only the meat of the
-sandwich and setting \code{form = B}, where \code{B} is a matrix of
-appropriate dimension, will return the sandwich variance-covariance matrix
+Alternately, setting \code{form = "meat"} will return only the meat of the 
+sandwich and setting \code{form = B}, where \code{B} is a matrix of 
+appropriate dimension, will return the sandwich variance-covariance matrix 
 calculated using \code{B} as the bread.}
+
+\item{...}{Additional arguments available for some classes of objects.}
 }
 \value{
 An object of class \code{c("vcovCR","clubSandwich")}, which consists 
@@ -42,13 +44,11 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
   regression coefficient estimates. The matrix has several attributes: 
   \describe{ \item{type}{indicates which small-sample adjustment was used} 
   \item{cluster}{contains the factor vector that defines independent 
-  clusters} 
-  \item{bread}{contains the bread matrix} 
-  \item{v_scale}{constant used in scaling the sandwich estimator} 
-  \item{est_mats}{contains
-  a list of estimating matrices used to calculate the sandwich estimator} 
+  clusters} \item{bread}{contains the bread matrix} \item{v_scale}{constant 
+  used in scaling the sandwich estimator} \item{est_mats}{contains a list of 
+  estimating matrices used to calculate the sandwich estimator} 
   \item{adjustments}{contains a list of adjustment matrices used to calculate
-  the sandwich estimator} \item{target}{contains the working
+  the sandwich estimator} \item{target}{contains the working 
   variance-covariance model used to calculate the adjustment matrices. This 
   is needed for calculating small-sample corrections for Wald tests.} }
 }

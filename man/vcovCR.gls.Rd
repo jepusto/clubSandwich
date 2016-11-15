@@ -5,7 +5,7 @@
 \title{Cluster-robust variance-covariance matrix for a gls object.}
 \usage{
 \method{vcovCR}{gls}(obj, cluster, type, target, inverse_var,
-  form = "sandwich")
+  form = "sandwich", ...)
 }
 \arguments{
 \item{obj}{Fitted model for which to calcualte the variance-covariance matrix}
@@ -28,10 +28,12 @@ will attempt to infer a value.}
 
 \item{form}{Controls the form of the returned matrix. The default 
 \code{"sandwich"} will return the sandwich variance-covariance matrix. 
-Alternately, setting \code{form = "meat"} will return only the meat of the
-sandwich and setting \code{form = B}, where \code{B} is a matrix of
-appropriate dimension, will return the sandwich variance-covariance matrix
+Alternately, setting \code{form = "meat"} will return only the meat of the 
+sandwich and setting \code{form = B}, where \code{B} is a matrix of 
+appropriate dimension, will return the sandwich variance-covariance matrix 
 calculated using \code{B} as the bread.}
+
+\item{...}{Additional arguments available for some classes of objects.}
 }
 \value{
 An object of class \code{c("vcovCR","clubSandwich")}, which consists 

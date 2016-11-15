@@ -38,7 +38,7 @@
 #' 
 
 
-vcovCR.rma.uni <- function(obj, cluster, type, target, inverse_var, form = "sandwich") {
+vcovCR.rma.uni <- function(obj, cluster, type, target, inverse_var, form = "sandwich", ...) {
   if (missing(cluster)) stop("You must specify a clustering variable.")
   if (length(cluster) != nrow(model_matrix(obj))) cluster <- droplevels(as.factor(cluster[obj$not.na]))
   if (length(cluster) != nrow(model_matrix(obj))) stop("Clustering variable must have length equal to nrow(model_matrix(obj)).")

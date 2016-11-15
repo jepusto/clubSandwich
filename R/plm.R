@@ -21,6 +21,9 @@
 #'   variance-covariance model used to calculate the \code{CR2} and \code{CR4} 
 #'   adjustment matrices. By default, the target is taken to be an identity
 #'   matrix for fixed effect models or the estimated compound-symmetric covariance matrix for random effects models. 
+#' @param ignore_FE Optional logical controlling whether fixed effects are
+#'   ignored when calculating small-sample adjustments in models where fixed
+#'   effects are estimated through absorption.
 #' @inheritParams vcovCR
 #'   
 #' @return An object of class \code{c("vcovCR","clubSandwich")}, which consists 
@@ -31,7 +34,7 @@
 #'   
 #' @export
 
-vcovCR.plm <- function(obj, cluster, type, target, inverse_var, form = "sandwich") {
+vcovCR.plm <- function(obj, cluster, type, target, inverse_var, form = "sandwich", ignore_FE = FALSE, ...) {
   
   if (obj$args$model=="random" & obj$args$effect=="twoways") stop("Variance matrix is not block diagonal.")
   
@@ -46,7 +49,8 @@ vcovCR.plm <- function(obj, cluster, type, target, inverse_var, form = "sandwich
   obj$na.action <- attr(obj$model, "na.action")
   
   vcov_CR(obj, cluster = cluster, type = type, 
-          target = target, inverse_var = inverse_var, form = form)
+          target = target, inverse_var = inverse_var, 
+          form = form, ignore_FE = ignore_FE)
 }
 
 get_index_order <- function(obj) {
@@ -98,13 +102,15 @@ model_matrix.plm <- function(obj) {
 # Augmented model matrix
 #----------------------------------------------
 
-augmented_model_matrix.plm <- function(obj, cluster, inverse_var) {
+augmented_model_matrix.plm <- function(obj, cluster, inverse_var, ignore_FE) {
   index <- attr(model.frame(obj),"index")
   individual <- droplevels(as.factor(index[[1]]))
   time <- droplevels(as.factor(index[[2]]))
   effect <- obj$args$effect
   
-  if (obj$args$model=="within") {
+  if (ignore_FE) {
+    S <- NULL 
+  } else if (obj$args$model=="within") {
     if (effect=="individual") {
       if (inverse_var & identical(individual, cluster)) {
         S <- NULL

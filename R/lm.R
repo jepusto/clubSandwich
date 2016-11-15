@@ -23,7 +23,7 @@
 #'   
 #' @export
 
-vcovCR.lm <- function(obj, cluster, type, target = NULL, inverse_var = NULL, form = "sandwich") {
+vcovCR.lm <- function(obj, cluster, type, target = NULL, inverse_var = NULL, form = "sandwich", ...) {
   if (missing(cluster)) stop("You must specify a clustering variable.")
   if (is.null(inverse_var)) inverse_var <- is.null(weights(obj)) & is.null(target)
   vcov_CR(obj, cluster = cluster, type = type, 

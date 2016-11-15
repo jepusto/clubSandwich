@@ -14,6 +14,7 @@ get_GH <- function(obj, vcov) {
   
   target <- attr(vcov, "target")
   inverse_var <- attr(vcov, "inverse_var")
+  ignore_FE <- attr(vcov, "ignore_FE")
   
   N <- length(cluster)
   J <- nlevels(cluster)
@@ -25,22 +26,23 @@ get_GH <- function(obj, vcov) {
   
   W_list <- weightMatrix(obj, cluster)
   
-  S <- augmented_model_matrix(obj, cluster, inverse_var)
+  S <- augmented_model_matrix(obj, cluster, inverse_var, ignore_FE)
   
   if (is.null(S)) {
     U_list <- matrix_list(X, cluster, "row")
+    rm(X, S)
     u <- p
     UW_list <- Map(function(u, w) as.matrix(t(u) %*% w), u = U_list, w = W_list)
     M_U <- M
   } else {
     U_list <- matrix_list(cbind(X, S), cluster, "row")
+    rm(X, S)
     u <- ncol(U_list[[1]])
     UW_list <- Map(function(u, w) as.matrix(t(u) %*% w), u = U_list, w = W_list)
     UWU_list <- Map(function(uw, u) uw %*% u, uw = UW_list, u = U_list)
     M_U <- chol2inv(chol(Reduce("+",UWU_list)))
     rm(UWU_list)
   }
-  rm(X, S)
 
   M_U_ct <- t(chol(M_U))
   
@@ -114,6 +116,7 @@ get_S_array <- function(obj, vcov) {
   
   target <- attr(vcov, "target")
   inverse_var <- attr(vcov, "inverse_var")
+  ignore_FE <- attr(vcov, "ignore_FE")
   
   N <- length(cluster)
   J <- nlevels(cluster)
@@ -123,7 +126,7 @@ get_S_array <- function(obj, vcov) {
   if (any(alias)) X <- X[, !alias, drop = FALSE]
   p <- ncol(X)
   
-  S <- augmented_model_matrix(obj, cluster, inverse_var)
+  S <- augmented_model_matrix(obj, cluster, inverse_var, ignore_FE)
   
   if (is.null(S)) {
     U <- X

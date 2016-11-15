@@ -24,7 +24,7 @@
 #'   
 #' @export
 
-vcovCR.lme <- function(obj, cluster, type, target, inverse_var, form = "sandwich") {
+vcovCR.lme <- function(obj, cluster, type, target, inverse_var, form = "sandwich", ...) {
   # if (length(obj$groups) > 1) stop("vcovCR.lme does not work for models with multiple levels of random effects.")
   if (missing(cluster)) cluster <- nlme::getGroups(obj, level = 1)
   if (missing(target)) target <- NULL

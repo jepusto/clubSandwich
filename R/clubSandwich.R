@@ -22,10 +22,11 @@
 #'   will attempt to infer a value.
 #' @param form Controls the form of the returned matrix. The default 
 #'   \code{"sandwich"} will return the sandwich variance-covariance matrix. 
-#'   Alternately, setting \code{form = "meat"} will return only the meat of the
-#'   sandwich and setting \code{form = B}, where \code{B} is a matrix of
-#'   appropriate dimension, will return the sandwich variance-covariance matrix
+#'   Alternately, setting \code{form = "meat"} will return only the meat of the 
+#'   sandwich and setting \code{form = B}, where \code{B} is a matrix of 
+#'   appropriate dimension, will return the sandwich variance-covariance matrix 
 #'   calculated using \code{B} as the bread.
+#' @param ... Additional arguments available for some classes of objects.
 #'   
 #' @description This is a generic function, with specific methods defined for 
 #'   \code{\link[stats]{lm}}, \code{\link[plm]{plm}}, \code{\link[nlme]{gls}}, 
@@ -37,13 +38,11 @@
 #'   regression coefficient estimates. The matrix has several attributes: 
 #'   \describe{ \item{type}{indicates which small-sample adjustment was used} 
 #'   \item{cluster}{contains the factor vector that defines independent 
-#'   clusters} 
-#'   \item{bread}{contains the bread matrix} 
-#'   \item{v_scale}{constant used in scaling the sandwich estimator} 
-#'   \item{est_mats}{contains
-#'   a list of estimating matrices used to calculate the sandwich estimator} 
+#'   clusters} \item{bread}{contains the bread matrix} \item{v_scale}{constant 
+#'   used in scaling the sandwich estimator} \item{est_mats}{contains a list of 
+#'   estimating matrices used to calculate the sandwich estimator} 
 #'   \item{adjustments}{contains a list of adjustment matrices used to calculate
-#'   the sandwich estimator} \item{target}{contains the working
+#'   the sandwich estimator} \item{target}{contains the working 
 #'   variance-covariance model used to calculate the adjustment matrices. This 
 #'   is needed for calculating small-sample corrections for Wald tests.} }
 #'   
@@ -55,7 +54,7 @@
 #' @export
 #' @import stats
 
-vcovCR <- function(obj, cluster, type, target, inverse_var, form) UseMethod("vcovCR")
+vcovCR <- function(obj, cluster, type, target, inverse_var, form, ...) UseMethod("vcovCR")
 
 #' Cluster-robust variance-covariance matrix
 #' 
@@ -65,7 +64,7 @@ vcovCR <- function(obj, cluster, type, target, inverse_var, form) UseMethod("vco
 #' @rdname vcovCR
 #' @export
 
-vcovCR.default <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form = "sandwich") 
+vcovCR.default <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form = "sandwich", ...) 
   vcov_CR(obj, cluster, type, target, inverse_var, form)
 
 #---------------------------------------------
@@ -85,7 +84,7 @@ adjust_est_mats <- function(type, est_mats, adjustments) {
 # uses methods residuals_CS(), model_matrix(), weightMatrix(), 
 # targetVariance(), bread(), v_scale()
 
-vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form = "sandwich") {
+vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form = "sandwich", ignore_FE = FALSE) {
   
   cluster <- droplevels(as.factor(cluster))
   
@@ -129,14 +128,16 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   }
   
   if (type %in% c("CR2","CR4")) {
-    S <- augmented_model_matrix(obj, cluster, inverse_var)
+    S <- augmented_model_matrix(obj, cluster, inverse_var, ignore_FE)
     
     if (is.null(S)) {
+      rm(S)
       U_list <- Xp_list
       UW_list <- XpW_list
       M_U <- bread(obj) / v_scale(obj)
     } else {
       U <- cbind(Xp, S)
+      rm(S)
       U_list <- matrix_list(U, cluster, "row")
       UW_list <- Map(function(u, w) as.matrix(t(u) %*% w), u = U_list, w = W_list)
       UWU_list <- Map(function(uw, u) uw %*% u, uw = UW_list, u = U_list)
@@ -177,6 +178,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   attr(vcov, "adjustments") <- adjustments
   attr(vcov, "target") <- Theta_list
   attr(vcov, "inverse_var") <- inverse_var
+  attr(vcov, "ignore_FE") <- ignore_FE
   class(vcov) <- c("vcovCR","clubSandwich")
   return(vcov)
 }
@@ -196,6 +198,7 @@ as.matrix.clubSandwich <- function(x, ...) {
   attr(x, "adjustments") <- NULL
   attr(x, "target") <- NULL
   attr(x, "inverse_var") <- NULL
+  attr(x, "ignore_FE") <- NULL
   class(x) <- "matrix"
   x
 }

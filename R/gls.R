@@ -24,7 +24,7 @@
 #'   
 #' @export
 
-vcovCR.gls <- function(obj, cluster, type, target, inverse_var, form = "sandwich") {
+vcovCR.gls <- function(obj, cluster, type, target, inverse_var, form = "sandwich", ...) {
   if (missing(cluster)) cluster <- nlme::getGroups(obj)
   if (missing(target)) target <- NULL
   if (missing(inverse_var) ) inverse_var <- is.null(target)
