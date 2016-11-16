@@ -76,7 +76,7 @@ covariance_array_old <- function(S_array, Omega_nsqrt, q = nrow(Omega_nsqrt), J 
   Cov_arr
 }
 
-covariance_array <- function(P_array, Omega_nsqrt, q = nrow(Omega_nsqrt)) {
+covariance_array <- function(GH, Omega_nsqrt, q = nrow(Omega_nsqrt)) {
   
   B_jk <- array(apply(P_array, 3:4, function(p) Omega_nsqrt %*% p %*% Omega_nsqrt), dim = dim(P_array))
   
@@ -259,7 +259,7 @@ Wald_testing <- function(C_mat, beta, vcov, test, GH) {
   
   # Hotelling's T-squared
   if ("HTA" %in% test | "HTB" %in% test) {
-    Cov_arr <- covariance_array(P_array, Omega_nsqrt, q = q)
+    Cov_arr <- covariance_array(GH, Omega_nsqrt, q = q)
     
     Var_index <- seq(1,q^4, 1 + q^2)
     Var_mat <- matrix(Cov_arr[Var_index], q, q)
@@ -279,7 +279,7 @@ Wald_testing <- function(C_mat, beta, vcov, test, GH) {
       result <- cbind(result, "HTB" = Hotelling_Tsq(Q, q, nu = nu_B))
     } 
   } else if ("HTZ" %in% test) {
-    Var_mat <- total_variance_mat(P_array, Omega_nsqrt, q = q)
+    Var_mat <- total_variance_mat(GH, Omega_nsqrt, q = q)
   }
   
   if ("HTZ" %in% test) {

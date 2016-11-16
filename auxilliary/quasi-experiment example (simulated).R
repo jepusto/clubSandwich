@@ -4,21 +4,22 @@ devtools::load_all()
 rm(list=ls())
 set.seed(20161109)
 
+Ntrt_schools <- 4
 Nschools <- 100
-Nt <- 30
+Ntrt <- 30
 Cper <- 50
-N <- (1 + Cper) * Nt
+N <- (1 + Cper) * Ntrt
 
 
 dat <- data.frame(
   sid = 1:51,
-  trt = rep(c(1, rep(0,Cper)), Nt),
-  matched = rep(1:Nt, each = Cper + 1),
+  trt = rep(c(1, rep(0,Cper)), Ntrt),
+  matched = rep(1:Ntrt, each = Cper + 1),
   school = sample(5:Nschools, size = N, replace = TRUE)
 )
 
 dat <- within(dat, {
-  school[trt==1] <- sample(1:4, size = Nt, replace = TRUE)
+  school[trt==1] <- sample(1:Ntrt_schools, size = Ntrt, replace = TRUE)
   matched <- factor(matched)
   school <- factor(school)
   x <- rnorm(N)
@@ -30,12 +31,12 @@ table(table(dat$school))
 obj <- plm(y ~ trt + x, data = dat, effect = "individual", index = c("matched","sid"))
 
 summary(obj)
-system.time(coef_test(obj, vcov = "CR1", cluster = dat$school, test = "naive-t"))
-system.time(coef_test(obj, vcov = "CR2", cluster = dat$school, test = "naive-t"))
-# system.time(coef_test_old(obj, vcov = "CR1", cluster = dat$school, test = "Satterthwaite"))
-# system.time(coef_test_old(obj, vcov = "CR2", cluster = dat$school, test = "Satterthwaite"))
-system.time(coef_test(obj, vcov = "CR1", cluster = dat$school, test = "Satterthwaite"))
-system.time(coef_test(obj, vcov = "CR2", cluster = dat$school, test = "Satterthwaite"))
+system.time(CR2_t <- coef_test(obj, vcov = "CR2", cluster = dat$school, test = "naive-t"))
+system.time(CR2a_Satt <- coef_test(obj, vcov = "CR2", cluster = dat$school, test = "Satterthwaite"))
+system.time(CR2b_Satt <- coef_test(obj, vcov = "CR2", cluster = dat$school, test = "Satterthwaite", ignore_FE = TRUE))
+CR2_t
+CR2a_Satt
+CR2b_Satt
 
 
 system.time(V_cr2 <- vcovCR(obj, cluster = dat$school, type = "CR2"))
@@ -73,6 +74,8 @@ saddlepoint(t_stats = beta[!beta_NA] / SE, P_array = P_array)
 constraints <- 1:2
 C_mat <- get_constraint_mat(obj, constraints)
 test <- c("chi-sq","Naive-F","HTA","HTB","HTZ","EDF","EDT")
+GH <- get_GH(obj, vcov)
+
 q <- nrow(C_mat)
 N <- dim(S_array)[2]
 J <- dim(S_array)[3]

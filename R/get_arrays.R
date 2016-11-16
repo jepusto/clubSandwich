@@ -75,21 +75,42 @@ get_GH <- function(obj, vcov) {
 # get P array
 #--------------------------
 
-get_P_array <- function(GH) {
+get_P_array <- function(GH, all = FALSE) {
   
   dims <- dim(GH$H)
   
-  if (length(dims)==3) {
-    P_array <- array(-apply(GH$H, 1, crossprod), dim = c(dims[3], dims[3], dims[1]))
-    P_diag <- sapply(GH$G, function(x) rowSums(x^2))
-    for (i in 1:dims[1]) diag(P_array[,,i]) <- diag(P_array[,,i]) + P_diag[i,]
+  if (all) {
+    
+    P_array <- array(NA, dim = c(dims[3], dims[3], dims[1], dims[1]))
+    if (length(dims)==3) {
+      for (i in 1:dims[1]) for (j in i:dims[1]) {
+        tmp <- -crossprod(GH$H[i,,], GH$H[j,,])
+        diag(tmp) <- diag(tmp) + sapply(GH$G, function(x) sum(x[i,] * x[j,]))
+        P_array[,,i,j] <- tmp
+        if (j > i) P_array[,,j,i] <- t(tmp)
+      }
+    } else {
+      for (i in 1:dims[2]) for (j in i:dims[2]) {
+        tmp <- crossprod(GH$H[3,i,,], GH$H[3,j,,]) - 
+        
+      }
+    }
+    
   } else {
-    P_array <- array(apply(GH$H, 2, function(h) {
-      uf <- crossprod(h[1,,], h[2,,])
-      crossprod(h[3,,]) - uf - t(uf)
-    }), dim = c(dims[4], dims[4], dims[2]))
-    P_diag <- sapply(GH$G, function(x) rowSums(x^2))
-    for (i in 1:dims[2]) diag(P_array[,,i]) <- diag(P_array[,,i]) + P_diag[i,]
+    
+    if (length(dims)==3) {
+      P_array <- array(-apply(GH$H, 1, crossprod), dim = c(dims[3], dims[3], dims[1]))
+      P_diag <- sapply(GH$G, function(x) rowSums(x^2))
+      for (i in 1:dims[1]) diag(P_array[,,i]) <- diag(P_array[,,i]) + P_diag[i,]
+    } else {
+      P_array <- array(apply(GH$H, 2, function(h) {
+        uf <- crossprod(h[1,,], h[2,,])
+        crossprod(h[3,,]) - uf - t(uf)
+      }), dim = c(dims[4], dims[4], dims[2]))
+      P_diag <- sapply(GH$G, function(x) rowSums(x^2))
+      for (i in 1:dims[2]) diag(P_array[,,i]) <- diag(P_array[,,i]) + P_diag[i,]
+    }
+    
   }
   
   P_array
