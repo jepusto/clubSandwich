@@ -76,9 +76,10 @@ covariance_array_old <- function(S_array, Omega_nsqrt, q = nrow(Omega_nsqrt), J 
   Cov_arr
 }
 
-covariance_array <- function(GH, Omega_nsqrt, q = nrow(Omega_nsqrt)) {
+covariance_array <- function(P_array, Omega_nsqrt, q = nrow(Omega_nsqrt)) {
   
-  B_jk <- array(apply(P_array, 3:4, function(p) Omega_nsqrt %*% p %*% Omega_nsqrt), dim = dim(P_array))
+  B_jk <- array(apply(P_array, 3:4, function(p) Omega_nsqrt %*% p %*% Omega_nsqrt), 
+                dim = dim(P_array))
   
   Cov_arr <- array(NA, dim = rep(q, 4))
   for (s in 1:q) for (t in 1:s) for (u in 1:s) for (v in 1:(ifelse(u==s,t,u))) {
@@ -177,28 +178,6 @@ Wald_test <- function(obj, constraints, vcov, test = "HTZ", ...) {
   
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!("clubSandwich" %in% class(vcov))) stop("Variance-covariance matrix must be a clubSandwich.")
-  
-  if (all(test == "All")) test <- c("chi-sq","Naive-F","HTA","HTB","HTZ","EDF","EDT")
-  
-  beta <- na.omit(coef_CS(obj))
-  
-  S_array <- get_S_array(obj, vcov)
-  
-  if (is.list(constraints)) {
-    C_mats <- lapply(constraints, get_constraint_mat, obj = obj)
-    results <- lapply(C_mats, Wald_testing_old, beta = beta, vcov = vcov, test = test, S_array = S_array)
-  } else {
-    C_mat <- get_constraint_mat(obj, constraints)
-    results <- Wald_testing_old(C_mat, beta = beta, vcov = vcov, test = test, S_array = S_array) 
-  }
-  
-  results
-}
-
-Wald_test_new <- function(obj, constraints, vcov, test = "HTZ", ...) {
-  
-  if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
-  if (!("clubSandwich" %in% class(vcov))) stop("Variance-covariance matrix must be a clubSandwich.")
 
   if (all(test == "All")) test <- c("chi-sq","Naive-F","HTA","HTB","HTZ","EDF","EDT")
   
@@ -217,6 +196,7 @@ Wald_test_new <- function(obj, constraints, vcov, test = "HTZ", ...) {
   results
 }
 
+
 array_multiply <- function(mat, arr) {
   new_mat <- apply(arr, 3, function(s) mat %*% s)
   array(new_mat, dim = c(nrow(mat), dim(arr)[2], dim(arr)[3]))
@@ -233,9 +213,11 @@ Wald_testing <- function(C_mat, beta, vcov, test, GH) {
     if (length(dims)==3) {
       GH$H <- array_multiply(C_mat, GH$H)
     } else {
-      for (i in 1:dims[1]) GH$H[i,,,] <- array_multiply(C_mat, GH$H[i,,,])
+      H <- array(NA, dim = c(3, q, dims[3:4]))
+      for (i in 1:dims[1]) H[i,,,] <- array_multiply(C_mat, GH$H[i,,,])
+      GH$H <- H
     }
-    
+    P_array <- get_P_array(GH = GH, all_terms = TRUE)
     Omega <- apply(P_array, 1:2, function(x) sum(diag(x)))
     Omega_nsqrt <- matrix_power(Omega, -1/2)
   }
@@ -259,7 +241,7 @@ Wald_testing <- function(C_mat, beta, vcov, test, GH) {
   
   # Hotelling's T-squared
   if ("HTA" %in% test | "HTB" %in% test) {
-    Cov_arr <- covariance_array(GH, Omega_nsqrt, q = q)
+    Cov_arr <- covariance_array(P_array, Omega_nsqrt, q = q)
     
     Var_index <- seq(1,q^4, 1 + q^2)
     Var_mat <- matrix(Cov_arr[Var_index], q, q)
@@ -279,7 +261,7 @@ Wald_testing <- function(C_mat, beta, vcov, test, GH) {
       result <- cbind(result, "HTB" = Hotelling_Tsq(Q, q, nu = nu_B))
     } 
   } else if ("HTZ" %in% test) {
-    Var_mat <- total_variance_mat(GH, Omega_nsqrt, q = q)
+    Var_mat <- total_variance_mat(P_array, Omega_nsqrt, q = q)
   }
   
   if ("HTZ" %in% test) {
@@ -324,6 +306,29 @@ Wald_testing <- function(C_mat, beta, vcov, test, GH) {
   class(result) <- c("Wald_test_clubSandwich", class(result))
   attr(result, "type") <- attr(vcov, "type")
   result 
+}
+
+
+Wald_test_old <- function(obj, constraints, vcov, test = "HTZ", ...) {
+  
+  if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
+  if (!("clubSandwich" %in% class(vcov))) stop("Variance-covariance matrix must be a clubSandwich.")
+  
+  if (all(test == "All")) test <- c("chi-sq","Naive-F","HTA","HTB","HTZ","EDF","EDT")
+  
+  beta <- na.omit(coef_CS(obj))
+  
+  S_array <- get_S_array(obj, vcov)
+  
+  if (is.list(constraints)) {
+    C_mats <- lapply(constraints, get_constraint_mat, obj = obj)
+    results <- lapply(C_mats, Wald_testing_old, beta = beta, vcov = vcov, test = test, S_array = S_array)
+  } else {
+    C_mat <- get_constraint_mat(obj, constraints)
+    results <- Wald_testing_old(C_mat, beta = beta, vcov = vcov, test = test, S_array = S_array) 
+  }
+  
+  results
 }
 
 Wald_testing_old <- function(C_mat, beta, vcov, test, S_array) {
