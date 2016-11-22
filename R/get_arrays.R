@@ -112,7 +112,7 @@ get_P_array <- function(GH, all_terms = FALSE) {
         uf <- crossprod(h[1,,], h[2,,])
         crossprod(h[3,,]) - uf - t(uf)
       }), dim = c(dims[4], dims[4], dims[2]))
-      P_diag <- matrix(sapply(GH$G, function(x) rowSums(x^2)), nrow = dims[1], ncol = dims[3])
+      P_diag <- matrix(sapply(GH$G, function(x) rowSums(x^2)), nrow = dims[2], ncol = dims[4])
       for (i in 1:dims[2]) diag(P_array[,,i]) <- diag(P_array[,,i]) + P_diag[i,]
     }
     
