@@ -1,6 +1,42 @@
 library(plm)
 devtools::load_all()
+rm(list=ls())
 
+trt_size <- c(547, 709, 385, 129, 302, 537, 747, 218, 73, 373, 440, 78, 272, 98, 67, 211, 19, 39, 89, 24, 217, 79, 83, 157, 118)
+FRL <- c(82, 51, 41, 83, 82, 60, 46, 49, 57, 90, 92, 99, 81, 90, 87, 100, 58, 58, 34, 61, 77, 73, 38, 91, 90)
+
+(Ntrt_schools <- length(trt_size))
+(Ntrt <- sum(trt_size))
+(Nschools <- 5889 + Ntrt_schools)
+Cper <- 50
+(N <- (1 + Cper) * Ntrt)
+
+
+dat <- data.frame(
+  sid = 1:51,
+  trt = rep(c(1, rep(0,Cper)), Ntrt),
+  matched = rep(1:Ntrt, each = Cper + 1),
+  school = sample(5:Nschools, size = N, replace = TRUE)
+)
+
+dat <- within(dat, {
+  school[trt==1] <- rep(1:Ntrt_schools, trt_size)
+  matched <- factor(matched)
+  school <- factor(school)
+  x <- rnorm(N)
+  sex <- sample(0:1, size = N, replace = TRUE)
+  y <- trt + rnorm(Nschools)[school] + rnorm(N)
+})
+
+table(table(dat$school))
+
+obj <- plm(y ~ trt, data = dat, effect = "individual", index = c("matched","sid"))
+summary(obj)
+coef_test(obj, vcov = "CR2", cluster = dat$school, test = "Satterthwaite", ignore_FE = TRUE)
+
+#------------------------
+# smaller example
+#------------------------
 rm(list=ls())
 set.seed(20161109)
 
