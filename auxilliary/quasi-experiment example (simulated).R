@@ -30,9 +30,27 @@ dat <- within(dat, {
 
 table(table(dat$school))
 
-obj <- plm(y ~ trt, data = dat, effect = "individual", index = c("matched","sid"))
+obj <- plm(y ~ trt, data = dat, effect = "individual", model = "pooling", index = c("matched","sid"))
+obj <- lm(y ~ trt, data = dat)
 summary(obj)
-coef_test(obj, vcov = "CR2", cluster = dat$school, test = "Satterthwaite", ignore_FE = TRUE)
+CR2_t <- coef_test(obj, vcov = "CR2", cluster = dat$school, test = "Satterthwaite", ignore_FE = TRUE)
+CR2_t
+CR2_t$df
+CR0_t <- coef_test(obj, vcov = "CR0", cluster = dat$school, test = "Satterthwaite")
+
+NT <- sum(trt_size)
+fi <- trt_size / NT
+1 / sum(fi^2)
+1 / (sum(fi^2) + sum(tcrossprod(fi^2 / (1 - fi))))
+
+
+ctl_size <- with(dat, as.numeric(table(school[trt==0])))
+NC <- sum(ctl_size)
+gi <- ctl_size / NC
+1 / sum(gi^2)
+(1 / NT + 1 / NC)^2 / 
+  (sum(fi^2) / NT^2 + sum(tcrossprod(fi^2 / (1 - fi))) / NT^2 + 
+     sum(gi^2) / NC^2 + sum(tcrossprod( gi^2 / (1 - gi))) / NC^2)
 
 #------------------------
 # smaller example

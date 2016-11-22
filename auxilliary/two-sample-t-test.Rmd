@@ -1,0 +1,33 @@
+---
+title: "Two-sample t-test on a between-cluster factor"
+author: "James E. Pustejovsky"
+date: "November 22, 2016"
+output: html_document
+---
+
+Consider a study design with $T$ treated clusters of size $m_1,...,m_T$ and $C$ untreated clusters of size $n_1,...,n_C$. We observe an outcome $Y$ for every observation in every cluster and seek to test the hypothesis that the mean of the treated population is equal to the mean of the control population, while allowing for the possibility of dependence among the observations within a cluster. 
+
+Let $M = \sum_{i=1}^T m_i$, $f_i = m_i / M$, $N = \sum_{i=1}^C n_i$, and $g_i = n_i / N$. Let $\bar{y}^T_i = \frac{1}{m_i} \sum_{j=1}^{m_i} y^T_{ij}$ and $\bar{y}^C_i = \frac{1}{n_i} \sum_{j=1}^{n_i} y^C_{ij}$. Let $\bar{\bar{y}}^T = \frac{1}{M} \sum_{i=1}^T \sum_{j=1}^{m_i} y^T_{ij}$ and $\bar{\bar{y}}^C = \frac{1}{N} \sum_{i=1}^C \sum_{j=1}^{n_i} y^C_{ij}$. The estimated difference in means is simply
+$$
+\hat\delta = \bar{\bar{y}}^T - \bar{\bar{y}}^C = \sum_{i=1}^T f_i \bar{y}^T_i - \sum_{i=1}^C g_i \bar{y}^C_i.
+$$
+The cluster-robust variance estimator of $\text{Var}\left(\hat\delta\right)$, without small sample correction, is
+$$
+V^{CR0} = \sum_{i=1}^T f_i^2 \left(\bar{y}^T_i - \bar{\bar{y}}^T\right)^2 + \sum_{i=1}^C g_i^2 \left(\bar{y}^C_i - \bar{\bar{y}}^C\right)^2.
+$$
+
+If we instead use the bias-reduced linearization variance estimator (CR2), then we have
+$$
+V^{CR2} = \sum_{i=1}^T \left(\frac{M}{M - m_i}\right)f_i^2 \left(\bar{y}^T_i - \bar{\bar{y}}^T\right)^2 + \sum_{i=1}^C \left(\frac{N}{N - n_i}\right) g_i^2 \left(\bar{y}^C_i - \bar{\bar{y}}^C\right)^2
+$$
+The degrees of freedom corresponding to the CR2 variance estimator (assuming an identity working model) are
+$$
+\nu_{CR2} = \left(\frac{1}{M} + \frac{1}{N}\right)^2 \left[\sum_{i=1}^T \frac{f_i^2(1 - f_i)^2}{(M - m_i)^2} + \sum_{i=1}^T \sum_{j \neq i} \frac{f_i^2 f_j^2}{(M - m_i)(M - m_j)} + \sum_{i=1}^C \frac{g_i^2(1 - g_i)^2}{(N - n_i)^2} + \sum_{i=1}^C \sum_{j \neq i} \frac{g_i^2 g_j^2}{(N - n_i)(N - n_j)}\right]^{-1}.
+$$
+If the cluster sizes are equal within each group (i.e., $f_1 = \cdots = f_T$ and $g_1 = \cdots = g_C$), then the degrees of freedom simplify to 
+$$
+\begin{aligned}
+\nu_{CR2} &= \left(\frac{1}{M} + \frac{1}{N}\right)^2 \left[\frac{1}{M^2 (T - 1)} + \frac{1}{N^2 (C - 1)}\right]^{-1} \\
+&= \frac{(M + N)^2}{\displaystyle{\frac{N^2}{T - 1} + \frac{M^2}{C - 1}}}.
+\end{aligned}
+$$
