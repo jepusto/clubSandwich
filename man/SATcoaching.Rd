@@ -3,23 +3,24 @@
 \docType{data}
 \name{SATcoaching}
 \alias{SATcoaching}
-\title{Meta-analysis of effects of coaching on SAT performance}
+\title{Randomized experiments on SAT coaching}
 \format{A data frame with 31 rows and 6 variables: \describe{ 
-  \item{Study}{Study identifier} \item{nT}{Sample size in treatment
+  \item{Study}{Study identifier} \item{nT}{Sample size in treatment 
   condition} \item{nC}{Sample size in control condition} \item{T}{Effect size
-  estimate (Standardized mean difference)} \item{V}{Variance of effect size
-  estimate} \item{Outcome}{Factor indicating whether effect size corresponds
+  estimate (Standardized mean difference)} \item{V}{Variance of effect size 
+  estimate} \item{Outcome}{Factor indicating whether effect size corresponds 
   to outcome on verbal (SATV) or math (SATM) test} }}
 \usage{
 SATcoaching
 }
 \description{
-Effect sizes from a meta-analysis on the effects of SAT coaching, reported in
-Kalaian and Raudenbush (1996)
+Effect sizes from randomized experiments on the effects of SAT coaching,
+reported in Kalaian and Raudenbush (1996)
 }
 \references{
-Kalaian, H. A. & Raudenbush, S. W. (1996). A multivariate mixed
-  linear model for meta-analysis. \emph{Psychological Methods, 1}(3), 227-235.
+Kalaian, H. A. & Raudenbush, S. W. (1996). A multivariate mixed 
+  linear model for meta-analysis. \emph{Psychological Methods, 1}(3),
+  227-235. 
   doi:\href{http://dx.doi.org/10.1037/1082-989X.1.3.227}{10.1037/1082-989X.1.3.227}
 }
 \keyword{datasets}
