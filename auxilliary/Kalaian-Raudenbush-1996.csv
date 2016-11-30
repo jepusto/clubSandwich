@@ -1,0 +1,48 @@
+study,year,nT,nC,SATV,SATM,hrs,ETS,study_type,homework
+Alderman & Powers (A),1980,28,22,0.22,,7,1,Randomized,1
+Alderman & Powers (B),1980,39,40,0.09,,10,1,Randomized,1
+Alderman & Powers (C),1980,22,17,0.14,,10.5,1,Randomized,1
+Alderman & Powers (D),1980,48,43,0.14,,10,1,Randomized,1
+Alderman & Powers (E),1980,25,74,-0.01,,6,1,Randomized,1
+Alderman & Powers (F),1980,37,35,0.14,,5,1,Randomized,1
+Alderman & Powers (G),1980,24,70,0.18,,11,1,Randomized,1
+Alderman & Powers (H),1980,16,19,0.01,,45,1,Randomized,1
+Evans & Pike (A),1973,145,129,0.13,0.12,21,1,Randomized,1
+Evans & Pike (B),1973,72,129,0.25,0.06,21,1,Randomized,1
+Evans & Pike (C),1973,71,129,0.31,0.09,21,1,Randomized,1
+Laschewer,1986,13,14,0,0.07,8.9,0,Randomized,0
+Roberts & Oppenheim (A),1966,43,37,0.01,,7.5,1,Randomized,0
+Roberts & Oppenheim (B),1966,19,13,0.67,,7.5,1,Randomized,0
+Roberts & Oppenheim (D),1966,16,11,-0.38,,7.5,1,Randomized,0
+Roberts & Oppenheim (E),1966,20,12,-0.24,,7.5,1,Randomized,0
+Roberts & Oppenheim (F),1966,39,28,0.29,,7.5,1,Randomized,0
+Roberts & Oppenheim (G),1966,38,25,,0.26,7.5,1,Randomized,0
+Roberts & Oppenheim (H),1966,18,13,,-0.41,7.5,1,Randomized,0
+Roberts & Oppenheim (I),1966,19,13,,0.08,7.5,1,Randomized,0
+Roberts & Oppenheim (J),1966,37,22,,0.3,7.5,1,Randomized,0
+Roberts & Oppenheim (K),1966,19,11,,-0.53,7.5,1,Randomized,0
+Roberts & Oppenheim (L),1966,17,13,,0.13,7.5,1,Randomized,0
+Roberts & Oppenheim (M),1966,20,12,,0.26,7.5,1,Randomized,0
+Roberts & Oppenheim (N),1966,20,13,,0.47,7.5,1,Randomized,0
+Zuman (B),1988,16,17,0.13,0.48,24,0,Randomized,1
+Burke (A),1986,25,25,0.5,,50,0,Matched,1
+Burke (B),1986,25,25,0.74,,50,0,Matched,1
+Coffin,1987,8,8,-0.23,0.33,18,0,Matched,0
+Davis,1985,22,21,0.13,0.13,15,0,Matched,0
+Frankel,1960,45,45,0.13,0.34,30,0,Matched,0
+Kintisch,1979,38,38,0.06,,20,0,Matched,1
+Whitla,1962,52,52,0.09,-0.11,10,1,Matched,1
+Curran (A),1988,21,17,-0.1,-0.08,6,0,Nonequivalent,0
+Curran (B),1988,24,17,-0.14,-0.29,6,0,Nonequivalent,0
+Curran (C),1988,20,17,-0.16,-0.34,6,0,Nonequivalent,0
+Curran (D),1988,20,17,-0.07,-0.06,6,0,Nonequivalent,0
+Dear,1958,60,526,-0.02,0.21,15,1,Nonequivalent,1
+Dyer,1953,225,193,0.06,0.17,15,1,Nonequivalent,1
+French (B),1955,110,158,0.06,,4.5,1,Nonequivalent,1
+French (C),1955,161,158,,0.2,15,1,Nonequivalent,1
+FTC,1978,192,684,0.15,0.03,40,0,Nonequivalent,0
+Keefauver,1976,16,25,0.17,-0.19,14,0,Nonequivalent,0
+Lass,1961,38,82,0.02,0.1,,1,Nonequivalent,1
+Reynolds & Oberman,1987,93,47,-0.04,0.6,63,0,Nonequivalent,1
+Teague,1992,10,15,0.4,,18,0,Nonequivalent,0
+Zuman (A),1988,21,34,0.54,0.57,27,0,Nonequivalent,1
