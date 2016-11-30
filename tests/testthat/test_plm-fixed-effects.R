@@ -92,23 +92,23 @@ test_that("bread works", {
 
 test_that("CR0 and CR1S agree with arellano vcov", {
   expect_equal(vcovHC(plm_individual, method="arellano", type = "HC0", cluster = "group"), 
-               as.matrix(vcovCR(plm_individual, type = "CR0")))
+               as.matrix(vcovCR(plm_individual, type = "CR0")), check.attributes = FALSE)
   expect_equal(vcovHC(plm_individual, method="arellano", type = "sss", cluster = "group"), 
-               as.matrix(vcovCR(plm_individual, type = "CR1S")))
+               as.matrix(vcovCR(plm_individual, type = "CR1S")), check.attributes = FALSE)
   
   expect_equal(vcovHC(plm_time, method="arellano", type = "HC0", cluster = "time"), 
-               as.matrix(vcovCR(plm_time, type = "CR0")))
+               as.matrix(vcovCR(plm_time, type = "CR0")), check.attributes = FALSE)
   expect_equal(vcovHC(plm_time, method="arellano", type = "sss", cluster = "time"), 
-               as.matrix(vcovCR(plm_time, type = "CR1S")))
+               as.matrix(vcovCR(plm_time, type = "CR1S")), check.attributes = FALSE)
   
   expect_equal(vcovHC(plm_twoways, method="arellano", type = "HC0", cluster = "group"), 
-               as.matrix(vcovCR(plm_twoways, cluster = "individual", type = "CR0")))
+               as.matrix(vcovCR(plm_twoways, cluster = "individual", type = "CR0")), check.attributes = FALSE)
   expect_equal(vcovHC(plm_twoways, method="arellano", type = "sss", cluster = "group"), 
-               as.matrix(vcovCR(plm_twoways, cluster = "individual", type = "CR1S")))
+               as.matrix(vcovCR(plm_twoways, cluster = "individual", type = "CR1S")), check.attributes = FALSE)
   expect_equal(vcovHC(plm_twoways, method="arellano", type = "HC0", cluster = "time"), 
-               as.matrix(vcovCR(plm_twoways, cluster = "time", type = "CR0")))
+               as.matrix(vcovCR(plm_twoways, cluster = "time", type = "CR0")), check.attributes = FALSE)
   expect_equal(vcovHC(plm_twoways, method="arellano", type = "sss", cluster = "time"), 
-               as.matrix(vcovCR(plm_twoways, cluster = "time", type = "CR1S")))
+               as.matrix(vcovCR(plm_twoways, cluster = "time", type = "CR1S")), check.attributes = FALSE)
 })
 
 test_that("vcovCR options work for CR2", {

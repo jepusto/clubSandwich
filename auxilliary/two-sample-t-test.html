@@ -132,6 +132,13 @@ V^{CR0} = \sum_{i=1}^T f_i^2 \left(\bar{y}^T_i - \bar{\bar{y}}^T\right)^2 + \sum
 \]</span></p>
 <p>If we instead use the bias-reduced linearization variance estimator (CR2), then we have <span class="math display">\[
 V^{CR2} = \sum_{i=1}^T \left(\frac{M}{M - m_i}\right)f_i^2 \left(\bar{y}^T_i - \bar{\bar{y}}^T\right)^2 + \sum_{i=1}^C \left(\frac{N}{N - n_i}\right) g_i^2 \left(\bar{y}^C_i - \bar{\bar{y}}^C\right)^2
+\]</span> The degrees of freedom corresponding to the CR2 variance estimator (assuming an identity working model) are <span class="math display">\[
+\nu_{CR2} = \left(\frac{1}{M} + \frac{1}{N}\right)^2 \left[\sum_{i=1}^T \frac{f_i^2(1 - f_i)^2}{(M - m_i)^2} + \sum_{i=1}^T \sum_{j \neq i} \frac{f_i^2 f_j^2}{(M - m_i)(M - m_j)} + \sum_{i=1}^C \frac{g_i^2(1 - g_i)^2}{(N - n_i)^2} + \sum_{i=1}^C \sum_{j \neq i} \frac{g_i^2 g_j^2}{(N - n_i)(N - n_j)}\right]^{-1}.
+\]</span> If the cluster sizes are equal within each group (i.e., <span class="math inline">\(f_1 = \cdots = f_T\)</span> and <span class="math inline">\(g_1 = \cdots = g_C\)</span>), then the degrees of freedom simplify to <span class="math display">\[
+\begin{aligned}
+\nu_{CR2} &amp;= \left(\frac{1}{M} + \frac{1}{N}\right)^2 \left[\frac{1}{M^2 (T - 1)} + \frac{1}{N^2 (C - 1)}\right]^{-1} \\
+&amp;= \frac{(M + N)^2}{\displaystyle{\frac{N^2}{T - 1} + \frac{M^2}{C - 1}}}.
+\end{aligned}
 \]</span></p>
 
 

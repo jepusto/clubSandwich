@@ -27,9 +27,9 @@ test_that("bread works", {
 test_that("CR0 and CR1S agree with arellano vcov", {
   
   expect_equal(vcovHC(plm_FD, method="arellano", type = "HC0", cluster = "group"), 
-               as.matrix(vcovCR(plm_FD, type = "CR0")))
+               as.matrix(vcovCR(plm_FD, type = "CR0")), check.attributes = FALSE)
   expect_equal(vcovHC(plm_FD, method="arellano", type = "sss", cluster = "group"), 
-               as.matrix(vcovCR(plm_FD, type = "CR1S")))
+               as.matrix(vcovCR(plm_FD, type = "CR1S")), check.attributes = FALSE)
   
   X <- model_matrix(plm_FD)
   e <- residuals(plm_FD)
@@ -48,7 +48,7 @@ test_that("CR0 and CR1S agree with arellano vcov", {
   vcov_baloney <- bread %*% baloney %*% bread
   attr(vcov_baloney, "dimnames") <- attr(baloney, "dimnames")
   expect_equal(vcov_baloney, 
-               vcovHC(plm_FD, method="arellano", type = "HC0", cluster = "time"))
+               vcovHC(plm_FD, method="arellano", type = "HC0", cluster = "time"), check.attributes = FALSE)
 })
 
 test_that("vcovCR options work for CR2", {
@@ -102,7 +102,7 @@ test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
     as.matrix(vcovCR(plm_FD, cluster = 1:nrow(Fatalities), type = t)))
   HC_individual <- lapply(HC_types, function(t) 
     vcovHC(plm_FD, method = "white1", type = t))
-  expect_equal(CR_individual, HC_individual)
+  expect_equal(CR_individual, HC_individual, check.attributes = FALSE)
   
 })
 
