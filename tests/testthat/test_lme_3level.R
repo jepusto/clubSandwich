@@ -151,7 +151,7 @@ test_that("Order doesn't matter.", {
   
   CR_fit <- lapply(CR_types, function(x) vcovCR(obj, type = x))
   CR_scramble <- lapply(CR_types, function(x) vcovCR(obj_scramble, type = x))
-  expect_equal(lapply(CR_fit, as.matrix), lapply(CR_scramble, as.matrix), tol = 10^-6)
+  expect_equal(lapply(CR_fit, as.matrix), lapply(CR_scramble, as.matrix), tol = 10^-5)
 
   test_fit <- lapply(CR_fit, function(x) coef_test(obj, vcov = x, test = "All"))
   test_scramble <- lapply(CR_scramble, function(x) coef_test(obj_scramble, vcov = x, test = "All"))
@@ -160,7 +160,7 @@ test_that("Order doesn't matter.", {
   constraints <- combn(length(coef(obj)), 2, simplify = FALSE)[10:16]
   Wald_fit <- Wald_test(obj, constraints = constraints, vcov = "CR2", test = "All")
   Wald_scramble <- Wald_test(obj_scramble, constraints = constraints, vcov = "CR2", test = "All")
-  expect_equal(Wald_fit, Wald_scramble, tol = 5 * 10^-6)
+  expect_equal(Wald_fit, Wald_scramble, tol = 5 * 10^-5)
 })
 
 

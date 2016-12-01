@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Linear regression models, estimated by ordinary least squares or weighted least squares, are a ubiquitous tool across a diverse range of fields. Classically, inference in such models is based on the assumption that the model's errors are independent and homoskedastic (or more generally, that the errors follow a known structure of a low-dimensional parameter). However, such assumptions will be unreasonable in many applications. Cluster-robust variance estimation methods provide a basis for inference under the considerably weaker assumption that the observations can be grouped into clusters, where the errors in different clusters are independent but errors within a common cluster may be correlated. 
+Linear regression models, estimated by ordinary least squares or weighted least squares, are a ubiquitous tool across a diverse range of fields. Classically, inference in such models is based on the assumption that the model's errors are independent and homoskedastic (or more generally, that the errors follow a known structure of a low-dimensional parameter). However, such assumptions will be unreasonable in many applications. Cluster-robust variance estimation methods provide a basis for inference under the weaker assumption that the observations can be grouped into clusters, where the errors in different clusters are independent but errors within a common cluster may be correlated. 
 
 Let us consider the linear regression model
 
