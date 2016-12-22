@@ -4,17 +4,25 @@
 \name{SATcoaching}
 \alias{SATcoaching}
 \title{Randomized experiments on SAT coaching}
-\format{A data frame with 31 rows and 6 variables: \describe{ 
-  \item{Study}{Study identifier} \item{nT}{Sample size in treatment 
-  condition} \item{nC}{Sample size in control condition} \item{T}{Effect size
-  estimate (Standardized mean difference)} \item{V}{Variance of effect size 
-  estimate} \item{Outcome}{Factor indicating whether effect size corresponds 
-  to outcome on verbal (SATV) or math (SATM) test} }}
+\format{A data frame with 67 rows and 11 variables: 
+\describe{ 
+  \item{study}{Study identifier}
+  \item{year}{Year of publication} 
+  \item{test}{Character string indicating whether effect size corresponds to outcome on verbal (SATV) or math (SATM) test}
+  \item{d}{Effect size estimate (Standardized mean difference)} 
+  \item{V}{Variance of effect size estimate} 
+  \item{nT}{Sample size in treatment condition} 
+  \item{nC}{Sample size in control condition} 
+  \item{study_type}{Character string indicating whether study design used a matched, non-equivalent, or randomized control group} 
+  \item{hrs}{Hours of coaching} 
+  \item{ETS}{Indicator variable for Educational Testing Service} 
+  \item{homework}{Indicator variable for homework} 
+  }}
 \usage{
 SATcoaching
 }
 \description{
-Effect sizes from randomized experiments on the effects of SAT coaching,
+Effect sizes from studies on the effects of SAT coaching,
 reported in Kalaian and Raudenbush (1996)
 }
 \references{
