@@ -1,8 +1,8 @@
 ## Resubmission
 
-This is a resubmission. In this version I have:
+This is a resubmission. 
 
-Note that the DESCRIPTION file includes a citation (Bell and McCaffrey, 2002), but unfortunately that article does not have a DOI.
+Note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
 ## Test environments
 
