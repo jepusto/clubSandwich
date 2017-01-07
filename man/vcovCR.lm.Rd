@@ -14,7 +14,9 @@
 the same cluster. Required for \code{lm} objects.}
 
 \item{type}{Character string specifying which small-sample adjustment should 
-be used.}
+be used, with available options \code{"CR0"}, \code{"CR1"}, \code{"CR1S"}, 
+\code{"CR2"}, or \code{"CR3"}. See "Details" section of
+\code{\link{vcovCR}} for further information.}
 
 \item{target}{Optional matrix or vector describing the working
 variance-covariance model used to calculate the \code{CR2} and \code{CR4}
@@ -42,6 +44,19 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
 \description{
 \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
 of a set of regression coefficient estimates from an \code{\link{lm}} object.
+}
+\examples{
+data("Produc", package = "plm")
+lm_individual <- lm(log(gsp) ~ 0 + state + log(pcap) + log(pc) + log(emp) + unemp, data = Produc)
+individual_index <- !grepl("state", names(coef(lm_individual)))
+vcovCR(lm_individual, cluster = Produc$state, type = "CR2")[individual_index,individual_index]
+
+# compare to plm()
+plm_FE <- plm::plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+                   data = Produc, index = c("state","year"), 
+                   effect = "individual", model = "within")
+vcovCR(plm_FE, type="CR2")
+
 }
 \seealso{
 \code{\link{vcovCR}}

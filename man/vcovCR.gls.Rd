@@ -15,7 +15,9 @@ belong to the same cluster. If not specified, will be set to
 \code{getGroups(obj)}.}
 
 \item{type}{Character string specifying which small-sample adjustment should 
-be used.}
+be used, with available options \code{"CR0"}, \code{"CR1"}, \code{"CR1S"}, 
+\code{"CR2"}, or \code{"CR3"}. See "Details" section of
+\code{\link{vcovCR}} for further information.}
 
 \item{target}{Optional matrix or vector describing the working 
 variance-covariance model used to calculate the \code{CR2} and \code{CR4} 
@@ -43,6 +45,16 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
 \description{
 \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
 of a set of regression coefficient estimates from a \code{\link[nlme]{gls}} object.
+}
+\examples{
+
+library(nlme)
+data(Ovary, package = "nlme")
+Ovary$time_int <- 1:nrow(Ovary)
+lm_AR1 <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), data = Ovary, 
+              correlation = corAR1(form = ~ time_int | Mare))
+vcovCR(lm_AR1, type = "CR2")
+    
 }
 \seealso{
 \code{\link{vcovCR}}

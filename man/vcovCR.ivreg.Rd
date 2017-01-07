@@ -14,7 +14,9 @@
 the same cluster. Required for \code{ivreg} objects.}
 
 \item{type}{Character string specifying which small-sample adjustment should 
-be used.}
+be used, with available options \code{"CR0"}, \code{"CR1"}, \code{"CR1S"}, 
+\code{"CR2"}, or \code{"CR3"}. See "Details" section of
+\code{\link{vcovCR}} for further information.}
 
 \item{target}{Optional matrix or vector describing the working
 variance-covariance model used to calculate the \code{CR2} and \code{CR4}

@@ -21,7 +21,9 @@ taken equal to the included random effect identifier if not otherwise
 specified.}
 
 \item{type}{Character string specifying which small-sample adjustment should 
-be used.}
+be used, with available options \code{"CR0"}, \code{"CR1"}, \code{"CR1S"}, 
+\code{"CR2"}, or \code{"CR3"}. See "Details" section of
+\code{\link{vcovCR}} for further information.}
 
 \item{target}{Optional matrix or vector describing the working 
 variance-covariance model used to calculate the \code{CR2} and \code{CR4} 
@@ -54,6 +56,37 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
 \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
 of a set of regression coefficient estimates from a \code{\link[plm]{plm}} 
 object.
+}
+\examples{
+
+library(plm)
+# fixed effects
+data("Produc", package = "plm")
+plm_FE <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+              data = Produc, index = c("state","year"), 
+              effect = "individual", model = "within")  
+vcovCR(plm_FE, type="CR2")
+
+# random effects
+plm_RE <- update(plm_FE, model = "random")
+vcovCR(plm_RE, type = "CR2")
+
+# first differencing
+data(Fatalities, package = "AER")
+Fatalities <- within(Fatalities, {
+  frate <- 10000 * fatal / pop
+  drinkagec <- cut(drinkage, breaks = 18:22, include.lowest = TRUE, right = FALSE)
+  drinkagec <- relevel(drinkagec, ref = 4)
+})
+
+plm_FD <- plm(frate ~ beertax + drinkagec + miles + unemp + log(income), 
+              data = Fatalities, index = c("state", "year"), 
+              model = "fd")
+vcovHC(plm_FD, method="arellano", type = "sss", cluster = "group")
+vcovCR(plm_FD, type = "CR1S")
+vcovCR(plm_FD, type = "CR2")
+
+
 }
 \seealso{
 \code{\link{vcovCR}}

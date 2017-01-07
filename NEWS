@@ -1,3 +1,8 @@
+clubSandwich 0.2.2.9
+=======================
+* Added documentation of "type" options in vcovCR().
+* Added examples for all vcovCR() methods.
+
 clubSandwich 0.2.2
 =======================
 * Added bread() methods for all supported model classes.
