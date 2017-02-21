@@ -85,10 +85,10 @@ test_that("vcovCR options work for CR4", {
 
 test_that("CR2 is target-unbiased", {
   
-  expect_true(check_CR(plm_FD, vcov = "CR2"))
+  expect_true(check_CR(plm_FD, vcov = "CR2", tol = 10^-7))
   expect_true(check_CR(plm_FD, vcov = "CR2", inverse_var = FALSE))
   
-  expect_true(check_CR(plm_FD, cluster = "time", vcov = "CR2"))
+  expect_true(check_CR(plm_FD, cluster = "time", vcov = "CR2", tol = 10^-7))
   expect_true(check_CR(plm_FD, cluster = "time", vcov = "CR2", inverse_var = FALSE))
 
 })

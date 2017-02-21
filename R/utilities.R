@@ -2,7 +2,7 @@
 # check that bread can be re-constructed from X and W
 #-----------------------------------------------------
 
-check_bread <- function(obj, cluster, y, tol = .Machine$double.eps ^ 0.5) {
+check_bread <- function(obj, cluster, y, tol = .Machine$double.eps^0.5) {
   cluster <- droplevels(as.factor(cluster))
   B <- sandwich::bread(obj) / v_scale(obj)
   X_list <- matrix_list(model_matrix(obj), cluster, "row")
@@ -17,7 +17,7 @@ check_bread <- function(obj, cluster, y, tol = .Machine$double.eps ^ 0.5) {
   beta <- as.vector(M %*% XWy)
   names(beta) <- names(coef)
   
-  eq_bread <- all.equal(M, B, tol = tol)
+  eq_bread <- diff(range(M / B)) < tol
   eq_coef <- all.equal(beta, coef, tol = tol)
   if (all(c(eq_coef, eq_bread) == TRUE)) TRUE else list(M = M, B = B, beta = beta, coef = coef)
 }
@@ -26,18 +26,18 @@ check_bread <- function(obj, cluster, y, tol = .Machine$double.eps ^ 0.5) {
 # check that CR2 and CR4 are target-unbiased
 #----------------------------------------------
 
-check_CR <- function(obj, vcov, ...) {
+check_CR <- function(obj, vcov, ..., tol = .Machine$double.eps^0.5) {
 
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!("clubSandwich" %in% class(vcov))) stop("Variance-covariance matrix must be a clubSandwich.")
 
   # calculate E(V^CRj)  
   cluster <- attr(vcov, "cluster")
-  Theta_list <- attr(vcov, "target")
   S_array <- get_S_array(obj, vcov)
   E_CRj <- lapply(1:nlevels(cluster), function(j) tcrossprod(S_array[,,j]))
          
   # calculate target
+  Theta_list <- attr(vcov, "target")
   Xp <- projection_matrix(obj)
   alias <- is.na(coef_CS(obj))
   if (any(alias)) Xp <- Xp[, !alias, drop = FALSE]
@@ -53,6 +53,6 @@ check_CR <- function(obj, vcov, ...) {
 
   MXWTWXM <- Map(function(xw, theta) M %*% as.matrix(xw %*% theta %*% t(xw)) %*% M, 
                     xw = XpW_list, theta = Theta_list)
-  eq <- all.equal(E_CRj, MXWTWXM)
+  eq <- all.equal(E_CRj, MXWTWXM, tolerance = tol)
   if (all(eq==TRUE)) TRUE else list(E_CRj = E_CRj, target = MXWTWXM)
 }

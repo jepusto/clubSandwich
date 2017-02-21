@@ -108,7 +108,7 @@ weightMatrix.robu <- function(obj, cluster) {
   } else{
     W <- obj$data.full$r.weights[ord]
   }
-  W <- W / mean(wi)
+  W <- W # / mean(wi)
   matrix_list(W, cluster, "both")
 }
 

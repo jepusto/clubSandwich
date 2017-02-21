@@ -194,15 +194,15 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
       rm(S)
       U_list <- Xp_list
       UW_list <- XpW_list
-      M_U <- bread(obj) / v_scale(obj)
     } else {
       U <- cbind(Xp, S)
       rm(S)
       U_list <- matrix_list(U, cluster, "row")
       UW_list <- Map(function(u, w) as.matrix(t(u) %*% w), u = U_list, w = W_list)
-      UWU_list <- Map(function(uw, u) uw %*% u, uw = UW_list, u = U_list)
-      M_U <- matrix_power(Reduce("+",UWU_list), p = -1)
     }
+
+    UWU_list <- Map(function(uw, u) uw %*% u, uw = UW_list, u = U_list)
+    M_U <- matrix_power(Reduce("+",UWU_list), p = -1)
   }
   
   adjustments <- do.call(type, args = mget(names(formals(type))))
