@@ -91,6 +91,8 @@ user_small <- robu(effectsize ~ binge + followup + sreport + age,
                    var.eff.size = var, userweights = user_wt)
 
 test_that("CR2 t-tests agree with robumeta for user weighting", {
+  skip("Skip due to bug in robumeta.")
+  
   user_lm <- lm(effectsize ~ binge + followup + sreport + age, data = hierdat,
                 weights = user_wt)
   expect_equivalent(coef_CS(user_lm), coef(user_lm))
@@ -273,3 +275,4 @@ test_that("vcovCR options work for CR2", {
   expect_identical(vcovCR(m3_hier, type = "CR2", target = iv, inverse_var = FALSE), CR2_not)
   expect_false(identical(vcovCR(m3_hier, type = "CR2", target = m3_hier$data.full$var.eff.size), CR2_not))
 })
+
