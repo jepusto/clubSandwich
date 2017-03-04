@@ -215,3 +215,27 @@ test_that("clubSandwich works with aliased predictors", {
   test_complete <- lapply(CR_types[-4], function(x) coef_test(npk_drop, vcov = x, cluster = npk$block, test = c("z","naive-t","Satterthwaite")))
   expect_identical(test_drop, test_complete)
 })
+
+
+test_that("weight scale doesn't matter", {
+  
+  lm_fit_w <- lm(y ~ X1 + X2 + X3, data = dat, weights = rep(4, nrow(dat)))
+  
+  CR_types <- paste0("CR",0:4)
+  
+  unweighted_fit <- lapply(CR_types, function(x) vcovCR(lm_fit, cluster = cluster, type = x))
+  weighted_fit <- lapply(CR_types, function(x) vcovCR(lm_fit_w, cluster = cluster, type = x))
+  
+  expect_equal(lapply(unweighted_fit, as.matrix), 
+               lapply(weighted_fit, as.matrix), 
+               tol = 5 * 10^-7)  
+  
+  target <- 1 + rpois(nrow(dat), lambda = 8)
+  unweighted_fit <- lapply(CR_types, function(x) vcovCR(lm_fit, cluster = cluster, type = x, target = target))
+  weighted_fit <- lapply(CR_types, function(x) vcovCR(lm_fit_w, cluster = cluster, type = x, target = target * 15))
+
+  expect_equal(lapply(unweighted_fit, as.matrix), 
+               lapply(weighted_fit, as.matrix), 
+               tol = 5 * 10^-7)  
+  
+})

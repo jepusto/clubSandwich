@@ -78,11 +78,15 @@ weightMatrix.rma.uni <- function(obj, cluster) {
     } else {
       wi <- obj$weights
     }
-    wi <- wi # / mean(wi)
   } else {
     wi <- rep(1, obj$k)
   }
-  matrix_list(wi, cluster, "both")
+  w_scale <- mean(wi)
+  wi <- wi / w_scale
+  
+  W_list <- matrix_list(wi, cluster, "both")
+  attr(W_list, "w_scale") <- w_scale
+  W_list
 }
 
 #---------------------------------------

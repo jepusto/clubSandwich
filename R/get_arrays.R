@@ -25,6 +25,8 @@ get_GH <- function(obj, vcov) {
   p <- ncol(X)
   
   W_list <- weightMatrix(obj, cluster)
+  w_scale <- attr(W_list, "w_scale")
+  if (is.null(w_scale)) w_scale <- 1
   
   S <- augmented_model_matrix(obj, cluster, inverse_var, ignore_FE)
   
@@ -33,7 +35,7 @@ get_GH <- function(obj, vcov) {
     rm(X, S)
     u <- p
     UW_list <- Map(function(u, w) as.matrix(t(u) %*% w), u = U_list, w = W_list)
-    M_U <- M
+    M_U <- w_scale * M
   } else {
     U_list <- matrix_list(cbind(X, S), cluster, "row")
     rm(X, S)

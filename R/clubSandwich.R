@@ -215,7 +215,10 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   components <- do.call(cbind, Map(function(e, r) e %*% r, e = E_list, r = res_list))
   
   v_scale <- v_scale(obj)
-  meat <- tcrossprod(components) / v_scale
+  w_scale <- attr(W_list, "w_scale")
+  if (is.null(w_scale)) w_scale <- 1L
+  
+  meat <- tcrossprod(components) * w_scale^2 / v_scale
   
   if (form == "sandwich") {
     bread <- sandwich::bread(obj)

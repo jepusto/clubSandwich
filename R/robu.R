@@ -92,7 +92,7 @@ targetVariance.robu <- function(obj, cluster) {
   if (obj$user_weighting) {
     V <- obj$data.full$avg.var.eff.size[ord]
   } else {
-    V <- 1 / obj$data.full$r.weights[ord]
+    V <- mean(obj$data.full$r.weights) / obj$data.full$r.weights[ord]
   }
   matrix_list(V, cluster, "both")
 }
@@ -108,8 +108,11 @@ weightMatrix.robu <- function(obj, cluster) {
   } else{
     W <- obj$data.full$r.weights[ord]
   }
-  W <- W # / mean(wi)
-  matrix_list(W, cluster, "both")
+  w_scale <- mean(W)
+  W <- W / w_scale
+  W_list <- matrix_list(W, cluster, "both")
+  attr(W_list, "w_scale") <- w_scale
+  W_list
 }
 
 #---------------------------------------

@@ -91,7 +91,6 @@ user_small <- robu(effectsize ~ binge + followup + sreport + age,
                    var.eff.size = var, userweights = user_wt)
 
 test_that("CR2 t-tests agree with robumeta for user weighting", {
-  skip("Skip due to bug in robumeta.")
   
   user_lm <- lm(effectsize ~ binge + followup + sreport + age, data = hierdat,
                 weights = user_wt)
@@ -102,7 +101,10 @@ test_that("CR2 t-tests agree with robumeta for user weighting", {
   # expect_true(check_CR(user_small, vcov = "CR4"))
   
   expect_equivalent(user_small$VR.r, as.matrix(robu_CR2))
-  lm_CR2 <- vcovCR(user_lm, cluster = hierdat$studyid, type = "CR2", target = user_small$data.full$avg.var.eff.size)
+  
+  target <- user_small$data.full$avg.var.eff.size
+  
+  lm_CR2 <- vcovCR(user_lm, cluster = hierdat$studyid, type = "CR2", target = target)
   expect_equivalent(robu_CR2, lm_CR2)
   
   CR2_ttests <- coef_test(user_small, vcov = robu_CR2, test = "Satterthwaite")
@@ -166,11 +168,13 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - full 
                              vcov = m3_hier_CR2, test = c("Naive-F","HTZ"))
   
   Fstat_club <- sapply(dropout_tests, function(x) x$F)
+  attr(Fstat_club, "dimnames") <- NULL
   Fstat_paper <- matrix(c(0.23, 0.22, 0.91, 0.84, 3.11, 2.78, 14.15, 13.78, 3.85, 3.65), nrow = 2)
   expect_equivalent(Fstat_paper, round(Fstat_club, 2))
   
   df_club <- sapply(dropout_tests, function(x) x$df[2])
   df_paper <- c(42.9, 21.5, 16.8, 36.9, 37.5)
+  attr(df_club, "names") <- NULL
   expect_equivalent(df_paper, round(df_club, 1))
 })
 
@@ -182,6 +186,7 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - reduc
                   + male_pct + white_pct + average_age
                   + implementation_quality + program_site + duration + service_hrs, 
                   data = dp_subset, studynum = studyID, var.eff.size = varLOR, modelweights = "HIER")
+
   
   m3_hier_CR2 <- vcovCR(m3_hier, cluster = dp_subset$studyID, type = "CR2")
   expect_true(check_CR(m3_hier, vcov = m3_hier_CR2))
@@ -204,10 +209,12 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - reduc
   
   Fstat_club <- sapply(dropout_tests, function(x) x$F)
   Fstat_paper <- matrix(c(3.19, 2.93, 1.05, 0.84, 0.32, 0.26, 4.02, 3.69, 1.19, 0.98), nrow = 2)
+  attr(Fstat_club, "dimnames") <- NULL
   expect_equivalent(Fstat_paper, round(Fstat_club, 2))
   
   df_club <- sapply(dropout_tests, function(x) x$df[2])
   df_paper <- c(11.0, 7.7, 4.6, 11.0, 9.1)
+  attr(df_club, "names") <- NULL
   expect_equivalent(df_paper, round(df_club, 1))
 })
 
@@ -263,14 +270,16 @@ test_that("vcovCR options work for CR2", {
                   + implementation_quality + program_site + duration + service_hrs, 
                   data = dp_subset, studynum = studyID, var.eff.size = varLOR, modelweights = "HIER")
   
-  iv <- 1 / m3_hier$data.full$r.weights
+  iv <- mean(m3_hier$data.full$r.weights) / m3_hier$data.full$r.weights
   CR2_iv <- vcovCR(m3_hier, type = "CR2")
   expect_identical(vcovCR(m3_hier, type = "CR2", inverse_var = TRUE), CR2_iv)
   expect_equal(vcovCR(m3_hier, type = "CR2", target = iv, inverse_var = TRUE), CR2_iv)
   
-  attr(CR2_iv, "inverse_var") <- FALSE
   CR2_not <- vcovCR(m3_hier, type = "CR2", inverse_var = FALSE)
+  attr(CR2_iv, "inverse_var") <- FALSE
+  attr(CR2_iv, "target") <- attr(CR2_not, "target")
   expect_equal(CR2_not, CR2_iv)
+  
   expect_identical(vcovCR(m3_hier, type = "CR2", target = iv), CR2_not)
   expect_identical(vcovCR(m3_hier, type = "CR2", target = iv, inverse_var = FALSE), CR2_not)
   expect_false(identical(vcovCR(m3_hier, type = "CR2", target = m3_hier$data.full$var.eff.size), CR2_not))
