@@ -83,8 +83,8 @@ test_that("getData works.", {
   egg_scramble <- Ovary[re_order,]
   gls_scramble <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), 
                       data = egg_scramble)
-  dat <- getData(gls_scramble)
-  expect_identical(egg_scramble, dat)
+  scramble_dat <- getData(gls_scramble)
+  expect_identical(egg_scramble, scramble_dat)
 })
 
 
@@ -127,7 +127,4 @@ test_that("clubSandwich works with dropped observations", {
   expect_identical(test_drop, test_complete)
 })
 
-
-test_that("CR2 is equivalent to Welch t-test for DiD design", {
-})
 

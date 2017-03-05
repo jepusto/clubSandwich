@@ -1,4 +1,4 @@
-context("glm objects")
+context("logit glm objects")
 
 m <- 10
 cluster <- factor(rep(LETTERS[1:m], 3 + rpois(m, 5)))
@@ -164,7 +164,9 @@ test_that("Order doesn't matter.",{
   
   test_fit <- lapply(CR_types, function(x) coef_test(logit_fit, vcov = x, cluster = dat$cluster, test = "All"))
   test_scramble <- lapply(CR_types, function(x) coef_test(logit_scramble, vcov = x, cluster = dat_scramble$cluster, test = "All"))
-  expect_equal(test_fit, test_scramble, tolerance = 10^-5)
+  compare_tests <- Map(function(a, b) sapply(a / b, function(x) diff(range(x))), test_fit, test_scramble)
+  compare_tests <- do.call(rbind, compare_tests)
+  expect_true(all(compare_tests < 10^-5))
   
   constraints <- combn(length(coef(logit_fit)), 2, simplify = FALSE)
   Wald_fit <- Wald_test(logit_fit, constraints = constraints, vcov = "CR2", cluster = dat$cluster, test = "All")

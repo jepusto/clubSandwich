@@ -133,7 +133,9 @@ test_that("clubSandwich errors with dropped observations", {
   
   test_drop <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, test = "All"))
   test_complete <- lapply(CR_types, function(x) coef_test(hier_complete, vcov = x, test = "All"))
-  expect_equal(test_drop, test_complete, tolerance = 10^-6)
+  compare_tests <- Map(function(a, b) sapply(a / b, function(x) diff(range(x))), test_drop, test_complete)
+  compare_tests <- do.call(rbind, compare_tests)
+  expect_true(all(compare_tests < 10^-5))
 })
 
 test_that("vcovCR options work for CR2", {
