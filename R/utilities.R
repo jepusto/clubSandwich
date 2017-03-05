@@ -2,7 +2,7 @@
 # check that bread can be re-constructed from X and W
 #-----------------------------------------------------
 
-check_bread <- function(obj, cluster, y, tol = .Machine$double.eps^0.5) {
+check_bread <- function(obj, cluster, y, check_coef = TRUE, tol = .Machine$double.eps^0.5) {
   cluster <- droplevels(as.factor(cluster))
   B <- sandwich::bread(obj) / v_scale(obj)
   X_list <- matrix_list(model_matrix(obj), cluster, "row")
@@ -11,15 +11,20 @@ check_bread <- function(obj, cluster, y, tol = .Machine$double.eps^0.5) {
   M <- chol2inv(chol(XWX))
   attr(M, "dimnames") <- attr(B, "dimnames")
   
-  coef <- coef_CS(obj)
-  y_list <- split(y, cluster)
-  XWy <- Reduce("+", Map(function(x, w, y) t(x) %*% w %*% y, x = X_list, w = W_list, y = y_list))
-  beta <- as.vector(M %*% XWy)
-  names(beta) <- names(coef)
-  
   eq_bread <- diff(range(M / B)) < tol
-  eq_coef <- all.equal(beta, coef, tol = tol)
-  if (all(c(eq_coef, eq_bread) == TRUE)) TRUE else list(M = M, B = B, beta = beta, coef = coef)
+  
+  if (check_coef) {
+    coef <- coef_CS(obj)
+    y_list <- split(y, cluster)
+    XWy <- Reduce("+", Map(function(x, w, y) t(x) %*% w %*% y, x = X_list, w = W_list, y = y_list))
+    beta <- as.vector(M %*% XWy)
+    names(beta) <- names(coef)
+    
+    eq_coef <- all.equal(beta, coef, tol = tol)
+    if (all(c(eq_coef, eq_bread) == TRUE)) TRUE else list(M = M, B = B, beta = beta, coef = coef)
+  } else {
+    if (eq_bread) TRUE else list(M = M, B = B)
+  }
 }
 
 #----------------------------------------------
