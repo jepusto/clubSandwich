@@ -40,7 +40,7 @@ plogit_fit <- glm(yp ~ X1 + X2 + X3 + X4, data = dat, weights = w, family = "qua
 # 
 # M / B
 # diff(range(M / B))
-# 
+
 
 test_that("bread works", {
   
@@ -148,7 +148,7 @@ test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
   CR_types <- paste0("CR", 0:3)
   CR_types[2] <- "CR1S"
   CR_list <- lapply(CR_types, function(t) as.matrix(vcovCR(logit_fit, cluster = dat$row, type = t)))
-  expect_equal(HC_list, CR_list)
+  expect_equal(HC_list, CR_list, tol = 4 * 10^-6)
   
 })
 
@@ -205,44 +205,38 @@ test_that("clubSandwich works with aliased predictors", {
 })
 
 
-test_that("clubSandwich results are roughly equivalent to gee", {
-  library(gee)
-  logit_gee <- gee(y1 ~ X1 + X2 + X3 + X4, id = cluster, 
-                   data = dat, family = "binomial")
-  logit_refit <- update(logit_fit, start = coef(logit_gee))
-  expect_equal(coef(logit_refit), coef(logit_gee))
-  
-  V_gee <- logit_gee$robust.variance
-  V_CR <- as.matrix(vcovCR(logit_refit, cluster = dat$cluster, type = "CR0"))
-  expect_equal(V_gee, V_CR)
-})
-
-test_that("clubSandwich results are roughly equivalent to geepack", {
+test_that("clubSandwich results are equivalent to geepack", {
   library(geepack)
+  
+  # check CR0 with logit
   logit_gee <- geeglm(y1 ~ X1 + X2 + X3 + X4, id = cluster, 
                       data = dat, family = "binomial")
   logit_refit <- update(logit_fit, start = coef(logit_gee))
   expect_equal(coef(logit_refit), coef(logit_gee))
   
-  V_gee <- summary(logit_gee)$cov.scaled
+  V_gee0 <- summary(logit_gee)$cov.scaled
   V_CR0 <- as.matrix(vcovCR(logit_refit, cluster = dat$cluster, type = "CR0"))
-  attr(V_gee, "dimnames") <- attr(V_CR, "dimnames")
-  expect_equal(V_gee, V_CR0)
+  attr(V_gee0, "dimnames") <- attr(V_CR0, "dimnames")
+  expect_equal(V_gee0, V_CR0)
   
+  # check CR3 with logit
   logit_gee <- geeglm(y1 ~ X1 + X2 + X3 + X4, id = cluster, 
                       data = dat, family = "binomial",
                       std.err = "jack")
-  V_gee <- summary(logit_gee)$cov.scaled
+  V_gee3 <- summary(logit_gee)$cov.scaled
   V_CR3 <- as.matrix(vcovCR(logit_refit, cluster = dat$cluster, type = "CR3"))
-  attr(V_gee, "dimnames") <- attr(V_CR, "dimnames")
-  expect_equal(V_gee, V_CR0)
+  attr(V_gee3, "dimnames") <- attr(V_CR3, "dimnames")
+  expect_equal(V_gee3 * m / (m - 6), V_CR3)
   
-})
-
-test_that("clubSandwich results are equivalent to geesmv", {
+  # check CR0 with plogit
+  plogit_gee <- geeglm(yp ~ X1 + X2 + X3 + X4, id = cluster, 
+                      data = dat, weights = w, family = "binomial")
+  plogit_refit <- update(plogit_fit, start = coef(plogit_gee))
+  expect_equal(coef(plogit_refit), coef(plogit_gee))
   
-})
-
-test_that("clubSandwich results are equivalent to saws", {
+  V_gee0 <- summary(plogit_gee)$cov.scaled
+  V_CR0 <- as.matrix(vcovCR(plogit_refit, cluster = dat$cluster, type = "CR0"))
+  attr(V_gee0, "dimnames") <- attr(V_CR0, "dimnames")
+  expect_equal(V_gee0, V_CR0)
   
 })
