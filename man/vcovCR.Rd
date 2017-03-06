@@ -56,8 +56,8 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
 }
 \description{
 This is a generic function, with specific methods defined for 
-  \code{\link[stats]{lm}}, \code{\link[plm]{plm}}, \code{\link[nlme]{gls}}, 
-  \code{\link[nlme]{lme}}, \code{\link[robumeta]{robu}}, 
+  \code{\link[stats]{lm}}, \code{\link[plm]{plm}}, \code{\link[stats]{glm}}, 
+  \code{\link[nlme]{gls}}, \code{\link[nlme]{lme}}, \code{\link[robumeta]{robu}}, 
   \code{\link[metafor]{rma.uni}}, and \code{\link[metafor]{rma.mv}} objects.
 
 \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
@@ -128,7 +128,7 @@ Pustejovsky, J. E. & Tipton, E. (2017). Small sample methods for cluster-robust 
 }
 \seealso{
 \code{\link{vcovCR.lm}}, \code{\link{vcovCR.plm}}, 
-  \code{\link{vcovCR.gls}}, \code{\link{vcovCR.lme}}, 
+  \code{\link{vcovCR.glm}}, \code{\link{vcovCR.gls}}, \code{\link{vcovCR.lme}}, 
   \code{\link{vcovCR.robu}}, \code{\link{vcovCR.rma.uni}}, 
   \code{\link{vcovCR.rma.mv}}
 }
