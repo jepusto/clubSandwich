@@ -6,13 +6,13 @@
 # clubSandwich
 
 `clubSandwich` provides several cluster-robust variance estimators 
-(i.e., sandwich estimators) for ordinary and weighted least squares linear regression models. 
+(i.e., sandwich estimators) for ordinary and weighted least squares linear regression models and for generalized linear models. 
 Several adjustments are incorporated to improve small-sample performance. 
 The package includes functions for estimating the variance-covariance matrix and 
 for testing single- and multiple-contrast hypotheses based on Wald test statistics. 
 Tests of single regression coefficients use Satterthwaite or saddlepoint corrections.
 Tests of multiple-contrast hypotheses use an approximation to Hotelling's T-squared distribution. 
-Methods are provided for a variety of fitted models, including  `lm`, `plm` (from package `plm`), `gls` and `lme` (from `nlme`), `robu` (from `robumeta`), and `rma.uni` and `rma.mv` (from `metafor`). 
+Methods are provided for a variety of fitted models, including  `lm`, `gls`, `plm` (from package `plm`), `gls` and `lme` (from `nlme`), `robu` (from `robumeta`), and `rma.uni` and `rma.mv` (from `metafor`). 
 
 # Installing clubSandwich
 
