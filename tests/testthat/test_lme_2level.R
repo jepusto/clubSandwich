@@ -145,22 +145,19 @@ test_that("lme agrees with gls", {
   
   CR_lme <- lapply(CR_types, function(x) vcovCR(lme_fit, type = x))
   CR_gls <- lapply(CR_types, function(x) vcovCR(gls_fit, type = x))
-  expect_equivalent(CR_lme, CR_gls)
+  max_ratio <- mapply(function(a, b) max(abs(a / b - 1)), CR_lme, CR_gls)
+  expect_true(all(max_ratio < 10^-8))
   
   test_lme <- lapply(CR_types, function(x) coef_test(lme_fit, vcov = x, test = "All"))
   test_gls <- lapply(CR_types, function(x) coef_test(gls_fit, vcov = x, test = "All"))
-  expect_equal(test_lme, test_gls, tolerance = 10^-5)
+  compare_tests <- mapply(function(a, b) max(abs(a / b - 1), na.rm = TRUE), test_lme, test_gls)
+  expect_true(all(compare_tests < 10^-8))
   
   constraints <- c(combn(length(coef(lme_fit)), 2, simplify = FALSE),
                    combn(length(coef(lme_fit)), 3, simplify = FALSE))
   Wald_lme <- Wald_test(lme_fit, constraints = constraints, vcov = "CR2", test = "All")
   Wald_gls <- Wald_test(gls_fit, constraints = constraints, vcov = "CR2", test = "All")
   expect_equal(Wald_lme, Wald_gls)
-})
-
-
-test_that("CR2 is equivalent to Welch t-test for DiD design", {
-  
 })
 
 

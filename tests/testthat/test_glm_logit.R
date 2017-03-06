@@ -164,9 +164,8 @@ test_that("Order doesn't matter.",{
   
   test_fit <- lapply(CR_types, function(x) coef_test(logit_fit, vcov = x, cluster = dat$cluster, test = "All"))
   test_scramble <- lapply(CR_types, function(x) coef_test(logit_scramble, vcov = x, cluster = dat_scramble$cluster, test = "All"))
-  compare_tests <- Map(function(a, b) sapply(a / b, function(x) diff(range(x))), test_fit, test_scramble)
-  compare_tests <- do.call(rbind, compare_tests)
-  expect_true(all(compare_tests < 10^-5))
+  compare_tests <- mapply(function(a, b) max(abs(a / b - 1), na.rm = TRUE), test_fit, test_scramble)
+  expect_true(all(compare_tests < 10^-8))
   
   constraints <- combn(length(coef(logit_fit)), 2, simplify = FALSE)
   Wald_fit <- Wald_test(logit_fit, constraints = constraints, vcov = "CR2", cluster = dat$cluster, test = "All")
