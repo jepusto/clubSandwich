@@ -16,7 +16,7 @@ plm_individual <- plm(inv ~ value + capital, data = Grunfeld, model="random")
 obj <- plm_individual
 
 test_that("individual effects agree with gls", {
-  icc <- with(plm_individual$ercomp$sigma2, id / (id + idios))
+  icc <- with(plm_individual$ercomp, sigma2[["id"]] / (sigma2[["id"]] + sigma2[["idios"]]))
   gls_individual <- gls(inv ~ value + capital, data = Grunfeld,
                         correlation = corCompSymm(value = icc, form = ~ 1 | firm, fixed=TRUE))
   
@@ -42,16 +42,13 @@ plm_time <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp,
                 effect = "time", model = "random")
 
 test_that("time effects agree with gls", {
-  icc <- with(plm_time$ercomp$sigma2, id / (id + idios))
+  icc <- with(plm_time$ercomp, sigma2[[2]] / (sigma2[[2]] + sigma2[[1]]))
   gls_time <- gls(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
                   data = Produc, 
                   correlation = corCompSymm(value = icc, form = ~ 1 | year, fixed = TRUE))
   
   expect_equal(model_matrix(plm_time), model_matrix(gls_time))
   expect_identical(nobs(plm_time), nobs(gls_time))
-  V_ratio <- Map("/", targetVariance(plm_time, cluster = Produc$year),
-                 targetVariance(gls_time, cluster = Produc$year))
-  expect_equal(lapply(V_ratio, min), lapply(V_ratio, max))
   expect_equivalent(residuals_CS(plm_time), residuals_CS(gls_time))
   
   CR_plm <- lapply(CR_types, function(x) vcovCR(plm_time, type = x))

@@ -198,7 +198,9 @@ nobs.plm <- function(object, ...) {
 targetVariance.plm <- function(obj, cluster) {
   if (obj$args$model=="random") {
     block_mat <- function(nj) {
-      r <- with(obj$ercomp$sigma2, id / idios)
+      sigma_sq <- obj$ercomp$sigma2[[1]]
+      tau_sq <- obj$ercomp$sigma2[[2]]
+      r <- tau_sq / sigma_sq
       Vj <- matrix(r, nj, nj)
       diag(Vj) <- 1 + r
       Vj
@@ -215,8 +217,8 @@ targetVariance.plm <- function(obj, cluster) {
 
 weightMatrix.plm <- function(obj, cluster) {
   if (obj$args$model=="random") {
-    sigma_sq <- obj$ercomp$sigma2$idios
-    tau_sq <- obj$ercomp$sigma2$id
+    sigma_sq <- obj$ercomp$sigma2[[1]]
+    tau_sq <- obj$ercomp$sigma2[[2]]
     block_mat <- function(nj) {
       theta <- tau_sq / ((nj * tau_sq + sigma_sq))
       Wj <- matrix(-theta, nj, nj)
