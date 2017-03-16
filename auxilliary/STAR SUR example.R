@@ -1,6 +1,7 @@
 
 data(STAR, package = "AER")
 
+library(clubSandwich)
 library(dplyr)
 library(tidyr)
 
@@ -27,7 +28,6 @@ lm_STAR <- lm(score ~ test:(0 + schoolid1 + gender + ethnicity + birth + lunch1 
 
 small_class_coefs <- which(grepl("star1small", names(coef(lm_STAR))))
 
-library(clubSandwich)
 
 # clustering by student 
 
