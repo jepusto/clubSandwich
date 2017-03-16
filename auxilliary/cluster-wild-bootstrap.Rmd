@@ -1,0 +1,68 @@
+---
+title: "Algorithm for cluster wild bootstrap"
+author: "James E. Pustejovsky"
+date: "March 16, 2017"
+output: html_document
+---
+
+Consider the model
+$$
+\mathbf{y}_j = \mathbf{T}_j \boldsymbol\alpha + \mathbf{U}_j \boldsymbol\beta + \mathbf{e}_j, \quad \text{where} \quad \mathbf{e}_j \sim N(\mathbf{0}, \boldsymbol\Sigma)
+$$
+for $j = 1,...,m$, and where $\mathbf{e}_j$ is independent of $\mathbf{e}_k$ for $j \neq k$. We will estimate the model using weighted least squares with fixed weight matrices $\mathbf{W}_1,...,\mathbf{W}_m$. 
+Suppose that we want to test the hypothesis that $\boldsymbol\beta = \mathbf{0}$. We will use the wild bootstrap, generating bootstrap samples under the null hypothesis. Begin by calculating 
+$$
+\boldsymbol{\tilde\alpha} = \mathbf{M_T} \mathbf{T}'\mathbf{W}\mathbf{y},
+$$
+where $\mathbf{M_T} = \left(\mathbf{T}'\mathbf{W}\mathbf{T}\right)^{-1}$. The residuals under the null model are 
+$$
+\mathbf{\tilde{e}} = \mathbf{y} - \mathbf{T}\boldsymbol{\tilde\alpha} = \left(\mathbf{I} - \mathbf{H_T}\right) \mathbf{y}.
+$$
+where $\mathbf{H_T} = \mathbf{T} \mathbf{M_T} \mathbf{T}' \mathbf{W}$. 
+
+# Wald test statistic
+
+Now to the hypothesis test. We'll first need to get the WLS estimate of $\boldsymbol\beta$ and the residuals from the full regression. This can be done efficiently as follows. Let $\mathbf{\ddot{U}}$ be the residuals from the WLS regression of $\mathbf{U}$ on $\mathbf{T}$, i.e.,
+$$
+\mathbf{\ddot{U}} = \left(\mathbf{I} - \mathbf{H_T}\right)\mathbf{U}.
+$$
+The WLS estimate of $\boldsymbol\beta$ can be calculated by taking the WLS regression of $\mathbf{\tilde{e}}$ on $\mathbf{\ddot{U}}$:
+$$
+\boldsymbol{\hat\beta} = \mathbf{M_{\ddot{U}}} \mathbf{\ddot{U}}' \mathbf{W} \mathbf{\tilde{e}},
+$$
+where $\mathbf{M_{\ddot{U}}} = \left(\mathbf{\ddot{U}}' \mathbf{W} \mathbf{\ddot{U}}\right)^{-1}$. The residuals can also be calculated as
+$$
+\mathbf{\hat{e}} = \mathbf{\tilde{e}} - \mathbf{\ddot{U}}\boldsymbol{\hat\beta}.
+$$
+With these quantities, calculate the robust variance-covariance matrix
+$$
+\mathbf{V} = \mathbf{M_{\ddot{U}}}\left(\sum_{j=1}^m \mathbf{\ddot{U}}_j' \mathbf{W}_j \mathbf{A}_j \mathbf{\hat{e}}_j  \mathbf{\hat{e}}_j' \mathbf{A}_j \mathbf{W}_j \mathbf{\ddot{U}}_j \right)\mathbf{M_{\ddot{U}}},
+$$
+where $\mathbf{A}_1,...,\mathbf{A}_m$ are some adjustment matrices (these could be identity matrices or the BRL adjustment matrices). Then calculate the Wald test statistic
+$$
+Q = \boldsymbol{\hat\beta}' \mathbf{V}^{-1} \boldsymbol{\hat\beta}.
+$$
+
+# Bootstrap
+
+We will use the cluster wild bootstrap to approximate the null sampling distribution of $Q$. This entails repeatedly generating new data 
+$$
+\mathbf{y}_j^* = \mathbf{T}_j \boldsymbol{\tilde\alpha} + \eta_j \mathbf{B}_j \boldsymbol{\tilde{e}}_j,
+$$
+where $\eta_1,...,\eta_m$ are sampled from some auxilliary distribution (i.e., the Rademacher distribution or Webb's 6-point distribution) and $\mathbf{B}_1,...,\mathbf{B}_m$ are some adjustment matrices calculated based on the null model (these could be identity matrices, the BRL adjustment matrices, the approximate jackknife adjustment, etc.). We then re-calculate $\boldsymbol{\hat\beta}$, $\mathbf{V}^{CR}$, and $Q$ based on the bootstrapped $\mathbf{y}^*$. 
+
+This can be done efficiently as follows:
+
+1. When first calculating $\boldsymbol{\hat\beta}$, save the matrices $\mathbf{M_{\ddot{U}}}$, $\mathbf{E}_j' = \mathbf{\ddot{U}}_j'\mathbf{W}_j$, and $\mathbf{G}_j' = \mathbf{E}_j' \mathbf{A}_j$ for later use. 
+2. Calculate $\mathbf{f}_j = \mathbf{B}_j \boldsymbol{\tilde{e}}_j$
+3. For $b = 1,...,B$:
+    a. Calculate $\mathbf{e}_j^{(b)} = \eta_j \mathbf{f}_j$.
+    b. Calculate $\boldsymbol{\hat\beta}^{(b)} = \mathbf{M_{\ddot{U}}} \sum_{j=1}^m \mathbf{E}_j \mathbf{e}_j^{(b)}$.
+    c. Calculate $\mathbf{\hat{e}}_j^{(b)} = \mathbf{e}_j^{(b)} - \mathbf{\ddot{U}}_j \boldsymbol{\hat\beta}^{(b)}$.
+    d. Calculate $\mathbf{V}^{(b)} = \mathbf{M_{\ddot{U}}}\left(\sum_{j=1}^m \mathbf{G}_j'\mathbf{\hat{e}}_j^{(b)} \left(\mathbf{\hat{e}}_j^{(b)}\right)' \mathbf{G}_j\right)\mathbf{M_{\ddot{U}}}$
+    e. Calculate $Q^{(b)} = \left(\boldsymbol{\hat\beta}^{(b)}\right)' \left(\mathbf{V}^{(b)}\right)^{-1} \boldsymbol{\hat\beta}^{(b)}$.
+4. Calculate the p-value corresponding to $H_0$ as 
+    $$
+    p = \frac{1}{B} \sum_{b = 1}^B I\left(Q > Q^{(b)}\right)
+    $$
+
