@@ -86,8 +86,11 @@ model_matrix.gls <- function(obj) {
 # Get (model-based) working variance matrix 
 #-------------------------------------
 
-targetVariance.gls <- function(obj, cluster) {
+targetVariance.gls <- function(obj, cluster = nlme::getGroups(obj)) {
+  
   groups <- nlme::getGroups(obj)
+  if (is.null(groups)) groups <- cluster
+  
   if (is.null(obj$modelStruct$corStruct)) {
     if (is.null(obj$modelStruct$varStruct)) {
       V_list <- matrix_list(rep(1, length(cluster)), cluster, "both")
@@ -105,6 +108,27 @@ targetVariance.gls <- function(obj, cluster) {
       V_list <- Map(function(R, s) tcrossprod(s) * R, R = R_list, s = sd_list)
     } 
   } 
+  
+  # check if clustering level is higher than highest level of random effects
+  
+  tb_groups <- table(groups)
+  tb_cluster <- table(cluster)
+  if (length(tb_groups) < length(tb_cluster) | 
+      any(as.vector(tb_groups) != rep(as.vector(tb_cluster), length.out = length(tb_groups))) | 
+      any(names(tb_groups) != rep(names(tb_cluster), length.out = length(tb_groups)))) {
+    
+    # check that random effects are nested within clusters  
+    tb_cross <- table(groups, cluster)
+    nested <- apply(tb_cross, 1, function(x) sum(x > 0) == 1)
+    if (!all(nested)) stop("Random effects are not nested within clustering variable.")
+    
+    # expand target_list to level of clustering
+    crosswalk <- data.frame(groups, cluster)
+    V_list <- add_bdiag(small_mats = V_list, 
+                             big_mats = matrix_list(rep(0, length(cluster)), cluster, dim = "both"),
+                             crosswalk = crosswalk)
+  }
+  
   V_list
 }
 
@@ -112,7 +136,7 @@ targetVariance.gls <- function(obj, cluster) {
 # Get weighting matrix
 #-------------------------------------
 
-weightMatrix.gls <- function(obj, cluster) {
+weightMatrix.gls <- function(obj, cluster = nlme::getGroups(obj)) {
   V_list <- targetVariance(obj, cluster)
   lapply(V_list, function(v) chol2inv(chol(v)))
 }

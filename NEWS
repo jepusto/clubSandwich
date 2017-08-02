@@ -4,6 +4,7 @@ clubSandwich 0.2.2.9
 * Added methods for glm objects.
 * Added documentation of "type" options in vcovCR().
 * Added examples for all vcovCR() methods.
+* Provide facility to cluster at higher level than highest random effects for lme and gls objects.
 
 clubSandwich 0.2.2
 =======================

@@ -9,8 +9,6 @@ obj_A3 <- update(obj_A, correlation = corExp(form = ~ Time))
 obj_A4 <- update(obj_A2, correlation = corExp(form = ~ Time))
 obj_B <- lme(distance ~ age, random = ~ age, data = Orthodont)
 
-obj <- obj_A2
-
 test_that("bread works", {
   expect_true(check_bread(obj_A, cluster = BodyWeight$Rat, y = BodyWeight$weight))
   expect_true(check_bread(obj_A2, cluster = BodyWeight$Rat, y = BodyWeight$weight, tol = 5 * 10^-5))
@@ -183,4 +181,39 @@ test_that("Emply levels are dropped in model_matrix", {
   X <- model_matrix(lme_fit)
   expect_identical(names(betas), colnames(X))
   
+})
+
+
+
+test_that("Possible to cluster at higher level than random effects", {
+  
+  n_districts <- 10
+  n_schools_per <- rnbinom(n_districts, size = 4, prob = 0.3)
+  n_schools <- sum(n_schools_per)
+  n_students_per <- 10
+  n_students <- n_schools * n_students_per
+  
+  # identifiers for each level
+  district_id <- factor(rep(1:n_districts, n_schools_per * n_students_per))
+  school_id <- factor(rep(1:sum(n_schools_per), each = n_students_per))
+  student_id <- 1:n_students
+  
+  # simulated outcome
+  Y <- rnorm(n_districts)[district_id] + rnorm(n_schools)[school_id] + rnorm(n_students)
+  X <- rnorm(n_students)
+  dat <- data.frame(district_id, school_id, student_id, Y, X)
+  dat_scramble <- dat[sample(nrow(dat)),]
+  
+  # fit two-level model
+  lme_2level <- lme(Y ~ X, random = ~ 1 | school_id, data = dat)
+  
+  # cluster at level 3
+  V <- vcovCR(lme_2level, type = "CR2", cluster = dat$district_id)
+  expect_is(V, "vcovCR")
+  expect_error(vcovCR(lme_2level, type = "CR2", cluster = dat_scramble$district_id))
+  
+  # check that result does not depend on sort-order
+  V_scramble <- vcovCR(lme(Y ~ X, random = ~ 1 | school_id, data = dat_scramble), 
+                       type = "CR2", cluster = dat_scramble$district_id)
+  expect_equal(as.matrix(V), as.matrix(V_scramble))
 })

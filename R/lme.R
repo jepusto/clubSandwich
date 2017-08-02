@@ -36,7 +36,6 @@
 #' @export
 
 vcovCR.lme <- function(obj, cluster, type, target, inverse_var, form = "sandwich", ...) {
-  # if (length(obj$groups) > 1) stop("vcovCR.lme does not work for models with multiple levels of random effects.")
   if (missing(cluster)) cluster <- nlme::getGroups(obj, level = 1)
   if (missing(target)) target <- NULL
   if (missing(inverse_var)) inverse_var <- is.null(target)
@@ -77,13 +76,13 @@ ZDZt <- function(D, Z_list) {
   lapply(Z_list, function(z) z %*% D %*% t(z))
 }
 
-targetVariance.lme <- function(obj, cluster) {
+targetVariance.lme <- function(obj, cluster = getGroups(obj, level = 1)) {
   
   if (any("nlme" == class(obj))) stop("not implemented for \"nlme\" objects")
   
   all_groups <- rev(obj$groups)
-  # if (length(all_groups) > 1) stop("not implemented for multiple levels of nesting")
   smallest_groups <- all_groups[[1]]
+  largest_groups <- all_groups[[length(all_groups)]]
   
   # Get level-1 variance-covariance structure as V_list
   
@@ -116,7 +115,7 @@ targetVariance.lme <- function(obj, cluster) {
     row.names(Z_mat) <- NULL
     Z_list <- matrix_list(Z_mat, all_groups[[1]], "row")
     ZDZ_list <- ZDZt(D_mat, Z_list)
-    return(Map("+", ZDZ_list, V_list)      )
+    target_list <- Map("+", ZDZ_list, V_list)
   } else {
     D_list <- lapply(obj$modelStruct$reStruct, as.matrix)
     Z_mat <- model.matrix(obj$modelStruct$reStruc, getData(obj))
@@ -131,8 +130,30 @@ targetVariance.lme <- function(obj, cluster) {
                                   big_mats = ZDZ_lists[[i]], 
                                   crosswalk = all_groups[c(i-1,i)])
     }
-    return(ZDZ_lists[[i]])
+    target_list <- ZDZ_lists[[i]]
   }
+  
+  # check if clustering level is higher than highest level of random effects
+  
+  tb_groups <- table(largest_groups)
+  tb_cluster <- table(cluster)
+  if (length(tb_groups) < length(tb_cluster) | 
+      any(as.vector(tb_groups) != rep(as.vector(tb_cluster), length.out = length(tb_groups))) | 
+      any(names(tb_groups) != rep(names(tb_cluster), length.out = length(tb_groups)))) {
+    
+    # check that random effects are nested within clusters  
+    tb_cross <- table(largest_groups, cluster)
+    nested <- apply(tb_cross, 1, function(x) sum(x > 0) == 1)
+    if (!all(nested)) stop("Random effects are not nested within clustering variable.")
+    
+    # expand target_list to level of clustering
+    crosswalk <- data.frame(largest_groups, cluster)
+    target_list <- add_bdiag(small_mats = target_list, 
+                             big_mats = matrix_list(rep(0, length(cluster)), cluster, dim = "both"),
+                             crosswalk = crosswalk)
+  }
+  
+  return(target_list)
 }
 
 
@@ -140,7 +161,7 @@ targetVariance.lme <- function(obj, cluster) {
 # Get weighting matrix
 #-------------------------------------
 
-weightMatrix.lme <- function(obj, cluster) {
+weightMatrix.lme <- function(obj, cluster = getGroups(obj, level = 1)) {
   V_list <- targetVariance(obj, cluster)
   lapply(V_list, function(v) chol2inv(chol(v)))
 }
