@@ -28,3 +28,16 @@ Possibly mis-spelled words in DESCRIPTION:
   linearization (8:51)
 
   All of the identified words are spelled correctly. 
+
+Found the following (possibly) invalid URLs:
+  URL: http://economics.mit.edu/faculty/angrist/data1/data/angrist
+    From: man/AchievementAwardsRCT.Rd
+    Status: 403
+    Message: Forbidden
+  URL: http://masteringmetrics.com/resources/
+    From: inst/doc/panel-data-CRVE.html
+    Status: 500
+    Message: Internal Server Error
+    
+  Both of the flagged URLs are correct.
+  
