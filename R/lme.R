@@ -76,7 +76,7 @@ ZDZt <- function(D, Z_list) {
   lapply(Z_list, function(z) z %*% D %*% t(z))
 }
 
-targetVariance.lme <- function(obj, cluster = getGroups(obj, level = 1)) {
+targetVariance.lme <- function(obj, cluster = nlme::getGroups(obj, level = 1)) {
   
   if (any("nlme" == class(obj))) stop("not implemented for \"nlme\" objects")
   
@@ -161,7 +161,7 @@ targetVariance.lme <- function(obj, cluster = getGroups(obj, level = 1)) {
 # Get weighting matrix
 #-------------------------------------
 
-weightMatrix.lme <- function(obj, cluster = getGroups(obj, level = 1)) {
+weightMatrix.lme <- function(obj, cluster = nlme::getGroups(obj, level = 1)) {
   V_list <- targetVariance(obj, cluster)
   lapply(V_list, function(v) chol2inv(chol(v)))
 }

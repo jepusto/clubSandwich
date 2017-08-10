@@ -1,4 +1,54 @@
 
+#----------------------------------------------------------------------
+# utility function for computing block-diagonal covariance matrices
+#----------------------------------------------------------------------
+
+#' Impute a block-diagonal covariance matrix
+#' 
+#' \code{impute_covariance_matrix} calculates a block-diagonal covariance 
+#' matrix, given the marginal variances, the block structure, and an assumed 
+#' correlation.
+#' 
+#' @param vi Vector of variances
+#' @param cluster Vector indicating which effects belong to the same cluster. 
+#'   Effects with the same value of `cluster` will be treated as correlated.
+#' @param r Vector or numeric value of assume correlation(s) between effect size
+#'   estimates from each study.
+#' @param return_list Optional logical indicating whether to return a list of matrices
+#'   (with one entry per block) or the full variance-covariance matrix.
+#'   
+#' @return If \code{cluster} is appropriately sorted, then a list of matrices, 
+#'   with one entry per cluster, will be returned by default. If \code{cluster}
+#'   is out of order, then the full variance-covariate matrix will be returned
+#'   by default. The output structure can be controlled with the optional
+#'   \code{return_list} argument.
+#'   
+#' @export
+#' 
+#' @examples
+#' library(metafor)
+#' data(SATcoaching)
+#' V_list <- impute_covariance_matrix(vi = SATcoaching$V, cluster = SATcoaching$study, r = 0.66)
+#' MVFE <- rma.mv(d ~ 0 + test, V = V_list, data = SATcoaching)
+#' coef_test(MVFE, vcov = "CR2", cluster = SATcoaching$study)
+#' 
+
+
+impute_covariance_matrix <- function(vi, cluster, r, return_list = identical(as.factor(cluster), sort(as.factor(cluster)))) {
+  
+  vi_list <- split(vi, cluster)
+  r_list <- rep_len(r, length(vi_list))
+  vcov_list <- Map(function(V, rho) (rho + diag(1 - rho, nrow = length(V))) * tcrossprod(sqrt(V)), V = vi_list, rho = r_list)
+  
+  if (return_list) {
+    return(vcov_list)
+  } else {
+    vcov_mat <- metafor::bldiag(vcov_list)
+    cluster_index <- order(order(cluster))
+    return(vcov_mat[cluster_index, cluster_index])
+  }
+}
+
 #-------------------------------------
 # vcovCR with defaults
 #-------------------------------------
