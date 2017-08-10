@@ -59,6 +59,14 @@ vcovCR.rma.uni <- function(obj, cluster, type, target, inverse_var, form = "sand
 # vcov()
 # model_matrix()
 
+# na.action
+
+na.action.rma <- function(object, ...) {
+  res <- which(!object$not.na)
+  class(res) <- "omit"
+  res
+}
+
 #-------------------------------------
 # Get (model-based) working variance matrix 
 #-------------------------------------

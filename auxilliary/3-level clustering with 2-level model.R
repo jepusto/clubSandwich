@@ -1,5 +1,5 @@
-library(nlme)
 library(clubSandwich)
+library(nlme)
 
 set.seed(20170802)
 
