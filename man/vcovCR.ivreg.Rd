@@ -8,7 +8,7 @@
   inverse_var = NULL, form = "sandwich", ...)
 }
 \arguments{
-\item{obj}{Fitted model for which to calcualte the variance-covariance matrix}
+\item{obj}{Fitted model for which to calculate the variance-covariance matrix}
 
 \item{cluster}{Expression or vector indicating which observations belong to
 the same cluster. Required for \code{ivreg} objects.}

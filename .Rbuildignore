@@ -5,3 +5,4 @@ paper_ClusterRobustTesting
 ^\.travis\.yml$
 cran-comments.md
 README.md
+revdep

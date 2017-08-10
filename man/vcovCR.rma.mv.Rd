@@ -8,7 +8,7 @@
   form = "sandwich", ...)
 }
 \arguments{
-\item{obj}{Fitted model for which to calcualte the variance-covariance matrix}
+\item{obj}{Fitted model for which to calculate the variance-covariance matrix}
 
 \item{cluster}{Optional expression or vector indicating which observations 
 belong to the same cluster. If not specified, will be set to the factor in

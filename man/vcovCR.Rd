@@ -11,7 +11,7 @@ vcovCR(obj, cluster, type, target, inverse_var, form, ...)
   inverse_var = FALSE, form = "sandwich", ...)
 }
 \arguments{
-\item{obj}{Fitted model for which to calcualte the variance-covariance matrix}
+\item{obj}{Fitted model for which to calculate the variance-covariance matrix}
 
 \item{cluster}{Expression or vector indicating which observations belong to 
 the same cluster. For some classes, the cluster will be detected 
@@ -71,7 +71,7 @@ Several different small sample corrections are available, which run
   parallel with the "HC" corrections for heteroskedasticity-consistent 
   variance estimators, as implemented in \code{\link[sandwich]{vcovHC}}. 
   The "CR2" adjustment is recommended (Pustejovsky & Tipton, 2017; 
-  Imbens & Kolesaar, )
+  Imbens & Kolesar, 2016).
   See Pustejovsky and Tipton (2017) and Cameron and Miller (2015) for further 
   technical details. Available options include: 
   \describe{ 
@@ -120,7 +120,7 @@ Bell, R. M., & McCaffrey, D. F. (2002). Bias reduction in standard errors for li
 
 Cameron, A. C., & Miller, D. L. (2015). A Practitioner's Guide to Cluster-Robust Inference. \emph{Journal of Human Resources, 50}(2), 317-372. \doi{10.3368/jhr.50.2.317}
 
-Imbens, G. W., & Kolesar, M. (2016). Robust standard errors in small samples: Some practical advice. \emph{Review of Economics and Statistics, 98}(4), 701-712. \doi{	10.1162/rest_a_00552}
+Imbens, G. W., & Kolesar, M. (2016). Robust standard errors in small samples: Some practical advice. \emph{Review of Economics and Statistics, 98}(4), 701-712. \doi{10.1162/rest_a_00552}
 
 Liang, K.-Y., & Zeger, S. L. (1986). Longitudinal data analysis using generalized linear models. \emph{Biometrika, 73}(1), 13-22. \doi{10.1093/biomet/73.1.13}
 
