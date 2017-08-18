@@ -15,6 +15,8 @@ CR0 <- function(J) NULL
 
 CR1 <- function(J) sqrt(J / (J - 1))
 
+CR1p <- function(J, p) sqrt(J / (J - p))
+
 CR1S <- function(J, N, p) sqrt(J * (N - 1) / ((J - 1) * (N - p)))
 
 CR2 <- function(M_U, U_list, UW_list, Theta_list, inverse_var = FALSE) {
