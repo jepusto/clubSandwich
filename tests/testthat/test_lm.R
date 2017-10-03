@@ -221,8 +221,6 @@ test_that("weight scale doesn't matter", {
   
   lm_fit_w <- lm(y ~ X1 + X2 + X3, data = dat, weights = rep(4, nrow(dat)))
   
-  CR_types <- paste0("CR",0:4)
-  
   unweighted_fit <- lapply(CR_types, function(x) vcovCR(lm_fit, cluster = cluster, type = x))
   weighted_fit <- lapply(CR_types, function(x) vcovCR(lm_fit_w, cluster = cluster, type = x))
   
