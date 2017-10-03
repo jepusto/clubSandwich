@@ -3,6 +3,7 @@ library(zoo, quietly=TRUE)
 library(AER, quietly=TRUE)
 
 data("CigarettesSW", package = "AER")
+
 Cigs <- within(CigarettesSW, {
   rprice <- price/cpi
   rincome <- income/population/cpi
@@ -146,16 +147,16 @@ test_that("Order doesn't matter.",{
   
   CR_fit <- lapply(CR_types, function(x) vcovCR(obj_wt, cluster = Cigs$state, type = x))
   CR_scramble <- lapply(CR_types, function(x) vcovCR(obj_scramble, cluster = dat_scramble$state, type = x))
-  expect_equivalent(CR_fit, CR_scramble)
+  expect_equal(CR_fit, CR_scramble, check.attributes = FALSE, tolerance = 5 * 10^-7)
   
   test_fit <- lapply(CR_types, function(x) coef_test(obj_wt, vcov = x, cluster = Cigs$state, test = "All"))
   test_scramble <- lapply(CR_types, function(x) coef_test(obj_scramble, vcov = x, cluster = dat_scramble$state, test = "All"))
-  expect_equal(test_fit, test_scramble, tolerance = 10^-5)
+  expect_equal(test_fit, test_scramble, tolerance = 5 * 10^-6)
   
   constraints <- combn(length(coef(obj_wt)), 2, simplify = FALSE)
   Wald_fit <- Wald_test(obj_wt, constraints = constraints, vcov = "CR2", cluster = Cigs$state, test = "All")
   Wald_scramble <- Wald_test(obj_scramble, constraints = constraints, vcov = "CR2", cluster = dat_scramble$state, test = "All")
-  expect_equal(Wald_fit, Wald_scramble)
+  expect_equal(Wald_fit, Wald_scramble, tolerance = 5 * 10^-6)
   
 })
 

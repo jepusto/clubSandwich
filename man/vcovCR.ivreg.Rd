@@ -5,7 +5,7 @@
 \title{Cluster-robust variance-covariance matrix for an ivreg object.}
 \usage{
 \method{vcovCR}{ivreg}(obj, cluster, type, target = NULL,
-  inverse_var = NULL, form = "sandwich", ...)
+  inverse_var = FALSE, form = "sandwich", ...)
 }
 \arguments{
 \item{obj}{Fitted model for which to calculate the variance-covariance matrix}
@@ -14,8 +14,8 @@
 the same cluster. Required for \code{ivreg} objects.}
 
 \item{type}{Character string specifying which small-sample adjustment should 
-be used, with available options \code{"CR0"}, \code{"CR1"}, \code{"CR1S"}, 
-\code{"CR2"}, or \code{"CR3"}. See "Details" section of
+be used, with available options \code{"CR0"}, \code{"CR1"}, \code{"CR1p"},
+\code{"CR1S"}, \code{"CR2"}, or \code{"CR3"}. See "Details" section of 
 \code{\link{vcovCR}} for further information.}
 
 \item{target}{Optional matrix or vector describing the working
@@ -23,9 +23,7 @@ variance-covariance model used to calculate the \code{CR2} and \code{CR4}
 adjustment matrices. If a vector, the target matrix is assumed to be
 diagonal. If not specified, the target is taken to be an identity matrix.}
 
-\item{inverse_var}{Optional logical indicating whether the weights used in 
-fitting the model are inverse-variance. If not specified, \code{vcovCR} 
-will attempt to infer a value.}
+\item{inverse_var}{Not used for \code{ivreg} objects.}
 
 \item{form}{Controls the form of the returned matrix. The default 
 \code{"sandwich"} will return the sandwich variance-covariance matrix. 
@@ -44,6 +42,20 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
 \description{
 \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
 of a set of regression coefficient estimates from an \code{\link[AER]{ivreg}} object.
+}
+\examples{
+
+data("CigarettesSW", package = "AER")
+Cigs <- within(CigarettesSW, {
+  rprice <- price/cpi
+  rincome <- income/population/cpi
+  tdiff <- (taxs - tax)/cpi
+})
+
+iv_fit <- ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi), data = Cigs)
+vcovCR(iv_fit, cluster = Cigs$state, type = "CR2")
+coef_test(iv_fit, vcov = "CR2", cluster = Cigs$state)
+      
 }
 \seealso{
 \code{\link{vcovCR}}
