@@ -14,6 +14,7 @@ Tests of single regression coefficients use Satterthwaite or saddlepoint correct
 Tests of multiple-contrast hypotheses use an approximation to Hotelling's T-squared distribution. 
 Methods are provided for a variety of fitted models, including
 `lm`, `glm`, 
+`ivreg` (from package `AER`),
 `plm` (from package `plm`), 
 `gls` and `lme` (from `nlme`), 
 `robu` (from `robumeta`), and 
