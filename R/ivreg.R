@@ -23,8 +23,8 @@
 #' @seealso \code{\link{vcovCR}}
 #'
 #' @examples 
-#' 
-#' data("CigarettesSW", package = "AER")
+#' library(AER)
+#' data("CigarettesSW")
 #' Cigs <- within(CigarettesSW, {
 #'   rprice <- price/cpi
 #'   rincome <- income/population/cpi
