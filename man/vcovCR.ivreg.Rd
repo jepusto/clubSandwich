@@ -44,8 +44,8 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
 of a set of regression coefficient estimates from an \code{\link[AER]{ivreg}} object.
 }
 \examples{
-
-data("CigarettesSW", package = "AER")
+library(AER)
+data("CigarettesSW")
 Cigs <- within(CigarettesSW, {
   rprice <- price/cpi
   rincome <- income/population/cpi
