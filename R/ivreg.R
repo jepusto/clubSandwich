@@ -23,15 +23,18 @@
 #'   
 #' @export
 
-vcovCR.ivreg <- function(obj, cluster, type, target = NULL, inverse_var = NULL, form = "sandwich", ...) {
+vcovCR.ivreg <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form = "sandwich", ...) {
   if (missing(cluster)) stop("You must specify a clustering variable.")
-  if (is.null(inverse_var)) inverse_var <- is.null(weights(obj)) & is.null(target)
+  if (inverse_var != FALSE) stop("Unfortunately, the inverse_var option is not available for ivreg models.")
   vcov_CR(obj, cluster = cluster, type = type, 
           target = target, inverse_var = inverse_var, form = form)
 }
 
 # residuals_CS()
 # coef()
+# targetVariance()
+# weightMatrix()
+# v_scale()
 
 #----------------------------------------------
 # get X matrix
@@ -49,30 +52,9 @@ projection_matrix.ivreg <- function(obj) {
   model.matrix(obj, component = "projected")
 }
 
-#--------------------------------------------
-# Get (model-based) working variance matrix 
-#-------------------------------------------
-
-targetVariance.ivreg <- function(obj) {
-  rep(1, nobs(obj))
-}
-
-#-------------------------------------
-# Get weighting matrix
-#-------------------------------------
-
-weightMatrix.ivreg <- function(obj) {
-  weights <- weights(obj)
-  if (is.null(weights)) weights <- 1
-  rep(weights, length.out = nobs(obj))
-}
-
 #---------------------------------------
 # Get bread matrix and scaling constant
 #---------------------------------------
 
 # bread.ivreg() is in AER package
-
-v_scale.ivreg <- function(obj) {
-  obj$nobs
-}
+# use default v_scale()
