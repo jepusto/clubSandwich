@@ -57,7 +57,7 @@
 #'   (2002) and further developed in Pustejovsky and Tipton (2017). The
 #'   adjustment is chosen so that the variance-covariance estimator is exactly
 #'   unbiased under a user-specified working model.} 
-#'   \item{"CR3"}{approximates the leave-one-cluster-out jackknife variance estimator (Bell & MCCaffery,
+#'   \item{"CR3"}{approximates the leave-one-cluster-out jackknife variance estimator (Bell & McCaffrey,
 #'   2002).} }
 #'   
 #' @references Bell, R. M., & McCaffrey, D. F. (2002). Bias reduction in
