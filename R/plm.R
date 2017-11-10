@@ -187,14 +187,6 @@ residuals_CS.plm <- function(obj) {
 }
 
 #-------------------------------------
-# nobs
-#-------------------------------------
-
-nobs.plm <- function(object, ...) {
-  length(object$residuals)
-}
-
-#-------------------------------------
 # Get (model-based) working variance matrix 
 #-------------------------------------
 
