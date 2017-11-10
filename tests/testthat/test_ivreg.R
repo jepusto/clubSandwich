@@ -34,6 +34,9 @@ test_that("Basic calculations from ivreg agree for unweighted model.", {
   
   hii <- diag(X %*% chol2inv(chol(t(XZ) %*% XZ)) %*% t(XZ))
   expect_equal(hatvalues(obj_un), hii)
+  
+  r <- as.vector(y - X %*% coef(obj_un))
+  expect_equal(r, as.vector(residuals_CS(obj_un)))
 })
 
 test_that("Basic calculations from ivreg agree for weighted model.", {
@@ -47,6 +50,9 @@ test_that("Basic calculations from ivreg agree for weighted model.", {
   
   hii <- diag(X%*% chol2inv(chol(t(XZ) %*% (w * XZ))) %*% t(w * XZ))
   expect_false(all(hatvalues(obj_wt) == hii)) # does not agree because hatvalues doesn't work with weighting
+  
+  r <- as.vector(y - X %*% coef(obj_wt))
+  expect_equal(r, as.vector(residuals_CS(obj_wt)))
 })
 
 test_that("bread works", {
@@ -121,10 +127,13 @@ test_that("vcovCR options work for CR4", {
 })
 
 
-test_that("CR2 and CR4 are target-unbiased", {
-  skip("Need to understand target-unbiasedness for ivreg objects.")
+test_that("CR2 is target-unbiased", {
   expect_true(check_CR(obj_un, vcov = "CR2", cluster = Cigs$state))
   expect_true(check_CR(obj_wt, vcov = "CR2", cluster = Cigs$state))
+})
+
+test_that("CR4 is target-unbiased", {
+  skip("Need to understand target-unbiasedness for ivreg objects.")
   expect_true(check_CR(obj_un, vcov = "CR4", cluster = Cigs$state))
   expect_true(check_CR(obj_wt, vcov = "CR4", cluster = Cigs$state))
 })

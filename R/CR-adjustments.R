@@ -42,27 +42,27 @@ CR2 <- function(M_U, U_list, UW_list, Theta_list, inverse_var = FALSE) {
                    v = Theta_chol, g = G_list)
 }
 
-CR3 <- function(Xp_list, XpW_list) {
-  XpWX_list <- Map(function(xw, x) xw %*% x, xw = XpW_list, x = Xp_list)
-  M <- chol2inv(chol(Reduce("+", XpWX_list)))
-  IH_jj <- IH_jj_list(M, Xp_list, XpW_list)
+CR3 <- function(X_list, XW_list) {
+  XWX_list <- Map(function(xw, x) xw %*% x, xw = XW_list, x = X_list)
+  M <- chol2inv(chol(Reduce("+", XWX_list)))
+  IH_jj <- IH_jj_list(M, X_list, XW_list)
   lapply(IH_jj, solve)
 }
 
-CR4 <- function(M_U, U_list, UW_list, Xp_list, XpW_list, Theta_list, inverse_var = FALSE) {
+CR4 <- function(M_U, U_list, UW_list, X_list, XW_list, Theta_list, inverse_var = FALSE) {
   
   if (inverse_var) {
-    F_list <- Map(function(xw, x) xw %*% x, xw = XpW_list, x = Xp_list)
-    UWX_list <- Map(function(uw, x) uw %*% x, uw = UW_list, x = Xp_list)
+    F_list <- Map(function(xw, x) xw %*% x, xw = XW_list, x = X_list)
+    UWX_list <- Map(function(uw, x) uw %*% x, uw = UW_list, x = X_list)
     F_chol <- lapply(F_list, chol_psd)
     G_list <- Map(function(fc, fm, uwx) fc %*% (fm - t(uwx) %*% M_U %*% uwx) %*% t(fc), 
                   fc = F_chol, fm = F_list, uwx = UWX_list)
   } else {
     F_list <- Map(function(xw, theta) xw %*% theta %*% t(xw), 
-                     xw = XpW_list, theta = Theta_list)
+                     xw = XW_list, theta = Theta_list)
     F_chol <- lapply(F_list, chol_psd)
-    UWX_list <- Map(function(uw, x) uw %*% x, uw = UW_list, x = Xp_list)
-    UWTWX_list <- Map(function(uw, xw, theta) uw %*% theta %*% t(xw), uw = UW_list, xw = XpW_list, theta = Theta_list)
+    UWX_list <- Map(function(uw, x) uw %*% x, uw = UW_list, x = X_list)
+    UWTWX_list <- Map(function(uw, xw, theta) uw %*% theta %*% t(xw), uw = UW_list, xw = XW_list, theta = Theta_list)
     UWTWU_list <- Map(function(uw, theta) uw %*% theta %*% t(uw), uw = UW_list, theta = Theta_list)
     MUWTWUM <- M_U %*% Reduce("+", UWTWU_list) %*% M_U
     G_list <- Map(function(fc, fm, uwx, uwtwx)

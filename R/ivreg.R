@@ -55,14 +55,6 @@ vcovCR.ivreg <- function(obj, cluster, type, target = NULL, inverse_var = FALSE,
 #----------------------------------------------
 
 model_matrix.ivreg <- function(obj) {
-  model.matrix(obj, component = "regressors")
-}
-
-#----------------------------------------------
-# get projection matrix
-#----------------------------------------------
-
-projection_matrix.ivreg <- function(obj) {
   model.matrix(obj, component = "projected")
 }
 
