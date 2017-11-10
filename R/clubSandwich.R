@@ -162,10 +162,8 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   
   alias <- is.na(coef_CS(obj))
   X <- model_matrix(obj)
-  Xp <- projection_matrix(obj)
   if (any(alias)) {
     X <- X[, !alias, drop = FALSE]
-    Xp <- Xp[, !alias, drop = FALSE]
   }  
   
   p <- NCOL(X)
@@ -181,9 +179,8 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   J <- nlevels(cluster)
   
   X_list <- matrix_list(X, cluster, "row")
-  Xp_list <- matrix_list(Xp, cluster, "row")
   W_list <- weightMatrix(obj, cluster)
-  XpW_list <- Map(function(x, w) as.matrix(t(x) %*% w), x = Xp_list, w = W_list)
+  XW_list <- Map(function(x, w) as.matrix(t(x) %*% w), x = X_list, w = W_list)
   
   if (is.null(target)) {
     if (inverse_var) {
@@ -204,10 +201,10 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
     
     if (is.null(S)) {
       rm(S)
-      U_list <- Xp_list
-      UW_list <- XpW_list
+      U_list <- X_list
+      UW_list <- XW_list
     } else {
-      U <- cbind(Xp, S)
+      U <- cbind(X, S)
       rm(S)
       U_list <- matrix_list(U, cluster, "row")
       UW_list <- Map(function(u, w) as.matrix(t(u) %*% w), u = U_list, w = W_list)
@@ -219,7 +216,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   
   adjustments <- do.call(type, args = mget(names(formals(type))))
   
-  E_list <- adjust_est_mats(type = type, est_mats = XpW_list, adjustments = adjustments)
+  E_list <- adjust_est_mats(type = type, est_mats = XW_list, adjustments = adjustments)
   
   resid <- residuals_CS(obj)
   res_list <- split(resid, cluster)
@@ -249,7 +246,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   attr(vcov, "cluster") <- cluster
   attr(vcov, "bread") <- bread
   attr(vcov, "v_scale") <- v_scale
-  attr(vcov, "est_mats") <- XpW_list
+  attr(vcov, "est_mats") <- XW_list
   attr(vcov, "adjustments") <- adjustments
   attr(vcov, "target") <- Theta_list
   attr(vcov, "inverse_var") <- inverse_var
