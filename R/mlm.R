@@ -57,9 +57,11 @@ model_matrix.mlm <- function(obj) {
   X <- model.matrix(obj)
   d <- ncol(residuals(obj))
   X_mat <- X %x% diag(1L, nrow = d)
-  dimnames(X_mat) <- list(rep(dimnames(X)[[1]], each = d),
-                          rep(dimnames(X)[[2]], times = d))
-  X_mat
+  rownames(X_mat) <- rep(dimnames(X)[[1]], each = d)
+  colnames(X_mat) <- paste(rep(colnames(residuals(obj)), ncol(X)), 
+                           rep(colnames(X), each = d), sep = ":")
+  i <- unlist(lapply(1:d, function(x) seq(x, ncol(X_mat), d)))
+  X_mat[,i]
 }
 
 #----------------------------------------------
@@ -101,7 +103,23 @@ coef_CS.mlm <- function(obj) {
 # Get bread matrix and scaling constant
 #---------------------------------------
 
-# bread.mlm() is in sandwich package
+#' @export
+#' 
+
+bread.mlm <- function (x, ...) {
+  if (!is.null(x$na.action)) class(x$na.action) <- "omit"
+  X_mat <- model.matrix(x)
+  w <- weights(x)
+  XWX <- if (!is.null(w)) crossprod(X_mat, w * X_mat) else crossprod(X_mat)
+  B <- chol2inv(chol(XWX))
+  rval <- diag(ncol(residuals(x))) %x% (B * nobs(x))
+  
+  col_names <- paste(rep(colnames(residuals(x)), each = ncol(X_mat)), 
+                     rep(colnames(X_mat), ncol(residuals(x))), sep = ":")
+  colnames(rval) <- rownames(rval) <- col_names
+  return(rval)
+}
+
 
 v_scale.mlm <- function(obj) {
   nobs(obj)

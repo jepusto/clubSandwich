@@ -5,13 +5,13 @@
 check_bread <- function(obj, cluster, y, check_coef = TRUE, tol = .Machine$double.eps^0.5) {
   cluster <- droplevels(as.factor(cluster))
   B <- sandwich::bread(obj) / v_scale(obj)
-  X_list <- matrix_list(projection_matrix(obj), cluster, "row")
+  X_list <- matrix_list(model_matrix(obj), cluster, "row")
   W_list <- weightMatrix(obj, cluster)
   XWX <- Reduce("+", Map(function(x, w) t(x) %*% w %*% x, x = X_list, w = W_list))
   M <- chol2inv(chol(XWX))
   attr(M, "dimnames") <- attr(B, "dimnames")
   
-  eq_bread <- diff(range(B / M)) < tol
+  eq_bread <- diff(range((B / M)[XWX != 0])) < tol
   
   if (check_coef) {
     coef <- coef_CS(obj)
