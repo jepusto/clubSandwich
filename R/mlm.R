@@ -96,7 +96,11 @@ weightMatrix.mlm <- function(obj, cluster) {
 #----------------------------------------------
 
 coef_CS.mlm <- function(obj) {
-  as.vector(coef(obj))
+  cf <- coef(obj)
+  res <- as.vector(cf)
+  names(res) <- paste(rep(colnames(cf), each = nrow(cf)), 
+                      rep(rownames(cf), ncol(cf)), sep = ":")
+  res
 }
 
 #---------------------------------------

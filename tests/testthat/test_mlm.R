@@ -1,6 +1,6 @@
 context("mlm objects")
 
-n <- nrow(dat_miss)
+n <- nrow(iris)
 lm_fit <- lm(cbind(Sepal.Length, Sepal.Width) ~ Species + Petal.Length, data = iris)
 lm_A_fit <- lm(Sepal.Length ~ Species + Petal.Length, data = iris)
 lm_B_fit <- lm(Sepal.Width ~ Species + Petal.Length, data = iris)
@@ -61,6 +61,32 @@ test_that("vcovCR is mostly equivalent to vcovHC when clusters are all of size 1
   expect_equal(CR_mats$CR3[p + 1:p,p + 1:p], HC_B_mats$HC3, check.attributes = FALSE)
 })
 
+test_that("mlm is equivalent to lm with long data.", {
+  iris_long <- reshape(iris, c("Sepal.Length","Sepal.Width"), 
+                       direction = "long", times = "outcome")
+  iris_long$outcome <- paste0("Sepal.", iris_long$time)
+  
+  lm_long <- lm(Sepal ~ 0 + outcome +  outcome:Species + outcome:Petal.Length, data = iris_long)
+  i <- order(rep(1:2, 4))
+  expect_equal(coef_CS(lm_fit), coef(lm_long)[i], check.attributes = FALSE)
+  
+  CR_fit <- lapply(CR_types, function(x) as.matrix(vcovCR(lm_fit, type = x)))
+  CR_long <- lapply(CR_types, function(x) vcovCR(lm_long, type = x, cluster = iris_long$id)[i,i])
+  expect_equivalent(CR_fit, CR_long)
+  
+  test_fit <- lapply(CR_types, function(x) coef_test(lm_fit, vcov = x, test = "All"))
+  test_long <- lapply(CR_types, function(x) coef_test(lm_long, vcov = x, cluster = iris_long$id, test = "All")[i,])
+  expect_equal(test_fit, test_long, check.attributes = FALSE)
+  
+  CR_fit <- lapply(CR_types, function(x) as.matrix(vcovCR(lm_fit, type = x, cluster = iris$Petal.Length)))
+  CR_long <- lapply(CR_types, function(x) vcovCR(lm_long, type = x, cluster = iris_long$Petal.Length)[i,i])
+  expect_equivalent(CR_fit, CR_long)
+  
+  test_fit <- lapply(CR_types, function(x) coef_test(lm_fit, vcov = x, test = "All"))
+  test_long <- lapply(CR_types, function(x) coef_test(lm_long, vcov = x, cluster = iris_long$id, test = "All")[i,])
+  expect_equal(test_fit, test_long, check.attributes = FALSE)
+  
+})
 
 test_that("Order doesn't matter.",{
   dat_scramble <- iris[sample(n),]
