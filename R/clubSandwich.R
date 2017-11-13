@@ -147,6 +147,7 @@ adjust_est_mats <- function(type, est_mats, adjustments) {
   switch(type,
          CR0 = est_mats,
          CR1 = lapply(est_mats, function(e) e * adjustments),
+         CR1p = lapply(est_mats, function(e) e * adjustments),
          CR1S = lapply(est_mats, function(e) e * adjustments),
          CR2 = Map(function(e, a) e %*% a, e = est_mats, a = adjustments),
          CR3 = Map(function(e, a) e %*% a, e = est_mats, a = adjustments),

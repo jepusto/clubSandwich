@@ -11,7 +11,7 @@ check_bread <- function(obj, cluster, y, check_coef = TRUE, tol = .Machine$doubl
   M <- chol2inv(chol(XWX))
   attr(M, "dimnames") <- attr(B, "dimnames")
   
-  eq_bread <- diff(range(B / M)) < tol
+  eq_bread <- diff(range((B / M)[XWX != 0])) < tol
   
   if (check_coef) {
     coef <- coef_CS(obj)
