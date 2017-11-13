@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a resubmission. 
+This is a resubmission. The new version includes support for two further classes of fitted models (ivreg and mlm objects) as well as bug fixes.
 
 Note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
@@ -25,7 +25,9 @@ Possibly mis-spelled words in DESCRIPTION:
   Satterthwaite (14:5)
   Tipton (10:46)
   covariance (12:5)
+  ivreg (17:5)
   linearization (8:51)
+  mlm (16:65)
 
   All of the identified words are spelled correctly. 
 

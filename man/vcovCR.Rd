@@ -79,7 +79,7 @@ Several different small sample corrections are available, which run
   \item{"CR1"}{multiplies CR0 by \code{m / (m - 1)}, where \code{m} is the 
   number of clusters.} 
   \item{"CR1p"}{multiplies CR0 by \code{m / (m - p)}, where \code{m} is the 
-  number of clusters and \code{p} is the nuber of covariates.} 
+  number of clusters and \code{p} is the number of covariates.} 
   \item{"CR1S"}{multiplies CR0 by \code{(m (N-1)) / [(m - 
   1)(N - p)]}, where \code{m} is the number of clusters, \code{N} is the 
   total number of observations, and \code{p} is the number of covariates. 
