@@ -3,28 +3,30 @@
 #-------------------------------------
 
 #' Cluster-robust variance-covariance matrix for an mlm object.
-#' 
-#' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
+#'
+#' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix
 #' of a set of regression coefficient estimates from an \code{mlm} object.
-#' 
-#' @param cluster Optional expression or vector indicating which observations 
+#'
+#' @param cluster Optional expression or vector indicating which observations
 #'   belong to the same cluster. If not specified, each row of the data will be
 #'   treated as a separate cluster.
-#' @param target Optional matrix or vector describing the working 
-#'   variance-covariance model used to calculate the \code{CR2} and \code{CR4} 
-#'   adjustment matrices. If not specified, the target is taken to be an identity matrix.
+#' @param target Optional matrix or vector describing the working
+#'   variance-covariance model used to calculate the \code{CR2} and \code{CR4}
+#'   adjustment matrices. If not specified, the target is taken to be an
+#'   identity matrix.
 #' @inheritParams vcovCR
-#'   
-#' @return An object of class \code{c("vcovCR","clubSandwich")}, which consists 
-#'   of a matrix of the estimated variance of and covariances between the 
+#'
+#' @return An object of class \code{c("vcovCR","clubSandwich")}, which consists
+#'   of a matrix of the estimated variance of and covariances between the
 #'   regression coefficient estimates.
-#'   
+#'
 #' @seealso \code{\link{vcovCR}}
-#'   
+#'
 #' @examples
-#' iris_fit <- lm(cbind(Sepal.Length, Sepal.Width) ~ Species + Petal.Length + Petal.Width, data = iris)
-#' Vcluster <- vcovCR(iris_fit2)
-#'     
+#' iris_fit <- lm(cbind(Sepal.Length, Sepal.Width) ~ Species + 
+#'                Petal.Length + Petal.Width, data = iris)
+#' Vcluster <- vcovCR(iris_fit, type = "CR2")
+#'
 #' @export
 
 vcovCR.mlm <- function(obj, cluster, type, target, inverse_var, form = "sandwich", ...) {

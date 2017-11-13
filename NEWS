@@ -1,6 +1,7 @@
-clubSandwich 0.2.3.9
+clubSandwich 0.3.0
 =======================
 * Added methods for ivreg objects.
+* Added methods for mlm objects.
 * Updated residuals_CS.plm to account for changes in plm 1.6-6.
 
 clubSandwich 0.2.3

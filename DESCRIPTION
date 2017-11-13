@@ -1,7 +1,7 @@
 Package: clubSandwich
 Title: Cluster-Robust (Sandwich) Variance Estimators with Small-Sample
     Corrections
-Version: 0.2.3.9
+Version: 0.3.0
 Authors@R: person("James", "Pustejovsky", email = "jepusto@gmail.com", role = c("aut", "cre"))
 Description: Provides several cluster-robust variance estimators
     (i.e., sandwich estimators) for ordinary and weighted least squares linear
@@ -13,7 +13,7 @@ Description: Provides several cluster-robust variance estimators
     based on Wald test statistics. Tests of single regression coefficients use
     Satterthwaite or saddle-point corrections. Tests of multiple-contrast hypotheses 
     use an approximation to Hotelling's T-squared distribution.  Methods are
-    provided for a variety of fitted models, including lm(), glm(), 
+    provided for a variety of fitted models, including lm() and mlm objects, glm(), 
     ivreg (from package 'AER'), 
     plm() (from package 'plm'),
     gls() and lme() (from 'nlme'), 
@@ -42,4 +42,4 @@ Suggests:
     plm (>= 1.6-4),
     testthat,
     rmarkdown
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

@@ -52,7 +52,8 @@ Cigs <- within(CigarettesSW, {
   tdiff <- (taxs - tax)/cpi
 })
 
-iv_fit <- ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi), data = Cigs)
+iv_fit <- ivreg(log(packs) ~ log(rprice) + log(rincome) | 
+                log(rincome) + tdiff + I(tax/cpi), data = Cigs)
 vcovCR(iv_fit, cluster = Cigs$state, type = "CR2")
 coef_test(iv_fit, vcov = "CR2", cluster = Cigs$state)
       
@@ -60,4 +61,3 @@ coef_test(iv_fit, vcov = "CR2", cluster = Cigs$state)
 \seealso{
 \code{\link{vcovCR}}
 }
-
