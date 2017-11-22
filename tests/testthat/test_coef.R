@@ -26,6 +26,42 @@ test_that("vcov arguments work", {
   expect_identical(test_A, test_B)
 })
 
+test_that("get_which_coef() works", {
+  f <- 6
+  beta <- 1:f
+  beta_names <- letters[1:f]
+  names(beta) <- beta_names
+  
+  which_grid <- as.matrix(expand.grid(rep(list(c(FALSE,TRUE)), f)))
+  dimnames(which_grid) <- NULL
+  name_list <- apply(which_grid, 1, function(x) beta_names[x])
+  int_list <- apply(which_grid, 1, which)
+  
+  which_log <- apply(which_grid[-1,], 1, get_which_coef, beta = beta)
+  which_char <- sapply(name_list[-1], get_which_coef, beta = beta)
+  which_int <- sapply(int_list[-1], get_which_coef, beta = beta)
+  
+  expect_identical(get_which_coef(beta, coefs = "All"), rep(TRUE, f))
+  expect_error(get_which_coef(beta, coefs = which_grid[1,]))
+  expect_error(get_which_coef(beta, coefs = name_list[[1]]))
+  expect_error(get_which_coef(beta, coefs = int_list[[1]]))
+  
+  expect_identical(which_log, which_char)
+  expect_identical(which_log, which_int)
+  expect_identical(which_char, which_int)
+})
+
+test_that("coefs argument works", {
+  dat <- balanced_dat(m = 15, n = 8)
+  lm_fit <- lm(y ~ X_btw + X_wth, data = dat)
+  which_grid <- expand.grid(rep(list(c(FALSE,TRUE)), length(coef(lm_fit))))
+  tests_all <- coef_test(lm_fit, vcov = "CR0", cluster = dat$cluster, test = "All", coefs = "All")
+  
+  tests_A <- apply(which_grid[-1,], 1, function(x) tests_all[x,])
+  tests_B <- apply(which_grid[-1,], 1, function(x) coef_test(lm_fit, vcov = "CR0", cluster = dat$cluster, test = "All", coefs = x))
+  expect_identical(tests_A, tests_B)
+})
+
 test_that("printing works", {
   dat <- balanced_dat(m = 15, n = 8)
   lm_fit <- lm(y ~ X_btw + X_wth, data = dat)

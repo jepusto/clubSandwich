@@ -39,42 +39,85 @@ saddlepoint <- function(t_stats, P_array) {
 }
 
 #---------------------------------------------
+# find which coefficients to test
+#---------------------------------------------
+
+get_which_coef <- function(beta, coefs) {
+  
+  p <- length(beta)  
+  
+  if (identical(coefs,"All")) return(rep(TRUE, p))
+  
+  switch(class(coefs),
+         character = {
+           term_names <- names(beta)
+           if (length(coefs) == 0) stop("You must specify at least one coefficient to test.")
+           if (any(!coefs %in% term_names)) stop("Coefficient names not in model specification.")
+           term_names %in% coefs
+         },
+         logical = {
+           if (sum(coefs) == 0) stop("You must specify at least one coefficient to test.")
+           if (length(coefs) != p) stop(paste0("Coefficient vector must be of length ",p, "."))
+           coefs
+         },
+         numeric = {
+           if (any(!(coefs %in% 1:p))) stop(paste0("Coefficient indices must be less than or equal to ",p,"."))
+           if (length(coefs) == 0) stop("You must specify at least one coefficient to test.")
+           (1:p) %in% coefs
+         },
+         integer = {
+           if (any(!(coefs %in% 1:p))) stop(paste0("Coefficient indices must be less than or equal to ",p,"."))
+           if (length(coefs) == 0) stop("You must specify at least one coefficient to test.")
+           (1:p) %in% coefs
+         }
+         )
+}
+
+
+#---------------------------------------------
 # coeftest for all model coefficients
 #---------------------------------------------
 
 #' Test all regression coefficients in a fitted model
-#' 
-#' \code{coef_test} reports t-tests for each coefficient estimate in a fitted 
-#' linear regression model, using a sandwich estimator for the standard errors 
+#'
+#' \code{coef_test} reports t-tests for each coefficient estimate in a fitted
+#' linear regression model, using a sandwich estimator for the standard errors
 #' and a small sample correction for the p-value. The small-sample correction is
 #' based on a Satterthwaite approximation or a saddlepoint approximation.
-#' 
+#'
 #' @param obj Fitted model for which to calculate t-tests.
-#' @param vcov Variance covariance matrix estimated using \code{vcovCR} or a 
+#' @param vcov Variance covariance matrix estimated using \code{vcovCR} or a
 #'   character string specifying which small-sample adjustment should be used to
 #'   calculate the variance-covariance.
-#' @param test Character vector specifying which small-sample corrections to 
+#' @param test Character vector specifying which small-sample corrections to
 #'   calculate. \code{"z"} returns a z test (i.e., using a standard normal
 #'   reference distribution). \code{"naive-t"} returns a t test with \code{m -
 #'   1} degrees of freedom. \code{"Satterthwaite"} returns a Satterthwaite
 #'   correction. \code{"saddlepoint"} returns a saddlepoint correction. Default
 #'   is \code{"Satterthwaite"}.
-#' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only 
+#' @param coefs Character, integer, or logical vector specifying which
+#'   coefficients should be tested. The default value \code{"All"} will test all
+#'   estimated coefficients.
+#' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only
 #'   needed if \code{vcov} is a character string.
-#'   
-#' @return A data frame containing estimated regression coefficients, standard 
-#'   errors, and test results. For the Satterthwaite approximation, degrees of 
-#'   freedom and a p-value are reported. For the saddlepoint approximation, the 
+#'
+#' @return A data frame containing estimated regression coefficients, standard
+#'   errors, and test results. For the Satterthwaite approximation, degrees of
+#'   freedom and a p-value are reported. For the saddlepoint approximation, the
 #'   saddlepoint and a p-value are reported.
-#'   
+#'
 #' @seealso \code{\link{vcovCR}}
-#'   
+#'
 #' @export
 
-coef_test <- function(obj, vcov, test = "Satterthwaite", ...) {
+coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", ...) {
   
-  beta <- coef_CS(obj)
-  beta_NA <- is.na(beta)
+  beta_full <- coef_CS(obj)
+  beta_NA <- is.na(beta_full)
+  
+  which_beta <- get_which_coef(beta_full, coefs)
+  
+  beta <- beta_full[which_beta & !beta_NA]
   
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!("clubSandwich" %in% class(vcov))) stop("Variance-covariance matrix must be a clubSandwich.")
@@ -82,32 +125,33 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", ...) {
   all_tests <- c("z","naive-t","Satterthwaite","saddlepoint")
   if (all(test == "All")) test <- all_tests
   test <- match.arg(test, all_tests, several.ok = TRUE)
-  
-  SE <- sqrt(diag(vcov))
+
+  SE <- sqrt(diag(vcov))[which_beta[!beta_NA]]
   
   if (any(c("Satterthwaite","saddlepoint") %in% test)) {
-    P_array <- get_P_array(get_GH(obj, vcov))
+    P_array <- get_P_array(get_GH(obj, vcov))[,,which_beta[!beta_NA],drop=FALSE]
   }
   
+
   result <- data.frame(beta = beta)
-  result$SE[!beta_NA] <- SE
-  
+  result$SE <- SE
+
   if ("z" %in% test) {
-    result$p_z[!beta_NA] <-  2 * pnorm(abs(beta[!beta_NA] / SE), lower.tail = FALSE)
+    result$p_z <-  2 * pnorm(abs(beta / SE), lower.tail = FALSE)
   }
   if ("naive-t" %in% test) {
     J <- nlevels(attr(vcov, "cluster"))
-    result$p_t[!beta_NA] <-  2 * pt(abs(beta[!beta_NA] / SE), df = J - 1, lower.tail = FALSE)
+    result$p_t <-  2 * pt(abs(beta / SE), df = J - 1, lower.tail = FALSE)
   }
   if ("Satterthwaite" %in% test) {
-    Satt <- Satterthwaite(beta = beta[!beta_NA], SE = SE, P_array = P_array)
-    result$df[!beta_NA] <- Satt$df
-    result$p_Satt[!beta_NA] <- Satt$p_Satt
+    Satt <- Satterthwaite(beta = beta, SE = SE, P_array = P_array)
+    result$df <- Satt$df
+    result$p_Satt <- Satt$p_Satt
   }
   if ("saddlepoint" %in% test) {
-    saddle <- saddlepoint(t_stats = beta[!beta_NA] / SE, P_array = P_array)
-    result$saddlepoint[!beta_NA] <- saddle$saddlepoint
-    result$p_saddle[!beta_NA] <-saddle$p_saddle
+    saddle <- saddlepoint(t_stats = beta / SE, P_array = P_array)
+    result$saddlepoint <- saddle$saddlepoint
+    result$p_saddle <-saddle$p_saddle
   }
   
   class(result) <- c("coef_test_clubSandwich", class(result))
@@ -126,25 +170,25 @@ print.coef_test_clubSandwich <- function(x, digits = 3, ...) {
   if ("p_z" %in% names(x)) {
     p_z <- format.pval(x$p_z, digits = digits, eps = 10^-digits)
     Sig_z <- cut(x$p_z, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
-                 labels = c("***", "**", "*", ".", " "))
+                 labels = c("***", "**", "*", ".", " "), include.lowest = TRUE)
     res <- cbind(res, "p-val (z)" = p_z, "Sig." = Sig_z)
   }
   if ("p_t" %in% names(x)) {
     p_t <- format.pval(x$p_t, digits = digits, eps = 10^-digits)
     Sig_t <- cut(x$p_t, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
-                    labels = c("***", "**", "*", ".", " "))
+                    labels = c("***", "**", "*", ".", " "), include.lowest = TRUE)
     res <- cbind(res, "p-val (naive-t)" = p_t, "Sig." = Sig_t)
   }
   if ("df" %in% names(x)) {
     p_Satt <- format.pval(x$p_Satt, digits = digits, eps = 10^-digits)
     Sig_Satt <- cut(x$p_Satt, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
-                       labels = c("***", "**", "*", ".", " "))
+                       labels = c("***", "**", "*", ".", " "), include.lowest = TRUE)
     res <- cbind(res, "d.f." = x$df, "p-val (Satt)" = p_Satt, "Sig." = Sig_Satt)    
   }
   if ("saddlepoint" %in% names(x)) {
     p_saddle <- format.pval(x$p_saddle, digits = digits, eps = 10^-digits)
     Sig_saddle <- cut(x$p_saddle, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
-                    labels = c("***", "**", "*", ".", " "))
+                    labels = c("***", "**", "*", ".", " "), include.lowest = TRUE)
     res <- cbind(res, "s.p." = x$saddlepoint, "p-val (Saddle)" = p_saddle, "Sig." = Sig_saddle)    
 
   } 
