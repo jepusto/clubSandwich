@@ -4,34 +4,38 @@
 \alias{coef_test}
 \title{Test all regression coefficients in a fitted model}
 \usage{
-coef_test(obj, vcov, test = "Satterthwaite", ...)
+coef_test(obj, vcov, test = "Satterthwaite", coefs = "All", ...)
 }
 \arguments{
 \item{obj}{Fitted model for which to calculate t-tests.}
 
-\item{vcov}{Variance covariance matrix estimated using \code{vcovCR} or a 
+\item{vcov}{Variance covariance matrix estimated using \code{vcovCR} or a
 character string specifying which small-sample adjustment should be used to
 calculate the variance-covariance.}
 
-\item{test}{Character vector specifying which small-sample corrections to 
+\item{test}{Character vector specifying which small-sample corrections to
 calculate. \code{"z"} returns a z test (i.e., using a standard normal
 reference distribution). \code{"naive-t"} returns a t test with \code{m -
 1} degrees of freedom. \code{"Satterthwaite"} returns a Satterthwaite
 correction. \code{"saddlepoint"} returns a saddlepoint correction. Default
 is \code{"Satterthwaite"}.}
 
-\item{...}{Further arguments passed to \code{\link{vcovCR}}, which are only 
+\item{coefs}{Character, integer, or logical vector specifying which
+coefficients should be tested. The default value \code{"All"} will test all
+estimated coefficients.}
+
+\item{...}{Further arguments passed to \code{\link{vcovCR}}, which are only
 needed if \code{vcov} is a character string.}
 }
 \value{
-A data frame containing estimated regression coefficients, standard 
-  errors, and test results. For the Satterthwaite approximation, degrees of 
-  freedom and a p-value are reported. For the saddlepoint approximation, the 
+A data frame containing estimated regression coefficients, standard
+  errors, and test results. For the Satterthwaite approximation, degrees of
+  freedom and a p-value are reported. For the saddlepoint approximation, the
   saddlepoint and a p-value are reported.
 }
 \description{
-\code{coef_test} reports t-tests for each coefficient estimate in a fitted 
-linear regression model, using a sandwich estimator for the standard errors 
+\code{coef_test} reports t-tests for each coefficient estimate in a fitted
+linear regression model, using a sandwich estimator for the standard errors
 and a small sample correction for the p-value. The small-sample correction is
 based on a Satterthwaite approximation or a saddlepoint approximation.
 }
