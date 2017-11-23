@@ -8,7 +8,7 @@ X2 <- c(rep(-0.3, 0.4 * m), rep(0.7, 0.3 * m), rep(-0.3, 0.4 * m))[cluster]
 X3 <- rnorm(m)[cluster] + rnorm(n)
 X4 <- rnorm(n)
 X <- cbind(X1, X2, X3, X4)
-eta <- -0.5 + X %*% c(0.3, -0.6, 0.15, 0.15)
+eta <- -0.4 + X %*% c(0.3, -0.6, 0.15, 0.15)
 p <- 1 / (1 + exp(-eta))
 summary(p)
 
