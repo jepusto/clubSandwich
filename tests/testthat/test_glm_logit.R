@@ -1,6 +1,6 @@
 context("logit glm objects")
 
-m <- 10
+m <- 20
 cluster <- factor(rep(LETTERS[1:m], 3 + rpois(m, 5)))
 n <- length(cluster)
 X1 <- c(rep(-0.5, m / 2), rep(0.5, m / 2))[cluster]
