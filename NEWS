@@ -1,5 +1,6 @@
 clubSandwich 0.3.0.999
 =======================
+* Added "coefs" option to coef_test() to allow testing of subsets of coefficients.
 
 clubSandwich 0.3.0
 =======================
