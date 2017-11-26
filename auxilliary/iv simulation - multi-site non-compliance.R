@@ -27,16 +27,16 @@ r_site <- function(n, p_trt = 0.5, delta = 0, p_nt = 0.1,
   res
 }
 
-sites <- 20
-size_mean <- 40
-size_sd <- 4
+sites <- 10
+size_mean <- 50
+size_sd <- 6
 p_trt <- 0.5
 delta <- 0
 delta_sd <- 0.05
-compliance <- 0.8
-comp_sd <- 0.05
+compliance <- 0.5
+comp_sd <- 0.0
 r_delta_comp <- 0
-v_uc <- 10
+v_uc <- 5
 r_uy <- 0.8
 
 
@@ -64,9 +64,9 @@ r_multisite_trial <- function(sites, size_mean = 50, size_sd = 0, p_trt = 0.5,
   do.call(rbind, site_dat)
 }
 
-dat <- r_multisite_trial(sites = 4, size_mean = 50, size_sd = 0, p_trt = 0.5, 
-                         delta = 0.4, delta_sd = 0, compliance = 0.8, comp_sd = 0.05,
-                         r_delta_comp = 0, v_uc = 10, r_uy = 0.8)
+dat <- r_multisite_trial(sites = 10, size_mean = 50, size_sd = 6, p_trt = 0.5, 
+                         delta = 0, delta_sd = 0.05, compliance = 0.5, comp_sd = 0.0,
+                         r_delta_comp = 0, v_uc = 5, r_uy = 0.8)
 
 with(dat, table(Trt, D, site))
 
@@ -74,24 +74,40 @@ with(dat, table(Trt, D, site))
 # Model-fitting function
 #------------------------------------------------------
 
-iv_est <- function(dat) {
-  require(AER)
-  require(clubSandwich)
-  lm_fit <- lm(Y ~ site + D, data = dat)
-  lm_CR2 <- coef_test(lm_fit, cluster = dat$site, vcov = "CR2", test = c("z", "Satterthwaite"))["D",,drop=FALSE]
-  rownames(lm_CR2) <- NULL
-  
-  iv_fit <- ivreg(Y ~ site + D | site + site:Trt, data = dat)
-  iv_CR0 <- coef_test(iv_fit, cluster = dat$site, vcov = "CR0", test = c("z", "Satterthwaite"))["D",,drop=FALSE]
-  rownames(iv_CR0) <- NULL
-  
-  iv_CR2 <- coef_test(iv_fit, cluster = dat$site, vcov = "CR2", test = c("z", "Satterthwaite"))["D",,drop=FALSE]
-  rownames(iv_CR2) <- NULL
-  
-  data.frame(type = c("lm-CR2","iv-CR0","iv-CR2"), rbind(lm_CR2, iv_CR0, iv_CR2))
+first_stage <- function(dat) {
+  first_stage <- lm(D ~ site + site: Trt, data = dat)
+  anova(first_stage)[2, "F value"]
 }
 
-# iv_est(dat)
+
+iv_est <- function(dat) {
+  require(AER, quietly = TRUE)
+  require(clubSandwich)
+  
+  lm_fit <- lm(Y ~ site + D, data = dat)
+  lm_CR2 <- coef_test(lm_fit, cluster = dat$site, vcov = "CR2", test = c("z", "Satterthwaite"), coefs = "D")
+  rownames(lm_CR2) <- NULL
+  
+  iv_one <- ivreg(Y ~ site + D | site + Trt, data = dat)
+  iv_one_CR0 <- coef_test(iv_one, cluster = dat$site, vcov = "CR0", test = c("z", "Satterthwaite"), coefs = "D")
+  rownames(iv_one_CR0) <- NULL
+  
+  iv_one_CR2 <- coef_test(iv_one, cluster = dat$site, vcov = "CR2", test = c("z", "Satterthwaite"), coefs = "D")
+  rownames(iv_one_CR2) <- NULL
+  
+  iv_many <- ivreg(Y ~ site + D | site + site:Trt, data = dat)
+  iv_many_CR0 <- coef_test(iv_many, cluster = dat$site, vcov = "CR0", test = c("z", "Satterthwaite"), coefs = "D")
+  rownames(iv_many_CR0) <- NULL
+  
+  iv_many_CR2 <- coef_test(iv_many, cluster = dat$site, vcov = "CR2", test = c("z", "Satterthwaite"), coefs = "D")
+  rownames(iv_many_CR2) <- NULL
+  
+  data.frame(type = c("lm-CR2","iv-one-CR0","iv-one-CR2","iv-many-CR0","iv-many-CR2"), 
+             Fstat = Fstat,
+             rbind(lm_CR2, iv_one_CR0, iv_one_CR2, iv_many_CR0, iv_many_CR2))
+}
+
+iv_est(dat)
 
 #------------------------------------------------------
 # Calculate performance measures
@@ -110,17 +126,19 @@ check_pvals(x = runif(10000), alpha = c(0.01, 0.05, 0.10))
 # Simulation Driver
 #-----------------------------------------------------------
 
-simulate_IV <- function(replicates, clusters, p_trt = 0.5, size_mean = 5, 
-                        p_nt = 0.1, p_at = p_nt, v_uc = 10, r_uy = 0.8, icc = 0.2,
+simulate_IV <- function(replicates, sites, size_mean = 40, size_sd = 4,
+                        p_trt = 0.5, delta = 0, delta_sd = 0.05,
+                        compliance = 0.8, comp_sd = 0.05, r_delta_comp = 0,
+                        v_uc = 10, r_uy = 0.8,
                         alpha = c(.01, .05), seed = NULL) {
   require(dplyr) 
   require(tidyr)
   if (!is.null(seed)) set.seed(seed)
   
   reps <- replicate(replicates, {
-    dat <- r_cluster_trial(clusters = clusters, p_trt = p_trt, size_mean = size_mean, 
-                           p_nt = p_nt, p_at = p_at, v_uc = v_uc,
-                           r_uy = r_uy, icc = icc)
+    dat <- r_multisite_trial(sites = sites, size_mean = size_mean, size_sd = size_sd, p_trt = p_trt, 
+                             delta = delta, delta_sd = delta_sd, compliance = compliance, comp_sd = comp_sd,
+                             r_delta_comp = r_delta_comp, v_uc = v_uc, r_uy = r_uy)
     iv_est(dat)
   }, simplify = FALSE)
   
@@ -139,9 +157,9 @@ simulate_IV <- function(replicates, clusters, p_trt = 0.5, size_mean = 5,
     unnest(reject)
 }
 
-# simulate_IV(replicates = 100, clusters = 20, p_trt = 0.4, size_mean = 5,
-#             p_nt = 0.2, p_at = 0.2, v_uc = 5,
-#             r_uy = 0.8, icc = 0.3)
+simulate_IV(replicates = 10, sites = 10, size_mean = 50, size_sd = 0, p_trt = 0.5, 
+            delta = 0, delta_sd = 0, compliance = 0.8, comp_sd = 0.05,
+            r_delta_comp = 0, v_uc = 10, r_uy = 0.8)
 
 
 #-------------------------------------
@@ -151,22 +169,22 @@ source_obj <- ls()
 
 set.seed(20171120)
 
+design_factors <- list(
+  sites = seq(10, 50, 10), 
+  size_mean = 50,
+  size_sd = 6, 
+  p_trt = 0.5, 
+  delta = 0,
+  delta_sd = c(0.05, 0.20),
+  compliance = seq(.5, .9, .1), 
+  comp_sd = c(.00, .05, .10),
+  r_delta_comp = 0, 
+  v_uc = 5,
+  r_uy = 0.8
+)
 
-# clusters <- 40
-# p_trt <- 0.5
-# delta <- 0
-# size_mean <- 5
-# p_nt <- 0.1
-# p_at <- 0.1
-# v_uc <- 10
-# r_uy <- 0.8
-# icc <- 0.3
-
-design_factors <- list(clusters = seq(20, 60, 10), p_trt = c(.3, .5), 
-                       icc = 0.2, v_uc = c(1, 2, 5, 10),
-                       p_nt = seq(0, 0.25, 0.05))
 params <- expand.grid(design_factors)
-params$replicates <- 5000
+params$replicates <- 5
 params$seed <- round(runif(1) * 2^30) + 1:nrow(params)
 
 # All look right?
@@ -175,7 +193,7 @@ nrow(params)
 head(params)
 
 #--------------------------------------------------------
-# run simulations in parallel - mdply workflow
+# run simulations in parallel
 #--------------------------------------------------------
 
 library(Pusto)
@@ -192,7 +210,7 @@ parallel::stopCluster(clust)
 session_info <- sessionInfo()
 run_date <- date()
 
-save(params, results, session_info, run_date, file = "auxilliary/IV Simulation Results.Rdata")
+save(params, results, session_info, run_date, file = "auxilliary/Multisite IV Simulation Results.Rdata")
 
 
 #--------------------------------------------------------
@@ -200,15 +218,4 @@ save(params, results, session_info, run_date, file = "auxilliary/IV Simulation R
 #--------------------------------------------------------
 library(ggplot2)
 rm(list=ls())
-load("auxilliary/IV Simulation Results.Rdata")
-
-results$compliance <- with(results, 1 - 2 * p_nt)
-
-ggplot(results, aes(compliance, alpha_0.05, color = type, shape = type, linetype = test)) + 
-  geom_line() + geom_point() + 
-  geom_hline(yintercept = .05, linetype = "dashed") + 
-  facet_grid(p_trt + v_uc ~ clusters, labeller = "label_both") + 
-  coord_cartesian(ylim = c(0, 0.1)) + 
-  theme_light() + 
-  labs(x = "Number of clusters", y = "Rejection rate at alpha = .05") + 
-  theme(legend.position = "bottom")
+load("auxilliary/IV Multisite Simulation Results.Rdata")
