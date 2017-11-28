@@ -27,22 +27,22 @@ r_site <- function(n, p_trt = 0.5, delta = 0, p_nt = 0.1,
   res
 }
 
-sites <- 10
-size_mean <- 50
-size_sd <- 6
-p_trt <- 0.5
-delta <- 0
-delta_sd <- 0.05
-compliance <- 0.5
-comp_sd <- 0.0
-r_delta_comp <- 0
-v_uc <- 5
-r_uy <- 0.8
+# sites <- 10
+# size_mean <- 50
+# size_sd <- 6
+# p_trt <- 0.5
+# delta <- 0
+# delta_sd <- 0.05
+# compliance <- 0.5
+# comp_sd <- 0.0
+# r_delta_comp <- 0
+# v_uc <- 2
+# r_uy <- 0.8
 
 
 r_multisite_trial <- function(sites, size_mean = 50, size_sd = 0, p_trt = 0.5, 
                               delta = 0, delta_sd = 0, compliance = 0.8, comp_sd = 0.05,
-                              r_delta_comp = 0, v_uc = 10, r_uy = 0.8) {
+                              r_delta_comp = 0, v_uc = 2, r_uy = 0.8) {
   
   size_p <- 1 - size_sd^2 / (size_mean - 2)
   n_j <- 2 + rbinom(sites, size = round((size_mean - 2) / size_p), prob = size_p)
@@ -66,7 +66,7 @@ r_multisite_trial <- function(sites, size_mean = 50, size_sd = 0, p_trt = 0.5,
 
 dat <- r_multisite_trial(sites = 10, size_mean = 50, size_sd = 6, p_trt = 0.5, 
                          delta = 0, delta_sd = 0.05, compliance = 0.5, comp_sd = 0.0,
-                         r_delta_comp = 0, v_uc = 5, r_uy = 0.8)
+                         r_delta_comp = 0, v_uc = 2, r_uy = 0.8)
 
 with(dat, table(Trt, D, site))
 
@@ -103,7 +103,6 @@ iv_est <- function(dat) {
   rownames(iv_many_CR2) <- NULL
   
   data.frame(type = c("lm-CR2","iv-one-CR0","iv-one-CR2","iv-many-CR0","iv-many-CR2"), 
-             Fstat = Fstat,
              rbind(lm_CR2, iv_one_CR0, iv_one_CR2, iv_many_CR0, iv_many_CR2))
 }
 
@@ -120,7 +119,7 @@ check_pvals <- function(x, alpha) {
   list(res)
 }
 
-check_pvals(x = runif(10000), alpha = c(0.01, 0.05, 0.10))
+# check_pvals(x = runif(10000), alpha = c(0.01, 0.05, 0.10))
 
 #-----------------------------------------------------------
 # Simulation Driver
@@ -157,9 +156,9 @@ simulate_IV <- function(replicates, sites, size_mean = 40, size_sd = 4,
     unnest(reject)
 }
 
-simulate_IV(replicates = 10, sites = 10, size_mean = 50, size_sd = 0, p_trt = 0.5, 
+simulate_IV(replicates = 50, sites = 10, size_mean = 50, size_sd = 0, p_trt = 0.5, 
             delta = 0, delta_sd = 0, compliance = 0.8, comp_sd = 0.05,
-            r_delta_comp = 0, v_uc = 10, r_uy = 0.8)
+            r_delta_comp = 0, v_uc = 2, r_uy = 0.8)
 
 
 #-------------------------------------
@@ -179,12 +178,12 @@ design_factors <- list(
   compliance = seq(.5, .9, .1), 
   comp_sd = c(.00, .05, .10),
   r_delta_comp = 0, 
-  v_uc = 5,
+  v_uc = 2,
   r_uy = 0.8
 )
 
 params <- expand.grid(design_factors)
-params$replicates <- 5
+params$replicates <- 4000
 params$seed <- round(runif(1) * 2^30) + 1:nrow(params)
 
 # All look right?
@@ -219,3 +218,6 @@ save(params, results, session_info, run_date, file = "auxilliary/Multisite IV Si
 library(ggplot2)
 rm(list=ls())
 load("auxilliary/IV Multisite Simulation Results.Rdata")
+
+results %>%
+  filter(is.na(alpha_0.05))
