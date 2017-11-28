@@ -147,6 +147,8 @@ clust <- start_parallel(source_obj = source_obj, register = TRUE)
 
 system.time(results <- plyr::mdply(params, .fun = simulate_IV, .parallel = TRUE))
 
+warnings()
+
 parallel::stopCluster(clust)
 
 #--------------------------------------------------------
