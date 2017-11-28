@@ -5,7 +5,7 @@ rm(list = ls())
 #------------------------------------------------------
 
 r_site <- function(n, p_trt = 0.5, delta = 0, p_nt = 0.1, 
-                   p_at = p_nt, v_uc = 10, r_uy = 0.8, site_id = NULL) {
+                   p_at = p_nt, v_uc = 2, r_uy = 0.8, site_id = NULL) {
   
   Trt <- (1:n) %in% (1:round(p_trt * n))
   
@@ -74,11 +74,6 @@ with(dat, table(Trt, D, site))
 # Model-fitting function
 #------------------------------------------------------
 
-first_stage <- function(dat) {
-  first_stage <- lm(D ~ site + site: Trt, data = dat)
-  anova(first_stage)[2, "F value"]
-}
-
 
 iv_est <- function(dat) {
   require(AER, quietly = TRUE)
@@ -128,7 +123,7 @@ check_pvals <- function(x, alpha) {
 simulate_IV <- function(replicates, sites, size_mean = 40, size_sd = 4,
                         p_trt = 0.5, delta = 0, delta_sd = 0.05,
                         compliance = 0.8, comp_sd = 0.05, r_delta_comp = 0,
-                        v_uc = 10, r_uy = 0.8,
+                        v_uc = 2, r_uy = 0.8,
                         alpha = c(.01, .05), seed = NULL) {
   require(dplyr) 
   require(tidyr)
@@ -179,11 +174,12 @@ design_factors <- list(
   comp_sd = c(.00, .05, .10),
   r_delta_comp = 0, 
   v_uc = 2,
-  r_uy = 0.8
+  r_uy = 0.8,
+  set = 1:5
 )
 
 params <- expand.grid(design_factors)
-params$replicates <- 4000
+params$replicates <- 800
 params$seed <- round(runif(1) * 2^30) + 1:nrow(params)
 
 # All look right?
@@ -200,6 +196,8 @@ clust <- start_parallel(source_obj = source_obj, register = TRUE)
 
 system.time(results <- plyr::mdply(params, .fun = simulate_IV, .parallel = TRUE))
 
+warnings()
+
 parallel::stopCluster(clust)
 
 #--------------------------------------------------------
@@ -209,15 +207,4 @@ parallel::stopCluster(clust)
 session_info <- sessionInfo()
 run_date <- date()
 
-save(params, results, session_info, run_date, file = "auxilliary/Multisite IV Simulation Results.Rdata")
-
-
-#--------------------------------------------------------
-# Analyze simulation results
-#--------------------------------------------------------
-library(ggplot2)
-rm(list=ls())
-load("auxilliary/IV Multisite Simulation Results.Rdata")
-
-results %>%
-  filter(is.na(alpha_0.05))
+save(params, results, session_info, run_date, file = "Multisite IV Simulation Results.Rdata")

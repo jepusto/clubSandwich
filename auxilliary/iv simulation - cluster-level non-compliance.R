@@ -74,7 +74,7 @@ check_pvals <- function(x, alpha) {
   list(res)
 }
 
-check_pvals(x = runif(10000), alpha = c(0.01, 0.05, 0.10))
+# check_pvals(x = runif(10000), alpha = c(0.01, 0.05, 0.10))
 
 #-----------------------------------------------------------
 # Simulation Driver
@@ -121,22 +121,16 @@ source_obj <- ls()
 
 set.seed(20171120)
 
+design_factors <- list(
+  clusters = seq(20, 60, 10), 
+  p_trt = c(.3, .5), 
+  icc = 0.2, 
+  v_uc = c(1, 2, 5),
+  p_nt = seq(0, 0.25, 0.05)
+)
 
-# clusters <- 40
-# p_trt <- 0.5
-# delta <- 0
-# size_mean <- 5
-# p_nt <- 0.1
-# p_at <- 0.1
-# v_uc <- 10
-# r_uy <- 0.8
-# icc <- 0.3
-
-design_factors <- list(clusters = seq(20, 60, 10), p_trt = c(.3, .5), 
-                       icc = 0.2, v_uc = c(1, 2, 5),
-                       p_nt = seq(0, 0.25, 0.05))
 params <- expand.grid(design_factors)
-params$replicates <- 4000
+params$replicates <- 50
 params$seed <- round(runif(1) * 2^30) + 1:nrow(params)
 
 # All look right?
@@ -145,7 +139,7 @@ nrow(params)
 head(params)
 
 #--------------------------------------------------------
-# run simulations in parallel - mdply workflow
+# run simulations in parallel
 #--------------------------------------------------------
 
 library(Pusto)
@@ -162,49 +156,5 @@ parallel::stopCluster(clust)
 session_info <- sessionInfo()
 run_date <- date()
 
-save(params, results, session_info, run_date, file = "auxilliary/IV Simulation Results.Rdata")
+save(params, results, session_info, run_date, file = "Clustered IV Simulation Results.Rdata")
 
-
-#--------------------------------------------------------
-# Analyze simulation results
-#--------------------------------------------------------
-library(dplyr)
-library(ggplot2)
-rm(list=ls())
-load("auxilliary/IV Simulation Results.Rdata")
-
-results$compliance <- with(results, 1 - 2 * p_nt)
-
-results %>%
-  filter(is.na(alpha_0.05)) %>%
-  View()
-
-results %>%
-  filter(type == "lm-CR2", test == "Satt") %>%
-ggplot(aes(compliance, alpha_0.05, color = factor(v_uc), shape =  factor(v_uc), linetype =  factor(v_uc))) + 
-  geom_line() + geom_point() + 
-  geom_hline(yintercept = .05, linetype = "dashed") + 
-  facet_grid(p_trt ~ clusters, labeller = "label_both") + 
-  theme_light() + 
-  labs(x = "Number of clusters", y = "Rejection rate at alpha = .05") + 
-  theme(legend.position = "bottom")
-
-results %>%
-  filter(type != "lm-CR2") %>%
-ggplot(aes(compliance, alpha_0.05, color = interaction(type,test), group = interaction(type, test, factor(v_uc)))) + 
-  geom_line() + geom_point() + 
-  geom_hline(yintercept = .05, linetype = "dashed") + 
-  facet_grid(p_trt ~ clusters, labeller = "label_both") + 
-  theme_light() + 
-  labs(x = "Number of clusters", y = "Rejection rate at alpha = .05", color = "test") + 
-  theme(legend.position = "bottom")
-
-results %>%
-  filter(type != "lm-CR2") %>%
-  ggplot(aes(compliance, alpha_0.01, color = interaction(type,test), group = interaction(type, test, factor(v_uc)))) + 
-  geom_line() + geom_point() + 
-  geom_hline(yintercept = .01, linetype = "dashed") + 
-  facet_grid(p_trt ~ clusters, labeller = "label_both") + 
-  theme_light() + 
-  labs(x = "Number of clusters", y = "Rejection rate at alpha = .05", color = "test") + 
-  theme(legend.position = "bottom")
