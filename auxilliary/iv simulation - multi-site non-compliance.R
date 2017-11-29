@@ -64,11 +64,11 @@ r_multisite_trial <- function(sites, size_mean = 50, size_sd = 0, p_trt = 0.5,
   do.call(rbind, site_dat)
 }
 
-dat <- r_multisite_trial(sites = 10, size_mean = 50, size_sd = 6, p_trt = 0.5, 
-                         delta = 0, delta_sd = 0.05, compliance = 0.5, comp_sd = 0.0,
-                         r_delta_comp = 0, v_uc = 2, r_uy = 0.8)
-
-with(dat, table(Trt, D, site))
+# dat <- r_multisite_trial(sites = 10, size_mean = 50, size_sd = 6, p_trt = 0.5, 
+#                          delta = 0, delta_sd = 0.05, compliance = 0.5, comp_sd = 0.0,
+#                          r_delta_comp = 0, v_uc = 2, r_uy = 0.8)
+# 
+# with(dat, table(Trt, D, site))
 
 #------------------------------------------------------
 # Model-fitting function
@@ -101,7 +101,7 @@ iv_est <- function(dat) {
              rbind(lm_CR2, iv_one_CR0, iv_one_CR2, iv_many_CR0, iv_many_CR2))
 }
 
-iv_est(dat)
+# iv_est(dat)
 
 #------------------------------------------------------
 # Calculate performance measures
@@ -124,9 +124,9 @@ simulate_IV <- function(replicates, sites, size_mean = 40, size_sd = 4,
                         p_trt = 0.5, delta = 0, delta_sd = 0.05,
                         compliance = 0.8, comp_sd = 0.05, r_delta_comp = 0,
                         v_uc = 2, r_uy = 0.8,
-                        alpha = c(.01, .05), seed = NULL) {
-  require(dplyr) 
-  require(tidyr)
+                        alpha = c(.01, .05), seed = NULL, ...) {
+  require(dplyr, quietly = TRUE) 
+  require(tidyr, quietly = TRUE)
   if (!is.null(seed)) set.seed(seed)
   
   reps <- replicate(replicates, {
@@ -151,9 +151,9 @@ simulate_IV <- function(replicates, sites, size_mean = 40, size_sd = 4,
     unnest(reject)
 }
 
-simulate_IV(replicates = 50, sites = 10, size_mean = 50, size_sd = 0, p_trt = 0.5, 
-            delta = 0, delta_sd = 0, compliance = 0.8, comp_sd = 0.05,
-            r_delta_comp = 0, v_uc = 2, r_uy = 0.8)
+# simulate_IV(replicates = 50, sites = 10, size_mean = 50, size_sd = 0, p_trt = 0.5,
+#             delta = 0, delta_sd = 0, compliance = 0.8, comp_sd = 0.05,
+#             r_delta_comp = 0, v_uc = 2, r_uy = 0.8)
 
 
 #-------------------------------------
@@ -161,7 +161,7 @@ simulate_IV(replicates = 50, sites = 10, size_mean = 50, size_sd = 0, p_trt = 0.
 #-------------------------------------
 source_obj <- ls()
 
-set.seed(20171120)
+set.seed(20171129)
 
 design_factors <- list(
   sites = seq(10, 50, 10), 
@@ -179,7 +179,7 @@ design_factors <- list(
 )
 
 params <- expand.grid(design_factors)
-params$replicates <- 800
+params$replicates <- 1000
 params$seed <- round(runif(1) * 2^30) + 1:nrow(params)
 
 # All look right?
