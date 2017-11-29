@@ -52,12 +52,13 @@ iv_est <- function(dat) {
   rownames(lm_CR2) <- NULL
   
   iv_fit <- ivreg(Y ~ D | Trt, data = dat)
+  
   iv_CR0 <- coef_test(iv_fit, cluster = dat$cluster, vcov = "CR0", test = c("z", "Satterthwaite"))["D",,drop=FALSE]
   rownames(iv_CR0) <- NULL
-  
+    
   iv_CR2 <- coef_test(iv_fit, cluster = dat$cluster, vcov = "CR2", test = c("z", "Satterthwaite"))["D",,drop=FALSE]
-  rownames(iv_CR2) <- NULL
-  
+  rownames(iv_CR2) <- NULL  
+
   data.frame(type = c("lm-CR2","iv-CR0","iv-CR2"), rbind(lm_CR2, iv_CR0, iv_CR2))
 }
 
@@ -96,12 +97,17 @@ simulate_IV <- function(replicates, clusters, p_trt = 0.5, size_mean = 5,
   
   bind_rows(reps) %>%
     group_by(type) %>%
-    mutate(V = SE^2) %>%
+    mutate(
+      V = SE^2,
+      p_z = ifelse(is.na(p_z), 1, p_z),
+      p_Satt = ifelse(is.na(p_Satt), 1, p_Satt)
+    ) %>%
     summarise(
-      E_beta = mean(beta),
-      V_beta = var(beta),
-      E_var = mean(V),
-      V_var = var(V),
+      na_pct = mean(is.na(beta)),
+      E_beta = mean(beta, na.rm = TRUE),
+      V_beta = var(beta, na.rm = TRUE),
+      E_var = mean(V, na.rm = TRUE),
+      V_var = var(V, na.rm = TRUE),
       z = check_pvals(p_z, alpha = alpha),
       Satt = check_pvals(p_Satt, alpha = alpha)
     ) %>%
@@ -109,9 +115,8 @@ simulate_IV <- function(replicates, clusters, p_trt = 0.5, size_mean = 5,
     unnest(reject)
 }
 
-# simulate_IV(replicates = 100, clusters = 20, p_trt = 0.4, size_mean = 5,
-#             p_nt = 0.2, p_at = 0.2, v_uc = 5,
-#             r_uy = 0.8, icc = 0.3)
+# simulate_IV(replicates = 10, clusters = 20, p_trt = 0.3, 
+#             p_nt = 0.25, p_at = 0.25, v_uc = 5, seed = 749088071)
 
 
 #-------------------------------------
@@ -119,7 +124,7 @@ simulate_IV <- function(replicates, clusters, p_trt = 0.5, size_mean = 5,
 #-------------------------------------
 source_obj <- ls()
 
-set.seed(20171120)
+set.seed(20171128)
 
 design_factors <- list(
   clusters = seq(20, 60, 10), 
@@ -130,7 +135,7 @@ design_factors <- list(
 )
 
 params <- expand.grid(design_factors)
-params$replicates <- 50
+params$replicates <- 5000
 params$seed <- round(runif(1) * 2^30) + 1:nrow(params)
 
 # All look right?
@@ -158,5 +163,6 @@ parallel::stopCluster(clust)
 session_info <- sessionInfo()
 run_date <- date()
 
-save(params, results, session_info, run_date, file = "Clustered IV Simulation Results.Rdata")
+save(params, results, session_info, run_date, file = "auxilliary/Clustered IV Simulation Results.Rdata")
+
 
