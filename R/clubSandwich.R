@@ -177,6 +177,9 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
       stop("Clustering variable must have length equal to nrow(model_matrix(obj)).")
     }
   } 
+  
+  if (any(is.na(cluster))) stop("Clustering variable cannot have missing values.")
+  
   J <- nlevels(cluster)
   
   X_list <- matrix_list(X, cluster, "row")

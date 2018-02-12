@@ -186,7 +186,10 @@ test_that("Order doesn't matter.",{
 
 test_that("clubSandwich works with dropped observations", {
   dat_miss <- dat
-  dat_miss$X1[sample.int(n, size = round(n / 10))] <- NA
+  miss_indicator <- sample.int(n, size = round(n / 10))
+  dat_miss$X1[miss_indicator] <- NA
+  dat_miss$cluster[miss_indicator] <- NA
+  
   lm_dropped <- lm(y ~ X1 + X2 + X3, data = dat_miss)
   dat_complete <- subset(dat_miss, !is.na(X1))
   lm_complete <- lm(y ~ X1 + X2 + X3, data = dat_complete)
@@ -200,6 +203,19 @@ test_that("clubSandwich works with dropped observations", {
   expect_identical(test_drop, test_complete)
 })
 
+
+test_that("clubSandwich requires no missing values on the clustering variable", {
+  dat_miss <- dat
+  miss_indicator <- sample.int(n, size = round(n / 10))
+  dat_miss$cluster[miss_indicator] <- NA
+  
+  lm_dropped <- lm(y ~ X1 + X2 + X3, data = dat_miss)
+  
+  expect_error(vcovCR(lm_dropped, cluster = dat_miss$cluster, type = "CR0"), 
+               "Clustering variable cannot have missing values.")
+  expect_error(coef_test(lm_dropped, vcov = "CR0", cluster = dat_miss$cluster, test = "All"),
+               "Clustering variable cannot have missing values.")
+})
 
 
 test_that("clubSandwich works with aliased predictors", {
