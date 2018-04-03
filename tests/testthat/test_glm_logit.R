@@ -44,15 +44,15 @@ plogit_fit <- glm(yp ~ X1 + X2 + X3 + X4, data = dat, weights = w, family = "qua
 
 test_that("bread works", {
   
-  expect_true(check_bread(logit_fit, cluster = dat$cluster, check_coef = FALSE, tol = 10^-4))
+  expect_true(check_bread(logit_fit, cluster = dat$cluster, check_coef = FALSE, tol = 10^-3))
   glm_vcov <- bread(logit_fit) * summary(logit_fit)$dispersion / v_scale(logit_fit)
   expect_equal(vcov(logit_fit), glm_vcov)
   
-  expect_true(check_bread(sflogit_fit, cluster = dat$cluster, check_coef = FALSE, tol = 10^-4))
+  expect_true(check_bread(sflogit_fit, cluster = dat$cluster, check_coef = FALSE, tol = 10^-3))
   glm_vcov <- bread(sflogit_fit) * summary(sflogit_fit)$dispersion / v_scale(sflogit_fit)
   expect_equal(vcov(sflogit_fit), glm_vcov)
 
-  expect_true(check_bread(plogit_fit, cluster = dat$cluster, check_coef = FALSE, tol = 10^-4))
+  expect_true(check_bread(plogit_fit, cluster = dat$cluster, check_coef = FALSE, tol = 10^-3))
   glm_vcov <- bread(plogit_fit) * summary(plogit_fit)$dispersion / v_scale(plogit_fit)
   expect_equal(vcov(plogit_fit), glm_vcov)
   
@@ -148,7 +148,7 @@ test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
   CR_types <- paste0("CR", 0:3)
   CR_types[2] <- "CR1S"
   CR_list <- lapply(CR_types, function(t) as.matrix(vcovCR(logit_fit, cluster = dat$row, type = t)))
-  expect_equal(HC_list, CR_list, tol = 4 * 10^-6)
+  expect_equal(HC_list, CR_list, tol = 4 * 10^-4)
   
 })
 

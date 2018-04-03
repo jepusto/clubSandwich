@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a resubmission. The new version includes support for two further classes of fitted models (ivreg and mlm objects) as well as bug fixes.
+This is a resubmission. The new version is a maintenance release to fix compatibility issues with the car package.
 
 Note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
@@ -19,16 +19,16 @@ There was 1 NOTE:
 * checking CRAN incoming feasibility ... NOTE
 
 Possibly mis-spelled words in DESCRIPTION:
-  Hotelling's (15:29)
-  McCaffrey (9:17)
-  Pustejovsky (10:30)
-  Satterthwaite (14:5)
-  Tipton (10:46)
-  covariance (12:5)
-  ivreg (17:5)
-  linearization (8:51)
-  mlm (16:65)
-
+  DOI (10:75)
+  Hotelling's (15:49)
+  McCaffrey (9:9)
+  Pustejovsky (10:44)
+  Satterthwaite (14:22)
+  Tipton (10:60)
+  eng (10:10)
+  ivreg (17:21)
+  mlm (16:77)
+  
   All of the identified words are spelled correctly. 
 
 Found the following (possibly) invalid URLs:

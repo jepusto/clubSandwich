@@ -1,6 +1,7 @@
-clubSandwich 0.3.0.999
+clubSandwich 0.3.1
 =======================
 * Added "coefs" option to coef_test() to allow testing of subsets of coefficients.
+* Updated tests to use carData instead of car package.
 
 clubSandwich 0.3.0
 =======================
