@@ -61,3 +61,4 @@ coef_test(iv_fit, vcov = "CR2", cluster = Cigs$state)
 \seealso{
 \code{\link{vcovCR}}
 }
+

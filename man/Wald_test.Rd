@@ -40,3 +40,4 @@ logical vectors, or matrices.
 \seealso{
 \code{\link{vcovCR}}
 }
+

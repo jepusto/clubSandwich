@@ -1,6 +1,6 @@
 context("Wald tests")
 
-data(Duncan, package = "car")
+data(Duncan, package = "carData")
 Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
 duncan_fit <- lm(prestige ~ type * (income + education), data=Duncan)
 coefs <- names(coef(duncan_fit))

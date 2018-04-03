@@ -57,3 +57,4 @@ coef_test(weight_fit, vcov = V_CR, test = "Satterthwaite")
 \seealso{
 \code{\link{vcovCR}}
 }
+
