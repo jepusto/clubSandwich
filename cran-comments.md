@@ -6,9 +6,9 @@ Note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002),
 
 ## Test environments
 
-* local Windows 7 Enterprise, R 3.4.1
-* ubuntu 12.04.5 (on travis-ci), R 3.4.2, devel
-* win-builder (release)
+* local Windows 7 Enterprise, R 3.4.4
+* ubuntu 12.04.5 (on travis-ci), R 3.4.4, devel
+* win-builder (release, devel)
 
 ## R CMD check results
 
