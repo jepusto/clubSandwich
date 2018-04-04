@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a resubmission. The new version is a maintenance release to fix compatibility issues with the car package.
+This is a resubmission. The new version is a maintenance release to fix compatibility issues with the car package. It also fixes the errors reported in the CRAN package check results for the previous version.
 
 Note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 

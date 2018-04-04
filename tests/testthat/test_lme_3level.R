@@ -29,29 +29,29 @@ test_that("bread works", {
 
 test_that("vcovCR options work for CR2", {
   
-  # expect_identical(vcovCR(obj_A1, cluster = egsingle$schoolid, type = "CR2"), CR2_mats[["A1"]])
-  # expect_identical(vcovCR(obj_A1, type = "CR2", inverse_var = TRUE), CR2_mats[["A1"]])
-  # expect_false(identical(vcovCR(obj_A1, type = "CR2", inverse_var = FALSE), CR2_mats[["A1"]]))
-  # target <- targetVariance(obj_A1)
-  # expect_equal(vcovCR(obj_A1, type = "CR2", target = target, inverse_var = TRUE), CR2_mats[["A1"]])
-  # attr(CR2_mats[["A1"]], "inverse_var") <- FALSE
-  # expect_equal(vcovCR(obj_A1, type = "CR2", target = target, inverse_var = FALSE), CR2_mats[["A1"]])
-  # 
-  # expect_identical(vcovCR(obj_A2, cluster = egsingle$schoolid, type = "CR2"), CR2_mats[["A2"]])
-  # expect_identical(vcovCR(obj_A2, type = "CR2", inverse_var = TRUE), CR2_mats[["A2"]])
-  # expect_false(identical(vcovCR(obj_A2, type = "CR2", inverse_var = FALSE), CR2_mats[["A2"]]))
-  # target <- targetVariance(obj_A2)
-  # expect_equal(vcovCR(obj_A2, type = "CR2", target = target, inverse_var = TRUE), CR2_mats[["A2"]])
-  # attr(CR2_mats[["A2"]], "inverse_var") <- FALSE
-  # expect_equal(vcovCR(obj_A2, type = "CR2", target = target, inverse_var = FALSE), CR2_mats[["A2"]])
-  # 
-  # expect_identical(vcovCR(obj_A3, cluster = egsingle$schoolid, type = "CR2"), CR2_mats[["A3"]])
-  # expect_identical(vcovCR(obj_A3, type = "CR2", inverse_var = TRUE), CR2_mats[["A3"]])
-  # expect_false(identical(vcovCR(obj_A3, type = "CR2", inverse_var = FALSE), CR2_mats[["A3"]]))
-  # target <- targetVariance(obj_A3)
-  # expect_equal(vcovCR(obj_A3, type = "CR2", target = target, inverse_var = TRUE), CR2_mats[["A3"]])
-  # attr(CR2_mats[["A3"]], "inverse_var") <- FALSE
-  # expect_equal(vcovCR(obj_A3, type = "CR2", target = target, inverse_var = FALSE), CR2_mats[["A3"]])
+  expect_identical(vcovCR(obj_A1, cluster = egsingle$schoolid, type = "CR2"), CR2_mats[["A1"]])
+  expect_identical(vcovCR(obj_A1, type = "CR2", inverse_var = TRUE), CR2_mats[["A1"]])
+  expect_false(identical(vcovCR(obj_A1, type = "CR2", inverse_var = FALSE), CR2_mats[["A1"]]))
+  target <- targetVariance(obj_A1)
+  expect_equal(vcovCR(obj_A1, type = "CR2", target = target, inverse_var = TRUE), CR2_mats[["A1"]])
+  attr(CR2_mats[["A1"]], "inverse_var") <- FALSE
+  expect_equal(vcovCR(obj_A1, type = "CR2", target = target, inverse_var = FALSE), CR2_mats[["A1"]])
+
+  expect_identical(vcovCR(obj_A2, cluster = egsingle$schoolid, type = "CR2"), CR2_mats[["A2"]])
+  expect_identical(vcovCR(obj_A2, type = "CR2", inverse_var = TRUE), CR2_mats[["A2"]])
+  expect_false(identical(vcovCR(obj_A2, type = "CR2", inverse_var = FALSE), CR2_mats[["A2"]]))
+  target <- targetVariance(obj_A2)
+  expect_equal(vcovCR(obj_A2, type = "CR2", target = target, inverse_var = TRUE), CR2_mats[["A2"]])
+  attr(CR2_mats[["A2"]], "inverse_var") <- FALSE
+  expect_equal(vcovCR(obj_A2, type = "CR2", target = target, inverse_var = FALSE), CR2_mats[["A2"]])
+
+  expect_identical(vcovCR(obj_A3, cluster = egsingle$schoolid, type = "CR2"), CR2_mats[["A3"]])
+  expect_identical(vcovCR(obj_A3, type = "CR2", inverse_var = TRUE), CR2_mats[["A3"]])
+  expect_false(identical(vcovCR(obj_A3, type = "CR2", inverse_var = FALSE), CR2_mats[["A3"]]))
+  target <- targetVariance(obj_A3)
+  expect_equal(vcovCR(obj_A3, type = "CR2", target = target, inverse_var = TRUE), CR2_mats[["A3"]])
+  attr(CR2_mats[["A3"]], "inverse_var") <- FALSE
+  expect_equal(vcovCR(obj_A3, type = "CR2", target = target, inverse_var = FALSE), CR2_mats[["A3"]])
   
   expect_identical(vcovCR(obj_A4, cluster = egsingle$schoolid, type = "CR2"), CR2_mats[["A4"]])
   expect_identical(vcovCR(obj_A4, type = "CR2", inverse_var = TRUE), CR2_mats[["A4"]])

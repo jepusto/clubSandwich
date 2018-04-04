@@ -3,20 +3,18 @@ Title: Cluster-Robust (Sandwich) Variance Estimators with Small-Sample
     Corrections
 Version: 0.3.1
 Authors@R: person("James", "Pustejovsky", email = "jepusto@gmail.com", role = c("aut", "cre"))
-Description: Provides several cluster-robust variance estimators (i.e.,
-    sandwich estimators) for ordinary and weighted least squares linear regression
-    models, including the bias-reduced linearization estimator introduced by Bell
-    and McCaffrey (2002) <http://www.statcan.gc.ca/pub/12-001-x/2002002/article/
-    9058-eng.pdf> and developed further by Pustejovsky and Tipton (2017) <DOI:
-    10.1080/07350015.2016.1247004>. The package includes functions for estimating
-    the variance- covariance matrix and for testing single- and multiple-
-    contrast hypotheses based on Wald test statistics. Tests of single regression
-    coefficients use Satterthwaite or saddle-point corrections. Tests of multiple-
-    contrast hypotheses use an approximation to Hotelling's T-squared distribution.
-    Methods are provided for a variety of fitted models, including lm() and mlm
-    objects, glm(), ivreg (from package 'AER'), plm() (from package 'plm'), gls()
-    and lme() (from 'nlme'), robu() (from 'robumeta'), and rma.uni() and rma.mv()
-    (from 'metafor').
+Description: Provides several cluster-robust variance estimators (i.e., sandwich estimators) for 
+    ordinary and weighted least squares linear regression models, including the bias-reduced 
+    linearization estimator introduced by Bell and McCaffrey (2002) 
+    <http://www.statcan.gc.ca/pub/12-001-x/2002002/article/9058-eng.pdf> and developed further 
+    by Pustejovsky and Tipton (2017) <DOI:10.1080/07350015.2016.1247004>. The package includes 
+    functions for estimating the variance- covariance matrix and for testing single- and multiple-
+    contrast hypotheses based on Wald test statistics. Tests of single regression coefficients 
+    use Satterthwaite or saddle-point corrections. Tests of multiple-contrast hypotheses use an 
+    approximation to Hotelling's T-squared distribution. Methods are provided for a variety of 
+    fitted models, including lm() and mlm objects, glm(), ivreg (from package 'AER'), plm() (from 
+    package 'plm'), gls() and lme() (from 'nlme'), robu() (from 'robumeta'), and rma.uni() and 
+    rma.mv() (from 'metafor').
 URL: https://github.com/jepusto/clubSandwich
 BugReports: https://github.com/jepusto/clubSandwich/issues
 Depends:
