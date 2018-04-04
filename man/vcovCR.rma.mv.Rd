@@ -67,4 +67,3 @@ Wald_test(mfor_fit, constraints = 2:5, vcov = mfor_CR2)
 \seealso{
 \code{\link{vcovCR}}
 }
-
