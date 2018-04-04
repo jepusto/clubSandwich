@@ -61,3 +61,4 @@ vcovCR(math_model, type = "CR2")
 \seealso{
 \code{\link{vcovCR}}
 }
+

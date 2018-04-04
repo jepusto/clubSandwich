@@ -59,3 +59,4 @@ vcovCR(lm_AR1, type = "CR2")
 \seealso{
 \code{\link{vcovCR}}
 }
+

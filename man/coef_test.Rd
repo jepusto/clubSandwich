@@ -42,3 +42,4 @@ based on a Satterthwaite approximation or a saddlepoint approximation.
 \seealso{
 \code{\link{vcovCR}}
 }
+

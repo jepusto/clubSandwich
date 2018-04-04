@@ -68,3 +68,4 @@ Wald_test(robu_fit, constraints = 2:5, vcov = robu_CR2)
 \seealso{
 \code{\link{vcovCR}}
 }
+
