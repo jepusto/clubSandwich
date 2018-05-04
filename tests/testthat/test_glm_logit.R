@@ -1,5 +1,6 @@
 context("logit glm objects")
 
+set.seed(20180504)
 m <- 20
 cluster <- factor(rep(LETTERS[1:m], 3 + rpois(m, 5)))
 n <- length(cluster)
