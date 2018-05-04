@@ -55,4 +55,3 @@ Vcluster <- vcovCR(iris_fit, type = "CR2")
 \seealso{
 \code{\link{vcovCR}}
 }
-

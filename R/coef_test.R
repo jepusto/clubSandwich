@@ -78,7 +78,7 @@ get_which_coef <- function(beta, coefs) {
 # coeftest for all model coefficients
 #---------------------------------------------
 
-#' Test all regression coefficients in a fitted model
+#' Test all or selected regression coefficients in a fitted model
 #'
 #' \code{coef_test} reports t-tests for each coefficient estimate in a fitted
 #' linear regression model, using a sandwich estimator for the standard errors
@@ -108,6 +108,15 @@ get_which_coef <- function(beta, coefs) {
 #'
 #' @seealso \code{\link{vcovCR}}
 #'
+#' @examples 
+#' data("Produc", package = "plm")
+#' lm_individual <- lm(log(gsp) ~ 0 + state + log(pcap) + log(pc) + log(emp) + unemp, data = Produc)
+#' individual_index <- !grepl("state", names(coef(lm_individual)))
+#' coef_test(lm_individual, vcov = "CR2", cluster = Produc$state, coefs = individual_index)
+#' 
+#' V_CR2 <- vcovCR(lm_individual, cluster = Produc$state, type = "CR2")
+#' coef_test(lm_individual, vcov = V_CR2, coefs = individual_index)
+#' 
 #' @export
 
 coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", ...) {

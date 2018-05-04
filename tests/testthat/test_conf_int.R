@@ -1,0 +1,62 @@
+context("confidence intervals")
+
+library(nlme, quietly=TRUE, warn.conflicts=FALSE)
+
+data(Ovary, package = "nlme")
+
+Ovary$time_int <- 1:nrow(Ovary)
+
+gls_fit <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), data = Ovary,
+              correlation = corAR1(form = ~ time_int | Mare), 
+              weights = varPower())
+
+CRs <- paste0("CR", 0:4)
+
+test_that("vcov arguments work", {
+  VCR <- lapply(CRs, function(t) vcovCR(gls_fit, type = t))
+  CI_A <- lapply(VCR, function(v) conf_int(gls_fit, vcov = v, level = .98))
+  CI_B <- lapply(CRs, function(t) conf_int(gls_fit, vcov = t, level = .98))
+  expect_identical(CI_A, CI_B)
+})
+
+test_that("coefs argument works", {
+  which_grid <- expand.grid(rep(list(c(FALSE,TRUE)), length(coef(gls_fit))))
+  tests_all <- conf_int(gls_fit, vcov = "CR0", coefs = "All")
+  
+  CI_A <- apply(which_grid[-1,], 1, function(x) tests_all[x,])
+  CI_B <- apply(which_grid[-1,], 1, function(x) conf_int(gls_fit, vcov = "CR0", coefs = x))
+  expect_identical(CI_A, CI_B)
+})
+
+test_that("printing works", {
+  CIs <- conf_int(gls_fit, vcov = "CR0")
+  expect_output(print(CIs))
+})
+
+test_that("level checks work", {
+  expect_error(conf_int(gls_fit, vcov = "CR0", level = -0.01))
+  expect_error(conf_int(gls_fit, vcov = "CR0", level = 95))
+  expect_output(print(conf_int(gls_fit, vcov = "CR0", level = runif(1))))
+})
+
+test_that("CI boundaries are ordered", {
+  lev <- runif(1)
+  CI_z <- conf_int(gls_fit, vcov = "CR0", test = "z", level = lev)
+  CI_t <- conf_int(gls_fit, vcov = "CR0", test = "naive-t", level = lev)
+  CI_Satt <- conf_int(gls_fit, vcov = "CR0", test = "Satterthwaite", level = lev)
+  expect_true(all(CI_t$CI_L < CI_z$CI_L))
+  expect_true(all(CI_t$CI_U > CI_z$CI_U))
+  expect_true(all(CI_Satt$CI_L < CI_z$CI_L))
+  expect_true(all(CI_Satt$CI_U > CI_z$CI_U))
+})
+
+test_that("conf_int() is consistent with coef_test()", {
+  lev <- runif(1)
+  CIs <- lapply(CRs, function(v) conf_int(gls_fit, vcov = v, test = "Satterthwaite", level = lev))
+  ttests <- lapply(CRs, function(v) coef_test(gls_fit, vcov = v, test = "Satterthwaite"))
+  CI_L <- lapply(ttests, function(x) x$beta - x$SE * qt(1 - (1 - lev) / 2, df = x$df))
+  CI_U <- lapply(ttests, function(x) x$beta + x$SE * qt(1 - (1 - lev) / 2, df = x$df))
+  expect_identical(lapply(CIs, function(x) x$CI_L), CI_L)
+  expect_identical(lapply(CIs, function(x) x$CI_U), CI_U)
+})
+

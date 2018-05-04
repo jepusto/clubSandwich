@@ -61,4 +61,3 @@ vcovCR(plm_FE, type="CR2")
 \seealso{
 \code{\link{vcovCR}}
 }
-

@@ -39,4 +39,3 @@ MVFE <- rma.mv(d ~ 0 + test, V = V_list, data = SATcoaching)
 coef_test(MVFE, vcov = "CR2", cluster = SATcoaching$study)
 
 }
-
