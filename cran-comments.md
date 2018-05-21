@@ -1,8 +1,8 @@
 ## Resubmission
 
-This is a resubmission. The new version is a maintenance release to fix compatibility issues with the car package. It also fixes the errors reported in the CRAN package check results for the previous version.
+This is a resubmission. The new version is a maintenance release to add two suggested packages (lme4 and zoo) that are used in the unit tests, but were previously not listed. This release also adds a convenience function for calculating confidence intervals based on cluster-robust standard errors and Satterthwaite degrees of freedom.
 
-Note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
+Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
 ## Test environments
 

@@ -39,6 +39,8 @@ Suggests:
     mlmRev,
     AER,
     plm (>= 1.6-4),
+    lme4,
+    zoo,
     testthat,
     rmarkdown
 RoxygenNote: 6.0.1
