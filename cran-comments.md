@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a resubmission. The new version is a maintenance release to add two suggested packages (lme4 and zoo) that are used in the unit tests, but were previously not listed. This release also adds a convenience function for calculating confidence intervals based on cluster-robust standard errors and Satterthwaite degrees of freedom.
+This is a resubmission. This submission is a maintenance release that corrects two errors identified in the "additional issues" CRAN package checks for the ATLAS and MKL BLAS. The new release adds two suggested packages (lme4 and zoo) that are used in the unit tests, but were previously not listed. The release also adds a convenience function for calculating confidence intervals based on cluster-robust standard errors and Satterthwaite degrees of freedom.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
