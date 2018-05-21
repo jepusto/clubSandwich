@@ -114,8 +114,8 @@ test_that("CR0 and CR1S agree with arellano vcov", {
 test_that("vcovCR options work for CR2", {
   CR2_iv <- vcovCR(plm_individual, type = "CR2")
   expect_identical(vcovCR(plm_individual, cluster = Produc_scramble$state, type = "CR2"), CR2_iv)
-  expect_identical(vcovCR(plm_individual, type = "CR2", inverse_var = TRUE), CR2_iv)
-  expect_identical(vcovCR(plm_individual, type = "CR2", target = rep(1, n), inverse_var = TRUE), CR2_iv)
+  expect_equal(vcovCR(plm_individual, type = "CR2", inverse_var = TRUE), CR2_iv)
+  expect_equal(vcovCR(plm_individual, type = "CR2", target = rep(1, n), inverse_var = TRUE), CR2_iv)
   
   CR2_not <- vcovCR(plm_individual, type = "CR2", inverse_var = FALSE)
   expect_equivalent(CR2_not, CR2_iv)

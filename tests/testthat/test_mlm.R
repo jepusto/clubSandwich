@@ -139,7 +139,7 @@ test_that("clubSandwich works with dropped outcomes", {
   
   test_drop <- lapply(CR_types, function(x) coef_test(lm_dropped, vcov = x, test = "All"))
   test_complete <- lapply(CR_types, function(x) coef_test(lm_complete, vcov = x, test = "All"))
-  expect_identical(test_drop, test_complete)
+  expect_equal(test_drop, test_complete)
 })
 
 test_that("clubSandwich works with dropped outcomes, covariates, and weights", {
