@@ -1,4 +1,4 @@
-clubSandwich 0.3.1.999
+clubSandwich 0.3.2
 =======================
 * Added conf_int() to provide easy cluster-robust confidence intervals.
 * Added examples to documentaiton for conf_int() and coef_test().

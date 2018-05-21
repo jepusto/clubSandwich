@@ -7,8 +7,8 @@ Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey 
 ## Test environments
 
 * local Windows 7 Enterprise, R 3.4.4
-* ubuntu 12.04.5 (on travis-ci), R 3.4.4, devel
-* win-builder (release, devel)
+* ubuntu 14.04.5 LTS (on travis-ci), R 3.5.0, devel
+* win-builder (devel, release, oldrelease)
 
 ## R CMD check results
 
