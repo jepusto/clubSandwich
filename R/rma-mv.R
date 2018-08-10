@@ -36,6 +36,8 @@
 
 impute_covariance_matrix <- function(vi, cluster, r, return_list = identical(as.factor(cluster), sort(as.factor(cluster)))) {
   
+  cluster <- droplevels(as.factor(cluster))
+  
   vi_list <- split(vi, cluster)
   r_list <- rep_len(r, length(vi_list))
   vcov_list <- Map(function(V, rho) (rho + diag(1 - rho, nrow = length(V))) * tcrossprod(sqrt(V)), V = vi_list, rho = r_list)

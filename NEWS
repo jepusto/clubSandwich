@@ -1,3 +1,7 @@
+clubSandwich 0.3.2.9999
+=======================
+* impute_covariance_matrix() now drops unobserved factor levels.
+
 clubSandwich 0.3.2
 =======================
 * Added conf_int() to provide easy cluster-robust confidence intervals.
