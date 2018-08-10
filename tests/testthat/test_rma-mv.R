@@ -113,7 +113,7 @@ test_that("order doesn't matter", {
   expect_equal(Wald_fit, Wald_scramble)
 })
 
-test_that("clubSandwich works with dropped observations", {
+test_that("clubSandwich works with dropped covariates", {
   dat_miss <- hierdat
   dat_miss$binge[sample.int(nrow(hierdat), size = round(nrow(hierdat) / 10))] <- NA
   dat_miss$followup[sample.int(nrow(hierdat), size = round(nrow(hierdat) / 20))] <- NA
@@ -145,6 +145,72 @@ test_that("clubSandwich works with dropped observations", {
   expect_true(all(compare_tests_B < 10^-5))
 })
 
+test_that("clubSandwich works with missing diagonal variances", {
+  
+  dat_miss <- hierdat
+  dat_miss$var[sample.int(nrow(hierdat), size = round(nrow(hierdat) / 10))] <- NA
+  expect_warning(hier_drop <- rma.mv(effectsize ~ binge + followup + sreport + age, 
+                                     random = list(~ 1 | esid, ~ 1 | studyid),
+                                     data = dat_miss, V = var, method = "REML"))
+  
+  hier_complete <- rma.mv(effectsize ~ binge + followup + sreport + age, 
+                          random = list(~ 1 | esid, ~ 1 | studyid),
+                          subset = !is.na(var),
+                          data = dat_miss, V = var, method = "REML")
+  
+  expect_error(vcovCR(hier_complete, type = "CR0", cluster = dat_miss$studyid))
+  
+  CR_drop_A <- lapply(CR_types, function(x) vcovCR(hier_drop, type = x))
+  CR_drop_B <- lapply(CR_types, function(x) vcovCR(hier_drop, type = x, cluster = dat_miss$studyid))
+  CR_complete <- lapply(CR_types, function(x) vcovCR(hier_complete, type = x))
+  expect_equal(CR_drop_A, CR_complete)
+  expect_equal(CR_drop_B, CR_complete)
+  
+})
+
+test_that("clubSandwich works with missing vcov matrix or weight matrix", {
+  
+  dat_miss <- corrdat
+  dat_miss$var[sample.int(nrow(corrdat), size = round(nrow(corrdat) / 10))] <- NA
+  
+  V_missing <- impute_covariance_matrix(dat_miss$var, cluster = dat_miss$studyid, r = 0.8)
+  
+  expect_warning(corr_drop <- rma.mv(effectsize ~ males + college + binge, 
+                                     random = ~ 1 | studyid, 
+                                     V = V_missing, data = dat_miss))
+  
+  corr_complete <- rma.mv(effectsize ~ males + college + binge,
+                          random = ~ 1 | studyid, 
+                          subset = !is.na(var),
+                          data = dat_miss, V = V_missing)
+  
+  expect_error(vcovCR(corr_complete, type = "CR0", cluster = dat_miss$studyid))
+  
+  CR_drop <- lapply(CR_types, function(x) vcovCR(corr_drop, cluster = dat_miss$studyid, type = x))
+  CR_complete <- lapply(CR_types, function(x) vcovCR(corr_complete, type = x))
+  expect_equal(CR_drop, CR_complete)
+  
+  
+  V_complete <- impute_covariance_matrix(corrdat$var, cluster = corrdat$studyid, r = 0.8)
+  W_missing <- lapply(V_complete, function(x) chol2inv(chol(x)))
+  
+  corr_drop <- rma.mv(effectsize ~ males + college + binge, 
+                      random = ~ 1 | studyid, 
+                      V = V_complete, W = bldiag(W_missing), 
+                      data = dat_miss)
+  
+  corr_complete <- rma.mv(effectsize ~ males + college + binge,
+                          random = ~ 1 | studyid, 
+                          V = V_complete, W = bldiag(W_missing),
+                          data = dat_miss, subset = !is.na(var))
+  
+  expect_error(vcovCR(corr_complete, type = "CR0", cluster = dat_miss$studyid))
+  
+  CR_drop <- lapply(CR_types, function(x) vcovCR(corr_drop, type = x))
+  CR_complete <- lapply(CR_types, function(x) vcovCR(corr_complete, type = x))
+  expect_equal(CR_drop, CR_complete)
+  
+})
 
 test_that("vcovCR options work for CR2", {
   RE_var <- targetVariance(hier_meta, cluster = factor(hierdat$studyid))
@@ -156,31 +222,4 @@ test_that("vcovCR options work for CR2", {
   expect_equivalent(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = RE_var), CR2_not)
   expect_equivalent(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = RE_var, inverse_var = FALSE), CR2_not)
   expect_false(identical(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = hierdat$var), CR2_not))
-})
-
-test_that("impute_covariance_matrix works correctly.", {
-  K <- 10
-  N <- sum(1:K)
-  dat <- data.frame(study = rep(LETTERS[1:K], 1:K), 
-                    yi = rnorm(N), 
-                    vi = rchisq(N, df = 2))
-  r <- 0.7
-  V_single_r <- impute_covariance_matrix(vi = dat$vi, cluster = dat$study, r = r)
-  r_list <- rbeta(K, 2, 2)
-  V_multiple_r <- impute_covariance_matrix(vi = dat$vi, cluster = dat$study, r = r_list)
-  
-  check_correlation <- function(M, r) if (nrow(M) > 1) max(abs(cov2cor(M)[lower.tri(M)] - r)) else 0
-  check_singles <- sapply(V_single_r, check_correlation, r = r)
-  expect_true(all(check_singles < 10^-14))
-  check_multiples <- Map(check_correlation, M = V_multiple_r, r = r_list)
-  expect_true(all(check_multiples < 10^-14))
-  
-  dat_scramble <- dat[sample(nrow(dat)),]
-  V_mat <- impute_covariance_matrix(vi = dat_scramble$vi, cluster = dat_scramble$study, r = r)
-  expect_equal(dat_scramble$vi, diag(V_mat))
-  
-  V_resorted <- V_mat[order(dat_scramble$study), order(dat_scramble$study)]
-  dat_unscramble <- dat_scramble[order(dat_scramble$study),]
-  V_unscramble <- impute_covariance_matrix(vi = dat_unscramble$vi, cluster = dat_unscramble$study, r = r)
-  expect_equal(V_resorted, bldiag(V_unscramble))
 })

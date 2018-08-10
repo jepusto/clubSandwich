@@ -87,7 +87,7 @@ test_that("order doesn't matter", {
   expect_equal(Wald_fit, Wald_scramble)
 })
 
-test_that("clubSandwich works with dropped observations", {
+test_that("clubSandwich works with dropped covariates", {
   dat_miss <- hierdat
   dat_miss$binge[sample.int(nrow(hierdat), size = round(nrow(hierdat) / 10))] <- NA
   dat_miss$followup[sample.int(nrow(hierdat), size = round(nrow(hierdat) / 20))] <- NA
@@ -112,6 +112,28 @@ test_that("clubSandwich works with dropped observations", {
   test_complete <- lapply(CR_types, function(x) coef_test(hier_complete, vcov = x, cluster = dat_miss$studyid[subset_ind], test = "All"))
   expect_equal(test_drop_A, test_complete, tolerance = 10^-6)
   expect_equal(test_drop_B, test_complete, tolerance = 10^-6)
+})
+
+test_that("clubSandwich works with missing variances", {
+  
+  dat_miss <- hierdat
+  dat_miss$var[sample.int(nrow(hierdat), size = round(nrow(hierdat) / 10))] <- NA
+  expect_warning(hier_drop <- rma(effectsize ~ binge + followup + sreport + age, 
+                                  data = dat_miss, vi = var, method = "REML"))
+  
+  
+  subset_ind <- with(dat_miss, !is.na(var))
+  hier_complete <- rma(effectsize ~ binge + followup + sreport + age, 
+                       subset = !is.na(var),
+                       data = dat_miss, vi = var, method = "REML")
+  expect_error(vcovCR(hier_complete, type = "CR0", cluster = dat_miss$studyid))
+  
+  CR_drop_A <- lapply(CR_types, function(x) vcovCR(hier_drop, type = x, cluster = dat_miss$studyid))
+  CR_drop_B <- lapply(CR_types, function(x) vcovCR(hier_drop, type = x, cluster = hierdat$studyid))
+  CR_complete <- lapply(CR_types, function(x) vcovCR(hier_complete, type = x, cluster = dat_miss$studyid[subset_ind]))
+  expect_equal(CR_drop_A, CR_complete)
+  expect_equal(CR_drop_B, CR_complete)
+  
 })
 
 
