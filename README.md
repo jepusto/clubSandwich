@@ -2,6 +2,7 @@
 [![Coverage Status](https://img.shields.io/codecov/c/github/jepusto/clubSandwich/master.svg)](https://codecov.io/github/jepusto/clubSandwich?branch=master)
 [![](http://www.r-pkg.org/badges/version/clubSandwich)](https://CRAN.R-project.org/package=clubSandwich)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/clubSandwich)](https://CRAN.R-project.org/package=clubSandwich)
+[![](http://cranlogs.r-pkg.org/badges/last-month/clubSandwich)](https://CRAN.R-project.org/package=clubSandwich)
 
 # clubSandwich
 
