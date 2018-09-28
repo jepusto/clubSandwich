@@ -32,7 +32,7 @@ results %>%
   expand_limits(y = 0) + 
   facet_grid(p_trt ~ clusters, labeller = "label_both") + 
   theme_light() + 
-  labs(x = "Number of clusters", y = "Rejection rate at alpha = .05") + 
+  labs(x = "Compliance rate", y = "Rejection rate at alpha = .05") + 
   theme(legend.position = "bottom")
 
 # rejection rates of OLS tests
@@ -44,7 +44,7 @@ results %>%
   geom_hline(yintercept = .05, linetype = "dashed") + 
   facet_grid(p_trt ~ clusters, labeller = "label_both") + 
   theme_light() + 
-  labs(x = "Number of clusters", y = "Rejection rate at alpha = .05") + 
+  labs(x = "Compliance rate", y = "Rejection rate at alpha = .05") + 
   theme(legend.position = "bottom")
 
 # rejection rates of IV tests at alpha = .05
@@ -57,8 +57,9 @@ results %>%
   expand_limits(y = 0) + 
   facet_grid(p_trt ~ clusters, labeller = "label_both") + 
   theme_light() + 
-  labs(x = "Number of clusters", y = "Rejection rate at alpha = .05", color = "test") + 
+  labs(x = "Compliance rate", y = "Rejection rate at alpha = .01", color = "test") + 
   theme(legend.position = "bottom")
+
 
 # rejection rates of IV tests at alpha = .01
 
@@ -70,8 +71,41 @@ results %>%
   expand_limits(y = 0) + 
   facet_grid(p_trt ~ clusters, labeller = "label_both") + 
   theme_light() + 
-  labs(x = "Number of clusters", y = "Rejection rate at alpha = .01", color = "test") + 
+  labs(x = "Compliance rate", y = "Rejection rate at alpha = .01", color = "test") + 
   theme(legend.position = "bottom")
+
+# For SREE 2019 abstract 
+
+SREE_results <- 
+  results %>%
+  filter(
+    (type == "iv-CR2" & test == "Satt") | (type == "iv-CR0" & test == "z")
+  ) %>%
+  mutate(test = recode(test, `Satt` = "Modified", `z` = "Conventional")) %>% 
+  rename(`Allocation fraction` = p_trt)
+
+ggplot(SREE_results, aes(compliance, alpha_0.05, color = test, linetype = factor(v_uc))) + 
+  geom_line() + geom_point() + 
+  geom_hline(yintercept = .05, linetype = "dashed") + 
+  expand_limits(y = 0) + 
+  facet_grid(`Allocation fraction` ~ clusters, labeller = "label_both") + 
+  scale_color_brewer(type = "qual", palette = 6) + 
+  scale_linetype(guide = "none") + 
+  theme_light() +
+  labs(x = "Compliance rate", y = "Rejection rate at alpha = .05", color = "CRVE estimator") + 
+  theme(legend.position = "bottom", strip.text = element_text(color = "black"))
+
+ggplot(SREE_results, aes(compliance, alpha_0.01, color = test, linetype = factor(v_uc))) + 
+  geom_line() + geom_point() + 
+  geom_hline(yintercept = .01, linetype = "dashed") + 
+  expand_limits(y = 0) + 
+  facet_grid(`Allocation fraction` ~ clusters, labeller = "label_both") + 
+  scale_color_brewer(type = "qual", palette = 6) + 
+  scale_linetype(guide = "none") + 
+  theme_light() +
+  labs(x = "Compliance rate", y = "Rejection rate at alpha = .01", color = "CRVE estimator") + 
+  theme(legend.position = "bottom", strip.text = element_text(color = "black"))
+
 
 #--------------------------------------------------------
 # Analyze multi-site simulation results
@@ -93,7 +127,7 @@ results %>%
   geom_line() + geom_point() + 
   facet_grid(delta_sd ~ sites, labeller = "label_both") + 
   theme_light() + 
-  labs(x = "Number of clusters", y = "Bias of OLS estimates") + 
+  labs(x = "Compliance rate", y = "Bias of OLS estimates") + 
   theme(legend.position = "bottom")
 
 # bias of IV estimates
@@ -105,7 +139,7 @@ results %>%
   expand_limits(y = 0) + 
   facet_grid(comp_sd ~ sites, labeller = "label_both") + 
   theme_light() + 
-  labs(x = "Number of clusters", y = "Bias of IV estimates", color = "test") + 
+  labs(x = "Compliance rate", y = "Bias of IV estimates", color = "test") + 
   theme(legend.position = "bottom")
 
 # rejection rates of OLS tests
@@ -117,7 +151,7 @@ results %>%
   geom_hline(yintercept = .05, linetype = "dashed") + 
   facet_grid(delta_sd ~ sites, labeller = "label_both") + 
   theme_light() + 
-  labs(x = "Number of clusters", y = "Rejection rate at alpha = .05") + 
+  labs(x = "Compliance rate", y = "Rejection rate at alpha = .05") + 
   theme(legend.position = "bottom")
 
 # rejection rates of single-instrument tests at alpha = .05
@@ -130,7 +164,7 @@ results %>%
   expand_limits(y = 0) + 
   facet_grid(comp_sd ~ sites, labeller = "label_both") + 
   theme_light() + 
-  labs(x = "Number of clusters", y = "Rejection rate at alpha = .05", color = "test") + 
+  labs(x = "Compliance rate", y = "Rejection rate at alpha = .05", color = "test") + 
   theme(legend.position = "bottom")
 
 # rejection rates of site-instrument tests at alpha = .05
@@ -143,7 +177,7 @@ results %>%
   expand_limits(y = 0) + 
   facet_grid(comp_sd ~ sites, labeller = "label_both") + 
   theme_light() + 
-  labs(x = "Number of clusters", y = "Rejection rate at alpha = .05", color = "test") + 
+  labs(x = "Compliance rate", y = "Rejection rate at alpha = .05", color = "test") + 
   theme(legend.position = "bottom")
 
 
@@ -157,7 +191,7 @@ results %>%
   expand_limits(y = 0) + 
   facet_grid(comp_sd ~ sites, labeller = "label_both") + 
   theme_light() + 
-  labs(x = "Number of clusters", y = "Rejection rate at alpha = .01", color = "test") + 
+  labs(x = "Compliance rate", y = "Rejection rate at alpha = .01", color = "test") + 
   theme(legend.position = "bottom")
 
 # rejection rates of site-instrument tests at alpha = .01
@@ -170,5 +204,5 @@ results %>%
   expand_limits(y = 0) + 
   facet_grid(comp_sd ~ sites, labeller = "label_both") + 
   theme_light() + 
-  labs(x = "Number of clusters", y = "Rejection rate at alpha = .01", color = "test") + 
+  labs(x = "Compliance rate", y = "Rejection rate at alpha = .01", color = "test") + 
   theme(legend.position = "bottom")
