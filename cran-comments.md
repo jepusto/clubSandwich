@@ -1,13 +1,13 @@
 ## Resubmission
 
-This is a resubmission. This submission is a maintenance release that corrects two errors identified in the "additional issues" CRAN package checks for the ATLAS and MKL BLAS. The new release adds two suggested packages (lme4 and zoo) that are used in the unit tests, but were previously not listed. The release also adds a convenience function for calculating confidence intervals based on cluster-robust standard errors and Satterthwaite degrees of freedom.
+This is a resubmission. This submission is a maintenance release that corrects an error identified in the CRAN package checks for debian-gcc. The release also updates some internals for consistency with changes in the metafor package.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
 ## Test environments
 
-* local Windows 7 Enterprise, R 3.4.4
-* ubuntu 14.04.5 LTS (on travis-ci), R 3.5.0, devel
+* local Windows 7 Enterprise, R 3.5.2
+* ubuntu 14.04.5 LTS (on travis-ci), R 3.5.2, devel
 * win-builder (devel, release, oldrelease)
 
 ## R CMD check results
