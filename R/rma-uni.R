@@ -54,8 +54,17 @@ vcovCR.rma.uni <- function(obj, cluster, type, target, inverse_var, form = "sand
           target = target, inverse_var = inverse_var, form = form)
 }
 
-# coef()
 # residuals_CS()
+
+residuals_CS.rma <- function(obj) {
+  res <- residuals(obj)
+  not_na <- obj$not.na
+  
+  if (length(res) == length(not_na)) res[not_na] else res
+  
+}
+
+# coef()
 # vcov()
 # model_matrix()
 

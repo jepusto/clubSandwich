@@ -168,7 +168,7 @@ test_that("clubSandwich works with missing diagonal variances", {
   
 })
 
-test_that("clubSandwich works with missing vcov matrix or weight matrix", {
+test_that("clubSandwich works with missing vcov matrix", {
   
   dat_miss <- corrdat
   dat_miss$var[sample.int(nrow(corrdat), size = round(nrow(corrdat) / 10))] <- NA
@@ -191,26 +191,27 @@ test_that("clubSandwich works with missing vcov matrix or weight matrix", {
   expect_equal(CR_drop, CR_complete)
   
   
-  V_complete <- impute_covariance_matrix(corrdat$var, cluster = corrdat$studyid, r = 0.8)
-  W_missing <- lapply(V_complete, function(x) chol2inv(chol(x)))
-  
-  corr_drop <- rma.mv(effectsize ~ males + college + binge, 
-                      random = ~ 1 | studyid, 
-                      V = V_complete, W = bldiag(W_missing), 
-                      data = dat_miss)
-  
-  corr_complete <- rma.mv(effectsize ~ males + college + binge,
-                          random = ~ 1 | studyid, 
-                          V = V_complete, W = bldiag(W_missing),
-                          data = dat_miss, subset = !is.na(var))
-  
-  expect_error(vcovCR(corr_complete, type = "CR0", cluster = dat_miss$studyid))
-  
-  CR_drop <- lapply(CR_types, function(x) vcovCR(corr_drop, type = x))
-  CR_complete <- lapply(CR_types, function(x) vcovCR(corr_complete, type = x))
-  expect_equal(CR_drop, CR_complete)
+  # V_complete <- impute_covariance_matrix(corrdat$var, cluster = corrdat$studyid, r = 0.8)
+  # W_missing <- lapply(V_complete, function(x) chol2inv(chol(x)))
+  # 
+  # corr_drop <- rma.mv(effectsize ~ males + college + binge, 
+  #                     random = ~ 1 | studyid, 
+  #                     V = V_complete, W = bldiag(W_missing), 
+  #                     data = dat_miss)
+  # 
+  # corr_complete <- rma.mv(effectsize ~ males + college + binge,
+  #                         random = ~ 1 | studyid, 
+  #                         V = V_complete, W = bldiag(W_missing),
+  #                         data = dat_miss, subset = !is.na(var))
+  # 
+  # expect_error(vcovCR(corr_complete, type = "CR0", cluster = dat_miss$studyid))
+  # 
+  # CR_drop <- lapply(CR_types, function(x) vcovCR(corr_drop, type = x))
+  # CR_complete <- lapply(CR_types, function(x) vcovCR(corr_complete, type = x))
+  # expect_equal(CR_drop, CR_complete)
   
 })
+
 
 test_that("vcovCR options work for CR2", {
   RE_var <- targetVariance(hier_meta, cluster = factor(hierdat$studyid))

@@ -28,7 +28,6 @@ test_that("CR2 and CR4 are target-unbiased", {
 })
 
 test_that("vcovCR is mostly equivalent to vcovHC when clusters are all of size 1", {
-  skip("Skip equivalence with sandwich package until version updates to 2.4.1.")
   library(sandwich, quietly=TRUE)
   CR_mats <- sapply(c("CR0","CR2","CR3","CR1","CR1p","CR1S"), 
                     function(t) as.matrix(vcovCR(lm_fit, type = t)),
@@ -182,3 +181,4 @@ test_that("weight scale doesn't matter", {
                lapply(weighted_fit, as.matrix))  
   
 })
+

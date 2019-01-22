@@ -4,8 +4,8 @@
 \alias{conf_int}
 \title{Calculate confidence intervals for all or selected regression coefficients in a fitted model}
 \usage{
-conf_int(obj, vcov, level = 0.95, test = "Satterthwaite", coefs = "All",
-  ...)
+conf_int(obj, vcov, level = 0.95, test = "Satterthwaite",
+  coefs = "All", ...)
 }
 \arguments{
 \item{obj}{Fitted model for which to calculate confidence intervals.}
