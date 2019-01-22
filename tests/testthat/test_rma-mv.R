@@ -170,6 +170,8 @@ test_that("clubSandwich works with missing diagonal variances", {
 
 test_that("clubSandwich works with missing vcov matrix", {
   
+  skip_if(packageVersion("metafor") < 2.1)
+  
   dat_miss <- corrdat
   dat_miss$var[sample.int(nrow(corrdat), size = round(nrow(corrdat) / 10))] <- NA
   
