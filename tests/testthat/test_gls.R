@@ -96,16 +96,16 @@ test_that("Order doesn't matter.", {
   lm_scramble <- update(lm_AR1_power, data = dat_scramble)
   CR_fit <- lapply(CR_types, function(x) vcovCR(lm_AR1_power, type = x))
   CR_scramble <- lapply(CR_types, function(x) vcovCR(lm_scramble, type = x))
-  expect_equal(lapply(CR_fit, as.matrix), lapply(CR_scramble, as.matrix), tol = 5 * 10^-7)
+  expect_equal(lapply(CR_fit, as.matrix), lapply(CR_scramble, as.matrix), tol = 5 * 10^-5)
   
   test_fit <- lapply(CR_types, function(x) coef_test(lm_AR1_power, vcov = x, test = "All"))
   test_scramble <- lapply(CR_types, function(x) coef_test(lm_scramble, vcov = x, test = "All"))
-  expect_equal(test_fit, test_scramble, tolerance = 5 * 10^-6)
+  expect_equal(test_fit, test_scramble, tolerance = 5 * 10^-5)
   
   constraints <- combn(length(coef(lm_AR1_power)), 2, simplify = FALSE)
   Wald_fit <- Wald_test(lm_AR1_power, constraints = constraints, vcov = "CR2", test = "All")
   Wald_scramble <- Wald_test(lm_scramble, constraints = constraints, vcov = "CR2", test = "All")
-  expect_equal(Wald_fit, Wald_scramble, tol = 5 * 10^-7)
+  expect_equal(Wald_fit, Wald_scramble, tol = 5 * 10^-5)
 })
 
 
