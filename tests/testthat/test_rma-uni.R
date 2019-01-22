@@ -110,8 +110,8 @@ test_that("clubSandwich works with dropped covariates", {
   test_drop_A <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, cluster = dat_miss$studyid, test = "All"))
   test_drop_B <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, cluster = hierdat$studyid, test = "All"))
   test_complete <- lapply(CR_types, function(x) coef_test(hier_complete, vcov = x, cluster = dat_miss$studyid[subset_ind], test = "All"))
-  expect_equal(test_drop_A, test_complete, tolerance = 10^-6)
-  expect_equal(test_drop_B, test_complete, tolerance = 10^-6)
+  expect_equal(test_drop_A, test_complete, tolerance = 5 * 10^-5)
+  expect_equal(test_drop_B, test_complete, tolerance = 5 * 10^-5)
 })
 
 test_that("clubSandwich works with missing variances", {
