@@ -4,8 +4,9 @@ library(nlme, quietly=TRUE, warn.conflicts=FALSE)
 library(mlmRev, quietly=TRUE, warn.conflicts=FALSE)
 
 school_subset <- levels(egsingle$schoolid)
-school_subset <- sample(school_subset, size = 30)
-egsingle <- subset(egsingle, schoolid %in% school_subset)
+school_subset <- sample(school_subset, size = 15)
+egsingle <- droplevels(subset(egsingle, schoolid %in% school_subset))
+
 
 obj_A1 <- lme(math ~ year * size + female + black + hispanic,
               random = list(~ year | schoolid, ~ 1 | childid),
