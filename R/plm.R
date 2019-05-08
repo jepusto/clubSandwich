@@ -86,9 +86,18 @@ vcovCR.plm <- function(obj, cluster, type, target, inverse_var, form = "sandwich
 get_index_order <- function(obj) {
   envir <- environment(obj$formula)
   mf <- match.call(plm::plm, call = obj$call, envir = envir)
-  index_names <- names(attr(model.frame(obj), "index"))
-  index <- eval(mf$data, envir)[,index_names]
-  order(index[,1],index[,2])
+  dat <- eval(mf$data, envir)
+  
+  index_names <- eval(mf$index)
+  
+  if ("pdata.frame" %in% class(dat) | is.numeric(index_names)) {
+    indices <- index(obj)
+  } else {
+    if (is.null(index_names)) index_names <- names(dat)[1:2]
+    indices <- as.list(dat[index_names])
+  }
+  
+  do.call(order, args = indices)
 }
 
 findCluster.plm <- function(obj, cluster) {
