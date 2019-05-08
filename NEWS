@@ -1,3 +1,7 @@
+clubSandwich 0.3.3.999
+=======================
+* Fixed a bug in get_index_order(), an internal function used with plm objects. Previously, the function assumed that both individual and time indices were specified in the plm call. The new function works even when zero or one indices are specified.
+
 clubSandwich 0.3.3
 =======================
 * impute_covariance_matrix() now drops unobserved factor levels.
