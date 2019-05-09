@@ -4,7 +4,8 @@
 \alias{coef_test}
 \title{Test all or selected regression coefficients in a fitted model}
 \usage{
-coef_test(obj, vcov, test = "Satterthwaite", coefs = "All", ...)
+coef_test(obj, vcov, test = "Satterthwaite", coefs = "All",
+  p_values = TRUE, ...)
 }
 \arguments{
 \item{obj}{Fitted model for which to calculate t-tests.}
@@ -23,6 +24,8 @@ is \code{"Satterthwaite"}.}
 \item{coefs}{Character, integer, or logical vector specifying which
 coefficients should be tested. The default value \code{"All"} will test all
 estimated coefficients.}
+
+\item{p_values}{Logical indicating whether to report p-values. The defult value is \code{TRUE}.}
 
 \item{...}{Further arguments passed to \code{\link{vcovCR}}, which are only
 needed if \code{vcov} is a character string.}

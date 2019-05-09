@@ -98,6 +98,7 @@ get_which_coef <- function(beta, coefs) {
 #' @param coefs Character, integer, or logical vector specifying which
 #'   coefficients should be tested. The default value \code{"All"} will test all
 #'   estimated coefficients.
+#' @param p_values Logical indicating whether to report p-values. The defult value is \code{TRUE}.
 #' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only
 #'   needed if \code{vcov} is a character string.
 #'
@@ -119,7 +120,7 @@ get_which_coef <- function(beta, coefs) {
 #' 
 #' @export
 
-coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", ...) {
+coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values = TRUE, ...) {
   
   beta_full <- coef_CS(obj)
   beta_NA <- is.na(beta_full)
@@ -166,7 +167,14 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", ...) {
   
   class(result) <- c("coef_test_clubSandwich", class(result))
   attr(result, "type") <- attr(vcov, "type")
-  result
+  
+  if (p_values) {
+    result
+  } else {
+    which_vars <- !grepl("p_", names(result))
+    result[which_vars]
+  }
+  
 }
 
 #---------------------------------------------
@@ -192,12 +200,15 @@ print.coef_test_clubSandwich <- function(x, digits = 3, ...) {
     res <- cbind(res, "p-val (naive-t)" = p_t, "Sig." = Sig_t)
   }
   if ("df" %in% names(x)) {
+    res <- cbind(res, "d.f." = x$df)
+  }
+  if ("p_Satt" %in% names(x)) {
     p_Satt <- format.pval(x$p_Satt, digits = digits, eps = 10^-digits)
     Sig_Satt <- cut(x$p_Satt, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
                        labels = c("***", "**", "*", ".", " "), include.lowest = TRUE)
-    res <- cbind(res, "d.f." = x$df, "p-val (Satt)" = p_Satt, "Sig." = Sig_Satt)    
+    res <- cbind(res, "p-val (Satt)" = p_Satt, "Sig." = Sig_Satt)    
   }
-  if ("saddlepoint" %in% names(x)) {
+  if ("p_saddle" %in% names(x)) {
     p_saddle <- format.pval(x$p_saddle, digits = digits, eps = 10^-digits)
     Sig_saddle <- cut(x$p_saddle, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
                     labels = c("***", "**", "*", ".", " "), include.lowest = TRUE)
