@@ -29,6 +29,6 @@ reported in Kalaian and Raudenbush (1996)
 Kalaian, H. A. & Raudenbush, S. W. (1996). A multivariate mixed 
   linear model for meta-analysis. \emph{Psychological Methods, 1}(3),
   227-235. 
-  doi:\href{http://dx.doi.org/10.1037/1082-989X.1.3.227}{10.1037/1082-989X.1.3.227}
+  doi:\href{https://dx.doi.org/10.1037/1082-989X.1.3.227}{10.1037/1082-989X.1.3.227}
 }
 \keyword{datasets}
