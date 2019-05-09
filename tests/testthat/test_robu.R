@@ -107,13 +107,13 @@ test_that("CR2 t-tests agree with robumeta for user weighting", {
   lm_CR2 <- vcovCR(user_lm, cluster = hierdat$studyid, type = "CR2", target = target)
   expect_equivalent(robu_CR2, lm_CR2)
   
-  CR2_ttests <- coef_test(user_small, vcov = robu_CR2, test = "Satterthwaite")
+  CR2_ttests <- coef_test(user_small, vcov = robu_CR2, test = "Satterthwaite", p_values = FALSE)
 #   expect_equal(user_small$dfs, CR2_ttests$df)
 #   expect_equal(user_small$reg_table$prob, CR2_ttests$p_Satt)
   lm_CR2_ttests <- coef_test(user_lm, vcov = "CR2", 
                              cluster = hierdat$studyid, 
                              target = user_small$data.full$avg.var.eff.size,
-                             test = "Satterthwaite")
+                             test = "Satterthwaite", p_values = FALSE)
   expect_equivalent(CR2_ttests, lm_CR2_ttests)
 })
 
@@ -230,9 +230,9 @@ test_that("order doesn't matter", {
   CR_scramble <- lapply(CR_types, function(x) vcovCR(corr_scramble, type = x))
   expect_equivalent(CR_fit, CR_scramble)
   
-  test_fit <- lapply(CR_types, function(x) coef_test(corr_small, vcov = x, test = "All"))
-  test_scramble <- lapply(CR_types, function(x) coef_test(corr_scramble, vcov = x, test = "All"))
-  expect_equal(test_fit, test_scramble, tolerance = 10^-5)
+  test_fit <- lapply(CR_types, function(x) coef_test(corr_small, vcov = x, test = "All", p_values = FALSE))
+  test_scramble <- lapply(CR_types, function(x) coef_test(corr_scramble, vcov = x, test = "All", p_values = FALSE))
+  expect_equal(test_fit, test_scramble, tolerance = 10^-6)
   
   constraints <- combn(length(coef_CS(corr_small)), 2, simplify = FALSE)
   Wald_fit <- Wald_test(corr_small, constraints = constraints, vcov = "CR2", test = "All")
@@ -257,8 +257,8 @@ test_that("clubSandwich works with dropped observations", {
   CR_complete <- lapply(CR_types, function(x) vcovCR(hier_complete, type = x))
   expect_identical(CR_drop, CR_complete)
   
-  test_drop <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, test = "All"))
-  test_complete <- lapply(CR_types, function(x) coef_test(hier_complete, vcov = x, test = "All"))
+  test_drop <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(hier_complete, vcov = x, test = "All", p_values = FALSE))
   expect_identical(test_drop, test_complete)
 })
 

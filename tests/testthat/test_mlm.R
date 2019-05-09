@@ -74,16 +74,16 @@ test_that("mlm is equivalent to lm with long data.", {
   CR_long <- lapply(CR_types, function(x) vcovCR(lm_long, type = x, cluster = iris_long$id)[i,i])
   expect_equivalent(CR_fit, CR_long)
   
-  test_fit <- lapply(CR_types, function(x) coef_test(lm_fit, vcov = x, test = "All"))
-  test_long <- lapply(CR_types, function(x) coef_test(lm_long, vcov = x, cluster = iris_long$id, test = "All")[i,])
+  test_fit <- lapply(CR_types, function(x) coef_test(lm_fit, vcov = x, test = "All", p_values = FALSE))
+  test_long <- lapply(CR_types, function(x) coef_test(lm_long, vcov = x, cluster = iris_long$id, test = "All", p_values = FALSE)[i,])
   expect_equal(test_fit, test_long, check.attributes = FALSE)
   
   CR_fit <- lapply(CR_types, function(x) as.matrix(vcovCR(lm_fit, type = x, cluster = iris$Petal.Length)))
   CR_long <- lapply(CR_types, function(x) vcovCR(lm_long, type = x, cluster = iris_long$Petal.Length)[i,i])
   expect_equivalent(CR_fit, CR_long)
   
-  test_fit <- lapply(CR_types, function(x) coef_test(lm_fit, vcov = x, test = "All"))
-  test_long <- lapply(CR_types, function(x) coef_test(lm_long, vcov = x, cluster = iris_long$id, test = "All")[i,])
+  test_fit <- lapply(CR_types, function(x) coef_test(lm_fit, vcov = x, test = "All", p_values = FALSE))
+  test_long <- lapply(CR_types, function(x) coef_test(lm_long, vcov = x, cluster = iris_long$id, test = "All", p_values = FALSE)[i,])
   expect_equal(test_fit, test_long, check.attributes = FALSE)
   
 })
@@ -96,9 +96,9 @@ test_that("Order doesn't matter.",{
   CR_scramble <- lapply(CR_types, function(x) vcovCR(WLS_scramble, type = x))
   expect_equivalent(CR_fit, CR_scramble)
   
-  test_fit <- lapply(CR_types, function(x) coef_test(WLS_fit, vcov = x, test = "All"))
-  test_scramble <- lapply(CR_types, function(x) coef_test(WLS_scramble, vcov = x, test = "All"))
-  expect_equal(test_fit, test_scramble, tolerance = 10^-5)
+  test_fit <- lapply(CR_types, function(x) coef_test(WLS_fit, vcov = x, test = "All", p_values = FALSE))
+  test_scramble <- lapply(CR_types, function(x) coef_test(WLS_scramble, vcov = x, test = "All", p_values = FALSE))
+  expect_equal(test_fit, test_scramble, tolerance = 10^-6)
   
   # constraints <- combn(length(coef_CS(lm_fit)), 2, simplify = FALSE)
   # Wald_fit <- Wald_test(WLS_fit, constraints = constraints, vcov = "CR2", test = "All")
@@ -117,8 +117,8 @@ test_that("clubSandwich works with dropped covariates", {
   CR_complete <- lapply(CR_types, function(x) vcovCR(lm_complete, type = x))
   expect_identical(CR_drop, CR_complete)
   
-  test_drop <- lapply(CR_types, function(x) coef_test(lm_dropped, vcov = x, test = "All"))
-  test_complete <- lapply(CR_types, function(x) coef_test(lm_complete, vcov = x, test = "All"))
+  test_drop <- lapply(CR_types, function(x) coef_test(lm_dropped, vcov = x, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(lm_complete, vcov = x, test = "All", p_values = FALSE))
   expect_identical(test_drop, test_complete)
 })
 
@@ -136,8 +136,8 @@ test_that("clubSandwich works with dropped outcomes", {
   CR_complete <- lapply(CR_types, function(x) vcovCR(lm_complete, type = x))
   expect_identical(CR_drop, CR_complete)
   
-  test_drop <- lapply(CR_types, function(x) coef_test(lm_dropped, vcov = x, test = "All"))
-  test_complete <- lapply(CR_types, function(x) coef_test(lm_complete, vcov = x, test = "All"))
+  test_drop <- lapply(CR_types, function(x) coef_test(lm_dropped, vcov = x, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(lm_complete, vcov = x, test = "All", p_values = FALSE))
   expect_equal(test_drop, test_complete)
 })
 
@@ -158,8 +158,8 @@ test_that("clubSandwich works with dropped outcomes, covariates, and weights", {
   CR_complete <- lapply(CR_types, function(x) vcovCR(WLS_complete, type = x))
   expect_identical(CR_drop, CR_complete)
   
-  test_drop <- lapply(CR_types, function(x) coef_test(WLS_dropped, vcov = x, test = "All"))
-  test_complete <- lapply(CR_types, function(x) coef_test(WLS_complete, vcov = x, test = "All"))
+  test_drop <- lapply(CR_types, function(x) coef_test(WLS_dropped, vcov = x, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(WLS_complete, vcov = x, test = "All", p_values = FALSE))
   expect_identical(test_drop, test_complete)
 })
 

@@ -69,8 +69,8 @@ test_that("withS and withG model specifications agree.", {
   CR_S <- lapply(CR_types, function(x) vcovCR(rma_S, type = x))
   expect_equivalent(CR_G, CR_S)
   
-  tests_G <- lapply(CR_types, function(x) coef_test(rma_G, vcov = x, test = "All"))
-  tests_S <- lapply(CR_types, function(x) coef_test(rma_S, vcov = x, test = "All"))
+  tests_G <- lapply(CR_types, function(x) coef_test(rma_G, vcov = x, test = "All", p_values = FALSE))
+  tests_S <- lapply(CR_types, function(x) coef_test(rma_S, vcov = x, test = "All", p_values = FALSE))
   expect_equal(tests_G, tests_S, tolerance = 10^-6)
 })
 
@@ -103,8 +103,8 @@ test_that("order doesn't matter", {
   CR_scramble <- lapply(CR_types, function(x) vcovCR(hier_scramble, type = x, cluster = dat_scramble$studyid))
   expect_equivalent(CR_fit, CR_scramble)
   
-  test_fit <- lapply(CR_types, function(x) coef_test(hier_meta, vcov = x, cluster = hierdat$studyid, test = "All"))
-  test_scramble <- lapply(CR_types, function(x) coef_test(hier_scramble, vcov = x, cluster = dat_scramble$studyid, test = "All"))
+  test_fit <- lapply(CR_types, function(x) coef_test(hier_meta, vcov = x, cluster = hierdat$studyid, test = "All", p_values = FALSE))
+  test_scramble <- lapply(CR_types, function(x) coef_test(hier_scramble, vcov = x, cluster = dat_scramble$studyid, test = "All", p_values = FALSE))
   expect_equal(test_fit, test_scramble, tolerance = 10^-6)
   
   constraints <- combn(length(coef(hier_scramble)), 2, simplify = FALSE)
@@ -134,15 +134,15 @@ test_that("clubSandwich works with dropped covariates", {
   expect_equal(CR_drop_A, CR_complete)
   expect_equal(CR_drop_B, CR_complete)
   
-  test_drop_A <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, test = "All"))
-  test_drop_B <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, cluster = dat_miss$studyid, test = "All"))
-  test_complete <- lapply(CR_types, function(x) coef_test(hier_complete, vcov = x, test = "All"))
+  test_drop_A <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, test = "All", p_values = FALSE))
+  test_drop_B <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, cluster = dat_miss$studyid, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(hier_complete, vcov = x, test = "All", p_values = FALSE))
   compare_tests_A <- Map(function(a, b) sapply(a / b, function(x) diff(range(x))), test_drop_A, test_complete)
   compare_tests_A <- do.call(rbind, compare_tests_A)
-  expect_true(all(compare_tests_A < 10^-5))
+  expect_true(all(compare_tests_A < 10^-6))
   compare_tests_B <- Map(function(a, b) sapply(a / b, function(x) diff(range(x))), test_drop_B, test_complete)
   compare_tests_B <- do.call(rbind, compare_tests_B)
-  expect_true(all(compare_tests_B < 10^-5))
+  expect_true(all(compare_tests_B < 10^-6))
 })
 
 test_that("clubSandwich works with missing diagonal variances", {

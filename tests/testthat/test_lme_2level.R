@@ -108,8 +108,8 @@ test_that("Order doesn't matter.", {
   CR_scramble <- lapply(CR_types, function(x) vcovCR(obj_scramble, type = x))
   expect_equivalent(CR_fit, CR_scramble)
   
-  test_fit <- lapply(CR_types, function(x) coef_test(obj_A, vcov = x, test = "All"))
-  test_scramble <- lapply(CR_types, function(x) coef_test(obj_scramble, vcov = x, test = "All"))
+  test_fit <- lapply(CR_types, function(x) coef_test(obj_A, vcov = x, test = "All", p_values = FALSE))
+  test_scramble <- lapply(CR_types, function(x) coef_test(obj_scramble, vcov = x, test = "All", p_values = FALSE))
   expect_equal(test_fit, test_scramble, tolerance = 10^-6)
   
   constraints <- combn(length(coef(obj_A)), 2, simplify = FALSE)
@@ -129,8 +129,8 @@ test_that("clubSandwich works with dropped observations", {
   CR_complete <- lapply(CR_types, function(x) vcovCR(obj_complete, type = x))
   expect_identical(CR_drop, CR_complete)
   
-  test_drop <- lapply(CR_types, function(x) coef_test(obj_dropped, vcov = x, test = "All"))
-  test_complete <- lapply(CR_types, function(x) coef_test(obj_complete, vcov = x, test = "All"))
+  test_drop <- lapply(CR_types, function(x) coef_test(obj_dropped, vcov = x, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(obj_complete, vcov = x, test = "All", p_values = FALSE))
   expect_identical(test_drop, test_complete)
 })
 
@@ -146,10 +146,11 @@ test_that("lme agrees with gls", {
   max_ratio <- mapply(function(a, b) max(abs(a / b - 1)), CR_lme, CR_gls)
   expect_true(all(max_ratio < 10^-4))
   
-  test_lme <- lapply(CR_types, function(x) coef_test(lme_fit, vcov = x, test = "All"))
-  test_gls <- lapply(CR_types, function(x) coef_test(gls_fit, vcov = x, test = "All"))
-  compare_tests <- mapply(function(a, b) max(abs(a / b - 1), na.rm = TRUE), test_lme, test_gls)
-  expect_true(all(compare_tests < 10^-4))
+  test_lme <- lapply(CR_types, function(x) coef_test(lme_fit, vcov = x, test = "All", p_values = FALSE))
+  test_gls <- lapply(CR_types, function(x) coef_test(gls_fit, vcov = x, test = "All", p_values = FALSE))
+  # compare_tests <- mapply(function(a, b) max(abs(a / b - 1), na.rm = TRUE), test_lme, test_gls)
+  # expect_true(all(compare_tests < 10^-4))
+  expect_equal(test_lme, test_gls, tolerance = 10^-6)
   
   constraints <- c(combn(length(coef(lme_fit)), 2, simplify = FALSE),
                    combn(length(coef(lme_fit)), 3, simplify = FALSE))

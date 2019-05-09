@@ -98,8 +98,8 @@ test_that("Order doesn't matter.", {
   CR_scramble <- lapply(CR_types, function(x) vcovCR(lm_scramble, type = x))
   expect_equal(lapply(CR_fit, as.matrix), lapply(CR_scramble, as.matrix), tol = 5 * 10^-5)
   
-  test_fit <- lapply(CR_types, function(x) coef_test(lm_AR1_power, vcov = x, test = "All"))
-  test_scramble <- lapply(CR_types, function(x) coef_test(lm_scramble, vcov = x, test = "All"))
+  test_fit <- lapply(CR_types, function(x) coef_test(lm_AR1_power, vcov = x, test = "All", p_values = FALSE))
+  test_scramble <- lapply(CR_types, function(x) coef_test(lm_scramble, vcov = x, test = "All", p_values = FALSE))
   expect_equal(test_fit, test_scramble, tolerance = 5 * 10^-5)
   
   constraints <- combn(length(coef(lm_AR1_power)), 2, simplify = FALSE)
@@ -122,8 +122,8 @@ test_that("clubSandwich works with dropped observations", {
   CR_complete <- lapply(CR_types, function(x) vcovCR(lm_complete, type = x))
   expect_identical(CR_drop, CR_complete)
   
-  test_drop <- lapply(CR_types, function(x) coef_test(lm_dropped, vcov = x, test = "All"))
-  test_complete <- lapply(CR_types, function(x) coef_test(lm_complete, vcov = x, test = "All"))
+  test_drop <- lapply(CR_types, function(x) coef_test(lm_dropped, vcov = x, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(lm_complete, vcov = x, test = "All", p_values = FALSE))
   expect_identical(test_drop, test_complete)
 })
 

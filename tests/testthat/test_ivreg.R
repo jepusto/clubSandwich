@@ -158,14 +158,14 @@ test_that("Order doesn't matter.",{
   CR_scramble <- lapply(CR_types, function(x) vcovCR(obj_scramble, cluster = dat_scramble$state, type = x))
   expect_equal(CR_fit, CR_scramble, check.attributes = FALSE, tolerance = 5 * 10^-7)
   
-  test_fit <- lapply(CR_types, function(x) coef_test(obj_wt, vcov = x, cluster = Cigs$state, test = "All"))
-  test_scramble <- lapply(CR_types, function(x) coef_test(obj_scramble, vcov = x, cluster = dat_scramble$state, test = "All"))
-  expect_equal(test_fit, test_scramble, tolerance = 5 * 10^-6)
+  test_fit <- lapply(CR_types, function(x) coef_test(obj_wt, vcov = x, cluster = Cigs$state, test = "All", p_values = FALSE))
+  test_scramble <- lapply(CR_types, function(x) coef_test(obj_scramble, vcov = x, cluster = dat_scramble$state, test = "All", p_values = FALSE))
+  expect_equal(test_fit, test_scramble, tolerance = 10^-6)
   
   constraints <- combn(length(coef(obj_wt)), 2, simplify = FALSE)
   Wald_fit <- Wald_test(obj_wt, constraints = constraints, vcov = "CR2", cluster = Cigs$state, test = "All")
   Wald_scramble <- Wald_test(obj_scramble, constraints = constraints, vcov = "CR2", cluster = dat_scramble$state, test = "All")
-  expect_equal(Wald_fit, Wald_scramble, tolerance = 5 * 10^-6)
+  expect_equal(Wald_fit, Wald_scramble, tolerance = 10^-6)
   
 })
 
@@ -180,8 +180,8 @@ test_that("clubSandwich works with dropped observations", {
   CR_complete <- lapply(CR_types, function(x) vcovCR(iv_complete, cluster = dat_complete$state, type = x))
   expect_identical(CR_drop, CR_complete)
   
-  test_drop <- lapply(CR_types, function(x) coef_test(iv_dropped, vcov = x, cluster = dat_miss$state, test = "All"))
-  test_complete <- lapply(CR_types, function(x) coef_test(iv_complete, vcov = x, cluster = dat_complete$state, test = "All"))
+  test_drop <- lapply(CR_types, function(x) coef_test(iv_dropped, vcov = x, cluster = dat_miss$state, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(iv_complete, vcov = x, cluster = dat_complete$state, test = "All", p_values = FALSE))
   expect_identical(test_drop, test_complete)
 })
 

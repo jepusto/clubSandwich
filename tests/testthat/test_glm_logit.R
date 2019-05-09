@@ -163,10 +163,11 @@ test_that("Order doesn't matter.",{
   CR_scramble <- lapply(CR_types, function(x) vcovCR(logit_scramble, cluster = dat_scramble$cluster, type = x))
   expect_equivalent(CR_fit, CR_scramble)
   
-  test_fit <- lapply(CR_types, function(x) coef_test(logit_fit, vcov = x, cluster = dat$cluster, test = "All"))
-  test_scramble <- lapply(CR_types, function(x) coef_test(logit_scramble, vcov = x, cluster = dat_scramble$cluster, test = "All"))
-  compare_tests <- mapply(function(a, b) max(abs(a / b - 1), na.rm = TRUE), test_fit, test_scramble)
-  expect_true(all(compare_tests < 10^-4))
+  test_fit <- lapply(CR_types, function(x) coef_test(logit_fit, vcov = x, cluster = dat$cluster, test = "All", p_values = FALSE))
+  test_scramble <- lapply(CR_types, function(x) coef_test(logit_scramble, vcov = x, cluster = dat_scramble$cluster, test = "All", p_values = FALSE))
+  # compare_tests <- mapply(function(a, b) max(abs(a / b - 1), na.rm = TRUE), test_fit, test_scramble)
+  # expect_true(all(compare_tests < 10^-4))
+  expect_equal(test_fit, test_scramble, tolerance = 10^-6)
   
   constraints <- combn(length(coef(logit_fit)), 2, simplify = FALSE)
   Wald_fit <- Wald_test(logit_fit, constraints = constraints, vcov = "CR2", cluster = dat$cluster, test = "All")
@@ -186,8 +187,8 @@ test_that("clubSandwich works with dropped observations", {
   CR_complete <- lapply(CR_types, function(x) vcovCR(logit_complete, cluster = dat_complete$cluster, type = x))
   expect_identical(CR_drop, CR_complete)
   
-  test_drop <- lapply(CR_types, function(x) coef_test(logit_dropped, vcov = x, cluster = dat_miss$cluster, test = "All"))
-  test_complete <- lapply(CR_types, function(x) coef_test(logit_complete, vcov = x, cluster = dat_complete$cluster, test = "All"))
+  test_drop <- lapply(CR_types, function(x) coef_test(logit_dropped, vcov = x, cluster = dat_miss$cluster, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(logit_complete, vcov = x, cluster = dat_complete$cluster, test = "All", p_values = FALSE))
   expect_identical(test_drop, test_complete)
 })
 
@@ -201,8 +202,8 @@ test_that("clubSandwich works with aliased predictors", {
   CR_drop <- lapply(CR_types[-4], function(x) vcovCR(npk_drop, cluster = npk$block, type = x))
   expect_identical(CR_alias, CR_drop)
   
-  test_drop <- lapply(CR_types[-4], function(x) coef_test(npk_alias, vcov = x, cluster = npk$block, test = c("z","naive-t","Satterthwaite"))[-13,])
-  test_complete <- lapply(CR_types[-4], function(x) coef_test(npk_drop, vcov = x, cluster = npk$block, test = c("z","naive-t","Satterthwaite")))
+  test_drop <- lapply(CR_types[-4], function(x) coef_test(npk_alias, vcov = x, cluster = npk$block, test = c("z","naive-t","Satterthwaite"), p_values = FALSE)[-13,])
+  test_complete <- lapply(CR_types[-4], function(x) coef_test(npk_drop, vcov = x, cluster = npk$block, test = c("z","naive-t","Satterthwaite"), p_values = FALSE))
   expect_identical(test_drop, test_complete)
 })
 

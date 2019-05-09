@@ -77,8 +77,8 @@ test_that("order doesn't matter", {
   CR_scramble <- lapply(CR_types, function(x) vcovCR(hier_scramble, type = x, cluster = dat_scramble$studyid))
   expect_equivalent(CR_fit, CR_scramble)
   
-  test_fit <- lapply(CR_types, function(x) coef_test(hier_meta, vcov = x, cluster = hierdat$studyid, test = "All"))
-  test_scramble <- lapply(CR_types, function(x) coef_test(hier_scramble, vcov = x, cluster = dat_scramble$studyid, test = "All"))
+  test_fit <- lapply(CR_types, function(x) coef_test(hier_meta, vcov = x, cluster = hierdat$studyid, test = "All", p_values = FALSE))
+  test_scramble <- lapply(CR_types, function(x) coef_test(hier_scramble, vcov = x, cluster = dat_scramble$studyid, test = "All", p_values = FALSE))
   expect_equal(test_fit, test_scramble, tolerance = 10^-6)
   
   constraints <- combn(length(coef(hier_scramble)), 2, simplify = FALSE)
@@ -107,11 +107,11 @@ test_that("clubSandwich works with dropped covariates", {
   expect_equal(CR_drop_A, CR_complete)
   expect_equal(CR_drop_B, CR_complete)
   
-  test_drop_A <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, cluster = dat_miss$studyid, test = "All"))
-  test_drop_B <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, cluster = hierdat$studyid, test = "All"))
-  test_complete <- lapply(CR_types, function(x) coef_test(hier_complete, vcov = x, cluster = dat_miss$studyid[subset_ind], test = "All"))
-  expect_equal(test_drop_A, test_complete, tolerance = 5 * 10^-5)
-  expect_equal(test_drop_B, test_complete, tolerance = 5 * 10^-5)
+  test_drop_A <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, cluster = dat_miss$studyid, test = "All", p_values = FALSE))
+  test_drop_B <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, cluster = hierdat$studyid, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(hier_complete, vcov = x, cluster = dat_miss$studyid[subset_ind], test = "All", p_values = FALSE))
+  expect_equal(test_drop_A, test_complete, tolerance = 10^-6)
+  expect_equal(test_drop_B, test_complete, tolerance = 10^-6)
 })
 
 test_that("clubSandwich works with missing variances", {

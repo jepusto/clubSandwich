@@ -31,8 +31,8 @@ test_that("individual effects agree with gls", {
   CR_gls <- lapply(CR_types, function(x) vcovCR(gls_individual, type = x))
   expect_equivalent(CR_plm, CR_gls)
 
-  test_plm <- lapply(CR_types, function(x) coef_test(plm_individual, vcov = x, test = "All")[,-3])
-  test_gls <- lapply(CR_types, function(x) coef_test(gls_individual, vcov = x, test = "All")[,-3])
+  test_plm <- lapply(CR_types, function(x) coef_test(plm_individual, vcov = x, test = "All", p_values = FALSE)[,-3])
+  test_gls <- lapply(CR_types, function(x) coef_test(gls_individual, vcov = x, test = "All", p_values = FALSE)[,-3])
   expect_equivalent(test_plm, test_gls)
   
 })
@@ -55,8 +55,8 @@ test_that("time effects agree with gls", {
   CR_gls <- lapply(CR_types, function(x) vcovCR(gls_time, type = x))
   expect_equivalent(CR_plm, CR_gls)
   
-  test_plm <- lapply(CR_types, function(x) coef_test(plm_time, vcov = x, test = "All")[,-3])
-  test_gls <- lapply(CR_types, function(x) coef_test(gls_time, vcov = x, test = "All")[,-3])
+  test_plm <- lapply(CR_types, function(x) coef_test(plm_time, vcov = x, test = "All", p_values = FALSE)[,-3])
+  test_gls <- lapply(CR_types, function(x) coef_test(gls_time, vcov = x, test = "All", p_values = FALSE)[,-3])
   expect_equivalent(test_plm, test_gls)
   
 })
