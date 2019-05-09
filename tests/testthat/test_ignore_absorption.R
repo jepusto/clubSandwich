@@ -57,7 +57,7 @@ test_that("Probability-weighted lsdv and within estimators are not necessarily e
   lsdv <- coef_test(wls_LSDV, vcov = "CR2", cluster = MV_Mortality$state, inverse_var = FALSE, coefs = 1:4)
   wthn <- coef_test(wls_within, vcov = "CR2", cluster = state, inverse_var = FALSE)
   lsdv / wthn
-  expect_equal(lsdv, wthn, check.attributes = FALSE, tolerance = 10^-3)
+  expect_equal(lsdv, wthn, check.attributes = FALSE, tolerance = 10^-2)
 })
 
 

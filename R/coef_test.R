@@ -144,13 +144,14 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", ...) {
 
   result <- data.frame(beta = beta)
   result$SE <- SE
+  result$tstat <- beta / SE
 
   if ("z" %in% test) {
-    result$p_z <-  2 * pnorm(abs(beta / SE), lower.tail = FALSE)
+    result$p_z <-  2 * pnorm(abs(result$tstat), lower.tail = FALSE)
   }
   if ("naive-t" %in% test) {
     J <- nlevels(attr(vcov, "cluster"))
-    result$p_t <-  2 * pt(abs(beta / SE), df = J - 1, lower.tail = FALSE)
+    result$p_t <-  2 * pt(abs(result$tstat), df = J - 1, lower.tail = FALSE)
   }
   if ("Satterthwaite" %in% test) {
     Satt <- Satterthwaite(beta = beta, SE = SE, P_array = P_array)
@@ -175,7 +176,9 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", ...) {
 #' @export
 
 print.coef_test_clubSandwich <- function(x, digits = 3, ...) {
-  res <- data.frame("Coef" = rownames(x), "Estimate" = x$beta, "SE" = x$SE)
+  res <- data.frame("Coef." = rownames(x), "Estimate" = x$beta, "SE" = x$SE)
+  res <- cbind(res, "t-stat" = x$tstat)
+  
   if ("p_z" %in% names(x)) {
     p_z <- format.pval(x$p_z, digits = digits, eps = 10^-digits)
     Sig_z <- cut(x$p_z, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 

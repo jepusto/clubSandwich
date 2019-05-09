@@ -63,6 +63,7 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
   result <- data.frame(
     beta = beta, 
     SE = SE,
+    df = df,
     CI_L = beta - SE * crit,
     CI_U = beta + SE * crit
   )
@@ -83,7 +84,7 @@ print.conf_int_clubSandwich <- function(x, digits = 3, ...) {
   lev <- paste0(100 * attr(x, "level"), "%")
   res <- data.frame("Coef" = rownames(x), x)
   rownames(res) <- NULL
-  names(res) <- c("Coef", "Estimate", "SE", paste(c("Lower", "Upper"), lev, "CI"))
+  names(res) <- c("Coef", "Estimate", "SE", "d.f.", paste(c("Lower", "Upper"), lev, "CI"))
   print(format(res, digits = 3))
 }
 
