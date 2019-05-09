@@ -1,14 +1,19 @@
 ## Resubmission
 
-This is a resubmission. This submission is a maintenance release that corrects an error identified in the CRAN package checks for debian-gcc. The release also updates some internals for consistency with changes in the metafor package.
+This is a resubmission. This submission is a maintenance release that corrects an error identified in the CRAN package checks for debian-gcc. The release also includes a bug fix for methods supporting the plm package and some minor tweaks to displayed output.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
 ## Test environments
 
 * local Windows 7 Enterprise, R 3.6.0
-* ubuntu 14.04.5 LTS (on travis-ci), R 3.5.2, devel
+* ubuntu 14.04.5 LTS (on travis-ci), R 3.6.0, devel
 * win-builder (devel, release, oldrelease)
+* r-hub:
+  * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
+  * Ubuntu Linux 16.04 LTS, R-release, GCC
+  * Fedora Linux, R-devel, clang, gfortran
+  * Debian Linux, R-devel, GCC
 
 ## R CMD check results
 
@@ -32,14 +37,10 @@ Possibly mis-spelled words in DESCRIPTION:
   All of the identified words are spelled correctly. 
 
 Found the following (possibly) invalid URLs:
-  URL: http://economics.mit.edu/faculty/angrist/data1/data/angrist
-    From: man/AchievementAwardsRCT.Rd
-    Status: 403
-    Message: Forbidden
   URL: http://masteringmetrics.com/resources/
     From: inst/doc/panel-data-CRVE.html
     Status: 500
     Message: Internal Server Error
     
-  Both of the flagged URLs are correct.
+  The flagged URL is correct.
   
