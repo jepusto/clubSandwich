@@ -148,8 +148,6 @@ test_that("lme agrees with gls", {
   
   test_lme <- lapply(CR_types, function(x) coef_test(lme_fit, vcov = x, test = "All", p_values = FALSE))
   test_gls <- lapply(CR_types, function(x) coef_test(gls_fit, vcov = x, test = "All", p_values = FALSE))
-  # compare_tests <- mapply(function(a, b) max(abs(a / b - 1), na.rm = TRUE), test_lme, test_gls)
-  # expect_true(all(compare_tests < 10^-4))
   expect_equal(test_lme, test_gls, tolerance = 10^-6)
   
   constraints <- c(combn(length(coef(lme_fit)), 2, simplify = FALSE),
