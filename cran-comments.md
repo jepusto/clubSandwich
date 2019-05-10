@@ -36,11 +36,16 @@ Possibly mis-spelled words in DESCRIPTION:
   
   All of the identified words are spelled correctly. 
 
+* checking CRAN incoming feasibility ... NOTE
+Maintainer: ‘James Pustejovsky <jepusto@gmail.com>’
+
 Found the following (possibly) invalid URLs:
-  URL: http://masteringmetrics.com/resources/
-    From: inst/doc/panel-data-CRVE.html
-    Status: 500
-    Message: Internal Server Error
-    
+  URL: https://economics.mit.edu/faculty/angrist/data1/data/angrist
+    From: man/AchievementAwardsRCT.Rd
+    Status: Error
+    Message: libcurl error code 60:
+      	SSL certificate problem: unable to get local issuer certificate
+      	(Status without verification: OK)
+
   The flagged URL is correct.
   
