@@ -137,12 +137,8 @@ test_that("clubSandwich works with dropped covariates", {
   test_drop_A <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, test = "All", p_values = FALSE))
   test_drop_B <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, cluster = dat_miss$studyid, test = "All", p_values = FALSE))
   test_complete <- lapply(CR_types, function(x) coef_test(hier_complete, vcov = x, test = "All", p_values = FALSE))
-  compare_tests_A <- Map(function(a, b) sapply(a / b, function(x) diff(range(x))), test_drop_A, test_complete)
-  compare_tests_A <- do.call(rbind, compare_tests_A)
-  expect_true(all(compare_tests_A < 10^-6))
-  compare_tests_B <- Map(function(a, b) sapply(a / b, function(x) diff(range(x))), test_drop_B, test_complete)
-  compare_tests_B <- do.call(rbind, compare_tests_B)
-  expect_true(all(compare_tests_B < 10^-6))
+  expect_equal(test_drop_A, test_complete, tolerance = 10^-6)
+  expect_equal(test_drop_B, test_complete, tolerance = 10^-6)
 })
 
 test_that("clubSandwich works with missing diagonal variances", {
