@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a resubmission. This submission is a maintenance release that corrects an error identified in the CRAN package checks for debian-gcc. The release also includes a bug fix for methods supporting the plm package and some minor tweaks to displayed output.
+This is a resubmission. This submission is a maintenance release that corrects errors identified in the CRAN package checks for debian-gcc and the additional checks for ATLAS, MKL, and noLD. The release also includes a bug fix for methods supporting the plm package and some minor tweaks to displayed output.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
