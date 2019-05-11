@@ -36,9 +36,6 @@ Possibly mis-spelled words in DESCRIPTION:
   
   All of the identified words are spelled correctly. 
 
-* checking CRAN incoming feasibility ... NOTE
-Maintainer: ‘James Pustejovsky <jepusto@gmail.com>’
-
 Found the following (possibly) invalid URLs:
   URL: https://economics.mit.edu/faculty/angrist/data1/data/angrist
     From: man/AchievementAwardsRCT.Rd
