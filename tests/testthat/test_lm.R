@@ -1,4 +1,5 @@
 context("lm objects")
+set.seed(20190513)
 
 m <- 8
 cluster <- factor(rep(LETTERS[1:m], 3 + rpois(m, 5)))

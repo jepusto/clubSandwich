@@ -1,4 +1,5 @@
 context("impute_covariance_matrix")
+set.seed(20190513)
 
 test_that("impute_covariance_matrix returns correct correlations.", {
   K <- 10

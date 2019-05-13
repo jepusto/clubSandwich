@@ -1,4 +1,5 @@
 context("mlm objects")
+set.seed(20190513)
 
 n <- nrow(iris)
 lm_fit <- lm(cbind(Sepal.Length, Sepal.Width) ~ Species + Petal.Length, data = iris)

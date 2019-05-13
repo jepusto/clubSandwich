@@ -1,6 +1,6 @@
 context("logit glm objects")
+set.seed(20190513)
 
-set.seed(20180504)
 m <- 20
 cluster <- factor(rep(LETTERS[1:m], 3 + rpois(m, 5)))
 n <- length(cluster)
@@ -45,15 +45,15 @@ plogit_fit <- glm(yp ~ X1 + X2 + X3 + X4, data = dat, weights = w, family = "qua
 
 test_that("bread works", {
   
-  expect_true(check_bread(logit_fit, cluster = dat$cluster, check_coef = FALSE, tol = 10^-3))
+  expect_true(check_bread(logit_fit, cluster = dat$cluster, check_coef = FALSE, tol = 1.5 * 10^-3))
   glm_vcov <- bread(logit_fit) * summary(logit_fit)$dispersion / v_scale(logit_fit)
   expect_equal(vcov(logit_fit), glm_vcov)
   
-  expect_true(check_bread(sflogit_fit, cluster = dat$cluster, check_coef = FALSE, tol = 10^-3))
+  expect_true(check_bread(sflogit_fit, cluster = dat$cluster, check_coef = FALSE, tol = 1.5 * 10^-3))
   glm_vcov <- bread(sflogit_fit) * summary(sflogit_fit)$dispersion / v_scale(sflogit_fit)
   expect_equal(vcov(sflogit_fit), glm_vcov)
 
-  expect_true(check_bread(plogit_fit, cluster = dat$cluster, check_coef = FALSE, tol = 10^-3))
+  expect_true(check_bread(plogit_fit, cluster = dat$cluster, check_coef = FALSE, tol = 1.5 * 10^-3))
   glm_vcov <- bread(plogit_fit) * summary(plogit_fit)$dispersion / v_scale(plogit_fit)
   expect_equal(vcov(plogit_fit), glm_vcov)
   

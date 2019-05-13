@@ -1,4 +1,5 @@
 context("population mean estimation")
+set.seed(20190513)
 
 m <- 14
 icc <- 0.2

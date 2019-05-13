@@ -1,4 +1,5 @@
 context("rma.uni objects")
+set.seed(20190513)
 
 library(robumeta, quietly=TRUE)
 suppressMessages(library(metafor, quietly=TRUE))

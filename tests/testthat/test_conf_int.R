@@ -1,4 +1,5 @@
 context("confidence intervals")
+set.seed(20190513)
 
 library(nlme, quietly=TRUE, warn.conflicts=FALSE)
 

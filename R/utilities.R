@@ -2,7 +2,7 @@
 # check that bread can be re-constructed from X and W
 #-----------------------------------------------------
 
-check_bread <- function(obj, cluster, y, check_coef = TRUE, tol = .Machine$double.eps^0.5) {
+check_bread <- function(obj, cluster, y, check_coef = TRUE, tol = 10^-6) {
   cluster <- droplevels(as.factor(cluster))
   B <- sandwich::bread(obj) / v_scale(obj)
   X_list <- matrix_list(model_matrix(obj), cluster, "row")

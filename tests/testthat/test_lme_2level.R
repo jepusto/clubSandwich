@@ -1,4 +1,6 @@
 context("2-level lme objects")
+set.seed(20190513)
+
 suppressMessages(library(lme4, quietly=TRUE))
 library(nlme, quietly=TRUE, warn.conflicts=FALSE)
 library(mlmRev, quietly=TRUE, warn.conflicts=FALSE)

@@ -1,4 +1,5 @@
 context("t-tests")
+set.seed(20190513)
 
 balanced_dat <- function(m, n) {
   cluster <- factor(rep(LETTERS[1:m], each = n))

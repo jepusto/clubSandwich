@@ -1,4 +1,5 @@
 context("robu objects")
+set.seed(20190513)
 
 library(robumeta, quietly=TRUE)
 data(corrdat)

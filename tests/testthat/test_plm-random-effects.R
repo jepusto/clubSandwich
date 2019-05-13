@@ -1,4 +1,5 @@
 context("plm objects - random effects")
+set.seed(20190513)
 
 library(nlme, quietly=TRUE)
 library(plm, quietly=TRUE)

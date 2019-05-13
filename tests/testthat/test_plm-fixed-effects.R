@@ -1,4 +1,5 @@
 context("plm objects - fixed effects")
+set.seed(20190513)
 
 library(plm, quietly=TRUE)
 

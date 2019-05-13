@@ -1,4 +1,6 @@
 context("ivreg objects")
+set.seed(20190513)
+
 library(zoo, quietly=TRUE)
 library(AER, quietly=TRUE)
 

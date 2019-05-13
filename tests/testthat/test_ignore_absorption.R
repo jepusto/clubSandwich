@@ -1,4 +1,6 @@
 context("ignoring absorbed fixed effects")
+set.seed(20190513)
+
 library(plm)
 
 data(MortalityRates)

@@ -1,4 +1,5 @@
 context("plm objects - first differences model")
+set.seed(20190513)
 
 library(plm, quietly=TRUE)
 

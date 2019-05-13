@@ -1,4 +1,6 @@
 context("3-level lme objects")
+set.seed(20190513)
+
 suppressMessages(library(lme4, quietly=TRUE))
 library(nlme, quietly=TRUE, warn.conflicts=FALSE)
 library(mlmRev, quietly=TRUE, warn.conflicts=FALSE)
@@ -29,6 +31,7 @@ test_that("bread works", {
 
 
 test_that("vcovCR options work for CR2", {
+  skip_on_cran()
   
   expect_identical(vcovCR(obj_A1, cluster = egsingle$schoolid, type = "CR2"), CR2_mats[["A1"]])
   expect_equal(vcovCR(obj_A1, type = "CR2", inverse_var = TRUE), CR2_mats[["A1"]])
@@ -65,6 +68,7 @@ test_that("vcovCR options work for CR2", {
 })
 
 test_that("vcovCR options work for CR4", {
+  skip_on_cran()
   skip("Not worrying about CR4 for now.")
   CR4_mats <- lapply(objects, vcovCR, type = "CR4")
   
@@ -104,6 +108,7 @@ test_that("vcovCR options work for CR4", {
 
 
 test_that("CR2 is target-unbiased", {
+  skip_on_cran()
   CR2_checks <- mapply(check_CR, obj = objects, vcov = CR2_mats)
   expect_true(all(CR2_checks))
   # CR4_checks <- mapply(check_CR, obj = objects, vcov = CR4_mats)
@@ -114,6 +119,7 @@ test_that("CR2 is target-unbiased", {
 CR_types <- paste0("CR",0:3)
 
 test_that("Order doesn't matter.", {
+  skip_on_cran()
   re_order <- sample(nrow(egsingle))
   dat_scramble <- egsingle[re_order,]
   obj <- obj_A4
@@ -166,6 +172,7 @@ test_that("Order doesn't matter.", {
 
 
 test_that("clubSandwich works with dropped observations", {
+  skip_on_cran()
   dat_miss <- egsingle
   dat_miss$math[sample.int(nrow(egsingle), size = round(nrow(egsingle) / 10))] <- NA
   obj_dropped <- update(obj_A4, data = dat_miss, na.action = na.omit)
@@ -189,6 +196,7 @@ test_that("clubSandwich works with dropped observations", {
 
 
 test_that("Possible to cluster at higher level than random effects", {
+  skip_on_cran()
   
   # fit two-level model
   obj_2level <- lme(math ~ year * size + female + black + hispanic,

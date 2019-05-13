@@ -1,4 +1,5 @@
 context("Wald tests")
+set.seed(20190513)
 
 data(Duncan, package = "carData")
 Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
