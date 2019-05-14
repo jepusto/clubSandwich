@@ -1,7 +1,6 @@
 ## Resubmission
 
-
-This is a resubmission. This submission is a maintenance release that fixes unit test errors identified in the CRAN package checks for debian-gcc and the additional checks for ATLAS. 
+This is a resubmission. This submission is a maintenance release that fixes unit test errors identified in the CRAN package checks for debian-gcc and the additional checks for ATLAS. I apologize for not successfully correcting these problems in my most recent submission. Some of the unit tests are stochastic, and I discovered that I was not actually setting seed values in some instances. I have corrected this and also made some tweaks to speed up the unit tests.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
