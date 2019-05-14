@@ -19,11 +19,13 @@ Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey 
 
 There were no ERRORs or WARNINGs. 
 
-There was 1 NOTE:
+There was 3 NOTES:
 
-* checking CRAN incoming feasibility ... NOTE
+* Days since last update: 3
 
-Possibly mis-spelled words in DESCRIPTION:
+  The quick resubmission is to rectify unit test errors, as described above.
+
+* Possibly mis-spelled words in DESCRIPTION:
   DOI (10:75)
   Hotelling's (15:49)
   McCaffrey (9:9)
@@ -36,7 +38,7 @@ Possibly mis-spelled words in DESCRIPTION:
   
   All of the identified words are spelled correctly. 
 
-Found the following (possibly) invalid URLs:
+* Found the following (possibly) invalid URLs:
   URL: https://economics.mit.edu/faculty/angrist/data1/data/angrist
     From: man/AchievementAwardsRCT.Rd
     Status: Error
