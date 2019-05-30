@@ -7,3 +7,4 @@ paper_ClusterRobustTesting
 cran-comments.md
 README.md
 revdep
+vignettes/Robust-Variance-Estimation-with-clubSandwich.Rmd
