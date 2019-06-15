@@ -36,6 +36,6 @@ cause to effect_. Princeton University Press, 2014.
 
 Carpenter, C., & Dobkin, C. (2011). The minimum legal drinking age and public
 health. _Journal of Economic Perspectives, 25_(2), 133-156.
-doi:[10.1257/jep.25.2.133](https://dx.doi.org/10.1257/jep.25.2.133)
+doi:[10.1257/jep.25.2.133](https://doi.org/10.1257/jep.25.2.133)
 }
 \keyword{datasets}

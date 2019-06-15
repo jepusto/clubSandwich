@@ -40,6 +40,6 @@ Demonstration program, reported in Angrist & Lavy (2009).
 Angrist, J. D., & Lavy, V. (2009). The effects of high stakes 
   high school achievement awards : Evidence from a randomized trial.
   \emph{American Economic Review, 99}(4), 1384-1414.
-  doi:\href{https://dx.doi.org/10.1257/aer.99.4.1384}{10.1257/aer.99.4.1384}
+  doi:\href{https://doi.org/10.1257/aer.99.4.1384}{10.1257/aer.99.4.1384}
 }
 \keyword{datasets}
