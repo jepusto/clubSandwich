@@ -31,7 +31,7 @@
 #' @references Angrist, J. D., & Lavy, V. (2009). The effects of high stakes 
 #'   high school achievement awards : Evidence from a randomized trial.
 #'   \emph{American Economic Review, 99}(4), 1384-1414.
-#'   doi:\href{https://dx.doi.org/10.1257/aer.99.4.1384}{10.1257/aer.99.4.1384}
+#'   doi:\href{https://doi.org/10.1257/aer.99.4.1384}{10.1257/aer.99.4.1384}
 #'   
 
 "AchievementAwardsRCT"
@@ -119,7 +119,7 @@
 #' 
 #' Carpenter, C., & Dobkin, C. (2011). The minimum legal drinking age and public
 #' health. _Journal of Economic Perspectives, 25_(2), 133-156.
-#' doi:[10.1257/jep.25.2.133](https://dx.doi.org/10.1257/jep.25.2.133)
+#' doi:[10.1257/jep.25.2.133](https://doi.org/10.1257/jep.25.2.133)
 #' 
  
 "MortalityRates"
@@ -147,7 +147,7 @@
 #' @references Kalaian, H. A. & Raudenbush, S. W. (1996). A multivariate mixed 
 #'   linear model for meta-analysis. \emph{Psychological Methods, 1}(3),
 #'   227-235. 
-#'   doi:\href{https://dx.doi.org/10.1037/1082-989X.1.3.227}{10.1037/1082-989X.1.3.227}
+#'   doi:\href{https://doi.org/10.1037/1082-989X.1.3.227}{10.1037/1082-989X.1.3.227}
 #'   
 
 "SATcoaching"
