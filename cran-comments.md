@@ -1,41 +1,33 @@
 ## Resubmission
 
-This is a resubmission. This submission is a maintenance release that fixes unit test errors identified in the CRAN package checks for debian-gcc and the additional checks for ATLAS. I apologize for not successfully correcting these problems in my most recent submission. Some of the unit tests are stochastic, and I discovered that I was not actually setting seed values in some instances. I have corrected this and also made some tweaks to speed up the unit tests.
+This is a resubmission. This submission is a maintenance release that corrects how the classes of fitted models are checked, using inherits() in place of writing conditions on class(). The package now passes all tests with r-devel.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
 ## Test environments
 
 * local Windows 7 Enterprise, R 3.6.0
-* ubuntu 14.04.5 LTS (on travis-ci), R 3.6.0, devel
+* ubuntu 14.04.5 LTS (on travis-ci), R 3.6.1, devel
 * win-builder (devel, release, oldrelease)
 * r-hub:
   * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
   * Ubuntu Linux 16.04 LTS, R-release, GCC
   * Fedora Linux, R-devel, clang, gfortran
-  * Debian Linux, R-devel, GCC
 
 ## R CMD check results
 
 There were no ERRORs or WARNINGs. 
 
-There was 3 NOTES:
-
-* Days since last update: 3
-
-  The quick resubmission is to rectify unit test errors, as described above.
+There were 2 NOTES:
 
 * Possibly mis-spelled words in DESCRIPTION:
-  DOI (10:75)
-  Hotelling's (15:49)
+  Hotelling's (16:49)
   McCaffrey (9:9)
-  Pustejovsky (10:44)
-  Satterthwaite (14:22)
-  Tipton (10:60)
-  eng (10:10)
-  ivreg (17:21)
-  mlm (16:77)
-  
+  Pustejovsky (11:26)
+  Satterthwaite (15:22)
+  Tipton (11:42)
+  mlm (17:77)
+
   All of the identified words are spelled correctly. 
 
 * Found the following (possibly) invalid URLs:
@@ -47,4 +39,3 @@ There was 3 NOTES:
       	(Status without verification: OK)
 
   The flagged URL is correct.
-  
