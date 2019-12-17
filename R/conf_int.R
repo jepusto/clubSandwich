@@ -41,7 +41,7 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
   beta <- beta_full[which_beta & !beta_NA]
   
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
-  if (!("clubSandwich" %in% class(vcov))) stop("Variance-covariance matrix must be a clubSandwich.")
+  if (!inherits(vcov, "clubSandwich")) stop("Variance-covariance matrix must be a clubSandwich.")
   
   all_tests <- c("z","naive-t","Satterthwaite")
   test <- match.arg(test, all_tests, several.ok = FALSE)

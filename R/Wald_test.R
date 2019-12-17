@@ -127,7 +127,7 @@ Hotelling_Tsq <- function(Q, q, nu) {
 Wald_test <- function(obj, constraints, vcov, test = "HTZ", ...) {
   
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
-  if (!("clubSandwich" %in% class(vcov))) stop("Variance-covariance matrix must be a clubSandwich.")
+  if (!inherits(vcov, "clubSandwich")) stop("Variance-covariance matrix must be a clubSandwich.")
 
   if (all(test == "All")) test <- c("chi-sq","Naive-F","HTA","HTB","HTZ","EDF","EDT")
   

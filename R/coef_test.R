@@ -130,7 +130,7 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values
   beta <- beta_full[which_beta & !beta_NA]
   
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
-  if (!("clubSandwich" %in% class(vcov))) stop("Variance-covariance matrix must be a clubSandwich.")
+  if (!inherits(vcov, "clubSandwich")) stop("Variance-covariance matrix must be a clubSandwich.")
   
   all_tests <- c("z","naive-t","Satterthwaite","saddlepoint")
   if (all(test == "All")) test <- all_tests

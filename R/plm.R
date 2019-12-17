@@ -90,7 +90,7 @@ get_index_order <- function(obj) {
   
   index_names <- eval(mf$index)
   
-  if ("pdata.frame" %in% class(dat) | is.numeric(index_names)) {
+  if (inherits(dat, "pdata.frame") | is.numeric(index_names)) {
     indices <- plm::index(obj)
   } else {
     if (is.null(index_names)) index_names <- names(dat)[1:2]
