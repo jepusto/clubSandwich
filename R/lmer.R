@@ -60,7 +60,7 @@ get_outer_group <- function(obj) {
 }
 
 check_nested <- function(inner_grp, outer_grp) {
-  n_outer <- all(tapply(outer_grp, inner_grp, function(x) length(unique(x))))
+  n_outer <- tapply(outer_grp, inner_grp, function(x) length(unique(x)))
   all(n_outer == 1)
 }
 
@@ -72,7 +72,6 @@ is_nested_lmerMod <- function(obj, cluster = get_outer_group(obj)) {
 
 
 # nobs()
-# residuals_CS()
 # model_matrix()
 
 #-------------------------------------
@@ -82,6 +81,18 @@ is_nested_lmerMod <- function(obj, cluster = get_outer_group(obj)) {
 coef_CS.lmerMod <- function(obj)
   getME(obj, "fixef")
 
+#-------------------------------------
+# residuals_CS()
+#-------------------------------------
+
+residuals_CS.lmerMod <- function(obj) {
+  y <- getME(obj, "y")
+  X <- getME(obj, "X")
+  beta <- getME(obj, "fixef")
+  y - as.numeric(X %*% beta)
+}
+  
+  
 #-------------------------------------
 # Get (model-based) working variance matrix 
 #-------------------------------------
@@ -105,7 +116,7 @@ targetVariance.lmerMod <- function(obj, cluster = get_outer_group(obj)) {
   
   Z_mat <- getME(obj, "Z")
   Lambdat <- getME(obj, "Lambdat")
-  Zlam_list <- split(Matrix::tcrossprod(Z_mat, Lambdat), cluster)
+  Zlam_list <- matrix_list(Matrix::tcrossprod(Z_mat, Lambdat), fac = cluster, dim = "row")
   target_list <- lapply(Zlam_list, function(z) Matrix::tcrossprod(z) + Matrix::Diagonal(n = NROW(z)))
   
   lapply(target_list, as.matrix)
@@ -126,8 +137,11 @@ weightMatrix.lmerMod <- function(obj, cluster = get_outer_group(obj)) {
 # Get bread matrix and scaling constant
 #---------------------------------------
 
+#' @export
+
 bread.lmerMod <- function(x, ...) {
-  as.matrix(vcov(x) * v_scale(x))
+  sigma_sq <- getME(x, "sigma")^2
+  as.matrix(vcov(x) * v_scale(x)) / sigma_sq
 }
 
 v_scale.lmerMod <- function(obj) {
