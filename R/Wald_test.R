@@ -6,34 +6,35 @@ get_constraint_mat <- function(obj, constraints) {
   p <- length(coef_CS(obj))
   beta_NA <- is.na(coef_CS(obj))
   
-  C_mat <- switch(class(constraints),
-        matrix = {
-          if (ncol(constraints) != p) stop(paste0("Constraint matrix must have ",p," columns."))
-          if (nrow(constraints) == 0) stop("Constraint matrix must have at least one row.")
-          constraints       
-        },
-        logical = {
-          if (length(constraints) != p) stop(paste0("Constraint logicals must be of length ",p,"."))
-          if (sum(constraints) == 0) stop("You must specify at least one constraint.")
-          diag(1L, nrow = p)[constraints,,drop=FALSE]              
-        },
-        numeric = {
-          if (any(!(constraints %in% 1:p))) stop(paste0("Constraint indices must be less than or equal to ",p,"."))
-          if (length(constraints) == 0) stop("You must specify at least one constraint.")
-          diag(1L, nrow = p)[constraints,,drop=FALSE]              
-        },
-        integer = {
-          if (any(!(constraints %in% 1:p))) stop(paste0("Constraint indices must be less than or equal to ",p,"."))
-          if (length(constraints) == 0) stop("You must specify at least one constraint.")
-          diag(1L, nrow = p)[constraints,,drop=FALSE]              
-        },
-        character = {
-          term_names <- names(coef_CS(obj))
-          if (any(!constraints %in% term_names)) stop("Constraint names not in model specification.")
-          if (length(constraints) == 0) stop("You must specify at least one constraint.")
-          diag(1L, nrow = p)[term_names %in% constraints,,drop=FALSE]
-        })
-
+  if (inherits(constraints, "matrix")) {
+    if (ncol(constraints) != p) stop(paste0("Constraint matrix must have ",p," columns."))
+    if (nrow(constraints) == 0) stop("Constraint matrix must have at least one row.")
+    C_mat <- constraints
+  } else {
+    C_mat <- switch(class(constraints),
+                    logical = {
+                      if (length(constraints) != p) stop(paste0("Constraint logicals must be of length ",p,"."))
+                      if (sum(constraints) == 0) stop("You must specify at least one constraint.")
+                      diag(1L, nrow = p)[constraints,,drop=FALSE]              
+                    },
+                    numeric = {
+                      if (any(!(constraints %in% 1:p))) stop(paste0("Constraint indices must be less than or equal to ",p,"."))
+                      if (length(constraints) == 0) stop("You must specify at least one constraint.")
+                      diag(1L, nrow = p)[constraints,,drop=FALSE]              
+                    },
+                    integer = {
+                      if (any(!(constraints %in% 1:p))) stop(paste0("Constraint indices must be less than or equal to ",p,"."))
+                      if (length(constraints) == 0) stop("You must specify at least one constraint.")
+                      diag(1L, nrow = p)[constraints,,drop=FALSE]              
+                    },
+                    character = {
+                      term_names <- names(coef_CS(obj))
+                      if (any(!constraints %in% term_names)) stop("Constraint names not in model specification.")
+                      if (length(constraints) == 0) stop("You must specify at least one constraint.")
+                      diag(1L, nrow = p)[term_names %in% constraints,,drop=FALSE]
+                    })
+  }
+  
   C_mat[,!beta_NA,drop=FALSE]
 
 }

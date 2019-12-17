@@ -8,6 +8,7 @@ coefs <- names(coef(duncan_fit))
 Duncan_CR2 <- vcovCR(duncan_fit, type = "CR2", cluster = Duncan$cluster)
 
 test_that("constraint expressions are equivalent", {
+  
   constraints_logical <- grepl("typeprof:", coefs)  
   constraints_int <- which(constraints_logical)
   constraints_num <- as.numeric(constraints_int)
