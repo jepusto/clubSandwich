@@ -39,6 +39,7 @@ Suggests:
     mlmRev,
     AER,
     plm (>= 1.6-4),
+    Matrix,
     lme4,
     zoo,
     testthat,

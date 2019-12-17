@@ -5,7 +5,7 @@
 #' Cluster-robust variance-covariance matrix for an lmerMod object.
 #' 
 #' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
-#' of a set of regression coefficient estimates from a \code{\link[lme4]{lmerMod}} object.
+#' of a set of regression coefficient estimates from \code{\link[lme4]{merMod}} object.
 #' 
 #' @param cluster Optional expression or vector indicating which observations 
 #'   belong to the same cluster. If not specified, will be set to 
@@ -54,8 +54,8 @@ vcovCR.lmerMod <- function(obj, cluster, type, target, inverse_var, form = "sand
 #-------------------------------------
 
 get_outer_group <- function(obj) {
-  group_n <- getME(obj, "l_i")
-  group_facs <- getME(obj, "flist")
+  group_n <- lme4::getME(obj, "l_i")
+  group_facs <- lme4::getME(obj, "flist")
   group_facs[[which.min(group_n)]]
 }
 
@@ -65,7 +65,7 @@ check_nested <- function(inner_grp, outer_grp) {
 }
 
 is_nested_lmerMod <- function(obj, cluster = get_outer_group(obj)) {
-  group_facs <- getME(obj, "flist")
+  group_facs <- lme4::getME(obj, "flist")
   nested <- vapply(group_facs, check_nested, outer_grp = cluster, FUN.VALUE = TRUE)
   all(nested)
 }
@@ -79,16 +79,16 @@ is_nested_lmerMod <- function(obj, cluster = get_outer_group(obj)) {
 #-------------------------------------
 
 coef_CS.lmerMod <- function(obj)
-  getME(obj, "fixef")
+  lme4::getME(obj, "fixef")
 
 #-------------------------------------
 # residuals_CS()
 #-------------------------------------
 
 residuals_CS.lmerMod <- function(obj) {
-  y <- getME(obj, "y")
-  X <- getME(obj, "X")
-  beta <- getME(obj, "fixef")
+  y <- lme4::getME(obj, "y")
+  X <- lme4::getME(obj, "X")
+  beta <- lme4::getME(obj, "fixef")
   y - as.numeric(X %*% beta)
 }
   
@@ -97,31 +97,15 @@ residuals_CS.lmerMod <- function(obj) {
 # Get (model-based) working variance matrix 
 #-------------------------------------
 
-split.dgCMatrix <- function(x, f, drop = FALSE, sep = ".", lex.order = FALSE, ...) {
-  
-  if (!missing(...)) .NotYetUsed(deparse(...), error = FALSE)
-  if (is.list(f)) {
-    f <- interaction(f, drop = drop, sep = sep, lex.order = lex.order)
-  } else if (!is.factor(f)) {
-    f <- as.factor(f)
-  } else if (drop) {
-    f <- factor(f)
-  }
-  storage.mode(f) <- "integer"
-  ind <- .Internal(split(seq_len(NROW(x)), f))
-  lapply(ind, function(i) x[i,,drop=FALSE])
-}
-
 targetVariance.lmerMod <- function(obj, cluster = get_outer_group(obj)) {
   
-  Z_mat <- getME(obj, "Z")
-  Lambdat <- getME(obj, "Lambdat")
+  Z_mat <- lme4::getME(obj, "Z")
+  Lambdat <- lme4::getME(obj, "Lambdat")
   Zlam_list <- matrix_list(Matrix::tcrossprod(Z_mat, Lambdat), fac = cluster, dim = "row")
   target_list <- lapply(Zlam_list, function(z) Matrix::tcrossprod(z) + Matrix::Diagonal(n = NROW(z)))
   
   lapply(target_list, as.matrix)
 }
-
 
 #-------------------------------------
 # Get weighting matrix
@@ -140,10 +124,10 @@ weightMatrix.lmerMod <- function(obj, cluster = get_outer_group(obj)) {
 #' @export
 
 bread.lmerMod <- function(x, ...) {
-  sigma_sq <- getME(x, "sigma")^2
+  sigma_sq <- lme4::getME(x, "sigma")^2
   as.matrix(vcov(x) * v_scale(x)) / sigma_sq
 }
 
 v_scale.lmerMod <- function(obj) {
-  min(getME(obj, "l_i"))
+  min(lme4::getME(obj, "l_i"))
 }
