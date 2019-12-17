@@ -1,5 +1,6 @@
-clubSandwich 0.3.5.999
+clubSandwich 0.4.0
 =======================
+* Added methods for lmerMod objects fitted by lme4::lmer().
 * Updated internals to use inherits() instead of checking class() directly.
 
 clubSandwich 0.3.5
