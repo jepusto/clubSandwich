@@ -1,3 +1,7 @@
+clubSandwich 0.3.5.999
+=======================
+* Updated internals to use inherits() instead of checking class() directly.
+
 clubSandwich 0.3.5
 =======================
 * Added t statistics to output of coef_test(). 
