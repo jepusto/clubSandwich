@@ -6,7 +6,7 @@ Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey 
 
 ## Test environments
 
-* local Windows 7 Enterprise, R 3.6.0
+* local Windows 7 Enterprise, R 3.6.1
 * ubuntu 14.04.5 LTS (on travis-ci), R 3.6.1, devel
 * win-builder (devel, release, oldrelease)
 * r-hub:
