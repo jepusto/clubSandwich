@@ -27,6 +27,7 @@ There were 2 NOTES:
   Pustejovsky (11:26)
   Satterthwaite (15:22)
   Tipton (11:42)
+  lme (19:44)
   mlm (17:77)
 
   All of the identified words are spelled correctly. 
