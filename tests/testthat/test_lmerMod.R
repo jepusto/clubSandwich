@@ -187,9 +187,9 @@ test_that("lmer agrees with lme", {
   expect_equal(v_scale(lmer_fit), v_scale(lme_fit))
   
   p <- length(coef_CS(lmer_fit))
-  expect_equal(bread(lmer_fit) / bread(lme_fit), matrix(1, p, p), check.attributes = FALSE)
+  expect_equal(bread(lmer_fit) / bread(lme_fit), matrix(1, p, p), check.attributes = FALSE, tol = 10^-6)
   expect_equal(targetVariance(lmer_fit), targetVariance(lme_fit), check.attributes = FALSE, tol = 10^-6)
-  expect_equal(weightMatrix(lmer_fit), weightMatrix(lme_fit), check.attributes = FALSE)
+  expect_equal(weightMatrix(lmer_fit), weightMatrix(lme_fit), check.attributes = FALSE, tol = 10^-6)
   
   CR_lmer <- lapply(CR_types, function(x) vcovCR(lmer_fit, type = x))
   CR_lme <- lapply(CR_types, function(x) vcovCR(lme_fit, type = x))
