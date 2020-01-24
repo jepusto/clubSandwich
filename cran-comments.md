@@ -1,13 +1,13 @@
 ## Resubmission
 
-This is a resubmission. The primary change is to add methods for fitted models of class lmerMod (from package lme4). This submission also corrects how the classes of fitted models are checked, using inherits() in place of writing conditions on class(). The package now passes all tests with r-devel.
+This is a resubmission. This submission is a maintenance release that fixes unit test errors identified in the CRAN additional package checks for ATLAS and noLD.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
 ## Test environments
 
 * local Windows 7 Enterprise, R 3.6.0
-* ubuntu 14.04.5 LTS (on travis-ci), R 3.6.1, devel
+* ubuntu 14.04.5 LTS (on travis-ci), R 3.6.2, devel
 * win-builder (devel, release, oldrelease)
 * r-hub:
   * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
