@@ -43,24 +43,24 @@ test_that("bread works", {
 test_that("vcovCR options work for CR2", {
   
   CR2_A <- vcovCR(obj_A1, type = "CR2")
-  expect_identical(vcovCR(obj_A1, cluster = sleepstudy$Subject, type = "CR2"), CR2_A)
-  expect_identical(vcovCR(obj_A1, type = "CR2", inverse_var = TRUE), CR2_A)
+  expect_equal(vcovCR(obj_A1, cluster = sleepstudy$Subject, type = "CR2"), CR2_A)
+  expect_equal(vcovCR(obj_A1, type = "CR2", inverse_var = TRUE), CR2_A)
   expect_false(identical(vcovCR(obj_A1, type = "CR2", inverse_var = FALSE), CR2_A))
   target <- targetVariance(obj_A1)
   expect_equal(vcovCR(obj_A1, type = "CR2", target = target, inverse_var = TRUE), CR2_A, check.attributes = FALSE)
   expect_equal(vcovCR(obj_A1, type = "CR2", target = target, inverse_var = FALSE), CR2_A, check.attributes = FALSE)
   
   CR2_B <- vcovCR(obj_B1, type = "CR2")
-  expect_identical(vcovCR(obj_B1, cluster = Orthodont$Subject, type = "CR2"), CR2_B)
-  expect_identical(vcovCR(obj_B1, type = "CR2", inverse_var = TRUE), CR2_B)
+  expect_equal(vcovCR(obj_B1, cluster = Orthodont$Subject, type = "CR2"), CR2_B)
+  expect_equal(vcovCR(obj_B1, type = "CR2", inverse_var = TRUE), CR2_B)
   expect_false(identical(vcovCR(obj_B1, type = "CR2", inverse_var = FALSE), CR2_B))
   target <- targetVariance(obj_B1)
   expect_equal(vcovCR(obj_B1, type = "CR2", target = target, inverse_var = TRUE), CR2_B, check.attributes = FALSE)
   expect_equal(vcovCR(obj_B1, type = "CR2", target = target, inverse_var = FALSE), CR2_B, check.attributes = FALSE)
   
   CR2_C <- vcovCR(obj_C1, type = "CR2")
-  expect_identical(vcovCR(obj_C1, cluster = egsingle$schoolid, type = "CR2"), CR2_C)
-  expect_identical(vcovCR(obj_C1, type = "CR2", inverse_var = TRUE), CR2_C)
+  expect_equal(vcovCR(obj_C1, cluster = egsingle$schoolid, type = "CR2"), CR2_C)
+  expect_equal(vcovCR(obj_C1, type = "CR2", inverse_var = TRUE), CR2_C)
   expect_false(identical(vcovCR(obj_C1, type = "CR2", inverse_var = FALSE), CR2_C))
   target <- targetVariance(obj_C1)
   expect_equal(vcovCR(obj_C1, type = "CR2", target = target, inverse_var = TRUE), CR2_C, check.attributes = FALSE)
@@ -187,9 +187,9 @@ test_that("lmer agrees with lme", {
   expect_equal(v_scale(lmer_fit), v_scale(lme_fit))
   
   p <- length(coef_CS(lmer_fit))
-  expect_equal(bread(lmer_fit) / bread(lme_fit), matrix(1, p, p), check.attributes = FALSE)
+  expect_equal(bread(lmer_fit) / bread(lme_fit), matrix(1, p, p), check.attributes = FALSE, tol = 10^-6)
   expect_equal(targetVariance(lmer_fit), targetVariance(lme_fit), check.attributes = FALSE, tol = 10^-6)
-  expect_equal(weightMatrix(lmer_fit), weightMatrix(lme_fit), check.attributes = FALSE)
+  expect_equal(weightMatrix(lmer_fit), weightMatrix(lme_fit), check.attributes = FALSE, tol = 10^-6)
   
   CR_lmer <- lapply(CR_types, function(x) vcovCR(lmer_fit, type = x))
   CR_lme <- lapply(CR_types, function(x) vcovCR(lme_fit, type = x))

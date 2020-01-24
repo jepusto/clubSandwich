@@ -1,3 +1,7 @@
+clubSandwich 0.4.1
+=======================
+* Updated unit tests to satisfy obscure CRAN checks.
+
 clubSandwich 0.4.0
 =======================
 * Added methods for lmerMod objects fitted by lme4::lmer().
