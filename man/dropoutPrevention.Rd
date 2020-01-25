@@ -4,35 +4,35 @@
 \name{dropoutPrevention}
 \alias{dropoutPrevention}
 \title{Dropout prevention/intervention program effects}
-\format{A data frame with 385 rows and 18 variables: \describe{ 
-  \item{LOR1}{log-odds ratio measuring the intervention effect} 
-  \item{varLOR}{estimated sampling variance of the log-odds ratio} 
-  \item{studyID}{unique identifier for each study}
-  \item{studySample}{unique identifier for each sample within a study}
-  \item{study_design}{study design (randomized, matched, or non-randomized and unmatched)}
-  \item{outcome}{outcome measure for the intervention effect is estimated (school dropout, 
-  school enrollment, graduation, graduation or GED receipt)}
-  \item{evaluator_independence}{degree of evaluator independence (independent, indirect 
-  but influential, involved in planning but not delivery, involved in delivery)}
-  \item{implementation_quality}{level of implementation quality (clear problems, 
-  possible problems, no apparent problems)}
-  \item{program_site}{Program delivery site (community, mixed, school classroom, 
-  school but outside of classroom)}
+\format{A data frame with 385 rows and 18 variables: \describe{
+  \item{LOR1}{log-odds ratio measuring the intervention effect}
+  \item{varLOR}{estimated sampling variance of the log-odds ratio}
+  \item{studyID}{unique identifier for each study} \item{studySample}{unique
+  identifier for each sample within a study} \item{study_design}{study design
+  (randomized, matched, or non-randomized and unmatched)}
+  \item{outcome}{outcome measure for the intervention effect is estimated
+  (school dropout, school enrollment, graduation, graduation or GED receipt)}
+  \item{evaluator_independence}{degree of evaluator independence
+  (independent, indirect but influential, involved in planning but not
+  delivery, involved in delivery)} \item{implementation_quality}{level of
+  implementation quality (clear problems, possible problems, no apparent
+  problems)} \item{program_site}{Program delivery site (community, mixed,
+  school classroom, school but outside of classroom)}
   \item{attrition}{Overall attrition (proportion)}
   \item{group_equivalence}{pretest group-equivalence log-odds ratio}
-  \item{adjusted}{adjusted or unadjusted data used to calculate intervention effect}
-  \item{male_pct}{proportion of the sample that is male}
+  \item{adjusted}{adjusted or unadjusted data used to calculate intervention
+  effect} \item{male_pct}{proportion of the sample that is male}
   \item{white_pct}{proportion of the sample that is white}
-  \item{average_age}{average age of the sample}
-  \item{duration}{program duration (in weeks)}
-  \item{service_hrs}{program contact hours per week}
+  \item{average_age}{average age of the sample} \item{duration}{program
+  duration (in weeks)} \item{service_hrs}{program contact hours per week}
   \item{big_study}{indicator for the 32 studies with 3 or more effect sizes}
   }}
 \source{
 Wilson, S. J., Lipsey, M. W., Tanner-Smith, E., Huang, C. H., &
   Steinka-Fry, K. T. (2011). Dropout prevention and intervention programs:
   Effects on school completion and dropout Among school-aged children and
-  youth: A systematic review. Campbell Systematic Reviews, 7(8).
+  youth: A systematic review. _Campbell Systematic Reviews, 7_(1), 1-61.
+  https://doi.org/10.4073/csr.2011.8
 }
 \usage{
 dropoutPrevention
@@ -46,8 +46,9 @@ by Wilson et al. (2011). Missing observations were imputed.
 Wilson, S. J., Lipsey, M. W., Tanner-Smith, E., Huang, C. H., &
   Steinka-Fry, K. T. (2011). Dropout prevention and intervention programs:
   Effects on school completion and dropout Among school-aged children and
-  youth: A systematic review. Campbell Systematic Reviews, 7(8).
-  
+  youth: A systematic review. _Campbell Systematic Reviews, 7_(1), 1-61.
+  https://doi.org/10.4073/csr.2011.8
+
   Tipton, E., & Pustejovsky, J. E. (2015). Small-sample adjustments for tests
   of moderators and model fit using robust variance estimation in
   meta-regression.
