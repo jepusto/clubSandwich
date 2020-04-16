@@ -1,13 +1,13 @@
 ## Resubmission
 
-This is a resubmission. This submission is a maintenance release that fixes unit test errors that occur with R-devel.
+This is a resubmission. This submission is a maintenance release that fixes unit test errors that occur with R-devel. I have reworked the approach to the unit tests that have caused problems in the past, so that the numerical tolerances are more appropriate.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
 ## Test environments
 
 * local Windows 7 Enterprise, R 3.6.3
-* ubuntu 14.04.5 LTS (on travis-ci), R 3.6.3, devel
+* ubuntu 16.04.6 LTS (on travis-ci), R-release, R-devel
 * win-builder (devel, release, oldrelease)
 * r-hub:
   * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
@@ -33,11 +33,15 @@ There were 2 NOTES:
   All of the identified words are spelled correctly. 
 
 * Found the following (possibly) invalid URLs:
-  URL: https://economics.mit.edu/faculty/angrist/data1/data/angrist
+  URL: https://doi.org/10.1257/aer.99.4.1384
     From: man/AchievementAwardsRCT.Rd
     Status: Error
-    Message: libcurl error code 60:
-      	SSL certificate problem: unable to get local issuer certificate
-      	(Status without verification: OK)
+    Message: libcurl error code 56:
+      	Recv failure: Connection was reset
+  URL: https://doi.org/10.1257/jep.25.2.133
+    From: inst/doc/panel-data-CRVE.html
+    Status: Error
+    Message: libcurl error code 56:
+      	Recv failure: Connection was reset
 
-  The flagged URL is correct.
+  The flagged URLs are correct.
