@@ -30,8 +30,8 @@ install.packages("clubSandwich")
 
 To install the latest development version directly from Github, type:
 ```{r}
-install.packages("devtools")
-devtools::install_github("jepusto/clubSandwich")
+install.packages("remotes")
+remotes::install_github("jepusto/clubSandwich")
 ```
 
 Once installed, have a look at the available vignettes by typing:
