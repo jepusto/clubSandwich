@@ -71,7 +71,7 @@ check_sort_order <- function(obj, dat, cluster = NULL,
   dat_scramble <- dat[re_order,]
   obj_scramble <- update(obj, data = dat_scramble)
 
-  constraints <- combn(length(coef_CS(obj)), 2, simplify = FALSE)
+  constraints <- utils::combn(length(coef_CS(obj)), 2, simplify = FALSE)
   
   if (is.null(cluster)) {
     CR_fit <- lapply(CR_types, function(x) vcovCR(obj, type = x))
