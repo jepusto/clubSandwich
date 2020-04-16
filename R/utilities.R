@@ -64,6 +64,7 @@ check_CR <- function(obj, vcov, ..., tol = .Machine$double.eps^0.5) {
 
 
 check_sort_order <- function(obj, dat, cluster = NULL,
+                             CR_types = paste0("CR",0:3),
                              tol = 10^-6, tol2 = tol, tol3 = tol) {
   
   re_order <- sample(nrow(dat))
@@ -92,7 +93,7 @@ check_sort_order <- function(obj, dat, cluster = NULL,
     
   }
   
-  expect_equivalent(CR_fit, CR_scramble, tolerance = tol)
+  testthat::expect_equivalent(CR_fit, CR_scramble, tolerance = tol)
   compare_ttests(test_fit, test_scramble, tol = tol2)
   compare_Waldtests(Wald_fit, Wald_scramble, tol = tol3)
 }
@@ -102,10 +103,10 @@ compare_ttests <- function(a, b, tol = 10^-6) {
   if (!inherits(a,"data.frame")) a <- do.call(rbind, a)
   if (!inherits(b,"data.frame")) b <- do.call(rbind, b)
   
-  expect_equal(a$beta, b$beta, tolerance = tol)
-  expect_equal(a$SE, b$SE, tolerance = tol)
-  expect_equal(a$df, b$df, tolerance = tol)
-  expect_equal(a$saddlepoint, b$saddlepoint, tolerance = tol)
+  testthat::expect_equal(a$beta, b$beta, tolerance = tol)
+  testthat::expect_equal(a$SE, b$SE, tolerance = tol)
+  testthat::expect_equal(a$df, b$df, tolerance = tol)
+  testthat::expect_equal(a$saddlepoint, b$saddlepoint, tolerance = tol)
 }
 
 compare_Waldtests <- function(a, b, tol = 10^-6) {
@@ -113,9 +114,9 @@ compare_Waldtests <- function(a, b, tol = 10^-6) {
   if (!inherits(a,"data.frame")) a <- do.call(rbind, a)
   if (!inherits(b,"data.frame")) b <- do.call(rbind, b)
   
-  expect_equal(a$Fstat, b$Fstat, tolerance = tol)
-  expect_equal(a$delta, b$delta, tolerance = tol)
-  expect_equal(a$df, b$df, tolerance = tol)
-  expect_equal(a$p_val, b$p_val, tolerance = tol)
+  testthat::expect_equal(a$Fstat, b$Fstat, tolerance = tol)
+  testthat::expect_equal(a$delta, b$delta, tolerance = tol)
+  testthat::expect_equal(a$df, b$df, tolerance = tol)
+  testthat::expect_equal(a$p_val, b$p_val, tolerance = tol)
   
 }
