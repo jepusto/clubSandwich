@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a resubmission. This submission is a maintenance release that fixes unit test errors that occur with R-devel. I have reworked the approach to the unit tests that have caused problems in the past, so that the numerical tolerances are more appropriate.
+This is a resubmission. This submission is a maintenance release to fix unit test errors that occur with R-devel. I have reworked the approach to the unit tests that have caused problems in the past, so that the numerical tolerances are more appropriate.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
