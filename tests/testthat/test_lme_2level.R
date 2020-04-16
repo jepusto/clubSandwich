@@ -102,22 +102,9 @@ test_that("CR2 and CR4 are target-unbiased", {
 CR_types <- paste0("CR",0:4)
 
 test_that("Order doesn't matter.", {
-  re_order <- sample(nrow(BodyWeight))
-  dat_scramble <- BodyWeight[re_order,]
-  obj_scramble <- update(obj_A, data = dat_scramble)
   
-  CR_fit <- lapply(CR_types, function(x) vcovCR(obj_A, type = x))
-  CR_scramble <- lapply(CR_types, function(x) vcovCR(obj_scramble, type = x))
-  expect_equivalent(CR_fit, CR_scramble)
+  check_sort_order(obj_A, BodyWeight)
   
-  test_fit <- lapply(CR_types, function(x) coef_test(obj_A, vcov = x, test = "All", p_values = FALSE))
-  test_scramble <- lapply(CR_types, function(x) coef_test(obj_scramble, vcov = x, test = "All", p_values = FALSE))
-  expect_equal(test_fit, test_scramble, tolerance = 10^-6)
-  
-  constraints <- combn(length(coef(obj_A)), 2, simplify = FALSE)
-  Wald_fit <- Wald_test(obj_A, constraints = constraints, vcov = "CR2", test = "All")
-  Wald_scramble <- Wald_test(obj_scramble, constraints = constraints, vcov = "CR2", test = "All")
-  expect_equal(Wald_fit, Wald_scramble)
 })
 
 
@@ -151,13 +138,13 @@ test_that("lme agrees with gls", {
   
   test_lme <- lapply(CR_types, function(x) coef_test(lme_fit, vcov = x, test = "All", p_values = FALSE))
   test_gls <- lapply(CR_types, function(x) coef_test(gls_fit, vcov = x, test = "All", p_values = FALSE))
-  expect_equal(test_lme, test_gls, tolerance = 10^-5)
+  compare_ttests(test_lme, test_gls)
   
   constraints <- c(combn(length(coef(lme_fit)), 2, simplify = FALSE),
                    combn(length(coef(lme_fit)), 3, simplify = FALSE))
   Wald_lme <- Wald_test(lme_fit, constraints = constraints, vcov = "CR2", test = "All")
   Wald_gls <- Wald_test(gls_fit, constraints = constraints, vcov = "CR2", test = "All")
-  expect_equal(Wald_lme, Wald_gls)
+  compare_Waldtests(Wald_lme, Wald_gls)
 })
 
 

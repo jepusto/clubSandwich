@@ -153,21 +153,8 @@ test_that("vcovCR is equivalent to vcovHC (with HC0 or HC1) when clusters are al
 })
 
 test_that("Order doesn't matter.",{
-  dat_scramble <- Cigs[sample(nrow(Cigs)),]
-  obj_scramble <- update(obj_wt, data = dat_scramble)
   
-  CR_fit <- lapply(CR_types, function(x) vcovCR(obj_wt, cluster = Cigs$state, type = x))
-  CR_scramble <- lapply(CR_types, function(x) vcovCR(obj_scramble, cluster = dat_scramble$state, type = x))
-  expect_equal(CR_fit, CR_scramble, check.attributes = FALSE, tolerance = 5 * 10^-7)
-  
-  test_fit <- lapply(CR_types, function(x) coef_test(obj_wt, vcov = x, cluster = Cigs$state, test = "All", p_values = FALSE))
-  test_scramble <- lapply(CR_types, function(x) coef_test(obj_scramble, vcov = x, cluster = dat_scramble$state, test = "All", p_values = FALSE))
-  expect_equal(test_fit, test_scramble, tolerance = 10^-6)
-  
-  constraints <- combn(length(coef(obj_wt)), 2, simplify = FALSE)
-  Wald_fit <- Wald_test(obj_wt, constraints = constraints, vcov = "CR2", cluster = Cigs$state, test = "All")
-  Wald_scramble <- Wald_test(obj_scramble, constraints = constraints, vcov = "CR2", cluster = dat_scramble$state, test = "All")
-  expect_equal(Wald_fit, Wald_scramble, tolerance = 10^-6)
+  check_sort_order(obj_wt, Cigs, "state")
   
 })
 

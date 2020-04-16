@@ -120,54 +120,9 @@ CR_types <- paste0("CR",0:3)
 
 test_that("Order doesn't matter.", {
   skip_on_cran()
-  re_order <- sample(nrow(egsingle))
-  dat_scramble <- egsingle[re_order,]
-  obj <- obj_A4
-  obj_scramble <- update(obj, data = dat_scramble)
   
-  # expect_equal(vcov(obj), vcov(obj_scramble))
-  # expect_equal(v_scale(obj), v_scale(obj_scramble))
-  # expect_equal(obj$sigma, obj_scramble$sigma)
-  # expect_equal(bread(obj), bread(obj_scramble), tol = 10^-5)
-  # expect_equal(coef_CS(obj), coef_CS(obj_scramble))
-  # expect_equal(residuals_CS(obj)[re_order], residuals_CS(obj_scramble), check.attributes=FALSE)
-  # expect_equal(model_matrix(obj)[re_order,], model_matrix(obj_scramble), check.attributes=FALSE)
-  # expect_equal(model.matrix(obj$modelStruct$reStruc, getData(obj))[re_order,], 
-  #              model.matrix(obj_scramble$modelStruct$reStruct, getData(obj_scramble)), check.attributes=FALSE)
-  # 
-  # V_list <- targetVariance(obj)
-  # V_mat <- as.matrix(bdiag(V_list))
-  # attr(V_mat, "dimnames") <- NULL
-  # V_resorted <- matrix_list(V_mat[re_order,re_order], dat_scramble$schoolid, "both")
-  # names(V_resorted) <- levels(dat_scramble$schoolid)
-  # expect_equal(targetVariance(obj_scramble), V_resorted, tol = 10^-6)
-  # 
-  # W_list <- weightMatrix(obj)
-  # W_mat <- as.matrix(bdiag(W_list))
-  # attr(W_mat, "dimnames") <- NULL
-  # W_resorted <- matrix_list(W_mat[re_order,re_order], dat_scramble$schoolid, "both")
-  # names(W_resorted) <- levels(dat_scramble$schoolid)
-  # expect_equal(weightMatrix(obj_scramble), W_resorted, tol = 10^-6)
-  # 
-  # X_list <- matrix_list(model_matrix(obj), egsingle$schoolid, "row")
-  # XWX <- Reduce("+", Map(function(w, x) t(x) %*% w %*% x, w = W_list, x = X_list))
-  # W_scramble <- weightMatrix(obj_scramble)
-  # X_scramble <- matrix_list(model_matrix(obj_scramble), dat_scramble$schoolid, "row")
-  # XWX_scramble <- Reduce("+", Map(function(w, x) t(x) %*% w %*% x, w = W_scramble, x = X_scramble))
-  # expect_equal(XWX, XWX_scramble)
+  check_sort_order(obj_A4, egsingle)
   
-  CR_fit <- lapply(CR_types, function(x) vcovCR(obj, type = x))
-  CR_scramble <- lapply(CR_types, function(x) vcovCR(obj_scramble, type = x))
-  expect_equal(lapply(CR_fit, as.matrix), lapply(CR_scramble, as.matrix), tol = 5 * 10^-5)
-
-  test_fit <- lapply(CR_fit, function(x) coef_test(obj, vcov = x, test = "All", p_values = FALSE))
-  test_scramble <- lapply(CR_scramble, function(x) coef_test(obj_scramble, vcov = x, test = "All", p_values = FALSE))
-  expect_equal(test_fit, test_scramble, tol = 10^-6)
-
-  constraints <- combn(length(coef(obj)), 2, simplify = FALSE)[10:16]
-  Wald_fit <- Wald_test(obj, constraints = constraints, vcov = "CR2", test = "All")
-  Wald_scramble <- Wald_test(obj_scramble, constraints = constraints, vcov = "CR2", test = "All")
-  expect_equal(Wald_fit, Wald_scramble, tol = 5 * 10^-5)
 })
 
 

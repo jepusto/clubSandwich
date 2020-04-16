@@ -156,23 +156,7 @@ test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
 CR_types <- paste0("CR", 0:4)
 
 test_that("Order doesn't matter.",{
-  dat_scramble <- dat[sample(n),]
-  logit_scramble <- update(logit_fit, data = dat_scramble)
-
-  CR_fit <- lapply(CR_types, function(x) vcovCR(logit_fit, cluster = dat$cluster, type = x))
-  CR_scramble <- lapply(CR_types, function(x) vcovCR(logit_scramble, cluster = dat_scramble$cluster, type = x))
-  expect_equivalent(CR_fit, CR_scramble)
-  
-  test_fit <- lapply(CR_types, function(x) coef_test(logit_fit, vcov = x, cluster = dat$cluster, test = "All", p_values = FALSE))
-  test_scramble <- lapply(CR_types, function(x) coef_test(logit_scramble, vcov = x, cluster = dat_scramble$cluster, test = "All", p_values = FALSE))
-  # compare_tests <- mapply(function(a, b) max(abs(a / b - 1), na.rm = TRUE), test_fit, test_scramble)
-  # expect_true(all(compare_tests < 10^-4))
-  expect_equal(test_fit, test_scramble, tolerance = 10^-6)
-  
-  constraints <- combn(length(coef(logit_fit)), 2, simplify = FALSE)
-  Wald_fit <- Wald_test(logit_fit, constraints = constraints, vcov = "CR2", cluster = dat$cluster, test = "All")
-  Wald_scramble <- Wald_test(logit_scramble, constraints = constraints, vcov = "CR2", cluster = dat_scramble$cluster, test = "All")
-  expect_equal(Wald_fit, Wald_scramble)
+  check_sort_order(logit_fit, dat = dat, cluster = "cluster")
 })
 
 
@@ -189,7 +173,7 @@ test_that("clubSandwich works with dropped observations", {
   
   test_drop <- lapply(CR_types, function(x) coef_test(logit_dropped, vcov = x, cluster = dat_miss$cluster, test = "All", p_values = FALSE))
   test_complete <- lapply(CR_types, function(x) coef_test(logit_complete, vcov = x, cluster = dat_complete$cluster, test = "All", p_values = FALSE))
-  expect_identical(test_drop, test_complete)
+  compare_ttests(test_drop, test_complete)
 })
 
 

@@ -168,21 +168,9 @@ test_that("CR2 is equivalent to Welch t-test for DiD design", {
 })
 
 test_that("Order doesn't matter.",{
-  dat_scramble <- dat[sample(n),]
-  WLS_scramble <- update(WLS_fit, data = dat_scramble)
-
-  CR_fit <- lapply(CR_types, function(x) vcovCR(WLS_fit, cluster = dat$cluster, type = x))
-  CR_scramble <- lapply(CR_types, function(x) vcovCR(WLS_scramble, cluster = dat_scramble$cluster, type = x))
-  expect_equivalent(CR_fit, CR_scramble)
   
-  test_fit <- lapply(CR_types, function(x) coef_test(WLS_fit, vcov = x, cluster = dat$cluster, test = "All", p_values = FALSE))
-  test_scramble <- lapply(CR_types, function(x) coef_test(WLS_scramble, vcov = x, cluster = dat_scramble$cluster, test = "All", p_values = FALSE))
-  expect_equal(test_fit, test_scramble, tolerance = 10^-6)
+  check_sort_order(WLS_fit, dat, "cluster")
   
-  constraints <- combn(length(coef(lm_fit)), 2, simplify = FALSE)
-  Wald_fit <- Wald_test(WLS_fit, constraints = constraints, vcov = "CR2", cluster = dat$cluster, test = "All")
-  Wald_scramble <- Wald_test(WLS_scramble, constraints = constraints, vcov = "CR2", cluster = dat_scramble$cluster, test = "All")
-  expect_equal(Wald_fit, Wald_scramble)
 })
 
 test_that("clubSandwich works with dropped observations", {

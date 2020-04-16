@@ -61,3 +61,61 @@ check_CR <- function(obj, vcov, ..., tol = .Machine$double.eps^0.5) {
   eq <- all.equal(E_CRj, MXWTWXM, tolerance = tol)
   if (all(eq==TRUE)) TRUE else list(E_CRj = E_CRj, target = MXWTWXM)
 }
+
+
+check_sort_order <- function(obj, dat, cluster = NULL,
+                             tol = 10^-6, tol2 = tol, tol3 = tol) {
+  
+  re_order <- sample(nrow(dat))
+  dat_scramble <- dat[re_order,]
+  obj_scramble <- update(obj, data = dat_scramble)
+
+  constraints <- combn(length(coef_CS(obj)), 2, simplify = FALSE)
+  
+  if (is.null(cluster)) {
+    CR_fit <- lapply(CR_types, function(x) vcovCR(obj, type = x))
+    CR_scramble <- lapply(CR_types, function(x) vcovCR(obj_scramble, type = x))
+    test_fit <- lapply(CR_types, function(x) coef_test(obj, vcov = x, test = "All", p_values = FALSE))
+    test_scramble <- lapply(CR_types, function(x) coef_test(obj_scramble, vcov = x, test = "All", p_values = FALSE))
+    Wald_fit <- Wald_test(obj, constraints = constraints, vcov = "CR2", test = "All")
+    Wald_scramble <- Wald_test(obj_scramble, constraints = constraints, vcov = "CR2", test = "All")
+    
+  } else {
+    CR_fit <- lapply(CR_types, function(x) vcovCR(obj, cluster = dat[[cluster]], type = x))
+    CR_scramble <- lapply(CR_types, function(x) vcovCR(obj_scramble, cluster = dat_scramble[[cluster]], type = x))
+    test_fit <- lapply(CR_types, function(x) coef_test(obj, vcov = x, cluster = dat[[cluster]], test = "All", p_values = FALSE))
+    test_scramble <- lapply(CR_types, function(x) coef_test(obj_scramble, vcov = x, cluster = dat_scramble[[cluster]], test = "All", p_values = FALSE))
+    Wald_fit <- Wald_test(obj, constraints = constraints, vcov = "CR2",
+                          cluster = dat[[cluster]], test = "All")
+    Wald_scramble <- Wald_test(obj_scramble, constraints = constraints, vcov = "CR2", 
+                               cluster = dat_scramble[[cluster]], test = "All")
+    
+  }
+  
+  expect_equivalent(CR_fit, CR_scramble, tolerance = tol)
+  compare_ttests(test_fit, test_scramble, tol = tol2)
+  compare_Waldtests(Wald_fit, Wald_scramble, tol = tol3)
+}
+
+compare_ttests <- function(a, b, tol = 10^-6) {
+  
+  if (!inherits(a,"data.frame")) a <- do.call(rbind, a)
+  if (!inherits(b,"data.frame")) b <- do.call(rbind, b)
+  
+  expect_equal(a$beta, b$beta, tolerance = tol)
+  expect_equal(a$SE, b$SE, tolerance = tol)
+  expect_equal(a$df, b$df, tolerance = tol)
+  expect_equal(a$saddlepoint, b$saddlepoint, tolerance = tol)
+}
+
+compare_Waldtests <- function(a, b, tol = 10^-6) {
+  
+  if (!inherits(a,"data.frame")) a <- do.call(rbind, a)
+  if (!inherits(b,"data.frame")) b <- do.call(rbind, b)
+  
+  expect_equal(a$Fstat, b$Fstat, tolerance = tol)
+  expect_equal(a$delta, b$delta, tolerance = tol)
+  expect_equal(a$df, b$df, tolerance = tol)
+  expect_equal(a$p_val, b$p_val, tolerance = tol)
+  
+}

@@ -117,41 +117,13 @@ CR_types <- paste0("CR",0:4)
 
 test_that("Order doesn't matter.", {
   
+  skip_on_cran()
+  
   # Model A1
-  
-  re_order <- sample(nrow(sleepstudy))
-  dat_scramble <- sleepstudy[re_order,]
-  obj_scramble <- update(obj_A1, data = dat_scramble)
-  
-  CR_fit <- lapply(CR_types, function(x) vcovCR(obj_A1, type = x))
-  CR_scramble <- lapply(CR_types, function(x) vcovCR(obj_scramble, type = x))
-  expect_equivalent(CR_fit, CR_scramble)
-  
-  test_fit <- lapply(CR_types, function(x) coef_test(obj_A1, vcov = x, test = "All", p_values = FALSE))
-  test_scramble <- lapply(CR_types, function(x) coef_test(obj_scramble, vcov = x, test = "All", p_values = FALSE))
-  expect_equal(test_fit, test_scramble, tolerance = 10^-6)
-  
-  constraints <- combn(length(coef_CS(obj_A1)), 2, simplify = FALSE)
-  Wald_fit <- Wald_test(obj_A1, constraints = constraints, vcov = "CR2", test = "All")
-  Wald_scramble <- Wald_test(obj_scramble, constraints = constraints, vcov = "CR2", test = "All")
-  expect_equal(Wald_fit, Wald_scramble)
-  
+  check_sort_order(obj = obj_A1, dat = sleepstudy)
+
   # Model C1
-  
-  re_order <- sample(nrow(egsingle))
-  eg_scramble <- egsingle[re_order,]
-  C1_scramble <- update(obj_C1, data = eg_scramble)
-  
-  expect_equal(coef_CS(obj_C1), coef_CS(C1_scramble))
-  expect_equal(nobs(obj_C1), nobs(C1_scramble))
-  expect_equal(residuals_CS(obj_C1)[re_order], residuals_CS(C1_scramble))
-  expect_equal(model_matrix(obj_C1)[re_order,], model_matrix(C1_scramble), check.attributes = FALSE)
-  
-  constraints <- combn(length(coef_CS(obj_C1)), 2, simplify = FALSE)
-  Wald_fit <- Wald_test(obj_C1, constraints = constraints, vcov = "CR2", test = "All")
-  Wald_scramble <- Wald_test(C1_scramble, constraints = constraints, vcov = "CR2", test = "All")
-  expect_equal(Wald_fit, Wald_scramble)
-  
+  check_sort_order(obj = obj_C1, dat = egsingle)
 })
 
 
@@ -197,13 +169,13 @@ test_that("lmer agrees with lme", {
   
   test_lmer <- lapply(CR_types, function(x) coef_test(lmer_fit, vcov = x, test = "All", p_values = FALSE))
   test_lme <- lapply(CR_types, function(x) coef_test(lme_fit, vcov = x, test = "All", p_values = FALSE))
-  expect_equal(test_lmer, test_lme, tolerance = 10^-5)
+  compare_ttests(test_lmer, test_lme, tol = 10^-10)
   
   constraints <- c(combn(length(coef_CS(lmer_fit)), 2, simplify = FALSE),
                    combn(length(coef_CS(lmer_fit)), 3, simplify = FALSE))
   Wald_lmer <- Wald_test(lmer_fit, constraints = constraints, vcov = "CR2", test = "All")
   Wald_lme <- Wald_test(lme_fit, constraints = constraints, vcov = "CR2", test = "All")
-  expect_equal(Wald_lmer, Wald_lme)
+  compare_Waldtests(Wald_lmer, Wald_lme)
   
 })
 
