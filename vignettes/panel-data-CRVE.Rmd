@@ -40,7 +40,7 @@ $$y_{it} = \alpha_i + \beta_t + \gamma b_{it} + \delta d_{it} + \epsilon_{it},$$
 for $i$ = 1,...,51 and $t$ = 1970,...,1983. 
 In this model, $\alpha_i$ is a state-specific fixed effect, $\beta_t$ is a year-specific fixed effect, $b_{it}$ is the current rate of beer taxation in state $i$ in year $t$, $d_{it}$ is the proportion of 18-20 year-olds in state $i$ in year $t$ who are legally allowed to drink, and $\delta$ captures the effect of shifting the minimum legal drinking age from 21 to 18. 
 Following Angrist and Pischke's analysis, we estimate this model both by (unweighted) OLs and by weighted least squares with weights corresponding to population size in a given state and year. 
-We also demonstrate random effects estimation and implement a cluster-robust Hausmann specification test.
+We also demonstrate random effects estimation and implement a cluster-robust Hausman specification test.
 
 ## Unweighted OLS
 

@@ -98,7 +98,7 @@ get_which_coef <- function(beta, coefs) {
 #' @param coefs Character, integer, or logical vector specifying which
 #'   coefficients should be tested. The default value \code{"All"} will test all
 #'   estimated coefficients.
-#' @param p_values Logical indicating whether to report p-values. The defult value is \code{TRUE}.
+#' @param p_values Logical indicating whether to report p-values. The default value is \code{TRUE}.
 #' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only
 #'   needed if \code{vcov} is a character string.
 #'

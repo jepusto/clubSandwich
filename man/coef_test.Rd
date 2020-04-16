@@ -31,7 +31,7 @@ is \code{"Satterthwaite"}.}
 coefficients should be tested. The default value \code{"All"} will test all
 estimated coefficients.}
 
-\item{p_values}{Logical indicating whether to report p-values. The defult value is \code{TRUE}.}
+\item{p_values}{Logical indicating whether to report p-values. The default value is \code{TRUE}.}
 
 \item{...}{Further arguments passed to \code{\link{vcovCR}}, which are only
 needed if \code{vcov} is a character string.}
