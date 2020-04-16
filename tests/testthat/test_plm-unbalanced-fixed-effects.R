@@ -165,6 +165,8 @@ test_that("vcovCR options work for CR4", {
 })
 
 test_that("CR2 and CR4 are target-unbiased", {
+
+  skip_on_cran()
   
   expect_true(check_CR(plm_individual, vcov = "CR2"))
   expect_true(check_CR(plm_individual, vcov = "CR4"))

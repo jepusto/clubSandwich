@@ -77,7 +77,7 @@ test_that("mlm is equivalent to lm with long data.", {
   
   test_fit <- lapply(CR_types, function(x) coef_test(lm_fit, vcov = x, test = "All", p_values = FALSE))
   test_long <- lapply(CR_types, function(x) coef_test(lm_long, vcov = x, cluster = iris_long$id, test = "All", p_values = FALSE)[i,])
-  expect_equal(test_fit, test_long, check.attributes = FALSE)
+  compare_ttests(test_fit, test_long)
   
   CR_fit <- lapply(CR_types, function(x) as.matrix(vcovCR(lm_fit, type = x, cluster = iris$Petal.Length)))
   CR_long <- lapply(CR_types, function(x) vcovCR(lm_long, type = x, cluster = iris_long$Petal.Length)[i,i])
@@ -85,26 +85,15 @@ test_that("mlm is equivalent to lm with long data.", {
   
   test_fit <- lapply(CR_types, function(x) coef_test(lm_fit, vcov = x, test = "All", p_values = FALSE))
   test_long <- lapply(CR_types, function(x) coef_test(lm_long, vcov = x, cluster = iris_long$id, test = "All", p_values = FALSE)[i,])
-  expect_equal(test_fit, test_long, check.attributes = FALSE)
+  compare_ttests(test_fit, test_long)
   
 })
 
 test_that("Order doesn't matter.",{
-  dat_scramble <- iris[sample(n),]
-  WLS_scramble <- update(WLS_fit, data = dat_scramble)
   
-  CR_fit <- lapply(CR_types, function(x) vcovCR(WLS_fit, type = x))
-  CR_scramble <- lapply(CR_types, function(x) vcovCR(WLS_scramble, type = x))
-  expect_equivalent(CR_fit, CR_scramble)
+  skip_on_cran()
+  check_sort_order(WLS_fit, iris)
   
-  test_fit <- lapply(CR_types, function(x) coef_test(WLS_fit, vcov = x, test = "All", p_values = FALSE))
-  test_scramble <- lapply(CR_types, function(x) coef_test(WLS_scramble, vcov = x, test = "All", p_values = FALSE))
-  expect_equal(test_fit, test_scramble, tolerance = 10^-6)
-  
-  # constraints <- combn(length(coef_CS(lm_fit)), 2, simplify = FALSE)
-  # Wald_fit <- Wald_test(WLS_fit, constraints = constraints, vcov = "CR2", test = "All")
-  # Wald_scramble <- Wald_test(WLS_scramble, constraints = constraints, vcov = "CR2", test = "All")
-  # expect_equal(Wald_fit, Wald_scramble)
 })
 
 test_that("clubSandwich works with dropped covariates", {
@@ -139,7 +128,7 @@ test_that("clubSandwich works with dropped outcomes", {
   
   test_drop <- lapply(CR_types, function(x) coef_test(lm_dropped, vcov = x, test = "All", p_values = FALSE))
   test_complete <- lapply(CR_types, function(x) coef_test(lm_complete, vcov = x, test = "All", p_values = FALSE))
-  expect_equal(test_drop, test_complete)
+  compare_ttests(test_drop, test_complete)
 })
 
 test_that("clubSandwich works with dropped outcomes, covariates, and weights", {

@@ -70,22 +70,11 @@ test_that("bread works", {
 CR_types <- paste0("CR",0:4)
 
 test_that("order doesn't matter", {
-  dat_scramble <- hierdat[sample(nrow(hierdat)),]
-  hier_scramble <-  rma(effectsize ~ binge + followup + sreport + age, 
-                        data = dat_scramble, vi = var, method = "REML")
   
-  CR_fit <- lapply(CR_types, function(x) vcovCR(hier_meta, type = x, cluster = hierdat$studyid))
-  CR_scramble <- lapply(CR_types, function(x) vcovCR(hier_scramble, type = x, cluster = dat_scramble$studyid))
-  expect_equivalent(CR_fit, CR_scramble)
+  skip_on_cran()
   
-  test_fit <- lapply(CR_types, function(x) coef_test(hier_meta, vcov = x, cluster = hierdat$studyid, test = "All", p_values = FALSE))
-  test_scramble <- lapply(CR_types, function(x) coef_test(hier_scramble, vcov = x, cluster = dat_scramble$studyid, test = "All", p_values = FALSE))
-  expect_equal(test_fit, test_scramble, tolerance = 10^-6)
+  check_sort_order(hier_meta, hierdat, cluster = "studyid")
   
-  constraints <- combn(length(coef(hier_scramble)), 2, simplify = FALSE)
-  Wald_fit <- Wald_test(hier_meta, constraints = constraints, vcov = "CR2", cluster = hierdat$studyid, test = "All")
-  Wald_scramble <- Wald_test(hier_scramble, constraints = constraints, vcov = "CR2", cluster = dat_scramble$studyid, test = "All")
-  expect_equal(Wald_fit, Wald_scramble)
 })
 
 test_that("clubSandwich works with dropped covariates", {
@@ -111,8 +100,8 @@ test_that("clubSandwich works with dropped covariates", {
   test_drop_A <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, cluster = dat_miss$studyid, test = "All", p_values = FALSE))
   test_drop_B <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, cluster = hierdat$studyid, test = "All", p_values = FALSE))
   test_complete <- lapply(CR_types, function(x) coef_test(hier_complete, vcov = x, cluster = dat_miss$studyid[subset_ind], test = "All", p_values = FALSE))
-  expect_equal(test_drop_A, test_complete, tolerance = 10^-6)
-  expect_equal(test_drop_B, test_complete, tolerance = 10^-6)
+  compare_ttests(test_drop_A, test_complete)
+  compare_ttests(test_drop_B, test_complete)
 })
 
 test_that("clubSandwich works with missing variances", {

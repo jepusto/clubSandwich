@@ -115,7 +115,7 @@ test_that("CR2 t-tests agree with robumeta for user weighting", {
                              cluster = hierdat$studyid, 
                              target = user_small$data.full$avg.var.eff.size,
                              test = "Satterthwaite", p_values = FALSE)
-  expect_equivalent(CR2_ttests, lm_CR2_ttests)
+  compare_ttests(CR2_ttests, lm_CR2_ttests)
 })
 
 
@@ -222,6 +222,9 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - reduc
 CR_types <- paste0("CR",0:4)
 
 test_that("order doesn't matter", {
+  
+  skip_on_cran()
+  
   dat_scramble <- corrdat[sample(nrow(corrdat)),]
   corr_scramble <-  robu(effectsize ~ males + college + binge, data = dat_scramble, 
                          modelweights = "CORR", studynum = studyid,
@@ -233,12 +236,12 @@ test_that("order doesn't matter", {
   
   test_fit <- lapply(CR_types, function(x) coef_test(corr_small, vcov = x, test = "All", p_values = FALSE))
   test_scramble <- lapply(CR_types, function(x) coef_test(corr_scramble, vcov = x, test = "All", p_values = FALSE))
-  expect_equal(test_fit, test_scramble, tolerance = 10^-6)
+  compare_ttests(test_fit, test_scramble)
   
   constraints <- combn(length(coef_CS(corr_small)), 2, simplify = FALSE)
   Wald_fit <- Wald_test(corr_small, constraints = constraints, vcov = "CR2", test = "All")
   Wald_scramble <- Wald_test(corr_scramble, constraints = constraints, vcov = "CR2", test = "All")
-  expect_equal(Wald_fit, Wald_scramble)
+  compare_Waldtests(Wald_fit, Wald_scramble)
 })
 
 test_that("clubSandwich works with dropped observations", {
