@@ -4,8 +4,15 @@
 \alias{vcovCR.ivreg}
 \title{Cluster-robust variance-covariance matrix for an ivreg object.}
 \usage{
-\method{vcovCR}{ivreg}(obj, cluster, type, target = NULL,
-  inverse_var = FALSE, form = "sandwich", ...)
+\method{vcovCR}{ivreg}(
+  obj,
+  cluster,
+  type,
+  target = NULL,
+  inverse_var = FALSE,
+  form = "sandwich",
+  ...
+)
 }
 \arguments{
 \item{obj}{Fitted model for which to calculate the variance-covariance matrix}

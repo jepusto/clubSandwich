@@ -7,8 +7,15 @@
 \usage{
 vcovCR(obj, cluster, type, target, inverse_var, form, ...)
 
-\method{vcovCR}{default}(obj, cluster, type, target = NULL,
-  inverse_var = FALSE, form = "sandwich", ...)
+\method{vcovCR}{default}(
+  obj,
+  cluster,
+  type,
+  target = NULL,
+  inverse_var = FALSE,
+  form = "sandwich",
+  ...
+)
 }
 \arguments{
 \item{obj}{Fitted model for which to calculate the variance-covariance matrix}

@@ -4,8 +4,14 @@
 \alias{coef_test}
 \title{Test all or selected regression coefficients in a fitted model}
 \usage{
-coef_test(obj, vcov, test = "Satterthwaite", coefs = "All",
-  p_values = TRUE, ...)
+coef_test(
+  obj,
+  vcov,
+  test = "Satterthwaite",
+  coefs = "All",
+  p_values = TRUE,
+  ...
+)
 }
 \arguments{
 \item{obj}{Fitted model for which to calculate t-tests.}

@@ -4,7 +4,8 @@
 \name{AchievementAwardsRCT}
 \alias{AchievementAwardsRCT}
 \title{Achievement Awards Demonstration program}
-\format{A data frame with 16526 rows and 21 variables: \describe{ 
+\format{
+A data frame with 16526 rows and 21 variables: \describe{ 
   \item{school_id}{Fictitious school identification number}
   \item{school_type}{Factor identifying the school type (Arab religious, Jewish religious, Jewish secular)}
   \item{pair}{Number of treatment pair. Note that 7 is a triple.} 
@@ -25,7 +26,8 @@
   \item{lagscore}{Lagged Bagrut score}
   \item{qrtl}{Quartile within distribution of lagscore, calculated by cohort and sex}
   \item{half}{Lower or upper half within distribution of lagscore, calculated by cohort and sex}
-  }}
+  }
+}
 \source{
 \href{https://economics.mit.edu/faculty/angrist/data1/data/angrist}{Angrist Data Archive}
 }

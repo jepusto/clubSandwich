@@ -4,7 +4,8 @@
 \name{dropoutPrevention}
 \alias{dropoutPrevention}
 \title{Dropout prevention/intervention program effects}
-\format{A data frame with 385 rows and 18 variables: \describe{
+\format{
+A data frame with 385 rows and 18 variables: \describe{
   \item{LOR1}{log-odds ratio measuring the intervention effect}
   \item{varLOR}{estimated sampling variance of the log-odds ratio}
   \item{studyID}{unique identifier for each study} \item{studySample}{unique
@@ -26,7 +27,8 @@
   \item{average_age}{average age of the sample} \item{duration}{program
   duration (in weeks)} \item{service_hrs}{program contact hours per week}
   \item{big_study}{indicator for the 32 studies with 3 or more effect sizes}
-  }}
+  }
+}
 \source{
 Wilson, S. J., Lipsey, M. W., Tanner-Smith, E., Huang, C. H., &
   Steinka-Fry, K. T. (2011). Dropout prevention and intervention programs:

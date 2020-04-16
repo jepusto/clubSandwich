@@ -4,8 +4,12 @@
 \alias{impute_covariance_matrix}
 \title{Impute a block-diagonal covariance matrix}
 \usage{
-impute_covariance_matrix(vi, cluster, r,
-  return_list = identical(as.factor(cluster), sort(as.factor(cluster))))
+impute_covariance_matrix(
+  vi,
+  cluster,
+  r,
+  return_list = identical(as.factor(cluster), sort(as.factor(cluster)))
+)
 }
 \arguments{
 \item{vi}{Vector of variances}

@@ -4,8 +4,7 @@
 \alias{vcovCR.lmerMod}
 \title{Cluster-robust variance-covariance matrix for an lmerMod object.}
 \usage{
-\method{vcovCR}{lmerMod}(obj, cluster, type, target, inverse_var,
-  form = "sandwich", ...)
+\method{vcovCR}{lmerMod}(obj, cluster, type, target, inverse_var, form = "sandwich", ...)
 }
 \arguments{
 \item{obj}{Fitted model for which to calculate the variance-covariance matrix}

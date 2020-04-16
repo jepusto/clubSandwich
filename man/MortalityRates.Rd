@@ -4,7 +4,8 @@
 \name{MortalityRates}
 \alias{MortalityRates}
 \title{State-level annual mortality rates by cause among 18-20 year-olds}
-\format{A data frame with 5508 rows and 12 variables: \describe{ 
+\format{
+A data frame with 5508 rows and 12 variables: \describe{ 
   \item{year}{Year of observation} 
   \item{state}{identifier for state} 
   \item{count}{Number of deaths} 
@@ -17,7 +18,8 @@
   \item{totpercap}{Total alcohol consumption per capita} 
   \item{mrate}{Mortality rate per 10,000} 
   \item{cause}{Cause of death} 
-  }}
+  }
+}
 \source{
 \href{http://masteringmetrics.com/wp-content/uploads/2015/01/deaths.dta}{Mastering
   'Metrics data archive}

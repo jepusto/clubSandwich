@@ -4,8 +4,7 @@
 \alias{vcovCR.rma.mv}
 \title{Cluster-robust variance-covariance matrix for a robu object.}
 \usage{
-\method{vcovCR}{rma.mv}(obj, cluster, type, target, inverse_var,
-  form = "sandwich", ...)
+\method{vcovCR}{rma.mv}(obj, cluster, type, target, inverse_var, form = "sandwich", ...)
 }
 \arguments{
 \item{obj}{Fitted model for which to calculate the variance-covariance matrix}

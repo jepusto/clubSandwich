@@ -4,8 +4,16 @@
 \alias{vcovCR.plm}
 \title{Cluster-robust variance-covariance matrix for a plm object.}
 \usage{
-\method{vcovCR}{plm}(obj, cluster, type, target, inverse_var,
-  form = "sandwich", ignore_FE = FALSE, ...)
+\method{vcovCR}{plm}(
+  obj,
+  cluster,
+  type,
+  target,
+  inverse_var,
+  form = "sandwich",
+  ignore_FE = FALSE,
+  ...
+)
 }
 \arguments{
 \item{obj}{Fitted model for which to calculate the variance-covariance matrix}

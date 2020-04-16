@@ -4,7 +4,8 @@
 \name{SATcoaching}
 \alias{SATcoaching}
 \title{Randomized experiments on SAT coaching}
-\format{A data frame with 67 rows and 11 variables: 
+\format{
+A data frame with 67 rows and 11 variables: 
 \describe{ 
   \item{study}{Study identifier}
   \item{year}{Year of publication} 
@@ -17,7 +18,8 @@
   \item{hrs}{Hours of coaching} 
   \item{ETS}{Indicator variable for Educational Testing Service} 
   \item{homework}{Indicator variable for homework} 
-  }}
+  }
+}
 \usage{
 SATcoaching
 }

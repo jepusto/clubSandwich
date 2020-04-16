@@ -4,8 +4,15 @@
 \alias{vcovCR.lm}
 \title{Cluster-robust variance-covariance matrix for an lm object.}
 \usage{
-\method{vcovCR}{lm}(obj, cluster, type, target = NULL,
-  inverse_var = NULL, form = "sandwich", ...)
+\method{vcovCR}{lm}(
+  obj,
+  cluster,
+  type,
+  target = NULL,
+  inverse_var = NULL,
+  form = "sandwich",
+  ...
+)
 }
 \arguments{
 \item{obj}{Fitted model for which to calculate the variance-covariance matrix}
