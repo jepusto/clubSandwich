@@ -1,13 +1,13 @@
 ## Resubmission
 
-This is a resubmission. This submission is a maintenance release that fixes unit test errors identified in the CRAN additional package checks for ATLAS and noLD. It also fixes a broken URL in one of the package vignettes.
+This is a resubmission. This submission is a maintenance release that fixes unit test errors that occur with R-devel.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
 ## Test environments
 
-* local Windows 7 Enterprise, R 3.6.1
-* ubuntu 14.04.5 LTS (on travis-ci), R 3.6.2, devel
+* local Windows 7 Enterprise, R 3.6.3
+* ubuntu 14.04.5 LTS (on travis-ci), R 3.6.3, devel
 * win-builder (devel, release, oldrelease)
 * r-hub:
   * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
