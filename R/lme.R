@@ -72,9 +72,245 @@ model_matrix.lme <- function(obj) {
 # Get (model-based) working variance matrix 
 #-------------------------------------
 
+get_cor_grouping <- function(mod, levels = NULL) {
+  if (!is.null(mod$groups)) {
+    struct <- mod$modelStruct$corStruct
+    if (is.null(struct)) struct <- mod
+    mod_formula <- nlme::getGroupsFormula(struct)
+    grps <- stats::model.frame(mod_formula, data = nlme::getData(mod))
+    grps <- apply(grps, 1, paste, collapse = "/")
+    if (is.null(levels)) levels <- unique(grps)
+    grps <- factor(grps, levels = levels)
+  } else if (!is.null(mod$modelStruct$corStruct)) {
+    grps <- factor(rep("A",mod$dims$N))
+  } else {
+    grps <- factor(1:mod$dims$N)
+  }
+  grps
+}
+
+# Construct list of block-diagonal correlation matrices
+
+build_corr_mats <- function(mod) {
+  
+}
+
+# Construct list of block-diagonal lowest-level var-cov matrices
+
+get_sort_order <- function(mod) {
+  groups <- mod$groups
+  if (is.data.frame(groups)) {
+    order(do.call(order, groups))
+  } else if (!is.null(groups)) {
+    order(order(groups))
+  } else {
+    1:mod$dims$N
+  }
+}
+
+build_var_cor_mats <- function(mod) {
+  
+  sigma <- mod$sigma
+
+  if (is.null(mod$modelStruct$corStruct)) {
+    
+    # if there is no correlation structure,
+    # then build block-diagonals with first available grouping variable
+    
+    if (is.null(mod$groups)) {
+      
+      # if there are no groups then make diagonal matrix-lists
+      
+      if (is.null(mod$modelStruct$varStruct)) {
+        V_list <- as.list(rep(sigma^2, mod$dims$N))
+      } else {
+        sd_vec <- sigma / as.numeric(nlme::varWeights(mod$modelStruct$varStruct))
+        V_list <- as.list(sd_vec^2)
+      }
+      grps <- factor(1:mod$dims$N)
+      attr(V_list, "groups") <- grps
+      names(V_list) <- levels(grps)
+      
+    } else {
+      
+      # if there are groups then make block-diagonal matrix-lists
+      
+      if (is.null(mod$modelStruct$varStruct)) {
+        grps <- mod$groups[[1]]
+        V_list <- tapply(rep(sigma^2, length(grps)),  grps, diag)
+      } else {
+        sort_order <- get_sort_order(mod)
+        sd_vec <- sigma / as.numeric(nlme::varWeights(mod$modelStruct$varStruct))[sort_order]
+        V_list <- tapply(sd_vec^2, mod$groups[[1]], diag)
+      }
+      attr(V_list, "groups") <- mod$groups[[1]]
+    }
+    
+  } else {
+    
+    # if there is a correlation structure,
+    # build block-diagonals according to its grouping structure
+    
+    R_list <- nlme::corMatrix(mod$modelStruct$corStruct)
+    grps <- get_cor_grouping(mod, levels = names(R_list))
+    if (!is.list(R_list)) R_list <- list(A = R_list)
+    
+    if (is.null(mod$modelStruct$varStruct)) {
+      V_list <- lapply(R_list, function(x) x * mod$sigma^2)
+    } else {
+      sort_order <- get_sort_order(mod)
+      sd_vec <- sigma / as.numeric(nlme::varWeights(mod$modelStruct$varStruct))[sort_order]
+      sd_list <- split(sd_vec, grps)
+      V_list <- Map(function(R, s) tcrossprod(s) * R, R = R_list, s = sd_list)
+    }
+    
+    attr(V_list, "groups") <- grps
+  }
+
+  return(V_list)
+}
+
+build_RE_mats <- function(mod) {
+  
+  # Get random effects structure
+  all_groups <- rev(mod$groups)
+  
+  if (length(all_groups) == 1) {
+    
+    D_mat <- mod$sigma^2 * as.matrix(mod$modelStruct$reStruct[[1]])
+    Z_mat <- model.matrix(mod$modelStruct$reStruc, nlme::getData(mod))
+    row.names(Z_mat) <- NULL
+    Z_list <- matrix_list(Z_mat, all_groups[[1]], "row")
+    ZDZ_list <- ZDZt(D_mat, Z_list)
+    
+    attr(ZDZ_list, "groups") <- all_groups[[1]]
+    
+  } else {
+    D_list <- lapply(mod$modelStruct$reStruct, function(x) mod$sigma^2 * as.matrix(x))
+    Z_mat <- model.matrix(mod$modelStruct$reStruc, nlme::getData(mod))
+    Z_names <- sapply(strsplit(colnames(Z_mat), ".", fixed=TRUE), function(x) x[1])
+    row.names(Z_mat) <- NULL
+    Z_levels <- lapply(names(all_groups), function(x) Z_mat[,x==Z_names,drop=FALSE])
+    Z_levels <- Map(matrix_list, x = Z_levels, fac = all_groups, dim = "row")
+    ZDZ_lists <- Map(ZDZt, D = D_list, Z_list = Z_levels)
+    
+    for (i in 2:length(all_groups)) {
+      ZDZ_lists[[i]] <- add_bdiag(small_mats = ZDZ_lists[[i-1]],
+                                  big_mats = ZDZ_lists[[i]],
+                                  crosswalk = all_groups[c(i-1,i)])
+    }
+    
+    ZDZ_list <- ZDZ_lists[[i]]
+    
+    attr(ZDZ_list, "groups") <- all_groups[[i]]
+    
+  }
+  
+  ZDZ_list
+  
+}
+
 ZDZt <- function(D, Z_list) {
   lapply(Z_list, function(z) z %*% D %*% t(z))
 }
+
+build_Sigma_mats.lme <- function(obj) {
+  
+  if (inherits(obj, "nlme")) stop("not implemented for \"nlme\" objects")
+  
+  # lowest-level covariance structure
+  V_list <- build_var_cor_mats(obj)
+  
+  # random effects covariance structure
+  ZDZ_list <- build_RE_mats(obj)
+  
+  V_grps <- attr(V_list, "groups")
+  
+  # Check if lowest-level covariance structure is nested within RE structure
+  ZDZ_grps <- attr(ZDZ_list, "groups")
+  group_mapping <- tapply(ZDZ_grps, V_grps, function(x) length(unique(x)))
+  nested <- all(group_mapping == 1L)
+  
+  if (nested) {
+    Sigma_list <- add_bdiag(V_list, ZDZ_list, data.frame(V_grps, ZDZ_grps))
+    Sigma_grps <- attr(ZDZ_list, "groups")
+  } else {
+    V_mat <- unblock(V_list, block = V_grps)
+    ZDZ_mat <- unblock(ZDZ_list, block = ZDZ_grps)
+    Sigma_list <- V_mat + ZDZ_mat
+    Sigma_grps <- factor(rep("A", nrow(Sigma_list)))
+  }
+  
+  attr(Sigma_list, "groups") <- Sigma_grps
+  
+  return(Sigma_list)
+}
+
+targetVariance2.lme <- function(obj, cluster = nlme::getGroups(obj, level = 1)) {
+  
+  if (inherits(obj, "nlme")) stop("not implemented for \"nlme\" objects")
+  
+  all_groups <- rev(obj$groups)
+  smallest_groups <- all_groups[[1]]
+  largest_groups <- all_groups[[length(all_groups)]]
+  
+  # Get level-1 variance-covariance structure as V_list
+  
+  # lowest-level covariance structure
+  V_list <- build_var_cor_mats(obj)
+  
+  # random effects covariance structure
+  ZDZ_list <- build_RE_mats(obj)
+  
+  # Get random effects structure
+  
+  if (length(all_groups) == 1) {
+    D_mat <- as.matrix(obj$modelStruct$reStruct[[1]])
+    Z_mat <- model.matrix(obj$modelStruct$reStruc, getData(obj))
+    row.names(Z_mat) <- NULL
+    Z_list <- matrix_list(Z_mat, all_groups[[1]], "row")
+    ZDZ_list <- ZDZt(D_mat, Z_list)
+    target_list <- Map("+", ZDZ_list, V_list)
+  } else {
+    D_list <- lapply(obj$modelStruct$reStruct, as.matrix)
+    Z_mat <- model.matrix(obj$modelStruct$reStruc, getData(obj))
+    Z_names <- sapply(strsplit(colnames(Z_mat), ".", fixed=TRUE), function(x) x[1])
+    row.names(Z_mat) <- NULL
+    Z_levels <- lapply(names(all_groups), function(x) Z_mat[,x==Z_names,drop=FALSE])
+    Z_levels <- Map(matrix_list, x = Z_levels, fac = all_groups, dim = "row")
+    ZDZ_lists <- Map(ZDZt, D = D_list, Z_list = Z_levels)
+    ZDZ_lists[[1]] <- Map("+", ZDZ_lists[[1]], V_list)  
+    for (i in 2:length(all_groups)) {
+      ZDZ_lists[[i]] <- add_bdiag(small_mats = ZDZ_lists[[i-1]], 
+                                  big_mats = ZDZ_lists[[i]], 
+                                  crosswalk = all_groups[c(i-1,i)])
+    }
+    target_list <- ZDZ_lists[[i]]
+  }
+  
+  # check if clustering level is higher than highest level of random effects
+  
+  tb_groups <- table(largest_groups)
+  tb_cluster <- table(cluster)
+  if (length(tb_groups) < length(tb_cluster) | 
+      any(as.vector(tb_groups) != rep(as.vector(tb_cluster), length.out = length(tb_groups))) | 
+      any(names(tb_groups) != rep(names(tb_cluster), length.out = length(tb_groups)))) {
+    
+    # check that random effects are nested within clusters  
+    tb_cross <- table(largest_groups, cluster)
+    nested <- apply(tb_cross, 1, function(x) sum(x > 0) == 1)
+    if (!all(nested)) stop("Random effects are not nested within clustering variable.")
+    
+    # expand target_list to level of clustering
+    crosswalk <- data.frame(largest_groups, cluster)
+    target_list <- add_bdiag(small_mats = target_list, 
+                             big_mats = matrix_list(rep(0, length(cluster)), cluster, dim = "both"),
+                             crosswalk = crosswalk)
+  }
+  
+  return(target_list)
+}
+
 
 targetVariance.lme <- function(obj, cluster = nlme::getGroups(obj, level = 1)) {
   
