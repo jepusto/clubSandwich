@@ -1,5 +1,4 @@
 context("multi-variate multi-level lme objects")
-skip()
 set.seed(20190513)
 
 dat <- read.table(file="https://raw.githubusercontent.com/wviechtb/multivariate_multilevel_models/master/data.dat", header=TRUE, sep="\t")
@@ -40,11 +39,6 @@ objects <- list(MVML_full = MVML_full, MVML_diag = MVML_diag, gls = gls_full)
 
 CR2_mats <- lapply(objects, vcovCR, type = "CR2")
 
-obj <- MVML_full
-cluster <- dat$id
-y <- dat$y
-targetVariance(obj)
-
 test_that("bread works", {
   bread_checks <- lapply(objects, check_bread, cluster = dat$id, y = dat$y)
   expect_true(all(unlist(bread_checks)))
@@ -58,13 +52,13 @@ test_that("bread works", {
 test_that("vcovCR options work for CR2", {
   skip_on_cran()
   
-  expect_identical(vcovCR(obj_A1, cluster = egsingle$schoolid, type = "CR2"), CR2_mats[["A1"]])
-  expect_equal(vcovCR(obj_A1, type = "CR2", inverse_var = TRUE), CR2_mats[["A1"]])
-  expect_false(identical(vcovCR(obj_A1, type = "CR2", inverse_var = FALSE), CR2_mats[["A1"]]))
-  target <- targetVariance(obj_A1)
-  expect_equal(vcovCR(obj_A1, type = "CR2", target = target, inverse_var = TRUE), CR2_mats[["A1"]])
-  attr(CR2_mats[["A1"]], "inverse_var") <- FALSE
-  expect_equal(vcovCR(obj_A1, type = "CR2", target = target, inverse_var = FALSE), CR2_mats[["A1"]])
+  expect_identical(vcovCR(MVML_full, cluster = dat$id, type = "CR2"), CR2_mats[["MVML_full"]])
+  expect_equal(vcovCR(MVML_full, type = "CR2", inverse_var = TRUE), CR2_mats[["MVML_full"]])
+  expect_false(identical(vcovCR(MVML_full, type = "CR2", inverse_var = FALSE), CR2_mats[["MVML_full"]]))
+  target <- targetVariance(MVML_full)
+  expect_equal(vcovCR(MVML_full, type = "CR2", target = target, inverse_var = TRUE), CR2_mats[["MVML_full"]])
+  attr(CR2_mats[["MVML_full"]], "inverse_var") <- FALSE
+  expect_equal(vcovCR(MVML_full, type = "CR2", target = target, inverse_var = FALSE), CR2_mats[["MVML_full"]])
   
 })
 
@@ -81,25 +75,44 @@ CR_types <- paste0("CR",0:3)
 test_that("Order doesn't matter.", {
   skip_on_cran()
   
-  check_sort_order(obj_A4, egsingle)
+  obj <- MVML_full
+  dat <- dat
+  cluster = NULL
+  CR_types = paste0("CR",0:3)
+  tol = 10^-6
+  tol2 = tol
+  tol3 = tol
+  seed <- 20200530
+  
+  re_order <- sample(nrow(dat))
+  dat_scramble <- dat[re_order,]
+  obj_scramble <- update(obj, data = dat_scramble)
+  constraints <- utils::combn(length(coef_CS(obj)), 2, simplify = FALSE)
+  
+  V_dat <- build_var_cor_mats(obj)
+  V_scram <- build_var_cor_mats(obj_scramble)
+  V_mat <- unblock(V_dat)[re_order, re_order]
+  V_mat_scram <- unblock(V_scram)
+  V_dat <- matrix_list(V_mat, fac = attr(V_scram, "groups"), dim = "both")
+  
+  Sigma_dat <- targetVariance(obj)
+  Sigma_scram <- targetVariance(obj_scramble)
+  
+  obj <- obj_scramble
+
+  check_sort_order(MVML_full, dat, seed = 20200530)
+  check_sort_order(MVML_diag, dat, seed = 20200530)
   
 })
 
 
 test_that("clubSandwich works with dropped observations", {
   skip_on_cran()
-  dat_miss <- egsingle
-  dat_miss$math[sample.int(nrow(egsingle), size = round(nrow(egsingle) / 10))] <- NA
-  obj_dropped <- update(obj_A4, data = dat_miss, na.action = na.omit)
-  obj_complete <- update(obj_A4, data = dat_miss, subset = !is.na(math))
+  dat_miss <- dat
+  dat_miss$y[sample.int(nrow(dat), size = round(nrow(dat) / 10))] <- NA
+  obj_dropped <- update(MVML_full, data = dat_miss, na.action = na.omit)
+  obj_complete <- update(MVML_full, data = dat_miss, subset = !is.na(y))
 
-  obj <- obj_dropped
-  cluster <- nlme::getGroups(obj, level = 1)
-  target <- NULL
-  inverse_var <- is.null(target)
-  type <- "CR2"
-  form <- "sandwich"
-  
   CR_drop <- lapply(CR_types, function(x) vcovCR(obj_dropped, type = x))
   CR_complete <- lapply(CR_types, function(x) vcovCR(obj_complete, type = x))
   expect_identical(CR_drop, CR_complete)
@@ -107,4 +120,17 @@ test_that("clubSandwich works with dropped observations", {
   test_drop <- lapply(CR_drop, function(x) coef_test(obj_dropped, vcov = x, test = "All", p_values = FALSE))
   test_complete <- lapply(CR_complete, function(x) coef_test(obj_complete, vcov = x, test = "All", p_values = FALSE))
   expect_identical(test_drop, test_complete)
+})
+
+
+test_that("Possible to cluster at higher level than random effects", {
+  skip_on_cran()
+  
+  # create 4th level
+  n_groups <- nlevels(factor(dat$id)) / 4
+  group_id <- rep(1:n_groups, each = 4)[dat$id]
+  
+  # cluster at level 4
+  expect_is(vcovCR(MVML_full, type = "CR2", cluster = group_id), "vcovCR")
+  expect_is(vcovCR(MVML_diag, type = "CR2", cluster = group_id), "vcovCR")
 })

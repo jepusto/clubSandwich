@@ -65,7 +65,10 @@ check_CR <- function(obj, vcov, ..., tol = .Machine$double.eps^0.5) {
 
 check_sort_order <- function(obj, dat, cluster = NULL,
                              CR_types = paste0("CR",0:3),
-                             tol = 10^-6, tol2 = tol, tol3 = tol) {
+                             tol = 10^-6, tol2 = tol, tol3 = tol, 
+                             seed = NULL) {
+  
+  if (!is.null(seed)) set.seed(seed)
   
   re_order <- sample(nrow(dat))
   dat_scramble <- dat[re_order,]

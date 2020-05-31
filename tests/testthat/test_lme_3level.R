@@ -133,12 +133,29 @@ test_that("clubSandwich works with dropped observations", {
   obj_dropped <- update(obj_A4, data = dat_miss, na.action = na.omit)
   obj_complete <- update(obj_A4, data = dat_miss, subset = !is.na(math))
 
-  obj <- obj_dropped
-  cluster <- nlme::getGroups(obj, level = 1)
-  target <- NULL
-  inverse_var <- is.null(target)
-  type <- "CR2"
-  form <- "sandwich"
+  # obj <- obj_dropped
+  # cluster <- nlme::getGroups(obj, level = 1)
+  # target <- NULL
+  # inverse_var <- TRUE
+  # type <- "CR2"
+  # form <- "sandwich"
+  # 
+  # full_grps <- get_cor_grouping(obj)
+  # R_list <- nlme::corMatrix(obj$modelStruct$corStruct)
+  # levels <- names(R_list)
+  # grps <- get_cor_grouping(obj, levels = names(R_list))
+  # 
+  # V_list <- build_var_cor_mats(obj)
+  # V_grps <- attr(V_list, "groups")
+  # ZDZ_list <- build_RE_mats(obj)
+  # ZDZ_grps <- attr(ZDZ_list, "groups")
+  # 
+  # V_dim <- sapply(V_list, nrow)
+  # identical(names(V_dim), names(table(V_grps)))
+  # data.frame(dim = V_dim, grps = table(V_grps))
+  # table(V_dim == table(V_grps))
+  # dat_miss$x <- NA
+  # dat_miss$x[!is.na(dat_miss$math)] <- V_grps
   
   CR_drop <- lapply(CR_types, function(x) vcovCR(obj_dropped, type = x))
   CR_complete <- lapply(CR_types, function(x) vcovCR(obj_complete, type = x))
