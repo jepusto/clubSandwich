@@ -34,7 +34,7 @@
 #' mfor_CR2 <- vcovCR(mfor_fit, type = "CR2", cluster = corrdat$studyid)
 #' mfor_CR2
 #' coef_test(mfor_fit, vcov = mfor_CR2, test = c("Satterthwaite", "saddlepoint"))
-#' Wald_test(mfor_fit, constraints = 2:4, vcov = mfor_CR2)
+#' Wald_test(mfor_fit, constraints = constrain_zero(2:4), vcov = mfor_CR2)
 #' 
 
 
