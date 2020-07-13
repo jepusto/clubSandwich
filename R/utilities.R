@@ -75,23 +75,24 @@ check_sort_order <- function(obj, dat, cluster = NULL,
   obj_scramble <- update(obj, data = dat_scramble)
 
   constraints <- utils::combn(length(coef_CS(obj)), 2, simplify = FALSE)
+  constraint_mats <- lapply(constraints, constrain_zero, coefs = coef_CS(obj))
   
   if (is.null(cluster)) {
     CR_fit <- lapply(CR_types, function(x) vcovCR(obj, type = x))
     CR_scramble <- lapply(CR_types, function(x) vcovCR(obj_scramble, type = x))
     test_fit <- lapply(CR_types, function(x) coef_test(obj, vcov = x, test = "All", p_values = FALSE))
     test_scramble <- lapply(CR_types, function(x) coef_test(obj_scramble, vcov = x, test = "All", p_values = FALSE))
-    Wald_fit <- Wald_test(obj, constraints = constrain_zero(constraints), vcov = "CR2", test = "All")
-    Wald_scramble <- Wald_test(obj_scramble, constraints = constrain_zero(constraints), vcov = "CR2", test = "All")
+    Wald_fit <- Wald_test(obj, constraints = constraint_mats, vcov = "CR2", test = "All")
+    Wald_scramble <- Wald_test(obj_scramble, constraints = constraint_mats, vcov = "CR2", test = "All")
     
   } else {
     CR_fit <- lapply(CR_types, function(x) vcovCR(obj, cluster = dat[[cluster]], type = x))
     CR_scramble <- lapply(CR_types, function(x) vcovCR(obj_scramble, cluster = dat_scramble[[cluster]], type = x))
     test_fit <- lapply(CR_types, function(x) coef_test(obj, vcov = x, cluster = dat[[cluster]], test = "All", p_values = FALSE))
     test_scramble <- lapply(CR_types, function(x) coef_test(obj_scramble, vcov = x, cluster = dat_scramble[[cluster]], test = "All", p_values = FALSE))
-    Wald_fit <- Wald_test(obj, constraints = constrain_zero(constraints), vcov = "CR2",
+    Wald_fit <- Wald_test(obj, constraints = constraint_mats, vcov = "CR2",
                           cluster = dat[[cluster]], test = "All")
-    Wald_scramble <- Wald_test(obj_scramble, constraints = constrain_zero(constraints), vcov = "CR2", 
+    Wald_scramble <- Wald_test(obj_scramble, constraints = constraint_mats, vcov = "CR2", 
                                cluster = dat_scramble[[cluster]], test = "All")
     
   }
