@@ -4,39 +4,80 @@
 \alias{Wald_test}
 \title{Test parameter constraints in a fitted linear regression model}
 \usage{
-Wald_test(obj, constraints, vcov, test = "HTZ", ...)
+Wald_test(obj, constraints, vcov, test = "HTZ", tidy = FALSE, ...)
 }
 \arguments{
 \item{obj}{Fitted model for which to calculate Wald tests.}
 
-\item{constraints}{List of one or more constraints to test. See details
-below.}
+\item{constraints}{List of one or more constraints to test. See details and
+examples.}
 
-\item{vcov}{Variance covariance matrix estimated using \code{vcovCR} or a 
+\item{vcov}{Variance covariance matrix estimated using \code{vcovCR} or a
 character string specifying which small-sample adjustment should be used to
 calculate the variance-covariance.}
 
-\item{test}{Character vector specifying which small-sample correction(s) to 
-calculate. The following corrections are available: \code{"chi-sq"}, 
-\code{"Naive-F"}, \code{"HTA"}, \code{"HTB"}, \code{"HTZ"}, \code{"EDF"}, 
+\item{test}{Character vector specifying which small-sample correction(s) to
+calculate. The following corrections are available: \code{"chi-sq"},
+\code{"Naive-F"}, \code{"HTA"}, \code{"HTB"}, \code{"HTZ"}, \code{"EDF"},
 \code{"EDT"}. Default is \code{"HTZ"}.}
 
-\item{...}{Further arguments passed to \code{\link{vcovCR}}, which are only 
+\item{tidy}{Logical value controlling whether to tidy the test results. If
+\code{constraints} is a list with multiple constraints, the result will
+be coerced into a data frame when \code{tidy = TRUE}.}
+
+\item{...}{Further arguments passed to \code{\link{vcovCR}}, which are only
 needed if \code{vcov} is a character string.}
 }
 \value{
 A list of test results.
 }
 \description{
-\code{Wald_test} reports Wald-type tests of linear contrasts from a fitted 
-linear regression model, using a sandwich estimator for the 
-variance-covariance matrix and a small sample correction for the p-value. 
+\code{Wald_test} reports Wald-type tests of linear contrasts from a fitted
+linear regression model, using a sandwich estimator for the
+variance-covariance matrix and a small sample correction for the p-value.
 Several different small-sample corrections are available.
 }
 \details{
-Constraints can be specified as character vectors, integer vectors,
-logical vectors, or matrices.
+Constraints can be specified directly as q X p matrices or
+  indirectly through \code{\link{constrain_equal}},
+  \code{\link{constrain_zero}}, or \code{\link{constrain_pairwise}}
+}
+\examples{
+
+data(Duncan, package = "carData")
+Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
+
+Duncan_fit <- lm(prestige ~ 0 + type + income + type:income + type:education, data=Duncan)
+# Note that type:income terms are interactions because main effect of income is included
+# but type:education terms are separate slopes for each unique level of type
+
+# Test equality of intercepts
+Wald_test(Duncan_fit,
+          constraints = constrain_equal(1:3),
+          vcov = "CR2", cluster = Duncan$cluster)
+
+# Test equality of type-by-education slopes
+Wald_test(Duncan_fit,
+          constraints = constrain_equal(":education", reg_ex = TRUE),
+          vcov = "CR2", cluster = Duncan$cluster)
+
+# Pairwise comparisons of type-by-education slopes
+Wald_test(Duncan_fit,
+          constraints = constrain_pairwise(":education", reg_ex = TRUE),
+          vcov = "CR2", cluster = Duncan$cluster)
+
+# Test type-by-income interactions
+Wald_test(Duncan_fit,
+          constraints = constrain_zero(":income", reg_ex = TRUE),
+          vcov = "CR2", cluster = Duncan$cluster)
+
+# Pairwise comparisons of type-by-income interactions
+Wald_test(Duncan_fit,
+          constraints = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
+          vcov = "CR2", cluster = Duncan$cluster)
+
 }
 \seealso{
-\code{\link{vcovCR}}
+\code{\link{vcovCR}}, \code{\link{constrain_equal}},
+  \code{\link{constrain_zero}}, \code{\link{constrain_pairwise}}
 }

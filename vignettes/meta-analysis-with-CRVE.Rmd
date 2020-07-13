@@ -52,7 +52,7 @@ A small-sample adjusted F-test for this hypothesis can be obtained as follows.
 The `vcov = "CR2"` option means that the standard errors will be corrected using the bias-reduced linearization estimator described in Tipton and Pustejovsky (2015).
 
 ```{r}
-Wald_test(m3_robu, constraints = 10:12, vcov = "CR2")
+Wald_test(m3_robu, constraints = constrain_zero(10:12), vcov = "CR2")
 ```
 
 By default, the `Wald_test` function provides an F-type test with degrees of freedom estimated using the approximate Hotelling's $T^2_Z$ method. The test has less than 17 degrees of freedom, even though there are 152 independent studies in the data, and has a p-value that is not quite significant at conventional levels. The low degrees of freedom are a consequence of the fact that one of the levels of `evaluator independence` has only a few effect sizes in it:
@@ -86,7 +86,7 @@ Note that `coef_test` assumed that it should cluster based on `studyID`, which i
 
 The F-test for degree of evaluator independence uses the same syntax as before:
 ```{r}
-Wald_test(m3_metafor, constraints = 10:12, vcov = "CR2")
+Wald_test(m3_metafor, constraints = constrain_zero(10:12), vcov = "CR2")
 ```
 
 Despite some differences in weighting schemes, the p-value is very close to the result obtained using `robumeta`.

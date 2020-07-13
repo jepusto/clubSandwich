@@ -173,14 +173,17 @@ coef_test(plm_Hausman, vcov = "CR2", test = "Satterthwaite")[1:4,]
 To conduct a joint test on the centered covariates, we can use the `Wald_test` function. The usual way to test this hypothesis would be to use the `CR1` variance estimator to calculate the robust Wald statistic, then use a $\chi^2_2$ reference distribution (or equivalently, compare a re-scaled Wald statistic to an $F(2,\infty)$ distribution). The `Wald_test` function reports the latter version: 
 
 ```{r}
-Wald_test(plm_Hausman, constraints = c("legal_cent","beer_cent"), 
+Wald_test(plm_Hausman, 
+          constraints = constrain_zero(c("legal_cent","beer_cent")), 
           vcov = "CR1", test = "chi-sq")
 ```
 
 The test is just shy of significance at the 5% level. If we instead use the `CR2` variance estimator and our newly proposed approximate F-test (which is the default in `Wald_test`), then we get:
 
 ```{r}
-Wald_test(plm_Hausman, constraints = c("legal_cent","beer_cent"), vcov = "CR2")
+Wald_test(plm_Hausman, 
+          constraints = constrain_zero(c("legal_cent","beer_cent")), 
+          vcov = "CR2")
 ```
 
 The low degrees of freedom of the test indicate that we're definitely in small-sample territory and should not trust the asymptotic $\chi^2$ approximation. 

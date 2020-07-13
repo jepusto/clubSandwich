@@ -173,8 +173,8 @@ test_that("lmer agrees with lme", {
   
   constraints <- c(combn(length(coef_CS(lmer_fit)), 2, simplify = FALSE),
                    combn(length(coef_CS(lmer_fit)), 3, simplify = FALSE))
-  Wald_lmer <- Wald_test(lmer_fit, constraints = constraints, vcov = "CR2", test = "All")
-  Wald_lme <- Wald_test(lme_fit, constraints = constraints, vcov = "CR2", test = "All")
+  Wald_lmer <- Wald_test(lmer_fit, constraints = constrain_zero(constraints), vcov = "CR2", test = "All")
+  Wald_lme <- Wald_test(lme_fit, constraints = constrain_zero(constraints), vcov = "CR2", test = "All")
   compare_Waldtests(Wald_lmer, Wald_lme)
   
 })

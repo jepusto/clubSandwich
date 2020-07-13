@@ -243,7 +243,7 @@ targetVariance.lme <- function(obj, cluster = nlme::getGroups(obj, level = 1)) {
     V_mat <- unblock(V_list, block = V_grps)
     ZDZ_mat <- unblock(ZDZ_list, block = ZDZ_grps)
     target_list <- V_mat + ZDZ_mat
-    target_grps <- factor(rep("A", nrow(Sigma_list)))
+    target_grps <- factor(rep("A", nrow(target_list)))
   }
   
   # check if clustering level is higher than highest level of random effects
