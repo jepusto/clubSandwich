@@ -126,6 +126,7 @@ test_that("clubSandwich works with dropped observations", {
 
 
 test_that("lme agrees with gls", {
+  
   lme_fit <- lme(weight ~ Time * Diet, data=BodyWeight, ~ 1 | Rat)
   gls_fit <- gls(weight ~ Time * Diet, data=BodyWeight, 
                  correlation = corCompSymm(form = ~ 1 | Rat))
@@ -142,8 +143,8 @@ test_that("lme agrees with gls", {
   
   constraints <- c(combn(length(coef(lme_fit)), 2, simplify = FALSE),
                    combn(length(coef(lme_fit)), 3, simplify = FALSE))
-  Wald_lme <- Wald_test(lme_fit, constraints = constraints, vcov = "CR2", test = "All")
-  Wald_gls <- Wald_test(gls_fit, constraints = constraints, vcov = "CR2", test = "All")
+  Wald_lme <- Wald_test(lme_fit, constraints = constrain_zero(constraints), vcov = "CR2", test = "All")
+  Wald_gls <- Wald_test(gls_fit, constraints = constrain_zero(constraints), vcov = "CR2", test = "All")
   compare_Waldtests(Wald_lme, Wald_gls)
 })
 

@@ -165,15 +165,15 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - full 
                         "Implmentation quality" = 16:17,
                         "Program format" = 18:20)
   
-  dropout_tests <- Wald_test(m3_hier, constraints = contrast_list, 
+  dropout_tests <- Wald_test(m3_hier, constraints = constrain_zero(contrast_list), 
                              vcov = m3_hier_CR2, test = c("Naive-F","HTZ"))
   
-  Fstat_club <- sapply(dropout_tests, function(x) x$F)
+  Fstat_club <- sapply(dropout_tests, function(x) x$Fstat)
   attr(Fstat_club, "dimnames") <- NULL
   Fstat_paper <- matrix(c(0.23, 0.22, 0.91, 0.84, 3.11, 2.78, 14.15, 13.78, 3.85, 3.65), nrow = 2)
   expect_equivalent(Fstat_paper, round(Fstat_club, 2))
   
-  df_club <- sapply(dropout_tests, function(x) x$df[2])
+  df_club <- sapply(dropout_tests, function(x) x$df_denom[2])
   df_paper <- c(42.9, 21.5, 16.8, 36.9, 37.5)
   attr(df_club, "names") <- NULL
   expect_equivalent(df_paper, round(df_club, 1))
@@ -191,8 +191,7 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - reduc
   
   m3_hier_CR2 <- vcovCR(m3_hier, cluster = dp_subset$studyID, type = "CR2")
   expect_true(check_CR(m3_hier, vcov = m3_hier_CR2))
-  # expect_true(check_CR(m3_hier, vcov = "CR4"))
-
+  
   CR2_ttests <- coef_test(m3_hier, vcov = m3_hier_CR2, test = "Satterthwaite")
   
   expect_equivalent(m3_hier$VR.r, as.matrix(m3_hier_CR2))
@@ -205,15 +204,15 @@ test_that("dropoutPrevention tests replicate Tipton & Pustejovsky (2015) - reduc
                         "Implmentation quality" = 15:16,
                         "Program format" = 17:19)
   
-  dropout_tests <- Wald_test(m3_hier, constraints = contrast_list, 
+  dropout_tests <- Wald_test(m3_hier, constraints = constrain_zero(contrast_list), 
                              vcov = "CR2", test = c("Naive-F","HTZ"))
   
-  Fstat_club <- sapply(dropout_tests, function(x) x$F)
+  Fstat_club <- sapply(dropout_tests, function(x) x$Fstat)
   Fstat_paper <- matrix(c(3.19, 2.93, 1.05, 0.84, 0.32, 0.26, 4.02, 3.69, 1.19, 0.98), nrow = 2)
   attr(Fstat_club, "dimnames") <- NULL
   expect_equivalent(Fstat_paper, round(Fstat_club, 2))
   
-  df_club <- sapply(dropout_tests, function(x) x$df[2])
+  df_club <- sapply(dropout_tests, function(x) x$df_denom[2])
   df_paper <- c(11.0, 7.7, 4.6, 11.0, 9.1)
   attr(df_club, "names") <- NULL
   expect_equivalent(df_paper, round(df_club, 1))
@@ -239,8 +238,8 @@ test_that("order doesn't matter", {
   compare_ttests(test_fit, test_scramble)
   
   constraints <- combn(length(coef_CS(corr_small)), 2, simplify = FALSE)
-  Wald_fit <- Wald_test(corr_small, constraints = constraints, vcov = "CR2", test = "All")
-  Wald_scramble <- Wald_test(corr_scramble, constraints = constraints, vcov = "CR2", test = "All")
+  Wald_fit <- Wald_test(corr_small, constraints = constrain_zero(constraints), vcov = "CR2", test = "All")
+  Wald_scramble <- Wald_test(corr_scramble, constraints = constrain_zero(constraints), vcov = "CR2", test = "All")
   compare_Waldtests(Wald_fit, Wald_scramble)
 })
 

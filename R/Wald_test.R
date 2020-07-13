@@ -91,6 +91,12 @@ constrain_zero <- function(constraints, coefs, reg_ex = FALSE) {
     return(f)
   }
   
+  if (is.list(constraints)) {
+    constraint_list <- lapply(constraints, constrain_zero, 
+                              coefs = coefs, reg_ex = reg_ex)
+    return(constraint_list)
+  }
+  
   p <- length(coefs)
   
   if (reg_ex) {
@@ -131,6 +137,12 @@ constrain_equal <- function(constraints, coefs, reg_ex = FALSE) {
     return(f)
   }
   
+  if (is.list(constraints)) {
+    constraint_list <- lapply(constraints, constrain_equal, 
+                              coefs = coefs, reg_ex = reg_ex)
+    return(constraint_list)
+  }
+  
   if (reg_ex) {
     if (!inherits(constraints, "character")) stop("When reg_ex = TRUE, constraints must be a regular expression.")
     constraints <- grepl(constraints, names(coefs))
@@ -156,6 +168,13 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
                                             reg_ex = reg_ex,
                                             with_zero = with_zero)
     return(f)
+  }
+  
+  if (is.list(constraints)) {
+    constraint_list <- lapply(constraints, constrain_pairwise, 
+                              coefs = coefs, reg_ex = reg_ex, with_zero = with_zero)
+    constraint_list <- unlist(constraint_list, recursive = FALSE)
+    return(constraint_list)
   }
   
   p <- length(coefs)
@@ -202,7 +221,7 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
       zero_mat
     })
     
-    C_mats <- c(C_mats, C_to_zero)
+    C_mats <- c(C_to_zero, C_mats)
   }
   
   return(C_mats)
@@ -222,8 +241,8 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #' Several different small-sample corrections are available.
 #'
 #' @param obj Fitted model for which to calculate Wald tests.
-#' @param constraints List of one or more constraints to test. See details
-#'   and examples.
+#' @param constraints List of one or more constraints to test. See details and
+#'   examples.
 #' @param vcov Variance covariance matrix estimated using \code{vcovCR} or a
 #'   character string specifying which small-sample adjustment should be used to
 #'   calculate the variance-covariance.
@@ -231,6 +250,9 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #'   calculate. The following corrections are available: \code{"chi-sq"},
 #'   \code{"Naive-F"}, \code{"HTA"}, \code{"HTB"}, \code{"HTZ"}, \code{"EDF"},
 #'   \code{"EDT"}. Default is \code{"HTZ"}.
+#' @param tidy Logical value controlling whether to tidy the test results. If
+#'   \code{constraints} is a list with multiple constraints, the result will
+#'   be coerced into a data frame when \code{tidy = TRUE}.
 #' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only
 #'   needed if \code{vcov} is a character string.
 #'
@@ -244,7 +266,7 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #'   \code{\link{constrain_zero}}, \code{\link{constrain_pairwise}}
 #'
 #' @examples
-#' 
+#'
 #' data(Duncan, package = "carData")
 #' Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
 #'
@@ -256,31 +278,31 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #' Wald_test(Duncan_fit,
 #'           constraints = constrain_equal(1:3),
 #'           vcov = "CR2", cluster = Duncan$cluster)
-#'           
+#'
 #' # Test equality of type-by-education slopes
 #' Wald_test(Duncan_fit,
 #'           constraints = constrain_equal(":education", reg_ex = TRUE),
 #'           vcov = "CR2", cluster = Duncan$cluster)
-#'           
+#'
 #' # Pairwise comparisons of type-by-education slopes
 #' Wald_test(Duncan_fit,
 #'           constraints = constrain_pairwise(":education", reg_ex = TRUE),
 #'           vcov = "CR2", cluster = Duncan$cluster)
-#'           
+#'
 #' # Test type-by-income interactions
 #' Wald_test(Duncan_fit,
 #'           constraints = constrain_zero(":income", reg_ex = TRUE),
 #'           vcov = "CR2", cluster = Duncan$cluster)
-#'           
+#'
 #' # Pairwise comparisons of type-by-income interactions
 #' Wald_test(Duncan_fit,
 #'           constraints = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
 #'           vcov = "CR2", cluster = Duncan$cluster)
-#'           
+#'
 #' @export
 
 
-Wald_test <- function(obj, constraints, vcov, test = "HTZ", ...) {
+Wald_test <- function(obj, constraints, vcov, test = "HTZ", tidy = FALSE, ...) {
   
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!inherits(vcov, "clubSandwich")) stop("Variance-covariance matrix must be a clubSandwich.")
@@ -305,6 +327,15 @@ Wald_test <- function(obj, constraints, vcov, test = "HTZ", ...) {
     }
     
     results <- lapply(constraints, Wald_testing, beta = beta, vcov = vcov, test = test, GH = GH)
+    
+    if (tidy) {
+      results <- mapply(
+        function(x, nm) cbind(hypothesis = rep(nm, nrow(x)), x, stringsAsFactors = FALSE), 
+        x = results, nm = names(results), SIMPLIFY = FALSE
+      )
+      results <- do.call(rbind, c(results, make.row.names = FALSE))
+      class(results) <- c("Wald_test_clubSandwich",class(results))
+    }
     
   } else {
     
@@ -348,18 +379,22 @@ Wald_testing <- function(C_mat, beta, vcov, test, GH) {
   # Wald statistic
   Q <- as.numeric(t(C_mat %*% beta) %*% chol2inv(chol(C_mat %*% vcov %*% t(C_mat))) %*% C_mat %*% beta)
   
-  result <- data.frame(row.names = c("Fstat","delta","df","p_val"))
+  result <- data.frame()
   
   # chi-square
   if ("chi-sq" %in% test) {
     p_val <- pchisq(Q, df = q, lower.tail = FALSE)
-    result <- cbind(result, "chi-sq" = c(Fstat = Q / q, delta = 1, df = Inf, p_val = p_val))
+    result <- rbind(result, 
+                    data.frame(test = "chi-sq", Fstat = Q / q, 
+                               delta = 1, df_num = q, df_denom = Inf, p_val = p_val))
   }
   
   # Naive F
   if ("Naive-F" %in% test) {
     p_val <- pf(Q / q, df1 = q, df2 = J - 1, lower.tail = FALSE)
-    result <- cbind(result, "Naive-F" = c(Fstat = Q / q, delta = 1, df = J - 1, p_val = p_val))
+    result <- rbind(result, 
+                    data.frame(test = "Naive-F", Fstat = Q / q, 
+                               delta = 1, df_num = q, df_denom = J - 1, p_val = p_val))
   }
   
   # Hotelling's T-squared
@@ -372,7 +407,9 @@ Wald_testing <- function(C_mat, beta, vcov, test, GH) {
     
     if ("HTA" %in% test) {
       nu_A <- 2 * sum(Var_mat) / sum(Cov_arr^2)
-      result <- cbind(result, "HTA" = Hotelling_Tsq(Q, q, nu = nu_A))
+      HTA_res <- 
+      
+      result <- rbind(result, data.frame(test = "HTA", Hotelling_Tsq(Q, q, nu = nu_A)))
     } 
     
     if ("HTB" %in% test) {
@@ -381,7 +418,7 @@ Wald_testing <- function(C_mat, beta, vcov, test, GH) {
       for (s in 1:q) for (t in 1:s) for (u in 1:s) for (v in 1:(ifelse(u==s,t,u))) lower_arr[s,t,u,v] <- TRUE
       
       nu_B <- 2 * sum(Var_mat[lower_mat]) / sum(Cov_arr[lower_arr]^2)
-      result <- cbind(result, "HTB" = Hotelling_Tsq(Q, q, nu = nu_B))
+      result <- rbind(result, data.frame(test = "HTB", Hotelling_Tsq(Q, q, nu = nu_B)))
     } 
   } else if ("HTZ" %in% test) {
     Var_mat <- total_variance_mat(P_array, Omega_nsqrt, q = q)
@@ -389,7 +426,7 @@ Wald_testing <- function(C_mat, beta, vcov, test, GH) {
   
   if ("HTZ" %in% test) {
     nu_Z <- q * (q + 1) / sum(Var_mat)
-    result <- cbind(result, "HTZ" = Hotelling_Tsq(Q, q, nu = nu_Z))
+    result <- rbind(result, data.frame(test = "HTZ", Hotelling_Tsq(Q, q, nu = nu_Z)))
   }
   
   # Eigen-decompositions
@@ -408,7 +445,9 @@ Wald_testing <- function(C_mat, beta, vcov, test, GH) {
       df <- ifelse(q * VQ > 2 * EQ^2, 4 + 2 * EQ^2 * (q + 2) / (q * VQ - 2 * EQ^2), Inf)
       Fstat <- delta * Q / q
       p_val <- pf(Fstat, df1 = q, df2 = df, lower.tail = FALSE)
-      result <- cbind(result, "EDF" = c(Fstat = Fstat, delta = delta, df = df, p_val = p_val))
+      result <- rbind(result, 
+                      data.frame(test = "EDF", Fstat = Fstat, 
+                                 delta = delta, df_num = q, df_denom = df, p_val = p_val))
     }
     
     if ("EDT" %in% test) {
@@ -421,11 +460,12 @@ Wald_testing <- function(C_mat, beta, vcov, test, GH) {
         (10 * b_j^2 + 8 * b_j * c_j^4 + 1000 * b_j)
       Fstat <- mean(z_j^2)
       p_val <- pf(Fstat, df1 = q, df2 = Inf, lower.tail = FALSE)
-      result <- cbind(result, "EDT" = c(Fstat = Fstat, delta = 1, df = Inf, p_val = p_val))
+      result <- rbind(result, 
+                      data.frame(test = "EDT", Fstat = Fstat, 
+                                 delta = 1, df_num = q, df_denom = Inf, p_val = p_val))
     }
   }
   
-  result <- as.data.frame(t(result))
   class(result) <- c("Wald_test_clubSandwich", class(result))
   attr(result, "type") <- attr(vcov, "type")
   result 
@@ -481,7 +521,7 @@ Hotelling_Tsq <- function(Q, q, nu) {
   df <- nu - q + 1
   Fstat <- delta * Q / q
   p_val <- ifelse(df > 0, pf(Fstat, df1 = q, df2 = df, lower.tail = FALSE), NA)
-  c(Fstat = Fstat, delta = delta, df = df, p_val = p_val)
+  data.frame(Fstat = Fstat, delta = delta, df_num = q, df_denom = df, p_val = p_val)
 }
 
 #---------------------------------------------
@@ -491,12 +531,12 @@ Hotelling_Tsq <- function(Q, q, nu) {
 #' @export
 
 print.Wald_test_clubSandwich <- function(x, digits = 3, ...) {
-  p_val <- format.pval(x$p_val, digits = digits, eps = 10^-digits)
-  sig <- symnum(x$p_val, corr = FALSE, na = FALSE, 
+  res <- x
+  res$delta <- NULL
+  res$p_val <- format.pval(x$p_val, digits = digits, eps = 10^-digits)
+  res$sig <- symnum(x$p_val, corr = FALSE, na = FALSE, 
                 cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
                 symbols = c("***", "**", "*", ".", " "))
-  res <- data.frame("Test" = rownames(x), "F" = x$Fstat, "d.f." = x$df, "p-val" = p_val)
-  #, "Sig." = sig)
   
   print(format(res, digits = 3), row.names = FALSE)
 }
