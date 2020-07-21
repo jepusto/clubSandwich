@@ -4,6 +4,8 @@ clubSandwich 0.4.2.9999
     * Wald_test() now uses new helper functions constrain_zero(), constrain_equal(), and constrain_pairwise() to specify constraint matrices.
     * Wald_test() gains an argument tidy. When TRUE, results for a list of tests will be tidied into a single data.frame. 
     * Output of Wald_test now includes both numerator and denominator degrees of freedom.
+* Corrected bug in methods for plm objects, which occurred when "within" models included cluster-level interactions. Previously main effects of cluster-level variables were not getting dropped from model_matrix.pml().    
+
 
 clubSandwich 0.4.2
 =======================

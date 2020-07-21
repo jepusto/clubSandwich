@@ -133,7 +133,15 @@ model_matrix.plm <- function(obj) {
   if (obj$args$model=="random") {
     model.matrix(Formula::as.Formula(formula(obj)), model.frame(obj))  
   } else {
-    model.matrix(obj, model = obj$args$model, effect = obj$args$effect)
+    cstcovar.rm <- switch(obj$args$model,
+                          within = "all",
+                          fd = "covariates",
+                          pooling = "none",
+                          between = "none")
+    model.matrix(obj, 
+                 model = obj$args$model, 
+                 effect = obj$args$effect,
+                 cstcovar.rm = cstcovar.rm)
   }
 }
 
