@@ -8,3 +8,4 @@ cran-comments.md
 README.md
 revdep
 vignettes/Robust-Variance-Estimation-with-clubSandwich.Rmd
+vignettes/Wald-tests-in-clubSandwich_cache

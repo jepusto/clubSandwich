@@ -44,6 +44,6 @@ Suggests:
     zoo,
     testthat,
     rmarkdown
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Encoding: UTF-8
 Language: en-US
