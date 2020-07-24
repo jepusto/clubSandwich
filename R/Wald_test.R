@@ -321,8 +321,12 @@ Wald_test <- function(obj, constraints, vcov, test = "HTZ", tidy = FALSE, ...) {
   
   if (is.list(constraints)) {
     
+    constraints <- lapply(constraints, function(x) {
+      if (inherits(x, "function")) x(coef_CS(obj)) else x
+    })
+    
     # List of constraints
-    if (!all(sapply(constraints, inherits, "matrix") & (sapply(constraints, ncol) == p))) {
+    if (!all(sapply(constraints, inherits, "matrix") & sapply(constraints, ncol) == p)) {
       stop(paste0("Constraints must be a q X ", p," matrix, a list of such matrices, or a call to a constrain_*() function."))
     }
     
@@ -338,6 +342,7 @@ Wald_test <- function(obj, constraints, vcov, test = "HTZ", tidy = FALSE, ...) {
     }
     
   } else {
+    
     
     if (!inherits(constraints, "matrix") | ncol(constraints) != p) {
       stop(paste0("Constraints must be a q X ", p," matrix, a list of such matrices, or a call to a constrain_*() function."))
