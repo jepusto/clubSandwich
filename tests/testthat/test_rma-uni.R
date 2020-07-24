@@ -130,14 +130,14 @@ test_that("clubSandwich works with missing variances", {
 test_that("vcovCR options work for CR2", {
   RE_var <- hier_meta$tau2 + hierdat$var
   CR2_iv <- vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid)
-  expect_identical(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, inverse_var = TRUE), CR2_iv)
+  expect_equal(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, inverse_var = TRUE), CR2_iv)
 
   CR2_not <- vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, inverse_var = FALSE)
   attr(CR2_iv, "inverse_var") <- FALSE
   attr(CR2_iv, "target") <- attr(CR2_not, "target")
   expect_equal(CR2_not, CR2_iv)
-  expect_identical(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = RE_var), CR2_not)
-  expect_identical(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = RE_var, inverse_var = FALSE), CR2_not)
+  expect_equal(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = RE_var), CR2_not)
+  expect_equal(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = RE_var, inverse_var = FALSE), CR2_not)
   expect_false(identical(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = hierdat$var), CR2_not))
 })
 

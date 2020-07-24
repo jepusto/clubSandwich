@@ -28,8 +28,8 @@ test_that("bread works", {
 
 test_that("vcovCR options work for CR2", {
   CR2_AR1 <- vcovCR(lm_AR1, type = "CR2")
-  expect_identical(vcovCR(lm_AR1, cluster = Ovary$Mare, type = "CR2"), CR2_AR1)
-  expect_identical(vcovCR(lm_AR1, type = "CR2", inverse_var = TRUE), CR2_AR1)
+  expect_equal(vcovCR(lm_AR1, cluster = Ovary$Mare, type = "CR2"), CR2_AR1)
+  expect_equal(vcovCR(lm_AR1, type = "CR2", inverse_var = TRUE), CR2_AR1)
   expect_false(identical(vcovCR(lm_AR1, type = "CR2", inverse_var = FALSE), CR2_AR1))
   
   target <- targetVariance(lm_AR1)
@@ -38,8 +38,8 @@ test_that("vcovCR options work for CR2", {
   expect_equal(vcovCR(lm_AR1, type = "CR2", target = target, inverse_var = FALSE), CR2_AR1)
 
   CR2_power <- vcovCR(lm_AR1_power, type = "CR2")
-  expect_identical(vcovCR(lm_AR1_power, cluster = Ovary$Mare, type = "CR2"), CR2_power)
-  expect_identical(vcovCR(lm_AR1_power, type = "CR2", inverse_var = TRUE), CR2_power)
+  expect_equal(vcovCR(lm_AR1_power, cluster = Ovary$Mare, type = "CR2"), CR2_power)
+  expect_equal(vcovCR(lm_AR1_power, type = "CR2", inverse_var = TRUE), CR2_power)
   expect_false(identical(vcovCR(lm_AR1_power, type = "CR2", inverse_var = FALSE), CR2_power))
   
   target <- targetVariance(lm_AR1_power, cluster = Ovary$Mare)
@@ -51,8 +51,8 @@ test_that("vcovCR options work for CR2", {
 
 test_that("vcovCR options work for CR4", {
   CR4_AR1 <- vcovCR(lm_AR1, type = "CR4")
-  expect_identical(vcovCR(lm_AR1, cluster = Ovary$Mare, type = "CR4"), CR4_AR1)
-  expect_identical(vcovCR(lm_AR1, type = "CR4", inverse_var = TRUE), CR4_AR1)
+  expect_equal(vcovCR(lm_AR1, cluster = Ovary$Mare, type = "CR4"), CR4_AR1)
+  expect_equal(vcovCR(lm_AR1, type = "CR4", inverse_var = TRUE), CR4_AR1)
   expect_false(identical(vcovCR(lm_AR1, type = "CR4", inverse_var = FALSE), CR4_AR1))
   
   target <- targetVariance(lm_AR1)
@@ -61,8 +61,8 @@ test_that("vcovCR options work for CR4", {
   expect_equal(vcovCR(lm_AR1, type = "CR4", target = target, inverse_var = FALSE), CR4_AR1)
   
   CR4_power <- vcovCR(lm_AR1_power, type = "CR4")
-  expect_identical(vcovCR(lm_AR1_power, cluster = Ovary$Mare, type = "CR4"), CR4_power)
-  expect_identical(vcovCR(lm_AR1_power, type = "CR4", inverse_var = TRUE), CR4_power)
+  expect_equal(vcovCR(lm_AR1_power, cluster = Ovary$Mare, type = "CR4"), CR4_power)
+  expect_equal(vcovCR(lm_AR1_power, type = "CR4", inverse_var = TRUE), CR4_power)
   expect_false(identical(vcovCR(lm_AR1_power, type = "CR4", inverse_var = FALSE), CR4_power))
   
   target <- targetVariance(lm_AR1_power)
@@ -85,7 +85,7 @@ test_that("getData works.", {
   gls_scramble <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), 
                       data = egg_scramble)
   scramble_dat <- getData(gls_scramble)
-  expect_identical(egg_scramble, scramble_dat)
+  expect_equal(egg_scramble, scramble_dat)
 })
 
 
@@ -93,7 +93,8 @@ CR_types <- paste0("CR",0:4)
 
 test_that("Order doesn't matter.", {
   
-  check_sort_order(lm_AR1_power, dat = Ovary)
+  check_sort_order(lm_AR1_power, dat = Ovary, 
+                   tol = 10^-4, tol2 = 10^-3, tol3 = 10^-3)
 
 })
 
@@ -109,11 +110,11 @@ test_that("clubSandwich works with dropped observations", {
   
   CR_drop <- lapply(CR_types, function(x) vcovCR(lm_dropped, type = x))
   CR_complete <- lapply(CR_types, function(x) vcovCR(lm_complete, type = x))
-  expect_identical(CR_drop, CR_complete)
+  expect_equal(CR_drop, CR_complete)
   
   test_drop <- lapply(CR_types, function(x) coef_test(lm_dropped, vcov = x, test = "All", p_values = FALSE))
   test_complete <- lapply(CR_types, function(x) coef_test(lm_complete, vcov = x, test = "All", p_values = FALSE))
-  expect_identical(test_drop, test_complete)
+  expect_equal(test_drop, test_complete)
 })
 
 test_that("Possible to cluster at higher level than random effects", {

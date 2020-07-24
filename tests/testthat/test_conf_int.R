@@ -17,7 +17,7 @@ test_that("vcov arguments work", {
   VCR <- lapply(CRs, function(t) vcovCR(gls_fit, type = t))
   CI_A <- lapply(VCR, function(v) conf_int(gls_fit, vcov = v, level = .98))
   CI_B <- lapply(CRs, function(t) conf_int(gls_fit, vcov = t, level = .98))
-  expect_identical(CI_A, CI_B)
+  expect_equal(CI_A, CI_B)
 })
 
 test_that("coefs argument works", {
@@ -26,7 +26,7 @@ test_that("coefs argument works", {
   
   CI_A <- apply(which_grid[-1,], 1, function(x) tests_all[x,])
   CI_B <- apply(which_grid[-1,], 1, function(x) conf_int(gls_fit, vcov = "CR0", coefs = x))
-  expect_identical(CI_A, CI_B)
+  expect_equal(CI_A, CI_B)
 })
 
 test_that("printing works", {
@@ -57,7 +57,7 @@ test_that("conf_int() is consistent with coef_test()", {
   ttests <- lapply(CRs, function(v) coef_test(gls_fit, vcov = v, test = "Satterthwaite"))
   CI_L <- lapply(ttests, function(x) x$beta - x$SE * qt(1 - (1 - lev) / 2, df = x$df))
   CI_U <- lapply(ttests, function(x) x$beta + x$SE * qt(1 - (1 - lev) / 2, df = x$df))
-  expect_identical(lapply(CIs, function(x) x$CI_L), CI_L)
-  expect_identical(lapply(CIs, function(x) x$CI_U), CI_U)
+  expect_equal(lapply(CIs, function(x) x$CI_L), CI_L)
+  expect_equal(lapply(CIs, function(x) x$CI_U), CI_U)
 })
 

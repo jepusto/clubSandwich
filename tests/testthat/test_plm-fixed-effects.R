@@ -114,29 +114,29 @@ test_that("CR0 and CR1S agree with arellano vcov", {
 
 test_that("vcovCR options work for CR2", {
   CR2_iv <- vcovCR(plm_individual, type = "CR2")
-  expect_identical(vcovCR(plm_individual, cluster = Produc_scramble$state, type = "CR2"), CR2_iv)
+  expect_equal(vcovCR(plm_individual, cluster = Produc_scramble$state, type = "CR2"), CR2_iv)
   expect_equal(vcovCR(plm_individual, type = "CR2", inverse_var = TRUE), CR2_iv)
   expect_equal(vcovCR(plm_individual, type = "CR2", target = rep(1, n), inverse_var = TRUE), CR2_iv)
   
   CR2_not <- vcovCR(plm_individual, type = "CR2", inverse_var = FALSE)
   expect_equivalent(CR2_not, CR2_iv)
-  expect_identical(vcovCR(plm_individual, cluster = Produc_scramble$state, type = "CR2", inverse_var = FALSE), CR2_not)
-  expect_identical(vcovCR(plm_individual, type = "CR2", target = rep(1, n)), CR2_not)
-  expect_identical(vcovCR(plm_individual, type = "CR2", target = rep(1, n), inverse_var = FALSE), CR2_not)
+  expect_equal(vcovCR(plm_individual, cluster = Produc_scramble$state, type = "CR2", inverse_var = FALSE), CR2_not)
+  expect_equal(vcovCR(plm_individual, type = "CR2", target = rep(1, n)), CR2_not)
+  expect_equal(vcovCR(plm_individual, type = "CR2", target = rep(1, n), inverse_var = FALSE), CR2_not)
   expect_false(identical(vcovCR(plm_individual, type = "CR2", target = 1 / Produc_scramble$emp), CR2_not))
 })
 
 test_that("vcovCR options work for CR4", {
   CR4_iv <- vcovCR(plm_individual, type = "CR4")
-  expect_identical(vcovCR(plm_individual, cluster = Produc_scramble$state, type = "CR4"), CR4_iv)
-  expect_identical(vcovCR(plm_individual, type = "CR4", inverse_var = TRUE), CR4_iv)
-  expect_identical(vcovCR(plm_individual, type = "CR4", target = rep(1, n), inverse_var = TRUE), CR4_iv)
+  expect_equal(vcovCR(plm_individual, cluster = Produc_scramble$state, type = "CR4"), CR4_iv)
+  expect_equal(vcovCR(plm_individual, type = "CR4", inverse_var = TRUE), CR4_iv)
+  expect_equal(vcovCR(plm_individual, type = "CR4", target = rep(1, n), inverse_var = TRUE), CR4_iv)
   
   CR4_not <- vcovCR(plm_individual, type = "CR4", inverse_var = FALSE)
   expect_equivalent(CR4_not, CR4_iv)
-  expect_identical(vcovCR(plm_individual, cluster = Produc_scramble$state, type = "CR4", inverse_var = FALSE), CR4_not)
-  expect_identical(vcovCR(plm_individual, type = "CR4", target = rep(1, n)), CR4_not)
-  expect_identical(vcovCR(plm_individual, type = "CR4", target = rep(1, n), inverse_var = FALSE), CR4_not)
+  expect_equal(vcovCR(plm_individual, cluster = Produc_scramble$state, type = "CR4", inverse_var = FALSE), CR4_not)
+  expect_equal(vcovCR(plm_individual, type = "CR4", target = rep(1, n)), CR4_not)
+  expect_equal(vcovCR(plm_individual, type = "CR4", target = rep(1, n), inverse_var = FALSE), CR4_not)
   expect_false(identical(vcovCR(plm_individual, type = "CR4", target = 1 / Produc_scramble$emp), CR4_not))
 })
 

@@ -204,7 +204,7 @@ test_that("clubSandwich works with missing vcov matrix", {
 test_that("vcovCR options work for CR2", {
   RE_var <- targetVariance(hier_meta, cluster = factor(hierdat$studyid))
   CR2_iv <- vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid)
-  expect_identical(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, inverse_var = TRUE), CR2_iv)
+  expect_equal(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, inverse_var = TRUE), CR2_iv)
 
   CR2_not <- vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, inverse_var = FALSE)
   expect_equal(CR2_not, CR2_iv)

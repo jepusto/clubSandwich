@@ -1,5 +1,6 @@
 context("multi-variate multi-level lme objects")
 set.seed(20190513)
+skip("Not yet ready to test.")
 
 dat <- read.table(file="https://raw.githubusercontent.com/wviechtb/multivariate_multilevel_models/master/data.dat", header=TRUE, sep="\t")
 dat$pa <- rowMeans(dat[, grepl("pa", names(dat))])

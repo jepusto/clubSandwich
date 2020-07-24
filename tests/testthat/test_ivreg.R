@@ -104,7 +104,7 @@ test_that("vcovCR options don't matter for CR0", {
 test_that("vcovCR options work for CR2", {
   
   CR2_iv <- vcovCR(obj_un, cluster = Cigs$state, type = "CR2")
-  expect_identical(vcovCR(obj_un, cluster = Cigs$state, type = "CR2", target = rep(1, nobs(obj_un))), CR2_iv)
+  expect_equal(vcovCR(obj_un, cluster = Cigs$state, type = "CR2", target = rep(1, nobs(obj_un))), CR2_iv)
   expect_false(identical(vcovCR(obj_un, cluster = Cigs$state, type = "CR2", target = 1 / Cigs$population), CR2_iv))
   
   wCR2_id <- vcovCR(obj_wt, cluster = Cigs$state, type = "CR2")
@@ -167,11 +167,11 @@ test_that("clubSandwich works with dropped observations", {
   
   CR_drop <- lapply(CR_types, function(x) vcovCR(iv_dropped, cluster = dat_miss$state, type = x))
   CR_complete <- lapply(CR_types, function(x) vcovCR(iv_complete, cluster = dat_complete$state, type = x))
-  expect_identical(CR_drop, CR_complete)
+  expect_equal(CR_drop, CR_complete)
   
   test_drop <- lapply(CR_types, function(x) coef_test(iv_dropped, vcov = x, cluster = dat_miss$state, test = "All", p_values = FALSE))
   test_complete <- lapply(CR_types, function(x) coef_test(iv_complete, vcov = x, cluster = dat_complete$state, test = "All", p_values = FALSE))
-  expect_identical(test_drop, test_complete)
+  expect_equal(test_drop, test_complete)
 })
 
 

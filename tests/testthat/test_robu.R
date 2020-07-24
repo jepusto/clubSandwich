@@ -258,11 +258,11 @@ test_that("clubSandwich works with dropped observations", {
   
   CR_drop <- lapply(CR_types, function(x) vcovCR(hier_drop, type = x))
   CR_complete <- lapply(CR_types, function(x) vcovCR(hier_complete, type = x))
-  expect_identical(CR_drop, CR_complete)
+  expect_equal(CR_drop, CR_complete)
   
   test_drop <- lapply(CR_types, function(x) coef_test(hier_drop, vcov = x, test = "All", p_values = FALSE))
   test_complete <- lapply(CR_types, function(x) coef_test(hier_complete, vcov = x, test = "All", p_values = FALSE))
-  expect_identical(test_drop, test_complete)
+  expect_equal(test_drop, test_complete)
 })
 
 test_that("vcovCR options work for CR2", {
@@ -275,7 +275,7 @@ test_that("vcovCR options work for CR2", {
   
   iv <- mean(m3_hier$data.full$r.weights) / m3_hier$data.full$r.weights
   CR2_iv <- vcovCR(m3_hier, type = "CR2")
-  expect_identical(vcovCR(m3_hier, type = "CR2", inverse_var = TRUE), CR2_iv)
+  expect_equal(vcovCR(m3_hier, type = "CR2", inverse_var = TRUE), CR2_iv)
   expect_equal(vcovCR(m3_hier, type = "CR2", target = iv, inverse_var = TRUE), CR2_iv)
   
   CR2_not <- vcovCR(m3_hier, type = "CR2", inverse_var = FALSE)
@@ -283,8 +283,8 @@ test_that("vcovCR options work for CR2", {
   attr(CR2_iv, "target") <- attr(CR2_not, "target")
   expect_equal(CR2_not, CR2_iv)
   
-  expect_identical(vcovCR(m3_hier, type = "CR2", target = iv), CR2_not)
-  expect_identical(vcovCR(m3_hier, type = "CR2", target = iv, inverse_var = FALSE), CR2_not)
+  expect_equal(vcovCR(m3_hier, type = "CR2", target = iv), CR2_not)
+  expect_equal(vcovCR(m3_hier, type = "CR2", target = iv, inverse_var = FALSE), CR2_not)
   expect_false(identical(vcovCR(m3_hier, type = "CR2", target = m3_hier$data.full$var.eff.size), CR2_not))
 })
 

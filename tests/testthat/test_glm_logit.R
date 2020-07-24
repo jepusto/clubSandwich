@@ -62,7 +62,7 @@ test_that("bread works", {
 test_that("vcovCR options work for CR2", {
   
   CR2_iv <- vcovCR(logit_fit, cluster = dat$cluster, type = "CR2")
-  expect_identical(vcovCR(logit_fit, cluster = dat$cluster, type = "CR2", 
+  expect_equal(vcovCR(logit_fit, cluster = dat$cluster, type = "CR2", 
                           inverse_var = TRUE), CR2_iv)
   expect_equal(vcovCR(logit_fit, cluster = dat$cluster, type = "CR2", 
                           target = targetVariance(logit_fit, cluster = dat$cluster), 
@@ -73,7 +73,7 @@ test_that("vcovCR options work for CR2", {
                       inverse_var = FALSE), CR2_iv)
 
   CR2_iv <- vcovCR(sflogit_fit, cluster = dat$cluster, type = "CR2")
-  expect_identical(vcovCR(sflogit_fit, cluster = dat$cluster, type = "CR2", 
+  expect_equal(vcovCR(sflogit_fit, cluster = dat$cluster, type = "CR2", 
                           inverse_var = TRUE), CR2_iv)
   expect_equal(vcovCR(sflogit_fit, cluster = dat$cluster, type = "CR2", 
                       target = targetVariance(sflogit_fit, cluster = dat$cluster), 
@@ -84,7 +84,7 @@ test_that("vcovCR options work for CR2", {
                       inverse_var = FALSE), CR2_iv)
   
   CR2_iv <- vcovCR(plogit_fit, cluster = dat$cluster, type = "CR2")
-  expect_identical(vcovCR(plogit_fit, cluster = dat$cluster, type = "CR2", 
+  expect_equal(vcovCR(plogit_fit, cluster = dat$cluster, type = "CR2", 
                           inverse_var = TRUE), CR2_iv)
   expect_equal(vcovCR(plogit_fit, cluster = dat$cluster, type = "CR2", 
                       target = targetVariance(plogit_fit, cluster = dat$cluster), 
@@ -97,7 +97,7 @@ test_that("vcovCR options work for CR2", {
 
 test_that("vcovCR options work for CR4", {
   CR4_iv <- vcovCR(logit_fit, cluster = dat$cluster, type = "CR4")
-  expect_identical(vcovCR(logit_fit, cluster = dat$cluster, type = "CR4", 
+  expect_equal(vcovCR(logit_fit, cluster = dat$cluster, type = "CR4", 
                           inverse_var = TRUE), CR4_iv)
   expect_equal(vcovCR(logit_fit, cluster = dat$cluster, type = "CR4", 
                       target = targetVariance(logit_fit, cluster = dat$cluster), 
@@ -108,7 +108,7 @@ test_that("vcovCR options work for CR4", {
                       inverse_var = FALSE), CR4_iv)
   
   CR4_iv <- vcovCR(sflogit_fit, cluster = dat$cluster, type = "CR4")
-  expect_identical(vcovCR(sflogit_fit, cluster = dat$cluster, type = "CR4", 
+  expect_equal(vcovCR(sflogit_fit, cluster = dat$cluster, type = "CR4", 
                           inverse_var = TRUE), CR4_iv)
   expect_equal(vcovCR(sflogit_fit, cluster = dat$cluster, type = "CR4", 
                       target = targetVariance(sflogit_fit, cluster = dat$cluster), 
@@ -119,7 +119,7 @@ test_that("vcovCR options work for CR4", {
                       inverse_var = FALSE), CR4_iv)
   
   CR4_iv <- vcovCR(plogit_fit, cluster = dat$cluster, type = "CR4")
-  expect_identical(vcovCR(plogit_fit, cluster = dat$cluster, type = "CR4", 
+  expect_equal(vcovCR(plogit_fit, cluster = dat$cluster, type = "CR4", 
                           inverse_var = TRUE), CR4_iv)
   expect_equal(vcovCR(plogit_fit, cluster = dat$cluster, type = "CR4", 
                       target = targetVariance(plogit_fit, cluster = dat$cluster), 
@@ -169,7 +169,7 @@ test_that("clubSandwich works with dropped observations", {
   
   CR_drop <- lapply(CR_types, function(x) vcovCR(logit_dropped, cluster = dat_miss$cluster, type = x))
   CR_complete <- lapply(CR_types, function(x) vcovCR(logit_complete, cluster = dat_complete$cluster, type = x))
-  expect_identical(CR_drop, CR_complete)
+  expect_equal(CR_drop, CR_complete)
   
   test_drop <- lapply(CR_types, function(x) coef_test(logit_dropped, vcov = x, cluster = dat_miss$cluster, test = "All", p_values = FALSE))
   test_complete <- lapply(CR_types, function(x) coef_test(logit_complete, vcov = x, cluster = dat_complete$cluster, test = "All", p_values = FALSE))
@@ -184,11 +184,11 @@ test_that("clubSandwich works with aliased predictors", {
   
   CR_alias <- lapply(CR_types[-4], function(x) vcovCR(npk_alias, cluster = npk$block, type = x))
   CR_drop <- lapply(CR_types[-4], function(x) vcovCR(npk_drop, cluster = npk$block, type = x))
-  expect_identical(CR_alias, CR_drop)
+  expect_equal(CR_alias, CR_drop)
   
   test_drop <- lapply(CR_types[-4], function(x) coef_test(npk_alias, vcov = x, cluster = npk$block, test = c("z","naive-t","Satterthwaite"), p_values = FALSE)[-13,])
   test_complete <- lapply(CR_types[-4], function(x) coef_test(npk_drop, vcov = x, cluster = npk$block, test = c("z","naive-t","Satterthwaite"), p_values = FALSE))
-  expect_identical(test_drop, test_complete)
+  expect_equal(test_drop, test_complete)
 })
 
 

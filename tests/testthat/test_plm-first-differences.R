@@ -55,33 +55,33 @@ test_that("CR0 and CR1S agree with arellano vcov", {
 test_that("vcovCR options work for CR2", {
   
   CR2_iv <- vcovCR(plm_FD, type = "CR2")
-  expect_identical(vcovCR(plm_FD, cluster = Fatalities$state, type = "CR2"), CR2_iv)
-  expect_identical(vcovCR(plm_FD, type = "CR2", inverse_var = TRUE), CR2_iv)
+  expect_equal(vcovCR(plm_FD, cluster = Fatalities$state, type = "CR2"), CR2_iv)
+  expect_equal(vcovCR(plm_FD, type = "CR2", inverse_var = TRUE), CR2_iv)
   
-  expect_identical(vcovCR(plm_FD, type = "CR2", 
+  expect_equal(vcovCR(plm_FD, type = "CR2", 
                           target = rep(1, n_obs), 
                           inverse_var = TRUE), CR2_iv)
   
   CR2_not <- vcovCR(plm_FD, type = "CR2", inverse_var = FALSE)
   expect_equivalent(CR2_not, CR2_iv)
-  expect_identical(vcovCR(plm_FD, cluster = Fatalities$state, type = "CR2", inverse_var = FALSE), CR2_not)
-  expect_identical(vcovCR(plm_FD, type = "CR2", target = rep(1, n_obs)), CR2_not)
-  expect_identical(vcovCR(plm_FD, type = "CR2", target = rep(1, n_obs), inverse_var = FALSE), CR2_not)
+  expect_equal(vcovCR(plm_FD, cluster = Fatalities$state, type = "CR2", inverse_var = FALSE), CR2_not)
+  expect_equal(vcovCR(plm_FD, type = "CR2", target = rep(1, n_obs)), CR2_not)
+  expect_equal(vcovCR(plm_FD, type = "CR2", target = rep(1, n_obs), inverse_var = FALSE), CR2_not)
   expect_false(identical(vcovCR(plm_FD, type = "CR2", target = target), CR2_not))
 })
 
 test_that("vcovCR options work for CR4", {
   skip_on_cran()
   CR4_iv <- vcovCR(plm_FD, type = "CR4")
-  expect_identical(vcovCR(plm_FD, cluster = Fatalities$state, type = "CR4"), CR4_iv)
-  expect_identical(vcovCR(plm_FD, type = "CR4", inverse_var = TRUE), CR4_iv)
-  expect_identical(vcovCR(plm_FD, type = "CR4", target = rep(1, n_obs), inverse_var = TRUE), CR4_iv)
+  expect_equal(vcovCR(plm_FD, cluster = Fatalities$state, type = "CR4"), CR4_iv)
+  expect_equal(vcovCR(plm_FD, type = "CR4", inverse_var = TRUE), CR4_iv)
+  expect_equal(vcovCR(plm_FD, type = "CR4", target = rep(1, n_obs), inverse_var = TRUE), CR4_iv)
   
   CR4_not <- vcovCR(plm_FD, type = "CR4", inverse_var = FALSE)
   expect_equivalent(CR4_not, CR4_iv, tolerance = 10^-6)
-  expect_identical(vcovCR(plm_FD, cluster = Fatalities$state, type = "CR4", inverse_var = FALSE), CR4_not)
-  expect_identical(vcovCR(plm_FD, type = "CR4", target = rep(1, n_obs)), CR4_not)
-  expect_identical(vcovCR(plm_FD, type = "CR4", target = rep(1, n_obs), inverse_var = FALSE), CR4_not)
+  expect_equal(vcovCR(plm_FD, cluster = Fatalities$state, type = "CR4", inverse_var = FALSE), CR4_not)
+  expect_equal(vcovCR(plm_FD, type = "CR4", target = rep(1, n_obs)), CR4_not)
+  expect_equal(vcovCR(plm_FD, type = "CR4", target = rep(1, n_obs), inverse_var = FALSE), CR4_not)
   expect_false(identical(vcovCR(plm_FD, type = "CR4", target = target), CR4_not))
 })
 

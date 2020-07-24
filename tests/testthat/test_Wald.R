@@ -86,29 +86,29 @@ test_that("constrain_zero expressions are equivalent", {
   constraints_char <- coef_names_int[constraints_lgl]
   constraints_mat <- diag(1L, nrow = length(coef_names_int))[constraints_lgl,,drop=FALSE]
 
-  expect_identical(constrain_zero("typeprof:", coefs_int, reg_ex = TRUE), constraints_mat)
-  expect_identical(constrain_zero(constraints_lgl, coefs_int), constraints_mat)
-  expect_identical(constrain_zero(constraints_int, coefs_int), constraints_mat)
-  expect_identical(constrain_zero(constraints_num, coefs_int), constraints_mat)
-  expect_identical(constrain_zero(constraints_char, coefs_int), constraints_mat)
+  expect_equal(constrain_zero("typeprof:", coefs_int, reg_ex = TRUE), constraints_mat)
+  expect_equal(constrain_zero(constraints_lgl, coefs_int), constraints_mat)
+  expect_equal(constrain_zero(constraints_int, coefs_int), constraints_mat)
+  expect_equal(constrain_zero(constraints_num, coefs_int), constraints_mat)
+  expect_equal(constrain_zero(constraints_char, coefs_int), constraints_mat)
   
   expect_type(constrain_zero("typeprof:", reg_ex = TRUE), "closure")
-  expect_identical(constrain_zero("typeprof:", reg_ex = TRUE)(coefs_int), constraints_mat)
-  expect_identical(constrain_zero(constraints_lgl)(coefs_int), constraints_mat)
-  expect_identical(constrain_zero(constraints_int)(coefs_int), constraints_mat)
-  expect_identical(constrain_zero(constraints_num)(coefs_int), constraints_mat)
-  expect_identical(constrain_zero(constraints_char)(coefs_int), constraints_mat)
+  expect_equal(constrain_zero("typeprof:", reg_ex = TRUE)(coefs_int), constraints_mat)
+  expect_equal(constrain_zero(constraints_lgl)(coefs_int), constraints_mat)
+  expect_equal(constrain_zero(constraints_int)(coefs_int), constraints_mat)
+  expect_equal(constrain_zero(constraints_num)(coefs_int), constraints_mat)
+  expect_equal(constrain_zero(constraints_char)(coefs_int), constraints_mat)
   
   constraint_list <- constrain_zero(list(type = 2:3, income = 6:7, edu = 8:9),
                                         coefs = coefs_int) 
   constraint_func <- constrain_zero(list(type = 2:3, income = 6:7, edu = 8:9))
-  expect_identical(constraint_list, constraint_func(coefs_int))
+  expect_equal(constraint_list, constraint_func(coefs_int))
   
   Wald_A <- Wald_test(Duncan_int, constraints = constraint_list,
                       vcov = Duncan_int_CR2, type = "All")
   Wald_B <- Wald_test(Duncan_int, constraints = constraint_func,
                       vcov = Duncan_int_CR2, type = "All")
-  expect_identical(Wald_A, Wald_B)
+  expect_equal(Wald_A, Wald_B)
 })
 
 test_that("constraint expressions are equivalent across specifications", {
@@ -189,5 +189,66 @@ test_that("Wald test is equivalent to Satterthwaite for q = 1.", {
   expect_equal(rep(1, 9), F_tests_int$df_num)
   expect_equal(t_tests_int$df, F_tests_int$df_denom)
   expect_equal(t_tests_int$p_Satt, F_tests_int$p_val)
+  
+})
+
+
+data(STAR, package = "AER")
+
+# clean up a few variables
+levels(STAR$stark)[3] <- "aide"
+levels(STAR$schoolk)[1] <- "urban"
+STAR <- subset(STAR, 
+               !is.na(schoolidk),
+               select = c(schoolidk, schoolk, stark, gender, ethnicity, math1, lunchk))
+
+lm_urbanicity <- lm(math1 ~ schoolk * stark + gender + ethnicity + lunchk, 
+                    data = STAR)
+V_urbanicity <- vcovCR(lm_urbanicity, cluster = STAR$schoolidk, type = "CR2")
+
+test_that("Wald_test works with lists.", {
+  test_A <- Wald_test(lm_urbanicity, 
+                      constraints = constrain_zero("schoolk.+:stark", reg_ex = TRUE),
+                      vcov = V_urbanicity)
+  
+  test_B <- Wald_test(lm_urbanicity, 
+                      constraints = constrain_zero("schoolk.+:starksmall", reg_ex = TRUE),
+                      vcov = V_urbanicity)
+  
+  C_list <- list(
+    `Any interaction` = constrain_zero("schoolk.+:stark", 
+                                       coef(lm_urbanicity), reg_ex = TRUE),
+    `Small vs regular` = constrain_zero("schoolk.+:starksmall", 
+                                        coef(lm_urbanicity), reg_ex = TRUE)
+  )
+  
+  D_list <- constrain_zero(constraints = list(
+    `Any interaction` = "schoolk.+:stark",
+    `Small vs regular` = "schoolk.+:starksmall"
+    ), reg_ex = TRUE)
+  
+  test_C <- Wald_test(lm_urbanicity, 
+                          constraints = C_list,
+                          vcov = V_urbanicity)
+  
+  test_D <- Wald_test(lm_urbanicity, 
+                      constraints = D_list,
+                      vcov = V_urbanicity)
+  
+  test_E <- Wald_test(
+                    lm_urbanicity, 
+                    constraints = list(
+                      `Any interaction` = constrain_zero("schoolk.+:stark", reg_ex = TRUE),
+                      `Small vs regular` = constrain_zero("schoolk.+:starksmall", reg_ex = TRUE)
+                    ),
+                    vcov = V_urbanicity
+                  )
+  
+  expect_identical(test_A, test_C$`Any interaction`)
+  expect_identical(test_A, test_D$`Any interaction`)
+  expect_identical(test_A, test_E$`Any interaction`)
+  expect_identical(test_B, test_C$`Small vs regular`)
+  expect_identical(test_B, test_D$`Small vs regular`)
+  expect_identical(test_B, test_E$`Small vs regular`)
   
 })

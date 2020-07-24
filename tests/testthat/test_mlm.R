@@ -105,11 +105,11 @@ test_that("clubSandwich works with dropped covariates", {
   
   CR_drop <- lapply(CR_types, function(x) vcovCR(lm_dropped, type = x))
   CR_complete <- lapply(CR_types, function(x) vcovCR(lm_complete, type = x))
-  expect_identical(CR_drop, CR_complete)
+  expect_equal(CR_drop, CR_complete)
   
   test_drop <- lapply(CR_types, function(x) coef_test(lm_dropped, vcov = x, test = "All", p_values = FALSE))
   test_complete <- lapply(CR_types, function(x) coef_test(lm_complete, vcov = x, test = "All", p_values = FALSE))
-  expect_identical(test_drop, test_complete)
+  expect_equal(test_drop, test_complete)
 })
 
 
@@ -124,7 +124,7 @@ test_that("clubSandwich works with dropped outcomes", {
   
   CR_drop <- lapply(CR_types, function(x) vcovCR(lm_dropped, type = x))
   CR_complete <- lapply(CR_types, function(x) vcovCR(lm_complete, type = x))
-  expect_identical(CR_drop, CR_complete)
+  expect_equal(CR_drop, CR_complete)
   
   test_drop <- lapply(CR_types, function(x) coef_test(lm_dropped, vcov = x, test = "All", p_values = FALSE))
   test_complete <- lapply(CR_types, function(x) coef_test(lm_complete, vcov = x, test = "All", p_values = FALSE))
@@ -146,11 +146,11 @@ test_that("clubSandwich works with dropped outcomes, covariates, and weights", {
   
   CR_drop <- lapply(CR_types, function(x) vcovCR(WLS_dropped, type = x))
   CR_complete <- lapply(CR_types, function(x) vcovCR(WLS_complete, type = x))
-  expect_identical(CR_drop, CR_complete)
+  expect_equal(CR_drop, CR_complete)
   
   test_drop <- lapply(CR_types, function(x) coef_test(WLS_dropped, vcov = x, test = "All", p_values = FALSE))
   test_complete <- lapply(CR_types, function(x) coef_test(WLS_complete, vcov = x, test = "All", p_values = FALSE))
-  expect_identical(test_drop, test_complete)
+  expect_equal(test_drop, test_complete)
 })
 
 test_that("weight scale doesn't matter", {

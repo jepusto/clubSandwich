@@ -71,24 +71,24 @@ test_that("vcovCR options work for CR2", {
 test_that("vcovCR options work for CR4", {
   
   CR4_A <- vcovCR(obj_A1, type = "CR4")
-  expect_identical(vcovCR(obj_A1, cluster = sleepstudy$Subject, type = "CR4"), CR4_A)
-  expect_identical(vcovCR(obj_A1, type = "CR4", inverse_var = TRUE), CR4_A)
+  expect_equal(vcovCR(obj_A1, cluster = sleepstudy$Subject, type = "CR4"), CR4_A)
+  expect_equal(vcovCR(obj_A1, type = "CR4", inverse_var = TRUE), CR4_A)
   expect_false(identical(vcovCR(obj_A1, type = "CR4", inverse_var = FALSE), CR4_A))
   target <- targetVariance(obj_A1)
   expect_equal(vcovCR(obj_A1, type = "CR4", target = target, inverse_var = TRUE), CR4_A, check.attributes = FALSE)
   expect_equal(vcovCR(obj_A1, type = "CR4", target = target, inverse_var = FALSE), CR4_A, check.attributes = FALSE)
   
   CR4_B <- vcovCR(obj_B1, type = "CR4")
-  expect_identical(vcovCR(obj_B1, cluster = Orthodont$Subject, type = "CR4"), CR4_B)
-  expect_identical(vcovCR(obj_B1, type = "CR4", inverse_var = TRUE), CR4_B)
+  expect_equal(vcovCR(obj_B1, cluster = Orthodont$Subject, type = "CR4"), CR4_B)
+  expect_equal(vcovCR(obj_B1, type = "CR4", inverse_var = TRUE), CR4_B)
   expect_false(identical(vcovCR(obj_B1, type = "CR4", inverse_var = FALSE), CR4_B))
   target <- targetVariance(obj_B1)
   expect_equal(vcovCR(obj_B1, type = "CR4", target = target, inverse_var = TRUE), CR4_B, check.attributes = FALSE)
   expect_equal(vcovCR(obj_B1, type = "CR4", target = target, inverse_var = FALSE), CR4_B, check.attributes = FALSE)
   
   CR4_C <- vcovCR(obj_C1, type = "CR4")
-  expect_identical(vcovCR(obj_C1, cluster = egsingle$schoolid, type = "CR4"), CR4_C)
-  expect_identical(vcovCR(obj_C1, type = "CR4", inverse_var = TRUE), CR4_C)
+  expect_equal(vcovCR(obj_C1, cluster = egsingle$schoolid, type = "CR4"), CR4_C)
+  expect_equal(vcovCR(obj_C1, type = "CR4", inverse_var = TRUE), CR4_C)
   expect_false(identical(vcovCR(obj_C1, type = "CR4", inverse_var = FALSE), CR4_C))
   target <- targetVariance(obj_C1)
   expect_equal(vcovCR(obj_C1, type = "CR4", target = target, inverse_var = TRUE), CR4_C, check.attributes = FALSE)
@@ -136,11 +136,11 @@ test_that("clubSandwich works with dropped observations", {
   
   CR_drop <- lapply(CR_types, function(x) vcovCR(obj_dropped, type = x))
   CR_complete <- lapply(CR_types, function(x) vcovCR(obj_complete, type = x))
-  expect_identical(CR_drop, CR_complete)
+  expect_equal(CR_drop, CR_complete)
   
   test_drop <- lapply(CR_types, function(x) coef_test(obj_dropped, vcov = x, test = "All", p_values = FALSE))
   test_complete <- lapply(CR_types, function(x) coef_test(obj_complete, vcov = x, test = "All", p_values = FALSE))
-  expect_identical(test_drop, test_complete)
+  expect_equal(test_drop, test_complete)
 })
 
 
