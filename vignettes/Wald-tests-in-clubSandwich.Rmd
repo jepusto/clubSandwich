@@ -5,6 +5,7 @@ date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
     number_sections: true
+    toc: true
 bibliography: bibliography.bib
 csl: apa.csl
 vignette: >
@@ -13,43 +14,22 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Version 0.4.3 of `clubSandwich` gains a new syntax for `Wald_test()`, a function for conducting tests of multiple-constraint hypotheses. In previous versions, this function was poorly documented and (consequently?) probably little used. The goal of this vignette is to demonstrate the new syntax. 
+Version 0.4.3 of `clubSandwich` introduced a new syntax for `Wald_test()`, a function for conducting tests of multiple-constraint hypotheses. In previous versions, this function was poorly documented and, consequently, probably little used. This vignette will demonstrate the new syntax. 
 
-For purposes of illustration, I will use the `AchievementAwardsRCT` data, which is drawn from a randomized trial of the Achievement Awards Demonstration program, reported in @Angrist2009effects. The data consist of individual-level measures for multiple cohorts of students in each of several schools in Israel. A subset of the schools received treatment, but only for the middle cohort (2001 cohort) of students. The primary outcome was completion of the Bagrut, the national matriculation certificate for post-secondary education. 
+For purposes of illustration, I will use the `STAR` data (available in the `AER` package), which is drawn from a randomized trial evaluating the effects of elementary school class size on student achievement. The data consist of individual-level measures for students in each of several dozen schools. For purposes of illustration, I will look at effects on math performance in first grade. Treatment conditions (the variable called `stark`) were assigned at the classroom level, and consisted of either a) a regular-size class, b) a small-size class, or c) a regular-size class but with the addition of a teacher's aide. In all of what follows, I will cluster standard errors by school in order to allow for generalization to a super-population of schools. 
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 library(clubSandwich)
-data(AchievementAwardsRCT)
-head(AchievementAwardsRCT)
+data(STAR, package = "AER")
+
+# clean up a few variables
+levels(STAR$stark)[3] <- "aide"
+levels(STAR$schoolk)[1] <- "urban"
+STAR <- subset(STAR, 
+               !is.na(schoolidk),
+               select = c(schoolidk, schoolk, stark, gender, ethnicity, math1, lunchk))
+head(STAR)
 ```
-
-Let's first consider a simple estimating equation where we examine differences across school type (Arabic religious school, Jewish religious school, or Jewish secular school) in baseline performance on the Bagrut. For simplicity, I'll use a simple linear regression, while clustering the standard errors by `school_id`. The estimating equation is
-$$
-\left(\text{Bagrut score}\right)_{ij} = \beta_0 + \beta_1 \left(\text{Jewish Religious}\right)_{ij} + \beta_2 \left(\text{Jewish Secular}\right)_{ij} + e_{ij},
-$$
-which can be estimated in R as follows:
-```{r type-treat, cache = TRUE}
-
-lm_type <- lm(lagscore ~ school_type, data = AchievementAwardsRCT)
-V_type <- vcovCR(lm_type, cluster = AchievementAwardsRCT$school_id, type = "CR2")
-coef_test(lm_type, vcov = V_type)
-
-```
-In the above parameterization of the model, the coefficients $\beta_1$ and $\beta_2$ represent differences in average Bagrut scores relative to the reference level of `school_type`, which in this case is Arabic religious schools. The t-statistics and p-values reported by `coef_test` are separate tests of the null hypotheses that each of these coefficients are equal to zero, meaning that there is no difference between the specified school type and the reference level. We might want to instead test the _joint_ null hypothesis that there are no differences among _any_ of the school types. This null can be expressed by a set of _multiple constraints_ on the parameters: $\beta_1 = 0$ and $\beta_2 = 0$. To test this null, we need a Wald test statistic for _both_ constraints at the same time. 
-
-Another way that the model could be parameterized is by using separate intercepts for each school type, so that the estimating equation would be
-$$
-\left(\text{Bagrut score}\right)_{ij} = \beta_0 \left(\text{Arabic}\right)_{ij} + \beta_1 \left(\text{Jewish Religious}\right)_{ij} + \beta_2 \left(\text{Jewish Secular}\right)_{ij} + e_{ij}.
-$$
-This model can be estimated in R by dropping the intercept term:
-```{r type-sep, cache = TRUE}
-
-lm_type_sep <- lm(lagscore ~ 0 + school_type, data = AchievementAwardsRCT)
-V_type_sep <- vcovCR(lm_type_sep, cluster = AchievementAwardsRCT$school_id, type = "CR2")
-coef_test(lm_type_sep, vcov = V_type_sep)
-
-```
-In this parameterization, the coefficients $\beta_0$, $\beta_1$, and $\beta_2$ represent the average performance levels of eac   h type of school. The t-tests and p-values now have a very different interpretation because they pertain to the null hypothesis that the average performance level for a given school type is equal to zero. With this separate-intercepts model, the joint null hypothesis that performance levels are equal across school types amounts to constraining the intercepts to be equal to each other: $\beta_0 = \beta_1$ and $\beta_0 = \beta_2$ (note that we don't need the constraint $\beta_1 = \beta_2$ because it is implied by the first two).
 
 # The Wald test function
 
@@ -57,15 +37,15 @@ The `Wald_test()` function can be used to conduct hypothesis tests that involve 
 $$
 Y_{ij} = \mathbf{x}_{ij} \boldsymbol\beta + \epsilon_{ij}
 $$
-The regression coefficient vector is $\boldsymbol\beta$. In quite general terms, a set of constraints on the regression coefficient vector can be expressed in terms of a $q \times p$ matrix $\mathbf{C}$, where each row of $\mathbf{C}$ expresses a set of constraints. A joint null hypothesis is then $H_0: \mathbf{C} \boldsymbol\beta = \mathbf{0}$, where $\mathbf{0}$ is a $q \times 1$ vector of zeros.[^more-general] 
+The regression coefficient vector is $\boldsymbol\beta$. In quite general terms, a set of constraints on the regression coefficient vector can be expressed in terms of a $q \times p$ matrix $\mathbf{C}$, where each row of $\mathbf{C}$ corresponds to one constraint. A joint null hypothesis is then $H_0: \mathbf{C} \boldsymbol\beta = \mathbf{0}$, where $\mathbf{0}$ is a $q \times 1$ vector of zeros.[^more-general] 
 
-[^more-general]: In [@pustejovsky2018small] we used a more general formulation of multiple-constraint null hypotheses, expressed as $H_0: \mathbf{C} \boldsymbol\beta = \mathbf{d}$ for some fixed $q \times 1$ vector $\mathbf{d}$. We can usually get by without this level of generality by modifying the $\mathbf{C}$ matrix so that we can always use $\mathbf{d} = \mathbf{0}$.
+[^more-general]: In @pustejovsky2018small we used a more general formulation of multiple-constraint null hypotheses, expressed as $H_0: \mathbf{C} \boldsymbol\beta = \mathbf{d}$ for some fixed $q \times 1$ vector $\mathbf{d}$. In practice, it's often possible to modify the $\mathbf{C}$ matrix so that $\mathbf{d}$ can always be set to $\mathbf{0}$.
 
 Wald-type test are based on the test statistic 
 $$
 Q = \left(\mathbf{C}\boldsymbol{\hat\beta}\right)' \left(\mathbf{C} \mathbf{V}^{CR} \mathbf{C}'\right)^{-1} \left(\mathbf{C}\boldsymbol{\hat\beta}\right),
 $$
-where $\boldsymbol{\hat\beta}$ is the estimated regression coefficient vector and $\mathbf{V}^{CR}$ is a cluster-robust variance matrix. If the number of clusters is sufficiently large, then the distribution of $Q$ under the null hypothesis is approximately $\chi^2(q)$. [@tipton2015small] investigated a wide range of other approximations to the null distribution of $Q$, many of which are included as options in `Wald_test()`. Based on a large simulation, they (...er...we...) recommended a method called the "approximate Hotelling's $T^2$-Z test, or "AHZ." This test approximates the distribution of $Q / q$ by a $T^2$ distribution, which is a multiple of an $F$ distribution, with numerator degrees of freedom $q$ and denominator degrees of freedom based on a generalization of the Satterthwaite approximation.
+where $\boldsymbol{\hat\beta}$ is the estimated regression coefficient vector and $\mathbf{V}^{CR}$ is a cluster-robust variance matrix. If the number of clusters is sufficiently large, then the distribution of $Q$ under the null hypothesis is approximately $\chi^2(q)$. @tipton2015small investigated a wide range of other approximations to the null distribution of $Q$, many of which are included as options in `Wald_test()`. Based on a large simulation, they (...er...we...) recommended a method called the "approximate Hotelling's $T^2$-Z" test, or "AHZ." This test approximates the distribution of $Q / q$ by a $T^2$ distribution, which is a multiple of an $F$ distribution, with numerator degrees of freedom $q$ and denominator degrees of freedom based on a generalization of the Satterthwaite approximation.
 
 The `Wald_test()` function has three main arguments:
 ```{r}
@@ -75,20 +55,39 @@ args(Wald_test)
 * The `obj` argument is used to specify the estimated regression model on which to perform the test,
 * the `constraints` argument is a $\mathbf{C}$ matrix expressing the set of constraints to test, and
 * the `vcov` argument is a cluster-robust variance matrix, which is used to construct the test statistic. (Alternately, `vcov` can be the type of cluster-robust variance matrix to construct, in which case it will be computed internally.)
-By default, `Wald_test()` will use the HTZ small-sample approximation. Other options are available (via the `test` argument) but not recommended for routine use. 
 
-To test the null hypothesis that $\beta_1 = \beta_2 = 0$ based on the `lm_type` regression, we can use:
-```{r}
-C_type <- matrix(c(0,0,1,0,0,1), 2, 3)
-Wald_test(lm_type, constraints = C_type, vcov = V_type)
+By default, `Wald_test()` will use the HTZ small-sample approximation. Other options are available (via the `test` argument) but not recommended for routine use. The optional `tidy` argument will be demonstrated below.
+
+## Testing treatment effects
+
+Returning to the STAR data, let's suppose we want to examine differences in math performance across class sizes. This can be done with a simple linear regression model, while clustering the standard errors by `schoolidk`. The estimating equation is
+$$
+\left(\text{Math}\right)_{ij} = \beta_0 + \beta_1 \left(\text{small}\right)_{ij} + \beta_2 \left(\text{aide}\right)_{ij} + e_{ij},
+$$
+which can be estimated in R as follows:
+```{r type-treat}
+
+lm_trt <- lm(math1 ~ stark, data = STAR)
+V_trt <- vcovCR(lm_trt, cluster = STAR$schoolidk, type = "CR2")
+coef_test(lm_trt, vcov = V_trt)
+
 ```
-The result includes details about the form of `test` computed, the $F$-statistic, the numerator and denominator degrees of freedom used to compute the reference distribution, and the $p$-value corresponding to the specified null hypothesis. In this example, $p = .59$, so we cannot rule out the null hypothesis that there are no differences in Bagrut performance across school types. 
 
-Constructing constraint matrices to express null hypotheses of interest "by hand" is a pretty cumbersome exercise. The representation of null hypotheses as arbitrary constraint matrices is useful for developing theory about how to test such hypotheses, but it is not all that helpful for actually running tests. Moreover, $\mathbf{C}$ matrices typically follow one of a small number of patterns. Two common use cases are a) constraining a set of $q > 1$ parameters to all be equal to zero and b) constraining a set of $q + 1$ parameters to be equal to a common value. The `clubSandwich` package now includes a set of helper functions to create constraint matrices for these common use cases.
+In this estimating equation, the coefficients $\beta_1$ and $\beta_2$ represent treatment effects, or differences in average math scores relative to the reference level of `stark`, which in this case is a regular-size class. The t-statistics and p-values reported by `coef_test` are separate tests of the null hypotheses that each of these coefficients are equal to zero, meaning that there is no difference between the specified treatment condition and the reference level. We might want to instead test the _joint_ null hypothesis that there are no differences among _any_ of the conditions. This null can be expressed by a set of multiple constraints on the parameters: $\beta_1 = 0$ and $\beta_2 = 0$.  
+
+To test the null hypothesis that $\beta_1 = \beta_2 = 0$ based on the treatment effects model specification, we can use:
+```{r}
+C_trt <- matrix(c(0,0,1,0,0,1), 2, 3)
+C_trt
+Wald_test(lm_trt, constraints = C_trt, vcov = V_trt)
+```
+The result includes details about the form of `test` computed, the $F$-statistic, the numerator and denominator degrees of freedom used to compute the reference distribution, and the $p$-value corresponding to the specified null hypothesis. In this example, $p = `r format.pval(Wald_test(lm_trt, constraints = C_trt, vcov = V_trt)$p_val, digits = 3)`$, so we can rule out the null hypothesis that there are no differences in math performance across conditions. 
+
+The representation of null hypotheses as arbitrary constraint matrices is useful for developing theory about how to test such hypotheses, but it is not all that helpful for actually running tests---constructing constraint matrices "by hand" is just too cumbersome of an exercise. Moreover, $\mathbf{C}$ matrices typically follow one of a small number of patterns. Two common use cases are a) constraining a set of $q > 1$ parameters to all be equal to zero and b) constraining a set of $q + 1$ parameters to be equal to a common value. The `clubSandwich` package now includes a set of helper functions to create constraint matrices for these common use cases.
 
 ## `constrain_zero()` 
 
-To constrain a set of $q$ regression coefficients to all be equal to zero, the simplest form of the $\mathbf{C}$ matrix would consist of a set of $q$ rows, where a single entry in each row would be equal to 1 and the remaining entries would all be zero. For the `lm_type` model, the C matrix would look like this:
+To constrain a set of $q$ regression coefficients to all be equal to zero, the simplest form of the $\mathbf{C}$ matrix would consist of a set of $q$ rows, where a single entry in each row would be equal to 1 and the remaining entries would all be zero. For the `lm_trt` model, the C matrix would look like this:
 $$
 \mathbf{C} = \left[\begin{array}{ccc} 0 & 1 & 0 \\ 0 & 0 & 1 \end{array} \right],
 $$
@@ -102,37 +101,58 @@ The `constrain_zero()` function will create matrices like this automatically. Th
 ```{r}
 args(constrain_zero)
 ```
-The `constraints` argument is used to specify _which_ coefficients in a regression model to set equal to zero. The `coefs` argument is the set of estimated regression coefficients, for which to calculate the constraints. Constraints can be specified by position index, by name, or via a regular expression. To test the joint null hypothesis that average Bagrut scores are equal across the three school types, we need to constrain the second and third coefficients to zero:
+* The `constraints` argument is used to specify _which_ coefficients in a regression model to set equal to zero. 
+* The `coefs` argument is the set of estimated regression coefficients, for which to calculate the constraints. 
+
+Constraints can be specified by position index, by name, or via a regular expression. To test the joint null hypothesis that average math performance is equal across the three treatment conditions, we need to constrain the second and third coefficients to zero:
 ```{r}
-constrain_zero(2:3, coefs = coef(lm_type))
+constrain_zero(2:3, coefs = coef(lm_trt))
 ```
 Or equivalently:
 ```{r}
-constrain_zero(c("school_typeReligious","school_typeSecular"), 
-               coefs = coef(lm_type))
-constrain_zero("^school_type", coefs = coef(lm_type), reg_ex = TRUE)
+constrain_zero(c("starksmall","starkaide"), coefs = coef(lm_trt))
+```
+or 
+```{r}
+constrain_zero("^stark", coefs = coef(lm_trt), reg_ex = TRUE)
 ```
 Note that if `constraints` is a regular expression, then the `reg_ex` argument needs to be set to `TRUE`. 
 
 The result of `constrain_zero()` can then be fed into the `Wald_test()` function:
 ```{r}
-C_type <- constrain_zero(2:3, coefs = coef(lm_type))
-Wald_test(lm_type, constraints = C_type, vcov = V_type)
+C_trt <- constrain_zero(2:3, coefs = coef(lm_trt))
+Wald_test(lm_trt, constraints = C_trt, vcov = V_trt)
 ```
-To reduce redundancy in the syntax, we can also _omit the `coefs` argument_ to `constrain_zero`, so long as we call it _inside_ of `Wald_test`[^under-the-hood]:
+To reduce redundancy in the syntax, we can also omit the `coefs` argument to `constrain_zero`, so long as we call it inside of `Wald_test`[^under-the-hood]:
 ```{r}
-Wald_test(lm_type, constraints = constrain_zero(2:3), vcov = V_type)
+Wald_test(lm_trt, constraints = constrain_zero(2:3), vcov = V_trt)
 ```
 
 [^under-the-hood]: How does this work? If we omit the `coefs` argument, `constrain_zero()` acts as a functional, by returning a function equivalent to 
-    ```{r}
+    ```{r, eval = FALSE}
     function(coefs) constrain_zero(constraints, coefs = coefs)    
     ```
     If this function is fed into the `constraints` argument of `Wald_test()`, `Wald_test()` recognizes that it is a function and evaluates the function with `coef(obj)`. It's a kinda-sorta hacky substitute for lazy evaluation. If you have suggestions for how to do this more elegantly, please send them my way.
 
 ## `constrain_equal()`
 
-Another common type of constraints involve setting a set of $q + 1$ regression coefficients to be all equal to a common (but unknown) value ($q + 1$ because it takes $q$ constraints to do this). There are many equivalent ways to express such a set of constraints in terms of a $\mathbf{C}$ matrix. One fairly simple form consists of a set of $q$ rows, where the entry corresponding to one of the coefficients of interest is equal to -1 and the entry corresponding to another coefficient of interest is equal to 1. For the `lm_type_sep` model, which has separate intercepts $\beta_0$, $\beta_1$, and $\beta_2$, the C matrix would look like this:
+Another common type of constraints involve setting a set of $q + 1$ regression coefficients to be all equal to a common (but unknown) value ($q + 1$ because it takes $q$ constraints to do this). There are many equivalent ways to express such a set of constraints in terms of a $\mathbf{C}$ matrix. One fairly simple form consists of a set of $q$ rows, where the entry corresponding to one of the coefficients of interest is equal to -1 and the entry corresponding to another coefficient of interest is equal to 1. 
+
+To see how this works, let's look at a different way of parameterizing our simple model for the STAR data, by using separate intercepts for each treatment condition. The estimating equation would then be
+$$
+\left(\text{Math}\right)_{ij} = \beta_0 \left(\text{regular}\right)_{ij} + \beta_1 \left(\text{small}\right)_{ij} + \beta_2 \left(\text{aide}\right)_{ij} + e_{ij}.
+$$
+This model can be estimated in R by dropping the intercept term:
+```{r type-sep}
+
+lm_sep <- lm(math1 ~ 0 + stark, data = STAR)
+V_sep <- vcovCR(lm_sep, cluster = STAR$schoolidk, type = "CR2")
+coef_test(lm_sep, vcov = V_sep)
+
+```
+In this parameterization, the coefficients $\beta_0$, $\beta_1$, and $\beta_2$ represent the average math performance levels of students in each of the treatment conditions. The t-tests and p-values now have a very different interpretation because they pertain to the null hypothesis that the average performance level for a given condition is equal to zero. With this separate-intercepts model, the joint null hypothesis that performance levels are equal across conditions amounts to constraining the intercepts to be equal to each other: $\beta_0 = \beta_1$ and $\beta_0 = \beta_2$ (note that we don't need the constraint $\beta_1 = \beta_2$ because it is implied by the first two).
+
+For the `lm_sep` model, which has separate intercepts $\beta_0$, $\beta_1$, and $\beta_2$, the C matrix would look like this:
 $$
 \mathbf{C} = \left[\begin{array}{ccc} -1 & 1 & 0 \\ -1 & 0 & 1 \end{array} \right],
 $$
@@ -146,33 +166,106 @@ The `constrain_equal()` function will create matrices like this automatically, g
 ```{r}
 args(constrain_equal)
 ```
-To test the joint null hypothesis that average Bagrut scores are equal across the three school types, we can constrain all three coefficients of `lm_type_sep` to be equal:
+To test the joint null hypothesis that average math performance is equal across the three treatment conditions, we can constrain all three coefficients of `lm_sep` to be equal:
 ```{r}
-constrain_equal(1:3, coefs = coef(lm_type_sep))
+constrain_equal(1:3, coefs = coef(lm_sep))
 ```
 Or equivalently:
 ```{r}
-constrain_equal(c("school_typeArab","school_typeReligious","school_typeSecular"),
-                coefs = coef(lm_type_sep))
-constrain_equal("^school_type", coefs = coef(lm_type_sep), reg_ex = TRUE)
+constrain_equal(c("starkregular","starksmall","starkaide"), coefs = coef(lm_sep))
+```
+or
+```{r}
+constrain_equal("^stark", coefs = coef(lm_sep), reg_ex = TRUE)
 ```
 Just as with `constrain_zero`, if `constraints` is a regular expression, then the `reg_ex` argument needs to be set to `TRUE`. 
 
 This constraint matrix can then be fed into `Wald_test()`:
 ```{r}
-C_sep <- constrain_equal("^school_type", coefs = coef(lm_type_sep), reg_ex = TRUE)
-Wald_test(lm_type_sep, constraints = C_sep, vcov = V_type_sep)
+C_sep <- constrain_equal("^stark", coefs = coef(lm_sep), reg_ex = TRUE)
+Wald_test(lm_sep, constraints = C_sep, vcov = V_sep)
 ```
-Or equivalently:
+or equivalently:
 ```{r}
-Wald_test(lm_type_sep, constraints = constrain_equal(1:3), vcov = V_type_sep)
+Wald_test(lm_sep, constraints = constrain_equal(1:3), vcov = V_sep)
 ```
-Note that these test results are exactly equal to the tests based on `lm_type` with `constrain_zero()`. They're algebraically equivalent---just different ways of parameterizing the same model and constraints. 
+Note that these test results are exactly equal to the tests based on `lm_trt` with `constrain_zero()`. They're algebraically equivalent---just different ways of parameterizing the same model and constraints. 
+
+# Testing an interaction
+
+Let's now consider how these functions can be applied in a more complex model. Suppose that we are interested in understanding whether the effect of being in a small class is consistent across schools in different areas, where areas are categorized as urban, suburban, or rural. To answer this question, we need to test for an interaction between urbanicity and treatment condition. One estimating equation that would let us examine this question is:
+$$
+\begin{aligned}
+\left(\text{Math}\right)_{ij} &= \beta_0 + \beta_1 \left(\text{suburban}\right)_{ij} + \beta_2 \left(\text{rural}\right)_{ij} \\
+& \quad + \beta_3 \left(\text{small}\right)_{ij} + \beta_4 \left(\text{aide}\right)_{ij} \\
+& \quad\quad + \beta_5 \left(\text{small}\right)(\text{suburban})_{ij} + \beta_6 \left(\text{aide}\right)(\text{suburban})_{ij} \\
+& \quad\quad\quad + \beta_{7} \left(\text{small}\right)(\text{rural})_{ij} + \beta_{8} \left(\text{aide}\right)(\text{rural})_{ij} \\
+& \quad\quad\quad\quad + \mathbf{x}_{ij} \boldsymbol\gamma  + e_{ij},
+\end{aligned}
+$$
+where $\mathbf{x}_{ij}$ is a row vector of student characteristics, included just to make the regression look fancier. In this specification, $\beta_3$ and $\beta_4$ represent the effects of being in a small class or aide class, compared to being in a regular class, but _only for the reference level of urbanicity_---in this case, urban schools. The coefficients $\beta_5, \beta_6, \beta_7, \beta_8$ all represent _interactions_ between treatment condition and urbanicity. Here's the model, estimated in R:
+```{r}
+lm_urbanicity <- lm(math1 ~ schoolk * stark + gender + ethnicity + lunchk, data = STAR)
+V_urbanicity <- vcovCR(lm_urbanicity, cluster = STAR$schoolidk, type = "CR2")
+coef_test(lm_urbanicity, vcov = V_urbanicity)
+```
+With this specification, there are several different null hypotheses that we might want to test. For one, perhaps we want to see if there is _any_ variation in treatment effects across different levels of urbanicity. This can be expressed in the null hypothesis that all four interaction terms are zero, or $H_{0A}: \beta_5 = \beta_6 = \beta_7 = \beta_8 = 0$. With Wald test:
+```{r}
+Wald_test(lm_urbanicity, 
+          constraints = constrain_zero("schoolk.+:stark", reg_ex = TRUE),
+          vcov = V_urbanicity)
+```
+
+Another possibility is that we might want to focus on variation in the effect of being in a small class or regular class, while ignoring whatever is going on in the aide class condition. Here, the null hypothesis would be simply $H_{0B}: \beta_5 = \beta_6 = 0$, tested as:
+```{r}
+Wald_test(lm_urbanicity, 
+          constraints = constrain_zero("schoolk.+:starksmall", reg_ex = TRUE),
+          vcov = V_urbanicity)
+```
 
 ## Lists of constraints
 
+In models like the urbanicity-by-treatment interaction specification, we may need to run multiple tests on the same estimating equation. This can be accomplished with `Wald_test` by providing a _list_ of constraints to the `constraints` argument. For example, we could test the hypotheses described above by creating a list of several constraint matrices and then passing it to `Wald_test`:
+```{r}
+C_list <- list(
+  `Any interaction` = constrain_zero("schoolk.+:stark", 
+                                     coef(lm_urbanicity), reg_ex = TRUE),
+  `Small vs regular` = constrain_zero("schoolk.+:starksmall", 
+                                      coef(lm_urbanicity), reg_ex = TRUE)
+)
+
+Wald_test(lm_urbanicity, 
+          constraints = C_list,
+          vcov = V_urbanicity)
+
+```
+Setting the option `tidy = TRUE` will arrange the output of all the tests into a single data frame: 
+```{r}
+
+Wald_test(lm_urbanicity, 
+          constraints = C_list,
+          vcov = V_urbanicity, 
+          tidy = TRUE)
+
+```
+The list of constraints can also be created inside `Wald_test`, so that the `coefs` argument can be omitted from `constrain_zero()`:
+```{r}
+
+Wald_test(
+  lm_urbanicity, 
+  constraints = list(
+    `Any interaction` = constrain_zero("schoolk.+:stark", reg_ex = TRUE),
+    `Small vs regular` = constrain_zero("schoolk.+:starksmall", reg_ex = TRUE)
+  ),
+  vcov = V_urbanicity, 
+  tidy = TRUE
+)
+
+```
+
 # Pairwise t-tests
 
-# Testing an interaction
+# Discussion
+
 
 # References
