@@ -265,7 +265,47 @@ Wald_test(
 
 # Pairwise t-tests
 
-# Discussion
+The `clubSandwich` package also provides a further convenience function, `constrain_pairwise()` that can be used in combination with `Wald_test()` to conduct pairwise comparisons among a set of regression coefficients. This function differs from the other two `constrain_*()` functions because it returns a _list_ of constraint matrices, each of which corresponds to a single linear combination of covariates. Specifically, the `constrain_pairwise()` function provides a list of constraints that represent the differences between every possible pair among a specified set of coefficients. The syntax is very similar to the other `constrain_*()` functions. 
 
+To demonstrate, consider the separate-intercepts specification of the simpler regression model:
+```{r}
+coef_test(lm_sep, vcov = V_sep)
+```
+This specification is nice because it lets us simply read off the average outcomes for each group. However, we will naturally also want to know about whether there are differences between the groups, so we'll want to compare the small-class condition to the regular-size class condition, the aide condition to the regular-size class condition, and the small-class condition to the aide condition. Thus, we'll want comparisons among all three coefficients:
+```{r}
+C_pairs <- constrain_pairwise(1:3, coefs = coef(lm_sep))
+C_pairs
+```
+Feeding these constraints into `Wald_test()` gives us significance tests for each pair:
+```{r}
+Wald_test(lm_sep, constraints = C_pairs, vcov = V_sep, tidy = TRUE)
+```
+
+The first two of these tests are equivalent to the tests of the treatment effect coefficients in the other parameterization of the model. Indeed, the denominator degrees of freedom are identical to the results of `coef_test(lm_trt, vcov = V_trt)`; the `Fstat`s here are equal to the squared t-statistics from the first model:
+```{r}
+t_stats <- coef_test(lm_trt, vcov = V_trt)$tstat[2:3]
+F_stats <- Wald_test(lm_sep, constraints = C_pairs, vcov = V_sep, tidy = TRUE)$Fstat[1:2]
+all.equal(t_stats^2, F_stats)
+```
+It is important to note that the p-values from the pairwise comparisons are _not_ corrected for multiplicity.[^multiplicity] For now, please correct-your-own using `p.adjust()` or your preferred method.
+
+[^multiplicity]: Options to include multiplicity corrections (Bonferroni, Holm, Benjamini-Hochberg, etc.) might be included in a [future release](https://github.com/jepusto/clubSandwich/issues/33). Reach out if this is of interest to you.
+
+Pairwise comparisons might also be of use in the model with treatment-by-urbanicity interactions. Here's the model results again:
+```{r}
+coef_test(lm_urbanicity, vcov = V_urbanicity)
+```
+Suppose that we are interested in the effect of small versus regular size classes, and in particular whether this effect varies across schools in different areas. The coefficients on `schoolksuburban:starksmall` and `schoolkrural:starksmall` already give us the differences in treatment effects between suburban schools versus urban schools and between rural schools versus urban schools. The difference between these coefficients gives us the difference in treatment effects between suburban schools and rural schools. We can look at all three of these contrasts using `constrain_pairwise()` by setting the option `with_zero = TRUE`:
+```{r}
+Wald_test(lm_urbanicity, 
+          constraints = constrain_pairwise(":starksmall", reg_ex = TRUE, with_zero = TRUE),
+          vcov = V_urbanicity,
+          tidy = TRUE)
+```
+Again, the results of the first two tests are identical to the t-tests reported in `coef_test()`. 
+
+# Remark
+
+All of the preceding examples were based on ordinary linear regression models with clustered standard errors. However, `Wald_test()` and its helper functions all work identically for all of the other models with supporting `clubSandwich` methods, including `nlme::lme()`, `nlme::gls()`, `lme4::lmer()`, `rma.uni()`, `rma.mv()`, and `robu()`, among others. 
 
 # References
