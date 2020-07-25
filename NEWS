@@ -1,4 +1,4 @@
-clubSandwich 0.4.2.9999
+clubSandwich 0.5.0
 =======================
 * Major update to Wald_test() 
     * Wald_test() now uses new helper functions constrain_zero(), constrain_equal(), and constrain_pairwise() to specify constraint matrices.

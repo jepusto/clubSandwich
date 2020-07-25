@@ -14,7 +14,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-Version 0.4.3 of `clubSandwich` introduced a new syntax for `Wald_test()`, a function for conducting tests of multiple-constraint hypotheses. In previous versions, this function was poorly documented and, consequently, probably little used. This vignette will demonstrate the new syntax. 
+Version 0.5.0 of `clubSandwich` introduced a new syntax for `Wald_test()`, a function for conducting tests of multiple-constraint hypotheses. In previous versions, this function was poorly documented and, consequently, probably little used. This vignette will demonstrate the new syntax. 
 
 For purposes of illustration, I will use the `STAR` data (available in the `AER` package), which is drawn from a randomized trial evaluating the effects of elementary school class size on student achievement. The data consist of individual-level measures for students in each of several dozen schools. For purposes of illustration, I will look at effects on math performance in first grade. Treatment conditions (the variable called `stark`) were assigned at the classroom level, and consisted of either a) a regular-size class, b) a small-size class, or c) a regular-size class but with the addition of a teacher's aide. In all of what follows, I will cluster standard errors by school in order to allow for generalization to a super-population of schools. 
 
