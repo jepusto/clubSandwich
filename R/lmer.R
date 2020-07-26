@@ -5,7 +5,7 @@
 #' Cluster-robust variance-covariance matrix for an lmerMod object.
 #' 
 #' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
-#' of a set of regression coefficient estimates from \code{\link[lme4]{merMod}} object.
+#' of a set of regression coefficient estimates from \code{\link[lme4:merMod-class]{merMod}} object.
 #' 
 #' @param cluster Optional expression or vector indicating which observations 
 #'   belong to the same cluster. If not specified, will be set to 

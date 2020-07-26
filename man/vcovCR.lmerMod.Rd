@@ -43,7 +43,7 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
 }
 \description{
 \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
-of a set of regression coefficient estimates from \code{\link[lme4]{merMod}} object.
+of a set of regression coefficient estimates from \code{\link[lme4:merMod-class]{merMod}} object.
 }
 \examples{
 library(lme4)

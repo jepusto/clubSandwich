@@ -113,6 +113,8 @@ test_that("constrain_zero expressions are equivalent", {
 
 test_that("constraint expressions are equivalent across specifications", {
 
+  skip_if(R.version$major < "4", "Skip for R versions below 4.")
+  
   constraints_eq <- constrain_equal(
     list(type = 1:3, income = 4:6, edu = 7:9),
     coefs = coefs_sep
@@ -128,14 +130,14 @@ test_that("constraint expressions are equivalent across specifications", {
   Wald_eq <- Wald_test(Duncan_sep, 
                        constraints_eq, 
                        vcov = Duncan_sep_CR2, 
-                       test = "All", tidy = TRUE) 
+                       test = c("Naive-F","HTZ","EDF"), tidy = TRUE) 
 
   Wald_zero <- Wald_test(Duncan_int, 
                          constraints_null,
                          vcov = Duncan_int_CR2, 
-                         test = "All", tidy = TRUE)
+                         test = c("Naive-F","HTZ","EDF"), tidy = TRUE)
   
-  expect_equal(Wald_eq, Wald_zero)
+  compare_Waldtests(Wald_eq, Wald_zero)
 
   pairwise_sep <- constrain_pairwise(
     list(type = 1:3, income = 4:6, edu = 7:9),
@@ -150,13 +152,15 @@ test_that("constraint expressions are equivalent across specifications", {
   
   pairwise_sep <- Wald_test(Duncan_sep, 
                        pairwise_sep, 
-                       vcov = Duncan_sep_CR2) 
+                       vcov = Duncan_sep_CR2, 
+                       tidy = TRUE) 
   
   pairwise_int <- Wald_test(Duncan_int, 
                          pairwise_int,
-                         vcov = Duncan_int_CR2)
+                         vcov = Duncan_int_CR2,
+                         tidy = TRUE)
   
-  expect_equal(pairwise_sep, pairwise_int, check.attributes = FALSE)
+  compare_Waldtests(pairwise_sep, pairwise_int)
   
 })
 

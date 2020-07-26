@@ -149,6 +149,6 @@ models. \emph{Journal of Business and Economic Statistics}. In Press.
 \seealso{
 \code{\link{vcovCR.lm}}, \code{\link{vcovCR.plm}}, 
   \code{\link{vcovCR.glm}}, \code{\link{vcovCR.gls}},
-  \code{\link{vcovCR.lme}}, \code{\link{vcovCR.robu}},
+  \code{\link{vcovCR.lme}}, \code{\link{vcovCR.lmerMod}}, \code{\link{vcovCR.robu}},
   \code{\link{vcovCR.rma.uni}}, \code{\link{vcovCR.rma.mv}}
 }

@@ -1,12 +1,12 @@
 ## Resubmission
 
-This is a resubmission. This submission is a maintenance release to fix unit test errors that occur with R-devel. I have reworked the approach to the unit tests that have caused problems in the past, so that the numerical tolerances are more appropriate.
+This is a resubmission. This submission adds new functionality for Wald tests, along with expanded documentation and a vignette. This submission also fixes unit test errors that occur with MKL and noLD builds. 
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
 ## Test environments
 
-* local Windows 7 Enterprise, R 3.6.3
+* local Windows 7 Enterprise, R 4.0.2
 * ubuntu 16.04.6 LTS (on travis-ci), R-release, R-devel
 * win-builder (devel, release, oldrelease)
 * r-hub:
