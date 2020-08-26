@@ -113,6 +113,7 @@ test_that("constrain_zero expressions are equivalent", {
 
 test_that("constraint expressions are equivalent across specifications", {
 
+  skip_on_cran()
   skip_if(R.version$major < "4", "Skip for R versions below 4.")
   
   constraints_eq <- constrain_equal(
@@ -160,11 +161,13 @@ test_that("constraint expressions are equivalent across specifications", {
                          vcov = Duncan_int_CR2,
                          tidy = TRUE)
   
-  compare_Waldtests(pairwise_sep, pairwise_int)
+  compare_Waldtests(pairwise_sep, pairwise_int, tol = 10^-4)
   
 })
 
 test_that("Wald test is equivalent to Satterthwaite for q = 1.", {
+  
+  skip_on_cran()
   
   t_tests_sep <- coef_test(Duncan_sep, vcov = Duncan_sep_CR2)
   
@@ -175,10 +178,10 @@ test_that("Wald test is equivalent to Satterthwaite for q = 1.", {
                            constraints = constrain_zero(constraints_sep),
                            tidy = TRUE)
       
-  expect_equal(t_tests_sep$tstat^2, F_tests_sep$Fstat)
-  expect_equal(rep(1, 9), F_tests_sep$df_num)
-  expect_equal(t_tests_sep$df, F_tests_sep$df_denom)
-  expect_equal(t_tests_sep$p_Satt, F_tests_sep$p_val)
+  expect_equal(t_tests_sep$tstat^2, F_tests_sep$Fstat, tol = 10^-5)
+  expect_equal(rep(1, 9), F_tests_sep$df_num, tol = 10^-5)
+  expect_equal(t_tests_sep$df, F_tests_sep$df_denom, tol = 10^-5)
+  expect_equal(t_tests_sep$p_Satt, F_tests_sep$p_val, tol = 10^-5)
   
   t_tests_int <- coef_test(Duncan_int, vcov = Duncan_int_CR2)
   
@@ -189,10 +192,10 @@ test_that("Wald test is equivalent to Satterthwaite for q = 1.", {
                            constraints = constrain_zero(constraints_int),
                            tidy = TRUE)
   
-  expect_equal(t_tests_int$tstat^2, F_tests_int$Fstat)
-  expect_equal(rep(1, 9), F_tests_int$df_num)
-  expect_equal(t_tests_int$df, F_tests_int$df_denom)
-  expect_equal(t_tests_int$p_Satt, F_tests_int$p_val)
+  expect_equal(t_tests_int$tstat^2, F_tests_int$Fstat, tol = 10^-5)
+  expect_equal(rep(1, 9), F_tests_int$df_num, tol = 10^-5)
+  expect_equal(t_tests_int$df, F_tests_int$df_denom, tol = 10^-5)
+  expect_equal(t_tests_int$p_Satt, F_tests_int$p_val, tol = 10^-5)
   
 })
 

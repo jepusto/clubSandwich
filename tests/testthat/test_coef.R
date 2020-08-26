@@ -24,7 +24,7 @@ test_that("vcov arguments work", {
   VCR <- lapply(CRs, function(t) vcovCR(lm_fit, cluster = dat$cluster, type = t))
   test_A <- lapply(VCR, function(v) coef_test(lm_fit, vcov = v, test = "All", p_values = FALSE))
   test_B <- lapply(CRs, function(t) coef_test(lm_fit, vcov = t, cluster = dat$cluster, test = "All", p_values = FALSE))
-  expect_equal(test_A, test_B)
+  compare_ttests(test_A, test_B)
 })
 
 test_that("get_which_coef() works", {
