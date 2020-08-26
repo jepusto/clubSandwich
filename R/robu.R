@@ -80,7 +80,7 @@ residuals_CS.robu <- function(obj) {
 
 model_matrix.robu <- function(obj) {
   ord <- order(order(obj$study_orig_id))
-  obj$Xreg[ord,]
+  obj$Xreg[ord,,drop=FALSE]
 }
 
 #-------------------------------------

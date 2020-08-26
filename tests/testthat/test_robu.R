@@ -4,6 +4,32 @@ set.seed(20190513)
 library(robumeta, quietly=TRUE)
 data(corrdat)
 
+
+test_that("methods work with intercept-only model.", {
+  
+  obj <- robu(effectsize ~ 1,
+              studynum = studyid,
+              var.eff.size = var,
+              small = FALSE,
+              data = corrdat)
+  N <- obj$M
+  k <- obj$N
+  
+  expect_equal(as.numeric(vcovCR(obj, type = "CR0")), as.numeric(obj$VR.r))
+  
+  expect_identical(clubSandwich:::coef_CS.robu(obj), as.numeric(obj$b.r))
+  expect_identical(length(clubSandwich:::residuals_CS.robu(obj)), N)
+  expect_identical(dim(clubSandwich:::model_matrix.robu(obj)), c(N, 1L))
+  expect_identical(dim(clubSandwich:::bread.robu(obj)), c(1L, 1L))
+  
+  V_list <- clubSandwich:::targetVariance.robu(obj, cluster = obj$study_orig_id)
+  expect_identical(as.integer(sapply(V_list, nrow)), obj$k)
+  
+  W_list <- clubSandwich:::weightMatrix.robu(obj, cluster = obj$study_orig_id)
+  expect_identical(as.integer(sapply(W_list, nrow)), obj$k)
+  
+})
+
 corr_large <- robu(effectsize ~ males + college + binge, data = corrdat, 
                    modelweights = "CORR", studynum = studyid,
                    var.eff.size = var, small = FALSE)
