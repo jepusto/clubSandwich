@@ -212,3 +212,58 @@ test_that("vcovCR options work for CR2", {
   expect_equivalent(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = RE_var, inverse_var = FALSE), CR2_not)
   expect_false(identical(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = hierdat$var), CR2_not))
 })
+
+test_that("clubSandwich works with complicated random effects specifications.", {
+  
+  skip_on_cran()
+  
+  data(oswald2013, package = "robumeta")
+  oswald2013 <- within(oswald2013, {
+    V = (1 - R^2)^2 / (N - 3)
+    SSID = paste(Study, "sample",Sample.ID)
+    ESID = 1:nrow(oswald2013)
+  })
+  
+  m1 <- rma.mv(
+    R ~ 0 + IAT.Focus + Crit.Cat, V = V,
+    data = oswald2013,
+    random = list(~ 1 | Study, ~ 1 | SSID, ~ 1 | ESID)
+  )
+  
+  m2 <- update(m1, 
+               random = list(~ IAT.Focus | Study, ~ 1 | SSID, ~ 1 | ESID),
+               struct = c("UN","UN","UN"))
+  
+  m3 <- update(m1, 
+               random = list(~ 1 | Study, ~ IAT.Focus | SSID, ~ 1 | ESID),
+               struct = c("UN","UN","UN"))
+  
+  m4 <- update(m1, 
+               random = list(~ IAT.Focus | Study, ~ IAT.Focus | SSID),
+               struct = c("UN","UN"))
+  
+  m5 <- update(m1, 
+               random = list(~ IAT.Focus | Study, ~ IAT.Focus | SSID, ~ 1 | ESID),
+               struct = c("UN","UN","UN"))
+  
+  m6 <- update(m5, struct = c("CS","CS","UN"))
+  m7 <- update(m5, struct = c("HCS","HCS","UN"))
+  m8 <- update(m5, struct = c("UN","CS","UN"))
+  m9 <- update(m5, struct = c("CS","UN","UN"))
+  
+  mod_list <- list(m1, m2, m3, m4, m5, m6, m7, m8, m9)
+  os_cluster <- factor(oswald2013$Study)
+  
+  cluster_list <- lapply(mod_list, findCluster.rma.mv)
+  lapply(cluster_list, expect_equal, expected = os_cluster)
+  
+  bread_checks <- sapply(mod_list, check_bread, cluster = oswald2013$Study, y = oswald2013$R)
+  expect_true(all(bread_checks))
+
+  CR_checks <- sapply(mod_list, check_CR, vcov = "CR2")
+  expect_true(all(CR_checks))
+
+  struct <- lapply(mod_list, get_structure) %>% bind_rows()
+  obj <- m5
+  
+})

@@ -137,16 +137,52 @@ weightMatrix.rma.mv <- function(obj, cluster) {
 # Get outer-most clustering variable
 #-----------------------------------------------
 
+get_structure <- function(obj) {
+  data.frame(G = obj$withG, H = obj$withH, R = obj$withR, S = obj$withS)
+}
+
 findCluster.rma.mv <- function(obj) {
-  if (obj$withS) {
-    r <- which.min(obj$s.nlevels)
-    cluster <- obj$mf.r[[r]][[obj$s.names[r]]]
-  } else if (obj$withG) {
-    cluster <- obj$mf.r[[1]][[obj$g.names[2]]]
-  } else {
-    stop("No clustering variable specified.")
+  
+  # parse model structure
+  
+  level_dat <- vector(mod = "integer")
+  cluster_dat <- data.frame(row.names = 1:obj$k)
+  
+  if (obj$withG) {
+    level_dat[["G"]] <- obj$g.nlevels[[2]]
+    cluster_dat$G <- obj$mf.g$outer
   }
-  droplevels(as.factor(cluster))
+  
+  if (obj$withH) {
+    level_dat[["H"]] <- obj$h.nlevels[[2]]
+    cluster_dat$H <- obj$mf.h$outer
+  }
+
+  if (obj$withR) {
+    level_dat[["R"]] <- obj$r.nlevels
+    cluster_dat$R <- obj$r.levels
+  }  
+  
+  if (obj$withS) {
+    level_dat[["S"]] <- obj$s.nlevels
+    cluster_dat$S <- obj$mf.r[[length(obj$mf.r)]]
+  }
+  
+  if (length(level_dat) == 0L) stop("No clustering variable specified.")
+  
+  
+  # determine cluster with smallest number of levels
+  
+  highest_clust <- names(level_dat)[which.min(level_dat)]
+  cluster <- cluster_dat[[highest_cluster]]
+  
+  
+  # check that random effects are nested within clustering variable
+  
+  
+  # clean up
+  if (!is.factor(cluster)) cluster <- as.factor(cluster)
+  droplevels(cluster)
 }
 
 #---------------------------------------
