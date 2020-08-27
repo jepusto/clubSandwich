@@ -120,13 +120,13 @@ test_that("constraint expressions are equivalent across specifications", {
     list(type = 1:3, income = 4:6, edu = 7:9),
     coefs = coefs_sep
   )  
-  constraints_eq$all <- do.call(rbind, constraints_eq)
+  # constraints_eq$all <- do.call(rbind, constraints_eq)
   
   constraints_null <- constrain_zero(
     list(type = 2:3, income = 6:7, edu = 8:9),
     coefs = coefs_int
   )
-  constraints_null$all <- do.call(rbind, constraints_null)
+  # constraints_null$all <- do.call(rbind, constraints_null)
   
   Wald_eq <- Wald_test(Duncan_sep, 
                        constraints_eq, 

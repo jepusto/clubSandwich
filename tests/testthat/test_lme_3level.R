@@ -12,7 +12,8 @@ egsingle <- droplevels(subset(egsingle, schoolid %in% school_subset))
 
 obj_A1 <- lme(math ~ year * size + female + black + hispanic,
               random = list(~ year | schoolid, ~ 1 | childid),
-              data = egsingle)
+              data = egsingle,
+              control = lmeControl(tolerance = 1e-4, opt = "optim"))
 obj_A2 <- update(obj_A1, weights = varIdent(form = ~ 1 | female))
 obj_A3 <- update(obj_A1, correlation = corExp(form = ~ year))
 obj_A4 <- update(obj_A2, correlation = corExp(form = ~ year))
