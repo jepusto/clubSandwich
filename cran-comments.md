@@ -8,6 +8,7 @@ Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey 
 
 ## Test environments
 
+* local Windows 10 Pro, R 4.0.2
 * local Windows 10 Education, R 4.0.2, MKL
 * ubuntu 16.04.6 LTS (on travis-ci), R-release, R-devel
 * win-builder (devel, release, oldrelease)
