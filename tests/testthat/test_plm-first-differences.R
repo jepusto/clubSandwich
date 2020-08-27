@@ -78,7 +78,7 @@ test_that("vcovCR options work for CR4", {
   expect_equal(vcovCR(plm_FD, type = "CR4", target = rep(1, n_obs), inverse_var = TRUE), CR4_iv)
   
   CR4_not <- vcovCR(plm_FD, type = "CR4", inverse_var = FALSE)
-  expect_equivalent(CR4_not, CR4_iv, tolerance = 10^-6)
+  expect_equivalent(CR4_not, CR4_iv, tolerance = 10^-3)
   expect_equal(vcovCR(plm_FD, cluster = Fatalities$state, type = "CR4", inverse_var = FALSE), CR4_not)
   expect_equal(vcovCR(plm_FD, type = "CR4", target = rep(1, n_obs)), CR4_not)
   expect_equal(vcovCR(plm_FD, type = "CR4", target = rep(1, n_obs), inverse_var = FALSE), CR4_not)
