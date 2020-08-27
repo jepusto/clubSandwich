@@ -96,7 +96,18 @@ impute_covariance_matrix <- function(vi, cluster, r, return_list = identical(as.
 #' Wald_test(mfor_fit, constraints = constrain_zero(2:5), vcov = mfor_CR2)
 
 vcovCR.rma.mv <- function(obj, cluster, type, target, inverse_var, form = "sandwich", ...) {
-  if (missing(cluster)) cluster <- findCluster.rma.mv(obj)
+  
+  if (obj$withR) stop("vcovCR.rma.mv() does not work with fixed correlation matrices in the R argument.")
+  
+  if (missing(cluster)) {
+    cluster <- findCluster.rma.mv(obj)
+  } else {
+    # check that random effects are nested within clustering variable
+    mod_struct <- parse_structure(obj)
+    nested <- test_nested(cluster, fac = mod_struct$cluster_dat)
+    if (!all(nested)) stop("Random effects are not nested within clustering")
+  }
+  
   if (missing(target)) {
     target <- NULL
     inverse_var <- is.null(obj$W)
@@ -141,9 +152,18 @@ get_structure <- function(obj) {
   data.frame(G = obj$withG, H = obj$withH, R = obj$withR, S = obj$withS)
 }
 
-findCluster.rma.mv <- function(obj) {
+test_nested <- function(cluster, fac) {
   
-  # parse model structure
+  if (is.list(fac)) {
+    res <- sapply(fac, test_nested, cluster = cluster)
+    return(res)
+  } 
+  
+  groupings <- tapply(cluster, fac, function(x) length(unique(x)))
+  all(groupings==1L)  
+}
+
+parse_structure <- function(obj) {
   
   level_dat <- vector(mod = "integer")
   cluster_dat <- data.frame(row.names = 1:obj$k)
@@ -157,28 +177,37 @@ findCluster.rma.mv <- function(obj) {
     level_dat[["H"]] <- obj$h.nlevels[[2]]
     cluster_dat$H <- obj$mf.h$outer
   }
-
-  if (obj$withR) {
-    level_dat[["R"]] <- obj$r.nlevels
-    cluster_dat$R <- obj$r.levels
-  }  
   
   if (obj$withS) {
-    level_dat[["S"]] <- obj$s.nlevels
-    cluster_dat$S <- obj$mf.r[[length(obj$mf.r)]]
+    s_levels <- obj$s.nlevels
+    names(s_levels) <- obj$s.names
+    level_dat <- c(level_dat, s_levels)
+    
+    mf_all <- do.call(cbind, obj$mf.r)
+    mf_s <- mf_all[obj$s.names]
+    cluster_dat <- cbind(cluster_dat, mf_s)
   }
   
-  if (length(level_dat) == 0L) stop("No clustering variable specified.")
+  list(level_dat = level_dat, cluster_dat = cluster_dat)
+}
+
+findCluster.rma.mv <- function(obj) {
   
+  if (obj$withR) stop("vcovCR.rma.mv() does not work with fixed correlation matrices in the R argument.")
+  
+  # parse model structure
+  mod_struct <- parse_structure(obj) 
+  
+  if (length(mod_struct$level_dat) == 0L) stop("No clustering variable specified.")
   
   # determine cluster with smallest number of levels
   
-  highest_clust <- names(level_dat)[which.min(level_dat)]
-  cluster <- cluster_dat[[highest_cluster]]
-  
+  highest_cluster <- names(mod_struct$level_dat)[which.min(mod_struct$level_dat)]
+  cluster <- mod_struct$cluster_dat[[highest_cluster]]
   
   # check that random effects are nested within clustering variable
-  
+  nested <- test_nested(cluster, fac = mod_struct$cluster_dat)
+  if (!all(nested)) stop("Random effects are not nested within clustering")
   
   # clean up
   if (!is.factor(cluster)) cluster <- as.factor(cluster)

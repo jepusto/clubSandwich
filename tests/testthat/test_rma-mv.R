@@ -218,11 +218,17 @@ test_that("clubSandwich works with complicated random effects specifications.", 
   skip_on_cran()
   
   data(oswald2013, package = "robumeta")
+  
   oswald2013 <- within(oswald2013, {
     V = (1 - R^2)^2 / (N - 3)
     SSID = paste(Study, "sample",Sample.ID)
     ESID = 1:nrow(oswald2013)
   })
+  
+  SS_lab <- unique(oswald2013$SSID)
+  n_SS <- length(SS_lab)
+  R_mat <- 0.4 + 0.6 * diag(nrow = n_SS)
+  colnames(R_mat) <- rownames(R_mat) <- SS_lab
   
   m1 <- rma.mv(
     R ~ 0 + IAT.Focus + Crit.Cat, V = V,
@@ -232,27 +238,35 @@ test_that("clubSandwich works with complicated random effects specifications.", 
   
   m2 <- update(m1, 
                random = list(~ IAT.Focus | Study, ~ 1 | SSID, ~ 1 | ESID),
-               struct = c("UN","UN","UN"))
+               struct = c("UN"))
   
   m3 <- update(m1, 
                random = list(~ 1 | Study, ~ IAT.Focus | SSID, ~ 1 | ESID),
-               struct = c("UN","UN","UN"))
+               struct = c("UN","UN"))
   
   m4 <- update(m1, 
+               random = list(~ 1 | Study, ~ 1 | SSID, ~ IAT.Focus | ESID),
+               struct = c("DIAG"))
+  
+  m5 <- update(m1, 
                random = list(~ IAT.Focus | Study, ~ IAT.Focus | SSID),
                struct = c("UN","UN"))
   
-  m5 <- update(m1, 
+  m6 <- update(m1, 
                random = list(~ IAT.Focus | Study, ~ IAT.Focus | SSID, ~ 1 | ESID),
-               struct = c("UN","UN","UN"))
+               struct = c("UN","UN"))
   
-  m6 <- update(m5, struct = c("CS","CS","UN"))
-  m7 <- update(m5, struct = c("HCS","HCS","UN"))
-  m8 <- update(m5, struct = c("UN","CS","UN"))
-  m9 <- update(m5, struct = c("CS","UN","UN"))
+  m7 <- update(m5, struct = c("CS","CS"))
+  m8 <- update(m5, struct = c("HCS","HCS"))
+  m9 <- update(m5, struct = c("UN","CS"))
+  m10 <- update(m5, struct = c("CS","UN"))
   
-  mod_list <- list(m1, m2, m3, m4, m5, m6, m7, m8, m9)
+  mod_list <- list(m1, m2, m3, m4, m5, m6, m7, m8, m9, m10)
   os_cluster <- factor(oswald2013$Study)
+  
+  obj <- m6
+  struct <- parse_structure(obj)
+  findCluster.rma.mv(obj)
   
   cluster_list <- lapply(mod_list, findCluster.rma.mv)
   lapply(cluster_list, expect_equal, expected = os_cluster)
@@ -263,7 +277,7 @@ test_that("clubSandwich works with complicated random effects specifications.", 
   CR_checks <- sapply(mod_list, check_CR, vcov = "CR2")
   expect_true(all(CR_checks))
 
-  struct <- lapply(mod_list, get_structure) %>% bind_rows()
-  obj <- m5
+  m11 <- update(m1, R = list(SSID = R_mat))
+  expect_error(findCluster.rma.mv(m11))
   
 })
