@@ -176,7 +176,7 @@ test_that("clubSandwich works with missing vcov matrix", {
   
   CR_drop <- lapply(CR_types, function(x) vcovCR(corr_drop, cluster = dat_miss$studyid, type = x))
   CR_complete <- lapply(CR_types, function(x) vcovCR(corr_complete, type = x))
-  expect_equal(CR_drop, CR_complete)
+  expect_equal(CR_drop, CR_complete, tol = 10^-5)
   
   
   # V_complete <- impute_covariance_matrix(corrdat$var, cluster = corrdat$studyid, r = 0.8)
