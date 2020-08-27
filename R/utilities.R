@@ -113,7 +113,7 @@ compare_ttests <- function(a, b, tol = 10^-6) {
   testthat::expect_equal(a$saddlepoint, b$saddlepoint, tolerance = tol)
 }
 
-compare_Waldtests <- function(a, b, tol = 10^-6) {
+compare_Waldtests <- function(a, b, tol = 10^-4) {
   
   if (!inherits(a,"data.frame")) a <- do.call(rbind, a)
   if (!inherits(b,"data.frame")) b <- do.call(rbind, b)

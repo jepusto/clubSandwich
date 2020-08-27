@@ -161,7 +161,7 @@ test_that("constraint expressions are equivalent across specifications", {
                          vcov = Duncan_int_CR2,
                          tidy = TRUE)
   
-  compare_Waldtests(pairwise_sep, pairwise_int, tol = 10^-4)
+  compare_Waldtests(pairwise_sep, pairwise_int)
   
 })
 
