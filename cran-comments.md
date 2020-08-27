@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a resubmission after the previous version of the package was archived on CRAN. My apologies for the delay in correcting the remaining errors identified. This happened as I was in the middle of a cross-country move, and it has taken me a while to get my family settled in to our new home.  
+This is a new submission after the previous version of the package was archived on CRAN. My apologies for the delay in correcting the remaining errors identified. This happened because I was in the middle of a cross-country move, and it has taken me a while to get my family settled in our new home.  
 
 This submission adds new functionality for Wald tests, along with expanded documentation and a vignette. This submission also fixes unit test errors that occur with MKL and noLD builds. I believe it also fixed the remaining MKL identified when I last tried to resubmit. However, I do not have access to a machine where I can build R against MKL, and so I cannot be entirely certain.
 
@@ -8,7 +8,7 @@ Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey 
 
 ## Test environments
 
-* local Windows 7 Enterprise, R 4.0.2
+* local Windows 10 Education, R 4.0.2
 * ubuntu 16.04.6 LTS (on travis-ci), R-release, R-devel
 * win-builder (devel, release, oldrelease)
 * r-hub:
