@@ -154,7 +154,7 @@ constrain_equal <- function(constraints, coefs, reg_ex = FALSE) {
   
   first_constraint <- which(C_mat[1,] > 0)
   C_mat[,first_constraint] <- -1L
-  C_mat[-1,]
+  C_mat[-1,,drop=FALSE]
 }
 
 #' @rdname constraint_matrices

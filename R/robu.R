@@ -60,7 +60,8 @@ vcovCR.robu <- function(obj, cluster, type, target, inverse_var, form = "sandwic
 coef_CS.robu <- function(obj) {
   beta <- as.vector(obj$b.r)
   labs <- obj$reg_table$labels
-  names(beta) <- levels(labs)[labs]
+  if (is.factor(labs)) labs <- levels(labs)[labs]
+  names(beta) <- labs
   beta
 }
 

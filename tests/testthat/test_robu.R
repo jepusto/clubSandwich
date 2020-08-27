@@ -17,7 +17,7 @@ test_that("methods work with intercept-only model.", {
   
   expect_equal(as.numeric(vcovCR(obj, type = "CR0")), as.numeric(obj$VR.r))
   
-  expect_identical(clubSandwich:::coef_CS.robu(obj), as.numeric(obj$b.r))
+  expect_identical(as.numeric(clubSandwich:::coef_CS.robu(obj)), as.numeric(obj$b.r))
   expect_identical(length(clubSandwich:::residuals_CS.robu(obj)), N)
   expect_identical(dim(clubSandwich:::model_matrix.robu(obj)), c(N, 1L))
   expect_identical(dim(clubSandwich:::bread.robu(obj)), c(1L, 1L))
@@ -314,3 +314,22 @@ test_that("vcovCR options work for CR2", {
   expect_false(identical(vcovCR(m3_hier, type = "CR2", target = m3_hier$data.full$var.eff.size), CR2_not))
 })
 
+
+test_that("Wald test problem.", {
+  
+  mod0 <- robu(formula = effectsize ~ 0 + factor(binge), 
+               data = hierdat, 
+               var.eff.size = var,
+               studynum = studyid, 
+               modelweights = "HIER", small = TRUE)
+  Wald0 <- Wald_test(mod0, constraints = constrain_equal(1:2), vcov = "CR2", test = "All")
+  
+  mod1 <- robu(formula = effectsize ~ binge, 
+               data = hierdat, 
+               var.eff.size = var,
+               studynum = studyid, 
+               modelweights = "HIER", small = TRUE)
+  Wald1 <- Wald_test(mod1, constraints = constrain_zero(2), vcov = "CR2", test = "All")
+  
+  compare_Waldtests(Wald0, Wald1)
+})
