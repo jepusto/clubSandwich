@@ -216,8 +216,8 @@ test_that("clubSandwich works with aliased predictors", {
   CR_drop <- lapply(CR_types[-4], function(x) vcovCR(npk_drop, cluster = npk$block, type = x))
   expect_equal(CR_alias, CR_drop)
   
-  test_drop <- lapply(CR_types[-4], function(x) coef_test(npk_alias, vcov = x, cluster = npk$block, test = c("z","naive-t","Satterthwaite"), p_values = FALSE))
-  test_complete <- lapply(CR_types[-4], function(x) coef_test(npk_drop, vcov = x, cluster = npk$block, test = c("z","naive-t","Satterthwaite"), p_values = FALSE))
+  test_drop <- lapply(CR_types[-4], function(x) coef_test(npk_alias, vcov = x, cluster = npk$block, test = c("z","naive-t","Satterthwaite"), coefs = 7:12, p_values = FALSE))
+  test_complete <- lapply(CR_types[-4], function(x) coef_test(npk_drop, vcov = x, cluster = npk$block, test = c("z","naive-t","Satterthwaite"), coefs = 7:12, p_values = FALSE))
   expect_equal(test_drop, test_complete)
 })
 
