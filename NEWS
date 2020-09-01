@@ -1,3 +1,8 @@
+clubSandwich 0.5.0.9999
+=======================
+* Corrected bug in methods for rma.mv objects, which previously led to incorrect identification of clustering variables in models with multiple levels of random effects, where at least one set of random effects has inner | outer structure.
+
+
 clubSandwich 0.5.0
 =======================
 * Major update to Wald_test() 
@@ -8,7 +13,6 @@ clubSandwich 0.5.0
 * Corrected bugs in methods for robu objects
     * Corrected a bug that previously led to errors for models with only one column in the model matrix (i.e., intercept-only models). 
     * Corrected a bug in an internal function that previously led to errors in constrain_equal() and constrain_zero() when called on robu objects.
-* Corrected bug in methods for rma.mv objects, which previously led to incorrect identification of clustering variables in models with multiple levels of random effects, where at least one set of random effects has inner | outer structure.
 
 
 clubSandwich 0.4.2
