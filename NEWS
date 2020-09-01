@@ -1,3 +1,8 @@
+clubSandwich 0.5.0.9999
+=======================
+* Corrected bug in methods for rma.mv objects, which previously led to incorrect identification of clustering variables in models with multiple levels of random effects, where at least one set of random effects has inner | outer structure.
+
+
 clubSandwich 0.5.0
 =======================
 * Major update to Wald_test() 
