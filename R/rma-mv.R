@@ -19,7 +19,7 @@
 #' @param ti Vector of time-points describing temporal spacing of effects, for
 #'   use with auto-regressive correlation structures.
 #' @param ar1 Vector or numeric value of assumed AR(1) auto-correlation(s)
-#'   between effect size estimates from each study. If non-null, then \code{ti}
+#'   between effect size estimates from each study. If specified, then \code{ti}
 #'   argument must be specified.
 #' @param smooth_vi Logical indicating whether to smooth the marginal variances
 #'   by taking the average \code{vi} within each cluster. Defaults to
@@ -80,20 +80,67 @@
 #'
 #' @examples
 #' library(metafor)
+#' 
+#' # Constant correlation
 #' data(SATcoaching)
 #' V_list <- impute_covariance_matrix(vi = SATcoaching$V, cluster = SATcoaching$study, r = 0.66)
 #' MVFE <- rma.mv(d ~ 0 + test, V = V_list, data = SATcoaching)
-#' coef_test(MVFE, vcov = "CR2", cluster = SATcoaching$study)
+#' conf_int(MVFE, vcov = "CR2", cluster = SATcoaching$study)
 #' 
 
 
-impute_covariance_matrix <- function(vi, cluster, r, return_list = identical(as.factor(cluster), sort(as.factor(cluster)))) {
+impute_covariance_matrix <- function(vi, cluster, r, ti, ar1, 
+                                     smooth_vi = FALSE, 
+                                     subgroup = NULL, 
+                                     return_list = identical(as.factor(cluster), sort(as.factor(cluster)))) {
   
   cluster <- droplevels(as.factor(cluster))
   
   vi_list <- split(vi, cluster)
-  r_list <- rep_len(r, length(vi_list))
-  vcov_list <- Map(function(V, rho) (rho + diag(1 - rho, nrow = length(V))) * tcrossprod(sqrt(V)), V = vi_list, rho = r_list)
+  
+  if (smooth_vi) vi_list <- lapply(vi_list, function(x) rep(mean(x, na.rm = TRUE), length(x)))
+
+  if (missing(r) & missing(ar1)) stop("You must specify a value for r or for ar1.")
+  
+  if (!missing(r)) {
+    r_list <- rep_len(r, length(vi_list))
+    if (missing(ar1)) {
+      vcov_list <- Map(function(V, rho) (rho + diag(1 - rho, nrow = length(V))) * tcrossprod(sqrt(V)), 
+                       V = vi_list, 
+                       rho = r_list)
+    }
+  } 
+  
+  if (!missing(ar1)) {
+    if (missing(ti)) stop("If you specify a value for ar1, you must provide a vector for ti.")
+    
+    ti_list <- split(ti, cluster)
+    ar_list <- rep_len(ar1, length(vi_list))
+    
+    if (missing(r)) {
+      vcov_list <- Map(function(V, time, phi) (phi^as.matrix(stats::dist(time))) * tcrossprod(sqrt(V)), 
+                       V = vi_list, 
+                       time = ti_list, 
+                       phi = ar_list)
+    } else {
+      vcov_list <- Map(function(V, rho, time, phi) (rho + (1 - rho) * phi^as.matrix(stats::dist(time))) * tcrossprod(sqrt(V)), 
+                       V = vi_list, 
+                       rho = r_list, 
+                       time = ti_list, 
+                       phi = ar_list)
+    }
+    
+    vcov_list <- lapply(vcov_list, function(x) {
+      attr(x, "dimnames") <- NULL
+      x
+    })
+  } 
+  
+  if (!is.null(subgroup)) {
+    si_list <- split(subgroup, cluster)
+    subgroup_list <- lapply(si_list, function(x) sapply(x, function(y) y == x))
+    vcov_list <- Map(function(V, S) V * S, V = vcov_list, S = subgroup_list)
+  }
   
   if (return_list) {
     return(vcov_list)

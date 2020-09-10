@@ -8,6 +8,10 @@ impute_covariance_matrix(
   vi,
   cluster,
   r,
+  ti,
+  ar1,
+  smooth_vi = FALSE,
+  subgroup = NULL,
   return_list = identical(as.factor(cluster), sort(as.factor(cluster)))
 )
 }
@@ -20,14 +24,11 @@ Effects with the same value of `cluster` will be treated as correlated.}
 \item{r}{Vector or numeric value of assumed constant correlation(s) between
 effect size estimates from each study.}
 
-\item{return_list}{Optional logical indicating whether to return a list of
-matrices (with one entry per block) or the full variance-covariance matrix.}
-
 \item{ti}{Vector of time-points describing temporal spacing of effects, for
 use with auto-regressive correlation structures.}
 
 \item{ar1}{Vector or numeric value of assumed AR(1) auto-correlation(s)
-between effect size estimates from each study. If non-null, then \code{ti}
+between effect size estimates from each study. If specified, then \code{ti}
 argument must be specified.}
 
 \item{smooth_vi}{Logical indicating whether to smooth the marginal variances
@@ -39,6 +40,9 @@ If non-null, effects that share the same category label and the same
 cluster will be treated as correlated, but effects with different category
 labels will be treated as uncorrelated, even if they come from the same
 cluster.}
+
+\item{return_list}{Optional logical indicating whether to return a list of
+matrices (with one entry per block) or the full variance-covariance matrix.}
 }
 \value{
 If \code{cluster} is appropriately sorted, then a list of matrices,
@@ -70,7 +74,7 @@ A block-diagonal variance-covariance matrix (possibly represented as a list
     If only a single value is given in \code{r}, then it will be used for every cluster.} 
     \item{If only \code{ar1} is specified,}{ each block of the
     variance-covariance matrix will have an AR(1) auto-correlation structure,
-    so that \mjdeqn{C_{hij} = (\phi_j)^{|t_{hj} - t_{ij}|} \sqrt{v_{hj}
+    so that \mjdeqn{C_{hij} = \phi_j^{|t_{hj} - t_{ij}|} \sqrt{v_{hj}
     v_{ij},}}{C-hij = (ar1-j)^|t-hj - t-ij| * sqrt(v-hj v-ij),} where
     where \mjeqn{\phi_j}{ar1-j} is the specified auto-correlation for cluster \mjeqn{j}{j} and 
     \mjeqn{t_{hj}}{t-hj} and \mjeqn{t_{ij}}{t-ij} are specified time-points
@@ -80,7 +84,7 @@ A block-diagonal variance-covariance matrix (possibly represented as a list
     \item{If both \code{r} and \code{ar1} are specified,}{ each block of the
     variance-covariance matrix will have combination of compound symmetric and 
     an AR(1) auto-correlation structures,
-    so that \mjdeqn{C_{hij} = \left[r_j + (1 - r_j)(\phi_j)^{|t_{hj} - t_{ij}|}\right] \sqrt{v_{hj}
+    so that \mjdeqn{C_{hij} = \left[r_j + (1 - r_j)\phi_j^{|t_{hj} - t_{ij}|}\right] \sqrt{v_{hj}
     v_{ij},}}{C-hij = [r-j + (1 - r-j)(ar1-j)^|t-hj - t-ij|] * sqrt(v-hj v-ij),} where
     where where \mjeqn{r_j}{r-j} is the specified constant correlation for cluster \mjeqn{j}{j}, 
     \mjeqn{\phi_j}{ar1-j} is the specified auto-correlation for cluster \mjeqn{j}{j} and 
@@ -89,12 +93,15 @@ A block-diagonal variance-covariance matrix (possibly represented as a list
     \mjeqn{j}{j}. If only single values are given in \code{r} or \code{ar1}, they will be used 
     for every cluster.}
   }
+  If \code{smooth_vi = TRUE},
 }
 \examples{
 library(metafor)
+
+# Constant correlation
 data(SATcoaching)
 V_list <- impute_covariance_matrix(vi = SATcoaching$V, cluster = SATcoaching$study, r = 0.66)
 MVFE <- rma.mv(d ~ 0 + test, V = V_list, data = SATcoaching)
-coef_test(MVFE, vcov = "CR2", cluster = SATcoaching$study)
+conf_int(MVFE, vcov = "CR2", cluster = SATcoaching$study)
 
 }
