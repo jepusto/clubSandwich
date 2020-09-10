@@ -4,27 +4,80 @@
 #----------------------------------------------------------------------
 
 #' Impute a block-diagonal covariance matrix
-#' 
-#' \code{impute_covariance_matrix} calculates a block-diagonal covariance 
-#' matrix, given the marginal variances, the block structure, and an assumed 
-#' correlation.
-#' 
+#'
+#' @description \loadmathjax{} \code{impute_covariance_matrix} calculates a
+#'   block-diagonal covariance matrix, given the marginal variances, the block
+#'   structure, and an assumed correlation structure. Can be used to create
+#'   compound-symmetric structures, AR(1) auto-correlated structures, or
+#'   combinations thereof.
+#'
 #' @param vi Vector of variances
-#' @param cluster Vector indicating which effects belong to the same cluster. 
+#' @param cluster Vector indicating which effects belong to the same cluster.
 #'   Effects with the same value of `cluster` will be treated as correlated.
-#' @param r Vector or numeric value of assume correlation(s) between effect size
-#'   estimates from each study.
-#' @param return_list Optional logical indicating whether to return a list of matrices
-#'   (with one entry per block) or the full variance-covariance matrix.
-#'   
-#' @return If \code{cluster} is appropriately sorted, then a list of matrices, 
+#' @param r Vector or numeric value of assumed constant correlation(s) between
+#'   effect size estimates from each study.
+#' @param ti Vector of time-points describing temporal spacing of effects, for
+#'   use with auto-regressive correlation structures.
+#' @param ar1 Vector or numeric value of assumed AR(1) auto-correlation(s)
+#'   between effect size estimates from each study. If non-null, then \code{ti}
+#'   argument must be specified.
+#' @param smooth_vi Logical indicating whether to smooth the marginal variances
+#'   by taking the average \code{vi} within each cluster. Defaults to
+#'   \code{FALSE}.
+#' @param subgroup Vector of category labels describing sub-groups of effects.
+#'   If non-null, effects that share the same category label and the same
+#'   cluster will be treated as correlated, but effects with different category
+#'   labels will be treated as uncorrelated, even if they come from the same
+#'   cluster.
+#' @param return_list Optional logical indicating whether to return a list of
+#'   matrices (with one entry per block) or the full variance-covariance matrix.
+#'
+#'
+#'
+#' @return If \code{cluster} is appropriately sorted, then a list of matrices,
 #'   with one entry per cluster, will be returned by default. If \code{cluster}
 #'   is out of order, then the full variance-covariate matrix will be returned
 #'   by default. The output structure can be controlled with the optional
 #'   \code{return_list} argument.
+#'
+#' @details A block-diagonal variance-covariance matrix (possibly represented as a list
+#'   of matrices) with a specified structure. The structure depends on whether
+#'   the \code{r} argument, \code{ar1} argument, or both arguments are
+#'   specified. Let \mjeqn{v_{ij}}{v-ij} denote the specified variance for
+#'   effect \mjeqn{i}{i} in cluster \mjeqn{j}{j} and \mjeqn{C_{hij}}{C-hij} be
+#'   the covariance between effects \mjeqn{h}{h} and \mjeqn{i}{i} in cluster
+#'   \mjeqn{j}{j}.  
+#'   \itemize{ 
+#'     \item{If only \code{r} is specified,}{ each block of
+#'     the variance-covariance matrix will have a constant (compound symmetric)
+#'     correlation, so that \mjdeqn{C_{hij} = r_j \sqrt{v_{hj} v_{ij},}}{C-hij = r-j *
+#'     sqrt(v-hj v-ij),} where \mjeqn{r_j}{r-j} is the specified correlation for cluster \mjeqn{j}{j}. 
+#'     If only a single value is given in \code{r}, then it will be used for every cluster.} 
+#'     \item{If only \code{ar1} is specified,}{ each block of the
+#'     variance-covariance matrix will have an AR(1) auto-correlation structure,
+#'     so that \mjdeqn{C_{hij} = \phi_j^{|t_{hj} - t_{ij}|} \sqrt{v_{hj}
+#'     v_{ij},}}{C-hij = (ar1-j)^|t-hj - t-ij| * sqrt(v-hj v-ij),} where
+#'     where \mjeqn{\phi_j}{ar1-j} is the specified auto-correlation for cluster \mjeqn{j}{j} and 
+#'     \mjeqn{t_{hj}}{t-hj} and \mjeqn{t_{ij}}{t-ij} are specified time-points
+#'     corresponding to effects \mjeqn{h}{h} and \mjeqn{i}{i} in cluster
+#'     \mjeqn{j}{j}. If only a single value is given in \code{ar1}, then it will be used 
+#'     for every cluster.}
+#'     \item{If both \code{r} and \code{ar1} are specified,}{ each block of the
+#'     variance-covariance matrix will have combination of compound symmetric and 
+#'     an AR(1) auto-correlation structures,
+#'     so that \mjdeqn{C_{hij} = \left[r_j + (1 - r_j)\phi_j^{|t_{hj} - t_{ij}|}\right] \sqrt{v_{hj}
+#'     v_{ij},}}{C-hij = [r-j + (1 - r-j)(ar1-j)^|t-hj - t-ij|] * sqrt(v-hj v-ij),} where
+#'     where where \mjeqn{r_j}{r-j} is the specified constant correlation for cluster \mjeqn{j}{j}, 
+#'     \mjeqn{\phi_j}{ar1-j} is the specified auto-correlation for cluster \mjeqn{j}{j} and 
+#'     \mjeqn{t_{hj}}{t-hj} and \mjeqn{t_{ij}}{t-ij} are specified time-points
+#'     corresponding to effects \mjeqn{h}{h} and \mjeqn{i}{i} in cluster
+#'     \mjeqn{j}{j}. If only single values are given in \code{r} or \code{ar1}, they will be used 
+#'     for every cluster.}
+#'   }
+#'   If \code{smooth_vi = TRUE},
 #'   
 #' @export
-#' 
+#'
 #' @examples
 #' library(metafor)
 #' data(SATcoaching)
