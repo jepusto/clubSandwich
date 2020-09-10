@@ -270,7 +270,7 @@ test_nested <- function(cluster, fac) {
 
 parse_structure <- function(obj) {
   
-  level_dat <- vector(mod = "integer")
+  level_dat <- vector(mode = "integer")
   cluster_dat <- data.frame(row.names = 1:obj$k)
   
   if (obj$withG) {
