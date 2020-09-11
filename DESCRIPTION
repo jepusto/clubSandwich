@@ -43,7 +43,9 @@ Suggests:
     lme4,
     zoo,
     testthat,
-    rmarkdown
+    rmarkdown,
+    mathjaxr
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 Language: en-US
+RdMacros: mathjaxr
