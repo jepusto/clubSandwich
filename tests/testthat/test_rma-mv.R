@@ -12,7 +12,6 @@ corrdat$wt <- corr_robu$data.full$r.weights
 corr_meta <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
                     V = var, W = wt, method = "FE")
 
-
 test_that("CR2 t-tests agree with robumeta for correlated effects", {
   
   robu_CR2 <- vcovCR(corr_meta, cluster = corrdat$studyid, target = 1 / corrdat$wt, type = "CR2")
@@ -279,5 +278,47 @@ test_that("clubSandwich works with complicated random effects specifications.", 
 
   m11 <- update(m1, R = list(SSID = R_mat))
   expect_error(findCluster.rma.mv(m11))
+  
+})
+
+test_that("clubSandwich works for correlated hierarchical effects model.", {
+  
+  skip_on_cran()
+  
+  V_mat <- impute_covariance_matrix(vi = corrdat$var, 
+                                    cluster = corrdat$studyid,
+                                    r = 0.7,
+                                    smooth_vi = TRUE)
+  
+  CHE_es <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
+                   V = V_mat, random = ~ 1 | esid)
+  CHE_study <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
+                      V = V_mat, random = ~ 1 | studyid)
+  CHE_studyes <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
+                        V = V_mat, random = ~ 1 | studyid / esid)
+  CHE_esstudy <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
+                        V = V_mat, random = ~ 1 | esid/ studyid)
+  CHE_study_es <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
+                         V = V_mat, random = list(~ 1 | studyid,  ~ 1 | esid))
+  CHE_es_study <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
+                         V = V_mat, random = list(~ 1 | esid, ~ 1 | studyid))
+  
+  mods <- list(es = CHE_es, study = CHE_study, 
+               studyes = CHE_studyes, esstudy = CHE_esstudy,
+               study_es = CHE_study_es, es_study = CHE_es_study)
+  
+  clusters <- lapply(mods, findCluster.rma.mv)
+  
+  expect_equal(clusters$study, clusters$studyes)
+  expect_equal(clusters$es, clusters$esstudy)
+  expect_equal(clusters$studyes, clusters$study_es)
+  expect_equal(clusters$study_es, clusters$es_study)
+  
+  V_CR2s <- lapply(mods, vcovCR, type = "CR2")
+  V_CR2s_clust <- mapply(vcovCR, mods, clusters, type = "CR2", SIMPLIFY = FALSE)
+  
+  expect_equal(V_CR2s, V_CR2s_clust)
+  expect_equal(V_CR2s$studyes, V_CR2s$study_es)
+  expect_equal(V_CR2s$studyes, V_CR2s$es_study)
   
 })
