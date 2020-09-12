@@ -268,6 +268,19 @@ test_nested <- function(cluster, fac) {
   all(groupings==1L)  
 }
 
+nest_structure <- function(x) {
+  
+  if (length(x) == 1) return(x) 
+  
+  y <- x
+  for (i in 2:length(x)) {
+    names(y)[i] <- paste(names(x)[1:i], collapse = "/")
+    y[i] <- do.call(paste, c(x[1:i], sep = "/"))
+  }
+  
+  y
+}
+
 parse_structure <- function(obj) {
   
   level_dat <- vector(mode = "integer")
@@ -288,7 +301,8 @@ parse_structure <- function(obj) {
     names(s_levels) <- obj$s.names
     level_dat <- c(level_dat, s_levels)
     
-    mf_all <- do.call(cbind, obj$mf.r)
+    mf_r <- lapply(obj$mf.r, nest_structure)
+    mf_all <- do.call(cbind, mf_r)
     mf_s <- mf_all[obj$s.names]
     cluster_dat <- cbind(cluster_dat, mf_s)
   }
