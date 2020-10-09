@@ -3,7 +3,8 @@ clubSandwich 0.5.0.9999
 * New functionality for impute_covariance_matrix(): 
     * Compute covariance matrices with AR1 correlation structure or with a combination of constant correlation and AR1 correlation structure. 
     * Compute covariance matrices that are blocked by subgroup.
-    * Average the variance estimates by cluster before computing covariance matrices. 
+    * Average the variance estimates by cluster before computing covariance matrices.
+* New function pattern_covariance_matrix(), which creates a covariance matrix based on a specified pattern of correlations between different categories of effects. 
 * Corrected bug in methods for rma.mv objects, which previously led to incorrect identification of clustering variables in models with multiple levels of random effects, where at least one set of random effects has inner | outer structure.
 
 

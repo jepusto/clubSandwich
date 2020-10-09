@@ -3,6 +3,27 @@
 # utility function for computing block-diagonal covariance matrices
 #----------------------------------------------------------------------
 
+isPosDef <- function(x) {
+  x_na <- is.na(x)
+  mis_rows <- apply(x_na, 1, all)
+  mis_cols <- apply(x_na, 2, all)
+  if (all(mis_rows) | all(mis_cols)) return(TRUE)
+  x_nomiss <- x[!mis_rows, !mis_cols]
+  x_eig <- eigen(x_nomiss)
+  all(x_eig$values > 0)    
+}
+
+check_PD <- function(vcov_list) {
+  PD <- sapply(vcov_list, isPosDef)
+  if (!all(PD)) {
+    NPD_clusters <- names(vcov_list)[!PD]
+    warn_text <- paste(c("The following clusters have non-positive definite covariance matrices:", NPD_clusters), collapse = "\n")
+    warning(warn_text)
+  } else {
+    NULL
+  }
+}
+
 #' Impute a block-diagonal covariance matrix
 #'
 #' @description \loadmathjax{} \code{impute_covariance_matrix} calculates a
@@ -31,56 +52,61 @@
 #'   cluster.
 #' @param return_list Optional logical indicating whether to return a list of
 #'   matrices (with one entry per block) or the full variance-covariance matrix.
+#' @param check_PD Optional logical indicating whether to check whether each
+#'   covariance matrix is positive definite. If \code{TRUE} (the default), the
+#'   function will display a warning if any covariance matrix is not positive
+#'   definite.
 #'
 #'
 #'
 #' @return If \code{cluster} is appropriately sorted, then a list of matrices,
 #'   with one entry per cluster, will be returned by default. If \code{cluster}
-#'   is out of order, then the full variance-covariate matrix will be returned
+#'   is out of order, then the full variance-covariace matrix will be returned
 #'   by default. The output structure can be controlled with the optional
 #'   \code{return_list} argument.
 #'
-#' @details A block-diagonal variance-covariance matrix (possibly represented as a list
-#'   of matrices) with a specified structure. The structure depends on whether
-#'   the \code{r} argument, \code{ar1} argument, or both arguments are
+#' @details A block-diagonal variance-covariance matrix (possibly represented as
+#'   a list of matrices) with a specified structure. The structure depends on
+#'   whether the \code{r} argument, \code{ar1} argument, or both arguments are
 #'   specified. Let \mjeqn{v_{ij}}{v-ij} denote the specified variance for
 #'   effect \mjeqn{i}{i} in cluster \mjeqn{j}{j} and \mjeqn{C_{hij}}{C-hij} be
 #'   the covariance between effects \mjeqn{h}{h} and \mjeqn{i}{i} in cluster
-#'   \mjeqn{j}{j}.  
-#'   \itemize{ 
-#'     \item{If only \code{r} is specified,}{ each block of
-#'     the variance-covariance matrix will have a constant (compound symmetric)
-#'     correlation, so that \mjdeqn{C_{hij} = r_j \sqrt{v_{hj} v_{ij},}}{C-hij = r-j *
-#'     sqrt(v-hj v-ij),} where \mjeqn{r_j}{r-j} is the specified correlation for cluster \mjeqn{j}{j}. 
-#'     If only a single value is given in \code{r}, then it will be used for every cluster.} 
-#'     \item{If only \code{ar1} is specified,}{ each block of the
-#'     variance-covariance matrix will have an AR(1) auto-correlation structure,
-#'     so that \mjdeqn{C_{hij} = \phi_j^{|t_{hj} - t_{ij}|} \sqrt{v_{hj}
-#'     v_{ij},}}{C-hij = (ar1-j)^|t-hj - t-ij| * sqrt(v-hj v-ij),} where
-#'     where \mjeqn{\phi_j}{ar1-j} is the specified auto-correlation for cluster \mjeqn{j}{j} and 
-#'     \mjeqn{t_{hj}}{t-hj} and \mjeqn{t_{ij}}{t-ij} are specified time-points
-#'     corresponding to effects \mjeqn{h}{h} and \mjeqn{i}{i} in cluster
-#'     \mjeqn{j}{j}. If only a single value is given in \code{ar1}, then it will be used 
-#'     for every cluster.}
-#'     \item{If both \code{r} and \code{ar1} are specified,}{ each block of the
-#'     variance-covariance matrix will have combination of compound symmetric and 
-#'     an AR(1) auto-correlation structures,
-#'     so that \mjdeqn{C_{hij} = \left[r_j + (1 - r_j)\phi_j^{|t_{hj} - t_{ij}|}\right] \sqrt{v_{hj}
-#'     v_{ij},}}{C-hij = [r-j + (1 - r-j)(ar1-j)^|t-hj - t-ij|] * sqrt(v-hj v-ij),} where
-#'     where where \mjeqn{r_j}{r-j} is the specified constant correlation for cluster \mjeqn{j}{j}, 
-#'     \mjeqn{\phi_j}{ar1-j} is the specified auto-correlation for cluster \mjeqn{j}{j} and 
-#'     \mjeqn{t_{hj}}{t-hj} and \mjeqn{t_{ij}}{t-ij} are specified time-points
-#'     corresponding to effects \mjeqn{h}{h} and \mjeqn{i}{i} in cluster
-#'     \mjeqn{j}{j}. If only single values are given in \code{r} or \code{ar1}, they will be used 
-#'     for every cluster.}
-#'   }
-#'   If \code{smooth_vi = TRUE},
-#'   
+#'   \mjeqn{j}{j}. \itemize{ \item{If only \code{r} is specified,}{ each block
+#'   of the variance-covariance matrix will have a constant (compound symmetric)
+#'   correlation, so that \mjdeqn{C_{hij} = r_j \sqrt{v_{hj} v_{ij},}}{C-hij =
+#'   r-j * sqrt(v-hj v-ij),} where \mjeqn{r_j}{r-j} is the specified correlation
+#'   for cluster \mjeqn{j}{j}. If only a single value is given in \code{r}, then
+#'   it will be used for every cluster.} \item{If only \code{ar1} is
+#'   specified,}{ each block of the variance-covariance matrix will have an
+#'   AR(1) auto-correlation structure, so that \mjdeqn{C_{hij} = \phi_j^{|t_{hj}
+#'   - t_{ij}|} \sqrt{v_{hj} v_{ij},}}{C-hij = (ar1-j)^|t-hj - t-ij| * sqrt(v-hj
+#'   v-ij),} where where \mjeqn{\phi_j}{ar1-j} is the specified auto-correlation
+#'   for cluster \mjeqn{j}{j} and \mjeqn{t_{hj}}{t-hj} and \mjeqn{t_{ij}}{t-ij}
+#'   are specified time-points corresponding to effects \mjeqn{h}{h} and
+#'   \mjeqn{i}{i} in cluster \mjeqn{j}{j}. If only a single value is given in
+#'   \code{ar1}, then it will be used for every cluster.} \item{If both \code{r}
+#'   and \code{ar1} are specified,}{ each block of the variance-covariance
+#'   matrix will have combination of compound symmetric and an AR(1)
+#'   auto-correlation structures, so that \mjdeqn{C_{hij} = \left[r_j + (1 -
+#'   r_j)\phi_j^{|t_{hj} - t_{ij}|}\right] \sqrt{v_{hj} v_{ij},}}{C-hij = [r-j +
+#'   (1 - r-j)(ar1-j)^|t-hj - t-ij|] * sqrt(v-hj v-ij),} where where where
+#'   \mjeqn{r_j}{r-j} is the specified constant correlation for cluster
+#'   \mjeqn{j}{j}, \mjeqn{\phi_j}{ar1-j} is the specified auto-correlation for
+#'   cluster \mjeqn{j}{j} and \mjeqn{t_{hj}}{t-hj} and \mjeqn{t_{ij}}{t-ij} are
+#'   specified time-points corresponding to effects \mjeqn{h}{h} and
+#'   \mjeqn{i}{i} in cluster \mjeqn{j}{j}. If only single values are given in
+#'   \code{r} or \code{ar1}, they will be used for every cluster.} } If
+#'   \code{smooth_vi = TRUE}, then all of the variances within cluster
+#'   \mjeqn{j}{j} will be set equal to the average variance of cluster
+#'   \mjeqn{j}{j}, i.e., \mjdeqn{v'_{ij} = \frac{1}{n_j} \sum_{i=1}^{n_j}
+#'   v_{ij}}{v-ij' = (v-1j + ... + v-nj,j) / n-j} for
+#'   \mjeqn{i=1,...,n_j}{i=1,...,n-j} and \mjeqn{j=1,...,k}{j=1,...,k}.
+#'
 #' @export
 #'
 #' @examples
 #' library(metafor)
-#' 
+#'
 #' # Constant correlation
 #' data(SATcoaching)
 #' V_list <- impute_covariance_matrix(vi = SATcoaching$V, cluster = SATcoaching$study, r = 0.66)
@@ -92,7 +118,8 @@
 impute_covariance_matrix <- function(vi, cluster, r, ti, ar1, 
                                      smooth_vi = FALSE, 
                                      subgroup = NULL, 
-                                     return_list = identical(as.factor(cluster), sort(as.factor(cluster)))) {
+                                     return_list = identical(as.factor(cluster), sort(as.factor(cluster))),
+                                     check_PD = TRUE) {
   
   cluster <- droplevels(as.factor(cluster))
   
@@ -141,6 +168,155 @@ impute_covariance_matrix <- function(vi, cluster, r, ti, ar1,
     subgroup_list <- lapply(si_list, function(x) sapply(x, function(y) y == x))
     vcov_list <- Map(function(V, S) V * S, V = vcov_list, S = subgroup_list)
   }
+  
+  if (check_PD) check_PD(vcov_list)
+  
+  if (return_list) {
+    return(vcov_list)
+  } else {
+    vcov_mat <- metafor::bldiag(vcov_list)
+    cluster_index <- order(order(cluster))
+    return(vcov_mat[cluster_index, cluster_index])
+  }
+}
+
+
+#' Impute a patterned block-diagonal covariance matrix
+#'
+#' @description \loadmathjax{} \code{pattern_covariance_matrix} calculates a
+#'   block-diagonal covariance matrix, given the marginal variances, the block
+#'   structure, and an assumed correlation structure defined by a patterned
+#'   correlation matrix.
+#'
+#' @param vi Vector of variances
+#' @param cluster Vector indicating which effects belong to the same cluster.
+#'   Effects with the same value of `cluster` will be treated as correlated.
+#' @param pattern_level Vector of categories for each effect size, used to
+#'   determine which entry of the pattern matrix will be used to impute a
+#'   correlation.
+#' @param r_pattern Patterned correlation matrix with row and column names
+#'   corresponding to the levels of \code{pattern}.
+#' @inheritParams impute_covariance_matrix
+#'
+#' @return If \code{cluster} is appropriately sorted, then a list of matrices,
+#'   with one entry per cluster, will be returned by default. If \code{cluster}
+#'   is out of order, then the full variance-covariace matrix will be returned
+#'   by default. The output structure can be controlled with the optional
+#'   \code{return_list} argument.
+#'
+#' @details A block-diagonal variance-covariance matrix (possibly represented as
+#'   a list of matrices) with a specified correlation structure, defined by a
+#'   patterned correlation matrix. Let \mjeqn{v_{ij}}{v-ij} denote the specified
+#'   variance for effect \mjeqn{i}{i} in cluster \mjeqn{j}{j} and
+#'   \mjeqn{C_{hij}}{C-hij} be the covariance between effects \mjeqn{h}{h} and
+#'   \mjeqn{i}{i} in cluster \mjeqn{j}{j}. Let \mjeqn{p_{ij}}{p-ij} be the level
+#'   of the pattern variable for effect \mjeqn{i}{i} in cluster \mjeqn{j}{j},
+#'   taking a value in \mjeqn{1,...,C}{1,...,C}. A patterned correlation matrix
+#'   is defined as a set of correlations between pairs of effects taking each
+#'   possible combination of patterns. Formally, let \mjeqn{r_{cd}}{r-cd} be the
+#'   correlation between effects in categories \mjeqn{c}{c} and \mjeqn{d}{d},
+#'   respectively, where \mjeqn{r_{cd} = r_{dc}}{r-cd = r-dc}. Then the
+#'   covariance between effects \mjeqn{h}{h} and \mjeqn{i}{i} in cluster
+#'   \mjeqn{j}{j} is taken to be \mjdeqn{C_{hij} = \sqrt{v_{hj} v_{ij}} \times
+#'   r_{p_{hj} p_{ij}}.}{C-hij = sqrt(v-hj v-ij) * r[p-hj, p-ij].} 
+#'   
+#'   Correlations between effect sizes within the same category are defined by the diagonal
+#'   values of the pattern matrix, which may take values less than one. 
+#'   
+#'   Combinations of pattern levels that do not occur in the patterned correlation matrix will be set equal to \code{r}.
+#'   
+#'   If \code{smooth_vi = TRUE}, then all of the variances within cluster
+#'   \mjeqn{j}{j} will be set equal to the average variance of cluster
+#'   \mjeqn{j}{j}, i.e., \mjdeqn{v'_{ij} = \frac{1}{n_j} \sum_{i=1}^{n_j}
+#'   v_{ij}}{v-ij' = (v-1j + ... + v-nj,j) / n-j} for
+#'   \mjeqn{i=1,...,n_j}{i=1,...,n-j} and \mjeqn{j=1,...,k}{j=1,...,k}.
+#'   
+#' @export
+#'
+#' @examples
+#' library(metafor)
+#'
+#' data(oswald2013, package = "robumeta")
+#' dat <- escalc(data = oswald2013, measure = "ZCOR", ri = R, ni = N)
+#' 
+#' # make a patterned correlation matrix 
+#' 
+#' p_levels <- levels(dat$Crit.Cat)
+#' r_pattern <- 0.7^as.matrix(dist(1:length(p_levels)))
+#' diag(r_pattern) <- seq(0.75, 0.95, length.out = 6)
+#' rownames(r_pattern) <- colnames(r_pattern) <- p_levels
+#' 
+#' # impute the covariance matrix using patterned correlations
+#' V_list <- pattern_covariance_matrix(vi = dat$vi, 
+#'                                     cluster = dat$Study, 
+#'                                     pattern_level = dat$Crit.Cat,
+#'                                     r_pattern = r_pattern,
+#'                                     smooth_vi = TRUE)
+#'                                     
+#' # fit a model using imputed covariance matrix
+#' 
+#' MVFE <- rma.mv(yi ~ 0 + Crit.Cat, V = V_list, 
+#'                random = ~ Crit.Cat | Study,
+#'                data = dat)
+#'                
+#' conf_int(MVFE, vcov = "CR2")
+#' 
+
+
+pattern_covariance_matrix <- function(vi, cluster, pattern_level, r_pattern, r,
+                                     smooth_vi = FALSE, subgroup = NULL, 
+                                     return_list = identical(as.factor(cluster), sort(as.factor(cluster))),
+                                     check_PD = TRUE) {
+  
+  if (missing(pattern_level)) stop("You must specify a vector for pattern_level.")
+  if (any(is.na(pattern_level[!is.na(vi)]))) stop("The pattern_level vector cannot have missing values.")
+  
+  pattern_level <- as.factor(pattern_level)
+  
+  if (!identical(rownames(r_pattern),colnames(r_pattern))) stop("Row names of r_pattern must be identical to column names.")
+  
+  mat_levels <- rownames(r_pattern)
+  p_levels <- levels(pattern_level)
+  
+  if (!all(p_levels %in% mat_levels)) {
+    
+    if (missing(r)) stop("At least one pattern_level is not available in r_pattern. Please specify a value for the r argument.")
+    
+    np_levels <- nlevels(pattern_level)
+    r_pattern_full <- matrix(r, nrow = np_levels, ncol = np_levels)
+    rownames(r_pattern_full) <- colnames(r_pattern_full) <- p_levels
+    included_levels <- intersect(mat_levels, p_levels)
+    r_pattern_full[included_levels, included_levels] <- r_pattern[included_levels, included_levels]
+    r_pattern <- r_pattern_full
+  } 
+    
+      
+  cluster <- droplevels(as.factor(cluster))
+      
+  pattern_list <- split(pattern_level, cluster)
+  
+  cor_list <- lapply(pattern_list, function(x) {
+    res <- r_pattern[x, x, drop=FALSE]
+    diag(res) <- 1
+    res
+  })
+  
+  vi_list <- split(vi, cluster)
+  
+  if (smooth_vi) vi_list <- lapply(vi_list, function(x) rep(mean(x, na.rm = TRUE), length(x)))
+  
+  vcov_list <- Map(function(V, r_mat) r_mat * tcrossprod(sqrt(V)), 
+                     V = vi_list, 
+                     r_mat = cor_list)
+  
+
+  if (!is.null(subgroup)) {
+    si_list <- split(subgroup, cluster)
+    subgroup_list <- lapply(si_list, function(x) sapply(x, function(y) y == x))
+    vcov_list <- Map(function(V, S) V * S, V = vcov_list, S = subgroup_list)
+  }
+  
+  if (check_PD) check_PD(vcov_list)
   
   if (return_list) {
     return(vcov_list)
