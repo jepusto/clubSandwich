@@ -27,7 +27,8 @@ VignetteBuilder: knitr
 LazyData: true
 Imports:
     stats,
-    sandwich
+    sandwich,
+    mathjaxr
 Suggests:
     Formula,
     knitr,
@@ -43,8 +44,7 @@ Suggests:
     lme4,
     zoo,
     testthat,
-    rmarkdown,
-    mathjaxr
+    rmarkdown
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 Language: en-US
