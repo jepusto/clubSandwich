@@ -80,7 +80,7 @@ A block-diagonal variance-covariance matrix (possibly represented as
   specified,}{ each block of the variance-covariance matrix will have an
   AR(1) auto-correlation structure, so that \mjdeqn{C_{hij} = \phi_j^{|t_{hj}
   - t_{ij}|} \sqrt{v_{hj} v_{ij},}}{C-hij = (ar1-j)^|t-hj - t-ij| * sqrt(v-hj
-  v-ij),} where where \mjeqn{\phi_j}{ar1-j} is the specified auto-correlation
+  v-ij),} where \mjeqn{\phi_j}{ar1-j} is the specified auto-correlation
   for cluster \mjeqn{j}{j} and \mjeqn{t_{hj}}{t-hj} and \mjeqn{t_{ij}}{t-ij}
   are specified time-points corresponding to effects \mjeqn{h}{h} and
   \mjeqn{i}{i} in cluster \mjeqn{j}{j}. If only a single value is given in
@@ -89,7 +89,7 @@ A block-diagonal variance-covariance matrix (possibly represented as
   matrix will have combination of compound symmetric and an AR(1)
   auto-correlation structures, so that \mjdeqn{C_{hij} = \left[r_j + (1 -
   r_j)\phi_j^{|t_{hj} - t_{ij}|}\right] \sqrt{v_{hj} v_{ij},}}{C-hij = [r-j +
-  (1 - r-j)(ar1-j)^|t-hj - t-ij|] * sqrt(v-hj v-ij),} where where where
+  (1 - r-j)(ar1-j)^|t-hj - t-ij|] * sqrt(v-hj v-ij),} where
   \mjeqn{r_j}{r-j} is the specified constant correlation for cluster
   \mjeqn{j}{j}, \mjeqn{\phi_j}{ar1-j} is the specified auto-correlation for
   cluster \mjeqn{j}{j} and \mjeqn{t_{hj}}{t-hj} and \mjeqn{t_{ij}}{t-ij} are
