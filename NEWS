@@ -1,4 +1,4 @@
-clubSandwich 0.5.0.9999
+clubSandwich 0.5.1
 =======================
 * New functionality for impute_covariance_matrix(): 
     * Compute covariance matrices with AR1 correlation structure or with a combination of constant correlation and AR1 correlation structure. 

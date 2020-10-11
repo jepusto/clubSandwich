@@ -1,8 +1,7 @@
 ## Resubmission
 
-This is a new submission after the previous version of the package was archived on CRAN. My apologies for the delay in correcting the remaining errors identified. This happened because I was in the middle of a cross-country move, and it has taken me a while to get my family settled in our new home.
-
-This submission adds new functionality for Wald tests, along with expanded documentation and a vignette. This submission also fixes unit test errors that occur with MKL and noLD builds. I believe I have also fixed the remaining MKL issue identified when I last tried to resubmit. However, I do not have access to a machine where I can exactly replicate the MKL check, and so I cannot be entirely certain.
+This is a re-submission, which adds new functions `impute_covariance_matrix()` and 
+`pattern_covariance_matrix()` and corrects a bug in the methods for `metafor::rma.mv` objects.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
