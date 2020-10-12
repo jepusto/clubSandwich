@@ -45,5 +45,10 @@ There were 2 NOTES:
     Status: Error
     Message: libcurl error code 56:
       	Recv failure: Connection was reset
+  URL: https://www.jstatsoft.org/v36/i03/
+    From: inst/doc/meta-analysis-with-CRVE.html
+    Status: Error
+    Message: libcurl error code 7:
+      	Failed to connect to www.jstatsoft.org port 443: Timed out
 
   The flagged URLs are correct.

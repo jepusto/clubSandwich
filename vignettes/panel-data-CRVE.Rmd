@@ -28,7 +28,7 @@ The following example demonstrates how to use `clubSandwich` to do cluster-robus
 
 Carpenter and Dobkin (2011) analyzed the effects of changes in the minimum legal drinking age on rates of motor vehicle fatalies among 18-20 year olds, using state-level panel data from the National Highway Traffic Administration's Fatal Accident Reporting System. 
 In their new textbook, Angrist and Pischke (2014) developed a stylized example based on Carpenter and Dobkin's work. 
-The following example uses Angrist and Pischke's data and follows their analysis because their data are [easily available](https://masteringmetrics.com/resources/).
+The following example uses Angrist and Pischke's data and follows their analysis because their data are [easily available](https://www.masteringmetrics.com/resources/).
 
 The outcome is the incidence of deaths in motor vehicle crashes among 18-20 year-olds (per 100,000 residents), for each state plus the District of Columbia, over the period 1970 to 1983. 
 There were several changes in the minimum legal drinking age during this time period, with variability in the timing of changes across states. 

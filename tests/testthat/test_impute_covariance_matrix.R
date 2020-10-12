@@ -200,24 +200,26 @@ test_that("impute_covariance_matrix works with missing variances.", {
 })
 
 
-data(oswald2013, package = "robumeta")
-dat <- metafor::escalc(data = oswald2013, measure = "ZCOR", ri = R, ni = N)
-
-# make a patterned correlation matrix 
-p_levels <- levels(dat$Crit.Cat)
-r_pattern <- 0.7^as.matrix(dist(1:length(p_levels)))
-diag(r_pattern) <- seq(0.75, 0.95, length.out = 6)
-rownames(r_pattern) <- colnames(r_pattern) <- p_levels
- 
-# impute the covariance matrix using patterned correlations
-V_list <- pattern_covariance_matrix(vi = dat$vi, 
-                                    cluster = dat$Study, 
-                                    pattern_level = dat$Crit.Cat,
-                                    r_pattern = r_pattern,
-                                    smooth_vi = TRUE)
 
 
 test_that("pattern_covariance_matrix works.", {
+  
+  data(oswald2013, package = "robumeta")
+  dat <- metafor::escalc(data = oswald2013, measure = "ZCOR", ri = R, ni = N)
+  
+  # make a patterned correlation matrix 
+  p_levels <- levels(dat$Crit.Cat)
+  r_pattern <- 0.7^as.matrix(dist(1:length(p_levels)))
+  diag(r_pattern) <- seq(0.75, 0.95, length.out = 6)
+  rownames(r_pattern) <- colnames(r_pattern) <- p_levels
+  
+  # impute the covariance matrix using patterned correlations
+  V_list <- pattern_covariance_matrix(vi = dat$vi, 
+                                      cluster = dat$Study, 
+                                      pattern_level = dat$Crit.Cat,
+                                      r_pattern = r_pattern,
+                                      smooth_vi = TRUE)
+
   r_pattern1 <- r_pattern2 <- r_pattern 
   
   # Recreate a constant covariance matrix
@@ -226,13 +228,9 @@ test_that("pattern_covariance_matrix works.", {
   
   V_pattern_const <- pattern_covariance_matrix(vi = dat$vi, cluster = dat$Study, pattern_level = dat$Crit.Cat,
                                               r_pattern = r_pattern1, smooth_vi = FALSE)
-  V_pattern_const <- lapply(V_pattern_const, function (x) {
-    dimnames(x) <- NULL
-    x
-  })
   
   V_impute_const <- impute_covariance_matrix(vi = dat$vi, cluster = dat$Study, r = 0.6)
-  expect_identical(V_pattern_const, V_impute_const)
+  expect_equal(V_pattern_const, V_impute_const, check.attributes = FALSE)
   
   # Patterns work with excluded categories
   exclude <- 3:5
@@ -266,6 +264,7 @@ test_that("pattern_covariance_matrix works.", {
                                               r_pattern = r_pattern2, 
                                               subgroup = dat$IAT.Focus,
                                               smooth_vi = FALSE, return_list = FALSE)
+  
   expect_identical(VS_pattern_extra_exclude, VS_pattern_full)
   
   
@@ -281,16 +280,15 @@ test_that("pattern_covariance_matrix works.", {
                                      subgroup = dat$IAT.Focus,
                                      smooth_vi = FALSE, return_list = FALSE, check = FALSE)  
   expect_true(inherits(V_npd, "matrix"))
-  
-})
 
-test_that("pattern_covariance_matrix works with missing entries", {
+  # pattern_covariance_matrix works with missing entries
   dat_miss <- dat
   dat_miss$vi[sample.int(nrow(dat), size = round(nrow(dat) / 10))] <- NA
   
   V_missing <- pattern_covariance_matrix(dat_miss$vi, cluster = dat_miss$Study,
-                                        pattern_level = dat_miss$Crit.Cat,
-                                        r_pattern = r_pattern, return_list = FALSE)
+                                         pattern_level = dat_miss$Crit.Cat,
+                                         r_pattern = r_pattern, return_list = FALSE)
+  
   non_missing_rows <- !is.na(dat_miss$vi)
   V_missing <- V_missing[non_missing_rows, non_missing_rows]
   
@@ -301,7 +299,7 @@ test_that("pattern_covariance_matrix works with missing entries", {
   
   expect_identical(V_missing, V_complete)
   
-
+  
   dat_miss$Crit.Cat[sample.int(nrow(dat), size = round(nrow(dat) / 10))] <- NA
   
   expect_error(
@@ -309,6 +307,6 @@ test_that("pattern_covariance_matrix works with missing entries", {
                               pattern_level = dat_miss$Crit.Cat,
                               r_pattern = r_pattern, return_list = TRUE,
                               check_PD = FALSE)
-  )
-  
+  )  
 })
+
