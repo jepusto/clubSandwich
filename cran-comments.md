@@ -1,7 +1,6 @@
 ## Resubmission
 
-This is a re-submission, which adds new functions `impute_covariance_matrix()` and 
-`pattern_covariance_matrix()` and corrects a bug in the methods for `metafor::rma.mv` objects.
+This is a re-submission.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
