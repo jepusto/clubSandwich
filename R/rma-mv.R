@@ -113,6 +113,7 @@ check_PD <- function(vcov_list) {
 #' MVFE <- rma.mv(d ~ 0 + test, V = V_list, data = SATcoaching)
 #' conf_int(MVFE, vcov = "CR2", cluster = SATcoaching$study)
 #' 
+#' @import mathjaxr
 
 
 impute_covariance_matrix <- function(vi, cluster, r, ti, ar1, 
