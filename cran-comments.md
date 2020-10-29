@@ -1,13 +1,13 @@
 ## Resubmission
 
-This is a re-submission.
+This is a re-submission. The only change is to add mathjaxr to the DESCRIPTION Imports field, correcting the outstanding error in CRAN checks.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
 ## Test environments
 
 * local Windows 10 Pro, R 4.0.2
-* local Windows 10 Education, R 4.0.2, MKL
+* local Windows 10 Education, R 4.0.2
 * ubuntu 16.04.6 LTS (on travis-ci), R-release, R-devel
 * win-builder (devel, release, oldrelease)
 * r-hub:
