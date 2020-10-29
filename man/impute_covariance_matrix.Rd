@@ -53,7 +53,7 @@ definite.}
 \value{
 If \code{cluster} is appropriately sorted, then a list of matrices,
   with one entry per cluster, will be returned by default. If \code{cluster}
-  is out of order, then the full variance-covariace matrix will be returned
+  is out of order, then the full variance-covariance matrix will be returned
   by default. The output structure can be controlled with the optional
   \code{return_list} argument.
 }

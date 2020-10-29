@@ -61,7 +61,7 @@ check_PD <- function(vcov_list) {
 #'
 #' @return If \code{cluster} is appropriately sorted, then a list of matrices,
 #'   with one entry per cluster, will be returned by default. If \code{cluster}
-#'   is out of order, then the full variance-covariace matrix will be returned
+#'   is out of order, then the full variance-covariance matrix will be returned
 #'   by default. The output structure can be controlled with the optional
 #'   \code{return_list} argument.
 #'
@@ -201,7 +201,7 @@ impute_covariance_matrix <- function(vi, cluster, r, ti, ar1,
 #'
 #' @return If \code{cluster} is appropriately sorted, then a list of matrices,
 #'   with one entry per cluster, will be returned by default. If \code{cluster}
-#'   is out of order, then the full variance-covariace matrix will be returned
+#'   is out of order, then the full variance-covariance matrix will be returned
 #'   by default. The output structure can be controlled with the optional
 #'   \code{return_list} argument.
 #'
