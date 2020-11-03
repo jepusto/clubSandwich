@@ -196,7 +196,7 @@ test_that("impute_covariance_matrix works with missing variances.", {
   V_complete <- impute_covariance_matrix(dat_complete$var, cluster = dat_complete$studyid, 
                                          r = 0.8, return_list = FALSE)
   
-  expect_identical(V_missing, V_complete)
+  expect_equal(V_missing, V_complete)
 })
 
 
@@ -241,7 +241,7 @@ test_that("pattern_covariance_matrix works.", {
                                                  r_pattern = r_pattern[-(3:5),-(3:5)], r = 0.3, smooth_vi = FALSE)
   V_pattern_full <- pattern_covariance_matrix(vi = dat$vi, cluster = dat$Study, pattern_level = dat$Crit.Cat,
                                                  r_pattern = r_pattern2, smooth_vi = FALSE)
-  expect_identical(V_pattern_exclude, V_pattern_full)
+  expect_equal(V_pattern_exclude, V_pattern_full)
   
   # Patterns work with extra categories
   levs <- c(p_levels, LETTERS[1:5])
@@ -250,11 +250,11 @@ test_that("pattern_covariance_matrix works.", {
   
   V_pattern_extra <- pattern_covariance_matrix(vi = dat$vi, cluster = dat$Study, pattern_level = dat$Crit.Cat,
                                                  r_pattern = r_pattern3, r = 0.3, smooth_vi = TRUE)
-  expect_identical(V_pattern_extra, V_list)
+  expect_equal(V_pattern_extra, V_list)
   
   V_pattern_extra_exclude <- pattern_covariance_matrix(vi = dat$vi, cluster = dat$Study, pattern_level = dat$Crit.Cat,
                                                       r_pattern = r_pattern3[-(3:5),-(3:5)], r = 0.3, smooth_vi = FALSE)
-  expect_identical(V_pattern_extra_exclude, V_pattern_full)
+  expect_equal(V_pattern_extra_exclude, V_pattern_full)
   
   VS_pattern_extra_exclude <- pattern_covariance_matrix(vi = dat$vi, cluster = dat$Study, pattern_level = dat$Crit.Cat,
                                                        r_pattern = r_pattern3[-(3:5),-(3:5)], r = 0.3, 
@@ -265,7 +265,7 @@ test_that("pattern_covariance_matrix works.", {
                                               subgroup = dat$IAT.Focus,
                                               smooth_vi = FALSE, return_list = FALSE)
   
-  expect_identical(VS_pattern_extra_exclude, VS_pattern_full)
+  expect_equal(VS_pattern_extra_exclude, VS_pattern_full)
   
   
   expect_warning(
@@ -297,7 +297,7 @@ test_that("pattern_covariance_matrix works.", {
                                           pattern_level = dat_complete$Crit.Cat,
                                           r_pattern = r_pattern, return_list = FALSE)
   
-  expect_identical(V_missing, V_complete)
+  expect_equal(V_missing, V_complete)
   
   
   dat_miss$Crit.Cat[sample.int(nrow(dat), size = round(nrow(dat) / 10))] <- NA
