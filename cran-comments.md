@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a re-submission after the package was archived on CRAN (yesterday). The only change is to add mathjaxr to the DESCRIPTION Imports field, correcting the outstanding error in CRAN checks that led to archiving.
+This is a re-submission after the package was archived on CRAN. The resubmission corrects a unit test that failed on ATLAS. The only other change from the previous release is to add mathjaxr to the DESCRIPTION Imports field, correcting the outstanding error in CRAN checks that led to archiving.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
