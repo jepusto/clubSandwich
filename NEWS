@@ -1,3 +1,7 @@
+clubSandwich 0.5.3
+=======================
+* Removed dependency on mathjaxr
+
 clubSandwich 0.5.2
 =======================
 * Added mathjaxr to Imports

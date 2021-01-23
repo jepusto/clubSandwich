@@ -58,7 +58,7 @@ If \code{cluster} is appropriately sorted, then a list of matrices,
   \code{return_list} argument.
 }
 \description{
-\loadmathjax{} \code{impute_covariance_matrix} calculates a
+\code{impute_covariance_matrix} calculates a
   block-diagonal covariance matrix, given the marginal variances, the block
   structure, and an assumed correlation structure. Can be used to create
   compound-symmetric structures, AR(1) auto-correlated structures, or
@@ -68,39 +68,39 @@ If \code{cluster} is appropriately sorted, then a list of matrices,
 A block-diagonal variance-covariance matrix (possibly represented as
   a list of matrices) with a specified structure. The structure depends on
   whether the \code{r} argument, \code{ar1} argument, or both arguments are
-  specified. Let \mjeqn{v_{ij}}{v-ij} denote the specified variance for
-  effect \mjeqn{i}{i} in cluster \mjeqn{j}{j} and \mjeqn{C_{hij}}{C-hij} be
-  the covariance between effects \mjeqn{h}{h} and \mjeqn{i}{i} in cluster
-  \mjeqn{j}{j}. \itemize{ \item{If only \code{r} is specified,}{ each block
+  specified. Let \eqn{v_{ij}}{v-ij} denote the specified variance for
+  effect \eqn{i}{i} in cluster \eqn{j}{j} and \eqn{C_{hij}}{C-hij} be
+  the covariance between effects \eqn{h}{h} and \eqn{i}{i} in cluster
+  \eqn{j}{j}. \itemize{ \item{If only \code{r} is specified,}{ each block
   of the variance-covariance matrix will have a constant (compound symmetric)
-  correlation, so that \mjdeqn{C_{hij} = r_j \sqrt{v_{hj} v_{ij},}}{C-hij =
-  r-j * sqrt(v-hj v-ij),} where \mjeqn{r_j}{r-j} is the specified correlation
-  for cluster \mjeqn{j}{j}. If only a single value is given in \code{r}, then
+  correlation, so that \deqn{C_{hij} = r_j \sqrt{v_{hj} v_{ij},}}{C-hij =
+  r-j * sqrt(v-hj v-ij),} where \eqn{r_j}{r-j} is the specified correlation
+  for cluster \eqn{j}{j}. If only a single value is given in \code{r}, then
   it will be used for every cluster.} \item{If only \code{ar1} is
   specified,}{ each block of the variance-covariance matrix will have an
-  AR(1) auto-correlation structure, so that \mjdeqn{C_{hij} = \phi_j^{|t_{hj}
+  AR(1) auto-correlation structure, so that \deqn{C_{hij} = \phi_j^{|t_{hj}
   - t_{ij}|} \sqrt{v_{hj} v_{ij},}}{C-hij = (ar1-j)^|t-hj - t-ij| * sqrt(v-hj
-  v-ij),} where \mjeqn{\phi_j}{ar1-j} is the specified auto-correlation
-  for cluster \mjeqn{j}{j} and \mjeqn{t_{hj}}{t-hj} and \mjeqn{t_{ij}}{t-ij}
-  are specified time-points corresponding to effects \mjeqn{h}{h} and
-  \mjeqn{i}{i} in cluster \mjeqn{j}{j}. If only a single value is given in
+  v-ij),} where \eqn{\phi_j}{ar1-j} is the specified auto-correlation
+  for cluster \eqn{j}{j} and \eqn{t_{hj}}{t-hj} and \eqn{t_{ij}}{t-ij}
+  are specified time-points corresponding to effects \eqn{h}{h} and
+  \eqn{i}{i} in cluster \eqn{j}{j}. If only a single value is given in
   \code{ar1}, then it will be used for every cluster.} \item{If both \code{r}
   and \code{ar1} are specified,}{ each block of the variance-covariance
   matrix will have combination of compound symmetric and an AR(1)
-  auto-correlation structures, so that \mjdeqn{C_{hij} = \left[r_j + (1 -
+  auto-correlation structures, so that \deqn{C_{hij} = \left[r_j + (1 -
   r_j)\phi_j^{|t_{hj} - t_{ij}|}\right] \sqrt{v_{hj} v_{ij},}}{C-hij = [r-j +
   (1 - r-j)(ar1-j)^|t-hj - t-ij|] * sqrt(v-hj v-ij),} where
-  \mjeqn{r_j}{r-j} is the specified constant correlation for cluster
-  \mjeqn{j}{j}, \mjeqn{\phi_j}{ar1-j} is the specified auto-correlation for
-  cluster \mjeqn{j}{j} and \mjeqn{t_{hj}}{t-hj} and \mjeqn{t_{ij}}{t-ij} are
-  specified time-points corresponding to effects \mjeqn{h}{h} and
-  \mjeqn{i}{i} in cluster \mjeqn{j}{j}. If only single values are given in
+  \eqn{r_j}{r-j} is the specified constant correlation for cluster
+  \eqn{j}{j}, \eqn{\phi_j}{ar1-j} is the specified auto-correlation for
+  cluster \eqn{j}{j} and \eqn{t_{hj}}{t-hj} and \eqn{t_{ij}}{t-ij} are
+  specified time-points corresponding to effects \eqn{h}{h} and
+  \eqn{i}{i} in cluster \eqn{j}{j}. If only single values are given in
   \code{r} or \code{ar1}, they will be used for every cluster.} } If
   \code{smooth_vi = TRUE}, then all of the variances within cluster
-  \mjeqn{j}{j} will be set equal to the average variance of cluster
-  \mjeqn{j}{j}, i.e., \mjdeqn{v'_{ij} = \frac{1}{n_j} \sum_{i=1}^{n_j}
+  \eqn{j}{j} will be set equal to the average variance of cluster
+  \eqn{j}{j}, i.e., \deqn{v'_{ij} = \frac{1}{n_j} \sum_{i=1}^{n_j}
   v_{ij}}{v-ij' = (v-1j + ... + v-nj,j) / n-j} for
-  \mjeqn{i=1,...,n_j}{i=1,...,n-j} and \mjeqn{j=1,...,k}{j=1,...,k}.
+  \eqn{i=1,...,n_j}{i=1,...,n-j} and \eqn{j=1,...,k}{j=1,...,k}.
 }
 \examples{
 library(metafor)

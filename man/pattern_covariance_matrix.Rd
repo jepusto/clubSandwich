@@ -58,7 +58,7 @@ If \code{cluster} is appropriately sorted, then a list of matrices,
   \code{return_list} argument.
 }
 \description{
-\loadmathjax{} \code{pattern_covariance_matrix} calculates a
+\code{pattern_covariance_matrix} calculates a
   block-diagonal covariance matrix, given the marginal variances, the block
   structure, and an assumed correlation structure defined by a patterned
   correlation matrix.
@@ -66,18 +66,18 @@ If \code{cluster} is appropriately sorted, then a list of matrices,
 \details{
 A block-diagonal variance-covariance matrix (possibly represented as
   a list of matrices) with a specified correlation structure, defined by a
-  patterned correlation matrix. Let \mjeqn{v_{ij}}{v-ij} denote the specified
-  variance for effect \mjeqn{i}{i} in cluster \mjeqn{j}{j} and
-  \mjeqn{C_{hij}}{C-hij} be the covariance between effects \mjeqn{h}{h} and
-  \mjeqn{i}{i} in cluster \mjeqn{j}{j}. Let \mjeqn{p_{ij}}{p-ij} be the level
-  of the pattern variable for effect \mjeqn{i}{i} in cluster \mjeqn{j}{j},
-  taking a value in \mjeqn{1,...,C}{1,...,C}. A patterned correlation matrix
+  patterned correlation matrix. Let \eqn{v_{ij}}{v-ij} denote the specified
+  variance for effect \eqn{i}{i} in cluster \eqn{j}{j} and
+  \eqn{C_{hij}}{C-hij} be the covariance between effects \eqn{h}{h} and
+  \eqn{i}{i} in cluster \eqn{j}{j}. Let \eqn{p_{ij}}{p-ij} be the level
+  of the pattern variable for effect \eqn{i}{i} in cluster \eqn{j}{j},
+  taking a value in \eqn{1,...,C}{1,...,C}. A patterned correlation matrix
   is defined as a set of correlations between pairs of effects taking each
-  possible combination of patterns. Formally, let \mjeqn{r_{cd}}{r-cd} be the
-  correlation between effects in categories \mjeqn{c}{c} and \mjeqn{d}{d},
-  respectively, where \mjeqn{r_{cd} = r_{dc}}{r-cd = r-dc}. Then the
-  covariance between effects \mjeqn{h}{h} and \mjeqn{i}{i} in cluster
-  \mjeqn{j}{j} is taken to be \mjdeqn{C_{hij} = \sqrt{v_{hj} v_{ij}} \times
+  possible combination of patterns. Formally, let \eqn{r_{cd}}{r-cd} be the
+  correlation between effects in categories \eqn{c}{c} and \eqn{d}{d},
+  respectively, where \eqn{r_{cd} = r_{dc}}{r-cd = r-dc}. Then the
+  covariance between effects \eqn{h}{h} and \eqn{i}{i} in cluster
+  \eqn{j}{j} is taken to be \deqn{C_{hij} = \sqrt{v_{hj} v_{ij}} \times
   r_{p_{hj} p_{ij}}.}{C-hij = sqrt(v-hj v-ij) * r[p-hj, p-ij].} 
   
   Correlations between effect sizes within the same category are defined by the diagonal
@@ -86,10 +86,10 @@ A block-diagonal variance-covariance matrix (possibly represented as
   Combinations of pattern levels that do not occur in the patterned correlation matrix will be set equal to \code{r}.
   
   If \code{smooth_vi = TRUE}, then all of the variances within cluster
-  \mjeqn{j}{j} will be set equal to the average variance of cluster
-  \mjeqn{j}{j}, i.e., \mjdeqn{v'_{ij} = \frac{1}{n_j} \sum_{i=1}^{n_j}
+  \eqn{j}{j} will be set equal to the average variance of cluster
+  \eqn{j}{j}, i.e., \deqn{v'_{ij} = \frac{1}{n_j} \sum_{i=1}^{n_j}
   v_{ij}}{v-ij' = (v-1j + ... + v-nj,j) / n-j} for
-  \mjeqn{i=1,...,n_j}{i=1,...,n-j} and \mjeqn{j=1,...,k}{j=1,...,k}.
+  \eqn{i=1,...,n_j}{i=1,...,n-j} and \eqn{j=1,...,k}{j=1,...,k}.
 }
 \examples{
 library(metafor)

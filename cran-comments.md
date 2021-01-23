@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a re-submission. The only change is to move the mathjaxr package from Imports to Suggests, so that the package can be built for the Debian/GNU Linux distribution without requiring mathjaxr.
+This is a re-submission. The only change is to remove the dependency on the mathjaxr package, so that the package can be built for the Debian/GNU Linux distribution.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
