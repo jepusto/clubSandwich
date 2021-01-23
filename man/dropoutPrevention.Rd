@@ -34,7 +34,7 @@ Wilson, S. J., Lipsey, M. W., Tanner-Smith, E., Huang, C. H., &
   Steinka-Fry, K. T. (2011). Dropout prevention and intervention programs:
   Effects on school completion and dropout Among school-aged children and
   youth: A systematic review. _Campbell Systematic Reviews, 7_(1), 1-61.
-  https://doi.org/10.4073/csr.2011.8
+  \doi{10.4073/csr.2011.8}
 }
 \usage{
 dropoutPrevention
@@ -49,10 +49,11 @@ Wilson, S. J., Lipsey, M. W., Tanner-Smith, E., Huang, C. H., &
   Steinka-Fry, K. T. (2011). Dropout prevention and intervention programs:
   Effects on school completion and dropout Among school-aged children and
   youth: A systematic review. _Campbell Systematic Reviews, 7_(1), 1-61.
-  https://doi.org/10.4073/csr.2011.8
+  \doi{10.4073/csr.2011.8}
 
   Tipton, E., & Pustejovsky, J. E. (2015). Small-sample adjustments for tests
   of moderators and model fit using robust variance estimation in
-  meta-regression.
+  meta-regression. _Journal of Educational and Behavioral Statistics, 40_(6), 604-634.
+  \doi{10.3102/1076998615606099}
 }
 \keyword{datasets}

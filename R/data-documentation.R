@@ -31,7 +31,7 @@
 #' @references Angrist, J. D., & Lavy, V. (2009). The effects of high stakes 
 #'   high school achievement awards : Evidence from a randomized trial.
 #'   \emph{American Economic Review, 99}(4), 1384-1414.
-#'   doi:\href{https://doi.org/10.1257/aer.99.4.1384}{10.1257/aer.99.4.1384}
+#'   \doi{10.1257/aer.99.4.1384}
 #'   
 
 "AchievementAwardsRCT"
@@ -72,17 +72,18 @@
 #'   Steinka-Fry, K. T. (2011). Dropout prevention and intervention programs:
 #'   Effects on school completion and dropout Among school-aged children and
 #'   youth: A systematic review. _Campbell Systematic Reviews, 7_(1), 1-61.
-#'   https://doi.org/10.4073/csr.2011.8
+#'   \doi{10.4073/csr.2011.8}
 #'
 #' @references Wilson, S. J., Lipsey, M. W., Tanner-Smith, E., Huang, C. H., &
 #'   Steinka-Fry, K. T. (2011). Dropout prevention and intervention programs:
 #'   Effects on school completion and dropout Among school-aged children and
 #'   youth: A systematic review. _Campbell Systematic Reviews, 7_(1), 1-61.
-#'   https://doi.org/10.4073/csr.2011.8
+#'   \doi{10.4073/csr.2011.8}
 #'
 #'   Tipton, E., & Pustejovsky, J. E. (2015). Small-sample adjustments for tests
 #'   of moderators and model fit using robust variance estimation in
-#'   meta-regression.
+#'   meta-regression. _Journal of Educational and Behavioral Statistics, 40_(6), 604-634.
+#'   \doi{10.3102/1076998615606099}
 #'   
 
 "dropoutPrevention"
@@ -120,7 +121,7 @@
 #' 
 #' Carpenter, C., & Dobkin, C. (2011). The minimum legal drinking age and public
 #' health. _Journal of Economic Perspectives, 25_(2), 133-156.
-#' doi:[10.1257/jep.25.2.133](https://doi.org/10.1257/jep.25.2.133)
+#' \doi{10.1257/jep.25.2.133}
 #' 
  
 "MortalityRates"
@@ -148,7 +149,7 @@
 #' @references Kalaian, H. A. & Raudenbush, S. W. (1996). A multivariate mixed 
 #'   linear model for meta-analysis. \emph{Psychological Methods, 1}(3),
 #'   227-235. 
-#'   doi:\href{https://doi.org/10.1037/1082-989X.1.3.227}{10.1037/1082-989X.1.3.227}
+#'   \doi{10.1037/1082-989X.1.3.227}
 #'   
 
 "SATcoaching"

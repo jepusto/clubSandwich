@@ -141,9 +141,9 @@ Liang, K.-Y., & Zeger, S. L. (1986). Longitudinal data analysis using
 generalized linear models. \emph{Biometrika, 73}(1), 13-22.
 \doi{10.1093/biomet/73.1.13}
 
-Pustejovsky, J. E. & Tipton, E. (2017). Small sample methods for
+Pustejovsky, J. E. & Tipton, E. (2018). Small sample methods for
 cluster-robust variance estimation and hypothesis testing in fixed effects
-models. \emph{Journal of Business and Economic Statistics}. In Press.
+models. \emph{Journal of Business and Economic Statistics, 36}(4), 672-683.
 \doi{10.1080/07350015.2016.1247004}
 }
 \seealso{
