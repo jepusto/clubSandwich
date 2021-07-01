@@ -260,7 +260,20 @@ test_that("clubSandwich works with complicated random effects specifications.", 
   m9 <- update(m5, struct = c("UN","CS"))
   m10 <- update(m5, struct = c("CS","UN"))
   
-  mod_list <- list(m1, m2, m3, m4, m5, m6, m7, m8, m9, m10)
+  m11 <- rma.mv(
+    R ~ 0 + IAT.Focus + Crit.ID, V = V,
+    data = oswald2013,
+    random = list(~ 1  + Crit.ID | Study),
+    struct = c("GEN")
+  )
+  
+  m12 <- update(m11, random = list(~ 1  + Crit.ID | Study, ~ 1 | SSID))
+  m13 <- update(m11, random = list(~ 1  + Crit.ID | Study, ~ IAT.Focus | SSID),
+                struct = c("GEN","UN"))
+  m14 <- update(m11, random = list(~ IAT.Focus | Study, ~ 1 + Crit.ID | SSID),
+                struct = c("UN","GEN"))
+  
+  mod_list <- list(m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14)
   os_cluster <- factor(oswald2013$Study)
   
   obj <- m6
