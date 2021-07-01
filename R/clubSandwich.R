@@ -27,7 +27,9 @@
 #'   Alternately, setting \code{form = "meat"} will return only the meat of the 
 #'   sandwich and setting \code{form = B}, where \code{B} is a matrix of 
 #'   appropriate dimension, will return the sandwich variance-covariance matrix 
-#'   calculated using \code{B} as the bread.
+#'   calculated using \code{B} as the bread. \code{form = "estfun"} will return the 
+#'   (appropriately scaled) estimating function, the transposed crossproduct of 
+#'   which is equal to the sandwich variance-covariance matrix. 
 #' @param ... Additional arguments available for some classes of objects.
 #'   
 #' @description This is a generic function, with specific methods defined for 
@@ -230,6 +232,12 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   v_scale <- v_scale(obj)
   w_scale <- attr(W_list, "w_scale")
   if (is.null(w_scale)) w_scale <- 1L
+  
+  if (form == "estfun") {
+    bread <- sandwich::bread(obj)
+    estfun <- bread %*% components
+    return(estfun * (w_scale / v_scale))
+  }
   
   meat <- tcrossprod(components) * w_scale^2 / v_scale
   
