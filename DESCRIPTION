@@ -43,7 +43,8 @@ Suggests:
     lme4,
     zoo,
     testthat,
-    rmarkdown
+    rmarkdown,
+    covr
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 Language: en-US

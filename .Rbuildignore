@@ -8,3 +8,5 @@ cran-comments.md
 README.md
 revdep
 vignettes/Robust-Variance-Estimation-with-clubSandwich.Rmd
+^\.github$
+^codecov\.yml$
