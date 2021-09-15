@@ -2,7 +2,6 @@
 [![R-CMD-check](https://github.com/jepusto/clubSandwich/workflows/R-CMD-check/badge.svg)](https://github.com/jepusto/clubSandwich/actions)
 [![Travis-CI Build Status](https://travis-ci.org/jepusto/clubSandwich.svg?branch=master)](https://travis-ci.org/jepusto/clubSandwich)
 [![Codecov Status](https://codecov.io/gh/jepusto/clubSandwich/branch/master/graph/badge.svg)](https://codecov.io/gh/jepusto/clubSandwich?branch=master)
-[![Coverage Status](https://img.shields.io/codecov/c/github/jepusto/clubSandwich/master.svg)](https://codecov.io/github/jepusto/clubSandwich?branch=master)
 [![](http://www.r-pkg.org/badges/version/clubSandwich)](https://CRAN.R-project.org/package=clubSandwich)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/clubSandwich)](https://CRAN.R-project.org/package=clubSandwich)
 [![](http://cranlogs.r-pkg.org/badges/last-month/clubSandwich)](https://CRAN.R-project.org/package=clubSandwich)
