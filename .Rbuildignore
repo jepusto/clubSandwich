@@ -10,3 +10,6 @@ revdep
 vignettes/Robust-Variance-Estimation-with-clubSandwich.Rmd
 ^\.github$
 ^codecov\.yml$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
