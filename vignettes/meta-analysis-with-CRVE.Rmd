@@ -99,6 +99,6 @@ Tipton, E. (2015). Small sample adjustments for robust variance estimation with 
 
 Tipton, E., & Pustejovsky, J. E. (2015). Small-sample adjustments for tests of moderators and model fit using robust variance estimation in meta-regression. _Journal of Educational and Behavioral Statistics, 40_(6), 604-634. https://doi.org/10.3102/1076998615606099
 
-Viechtbauer, W. (2010). Conducting meta-analyses in R with the metafor package. _Journal of Statistical Software, 36_(3), 1-48. URL: https://www.jstatsoft.org/v36/i03/
+Viechtbauer, W. (2010). Conducting meta-analyses in R with the metafor package. _Journal of Statistical Software, 36_(3), 1-48. URL: https://doi.org/10.18637/jss.v036.i03
   
 Wilson, S. J., Lipsey, M. W., Tanner-Smith, E., Huang, C. H., & Steinka-Fry, K. T. (2011). Dropout prevention and intervention programs: Effects on school completion and dropout Among school-aged children and youth: A systematic review. _Campbell Systematic Reviews, 7_(1), 1-61. https://doi.org/10.4073/csr.2011.8
