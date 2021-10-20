@@ -525,7 +525,7 @@ Hotelling_Tsq <- function(Q, q, nu) {
   delta <- (nu - q + 1) / nu
   df <- nu - q + 1
   Fstat <- delta * Q / q
-  p_val <- ifelse(df > 0, pf(Fstat, df1 = q, df2 = df, lower.tail = FALSE), NA)
+  p_val <- ifelse(df > 0, pf(Fstat, df1 = q, df2 = df, lower.tail = FALSE), as.numeric(NA))
   data.frame(Fstat = Fstat, delta = delta, df_num = q, df_denom = df, p_val = p_val)
 }
 
