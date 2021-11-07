@@ -3,27 +3,36 @@
 # confidence intervals for all model coefficients
 #---------------------------------------------------
 
-#' Calculate confidence intervals for all or selected regression coefficients in a fitted model
+#' Calculate confidence intervals for all or selected regression coefficients in
+#' a fitted model
 #'
-#' \code{conf_int} reports confidence intervals for each coefficient estimate in a fitted
-#' linear regression model, using a sandwich estimator for the standard errors
-#' and a small sample correction for the critical values. The small-sample correction is
-#' based on a Satterthwaite approximation.
+#' \code{conf_int} reports confidence intervals for each coefficient estimate in
+#' a fitted linear regression model, using a sandwich estimator for the standard
+#' errors and a small sample correction for the critical values. The
+#' small-sample correction is based on a Satterthwaite approximation.
 #'
 #' @param obj Fitted model for which to calculate confidence intervals.
-#' @param level Desired coverage level for confidence intervals. 
+#' @param level Desired coverage level for confidence intervals.
+#' @param test Character vector specifying which small-sample corrections to
+#'   calculate. \code{"z"} returns a z test (i.e., using a standard normal
+#'   reference distribution). \code{"naive-t"} returns a t test with \code{m -
+#'   1} degrees of freedom. \code{"Satterthwaite"} returns a Satterthwaite
+#'   correction. Unlike in \code{coef_test()}, \code{"saddlepoint"} is not
+#'   currently supported in \code{conf_int()} because saddlepoint confidence
+#'   intervals do not have a closed-form solution.
 #' @inheritParams coef_test
-#' 
-#' @return A data frame containing estimated regression coefficients, standard errors, and confidence intervals. 
+#'
+#' @return A data frame containing estimated regression coefficients, standard
+#'   errors, and confidence intervals.
 #'
 #' @seealso \code{\link{vcovCR}}
-#' 
-#' @examples 
+#'
+#' @examples
 #' data("Produc", package = "plm")
 #' lm_individual <- lm(log(gsp) ~ 0 + state + log(pcap) + log(pc) + log(emp) + unemp, data = Produc)
 #' individual_index <- !grepl("state", names(coef(lm_individual)))
 #' conf_int(lm_individual, vcov = "CR2", cluster = Produc$state, coefs = individual_index)
-#' 
+#'
 #' V_CR2 <- vcovCR(lm_individual, cluster = Produc$state, type = "CR2")
 #' conf_int(lm_individual, vcov = V_CR2, level = .99, coefs = individual_index)
 #'
@@ -44,6 +53,7 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
   if (!inherits(vcov, "clubSandwich")) stop("Variance-covariance matrix must be a clubSandwich.")
   
   all_tests <- c("z","naive-t","Satterthwaite")
+  if (test == "saddlepoint") stop("test = 'saddlepoint' is not currently supported  because saddlepoint confidence intervals do not have a closed-form solution.")
   test <- match.arg(test, all_tests, several.ok = FALSE)
 
   SE <- sqrt(diag(vcov))[which_beta[!beta_NA]]

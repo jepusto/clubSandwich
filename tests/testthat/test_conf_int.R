@@ -85,3 +85,12 @@ test_that("conf_int() is consistent with coef_test()", {
   
 })
 
+test_that("conf_int has informative error messages.", {
+  expect_error(
+    conf_int(gls_fit, vcov = "CR0", test = "all")
+  )
+  
+  expect_error(
+    conf_int(gls_fit, vcov = "CR0", test = "saddlepoint")
+  )
+})

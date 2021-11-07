@@ -309,12 +309,7 @@ Wald_test <- function(obj, constraints, vcov, test = "HTZ", tidy = FALSE, ...) {
   
   all_tests <- c("chi-sq","Naive-F","HTA","HTB","HTZ","EDF","EDT")
   if (all(test == "All")) test <- all_tests
-  if (!any(test %in% all_tests)) {
-    msg <- paste0("The test argument must be one of: ",
-                  paste(paste0("'",all_tests,"'"), collapse = ", "),
-                  ", or 'All'.")
-    stop(msg)
-  }
+  test <- match.arg(test, all_tests, several.ok = TRUE)
 
   beta <- na.omit(coef_CS(obj))
   p <- length(beta)
