@@ -2,9 +2,18 @@
 % Please edit documentation in R/conf_int.R
 \name{conf_int}
 \alias{conf_int}
-\title{Calculate confidence intervals for all or selected regression coefficients in a fitted model}
+\title{Calculate confidence intervals for all or selected regression coefficients in
+a fitted model}
 \usage{
-conf_int(obj, vcov, level = 0.95, test = "Satterthwaite", coefs = "All", ...)
+conf_int(
+  obj,
+  vcov,
+  level = 0.95,
+  test = "Satterthwaite",
+  coefs = "All",
+  ...,
+  p_values = FALSE
+)
 }
 \arguments{
 \item{obj}{Fitted model for which to calculate confidence intervals.}
@@ -19,8 +28,9 @@ calculate the variance-covariance.}
 calculate. \code{"z"} returns a z test (i.e., using a standard normal
 reference distribution). \code{"naive-t"} returns a t test with \code{m -
 1} degrees of freedom. \code{"Satterthwaite"} returns a Satterthwaite
-correction. \code{"saddlepoint"} returns a saddlepoint correction. Default
-is \code{"Satterthwaite"}.}
+correction. Unlike in \code{coef_test()}, \code{"saddlepoint"} is not
+currently supported in \code{conf_int()} because saddlepoint confidence
+intervals do not have a closed-form solution.}
 
 \item{coefs}{Character, integer, or logical vector specifying which
 coefficients should be tested. The default value \code{"All"} will test all
@@ -28,15 +38,18 @@ estimated coefficients.}
 
 \item{...}{Further arguments passed to \code{\link{vcovCR}}, which are only
 needed if \code{vcov} is a character string.}
+
+\item{p_values}{Logical indicating whether to report p-values. The default value is \code{FALSE}.}
 }
 \value{
-A data frame containing estimated regression coefficients, standard errors, and confidence intervals.
+A data frame containing estimated regression coefficients, standard
+  errors, confidence intervals, and (optionally) p-values.
 }
 \description{
-\code{conf_int} reports confidence intervals for each coefficient estimate in a fitted
-linear regression model, using a sandwich estimator for the standard errors
-and a small sample correction for the critical values. The small-sample correction is
-based on a Satterthwaite approximation.
+\code{conf_int} reports confidence intervals for each coefficient estimate in
+a fitted linear regression model, using a sandwich estimator for the standard
+errors and a small sample correction for the critical values. The
+small-sample correction is based on a Satterthwaite approximation.
 }
 \examples{
 data("Produc", package = "plm")

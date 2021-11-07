@@ -32,7 +32,9 @@ will attempt to infer a value.}
 Alternately, setting \code{form = "meat"} will return only the meat of the 
 sandwich and setting \code{form = B}, where \code{B} is a matrix of 
 appropriate dimension, will return the sandwich variance-covariance matrix 
-calculated using \code{B} as the bread.}
+calculated using \code{B} as the bread. \code{form = "estfun"} will return the 
+(appropriately scaled) estimating function, the transposed crossproduct of 
+which is equal to the sandwich variance-covariance matrix.}
 
 \item{...}{Additional arguments available for some classes of objects.}
 }
