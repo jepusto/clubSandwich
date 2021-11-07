@@ -32,6 +32,9 @@ test_that("coefs argument works", {
 test_that("printing works", {
   CIs <- conf_int(gls_fit, vcov = "CR0")
   expect_output(print(CIs))
+  
+  CIs <- conf_int(gls_fit, vcov = "CR0", p_value = TRUE)
+  expect_output(print(CIs))
 })
 
 test_that("level checks work", {
@@ -52,12 +55,33 @@ test_that("CI boundaries are ordered", {
 })
 
 test_that("conf_int() is consistent with coef_test()", {
+  
   lev <- runif(1)
-  CIs <- lapply(CRs, function(v) conf_int(gls_fit, vcov = v, test = "Satterthwaite", level = lev))
+  CIs <- lapply(CRs, function(v) conf_int(gls_fit, vcov = v, test = "Satterthwaite", level = lev, p_value = TRUE))
   ttests <- lapply(CRs, function(v) coef_test(gls_fit, vcov = v, test = "Satterthwaite"))
   CI_L <- lapply(ttests, function(x) x$beta - x$SE * qt(1 - (1 - lev) / 2, df = x$df))
   CI_U <- lapply(ttests, function(x) x$beta + x$SE * qt(1 - (1 - lev) / 2, df = x$df))
   expect_equal(lapply(CIs, function(x) x$CI_L), CI_L)
   expect_equal(lapply(CIs, function(x) x$CI_U), CI_U)
+  expect_equal(lapply(CIs, function(x) x$p_val), lapply(ttests, function(x) x$p_Satt))
+
+  lev <- runif(1)
+  CIs <- lapply(CRs, function(v) conf_int(gls_fit, vcov = v, test = "naive-t", level = lev, p_value = TRUE))
+  ttests <- lapply(CRs, function(v) coef_test(gls_fit, vcov = v, test = "naive-t"))
+  CI_L <- lapply(ttests, function(x) x$beta - x$SE * qt(1 - (1 - lev) / 2, df = x$df))
+  CI_U <- lapply(ttests, function(x) x$beta + x$SE * qt(1 - (1 - lev) / 2, df = x$df))
+  expect_equal(lapply(CIs, function(x) x$CI_L), CI_L)
+  expect_equal(lapply(CIs, function(x) x$CI_U), CI_U)
+  expect_equal(lapply(CIs, function(x) x$p_val), lapply(ttests, function(x) x$p_t))
+  
+  lev <- runif(1)
+  CIs <- lapply(CRs, function(v) conf_int(gls_fit, vcov = v, test = "z", level = lev, p_value = TRUE))
+  ttests <- lapply(CRs, function(v) coef_test(gls_fit, vcov = v, test = "z"))
+  CI_L <- lapply(ttests, function(x) x$beta - x$SE * qt(1 - (1 - lev) / 2, df = x$df))
+  CI_U <- lapply(ttests, function(x) x$beta + x$SE * qt(1 - (1 - lev) / 2, df = x$df))
+  expect_equal(lapply(CIs, function(x) x$CI_L), CI_L)
+  expect_equal(lapply(CIs, function(x) x$CI_U), CI_U)
+  expect_equal(lapply(CIs, function(x) x$p_val), lapply(ttests, function(x) x$p_z))
+  
 })
 

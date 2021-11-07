@@ -29,7 +29,7 @@
 #'
 #' @export
 
-conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "All", ...) {
+conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "All", ..., p_value = FALSE) {
   
   if (level <= 0 | level >= 1) stop("Confidence level must be between 0 and 1.")
   
@@ -67,6 +67,11 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
     CI_L = beta - SE * crit,
     CI_U = beta + SE * crit
   )
+  
+  if (p_value) {
+    t_stat <- result$beta / result$SE
+    result$p_val <- 2 * pt(abs(t_stat), df = result$df, lower.tail = FALSE)
+  }
 
   class(result) <- c("conf_int_clubSandwich", class(result))
   attr(result, "type") <- attr(vcov, "type")
@@ -84,7 +89,13 @@ print.conf_int_clubSandwich <- function(x, digits = 3, ...) {
   lev <- paste0(100 * attr(x, "level"), "%")
   res <- data.frame("Coef" = rownames(x), x)
   rownames(res) <- NULL
-  names(res) <- c("Coef", "Estimate", "SE", "d.f.", paste(c("Lower", "Upper"), lev, "CI"))
+  res_names <- c("Coef", "Estimate", "SE", "d.f.", paste(c("Lower", "Upper"), lev, "CI"))
+  if ("p_val" %in% names(x)) {
+    res$p_val <- format.pval(x$p_val, digits = digits, eps = 10^-digits)
+    res$Sig <- cut(x$p_val, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
+                 labels = c("***", "**", "*", ".", " "), include.lowest = TRUE)
+    res_names <- c(res_names, "p-value", "Sig.")
+  }
+  names(res) <- res_names
   print(format(res, digits = 3))
 }
-

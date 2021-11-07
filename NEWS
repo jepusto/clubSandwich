@@ -1,5 +1,6 @@
 clubSandwich 0.5.3.9999
 =======================
+* conf_int() now includes an option to report a p-value for each coefficient.
 * coef_test() now reports degrees of freedom for test = 'z' and test = 'naive-t'.
 * Corrected bug in Wald_test(), which threw an error for tests of intercept-only models.
 * Added more informative error message if the test argument of Wald_test() does not match any of the available tests.
