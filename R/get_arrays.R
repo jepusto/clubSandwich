@@ -86,7 +86,11 @@ get_P_array <- function(GH, all_terms = FALSE) {
     if (length(dims)==3) {
       P_array <- array(NA, dim = c(dims[1], dims[1], dims[3], dims[3]))
       for (i in 1:dims[1]) for (j in i:dims[1]) {
-        tmp <- -crossprod(GH$H[i,,], GH$H[j,,])
+        if (dims[2] == 1L) {
+          tmp <- -tcrossprod(GH$H[i,,], GH$H[j,,])
+        } else {
+          tmp <- -crossprod(GH$H[i,,], GH$H[j,,])
+        }
         diag(tmp) <- diag(tmp) + sapply(GH$G, function(x) sum(x[i,] * x[j,]))
         P_array[i,j,,] <- tmp
         if (j > i) P_array[j,i,,] <- t(tmp)

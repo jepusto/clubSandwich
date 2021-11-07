@@ -1,5 +1,7 @@
 clubSandwich 0.5.3.9999
 =======================
+* Corrected bug in Wald_test(), which threw an error for tests of intercept-only models.
+* Added more informative error message if the test argument of Wald_test() does not match any of the available tests.
 * Fixed minor bug in print method for Wald_test() results, which threw an error when the p-value was NA.
 
 clubSandwich 0.5.3

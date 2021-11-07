@@ -260,11 +260,8 @@ test_that("Wald_test works with lists.", {
   
 })
 
-lm_urbanicity <- lm(math1 ~ schoolk * stark + gender + ethnicity + lunchk, 
-                    data = STAR)
-V_urbanicity <- vcovCR(lm_urbanicity, cluster = STAR$schoolidk, type = "CR2")
-
 test_that("Wald_test has informative error messages.", {
+  
   expect_error(
     Wald_test(lm_urbanicity, 
               constraints = constrain_zero("schoolk.+:stark", reg_ex = TRUE),
@@ -286,4 +283,31 @@ test_that("Wald_test has informative error messages.", {
   )
   
   expect_equal(A, subset(B, test == "HTA"), check.attributes = FALSE)
+})
+
+
+test_that("Wald_test works for intercept-only models.", {
+  
+  lm_int <- lm(math1 ~ 1, data = STAR)
+  vcov_int <- vcovCR(lm_int, cluster = STAR$schoolidk, type = "CR2")
+  F_test <- Wald_test(lm_int, constraints = constrain_zero(1), 
+                      vcov = vcov_int, test = c("HTZ","HTA","HTB"))
+  t_test <- coef_test(lm_int, vcov = vcov_int)
+  
+  expect_equal(F_test$Fstat, rep(t_test$tstat^2, 3L))
+  expect_equal(F_test$df_denom, rep(t_test$df, 3L))
+  expect_equal(F_test$p_val, rep(t_test$p_Satt, 3L))
+  
+  lm_sep <- lm(math1 ~ 0 + schoolk, data = STAR)
+  vcov_sep <- vcovCR(lm_sep, cluster = STAR$schoolidk, type = "CR2")
+  F_test <- Wald_test(lm_sep, 
+                      constraints = constrain_pairwise(1:3, with_zero = TRUE), 
+                      vcov = vcov_sep, test = "HTZ", tidy = TRUE)
+  
+  t_test <- coef_test(lm_sep, vcov = vcov_sep)
+  
+  expect_equal(F_test$Fstat[1:3], t_test$tstat^2)
+  expect_equal(F_test$df_denom[1:3], t_test$df)
+  expect_equal(F_test$p_val[1:3], t_test$p_Satt)
+  
 })
