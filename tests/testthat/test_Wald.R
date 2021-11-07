@@ -259,3 +259,31 @@ test_that("Wald_test works with lists.", {
   expect_identical(test_B, test_E$`Small vs regular`)
   
 })
+
+lm_urbanicity <- lm(math1 ~ schoolk * stark + gender + ethnicity + lunchk, 
+                    data = STAR)
+V_urbanicity <- vcovCR(lm_urbanicity, cluster = STAR$schoolidk, type = "CR2")
+
+test_that("Wald_test has informative error messages.", {
+  expect_error(
+    Wald_test(lm_urbanicity, 
+              constraints = constrain_zero("schoolk.+:stark", reg_ex = TRUE),
+              vcov = V_urbanicity, 
+              test = "none"
+              )
+  )
+  
+  A <- Wald_test(lm_urbanicity, 
+            constraints = constrain_zero("schoolk.+:stark", reg_ex = TRUE),
+            vcov = V_urbanicity, 
+            test = c("none","HTA")
+  )
+
+  B <- Wald_test(lm_urbanicity, 
+                 constraints = constrain_zero("schoolk.+:stark", reg_ex = TRUE),
+                 vcov = V_urbanicity, 
+                 test = "All"
+  )
+  
+  expect_equal(A, subset(B, test == "HTA"), check.attributes = FALSE)
+})

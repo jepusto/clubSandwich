@@ -307,8 +307,15 @@ Wald_test <- function(obj, constraints, vcov, test = "HTZ", tidy = FALSE, ...) {
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!inherits(vcov, "clubSandwich")) stop("Variance-covariance matrix must be a clubSandwich.")
   
-  if (all(test == "All")) test <- c("chi-sq","Naive-F","HTA","HTB","HTZ","EDF","EDT")
-  
+  all_tests <- c("chi-sq","Naive-F","HTA","HTB","HTZ","EDF","EDT")
+  if (all(test == "All")) test <- all_tests
+  if (!any(test %in% all_tests)) {
+    msg <- paste0("The test argument must be one of: ",
+                  paste(paste0("'",all_tests,"'"), collapse = ", "),
+                  ", or 'All'.")
+    stop(msg)
+  }
+
   beta <- na.omit(coef_CS(obj))
   p <- length(beta)
   
