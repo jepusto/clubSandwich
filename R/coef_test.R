@@ -143,7 +143,7 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values
   }
   
 
-  result <- data.frame(beta = beta)
+  result <- data.frame(Coef = names(beta), beta = as.numeric(beta))
   result$SE <- SE
   result$tstat <- beta / SE
 
@@ -169,7 +169,7 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values
   
   class(result) <- c("coef_test_clubSandwich", class(result))
   attr(result, "type") <- attr(vcov, "type")
-  
+
   if (p_values) {
     result
   } else {
@@ -187,8 +187,14 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values
 
 print.coef_test_clubSandwich <- function(x, digits = 3, ...) {
   
-  res <- data.frame("Coef." = rownames(x), "Estimate" = x$beta, "SE" = x$SE)
-  res <- cbind(res, "t-stat" = x$tstat)
+  res <- data.frame(
+    `Coef.` = x$Coef, 
+    `Estimate` = x$beta, 
+    `SE` = x$SE
+  )
+  
+  res$`t-stat` <- x$tstat
+
   
   if ("p_z" %in% names(x)) {
     p_z <- format.pval(x$p_z, digits = digits, eps = 10^-digits)
@@ -218,6 +224,6 @@ print.coef_test_clubSandwich <- function(x, digits = 3, ...) {
     res <- cbind(res, "s.p." = x$saddlepoint, "p-val (Saddle)" = p_saddle, "Sig." = Sig_saddle)    
   } 
 
-  print(format(res, digits = 3))
+  print(format(res, digits = 3), row.names = FALSE)
   
 }

@@ -60,7 +60,7 @@ test_that("coefs argument works", {
   
   tests_A <- apply(which_grid[-1,], 1, function(x) tests_all[x,])
   tests_B <- apply(which_grid[-1,], 1, function(x) coef_test(lm_fit, vcov = "CR0", cluster = dat$cluster, test = "All", coefs = x, p_values = FALSE))
-  expect_equal(tests_A, tests_B)
+  expect_equal(tests_A, tests_B, check.attributes = FALSE)
 })
 
 test_that("printing works", {

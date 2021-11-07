@@ -20,10 +20,12 @@
 #'   correction. Unlike in \code{coef_test()}, \code{"saddlepoint"} is not
 #'   currently supported in \code{conf_int()} because saddlepoint confidence
 #'   intervals do not have a closed-form solution.
+#' @param p_values Logical indicating whether to report p-values. The default value is \code{FALSE}.
+
 #' @inheritParams coef_test
 #'
 #' @return A data frame containing estimated regression coefficients, standard
-#'   errors, and confidence intervals.
+#'   errors, confidence intervals, and (optionally) p-values.
 #'
 #' @seealso \code{\link{vcovCR}}
 #'
@@ -38,7 +40,7 @@
 #'
 #' @export
 
-conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "All", ..., p_value = FALSE) {
+conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "All", ..., p_values = FALSE) {
   
   if (level <= 0 | level >= 1) stop("Confidence level must be between 0 and 1.")
   
@@ -71,14 +73,15 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
   crit <- qt(1 - (1 - level) / 2, df = df)
   
   result <- data.frame(
+    Coef = names(beta),
     beta = beta, 
     SE = SE,
     df = df,
     CI_L = beta - SE * crit,
     CI_U = beta + SE * crit
-  )
-  
-  if (p_value) {
+   )
+
+  if (p_values) {
     t_stat <- result$beta / result$SE
     result$p_val <- 2 * pt(abs(t_stat), df = result$df, lower.tail = FALSE)
   }
@@ -97,15 +100,13 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
 
 print.conf_int_clubSandwich <- function(x, digits = 3, ...) {
   lev <- paste0(100 * attr(x, "level"), "%")
-  res <- data.frame("Coef" = rownames(x), x)
-  rownames(res) <- NULL
-  res_names <- c("Coef", "Estimate", "SE", "d.f.", paste(c("Lower", "Upper"), lev, "CI"))
+  res_names <- c("Coef.", "Estimate", "SE", "d.f.", paste(c("Lower", "Upper"), lev, "CI"))
   if ("p_val" %in% names(x)) {
-    res$p_val <- format.pval(x$p_val, digits = digits, eps = 10^-digits)
-    res$Sig <- cut(x$p_val, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
+    x$Sig <- cut(x$p_val, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
                  labels = c("***", "**", "*", ".", " "), include.lowest = TRUE)
+    x$p_val <- format.pval(x$p_val, digits = digits, eps = 10^-digits)
     res_names <- c(res_names, "p-value", "Sig.")
   }
-  names(res) <- res_names
-  print(format(res, digits = 3))
+  names(x) <- res_names
+  print(format(x, digits = 3), row.names = FALSE)
 }
