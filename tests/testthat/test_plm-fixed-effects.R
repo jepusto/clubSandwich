@@ -213,7 +213,7 @@ test_that("CR2 is equivalent to Welch t-test for DiD design", {
   expect_equal(with(t_Welch, estimate[[2]] - estimate[[1]]), plm_Satt$beta)
   expect_equal(as.numeric(-t_Welch$statistic), with(plm_Satt, beta / SE))
   expect_equal(as.numeric(-t_Welch$statistic)^2, plm_Wald$Fstat)
-  expect_is(all.equal(as.numeric(t_Welch$parameter), plm_Satt$df), "character")
+  expect_is(all.equal(as.numeric(t_Welch$parameter), plm_Satt$df_Satt), "character")
   expect_equal(plm_Satt$df, df)
   expect_equal(plm_Wald$df_denom, df)
 })

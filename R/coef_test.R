@@ -146,6 +146,7 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values
   result <- data.frame(Coef = names(beta), beta = as.numeric(beta))
   result$SE <- SE
   result$tstat <- beta / SE
+  row.names(result) <- result$Coef
 
   if ("z" %in% test) {
     result$df_z <- Inf

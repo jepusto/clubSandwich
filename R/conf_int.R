@@ -80,6 +80,7 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
     CI_L = beta - SE * crit,
     CI_U = beta + SE * crit
    )
+  row.names(result) <- result$Coef
 
   if (p_values) {
     t_stat <- result$beta / result$SE
