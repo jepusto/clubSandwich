@@ -148,15 +148,17 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values
   result$tstat <- beta / SE
 
   if ("z" %in% test) {
+    result$df_z <- Inf
     result$p_z <-  2 * pnorm(abs(result$tstat), lower.tail = FALSE)
   }
   if ("naive-t" %in% test) {
     J <- nlevels(attr(vcov, "cluster"))
+    result$df_t <- J - 1
     result$p_t <-  2 * pt(abs(result$tstat), df = J - 1, lower.tail = FALSE)
   }
   if ("Satterthwaite" %in% test) {
     Satt <- Satterthwaite(beta = beta, SE = SE, P_array = P_array)
-    result$df <- Satt$df
+    result$df_Satt <- Satt$df
     result$p_Satt <- Satt$p_Satt
   }
   if ("saddlepoint" %in% test) {
@@ -184,6 +186,7 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values
 #' @export
 
 print.coef_test_clubSandwich <- function(x, digits = 3, ...) {
+  
   res <- data.frame("Coef." = rownames(x), "Estimate" = x$beta, "SE" = x$SE)
   res <- cbind(res, "t-stat" = x$tstat)
   
@@ -191,30 +194,30 @@ print.coef_test_clubSandwich <- function(x, digits = 3, ...) {
     p_z <- format.pval(x$p_z, digits = digits, eps = 10^-digits)
     Sig_z <- cut(x$p_z, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
                  labels = c("***", "**", "*", ".", " "), include.lowest = TRUE)
-    res <- cbind(res, "p-val (z)" = p_z, "Sig." = Sig_z)
+    res <- cbind(res, "d.f. (z)" = x$df_z,"p-val (z)" = p_z, "Sig." = Sig_z)
   }
+  
   if ("p_t" %in% names(x)) {
     p_t <- format.pval(x$p_t, digits = digits, eps = 10^-digits)
     Sig_t <- cut(x$p_t, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
                     labels = c("***", "**", "*", ".", " "), include.lowest = TRUE)
-    res <- cbind(res, "p-val (naive-t)" = p_t, "Sig." = Sig_t)
+    res <- cbind(res, "d.f. (naive-t)" = x$df_t, "p-val (naive-t)" = p_t, "Sig." = Sig_t)
   }
-  if ("df" %in% names(x)) {
-    res <- cbind(res, "d.f." = x$df)
-  }
+  
   if ("p_Satt" %in% names(x)) {
     p_Satt <- format.pval(x$p_Satt, digits = digits, eps = 10^-digits)
     Sig_Satt <- cut(x$p_Satt, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
                        labels = c("***", "**", "*", ".", " "), include.lowest = TRUE)
-    res <- cbind(res, "p-val (Satt)" = p_Satt, "Sig." = Sig_Satt)    
+    res <- cbind(res, "d.f. (Satt)" = x$df_Satt, "p-val (Satt)" = p_Satt, "Sig." = Sig_Satt)    
   }
+  
   if ("p_saddle" %in% names(x)) {
     p_saddle <- format.pval(x$p_saddle, digits = digits, eps = 10^-digits)
     Sig_saddle <- cut(x$p_saddle, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
                     labels = c("***", "**", "*", ".", " "), include.lowest = TRUE)
     res <- cbind(res, "s.p." = x$saddlepoint, "p-val (Saddle)" = p_saddle, "Sig." = Sig_saddle)    
-
   } 
-  print(format(res, digits = 3))
-}
 
+  print(format(res, digits = 3))
+  
+}
