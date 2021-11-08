@@ -56,6 +56,8 @@ vcovCR.lm <- function(obj, cluster, type, target = NULL, inverse_var = NULL, for
 
 # bread.lm() is in sandwich package
 
+#' @export
+
 v_scale.lm <- function(obj) {
   as.vector(sum(summary(obj)$df[1:2])) 
 }

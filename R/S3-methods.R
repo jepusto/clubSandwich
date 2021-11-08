@@ -4,6 +4,8 @@
 
 targetVariance <- function(obj, cluster) UseMethod("targetVariance")
 
+#' @export
+
 targetVariance.default <- function(obj, cluster) {
   matrix_list(rep(1, nobs(obj)), cluster, "both")
 }
@@ -13,6 +15,8 @@ targetVariance.default <- function(obj, cluster) {
 #----------------------------------------------
 
 weightMatrix <- function(obj, cluster) UseMethod("weightMatrix")
+
+#' @export
 
 weightMatrix.default <- function(obj, cluster) {
   weights <- weights(obj)
@@ -34,6 +38,8 @@ weightMatrix.default <- function(obj, cluster) {
 
 model_matrix <- function(obj) UseMethod("model_matrix")
 
+#' @export
+
 model_matrix.default <- function(obj) {
   model.matrix(obj)
 }
@@ -43,6 +49,8 @@ model_matrix.default <- function(obj) {
 #----------------------------------------------
 
 augmented_model_matrix <- function(obj, cluster, inverse_var, ignore_FE) UseMethod("augmented_model_matrix")
+
+#' @export
 
 augmented_model_matrix.default <- function(obj, cluster, inverse_var, ignore_FE) {
   NULL
@@ -54,6 +62,8 @@ augmented_model_matrix.default <- function(obj, cluster, inverse_var, ignore_FE)
 
 residuals_CS <- function(obj) UseMethod("residuals_CS") 
 
+#' @export
+
 residuals_CS.default <- function(obj) {
   residuals(obj)
 }
@@ -63,6 +73,8 @@ residuals_CS.default <- function(obj) {
 #----------------------------------------------
 
 coef_CS <- function(obj) UseMethod("coef_CS") 
+
+#' @export
 
 coef_CS.default <- function(obj) {
   coef(obj)
@@ -78,6 +90,8 @@ coef_CS.default <- function(obj) {
 get_bread <- function(obj) bread(obj)
 
 v_scale <- function(obj) UseMethod("v_scale")
+
+#' @export
 
 v_scale.default <- function(obj) {
   nobs(obj)

@@ -129,6 +129,8 @@ findCluster.plm <- function(obj, cluster) {
 # Model matrix
 #-----------------------------------------------
 
+#' @export
+
 model_matrix.plm <- function(obj) {
   if (obj$args$model=="random") {
     model.matrix(Formula::as.Formula(formula(obj)), model.frame(obj))  
@@ -148,6 +150,8 @@ model_matrix.plm <- function(obj) {
 #----------------------------------------------
 # Augmented model matrix
 #----------------------------------------------
+
+#' @export
 
 augmented_model_matrix.plm <- function(obj, cluster, inverse_var, ignore_FE) {
   index <- attr(model.frame(obj),"index")
@@ -190,6 +194,8 @@ augmented_model_matrix.plm <- function(obj, cluster, inverse_var, ignore_FE) {
 # unadjusted residuals
 #-------------------------------------
 
+#' @export
+
 residuals_CS.plm <- function(obj) {
   if (obj$args$model=="random") {
     y <- plm::pmodel.response(formula(obj), model.frame(obj), model = "pooling")
@@ -206,6 +212,8 @@ residuals_CS.plm <- function(obj) {
 #-------------------------------------
 # Get (model-based) working variance matrix 
 #-------------------------------------
+
+#' @export
 
 targetVariance.plm <- function(obj, cluster) {
   if (obj$args$model=="random") {
@@ -227,6 +235,8 @@ targetVariance.plm <- function(obj, cluster) {
 # Get weighting matrix
 #-------------------------------------
 
+#' @export
+
 weightMatrix.plm <- function(obj, cluster) {
   if (obj$args$model=="random") {
     sigma_sq <- obj$ercomp$sigma2[[1]]
@@ -247,6 +257,8 @@ weightMatrix.plm <- function(obj, cluster) {
 # Get bread matrix and scaling constant
 #---------------------------------------
 
+#' @export
+
 bread.plm <- function(x, ...) {
   # if (x$args$model=="random") {
   #   v_scale(x) * vcov(x) / x$ercomp$sigma2$idios
@@ -255,6 +267,8 @@ bread.plm <- function(x, ...) {
   # }
   v_scale(x) * vcov(x) / with(x, sum(residuals^2) / df.residual)
 }
+
+#' @export
 
 v_scale.plm <- function(obj) {
   max(sapply(attr(obj$model, "index"), nlevels))

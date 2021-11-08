@@ -57,6 +57,8 @@ vcovCR.robu <- function(obj, cluster, type, target, inverse_var, form = "sandwic
 # coefficients
 #-----------------------------------------------
 
+#' @export
+
 coef_CS.robu <- function(obj) {
   beta <- as.vector(obj$b.r)
   labs <- obj$reg_table$labels
@@ -69,6 +71,8 @@ coef_CS.robu <- function(obj) {
 # residuals
 #-----------------------------------------------
 
+#' @export
+
 residuals_CS.robu <- function(obj) {
   ord <- order(order(obj$study_orig_id))
   obj$data.full$e.r[ord]
@@ -79,6 +83,8 @@ residuals_CS.robu <- function(obj) {
 # Model matrix
 #-----------------------------------------------
 
+#' @export
+
 model_matrix.robu <- function(obj) {
   ord <- order(order(obj$study_orig_id))
   obj$Xreg[ord,,drop=FALSE]
@@ -87,6 +93,8 @@ model_matrix.robu <- function(obj) {
 #-------------------------------------
 # Get (model-based) working variance matrix 
 #-------------------------------------
+
+#' @export
 
 targetVariance.robu <- function(obj, cluster) {
   ord <- order(order(obj$study_orig_id))
@@ -101,6 +109,8 @@ targetVariance.robu <- function(obj, cluster) {
 #-------------------------------------
 # Get weighting matrix
 #-------------------------------------
+
+#' @export
 
 weightMatrix.robu <- function(obj, cluster) {
   ord <- order(order(obj$study_orig_id))
@@ -120,6 +130,8 @@ weightMatrix.robu <- function(obj, cluster) {
 # Get bread matrix and scaling constant
 #---------------------------------------
 
+#' @export
+
 bread.robu <- function(x, ...) {
   if (x$user_weighting) { 
     W <- x$data.full$userweights
@@ -128,6 +140,8 @@ bread.robu <- function(x, ...) {
   }
   x$N * chol2inv(chol(crossprod(x$Xreg, W * x$Xreg)))
 }
+
+#' @export
 
 v_scale.robu <- function(obj) {
   obj$N

@@ -78,12 +78,16 @@ is_nested_lmerMod <- function(obj, cluster = get_outer_group(obj)) {
 # coef_CS()
 #-------------------------------------
 
+#' @export
+
 coef_CS.lmerMod <- function(obj)
   lme4::getME(obj, "fixef")
 
 #-------------------------------------
 # residuals_CS()
 #-------------------------------------
+
+#' @export
 
 residuals_CS.lmerMod <- function(obj) {
   y <- lme4::getME(obj, "y")
@@ -96,6 +100,8 @@ residuals_CS.lmerMod <- function(obj) {
 #-------------------------------------
 # Get (model-based) working variance matrix 
 #-------------------------------------
+
+#' @export
 
 targetVariance.lmerMod <- function(obj, cluster = get_outer_group(obj)) {
   
@@ -110,6 +116,8 @@ targetVariance.lmerMod <- function(obj, cluster = get_outer_group(obj)) {
 #-------------------------------------
 # Get weighting matrix
 #-------------------------------------
+
+#' @export
 
 weightMatrix.lmerMod <- function(obj, cluster = get_outer_group(obj)) {
   V_list <- targetVariance(obj, cluster)
@@ -127,6 +135,8 @@ bread.lmerMod <- function(x, ...) {
   sigma_sq <- lme4::getME(x, "sigma")^2
   as.matrix(vcov(x) * v_scale(x)) / sigma_sq
 }
+
+#' @export
 
 v_scale.lmerMod <- function(obj) {
   min(lme4::getME(obj, "l_i"))

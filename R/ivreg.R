@@ -55,6 +55,8 @@ vcovCR.ivreg <- function(obj, cluster, type, target = NULL, inverse_var = FALSE,
 # get X matrix
 #----------------------------------------------
 
+#' @export
+
 model_matrix.ivreg <- function(obj) {
   model.matrix(obj, component = "projected")
 }

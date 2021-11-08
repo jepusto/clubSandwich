@@ -56,6 +56,8 @@ vcovCR.rma.uni <- function(obj, cluster, type, target, inverse_var, form = "sand
 
 # residuals_CS()
 
+#' @export
+
 residuals_CS.rma <- function(obj) {
   res <- residuals(obj)
   not_na <- obj$not.na
@@ -70,6 +72,8 @@ residuals_CS.rma <- function(obj) {
 
 # na.action
 
+#' @export
+
 na.action.rma <- function(object, ...) {
   res <- which(!object$not.na)
   class(res) <- "omit"
@@ -80,6 +84,8 @@ na.action.rma <- function(object, ...) {
 # Get (model-based) working variance matrix 
 #-------------------------------------
 
+#' @export
+
 targetVariance.rma.uni <- function(obj, cluster) {
   matrix_list(obj$vi + obj$tau2, cluster, "both")
 }
@@ -87,6 +93,8 @@ targetVariance.rma.uni <- function(obj, cluster) {
 #-------------------------------------
 # Get weighting matrix
 #-------------------------------------
+
+#' @export
 
 weightMatrix.rma.uni <- function(obj, cluster) {
   if (obj$weighted) {
@@ -110,6 +118,8 @@ weightMatrix.rma.uni <- function(obj, cluster) {
 # Get bread matrix and scaling constant
 #---------------------------------------
 
+#' @export
+
 bread.rma.uni <- function(x, ...) {
   X_mat <- model_matrix(x)
   if (x$weighted) {
@@ -126,6 +136,8 @@ bread.rma.uni <- function(x, ...) {
   rownames(B) <- colnames(B) <- colnames(X_mat)
   B
 }
+
+#' @export
 
 v_scale.robu <- function(obj) {
   nobs(obj)

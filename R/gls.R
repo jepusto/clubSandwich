@@ -77,6 +77,8 @@ getData <- function (object) {
   data
 }
 
+#' @export
+
 model_matrix.gls <- function(obj) {
   dat <- getData(obj)
   model.matrix(formula(obj), data = dat)
@@ -85,6 +87,8 @@ model_matrix.gls <- function(obj) {
 #-------------------------------------
 # Get (model-based) working variance matrix 
 #-------------------------------------
+
+#' @export
 
 targetVariance.gls <- function(obj, cluster = nlme::getGroups(obj)) {
   
@@ -135,6 +139,8 @@ targetVariance.gls <- function(obj, cluster = nlme::getGroups(obj)) {
 #-------------------------------------
 # Get weighting matrix
 #-------------------------------------
+
+#' @export
 
 weightMatrix.gls <- function(obj, cluster = nlme::getGroups(obj)) {
   V_list <- targetVariance(obj, cluster)

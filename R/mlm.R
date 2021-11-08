@@ -46,6 +46,8 @@ vcovCR.mlm <- function(obj, cluster, type, target, inverse_var, form = "sandwich
 # residuals
 #-------------------------------------
 
+#' @export
+
 residuals_CS.mlm <- function(obj) {
   res <- residuals(obj)
   as.vector(t(res))
@@ -54,6 +56,8 @@ residuals_CS.mlm <- function(obj) {
 #-------------------------------------
 # model_matrix()
 #-------------------------------------
+
+#' @export
 
 model_matrix.mlm <- function(obj) {
   X <- model.matrix(obj)
@@ -70,6 +74,8 @@ model_matrix.mlm <- function(obj) {
 # get "working" variance-covariance matrix
 #----------------------------------------------
 
+#' @export
+
 targetVariance.mlm <- function(obj, cluster) {
   matrix_list(rep(1, nobs(obj) * ncol(residuals(obj))), cluster, "both")
 }
@@ -77,6 +83,8 @@ targetVariance.mlm <- function(obj, cluster) {
 #-------------------------------------
 # Get weighting matrix
 #-------------------------------------
+
+#' @export
 
 weightMatrix.mlm <- function(obj, cluster) {
   weights <- weights(obj)
@@ -96,6 +104,8 @@ weightMatrix.mlm <- function(obj, cluster) {
 #----------------------------------------------
 # get coefficient estimates
 #----------------------------------------------
+
+#' @export
 
 coef_CS.mlm <- function(obj) {
   cf <- coef(obj)
@@ -124,19 +134,7 @@ bread.mlm <- function(x, ...) {
   return(rval)
 }
 
-# bread.mlm <- function (x, ...) {
-#   if (!is.null(x$na.action)) class(x$na.action) <- "omit"
-#   X_mat <- model.matrix(x)
-#   w <- weights(x)
-#   XWX <- if (!is.null(w)) crossprod(X_mat, w * X_mat) else crossprod(X_mat)
-#   B <- chol2inv(chol(XWX))
-#   rval <- diag(ncol(residuals(x))) %x% (B * nobs(x))
-#   
-#   col_names <- paste(rep(colnames(residuals(x)), each = ncol(X_mat)), 
-#                      rep(colnames(X_mat), ncol(residuals(x))), sep = ":")
-#   colnames(rval) <- rownames(rval) <- col_names
-#   return(rval)
-# }
+#' @export
 
 v_scale.mlm <- function(obj) {
   nobs(obj)

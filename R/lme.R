@@ -49,6 +49,8 @@ vcovCR.lme <- function(obj, cluster, type, target, inverse_var, form = "sandwich
 # residuals_CS()
 #-------------------------------------
 
+#' @export
+
 residuals_CS.lme <- function(obj) 
   residuals(obj, level = 0)
 
@@ -56,12 +58,16 @@ residuals_CS.lme <- function(obj)
 # coef_CS()
 #-------------------------------------
 
+#' @export
+
 coef_CS.lme <- function(obj)
   nlme::fixef(obj)
 
 #-------------------------------------
 # model_matrix()
 #-------------------------------------
+
+#' @export
 
 model_matrix.lme <- function(obj) {
   dat <- droplevels(getData(obj))
@@ -218,6 +224,7 @@ ZDZt <- function(D, Z_list) {
   lapply(Z_list, function(z) z %*% D %*% t(z))
 }
 
+#' @export
 
 targetVariance.lme <- function(obj, cluster = nlme::getGroups(obj, level = 1)) {
   
@@ -356,6 +363,8 @@ targetVariance_old.lme <- function(obj, cluster = nlme::getGroups(obj, level = 1
 # Get weighting matrix
 #-------------------------------------
 
+#' @export
+
 weightMatrix.lme <- function(obj, cluster = nlme::getGroups(obj, level = 1)) {
   V_list <- targetVariance(obj, cluster)
   lapply(V_list, function(v) chol2inv(chol(v)))
@@ -370,6 +379,8 @@ weightMatrix.lme <- function(obj, cluster = nlme::getGroups(obj, level = 1)) {
 bread.lme <- function(x, ...) {
   vcov(x) * v_scale(x) / x$sigma^2
 }
+
+#' @export
 
 v_scale.lme <- function(obj) {
   nlevels(nlme::getGroups(obj))

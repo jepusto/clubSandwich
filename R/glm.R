@@ -45,6 +45,8 @@ vcovCR.glm <- function(obj, cluster, type, target = NULL, inverse_var = NULL, fo
 # Model matrix
 #-----------------------------------------------
 
+#' @export
+
 model_matrix.glm <- function(obj) {
   X <- model.matrix(obj)
   eta <- obj$linear.predictors
@@ -57,6 +59,8 @@ model_matrix.glm <- function(obj) {
 # residuals
 #-------------------------------------
 
+#' @export
+
 residuals_CS.glm <- function(obj) {
   residuals(obj, type = "response")
 }
@@ -64,6 +68,8 @@ residuals_CS.glm <- function(obj) {
 #-----------------------------------------------
 # Get (model-based) working variance matrix 
 #-----------------------------------------------
+
+#' @export
 
 targetVariance.glm <- function(obj, cluster) {
   mu <- fitted.values(obj)
@@ -76,6 +82,8 @@ targetVariance.glm <- function(obj, cluster) {
 #-------------------------------------
 # Get weighting matrix
 #-------------------------------------
+
+#' @export
 
 weightMatrix.glm <- function(obj, cluster) {
   mu <- fitted.values(obj)
@@ -90,6 +98,8 @@ weightMatrix.glm <- function(obj, cluster) {
 #---------------------------------------
 
 # bread.glm() is in sandwich package
+
+#' @export
 
 v_scale.glm <- function(obj) {
   if (substr(obj$family$family, 1, 17) %in% c("poisson", "binomial", "Negative Binomial")) {
