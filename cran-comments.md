@@ -1,14 +1,15 @@
 ## Resubmission
 
-This is a re-submission. The only change is to remove the dependency on the mathjaxr package, so that the package can be built for the Debian/GNU Linux distribution.
+This is a re-submission. This version includes miscellaneous bug fixes, error-handling, and corrections to the documentation.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
 ## Test environments
 
-* local Windows 10 Pro, R 4.0.2
-* local Windows 10 Education, R 4.0.2
-* ubuntu 16.04.6 LTS (on travis-ci), R-release, R-devel
+* local Windows 10 Pro, R 4.0.3
+* ubuntu 20.04.3 LTS (on Github), R devel, release, oldrelease
+* macOS-latest (on Github), R release
+* windows-latest (on Github), R release
 * win-builder (devel, release, oldrelease)
 * r-hub:
   * Windows Server 2008 R2 SP1, R-devel, 32/64 bit

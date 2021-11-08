@@ -1,4 +1,4 @@
-clubSandwich 0.5.3.9999
+clubSandwich 0.5.4
 =======================
 * Corrected a bug in the Satterthwaite degrees of freedom calculations for models that include only an intercept.
 * Output of coef_test() and conf_int() now include a variable containing the coefficient names, so that the results are "tidy."
