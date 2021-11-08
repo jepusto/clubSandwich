@@ -1,5 +1,6 @@
 clubSandwich 0.5.3.9999
 =======================
+* Corrected a bug in the Satterthwaite degrees of freedom calculations for models that include only an intercept.
 * Output of coef_test() and conf_int() now include a variable containing the coefficient names, so that the results are "tidy."
 * conf_int() now includes an option to report a p-value for each coefficient.
 * coef_test() now reports degrees of freedom for test = 'z' and test = 'naive-t'.

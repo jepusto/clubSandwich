@@ -141,3 +141,57 @@ test_that("vcovCR options work for CR2", {
   expect_false(identical(vcovCR(hier_meta, type = "CR2", cluster = hierdat$studyid, target = hierdat$var), CR2_not))
 })
 
+
+test_that("vcovCR works with intercept-only model and user-specified weights.", {
+  
+  dat <- escalc(measure="RR", ai=tpos, bi=tneg, ci=cpos, di=cneg, data=dat.bcg)
+  dat$wt <- sample(1:3, size = nrow(dat), replace = TRUE)
+  
+  res <- rma(yi, vi, weights = wt, data=dat)
+  
+  meta_rob <- robust(res, cluster=dat$trial)
+  club_rob <- coef_test(res, vcov="CR1", cluster=dat$trial, test = "naive-t")
+  expect_equal(meta_rob$se, club_rob$SE)
+  expect_equal(meta_rob$zval, club_rob$tstat)
+  expect_equal(meta_rob$dfs, club_rob$df_t)
+  expect_equal(meta_rob$pval, club_rob$p_t)
+  
+  expect_true(check_CR(res, vcov = "CR2", cluster = dat$trial))
+  test_uni <- coef_test(res, vcov="CR2", cluster=dat$trial, test = "All")
+  
+  
+  res <- rma.mv(yi, vi, W = wt, random = ~ 1 | trial, data=dat) 
+  meta_rob <- robust(res, cluster=dat$trial)
+  club_rob <- coef_test(res, vcov="CR1", test = "naive-t")
+  expect_equal(meta_rob$se, club_rob$SE)
+  expect_equal(meta_rob$zval, club_rob$tstat)
+  expect_equal(meta_rob$dfs, club_rob$df_t)
+  expect_equal(meta_rob$pval, club_rob$p_t)
+  
+  expect_true(check_CR(res, vcov = "CR2"))
+  test_mv <- coef_test(res, vcov="CR2", test = "All")
+  
+  expect_equal(test_uni, test_mv, tolerance = 10^-5)
+
+  V_club <- vcovCR(res, type = "CR2")
+  k <- res$k
+  yi <- res$yi
+  wi <- diag(res$W)
+  W <- sum(wi)
+  wi <- wi / W
+  vi <- diag(res$M)
+  V <- sum(vi)
+  ei <- residuals_CS(res)
+  M <- sum(wi^2 * vi)
+  ai <- 1 / sqrt(1 - 2 * wi + M / vi)
+  V_hand <- sum(wi^2 * ai^2 * ei^2)
+  expect_equal(V_hand, as.numeric(V_club))
+  
+  pi_theta_pj <- diag(vi) - tcrossprod(rep(1,k), wi * vi) - tcrossprod(wi * vi, rep(1, k)) + M
+  df <- M^2 / sum(tcrossprod(ai^2 * wi^2) * (pi_theta_pj^2))
+  
+  expect_equal(Inf, test_uni$df_z)
+  expect_equal(k - 1, test_uni$df_t)
+  expect_equal(df, test_uni$df_Satt, tolerance = 10^-5)
+  
+})

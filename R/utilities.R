@@ -39,7 +39,12 @@ check_CR <- function(obj, vcov, ..., tol = .Machine$double.eps^0.5) {
   # calculate E(V^CRj)  
   cluster <- attr(vcov, "cluster")
   S_array <- get_S_array(obj, vcov)
-  E_CRj <- lapply(1:nlevels(cluster), function(j) tcrossprod(S_array[,,j]))
+  if (dim(S_array)[1] == 1L) {
+    E_CRj <- lapply(1:nlevels(cluster), function(j) crossprod(S_array[1,,j]))
+  } else {
+    E_CRj <- lapply(1:nlevels(cluster), function(j) tcrossprod(S_array[,,j]))  
+  }
+  
          
   # calculate target
   Theta_list <- attr(vcov, "target")
