@@ -4,13 +4,14 @@ set.seed(20190513)
 m <- 8
 cluster <- factor(rep(LETTERS[1:m], 3 + rpois(m, 5)))
 n <- length(cluster)
+const <- rep("whuzzup.", n)
 X <- matrix(rnorm(3 * n), n, 3)
 nu <- rnorm(m)[cluster]
 e <- rnorm(n)
 w <- rgamma(n, shape = 3, scale = 3)
 y <- X %*% c(.4, .3, -.3) + nu + e
 
-dat <- data.frame(y, X, cluster, w, row = 1:n)
+dat <- data.frame(y, X, cluster, const, w, row = 1:n)
 
 lm_fit <- lm(y ~ X1 + X2 + X3, data = dat)
 WLS_fit <- lm(y ~ X1 + X2 + X3, data = dat, weights = w)
@@ -240,5 +241,30 @@ test_that("weight scale doesn't matter", {
   expect_equal(lapply(unweighted_fit, as.matrix), 
                lapply(weighted_fit, as.matrix), 
                tol = 5 * 10^-7)  
+  
+})
+
+test_that("vcovCR errors when there is only one cluster.", {
+  
+  single_cluster_error_msg <- "Cluster-robust variance estimation will not work when the data only includes a single cluster."
+  
+  expect_error(
+    vcovCR(lm_fit, cluster = dat$const, type = "CR0"), 
+    single_cluster_error_msg
+  )
+  
+  expect_error(
+    conf_int(WLS_fit, vcov = "CR1", cluster = dat$const), single_cluster_error_msg
+  )
+  
+  expect_error(
+    coef_test(lm_fit, vcov = "CR2", cluster = dat$const), single_cluster_error_msg
+  )
+  
+  expect_error(
+    Wald_test(WLS_fit, constraints = constrain_zero(2:4), 
+              vcov = "CR3", cluster = dat$const),
+    single_cluster_error_msg
+  )
   
 })

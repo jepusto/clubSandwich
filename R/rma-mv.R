@@ -386,7 +386,7 @@ vcovCR.rma.mv <- function(obj, cluster, type, target, inverse_var, form = "sandw
     } 
     
     nested <- test_nested(cluster, fac = mod_struct$cluster_dat)
-    if (!all(nested)) stop("Random effects are not nested within clustering")
+    if (!all(nested)) stop("Random effects are not nested within clustering variable.")
   }
   
   if (missing(target)) {

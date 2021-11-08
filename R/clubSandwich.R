@@ -183,6 +183,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   if (any(is.na(cluster))) stop("Clustering variable cannot have missing values.")
   
   J <- nlevels(cluster)
+  if (J < 2) stop("Cluster-robust variance estimation will not work when the data only includes a single cluster.")
   
   X_list <- matrix_list(X, cluster, "row")
   W_list <- weightMatrix(obj, cluster)

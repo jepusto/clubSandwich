@@ -335,3 +335,45 @@ test_that("clubSandwich works for correlated hierarchical effects model.", {
   expect_equal(V_CR2s$studyes, V_CR2s$es_study)
   
 })
+
+test_that("vcovCR errors when there is only one cluster.", {
+  
+  dat <- data.frame(
+    study = "study1", # study number
+    est = runif(5, 0.1, 0.6), # R-squared values
+    se = runif(5, 0.005, 0.025), # standard errors of R-squared values
+    es_id = 1:5 # effect size ID
+  )
+  
+  v_mat <- impute_covariance_matrix(dat$se^2, cluster = dat$study, r = 0.8)
+  
+  # working model in metafor
+  expect_warning(
+    res <- rma.mv(yi = est, V = v_mat, random = ~ 1 | study / es_id, data = dat)
+  )
+
+  single_cluster_error_msg <- "Cluster-robust variance estimation will not work when the data only includes a single cluster."
+
+  expect_error(
+    vcovCR(res, type = "CR0"), single_cluster_error_msg
+  )
+
+  expect_error(
+    conf_int(res, vcov = "CR1"), single_cluster_error_msg
+  )
+  
+  expect_error(
+    coef_test(res, vcov = "CR2"), single_cluster_error_msg
+  )
+  
+  expect_error(
+    Wald_test(res, constraints = constrain_zero(1), vcov = "CR3"),
+    single_cluster_error_msg
+  )
+  
+  expect_error(
+    vcovCR(res, cluster = dat$es_id),
+    "Random effects are not nested within clustering variable."
+  )
+  
+})
