@@ -377,3 +377,40 @@ test_that("vcovCR errors when there is only one cluster.", {
   )
   
 })
+
+
+test_that("clubSandwich works when random effects variable has missing levels.",{
+  
+  dat <- dat.konstantopoulos2011
+  dat$district_fac <- factor(dat$district)
+  dat$district_fac_plus <- factor(dat$district, levels = c(levels(dat$district_fac), 1000, 10000))
+  
+  mlma_fac <- rma.mv(yi ~ year, V = vi, 
+                     random = ~ 1 | district_fac / study,
+                     sparse = TRUE, data = dat)
+  
+  implicit_fac <- coef_test(mlma_fac, vcov = "CR2")
+  explicit_fac <- coef_test(mlma_fac, vcov = "CR2", cluster = dat$district_fac)
+  expect_equal(implicit_fac, explicit_fac)
+
+  mlma_plus <- rma.mv(yi ~ year, V = vi, 
+                     random = ~ 1 | district_fac_plus / study,
+                     sparse = TRUE, data = dat)
+  
+  implicit_plus <- coef_test(mlma_plus, vcov = "CR2")
+  explicit_plus <- coef_test(mlma_plus, vcov = "CR2", cluster = dat$district_fac_plus)
+  expect_equal(implicit_plus, explicit_plus)
+  expect_equal(implicit_fac, implicit_plus)
+  expect_equal(implicit_fac, explicit_plus)
+  
+  mlma_num <- rma.mv(yi ~ year, V = vi, 
+                     random = ~ 1 | district / study,
+                     sparse = TRUE, data = dat)
+  
+  implicit_num <- coef_test(mlma_num, vcov = "CR2")
+  explicit_num <- coef_test(mlma_num, vcov = "CR2", cluster = dat$district)
+  expect_equal(implicit_num, explicit_num)
+  expect_equal(implicit_fac, implicit_num)
+  expect_equal(implicit_fac, explicit_num)
+  
+})

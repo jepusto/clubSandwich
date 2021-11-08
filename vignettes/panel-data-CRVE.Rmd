@@ -115,7 +115,7 @@ coef_test(lm_weighted, vcov = "CR2",
 Using population weights slightly reduces the point estimate of the effect, while also slightly increasing its precision. 
 If you were following the standard approach, you would probably be happy with the weighted estimates and wouldn't think about it any further. 
 However, using the CR2 variance estimator and Satterthwaite correction produces a p-value that is an order of magnitude larger (though still significant at the conventional 5% level). 
-The degrees of freedom are just `r round(coef_test(lm_weighted, vcov = "CR2", cluster = MV_deaths$state, test = "Satterthwaite")["legal","df"], 1)`---drastically smaller than would be expected based on the number of clusters. 
+The degrees of freedom are just `r round(coef_test(lm_weighted, vcov = "CR2", cluster = MV_deaths$state, test = "Satterthwaite")["legal","df_Satt"], 1)`---drastically smaller than would be expected based on the number of clusters. 
 
 Even with weights, the `coef_test` function uses an "independent, homoskedastic" working model as a default for `lm` objects. 
 In the present example, the outcome is a standardized rate and so a better assumption might be that the error variances are inversely proportional to population size. 

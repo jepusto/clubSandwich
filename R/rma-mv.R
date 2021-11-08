@@ -408,6 +408,8 @@ vcovCR.rma.mv <- function(obj, cluster, type, target, inverse_var, form = "sandw
 # Get (model-based) working variance matrix 
 #-------------------------------------
 
+#' @export
+
 targetVariance.rma.mv <- function(obj, cluster) {
   matrix_list(obj$M, cluster, "both")
 }
@@ -415,6 +417,8 @@ targetVariance.rma.mv <- function(obj, cluster) {
 #-------------------------------------
 # Get weighting matrix
 #-------------------------------------
+
+#' @export
 
 weightMatrix.rma.mv <- function(obj, cluster) {
   if (is.null(obj$W)) {
@@ -481,10 +485,12 @@ parse_structure <- function(obj) {
     mf_all <- do.call(cbind, mf_r)
     mf_s <- mf_all[obj$s.names]
     cluster_dat <- cbind(cluster_dat, mf_s)
+    cluster_dat <- droplevels(cluster_dat)
   }
   
   list(level_dat = level_dat, cluster_dat = cluster_dat)
 }
+
 
 findCluster.rma.mv <- function(obj) {
   
@@ -513,6 +519,8 @@ findCluster.rma.mv <- function(obj) {
 # Get bread matrix and scaling constant
 #---------------------------------------
 
+#' @export
+
 bread.rma.mv <- function(x, ...) {
   if (is.null(x$W)) {
     B <- vcov(x) * nobs(x)
@@ -524,6 +532,8 @@ bread.rma.mv <- function(x, ...) {
   }
   B
 }
+
+#' @export
 
 v_scale.rma.mv <- function(obj) {
   nobs(obj)
