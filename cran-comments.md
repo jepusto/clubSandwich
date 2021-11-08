@@ -7,6 +7,7 @@ Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey 
 ## Test environments
 
 * local Windows 10 Pro, R 4.0.3
+* local Windows 10 Education, R 4.0.2
 * ubuntu 20.04.3 LTS (on Github), R devel, release, oldrelease
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release
@@ -35,20 +36,17 @@ There were 2 NOTES:
   All of the identified words are spelled correctly. 
 
 * Found the following (possibly) invalid URLs:
-  URL: https://doi.org/10.1257/aer.99.4.1384
+  URL: https://doi.org/10.1037/1082-989X.1.3.227
+    From: man/SATcoaching.Rd
+    Status: 400
+    Message: Bad Request
+  URL: https://doi.org/10.1037/met0000011
+    From: inst/doc/meta-analysis-with-CRVE.html
+    Status: 400
+    Message: Bad Request
+  URL: https://economics.mit.edu/faculty/angrist/data1/data/angrist
     From: man/AchievementAwardsRCT.Rd
     Status: Error
-    Message: libcurl error code 56:
-      	Recv failure: Connection was reset
-  URL: https://doi.org/10.1257/jep.25.2.133
-    From: inst/doc/panel-data-CRVE.html
-    Status: Error
-    Message: libcurl error code 56:
-      	Recv failure: Connection was reset
-  URL: https://www.jstatsoft.org/v36/i03/
-    From: inst/doc/meta-analysis-with-CRVE.html
-    Status: Error
-    Message: libcurl error code 7:
-      	Failed to connect to www.jstatsoft.org port 443: Timed out
-
+    Message: SSL certificate problem: unable to get local issuer certificate
+    
   The flagged URLs are correct.
