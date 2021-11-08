@@ -246,47 +246,41 @@ definite.</p></td>
   \(i=1,...,n_j\) and \(j=1,...,k\).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://www.metafor-project.org'>metafor</a></span><span class='op'>)</span>
-
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>oswald2013</span>, package <span class='op'>=</span> <span class='st'>"robumeta"</span><span class='op'>)</span>
-<span class='va'>dat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://wviechtb.github.io/metafor/reference/escalc.html'>escalc</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>oswald2013</span>, measure <span class='op'>=</span> <span class='st'>"ZCOR"</span>, ri <span class='op'>=</span> <span class='va'>R</span>, ni <span class='op'>=</span> <span class='va'>N</span><span class='op'>)</span>
-
-<span class='co'># make a patterned correlation matrix </span>
-
-<span class='va'>p_levels</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/levels.html'>levels</a></span><span class='op'>(</span><span class='va'>dat</span><span class='op'>$</span><span class='va'>Crit.Cat</span><span class='op'>)</span>
-<span class='va'>r_pattern</span> <span class='op'>&lt;-</span> <span class='fl'>0.7</span><span class='op'>^</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/dist.html'>dist</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>p_levels</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='va'>r_pattern</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0.75</span>, <span class='fl'>0.95</span>, length.out <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>r_pattern</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>r_pattern</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>p_levels</span>
-
-<span class='co'># impute the covariance matrix using patterned correlations</span>
-<span class='va'>V_list</span> <span class='op'>&lt;-</span> <span class='fu'>pattern_covariance_matrix</span><span class='op'>(</span>vi <span class='op'>=</span> <span class='va'>dat</span><span class='op'>$</span><span class='va'>vi</span>, 
-                                    cluster <span class='op'>=</span> <span class='va'>dat</span><span class='op'>$</span><span class='va'>Study</span>, 
-                                    pattern_level <span class='op'>=</span> <span class='va'>dat</span><span class='op'>$</span><span class='va'>Crit.Cat</span>,
-                                    r_pattern <span class='op'>=</span> <span class='va'>r_pattern</span>,
-                                    smooth_vi <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-                                    
-<span class='co'># fit a model using imputed covariance matrix</span>
-
-<span class='va'>MVFE</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://wviechtb.github.io/metafor/reference/rma.mv.html'>rma.mv</a></span><span class='op'>(</span><span class='va'>yi</span> <span class='op'>~</span> <span class='fl'>0</span> <span class='op'>+</span> <span class='va'>Crit.Cat</span>, V <span class='op'>=</span> <span class='va'>V_list</span>, 
-               random <span class='op'>=</span> <span class='op'>~</span> <span class='va'>Crit.Cat</span> <span class='op'>|</span> <span class='va'>Study</span>,
-               data <span class='op'>=</span> <span class='va'>dat</span><span class='op'>)</span>
-               
-<span class='fu'><a href='conf_int.html'>conf_int</a></span><span class='op'>(</span><span class='va'>MVFE</span>, vcov <span class='op'>=</span> <span class='st'>"CR2"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                             Coef Estimate     SE  d.f. Lower 95% CI
-#&gt; 1         Crit.CatBrain Activity   0.1826 0.3323  4.55      -0.6979
-#&gt; 2 Crit.CatInterpersonal Behavior   0.1469 0.0456  3.97       0.0199
-#&gt; 3          Crit.CatMicrobehavior   0.0852 0.0320  8.56       0.0122
-#&gt; 4      Crit.CatPerson Perception   0.1364 0.0249 16.77       0.0839
-#&gt; 5      Crit.CatPolicy Preference   0.1334 0.0252  4.64       0.0669
-#&gt; 6          Crit.CatResponse Time   0.1835 0.1410  1.76      -0.5118
-#&gt;   Upper 95% CI
-#&gt; 1        1.063
-#&gt; 2        0.274
-#&gt; 3        0.158
-#&gt; 4        0.189
-#&gt; 5        0.200
-#&gt; 6        0.879</div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://www.metafor-project.org'>metafor</a></span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>oswald2013</span>, package <span class='op'>=</span> <span class='st'>"robumeta"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>dat</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://wviechtb.github.io/metafor/reference/escalc.html'>escalc</a></span><span class='op'>(</span>data <span class='op'>=</span> <span class='va'>oswald2013</span>, measure <span class='op'>=</span> <span class='st'>"ZCOR"</span>, ri <span class='op'>=</span> <span class='va'>R</span>, ni <span class='op'>=</span> <span class='va'>N</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># make a patterned correlation matrix </span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>p_levels</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/levels.html'>levels</a></span><span class='op'>(</span><span class='va'>dat</span><span class='op'>$</span><span class='va'>Crit.Cat</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>r_pattern</span> <span class='op'>&lt;-</span> <span class='fl'>0.7</span><span class='op'>^</span><span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/dist.html'>dist</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>p_levels</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='va'>r_pattern</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>0.75</span>, <span class='fl'>0.95</span>, length.out <span class='op'>=</span> <span class='fl'>6</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>r_pattern</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>r_pattern</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>p_levels</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># impute the covariance matrix using patterned correlations</span></span>
+<span class='r-in'><span class='va'>V_list</span> <span class='op'>&lt;-</span> <span class='fu'>pattern_covariance_matrix</span><span class='op'>(</span>vi <span class='op'>=</span> <span class='va'>dat</span><span class='op'>$</span><span class='va'>vi</span>, </span>
+<span class='r-in'>                                    cluster <span class='op'>=</span> <span class='va'>dat</span><span class='op'>$</span><span class='va'>Study</span>, </span>
+<span class='r-in'>                                    pattern_level <span class='op'>=</span> <span class='va'>dat</span><span class='op'>$</span><span class='va'>Crit.Cat</span>,</span>
+<span class='r-in'>                                    r_pattern <span class='op'>=</span> <span class='va'>r_pattern</span>,</span>
+<span class='r-in'>                                    smooth_vi <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-in'>                                    </span>
+<span class='r-in'><span class='co'># fit a model using imputed covariance matrix</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>MVFE</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://wviechtb.github.io/metafor/reference/rma.mv.html'>rma.mv</a></span><span class='op'>(</span><span class='va'>yi</span> <span class='op'>~</span> <span class='fl'>0</span> <span class='op'>+</span> <span class='va'>Crit.Cat</span>, V <span class='op'>=</span> <span class='va'>V_list</span>, </span>
+<span class='r-in'>               random <span class='op'>=</span> <span class='op'>~</span> <span class='va'>Crit.Cat</span> <span class='op'>|</span> <span class='va'>Study</span>,</span>
+<span class='r-in'>               data <span class='op'>=</span> <span class='va'>dat</span><span class='op'>)</span></span>
+<span class='r-in'>               </span>
+<span class='r-in'><span class='fu'><a href='conf_int.html'>conf_int</a></span><span class='op'>(</span><span class='va'>MVFE</span>, vcov <span class='op'>=</span> <span class='st'>"CR2"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                           Coef. Estimate     SE  d.f. Lower 95% CI Upper 95% CI</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>          Crit.CatBrain Activity   0.1826 0.3323  4.55      -0.6979        1.063</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  Crit.CatInterpersonal Behavior   0.1469 0.0456  3.97       0.0199        0.274</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           Crit.CatMicrobehavior   0.0852 0.0320  8.56       0.0122        0.158</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       Crit.CatPerson Perception   0.1364 0.0249 16.77       0.0839        0.189</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       Crit.CatPolicy Preference   0.1334 0.0252  4.64       0.0669        0.200</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           Crit.CatResponse Time   0.1835 0.1410  1.76      -0.5118        0.879</span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

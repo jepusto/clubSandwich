@@ -200,7 +200,9 @@ will attempt to infer a value.</p></td>
 Alternately, setting <code>form = "meat"</code> will return only the meat of the 
 sandwich and setting <code>form = B</code>, where <code>B</code> is a matrix of 
 appropriate dimension, will return the sandwich variance-covariance matrix 
-calculated using <code>B</code> as the bread.</p></td>
+calculated using <code>B</code> as the bread. <code>form = "estfun"</code> will return the 
+(appropriately scaled) estimating function, the transposed crossproduct of 
+which is equal to the sandwich variance-covariance matrix.</p></td>
     </tr>
     <tr>
       <th>ignore_FE</th>
@@ -216,7 +218,7 @@ effects are estimated through absorption.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code><a href='https://rdrr.io/r/base/c.html'>c("vcovCR","clubSandwich")</a></code>, which consists 
+    <p>An object of class <code>c("vcovCR","clubSandwich")</code>, which consists 
   of a matrix of the estimated variance of and covariances between the 
   regression coefficient estimates.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
@@ -224,104 +226,109 @@ effects are estimated through absorption.</p></td>
     <div class='dont-index'><p><code><a href='vcovCR.html'>vcovCR</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://cran.r-project.org/package=plm'>plm</a></span><span class='op'>)</span>
-<span class='co'># fixed effects</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"Produc"</span>, package <span class='op'>=</span> <span class='st'>"plm"</span><span class='op'>)</span>
-<span class='va'>plm_FE</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/plm/man/plm.html'>plm</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>gsp</span><span class='op'>)</span> <span class='op'>~</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>pcap</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>pc</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>emp</span><span class='op'>)</span> <span class='op'>+</span> <span class='va'>unemp</span>, 
-              data <span class='op'>=</span> <span class='va'>Produc</span>, index <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"state"</span>,<span class='st'>"year"</span><span class='op'>)</span>, 
-              effect <span class='op'>=</span> <span class='st'>"individual"</span>, model <span class='op'>=</span> <span class='st'>"within"</span><span class='op'>)</span>  
-<span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>plm_FE</span>, type<span class='op'>=</span><span class='st'>"CR2"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;               log(pcap)       log(pc)      log(emp)         unemp
-#&gt; log(pcap)  3.900840e-03 -7.382313e-04 -0.0024837779 -7.825846e-05
-#&gt; log(pc)   -7.382313e-04  4.177767e-03 -0.0040101610 -9.960967e-05
-#&gt; log(emp)  -2.483778e-03 -4.010161e-03  0.0073152051  1.736024e-04
-#&gt; unemp     -7.825846e-05 -9.960967e-05  0.0001736024  6.745842e-06</div><div class='input'>
-<span class='co'># random effects</span>
-<span class='va'>plm_RE</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://wviechtb.github.io/metafor/reference/update.rma.html'>update</a></span><span class='op'>(</span><span class='va'>plm_FE</span>, model <span class='op'>=</span> <span class='st'>"random"</span><span class='op'>)</span>
-<span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>plm_RE</span>, type <span class='op'>=</span> <span class='st'>"CR2"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;               (Intercept)     log(pcap)       log(pc)      log(emp)
-#&gt; (Intercept)  0.0608153880 -8.772256e-03 -7.015754e-03  0.0136354448
-#&gt; log(pcap)   -0.0087722560  3.221991e-03  3.731861e-05 -0.0031502393
-#&gt; log(pc)     -0.0070157539  3.731861e-05  2.060851e-03 -0.0020993882
-#&gt; log(emp)     0.0136354448 -3.150239e-03 -2.099388e-03  0.0054047466
-#&gt; unemp        0.0004200323 -7.947309e-05 -6.416279e-05  0.0001390737
-#&gt;                     unemp
-#&gt; (Intercept)  4.200323e-04
-#&gt; log(pcap)   -7.947309e-05
-#&gt; log(pc)     -6.416279e-05
-#&gt; log(emp)     1.390737e-04
-#&gt; unemp        5.848168e-06</div><div class='input'>
-<span class='co'># first differencing</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>Fatalities</span>, package <span class='op'>=</span> <span class='st'>"AER"</span><span class='op'>)</span>
-<span class='va'>Fatalities</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/with.html'>within</a></span><span class='op'>(</span><span class='va'>Fatalities</span>, <span class='op'>{</span>
-  <span class='va'>frate</span> <span class='op'>&lt;-</span> <span class='fl'>10000</span> <span class='op'>*</span> <span class='va'>fatal</span> <span class='op'>/</span> <span class='va'>pop</span>
-  <span class='va'>drinkagec</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cut.html'>cut</a></span><span class='op'>(</span><span class='va'>drinkage</span>, breaks <span class='op'>=</span> <span class='fl'>18</span><span class='op'>:</span><span class='fl'>22</span>, include.lowest <span class='op'>=</span> <span class='cn'>TRUE</span>, right <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-  <span class='va'>drinkagec</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/relevel.html'>relevel</a></span><span class='op'>(</span><span class='va'>drinkagec</span>, ref <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>
-<span class='op'>}</span><span class='op'>)</span>
-
-<span class='va'>plm_FD</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/plm/man/plm.html'>plm</a></span><span class='op'>(</span><span class='va'>frate</span> <span class='op'>~</span> <span class='va'>beertax</span> <span class='op'>+</span> <span class='va'>drinkagec</span> <span class='op'>+</span> <span class='va'>miles</span> <span class='op'>+</span> <span class='va'>unemp</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>income</span><span class='op'>)</span>, 
-              data <span class='op'>=</span> <span class='va'>Fatalities</span>, index <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"state"</span>, <span class='st'>"year"</span><span class='op'>)</span>, 
-              model <span class='op'>=</span> <span class='st'>"fd"</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/pkg/plm/man/vcovHC.plm.html'>vcovHC</a></span><span class='op'>(</span><span class='va'>plm_FD</span>, method<span class='op'>=</span><span class='st'>"arellano"</span>, type <span class='op'>=</span> <span class='st'>"sss"</span>, cluster <span class='op'>=</span> <span class='st'>"group"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                    (Intercept)       beertax drinkagec[18,19) drinkagec[19,20)
-#&gt; (Intercept)       4.491252e-04  1.312107e-03     3.177175e-05    -3.224139e-05
-#&gt; beertax           1.312107e-03  6.112682e-02    -1.374164e-03    -2.155192e-03
-#&gt; drinkagec[18,19)  3.177175e-05 -1.374164e-03     5.978249e-03     2.531421e-03
-#&gt; drinkagec[19,20) -3.224139e-05 -2.155192e-03     2.531421e-03     2.130959e-03
-#&gt; drinkagec[20,21) -2.531288e-04 -9.279081e-04     1.738413e-03     1.185214e-03
-#&gt; miles             4.688676e-09 -1.642830e-07    -8.440044e-08    -5.492005e-08
-#&gt; unemp            -7.197958e-05 -3.079273e-04    -4.794408e-05    -3.200981e-05
-#&gt; log(income)      -1.853129e-02 -2.489411e-02     3.443431e-03     4.787025e-03
-#&gt;                  drinkagec[20,21)         miles         unemp   log(income)
-#&gt; (Intercept)         -2.531288e-04  4.688676e-09 -7.197958e-05 -1.853129e-02
-#&gt; beertax             -9.279081e-04 -1.642830e-07 -3.079273e-04 -2.489411e-02
-#&gt; drinkagec[18,19)     1.738413e-03 -8.440044e-08 -4.794408e-05  3.443431e-03
-#&gt; drinkagec[19,20)     1.185214e-03 -5.492005e-08 -3.200981e-05  4.787025e-03
-#&gt; drinkagec[20,21)     2.529571e-03 -9.131630e-08  1.900456e-04  1.890722e-02
-#&gt; miles               -9.131630e-08  1.570809e-11  1.928974e-09 -6.148657e-07
-#&gt; unemp                1.900456e-04  1.928974e-09  1.970444e-04  8.234312e-03
-#&gt; log(income)          1.890722e-02 -6.148657e-07  8.234312e-03  1.034150e+00
-#&gt; attr(,"cluster")
-#&gt; [1] "group"</div><div class='input'><span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>plm_FD</span>, type <span class='op'>=</span> <span class='st'>"CR1S"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                    (Intercept)       beertax drinkagec[18,19) drinkagec[19,20)
-#&gt; (Intercept)       4.491252e-04  1.312107e-03     3.177175e-05    -3.224139e-05
-#&gt; beertax           1.312107e-03  6.112682e-02    -1.374164e-03    -2.155192e-03
-#&gt; drinkagec[18,19)  3.177175e-05 -1.374164e-03     5.978249e-03     2.531421e-03
-#&gt; drinkagec[19,20) -3.224139e-05 -2.155192e-03     2.531421e-03     2.130959e-03
-#&gt; drinkagec[20,21) -2.531288e-04 -9.279081e-04     1.738413e-03     1.185214e-03
-#&gt; miles             4.688676e-09 -1.642830e-07    -8.440044e-08    -5.492005e-08
-#&gt; unemp            -7.197958e-05 -3.079273e-04    -4.794408e-05    -3.200981e-05
-#&gt; log(income)      -1.853129e-02 -2.489411e-02     3.443431e-03     4.787025e-03
-#&gt;                  drinkagec[20,21)         miles         unemp   log(income)
-#&gt; (Intercept)         -2.531288e-04  4.688676e-09 -7.197958e-05 -1.853129e-02
-#&gt; beertax             -9.279081e-04 -1.642830e-07 -3.079273e-04 -2.489411e-02
-#&gt; drinkagec[18,19)     1.738413e-03 -8.440044e-08 -4.794408e-05  3.443431e-03
-#&gt; drinkagec[19,20)     1.185214e-03 -5.492005e-08 -3.200981e-05  4.787025e-03
-#&gt; drinkagec[20,21)     2.529571e-03 -9.131630e-08  1.900456e-04  1.890722e-02
-#&gt; miles               -9.131630e-08  1.570809e-11  1.928974e-09 -6.148657e-07
-#&gt; unemp                1.900456e-04  1.928974e-09  1.970444e-04  8.234312e-03
-#&gt; log(income)          1.890722e-02 -6.148657e-07  8.234312e-03  1.034150e+00</div><div class='input'><span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>plm_FD</span>, type <span class='op'>=</span> <span class='st'>"CR2"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                    (Intercept)       beertax drinkagec[18,19) drinkagec[19,20)
-#&gt; (Intercept)       4.926777e-04  0.0014903060     5.194011e-05    -1.917433e-05
-#&gt; beertax           1.490306e-03  0.0639227452    -1.545309e-03    -2.356755e-03
-#&gt; drinkagec[18,19)  5.194011e-05 -0.0015453092     6.783986e-03     2.627033e-03
-#&gt; drinkagec[19,20) -1.917433e-05 -0.0023567549     2.627033e-03     2.182684e-03
-#&gt; drinkagec[20,21) -2.585076e-04 -0.0011673142     1.811511e-03     1.193471e-03
-#&gt; miles            -1.036421e-07 -0.0000011056    -1.901583e-07    -1.298187e-07
-#&gt; unemp            -7.270549e-05 -0.0002748930    -3.606990e-05    -3.739358e-05
-#&gt; log(income)      -1.903417e-02 -0.0209995682     3.953875e-03     4.817831e-03
-#&gt;                  drinkagec[20,21)         miles         unemp   log(income)
-#&gt; (Intercept)         -2.585076e-04 -1.036421e-07 -7.270549e-05 -1.903417e-02
-#&gt; beertax             -1.167314e-03 -1.105600e-06 -2.748930e-04 -2.099957e-02
-#&gt; drinkagec[18,19)     1.811511e-03 -1.901583e-07 -3.606990e-05  3.953875e-03
-#&gt; drinkagec[19,20)     1.193471e-03 -1.298187e-07 -3.739358e-05  4.817831e-03
-#&gt; drinkagec[20,21)     2.626823e-03 -1.514746e-07  1.955850e-04  1.969001e-02
-#&gt; miles               -1.514746e-07  4.431806e-10 -5.460872e-10 -1.329604e-06
-#&gt; unemp                1.955850e-04 -5.460872e-10  2.005515e-04  8.377011e-03
-#&gt; log(income)          1.969001e-02 -1.329604e-06  8.377011e-03  1.065829e+00</div><div class='input'>
-
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://cran.r-project.org/package=plm'>plm</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># fixed effects</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"Produc"</span>, package <span class='op'>=</span> <span class='st'>"plm"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>plm_FE</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/plm/man/plm.html'>plm</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>gsp</span><span class='op'>)</span> <span class='op'>~</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>pcap</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>pc</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>emp</span><span class='op'>)</span> <span class='op'>+</span> <span class='va'>unemp</span>, </span>
+<span class='r-in'>              data <span class='op'>=</span> <span class='va'>Produc</span>, index <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"state"</span>,<span class='st'>"year"</span><span class='op'>)</span>, </span>
+<span class='r-in'>              effect <span class='op'>=</span> <span class='st'>"individual"</span>, model <span class='op'>=</span> <span class='st'>"within"</span><span class='op'>)</span>  </span>
+<span class='r-in'><span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>plm_FE</span>, type<span class='op'>=</span><span class='st'>"CR2"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>               log(pcap)       log(pc)      log(emp)         unemp</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(pcap)  3.900840e-03 -7.382313e-04 -0.0024837779 -7.825846e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(pc)   -7.382313e-04  4.177767e-03 -0.0040101610 -9.960967e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(emp)  -2.483778e-03 -4.010161e-03  0.0073152051  1.736024e-04</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> unemp     -7.825846e-05 -9.960967e-05  0.0001736024  6.745842e-06</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># random effects</span></span>
+<span class='r-in'><span class='va'>plm_RE</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/update.html'>update</a></span><span class='op'>(</span><span class='va'>plm_FE</span>, model <span class='op'>=</span> <span class='st'>"random"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>plm_RE</span>, type <span class='op'>=</span> <span class='st'>"CR2"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>               (Intercept)     log(pcap)       log(pc)      log(emp)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)  0.0608153880 -8.772256e-03 -7.015754e-03  0.0136354448</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(pcap)   -0.0087722560  3.221991e-03  3.731861e-05 -0.0031502393</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(pc)     -0.0070157539  3.731861e-05  2.060851e-03 -0.0020993882</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(emp)     0.0136354448 -3.150239e-03 -2.099388e-03  0.0054047466</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> unemp        0.0004200323 -7.947309e-05 -6.416279e-05  0.0001390737</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                     unemp</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)  4.200323e-04</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(pcap)   -7.947309e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(pc)     -6.416279e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(emp)     1.390737e-04</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> unemp        5.848168e-06</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># first differencing</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>Fatalities</span>, package <span class='op'>=</span> <span class='st'>"AER"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>Fatalities</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/with.html'>within</a></span><span class='op'>(</span><span class='va'>Fatalities</span>, <span class='op'>{</span></span>
+<span class='r-in'>  <span class='va'>frate</span> <span class='op'>&lt;-</span> <span class='fl'>10000</span> <span class='op'>*</span> <span class='va'>fatal</span> <span class='op'>/</span> <span class='va'>pop</span></span>
+<span class='r-in'>  <span class='va'>drinkagec</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/cut.html'>cut</a></span><span class='op'>(</span><span class='va'>drinkage</span>, breaks <span class='op'>=</span> <span class='fl'>18</span><span class='op'>:</span><span class='fl'>22</span>, include.lowest <span class='op'>=</span> <span class='cn'>TRUE</span>, right <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-in'>  <span class='va'>drinkagec</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/relevel.html'>relevel</a></span><span class='op'>(</span><span class='va'>drinkagec</span>, ref <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>plm_FD</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/plm/man/plm.html'>plm</a></span><span class='op'>(</span><span class='va'>frate</span> <span class='op'>~</span> <span class='va'>beertax</span> <span class='op'>+</span> <span class='va'>drinkagec</span> <span class='op'>+</span> <span class='va'>miles</span> <span class='op'>+</span> <span class='va'>unemp</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>income</span><span class='op'>)</span>, </span>
+<span class='r-in'>              data <span class='op'>=</span> <span class='va'>Fatalities</span>, index <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"state"</span>, <span class='st'>"year"</span><span class='op'>)</span>, </span>
+<span class='r-in'>              model <span class='op'>=</span> <span class='st'>"fd"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/pkg/plm/man/vcovHC.plm.html'>vcovHC</a></span><span class='op'>(</span><span class='va'>plm_FD</span>, method<span class='op'>=</span><span class='st'>"arellano"</span>, type <span class='op'>=</span> <span class='st'>"sss"</span>, cluster <span class='op'>=</span> <span class='st'>"group"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                    (Intercept)       beertax drinkagec[18,19) drinkagec[19,20)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)       4.491252e-04  1.312107e-03     3.177175e-05    -3.224139e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> beertax           1.312107e-03  6.112682e-02    -1.374164e-03    -2.155192e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[18,19)  3.177175e-05 -1.374164e-03     5.978249e-03     2.531421e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[19,20) -3.224139e-05 -2.155192e-03     2.531421e-03     2.130959e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[20,21) -2.531288e-04 -9.279081e-04     1.738413e-03     1.185214e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> miles             4.688676e-09 -1.642830e-07    -8.440044e-08    -5.492005e-08</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> unemp            -7.197958e-05 -3.079273e-04    -4.794408e-05    -3.200981e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(income)      -1.853129e-02 -2.489411e-02     3.443431e-03     4.787025e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                  drinkagec[20,21)         miles         unemp   log(income)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)         -2.531288e-04  4.688676e-09 -7.197958e-05 -1.853129e-02</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> beertax             -9.279081e-04 -1.642830e-07 -3.079273e-04 -2.489411e-02</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[18,19)     1.738413e-03 -8.440044e-08 -4.794408e-05  3.443431e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[19,20)     1.185214e-03 -5.492005e-08 -3.200981e-05  4.787025e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[20,21)     2.529571e-03 -9.131630e-08  1.900456e-04  1.890722e-02</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> miles               -9.131630e-08  1.570809e-11  1.928974e-09 -6.148657e-07</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> unemp                1.900456e-04  1.928974e-09  1.970444e-04  8.234312e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(income)          1.890722e-02 -6.148657e-07  8.234312e-03  1.034150e+00</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> attr(,"cluster")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "group"</span>
+<span class='r-in'><span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>plm_FD</span>, type <span class='op'>=</span> <span class='st'>"CR1S"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                    (Intercept)       beertax drinkagec[18,19) drinkagec[19,20)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)       4.491252e-04  1.312107e-03     3.177175e-05    -3.224139e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> beertax           1.312107e-03  6.112682e-02    -1.374164e-03    -2.155192e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[18,19)  3.177175e-05 -1.374164e-03     5.978249e-03     2.531421e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[19,20) -3.224139e-05 -2.155192e-03     2.531421e-03     2.130959e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[20,21) -2.531288e-04 -9.279081e-04     1.738413e-03     1.185214e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> miles             4.688676e-09 -1.642830e-07    -8.440044e-08    -5.492005e-08</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> unemp            -7.197958e-05 -3.079273e-04    -4.794408e-05    -3.200981e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(income)      -1.853129e-02 -2.489411e-02     3.443431e-03     4.787025e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                  drinkagec[20,21)         miles         unemp   log(income)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)         -2.531288e-04  4.688676e-09 -7.197958e-05 -1.853129e-02</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> beertax             -9.279081e-04 -1.642830e-07 -3.079273e-04 -2.489411e-02</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[18,19)     1.738413e-03 -8.440044e-08 -4.794408e-05  3.443431e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[19,20)     1.185214e-03 -5.492005e-08 -3.200981e-05  4.787025e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[20,21)     2.529571e-03 -9.131630e-08  1.900456e-04  1.890722e-02</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> miles               -9.131630e-08  1.570809e-11  1.928974e-09 -6.148657e-07</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> unemp                1.900456e-04  1.928974e-09  1.970444e-04  8.234312e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(income)          1.890722e-02 -6.148657e-07  8.234312e-03  1.034150e+00</span>
+<span class='r-in'><span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>plm_FD</span>, type <span class='op'>=</span> <span class='st'>"CR2"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                    (Intercept)       beertax drinkagec[18,19) drinkagec[19,20)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)       4.926777e-04  0.0014903060     5.194011e-05    -1.917433e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> beertax           1.490306e-03  0.0639227452    -1.545309e-03    -2.356755e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[18,19)  5.194011e-05 -0.0015453092     6.783986e-03     2.627033e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[19,20) -1.917433e-05 -0.0023567549     2.627033e-03     2.182684e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[20,21) -2.585076e-04 -0.0011673142     1.811511e-03     1.193471e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> miles            -1.036421e-07 -0.0000011056    -1.901583e-07    -1.298187e-07</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> unemp            -7.270549e-05 -0.0002748930    -3.606990e-05    -3.739358e-05</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(income)      -1.903417e-02 -0.0209995682     3.953875e-03     4.817831e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                  drinkagec[20,21)         miles         unemp   log(income)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)         -2.585076e-04 -1.036421e-07 -7.270549e-05 -1.903417e-02</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> beertax             -1.167314e-03 -1.105600e-06 -2.748930e-04 -2.099957e-02</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[18,19)     1.811511e-03 -1.901583e-07 -3.606990e-05  3.953875e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[19,20)     1.193471e-03 -1.298187e-07 -3.739358e-05  4.817831e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> drinkagec[20,21)     2.626823e-03 -1.514746e-07  1.955850e-04  1.969001e-02</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> miles               -1.514746e-07  4.431806e-10 -5.460872e-10 -1.329604e-06</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> unemp                1.955850e-04 -5.460872e-10  2.005515e-04  8.377011e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(income)          1.969001e-02 -1.329604e-06  8.377011e-03  1.065829e+00</span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

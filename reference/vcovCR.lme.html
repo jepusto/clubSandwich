@@ -154,7 +154,7 @@ of a set of regression coefficient estimates from a <code><a href='https://rdrr.
       <th>cluster</th>
       <td><p>Optional expression or vector indicating which observations 
 belong to the same cluster. If not specified, will be set to 
-<code><a href='https://rdrr.io/pkg/nlme/man/getGroups.html'>getGroups(obj)</a></code>.</p></td>
+<code>getGroups(obj)</code>.</p></td>
     </tr>
     <tr>
       <th>type</th>
@@ -183,7 +183,9 @@ will attempt to infer a value.</p></td>
 Alternately, setting <code>form = "meat"</code> will return only the meat of the 
 sandwich and setting <code>form = B</code>, where <code>B</code> is a matrix of 
 appropriate dimension, will return the sandwich variance-covariance matrix 
-calculated using <code>B</code> as the bread.</p></td>
+calculated using <code>B</code> as the bread. <code>form = "estfun"</code> will return the 
+(appropriately scaled) estimating function, the transposed crossproduct of 
+which is equal to the sandwich variance-covariance matrix.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -193,7 +195,7 @@ calculated using <code>B</code> as the bread.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code><a href='https://rdrr.io/r/base/c.html'>c("vcovCR","clubSandwich")</a></code>, which consists 
+    <p>An object of class <code>c("vcovCR","clubSandwich")</code>, which consists 
   of a matrix of the estimated variance of and covariances between the 
   regression coefficient estimates.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
@@ -201,45 +203,47 @@ calculated using <code>B</code> as the bread.</p></td>
     <div class='dont-index'><p><code><a href='vcovCR.html'>vcovCR</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://svn.r-project.org/R-packages/trunk/nlme/'>nlme</a></span><span class='op'>)</span>
-<span class='va'>rat_weight</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/nlme/man/lme.html'>lme</a></span><span class='op'>(</span><span class='va'>weight</span> <span class='op'>~</span> <span class='va'>Time</span> <span class='op'>*</span> <span class='va'>Diet</span>, data<span class='op'>=</span><span class='va'>BodyWeight</span>, <span class='op'>~</span> <span class='va'>Time</span> <span class='op'>|</span> <span class='va'>Rat</span><span class='op'>)</span> 
-<span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>rat_weight</span>, type <span class='op'>=</span> <span class='st'>"CR2"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;              (Intercept)          Time         Diet2        Diet3    Time:Diet2
-#&gt; (Intercept)  20.50523572 -0.0586895628  -20.50523572 -20.50523572  0.0586895628
-#&gt; Time         -0.05868956  0.0008918201    0.05868956   0.05868956 -0.0008918201
-#&gt; Diet2       -20.50523572  0.0586895628 1192.99481298  20.50523572  0.3728534881
-#&gt; Diet3       -20.50523572  0.0586895628   20.50523572 238.25477649 -0.0586895628
-#&gt; Time:Diet2    0.05868956 -0.0008918201    0.37285349  -0.05868956  0.0458806483
-#&gt; Time:Diet3    0.05868956 -0.0008918201   -0.05868956  -1.87063320  0.0008918201
-#&gt;                Time:Diet3
-#&gt; (Intercept)  0.0586895628
-#&gt; Time        -0.0008918201
-#&gt; Diet2       -0.0586895628
-#&gt; Diet3       -1.8706331980
-#&gt; Time:Diet2   0.0008918201
-#&gt; Time:Diet3   0.0237304192</div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>egsingle</span>, package <span class='op'>=</span> <span class='st'>"mlmRev"</span><span class='op'>)</span>
-<span class='va'>math_model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/nlme/man/lme.html'>lme</a></span><span class='op'>(</span><span class='va'>math</span> <span class='op'>~</span> <span class='va'>year</span> <span class='op'>*</span> <span class='va'>size</span> <span class='op'>+</span> <span class='va'>female</span> <span class='op'>+</span> <span class='va'>black</span> <span class='op'>+</span> <span class='va'>hispanic</span>, 
-                  random <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>~</span> <span class='va'>year</span> <span class='op'>|</span> <span class='va'>schoolid</span>, <span class='op'>~</span> <span class='fl'>1</span> <span class='op'>|</span> <span class='va'>childid</span><span class='op'>)</span>, 
-                  data <span class='op'>=</span> <span class='va'>egsingle</span><span class='op'>)</span>
-<span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>math_model</span>, type <span class='op'>=</span> <span class='st'>"CR2"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;               (Intercept)          year          size    femaleMale
-#&gt; (Intercept)  1.736519e-02  1.401158e-03 -2.038097e-05 -2.612966e-04
-#&gt; year         1.401158e-03  1.731819e-03 -1.427005e-06 -3.077206e-04
-#&gt; size        -2.038097e-05 -1.427005e-06  3.502637e-08 -1.233401e-06
-#&gt; femaleMale  -2.612966e-04 -3.077206e-04 -1.233401e-06  1.805649e-03
-#&gt; black1      -3.864396e-03 -3.597708e-04  5.428152e-07 -4.759591e-04
-#&gt; hispanic1   -1.912759e-03 -4.327555e-04 -2.801781e-06 -1.510980e-04
-#&gt; year:size   -1.982878e-06 -2.017339e-06  2.488423e-09  2.488713e-07
-#&gt;                    black1     hispanic1     year:size
-#&gt; (Intercept) -3.864396e-03 -1.912759e-03 -1.982878e-06
-#&gt; year        -3.597708e-04 -4.327555e-04 -2.017339e-06
-#&gt; size         5.428152e-07 -2.801781e-06  2.488423e-09
-#&gt; femaleMale  -4.759591e-04 -1.510980e-04  2.488713e-07
-#&gt; black1       5.853760e-03  3.897285e-03  4.954402e-07
-#&gt; hispanic1    3.897285e-03  7.563077e-03  5.786971e-07
-#&gt; year:size    4.954402e-07  5.786971e-07  2.678030e-09</div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://svn.r-project.org/R-packages/trunk/nlme/'>nlme</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>rat_weight</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/nlme/man/lme.html'>lme</a></span><span class='op'>(</span><span class='va'>weight</span> <span class='op'>~</span> <span class='va'>Time</span> <span class='op'>*</span> <span class='va'>Diet</span>, data<span class='op'>=</span><span class='va'>BodyWeight</span>, <span class='op'>~</span> <span class='va'>Time</span> <span class='op'>|</span> <span class='va'>Rat</span><span class='op'>)</span> </span>
+<span class='r-in'><span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>rat_weight</span>, type <span class='op'>=</span> <span class='st'>"CR2"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>              (Intercept)          Time         Diet2        Diet3    Time:Diet2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)  20.50523572 -0.0586895628  -20.50523572 -20.50523572  0.0586895628</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Time         -0.05868956  0.0008918201    0.05868956   0.05868956 -0.0008918201</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Diet2       -20.50523572  0.0586895628 1192.99481298  20.50523572  0.3728534881</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Diet3       -20.50523572  0.0586895628   20.50523572 238.25477649 -0.0586895628</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Time:Diet2    0.05868956 -0.0008918201    0.37285349  -0.05868956  0.0458806483</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Time:Diet3    0.05868956 -0.0008918201   -0.05868956  -1.87063320  0.0008918201</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                Time:Diet3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)  0.0586895628</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Time        -0.0008918201</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Diet2       -0.0586895628</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Diet3       -1.8706331980</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Time:Diet2   0.0008918201</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Time:Diet3   0.0237304192</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>egsingle</span>, package <span class='op'>=</span> <span class='st'>"mlmRev"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>math_model</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/nlme/man/lme.html'>lme</a></span><span class='op'>(</span><span class='va'>math</span> <span class='op'>~</span> <span class='va'>year</span> <span class='op'>*</span> <span class='va'>size</span> <span class='op'>+</span> <span class='va'>female</span> <span class='op'>+</span> <span class='va'>black</span> <span class='op'>+</span> <span class='va'>hispanic</span>, </span>
+<span class='r-in'>                  random <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>~</span> <span class='va'>year</span> <span class='op'>|</span> <span class='va'>schoolid</span>, <span class='op'>~</span> <span class='fl'>1</span> <span class='op'>|</span> <span class='va'>childid</span><span class='op'>)</span>, </span>
+<span class='r-in'>                  data <span class='op'>=</span> <span class='va'>egsingle</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>math_model</span>, type <span class='op'>=</span> <span class='st'>"CR2"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>               (Intercept)          year          size    femaleMale</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)  1.736519e-02  1.401158e-03 -2.038097e-05 -2.612966e-04</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> year         1.401158e-03  1.731819e-03 -1.427005e-06 -3.077206e-04</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> size        -2.038097e-05 -1.427005e-06  3.502637e-08 -1.233401e-06</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> femaleMale  -2.612966e-04 -3.077206e-04 -1.233401e-06  1.805649e-03</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> black1      -3.864396e-03 -3.597708e-04  5.428152e-07 -4.759591e-04</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> hispanic1   -1.912759e-03 -4.327555e-04 -2.801781e-06 -1.510980e-04</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> year:size   -1.982878e-06 -2.017339e-06  2.488423e-09  2.488713e-07</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                    black1     hispanic1     year:size</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept) -3.864396e-03 -1.912759e-03 -1.982878e-06</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> year        -3.597708e-04 -4.327555e-04 -2.017339e-06</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> size         5.428152e-07 -2.801781e-06  2.488423e-09</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> femaleMale  -4.759591e-04 -1.510980e-04  2.488713e-07</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> black1       5.853760e-03  3.897285e-03  4.954402e-07</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> hispanic1    3.897285e-03  7.563077e-03  5.786971e-07</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> year:size    4.954402e-07  5.786971e-07  2.678030e-09</span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

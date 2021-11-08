@@ -203,23 +203,25 @@ needed if <code>vcov</code> is a character string.</p></td>
     <div class='dont-index'><p><code><a href='vcovCR.html'>vcovCR</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"Produc"</span>, package <span class='op'>=</span> <span class='st'>"plm"</span><span class='op'>)</span>
-<span class='va'>lm_individual</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>gsp</span><span class='op'>)</span> <span class='op'>~</span> <span class='fl'>0</span> <span class='op'>+</span> <span class='va'>state</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>pcap</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>pc</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>emp</span><span class='op'>)</span> <span class='op'>+</span> <span class='va'>unemp</span>, data <span class='op'>=</span> <span class='va'>Produc</span><span class='op'>)</span>
-<span class='va'>individual_index</span> <span class='op'>&lt;-</span> <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grepl</a></span><span class='op'>(</span><span class='st'>"state"</span>, <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>lm_individual</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'>coef_test</span><span class='op'>(</span><span class='va'>lm_individual</span>, vcov <span class='op'>=</span> <span class='st'>"CR2"</span>, cluster <span class='op'>=</span> <span class='va'>Produc</span><span class='op'>$</span><span class='va'>state</span>, coefs <span class='op'>=</span> <span class='va'>individual_index</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;       Coef. Estimate     SE t-stat d.f. p-val (Satt) Sig.
-#&gt; 1 log(pcap)  -0.0261 0.0625 -0.419 22.9       0.6794     
-#&gt; 2   log(pc)   0.2920 0.0646  4.518 22.2       &lt;0.001  ***
-#&gt; 3  log(emp)   0.7682 0.0855  8.981 20.4       &lt;0.001  ***
-#&gt; 4     unemp  -0.0053 0.0026 -2.040 32.0       0.0497    *</div><div class='input'>
-<span class='va'>V_CR2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>lm_individual</span>, cluster <span class='op'>=</span> <span class='va'>Produc</span><span class='op'>$</span><span class='va'>state</span>, type <span class='op'>=</span> <span class='st'>"CR2"</span><span class='op'>)</span>
-<span class='fu'>coef_test</span><span class='op'>(</span><span class='va'>lm_individual</span>, vcov <span class='op'>=</span> <span class='va'>V_CR2</span>, coefs <span class='op'>=</span> <span class='va'>individual_index</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;       Coef. Estimate     SE t-stat d.f. p-val (Satt) Sig.
-#&gt; 1 log(pcap)  -0.0261 0.0625 -0.419 22.9       0.6794     
-#&gt; 2   log(pc)   0.2920 0.0646  4.518 22.2       &lt;0.001  ***
-#&gt; 3  log(emp)   0.7682 0.0855  8.981 20.4       &lt;0.001  ***
-#&gt; 4     unemp  -0.0053 0.0026 -2.040 32.0       0.0497    *</div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"Produc"</span>, package <span class='op'>=</span> <span class='st'>"plm"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>lm_individual</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>gsp</span><span class='op'>)</span> <span class='op'>~</span> <span class='fl'>0</span> <span class='op'>+</span> <span class='va'>state</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>pcap</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>pc</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>emp</span><span class='op'>)</span> <span class='op'>+</span> <span class='va'>unemp</span>, data <span class='op'>=</span> <span class='va'>Produc</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>individual_index</span> <span class='op'>&lt;-</span> <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grepl</a></span><span class='op'>(</span><span class='st'>"state"</span>, <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>lm_individual</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>coef_test</span><span class='op'>(</span><span class='va'>lm_individual</span>, vcov <span class='op'>=</span> <span class='st'>"CR2"</span>, cluster <span class='op'>=</span> <span class='va'>Produc</span><span class='op'>$</span><span class='va'>state</span>, coefs <span class='op'>=</span> <span class='va'>individual_index</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      Coef. Estimate     SE t-stat d.f. (Satt) p-val (Satt) Sig.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  log(pcap)  -0.0261 0.0625 -0.419        22.9       0.6794     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    log(pc)   0.2920 0.0646  4.518        22.2       &lt;0.001  ***</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   log(emp)   0.7682 0.0855  8.981        20.4       &lt;0.001  ***</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      unemp  -0.0053 0.0026 -2.040        32.0       0.0497    *</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>V_CR2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>lm_individual</span>, cluster <span class='op'>=</span> <span class='va'>Produc</span><span class='op'>$</span><span class='va'>state</span>, type <span class='op'>=</span> <span class='st'>"CR2"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>coef_test</span><span class='op'>(</span><span class='va'>lm_individual</span>, vcov <span class='op'>=</span> <span class='va'>V_CR2</span>, coefs <span class='op'>=</span> <span class='va'>individual_index</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      Coef. Estimate     SE t-stat d.f. (Satt) p-val (Satt) Sig.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  log(pcap)  -0.0261 0.0625 -0.419        22.9       0.6794     </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    log(pc)   0.2920 0.0646  4.518        22.2       &lt;0.001  ***</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   log(emp)   0.7682 0.0855  8.981        20.4       &lt;0.001  ***</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      unemp  -0.0053 0.0026 -2.040        32.0       0.0497    *</span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -188,7 +188,9 @@ diagonal. If not specified, the target is taken to be an identity matrix.</p></t
 Alternately, setting <code>form = "meat"</code> will return only the meat of the 
 sandwich and setting <code>form = B</code>, where <code>B</code> is a matrix of 
 appropriate dimension, will return the sandwich variance-covariance matrix 
-calculated using <code>B</code> as the bread.</p></td>
+calculated using <code>B</code> as the bread. <code>form = "estfun"</code> will return the 
+(appropriately scaled) estimating function, the transposed crossproduct of 
+which is equal to the sandwich variance-covariance matrix.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -198,7 +200,7 @@ calculated using <code>B</code> as the bread.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An object of class <code><a href='https://rdrr.io/r/base/c.html'>c("vcovCR","clubSandwich")</a></code>, which consists
+    <p>An object of class <code>c("vcovCR","clubSandwich")</code>, which consists
   of a matrix of the estimated variance of and covariances between the
   regression coefficient estimates.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
@@ -206,32 +208,44 @@ calculated using <code>B</code> as the bread.</p></td>
     <div class='dont-index'><p><code><a href='vcovCR.html'>vcovCR</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>AER</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Loading required package: car</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: carData</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘car’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:metafor’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    vif</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: lmtest</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: zoo</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>Attaching package: ‘zoo’</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:base’:</span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>    as.Date, as.Date.numeric</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: sandwich</span></div><div class='output co'>#&gt; <span class='message'>Loading required package: survival</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"CigarettesSW"</span><span class='op'>)</span>
-<span class='va'>Cigs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/with.html'>within</a></span><span class='op'>(</span><span class='va'>CigarettesSW</span>, <span class='op'>{</span>
-  <span class='va'>rprice</span> <span class='op'>&lt;-</span> <span class='va'>price</span><span class='op'>/</span><span class='va'>cpi</span>
-  <span class='va'>rincome</span> <span class='op'>&lt;-</span> <span class='va'>income</span><span class='op'>/</span><span class='va'>population</span><span class='op'>/</span><span class='va'>cpi</span>
-  <span class='va'>tdiff</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='va'>taxs</span> <span class='op'>-</span> <span class='va'>tax</span><span class='op'>)</span><span class='op'>/</span><span class='va'>cpi</span>
-<span class='op'>}</span><span class='op'>)</span>
-
-<span class='va'>iv_fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/AER/man/ivreg.html'>ivreg</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>packs</span><span class='op'>)</span> <span class='op'>~</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>rprice</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>rincome</span><span class='op'>)</span> <span class='op'>|</span> 
-                <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>rincome</span><span class='op'>)</span> <span class='op'>+</span> <span class='va'>tdiff</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span><span class='op'>(</span><span class='va'>tax</span><span class='op'>/</span><span class='va'>cpi</span><span class='op'>)</span>, data <span class='op'>=</span> <span class='va'>Cigs</span><span class='op'>)</span>
-<span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>iv_fit</span>, cluster <span class='op'>=</span> <span class='va'>Cigs</span><span class='op'>$</span><span class='va'>state</span>, type <span class='op'>=</span> <span class='st'>"CR2"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;              (Intercept) log(rprice) log(rincome)
-#&gt; (Intercept)   0.31782384 -0.08285646   0.02774789
-#&gt; log(rprice)  -0.08285646  0.03453204  -0.03009923
-#&gt; log(rincome)  0.02774789 -0.03009923   0.04292233</div><div class='input'><span class='fu'><a href='coef_test.html'>coef_test</a></span><span class='op'>(</span><span class='va'>iv_fit</span>, vcov <span class='op'>=</span> <span class='st'>"CR2"</span>, cluster <span class='op'>=</span> <span class='va'>Cigs</span><span class='op'>$</span><span class='va'>state</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;          Coef. Estimate    SE t-stat d.f. p-val (Satt) Sig.
-#&gt; 1  (Intercept)    9.736 0.564  17.27 22.0       &lt;0.001  ***
-#&gt; 2  log(rprice)   -1.229 0.186  -6.61 21.1       &lt;0.001  ***
-#&gt; 3 log(rincome)    0.257 0.207   1.24 23.5        0.227     </div><div class='input'>      
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>AER</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: car</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: carData</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Attaching package: ‘car’</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> The following object is masked from ‘package:metafor’:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     vif</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: lmtest</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: zoo</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Attaching package: ‘zoo’</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> The following objects are masked from ‘package:base’:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     as.Date, as.Date.numeric</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: sandwich</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: survival</span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"CigarettesSW"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>Cigs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/with.html'>within</a></span><span class='op'>(</span><span class='va'>CigarettesSW</span>, <span class='op'>{</span></span>
+<span class='r-in'>  <span class='va'>rprice</span> <span class='op'>&lt;-</span> <span class='va'>price</span><span class='op'>/</span><span class='va'>cpi</span></span>
+<span class='r-in'>  <span class='va'>rincome</span> <span class='op'>&lt;-</span> <span class='va'>income</span><span class='op'>/</span><span class='va'>population</span><span class='op'>/</span><span class='va'>cpi</span></span>
+<span class='r-in'>  <span class='va'>tdiff</span> <span class='op'>&lt;-</span> <span class='op'>(</span><span class='va'>taxs</span> <span class='op'>-</span> <span class='va'>tax</span><span class='op'>)</span><span class='op'>/</span><span class='va'>cpi</span></span>
+<span class='r-in'><span class='op'>}</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>iv_fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/AER/man/ivreg.html'>ivreg</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>packs</span><span class='op'>)</span> <span class='op'>~</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>rprice</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>rincome</span><span class='op'>)</span> <span class='op'>|</span> </span>
+<span class='r-in'>                <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>rincome</span><span class='op'>)</span> <span class='op'>+</span> <span class='va'>tdiff</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span><span class='op'>(</span><span class='va'>tax</span><span class='op'>/</span><span class='va'>cpi</span><span class='op'>)</span>, data <span class='op'>=</span> <span class='va'>Cigs</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>iv_fit</span>, cluster <span class='op'>=</span> <span class='va'>Cigs</span><span class='op'>$</span><span class='va'>state</span>, type <span class='op'>=</span> <span class='st'>"CR2"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>              (Intercept) log(rprice) log(rincome)</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> (Intercept)   0.31782384 -0.08285646   0.02774789</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(rprice)  -0.08285646  0.03453204  -0.03009923</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> log(rincome)  0.02774789 -0.03009923   0.04292233</span>
+<span class='r-in'><span class='fu'><a href='coef_test.html'>coef_test</a></span><span class='op'>(</span><span class='va'>iv_fit</span>, vcov <span class='op'>=</span> <span class='st'>"CR2"</span>, cluster <span class='op'>=</span> <span class='va'>Cigs</span><span class='op'>$</span><span class='va'>state</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         Coef. Estimate    SE t-stat d.f. (Satt) p-val (Satt) Sig.</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   (Intercept)    9.736 0.564  17.27        22.0       &lt;0.001  ***</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   log(rprice)   -1.229 0.186  -6.61        21.1       &lt;0.001  ***</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  log(rincome)    0.257 0.207   1.24        23.5        0.227     </span>
+<span class='r-in'>      </span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

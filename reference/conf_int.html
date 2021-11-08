@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculate confidence intervals for all or selected regression coefficients in a fitted model — conf_int • clubSandwich</title>
+<title>Calculate confidence intervals for all or selected regression coefficients in
+a fitted model — conf_int • clubSandwich</title>
 
 
 <!-- jquery -->
@@ -39,11 +40,12 @@
 
 
 
-<meta property="og:title" content="Calculate confidence intervals for all or selected regression coefficients in a fitted model — conf_int" />
-<meta property="og:description" content="conf_int reports confidence intervals for each coefficient estimate in a fitted
-linear regression model, using a sandwich estimator for the standard errors
-and a small sample correction for the critical values. The small-sample correction is
-based on a Satterthwaite approximation." />
+<meta property="og:title" content="Calculate confidence intervals for all or selected regression coefficients in
+a fitted model — conf_int" />
+<meta property="og:description" content="conf_int reports confidence intervals for each coefficient estimate in
+a fitted linear regression model, using a sandwich estimator for the standard
+errors and a small sample correction for the critical values. The
+small-sample correction is based on a Satterthwaite approximation." />
 
 
 
@@ -132,19 +134,28 @@ based on a Satterthwaite approximation." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculate confidence intervals for all or selected regression coefficients in a fitted model</h1>
+    <h1>Calculate confidence intervals for all or selected regression coefficients in
+a fitted model</h1>
     <small class="dont-index">Source: <a href='https://github.com/jepusto/clubSandwich/blob/master/R/conf_int.R'><code>R/conf_int.R</code></a></small>
     <div class="hidden name"><code>conf_int.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>conf_int</code> reports confidence intervals for each coefficient estimate in a fitted
-linear regression model, using a sandwich estimator for the standard errors
-and a small sample correction for the critical values. The small-sample correction is
-based on a Satterthwaite approximation.</p>
+    <p><code>conf_int</code> reports confidence intervals for each coefficient estimate in
+a fitted linear regression model, using a sandwich estimator for the standard
+errors and a small sample correction for the critical values. The
+small-sample correction is based on a Satterthwaite approximation.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>conf_int</span><span class='op'>(</span><span class='va'>obj</span>, <span class='va'>vcov</span>, level <span class='op'>=</span> <span class='fl'>0.95</span>, test <span class='op'>=</span> <span class='st'>"Satterthwaite"</span>, coefs <span class='op'>=</span> <span class='st'>"All"</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>conf_int</span><span class='op'>(</span>
+  <span class='va'>obj</span>,
+  <span class='va'>vcov</span>,
+  level <span class='op'>=</span> <span class='fl'>0.95</span>,
+  test <span class='op'>=</span> <span class='st'>"Satterthwaite"</span>,
+  coefs <span class='op'>=</span> <span class='st'>"All"</span>,
+  <span class='va'>...</span>,
+  p_values <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -169,8 +180,9 @@ calculate the variance-covariance.</p></td>
 calculate. <code>"z"</code> returns a z test (i.e., using a standard normal
 reference distribution). <code>"naive-t"</code> returns a t test with <code>m -
 1</code> degrees of freedom. <code>"Satterthwaite"</code> returns a Satterthwaite
-correction. <code>"saddlepoint"</code> returns a saddlepoint correction. Default
-is <code>"Satterthwaite"</code>.</p></td>
+correction. Unlike in <code><a href='coef_test.html'>coef_test()</a></code>, <code>"saddlepoint"</code> is not
+currently supported in <code>conf_int()</code> because saddlepoint confidence
+intervals do not have a closed-form solution.</p></td>
     </tr>
     <tr>
       <th>coefs</th>
@@ -183,33 +195,40 @@ estimated coefficients.</p></td>
       <td><p>Further arguments passed to <code><a href='vcovCR.html'>vcovCR</a></code>, which are only
 needed if <code>vcov</code> is a character string.</p></td>
     </tr>
+    <tr>
+      <th>p_values</th>
+      <td><p>Logical indicating whether to report p-values. The default value is <code>FALSE</code>.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A data frame containing estimated regression coefficients, standard errors, and confidence intervals.</p>
+    <p>A data frame containing estimated regression coefficients, standard
+  errors, confidence intervals, and (optionally) p-values.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='vcovCR.html'>vcovCR</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"Produc"</span>, package <span class='op'>=</span> <span class='st'>"plm"</span><span class='op'>)</span>
-<span class='va'>lm_individual</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>gsp</span><span class='op'>)</span> <span class='op'>~</span> <span class='fl'>0</span> <span class='op'>+</span> <span class='va'>state</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>pcap</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>pc</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>emp</span><span class='op'>)</span> <span class='op'>+</span> <span class='va'>unemp</span>, data <span class='op'>=</span> <span class='va'>Produc</span><span class='op'>)</span>
-<span class='va'>individual_index</span> <span class='op'>&lt;-</span> <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grepl</a></span><span class='op'>(</span><span class='st'>"state"</span>, <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>lm_individual</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'>conf_int</span><span class='op'>(</span><span class='va'>lm_individual</span>, vcov <span class='op'>=</span> <span class='st'>"CR2"</span>, cluster <span class='op'>=</span> <span class='va'>Produc</span><span class='op'>$</span><span class='va'>state</span>, coefs <span class='op'>=</span> <span class='va'>individual_index</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;        Coef Estimate     SE d.f. Lower 95% CI Upper 95% CI
-#&gt; 1 log(pcap)  -0.0261 0.0625 22.9      -0.1554     1.03e-01
-#&gt; 2   log(pc)   0.2920 0.0646 22.2       0.1580     4.26e-01
-#&gt; 3  log(emp)   0.7682 0.0855 20.4       0.5900     9.46e-01
-#&gt; 4     unemp  -0.0053 0.0026 32.0      -0.0106    -6.94e-06</div><div class='input'>
-<span class='va'>V_CR2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>lm_individual</span>, cluster <span class='op'>=</span> <span class='va'>Produc</span><span class='op'>$</span><span class='va'>state</span>, type <span class='op'>=</span> <span class='st'>"CR2"</span><span class='op'>)</span>
-<span class='fu'>conf_int</span><span class='op'>(</span><span class='va'>lm_individual</span>, vcov <span class='op'>=</span> <span class='va'>V_CR2</span>, level <span class='op'>=</span> <span class='fl'>.99</span>, coefs <span class='op'>=</span> <span class='va'>individual_index</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;        Coef Estimate     SE d.f. Lower 99% CI Upper 99% CI
-#&gt; 1 log(pcap)  -0.0261 0.0625 22.9      -0.2016      0.14927
-#&gt; 2   log(pc)   0.2920 0.0646 22.2       0.1099      0.47407
-#&gt; 3  log(emp)   0.7682 0.0855 20.4       0.5253      1.01102
-#&gt; 4     unemp  -0.0053 0.0026 32.0      -0.0124      0.00182</div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"Produc"</span>, package <span class='op'>=</span> <span class='st'>"plm"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>lm_individual</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>gsp</span><span class='op'>)</span> <span class='op'>~</span> <span class='fl'>0</span> <span class='op'>+</span> <span class='va'>state</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>pcap</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>pc</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>emp</span><span class='op'>)</span> <span class='op'>+</span> <span class='va'>unemp</span>, data <span class='op'>=</span> <span class='va'>Produc</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>individual_index</span> <span class='op'>&lt;-</span> <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grepl</a></span><span class='op'>(</span><span class='st'>"state"</span>, <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>lm_individual</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>conf_int</span><span class='op'>(</span><span class='va'>lm_individual</span>, vcov <span class='op'>=</span> <span class='st'>"CR2"</span>, cluster <span class='op'>=</span> <span class='va'>Produc</span><span class='op'>$</span><span class='va'>state</span>, coefs <span class='op'>=</span> <span class='va'>individual_index</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      Coef. Estimate     SE d.f. Lower 95% CI Upper 95% CI</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  log(pcap)  -0.0261 0.0625 22.9      -0.1554     1.03e-01</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    log(pc)   0.2920 0.0646 22.2       0.1580     4.26e-01</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   log(emp)   0.7682 0.0855 20.4       0.5900     9.46e-01</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      unemp  -0.0053 0.0026 32.0      -0.0106    -6.94e-06</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>V_CR2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='vcovCR.html'>vcovCR</a></span><span class='op'>(</span><span class='va'>lm_individual</span>, cluster <span class='op'>=</span> <span class='va'>Produc</span><span class='op'>$</span><span class='va'>state</span>, type <span class='op'>=</span> <span class='st'>"CR2"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>conf_int</span><span class='op'>(</span><span class='va'>lm_individual</span>, vcov <span class='op'>=</span> <span class='va'>V_CR2</span>, level <span class='op'>=</span> <span class='fl'>.99</span>, coefs <span class='op'>=</span> <span class='va'>individual_index</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      Coef. Estimate     SE d.f. Lower 99% CI Upper 99% CI</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  log(pcap)  -0.0261 0.0625 22.9      -0.2016      0.14927</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    log(pc)   0.2920 0.0646 22.2       0.1099      0.47407</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   log(emp)   0.7682 0.0855 20.4       0.5253      1.01102</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      unemp  -0.0053 0.0026 32.0      -0.0124      0.00182</span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

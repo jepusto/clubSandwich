@@ -198,80 +198,90 @@ compared to zero. Defaults to <code>FALSE</code>.</p></td>
     <div class='dont-index'><p><code><a href='Wald_test.html'>Wald_test</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>Duncan</span>, package <span class='op'>=</span> <span class='st'>"carData"</span><span class='op'>)</span>
-<span class='va'>Duncan</span><span class='op'>$</span><span class='va'>cluster</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>LETTERS</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>8</span><span class='op'>]</span>, size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>Duncan</span><span class='op'>)</span>, replace <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-
-<span class='va'>Duncan_fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>prestige</span> <span class='op'>~</span> <span class='fl'>0</span> <span class='op'>+</span> <span class='va'>type</span> <span class='op'>+</span> <span class='va'>income</span> <span class='op'>+</span> <span class='va'>type</span><span class='op'>:</span><span class='va'>income</span> <span class='op'>+</span> <span class='va'>type</span><span class='op'>:</span><span class='va'>education</span>, data<span class='op'>=</span><span class='va'>Duncan</span><span class='op'>)</span>
-<span class='co'># Note that type:income terms are interactions because main effect of income is included</span>
-<span class='co'># but type:education terms are separate slopes for each unique level of type</span>
-
-<span class='va'>Duncan_coefs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>Duncan_fit</span><span class='op'>)</span>
-
-<span class='co'># The following are all equivalent</span>
-<span class='fu'>constrain_zero</span><span class='op'>(</span>constraints <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"typeprof:income"</span>,<span class='st'>"typewc:income"</span><span class='op'>)</span>, 
-               coefs <span class='op'>=</span> <span class='va'>Duncan_coefs</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-#&gt; [1,]    0    0    0    0    1    0    0    0    0
-#&gt; [2,]    0    0    0    0    0    1    0    0    0</div><div class='input'><span class='fu'>constrain_zero</span><span class='op'>(</span>constraints <span class='op'>=</span> <span class='st'>":income"</span>, coefs <span class='op'>=</span> <span class='va'>Duncan_coefs</span>, 
-               reg_ex <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-#&gt; [1,]    0    0    0    0    1    0    0    0    0
-#&gt; [2,]    0    0    0    0    0    1    0    0    0</div><div class='input'><span class='fu'>constrain_zero</span><span class='op'>(</span>constraints <span class='op'>=</span> <span class='fl'>5</span><span class='op'>:</span><span class='fl'>6</span>, coefs <span class='op'>=</span> <span class='va'>Duncan_coefs</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-#&gt; [1,]    0    0    0    0    1    0    0    0    0
-#&gt; [2,]    0    0    0    0    0    1    0    0    0</div><div class='input'><span class='fu'>constrain_zero</span><span class='op'>(</span>constraints <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>FALSE</span>, <span class='cn'>FALSE</span>, <span class='cn'>FALSE</span>, <span class='cn'>FALSE</span>, <span class='cn'>TRUE</span>, <span class='cn'>TRUE</span>, <span class='cn'>FALSE</span>, <span class='cn'>FALSE</span>, <span class='cn'>FALSE</span><span class='op'>)</span>, 
-               coefs <span class='op'>=</span> <span class='va'>Duncan_coefs</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-#&gt; [1,]    0    0    0    0    1    0    0    0    0
-#&gt; [2,]    0    0    0    0    0    1    0    0    0</div><div class='input'>
-<span class='co'># The following are all equivalent</span>
-<span class='fu'>constrain_equal</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"typebc:education"</span>,<span class='st'>"typeprof:education"</span>,<span class='st'>"typewc:education"</span><span class='op'>)</span>, 
-                <span class='va'>Duncan_coefs</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-#&gt; [1,]    0    0    0    0    0    0   -1    1    0
-#&gt; [2,]    0    0    0    0    0    0   -1    0    1</div><div class='input'><span class='fu'>constrain_equal</span><span class='op'>(</span><span class='st'>":education"</span>, <span class='va'>Duncan_coefs</span>, reg_ex <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-#&gt; [1,]    0    0    0    0    0    0   -1    1    0
-#&gt; [2,]    0    0    0    0    0    0   -1    0    1</div><div class='input'><span class='fu'>constrain_equal</span><span class='op'>(</span><span class='fl'>7</span><span class='op'>:</span><span class='fl'>9</span>, <span class='va'>Duncan_coefs</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-#&gt; [1,]    0    0    0    0    0    0   -1    1    0
-#&gt; [2,]    0    0    0    0    0    0   -1    0    1</div><div class='input'><span class='fu'>constrain_equal</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>FALSE</span>,<span class='cn'>FALSE</span>,<span class='cn'>FALSE</span>,<span class='cn'>FALSE</span>,<span class='cn'>FALSE</span>,<span class='cn'>FALSE</span>,<span class='cn'>TRUE</span>,<span class='cn'>TRUE</span>,<span class='cn'>TRUE</span><span class='op'>)</span>, 
-                <span class='va'>Duncan_coefs</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-#&gt; [1,]    0    0    0    0    0    0   -1    1    0
-#&gt; [2,]    0    0    0    0    0    0   -1    0    1</div><div class='input'>
-<span class='co'># Test pairwise equality of the education slopes</span>
-<span class='fu'>constrain_pairwise</span><span class='op'>(</span><span class='st'>":education"</span>, <span class='va'>Duncan_coefs</span>,
-                   reg_ex <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $`typeprof:education - typebc:education`
-#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-#&gt; [1,]    0    0    0    0    0    0   -1    1    0
-#&gt; 
-#&gt; $`typewc:education - typebc:education`
-#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-#&gt; [1,]    0    0    0    0    0    0   -1    0    1
-#&gt; 
-#&gt; $`typewc:education - typeprof:education`
-#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-#&gt; [1,]    0    0    0    0    0    0    0   -1    1
-#&gt; </div><div class='input'>
-<span class='co'># Test pairwise equality of the income slopes, plus compare against zero</span>
-<span class='fu'>constrain_pairwise</span><span class='op'>(</span><span class='st'>":income"</span>, <span class='va'>Duncan_coefs</span>, 
-                   reg_ex <span class='op'>=</span> <span class='cn'>TRUE</span>, with_zero <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $`typeprof:income`
-#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-#&gt; [1,]    0    0    0    0    1    0    0    0    0
-#&gt; 
-#&gt; $`typewc:income`
-#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-#&gt; [1,]    0    0    0    0    0    1    0    0    0
-#&gt; 
-#&gt; $`typewc:income - typeprof:income`
-#&gt;      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
-#&gt; [1,]    0    0    0    0   -1    1    0    0    0
-#&gt; </div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>Duncan</span>, package <span class='op'>=</span> <span class='st'>"carData"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>Duncan</span><span class='op'>$</span><span class='va'>cluster</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>LETTERS</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>8</span><span class='op'>]</span>, size <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>Duncan</span><span class='op'>)</span>, replace <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>Duncan_fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>prestige</span> <span class='op'>~</span> <span class='fl'>0</span> <span class='op'>+</span> <span class='va'>type</span> <span class='op'>+</span> <span class='va'>income</span> <span class='op'>+</span> <span class='va'>type</span><span class='op'>:</span><span class='va'>income</span> <span class='op'>+</span> <span class='va'>type</span><span class='op'>:</span><span class='va'>education</span>, data<span class='op'>=</span><span class='va'>Duncan</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># Note that type:income terms are interactions because main effect of income is included</span></span>
+<span class='r-in'><span class='co'># but type:education terms are separate slopes for each unique level of type</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>Duncan_coefs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='va'>Duncan_fit</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># The following are all equivalent</span></span>
+<span class='r-in'><span class='fu'>constrain_zero</span><span class='op'>(</span>constraints <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"typeprof:income"</span>,<span class='st'>"typewc:income"</span><span class='op'>)</span>, </span>
+<span class='r-in'>               coefs <span class='op'>=</span> <span class='va'>Duncan_coefs</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]    0    0    0    0    1    0    0    0    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]    0    0    0    0    0    1    0    0    0</span>
+<span class='r-in'><span class='fu'>constrain_zero</span><span class='op'>(</span>constraints <span class='op'>=</span> <span class='st'>":income"</span>, coefs <span class='op'>=</span> <span class='va'>Duncan_coefs</span>, </span>
+<span class='r-in'>               reg_ex <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]    0    0    0    0    1    0    0    0    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]    0    0    0    0    0    1    0    0    0</span>
+<span class='r-in'><span class='fu'>constrain_zero</span><span class='op'>(</span>constraints <span class='op'>=</span> <span class='fl'>5</span><span class='op'>:</span><span class='fl'>6</span>, coefs <span class='op'>=</span> <span class='va'>Duncan_coefs</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]    0    0    0    0    1    0    0    0    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]    0    0    0    0    0    1    0    0    0</span>
+<span class='r-in'><span class='fu'>constrain_zero</span><span class='op'>(</span>constraints <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>FALSE</span>, <span class='cn'>FALSE</span>, <span class='cn'>FALSE</span>, <span class='cn'>FALSE</span>, <span class='cn'>TRUE</span>, <span class='cn'>TRUE</span>, <span class='cn'>FALSE</span>, <span class='cn'>FALSE</span>, <span class='cn'>FALSE</span><span class='op'>)</span>, </span>
+<span class='r-in'>               coefs <span class='op'>=</span> <span class='va'>Duncan_coefs</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]    0    0    0    0    1    0    0    0    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]    0    0    0    0    0    1    0    0    0</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># The following are all equivalent</span></span>
+<span class='r-in'><span class='fu'>constrain_equal</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"typebc:education"</span>,<span class='st'>"typeprof:education"</span>,<span class='st'>"typewc:education"</span><span class='op'>)</span>, </span>
+<span class='r-in'>                <span class='va'>Duncan_coefs</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]    0    0    0    0    0    0   -1    1    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]    0    0    0    0    0    0   -1    0    1</span>
+<span class='r-in'><span class='fu'>constrain_equal</span><span class='op'>(</span><span class='st'>":education"</span>, <span class='va'>Duncan_coefs</span>, reg_ex <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]    0    0    0    0    0    0   -1    1    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]    0    0    0    0    0    0   -1    0    1</span>
+<span class='r-in'><span class='fu'>constrain_equal</span><span class='op'>(</span><span class='fl'>7</span><span class='op'>:</span><span class='fl'>9</span>, <span class='va'>Duncan_coefs</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]    0    0    0    0    0    0   -1    1    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]    0    0    0    0    0    0   -1    0    1</span>
+<span class='r-in'><span class='fu'>constrain_equal</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>FALSE</span>,<span class='cn'>FALSE</span>,<span class='cn'>FALSE</span>,<span class='cn'>FALSE</span>,<span class='cn'>FALSE</span>,<span class='cn'>FALSE</span>,<span class='cn'>TRUE</span>,<span class='cn'>TRUE</span>,<span class='cn'>TRUE</span><span class='op'>)</span>, </span>
+<span class='r-in'>                <span class='va'>Duncan_coefs</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]    0    0    0    0    0    0   -1    1    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [2,]    0    0    0    0    0    0   -1    0    1</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Test pairwise equality of the education slopes</span></span>
+<span class='r-in'><span class='fu'>constrain_pairwise</span><span class='op'>(</span><span class='st'>":education"</span>, <span class='va'>Duncan_coefs</span>,</span>
+<span class='r-in'>                   reg_ex <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $`typeprof:education - typebc:education`</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]    0    0    0    0    0    0   -1    1    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $`typewc:education - typebc:education`</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]    0    0    0    0    0    0   -1    0    1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $`typewc:education - typeprof:education`</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]    0    0    0    0    0    0    0   -1    1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Test pairwise equality of the income slopes, plus compare against zero</span></span>
+<span class='r-in'><span class='fu'>constrain_pairwise</span><span class='op'>(</span><span class='st'>":income"</span>, <span class='va'>Duncan_coefs</span>, </span>
+<span class='r-in'>                   reg_ex <span class='op'>=</span> <span class='cn'>TRUE</span>, with_zero <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $`typeprof:income`</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]    0    0    0    0    1    0    0    0    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $`typewc:income`</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]    0    0    0    0    0    1    0    0    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $`typewc:income - typeprof:income`</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1,]    0    0    0    0   -1    1    0    0    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

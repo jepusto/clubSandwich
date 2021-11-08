@@ -91,7 +91,7 @@
       <h1 data-toc-skip>Wald tests of multiple-constraint null hypotheses</h1>
                         <h4 class="author">James E. Pustejovsky</h4>
             
-            <h4 class="date">2021-10-20</h4>
+            <h4 class="date">2021-11-08</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jepusto/clubSandwich/blob/master/vignettes/Wald-tests-in-clubSandwich.Rmd"><code>vignettes/Wald-tests-in-clubSandwich.Rmd</code></a></small>
       <div class="hidden name"><code>Wald-tests-in-clubSandwich.Rmd</code></div>
@@ -151,10 +151,10 @@ Q = \left(\mathbf{C}\boldsymbol{\hat\beta}\right)' \left(\mathbf{C} \mathbf{V}^{
 <code class="sourceCode R"><span class="va">lm_trt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">math1</span> <span class="op">~</span> <span class="va">stark</span>, data <span class="op">=</span> <span class="va">STAR</span><span class="op">)</span>
 <span class="va">V_trt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_trt</span>, cluster <span class="op">=</span> <span class="va">STAR</span><span class="op">$</span><span class="va">schoolidk</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span>
 <span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">lm_trt</span>, vcov <span class="op">=</span> <span class="va">V_trt</span><span class="op">)</span></code></pre></div>
-<pre><code>##         Coef. Estimate   SE  t-stat d.f. p-val (Satt) Sig.
-## 1 (Intercept)  531.727 2.78 191.506 59.9       &lt;0.001  ***
-## 2  starksmall    9.469 2.30   4.114 65.6       &lt;0.001  ***
-## 3   starkaide   -0.483 1.86  -0.259 65.6        0.796</code></pre>
+<pre><code>##        Coef. Estimate   SE  t-stat d.f. (Satt) p-val (Satt) Sig.
+##  (Intercept)  531.727 2.78 191.506        59.9       &lt;0.001  ***
+##   starksmall    9.469 2.30   4.114        65.6       &lt;0.001  ***
+##    starkaide   -0.483 1.86  -0.259        65.6        0.796</code></pre>
 <p>In this estimating equation, the coefficients <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span> represent treatment effects, or differences in average math scores relative to the reference level of <code>stark</code>, which in this case is a regular-size class. The t-statistics and p-values reported by <code>coef_test</code> are separate tests of the null hypotheses that each of these coefficients are equal to zero, meaning that there is no difference between the specified treatment condition and the reference level. We might want to instead test the <em>joint</em> null hypothesis that there are no differences among <em>any</em> of the conditions. This null can be expressed by a set of multiple constraints on the parameters: <span class="math inline">\(\beta_1 = 0\)</span> and <span class="math inline">\(\beta_2 = 0\)</span>.</p>
 <p>To test the null hypothesis that <span class="math inline">\(\beta_1 = \beta_2 = 0\)</span> based on the treatment effects model specification, we can use:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -231,10 +231,10 @@ Q = \left(\mathbf{C}\boldsymbol{\hat\beta}\right)' \left(\mathbf{C} \mathbf{V}^{
 <code class="sourceCode R"><span class="va">lm_sep</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">math1</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">stark</span>, data <span class="op">=</span> <span class="va">STAR</span><span class="op">)</span>
 <span class="va">V_sep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_sep</span>, cluster <span class="op">=</span> <span class="va">STAR</span><span class="op">$</span><span class="va">schoolidk</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span>
 <span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">lm_sep</span>, vcov <span class="op">=</span> <span class="va">V_sep</span><span class="op">)</span></code></pre></div>
-<pre><code>##          Coef. Estimate   SE t-stat d.f. p-val (Satt) Sig.
-## 1 starkregular      532 2.78    192 59.9       &lt;0.001  ***
-## 2   starksmall      541 2.89    187 65.0       &lt;0.001  ***
-## 3    starkaide      531 2.72    195 64.3       &lt;0.001  ***</code></pre>
+<pre><code>##         Coef. Estimate   SE t-stat d.f. (Satt) p-val (Satt) Sig.
+##  starkregular      532 2.78    192        59.9       &lt;0.001  ***
+##    starksmall      541 2.89    187        65.0       &lt;0.001  ***
+##     starkaide      531 2.72    195        64.3       &lt;0.001  ***</code></pre>
 <p>In this parameterization, the coefficients <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span>, and <span class="math inline">\(\beta_2\)</span> represent the average math performance levels of students in each of the treatment conditions. The t-tests and p-values now have a very different interpretation because they pertain to the null hypothesis that the average performance level for a given condition is equal to zero. With this separate-intercepts model, the joint null hypothesis that performance levels are equal across conditions amounts to constraining the intercepts to be equal to each other: <span class="math inline">\(\beta_0 = \beta_1\)</span> and <span class="math inline">\(\beta_0 = \beta_2\)</span> (note that we don’t need the constraint <span class="math inline">\(\beta_1 = \beta_2\)</span> because it is implied by the first two).</p>
 <p>For the <code>lm_sep</code> model, which has separate intercepts <span class="math inline">\(\beta_0\)</span>, <span class="math inline">\(\beta_1\)</span>, and <span class="math inline">\(\beta_2\)</span>, the C matrix would look like this: <span class="math display">\[
 \mathbf{C} = \left[\begin{array}{ccc} -1 &amp; 1 &amp; 0 \\ -1 &amp; 0 &amp; 1 \end{array} \right],
@@ -295,22 +295,38 @@ Q = \left(\mathbf{C}\boldsymbol{\hat\beta}\right)' \left(\mathbf{C} \mathbf{V}^{
 <code class="sourceCode R"><span class="va">lm_urbanicity</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">math1</span> <span class="op">~</span> <span class="va">schoolk</span> <span class="op">*</span> <span class="va">stark</span> <span class="op">+</span> <span class="va">gender</span> <span class="op">+</span> <span class="va">ethnicity</span> <span class="op">+</span> <span class="va">lunchk</span>, data <span class="op">=</span> <span class="va">STAR</span><span class="op">)</span>
 <span class="va">V_urbanicity</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_urbanicity</span>, cluster <span class="op">=</span> <span class="va">STAR</span><span class="op">$</span><span class="va">schoolidk</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span>
 <span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">lm_urbanicity</span>, vcov <span class="op">=</span> <span class="va">V_urbanicity</span><span class="op">)</span></code></pre></div>
-<pre><code>##                         Coef. Estimate    SE  t-stat  d.f. p-val (Satt) Sig.
-## 1                 (Intercept)   542.62  5.91 91.8599 21.70       &lt;0.001  ***
-## 2             schoolksuburban     2.77  6.76  0.4100 28.35       0.6849     
-## 3                schoolkrural     1.03  6.38  0.1616 30.74       0.8727     
-## 4                  starksmall     9.42  4.56  2.0649 17.10       0.0544    .
-## 5                   starkaide    -4.27  2.17 -1.9631 16.73       0.0665    .
-## 6                genderfemale     2.14  1.20  1.7773 67.14       0.0800    .
-## 7               ethnicityafam   -16.79  4.19 -4.0026 34.94       &lt;0.001  ***
-## 8              ethnicityasian    13.19 11.02  1.1963  6.23       0.2751     
-## 9           ethnicityhispanic    39.23 20.62  1.9028  1.01       0.3067     
-## 10             ethnicityother     8.86 18.78  0.4720  3.02       0.6690     
-## 11                 lunchkfree   -19.37  2.04 -9.4848 57.38       &lt;0.001  ***
-## 12 schoolksuburban:starksmall     3.03  6.39  0.4746 28.94       0.6386     
-## 13    schoolkrural:starksmall    -0.31  5.58 -0.0555 34.04       0.9560     
-## 14  schoolksuburban:starkaide     5.10  3.72  1.3711 28.64       0.1810     
-## 15     schoolkrural:starkaide     8.16  3.16  2.5857 34.30       0.0141    *</code></pre>
+<pre><code>##                       Coef. Estimate    SE  t-stat d.f. (Satt) p-val (Satt)
+##                 (Intercept)   542.62  5.91 91.8599       21.70       &lt;0.001
+##             schoolksuburban     2.77  6.76  0.4100       28.35       0.6849
+##                schoolkrural     1.03  6.38  0.1616       30.74       0.8727
+##                  starksmall     9.42  4.56  2.0649       17.10       0.0544
+##                   starkaide    -4.27  2.17 -1.9631       16.73       0.0665
+##                genderfemale     2.14  1.20  1.7773       67.14       0.0800
+##               ethnicityafam   -16.79  4.19 -4.0026       34.94       &lt;0.001
+##              ethnicityasian    13.19 11.02  1.1963        6.23       0.2751
+##           ethnicityhispanic    39.23 20.62  1.9028        1.01       0.3067
+##              ethnicityother     8.86 18.78  0.4720        3.02       0.6690
+##                  lunchkfree   -19.37  2.04 -9.4848       57.38       &lt;0.001
+##  schoolksuburban:starksmall     3.03  6.39  0.4746       28.94       0.6386
+##     schoolkrural:starksmall    -0.31  5.58 -0.0555       34.04       0.9560
+##   schoolksuburban:starkaide     5.10  3.72  1.3711       28.64       0.1810
+##      schoolkrural:starkaide     8.16  3.16  2.5857       34.30       0.0141
+##  Sig.
+##   ***
+##      
+##      
+##     .
+##     .
+##     .
+##   ***
+##      
+##      
+##      
+##   ***
+##      
+##      
+##      
+##     *</code></pre>
 <p>With this specification, there are several different null hypotheses that we might want to test. For one, perhaps we want to see if there is <em>any</em> variation in treatment effects across different levels of urbanicity. This can be expressed in the null hypothesis that all four interaction terms are zero, or <span class="math inline">\(H_{0A}: \beta_5 = \beta_6 = \beta_7 = \beta_8 = 0\)</span>. With Wald test:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/Wald_test.html">Wald_test</a></span><span class="op">(</span><span class="va">lm_urbanicity</span>, 
@@ -379,10 +395,10 @@ Q = \left(\mathbf{C}\boldsymbol{\hat\beta}\right)' \left(\mathbf{C} \mathbf{V}^{
 <p>To demonstrate, consider the separate-intercepts specification of the simpler regression model:</p>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">lm_sep</span>, vcov <span class="op">=</span> <span class="va">V_sep</span><span class="op">)</span></code></pre></div>
-<pre><code>##          Coef. Estimate   SE t-stat d.f. p-val (Satt) Sig.
-## 1 starkregular      532 2.78    192 59.9       &lt;0.001  ***
-## 2   starksmall      541 2.89    187 65.0       &lt;0.001  ***
-## 3    starkaide      531 2.72    195 64.3       &lt;0.001  ***</code></pre>
+<pre><code>##         Coef. Estimate   SE t-stat d.f. (Satt) p-val (Satt) Sig.
+##  starkregular      532 2.78    192        59.9       &lt;0.001  ***
+##    starksmall      541 2.89    187        65.0       &lt;0.001  ***
+##     starkaide      531 2.72    195        64.3       &lt;0.001  ***</code></pre>
 <p>This specification is nice because it lets us simply read off the average outcomes for each group. However, we will naturally also want to know about whether there are differences between the groups, so we’ll want to compare the small-class condition to the regular-size class condition, the aide condition to the regular-size class condition, and the small-class condition to the aide condition. Thus, we’ll want comparisons among all three coefficients:</p>
 <div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">C_pairs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/constraint_matrices.html">constrain_pairwise</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span>, coefs <span class="op">=</span> <span class="fu"><a href="https://wviechtb.github.io/metafor/reference/coef.rma.html">coef</a></span><span class="op">(</span><span class="va">lm_sep</span><span class="op">)</span><span class="op">)</span>
@@ -405,7 +421,7 @@ Q = \left(\mathbf{C}\boldsymbol{\hat\beta}\right)' \left(\mathbf{C} \mathbf{V}^{
 ##  starksmall - starkregular  HTZ 16.9238      1     65.6 &lt;0.001 ***
 ##   starkaide - starkregular  HTZ  0.0673      1     65.6  0.796    
 ##     starkaide - starksmall  HTZ 17.8137      1     66.9 &lt;0.001 ***</code></pre>
-<p>The first two of these tests are equivalent to the tests of the treatment effect coefficients in the other parameterization of the model. Indeed, the denominator degrees of freedom are identical to the results of <code><a href="../reference/coef_test.html">coef_test(lm_trt, vcov = V_trt)</a></code>; the <code>Fstat</code>s here are equal to the squared t-statistics from the first model:</p>
+<p>The first two of these tests are equivalent to the tests of the treatment effect coefficients in the other parameterization of the model. Indeed, the denominator degrees of freedom are identical to the results of <code>coef_test(lm_trt, vcov = V_trt)</code>; the <code>Fstat</code>s here are equal to the squared t-statistics from the first model:</p>
 <div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">t_stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">lm_trt</span>, vcov <span class="op">=</span> <span class="va">V_trt</span><span class="op">)</span><span class="op">$</span><span class="va">tstat</span><span class="op">[</span><span class="fl">2</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>
 <span class="va">F_stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Wald_test.html">Wald_test</a></span><span class="op">(</span><span class="va">lm_sep</span>, constraints <span class="op">=</span> <span class="va">C_pairs</span>, vcov <span class="op">=</span> <span class="va">V_sep</span>, tidy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">Fstat</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>
@@ -415,22 +431,38 @@ Q = \left(\mathbf{C}\boldsymbol{\hat\beta}\right)' \left(\mathbf{C} \mathbf{V}^{
 <p>Pairwise comparisons might also be of use in the model with treatment-by-urbanicity interactions. Here’s the model results again:</p>
 <div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">lm_urbanicity</span>, vcov <span class="op">=</span> <span class="va">V_urbanicity</span><span class="op">)</span></code></pre></div>
-<pre><code>##                         Coef. Estimate    SE  t-stat  d.f. p-val (Satt) Sig.
-## 1                 (Intercept)   542.62  5.91 91.8599 21.70       &lt;0.001  ***
-## 2             schoolksuburban     2.77  6.76  0.4100 28.35       0.6849     
-## 3                schoolkrural     1.03  6.38  0.1616 30.74       0.8727     
-## 4                  starksmall     9.42  4.56  2.0649 17.10       0.0544    .
-## 5                   starkaide    -4.27  2.17 -1.9631 16.73       0.0665    .
-## 6                genderfemale     2.14  1.20  1.7773 67.14       0.0800    .
-## 7               ethnicityafam   -16.79  4.19 -4.0026 34.94       &lt;0.001  ***
-## 8              ethnicityasian    13.19 11.02  1.1963  6.23       0.2751     
-## 9           ethnicityhispanic    39.23 20.62  1.9028  1.01       0.3067     
-## 10             ethnicityother     8.86 18.78  0.4720  3.02       0.6690     
-## 11                 lunchkfree   -19.37  2.04 -9.4848 57.38       &lt;0.001  ***
-## 12 schoolksuburban:starksmall     3.03  6.39  0.4746 28.94       0.6386     
-## 13    schoolkrural:starksmall    -0.31  5.58 -0.0555 34.04       0.9560     
-## 14  schoolksuburban:starkaide     5.10  3.72  1.3711 28.64       0.1810     
-## 15     schoolkrural:starkaide     8.16  3.16  2.5857 34.30       0.0141    *</code></pre>
+<pre><code>##                       Coef. Estimate    SE  t-stat d.f. (Satt) p-val (Satt)
+##                 (Intercept)   542.62  5.91 91.8599       21.70       &lt;0.001
+##             schoolksuburban     2.77  6.76  0.4100       28.35       0.6849
+##                schoolkrural     1.03  6.38  0.1616       30.74       0.8727
+##                  starksmall     9.42  4.56  2.0649       17.10       0.0544
+##                   starkaide    -4.27  2.17 -1.9631       16.73       0.0665
+##                genderfemale     2.14  1.20  1.7773       67.14       0.0800
+##               ethnicityafam   -16.79  4.19 -4.0026       34.94       &lt;0.001
+##              ethnicityasian    13.19 11.02  1.1963        6.23       0.2751
+##           ethnicityhispanic    39.23 20.62  1.9028        1.01       0.3067
+##              ethnicityother     8.86 18.78  0.4720        3.02       0.6690
+##                  lunchkfree   -19.37  2.04 -9.4848       57.38       &lt;0.001
+##  schoolksuburban:starksmall     3.03  6.39  0.4746       28.94       0.6386
+##     schoolkrural:starksmall    -0.31  5.58 -0.0555       34.04       0.9560
+##   schoolksuburban:starkaide     5.10  3.72  1.3711       28.64       0.1810
+##      schoolkrural:starkaide     8.16  3.16  2.5857       34.30       0.0141
+##  Sig.
+##   ***
+##      
+##      
+##     .
+##     .
+##     .
+##   ***
+##      
+##      
+##      
+##   ***
+##      
+##      
+##      
+##     *</code></pre>
 <p>Suppose that we are interested in the effect of small versus regular size classes, and in particular whether this effect varies across schools in different areas. The coefficients on <code>schoolksuburban:starksmall</code> and <code>schoolkrural:starksmall</code> already give us the differences in treatment effects between suburban schools versus urban schools and between rural schools versus urban schools. The difference between these coefficients gives us the difference in treatment effects between suburban schools and rural schools. We can look at all three of these contrasts using <code><a href="../reference/constraint_matrices.html">constrain_pairwise()</a></code> by setting the option <code>with_zero = TRUE</code>:</p>
 <div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/Wald_test.html">Wald_test</a></span><span class="op">(</span><span class="va">lm_urbanicity</span>, 
@@ -472,7 +504,7 @@ Q = \left(\mathbf{C}\boldsymbol{\hat\beta}\right)' \left(\mathbf{C} \mathbf{V}^{
 <p>How does this work? If we omit the <code>coefs</code> argument, <code><a href="../reference/constraint_matrices.html">constrain_zero()</a></code> acts as a functional, by returning a function equivalent to</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw">function</span><span class="op">(</span><span class="va">coefs</span><span class="op">)</span> <span class="fu"><a href="../reference/constraint_matrices.html">constrain_zero</a></span><span class="op">(</span><span class="va">constraints</span>, coefs <span class="op">=</span> <span class="va">coefs</span><span class="op">)</span>    </code></pre></div>
-<p>If this function is fed into the <code>constraints</code> argument of <code><a href="../reference/Wald_test.html">Wald_test()</a></code>, <code><a href="../reference/Wald_test.html">Wald_test()</a></code> recognizes that it is a function and evaluates the function with <code><a href="https://wviechtb.github.io/metafor/reference/coef.rma.html">coef(obj)</a></code>. It’s a kinda-sorta hacky substitute for lazy evaluation. If you have suggestions for how to do this more elegantly, please send them my way.<a href="#fnref2" class="footnote-back">↩︎</a></p>
+<p>If this function is fed into the <code>constraints</code> argument of <code><a href="../reference/Wald_test.html">Wald_test()</a></code>, <code><a href="../reference/Wald_test.html">Wald_test()</a></code> recognizes that it is a function and evaluates the function with <code>coef(obj)</code>. It’s a kinda-sorta hacky substitute for lazy evaluation. If you have suggestions for how to do this more elegantly, please send them my way.<a href="#fnref2" class="footnote-back">↩︎</a></p>
 </li>
 <li id="fn3"><p>Options to include multiplicity corrections (Bonferroni, Holm, Benjamini-Hochberg, etc.) might be included in a <a href="https://github.com/jepusto/clubSandwich/issues/33">future release</a>. Reach out if this is of interest to you.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
 </ol>
