@@ -524,7 +524,7 @@ total_variance_mat <- function(P_array, Omega_nsqrt, q = nrow(Omega_nsqrt)) {
 #--------------------------------------------------
 
 Hotelling_Tsq <- function(Q, q, nu) {
-  delta <- (nu - q + 1) / nu
+  delta <- pmax((nu - q + 1) / nu, 0)
   df <- nu - q + 1
   Fstat <- delta * Q / q
   p_val <- ifelse(df > 0, pf(Fstat, df1 = q, df2 = df, lower.tail = FALSE), as.numeric(NA))
