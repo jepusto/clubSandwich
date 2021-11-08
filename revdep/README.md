@@ -2,7 +2,7 @@
 
 |field    |value                        |
 |:--------|:----------------------------|
-|version  |R version 3.6.0 (2019-04-26) |
+|version  |R version 4.0.2 (2020-06-22) |
 |os       |Windows 10 x64               |
 |system   |x86_64, mingw32              |
 |ui       |RStudio                      |
@@ -10,13 +10,15 @@
 |collate  |English_United States.1252   |
 |ctype    |English_United States.1252   |
 |tz       |America/Chicago              |
-|date     |2019-05-09                   |
+|date     |2021-11-07                   |
 
 # Dependencies
 
-|package      |old   |new   |<U+0394>  |
-|:------------|:-----|:-----|:--|
-|clubSandwich |0.3.3 |0.3.4 |*  |
+|package      |old   |new        |<U+0394>  |
+|:------------|:-----|:----------|:--|
+|clubSandwich |0.5.3 |0.5.3.9999 |*  |
+|sandwich     |3.0-1 |3.0-1      |   |
+|zoo          |1.8-9 |1.8-9      |   |
 
 # Revdeps
 
