@@ -47,8 +47,10 @@ wls_within <- lm(Y_absorb ~ 0 + U_absorb, weights = w)
 test_that("Inverse-variance weighted lsdv and within estimators are equivalent.", {
   lsdv <- coef_test(wls_LSDV, vcov = "CR2", cluster = MV_Mortality$state, inverse_var = TRUE, p_values = FALSE)[1:4,]
   wthn <- coef_test(wls_within, vcov = "CR2", cluster = state, inverse_var = TRUE, p_values = FALSE)[1:4,]
-  lsdv / wthn
-  expect_equal(lsdv, wthn, check.attributes = FALSE, tolerance = 10^-3)
+  expect_equal(lsdv$beta, wthn$beta, check.attributes = FALSE, tolerance = 10^-5)
+  expect_equal(lsdv$SE, wthn$SE, check.attributes = FALSE, tolerance = 10^-2)
+  expect_equal(lsdv$tstat, wthn$tstat, check.attributes = FALSE, tolerance = 10^-2)
+  expect_equal(lsdv$df_Satt, wthn$df_Satt, check.attributes = FALSE, tolerance = 10^-2)
 })
 
 #-----------------------
@@ -58,8 +60,10 @@ test_that("Inverse-variance weighted lsdv and within estimators are equivalent."
 test_that("Probability-weighted lsdv and within estimators are not necessarily equivalent.", {
   lsdv <- coef_test(wls_LSDV, vcov = "CR2", cluster = MV_Mortality$state, inverse_var = FALSE, coefs = 1:4, p_values = FALSE)
   wthn <- coef_test(wls_within, vcov = "CR2", cluster = state, inverse_var = FALSE, p_values = FALSE)
-  lsdv / wthn
-  expect_equal(lsdv, wthn, check.attributes = FALSE, tolerance = 10^-2)
+  expect_equal(lsdv$beta, wthn$beta, check.attributes = FALSE, tolerance = 10^-5)
+  expect_equal(lsdv$SE, wthn$SE, check.attributes = FALSE, tolerance = 10^-2)
+  expect_equal(lsdv$tstat, wthn$tstat, check.attributes = FALSE, tolerance = 10^-2)
+  expect_equal(lsdv$df_Satt, wthn$df_Satt, check.attributes = FALSE, tolerance = 10^-2)
 })
 
 
