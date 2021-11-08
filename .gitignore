@@ -3,3 +3,7 @@
 .RData
 inst/doc
 docs
+revdep/*
+revdep/README.md
+revdep/data.sqlite
+revdep/failures.md

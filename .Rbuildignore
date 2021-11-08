@@ -13,3 +13,4 @@ vignettes/Robust-Variance-Estimation-with-clubSandwich.Rmd
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^revdep$
