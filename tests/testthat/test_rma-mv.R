@@ -294,6 +294,25 @@ test_that("clubSandwich works with complicated random effects specifications.", 
   
 })
 
+test_that("clubSandwich works for random slopes model.", {
+  
+  # example from https://wviechtb.github.io/metadat/reference/dat.obrien2003.html
+  dat <- dat.obrien2003
+  dat$bmicent <- dat$bmi - ave(dat$bmi, dat$study)
+  dat <- escalc(measure="PR", xi=cases, ni=total, data=dat)
+  dat$yi <- dat$yi*100
+  dat$vi <- dat$vi*100^2
+  res <- rma.mv(yi, vi, mods = ~ bmicent, 
+                random = ~ bmicent | study, struct="GEN", 
+                data=dat)
+  
+  cl <- findCluster.rma.mv(res)
+  
+  expect_true(check_bread(res, cluster = cl, y = dat$yi))
+  expect_true(check_CR(res, vcov = "CR2"))
+  
+})
+
 test_that("clubSandwich works for correlated hierarchical effects model.", {
   
   skip_on_cran()
