@@ -522,15 +522,26 @@ findCluster.rma.mv <- function(obj) {
 #' @export
 
 bread.rma.mv <- function(x, ...) {
-  if (is.null(x$W)) {
-    B <- vcov(x) * nobs(x)
-  } else{
+
+  if (inherits(x, "robust.rma")) {
+    cluster <- findCluster.rma.mv(x)
+    W <- weightMatrix(x, cluster = cluster)
     X_mat <- model_matrix(x)
-    XWX <- t(X_mat) %*% x$W %*% X_mat
-    B <- chol2inv(chol(XWX)) * nobs(x)
-    rownames(B) <- colnames(B) <- colnames(X_mat)
+    X_list <- matrix_list(X_mat, fac = cluster, dim = "row")
+    XWX_list <- Map(function(x, w) t(x) %*% w %*% x, x = X_list, w = W)
+    XWX <- Reduce(`+`, XWX_list)
+  } else {
+    if (is.null(x$W)) {
+      B <- vcov(x) * nobs(x)
+      return(B)      
+    } else {
+      X_mat <- model_matrix(x)
+      XWX <- t(X_mat) %*% x$W %*% X_mat
+    }
   }
-  B
+  B <- chol2inv(chol(XWX)) * nobs(x)
+  rownames(B) <- colnames(B) <- colnames(X_mat)
+  return(B)
 }
 
 #' @export

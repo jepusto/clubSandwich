@@ -195,3 +195,84 @@ test_that("vcovCR works with intercept-only model and user-specified weights.", 
   expect_equal(df, test_uni$df_Satt, tolerance = 10^-5)
   
 })
+
+test_that("clubSandwich agrees with metafor::robust() for CR0.", {
+  
+  test_CR0 <- conf_int(corr_meta, vcov = "CR0", cluster = corrdat$studyid, test = "naive-t", p_values = TRUE)
+  meta_CR0 <- robust(corr_meta, cluster = corrdat$studyid, adjust = FALSE)
+  rob_CR0 <- conf_int(meta_CR0, vcov = "CR0", cluster = corrdat$studyid, test = "naive-t", p_values = TRUE)
+  expect_equal(test_CR0$SE, meta_CR0$se)
+  expect_equal(rob_CR0, test_CR0)
+
+  club_F_CR0 <- Wald_test(corr_meta, constraints = constrain_zero(2:4), 
+                          vcov = "CR0", cluster = corrdat$studyid, test = "Naive-F")
+  rob_F_CR0 <- Wald_test(meta_CR0, constraints = constrain_zero(2:4), 
+                         vcov = "CR0", cluster = corrdat$studyid, test = "Naive-F")
+  expect_equal(club_F_CR0$Fstat, meta_CR0$QM)
+  expect_equal(club_F_CR0, rob_F_CR0)
+
+})
+
+test_that("clubSandwich agrees with metafor::robust() for CR1p.", {
+  
+  test_CR1 <- conf_int(corr_meta, vcov = "CR1p", cluster = corrdat$studyid, test = "naive-t", p_values = TRUE)
+  meta_CR1 <- robust(corr_meta, cluster = corrdat$studyid, adjust = TRUE)
+  rob_CR1 <- conf_int(meta_CR1, vcov = "CR1p", cluster = corrdat$studyid, test = "naive-t", p_values = TRUE)
+  expect_equal(test_CR1$SE, meta_CR1$se)
+  expect_equal(rob_CR1, test_CR1)
+  
+  club_F_CR1 <- Wald_test(corr_meta, constraints = constrain_zero(2:4), 
+                          vcov = "CR1p", cluster = corrdat$studyid, test = "Naive-F")
+  rob_F_CR1 <- Wald_test(meta_CR1, constraints = constrain_zero(2:4), 
+                         vcov = "CR1p", cluster = corrdat$studyid, test = "Naive-F")
+  expect_equal(club_F_CR1$Fstat, meta_CR1$QM)
+  expect_equal(club_F_CR1, rob_F_CR1)
+})
+
+test_that("clubSandwich agrees with metafor::robust() for CR2.", {
+  
+  skip_if(packageVersion('metafor') <= "3.0.1")
+  test_CR2 <- conf_int(corr_meta, vcov = "CR2", cluster = corrdat$studyid, p_values = TRUE)
+  meta_CR2 <- robust(corr_meta, cluster = corrdat$studyid, clubSandwich = TRUE)
+  rob_CR2 <- conf_int(meta_CR2, vcov = "CR2", cluster = corrdat$studyid, p_values = TRUE)
+  expect_equal(test_CR2$SE, meta_CR2$se)
+  expect_equal(rob_CR2, test_CR2)
+  
+  club_F_CR2 <- Wald_test(corr_meta, constraints = constrain_zero(2:4), 
+                          vcov = "CR2", cluster = corrdat$studyid, test = "All")
+  rob_F_CR2 <- Wald_test(meta_CR2, constraints = constrain_zero(2:4), 
+                         vcov = "CR2", cluster = corrdat$studyid, test = "All")
+  expect_equal(subset(club_F_CR2, test == "HTZ")$Fstat, meta_CR2$QM)
+  expect_equal(subset(club_F_CR2, test == "HTZ")$df_num, meta_CR2$QMdf[1])
+  expect_equal(subset(club_F_CR2, test == "HTZ")$df_denom, meta_CR2$QMdf[2])
+  expect_equal(subset(club_F_CR2, test == "HTZ")$p_val, meta_CR2$QMp)
+  expect_equal(club_F_CR2, rob_F_CR2)
+})
+
+test_that("clubSandwich methods work on robust.rma objects.", {
+  
+  hier_robust <- robust(hier_meta, cluster = hierdat$studyid, adjust = TRUE)
+  
+  expect_equal(residuals_CS(hier_meta), residuals_CS(hier_robust))
+  expect_equal(coef_CS(hier_meta), coef_CS(hier_robust))
+  expect_equal(model_matrix(hier_meta), model_matrix(hier_robust))
+  expect_equal(bread(hier_meta), bread(hier_robust))
+  expect_equal(v_scale(hier_meta), v_scale(hier_robust))
+  expect_equal(targetVariance(hier_meta, cluster = hierdat$studyid), 
+               targetVariance(hier_robust, cluster = hierdat$studyid))
+  expect_equal(weightMatrix(hier_meta, cluster = hierdat$studyid), 
+               weightMatrix(hier_robust, cluster = hierdat$studyid))
+
+  hier_club <- robust(hier_meta, cluster = hierdat$studyid, adjust = FALSE, clubSandwich = TRUE)
+
+  expect_equal(residuals_CS(hier_meta), residuals_CS(hier_club))
+  expect_equal(coef_CS(hier_meta), coef_CS(hier_club))
+  expect_equal(model_matrix(hier_meta), model_matrix(hier_club))
+  expect_equal(bread(hier_meta), bread(hier_club))
+  expect_equal(v_scale(hier_meta), v_scale(hier_club))
+  expect_equal(targetVariance(hier_meta, cluster = hierdat$studyid), 
+               targetVariance(hier_club, cluster = hierdat$studyid))
+  expect_equal(weightMatrix(hier_meta, cluster = hierdat$studyid), 
+               weightMatrix(hier_club, cluster = hierdat$studyid))
+  
+})
