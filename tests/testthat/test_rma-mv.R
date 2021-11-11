@@ -473,7 +473,7 @@ test_that("clubSandwich agrees with metafor::robust() for CR1p.", {
 
 test_that("clubSandwich agrees with metafor::robust() for CR2.", {
   
-  skip_if(packageVersion('metafor') <= "3.0.1")
+  skip_if(packageVersion('metafor') < "3.1.31")
   test_CR2 <- coef_test(corr_meta, vcov = "CR2", test = "All")
   meta_CR2 <- robust(corr_meta, cluster = corrdat$studyid, clubSandwich = TRUE)
   rob_CR2 <- coef_test(meta_CR2, vcov = "CR2", test = "All")
