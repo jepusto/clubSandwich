@@ -171,9 +171,12 @@ calculate the variance-covariance.</p></td>
       <td><p>Character vector specifying which small-sample corrections to
 calculate. <code>"z"</code> returns a z test (i.e., using a standard normal
 reference distribution). <code>"naive-t"</code> returns a t test with <code>m -
-1</code> degrees of freedom. <code>"Satterthwaite"</code> returns a Satterthwaite
-correction. <code>"saddlepoint"</code> returns a saddlepoint correction. Default
-is <code>"Satterthwaite"</code>.</p></td>
+1</code> degrees of freedom, where <code>m</code> is the number of unique clusters.
+<code>"naive-tp"</code> returns a t test with <code>m - p</code> degrees of freedom,
+where <code>p</code> is the number of regression coefficients in <code>obj</code>.
+<code>"Satterthwaite"</code> returns a Satterthwaite correction.
+<code>"saddlepoint"</code> returns a saddlepoint correction. Default is
+<code>"Satterthwaite"</code>.</p></td>
     </tr>
     <tr>
       <th>coefs</th>
@@ -183,7 +186,8 @@ estimated coefficients.</p></td>
     </tr>
     <tr>
       <th>p_values</th>
-      <td><p>Logical indicating whether to report p-values. The default value is <code>TRUE</code>.</p></td>
+      <td><p>Logical indicating whether to report p-values. The default
+value is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>

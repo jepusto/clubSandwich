@@ -179,10 +179,13 @@ calculate the variance-covariance.</p></td>
       <td><p>Character vector specifying which small-sample corrections to
 calculate. <code>"z"</code> returns a z test (i.e., using a standard normal
 reference distribution). <code>"naive-t"</code> returns a t test with <code>m -
-1</code> degrees of freedom. <code>"Satterthwaite"</code> returns a Satterthwaite
-correction. Unlike in <code><a href='coef_test.html'>coef_test()</a></code>, <code>"saddlepoint"</code> is not
-currently supported in <code>conf_int()</code> because saddlepoint confidence
-intervals do not have a closed-form solution.</p></td>
+1</code> degrees of freedom, where <code>m</code> is the number of unique clusters.
+<code>"naive-tp"</code> returns a t test with <code>m - p</code> degrees of freedom,
+where <code>p</code> is the number of regression coefficients in <code>obj</code>.
+<code>"Satterthwaite"</code> returns a Satterthwaite correction. Unlike in
+<code><a href='coef_test.html'>coef_test()</a></code>, <code>"saddlepoint"</code> is not currently supported in
+<code>conf_int()</code> because saddlepoint confidence intervals do not have a
+closed-form solution.</p></td>
     </tr>
     <tr>
       <th>coefs</th>
@@ -197,7 +200,8 @@ needed if <code>vcov</code> is a character string.</p></td>
     </tr>
     <tr>
       <th>p_values</th>
-      <td><p>Logical indicating whether to report p-values. The default value is <code>FALSE</code>.</p></td>
+      <td><p>Logical indicating whether to report p-values. The default
+value is <code>FALSE</code>.</p></td>
     </tr>
     </table>
 
