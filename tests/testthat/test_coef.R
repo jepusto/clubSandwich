@@ -77,6 +77,7 @@ test_that("printing works", {
   expect_identical(t_names, c("Coef.","Estimate","SE","t-stat",
                               "d.f. (z)", "p-val (z)", "Sig.",
                               "d.f. (naive-t)", "p-val (naive-t)","Sig.",
+                              "d.f. (naive-tp)", "p-val (naive-tp)","Sig.",
                               "d.f. (Satt)", "p-val (Satt)", "Sig.",
                               "s.p.", "p-val (Saddle)", "Sig."))
 })

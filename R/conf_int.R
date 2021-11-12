@@ -16,11 +16,15 @@
 #' @param test Character vector specifying which small-sample corrections to
 #'   calculate. \code{"z"} returns a z test (i.e., using a standard normal
 #'   reference distribution). \code{"naive-t"} returns a t test with \code{m -
-#'   1} degrees of freedom. \code{"Satterthwaite"} returns a Satterthwaite
-#'   correction. Unlike in \code{coef_test()}, \code{"saddlepoint"} is not
-#'   currently supported in \code{conf_int()} because saddlepoint confidence
-#'   intervals do not have a closed-form solution.
-#' @param p_values Logical indicating whether to report p-values. The default value is \code{FALSE}.
+#'   1} degrees of freedom, where \code{m} is the number of unique clusters.
+#'   \code{"naive-tp"} returns a t test with \code{m - p} degrees of freedom,
+#'   where \code{p} is the number of regression coefficients in \code{obj}.
+#'   \code{"Satterthwaite"} returns a Satterthwaite correction. Unlike in
+#'   \code{coef_test()}, \code{"saddlepoint"} is not currently supported in
+#'   \code{conf_int()} because saddlepoint confidence intervals do not have a
+#'   closed-form solution.
+#' @param p_values Logical indicating whether to report p-values. The default
+#'   value is \code{FALSE}.
 
 #' @inheritParams coef_test
 #'
@@ -46,7 +50,8 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
   
   beta_full <- coef_CS(obj)
   beta_NA <- is.na(beta_full)
-  
+  p <- sum(!beta_NA)
+    
   which_beta <- get_which_coef(beta_full, coefs)
   
   beta <- beta_full[which_beta & !beta_NA]
@@ -54,7 +59,7 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!inherits(vcov, "clubSandwich")) stop("Variance-covariance matrix must be a clubSandwich.")
   
-  all_tests <- c("z","naive-t","Satterthwaite")
+  all_tests <- c("z","naive-t","naive-tp","Satterthwaite")
   if (test == "saddlepoint") stop("test = 'saddlepoint' is not currently supported  because saddlepoint confidence intervals do not have a closed-form solution.")
   test <- match.arg(test, all_tests, several.ok = FALSE)
 
@@ -67,6 +72,7 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
   df <- switch(test, 
                z = Inf,
                `naive-t` = nlevels(attr(vcov, "cluster")) - 1,
+               `naive-tp` = nlevels(attr(vcov, "cluster")) - p,
                `Satterthwaite` = Satterthwaite(beta = beta, SE = SE, P_array = P_array)$df
   )
 

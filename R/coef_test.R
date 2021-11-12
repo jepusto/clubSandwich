@@ -92,13 +92,17 @@ get_which_coef <- function(beta, coefs) {
 #' @param test Character vector specifying which small-sample corrections to
 #'   calculate. \code{"z"} returns a z test (i.e., using a standard normal
 #'   reference distribution). \code{"naive-t"} returns a t test with \code{m -
-#'   1} degrees of freedom. \code{"Satterthwaite"} returns a Satterthwaite
-#'   correction. \code{"saddlepoint"} returns a saddlepoint correction. Default
-#'   is \code{"Satterthwaite"}.
+#'   1} degrees of freedom, where \code{m} is the number of unique clusters.
+#'   \code{"naive-tp"} returns a t test with \code{m - p} degrees of freedom,
+#'   where \code{p} is the number of regression coefficients in \code{obj}.
+#'   \code{"Satterthwaite"} returns a Satterthwaite correction.
+#'   \code{"saddlepoint"} returns a saddlepoint correction. Default is
+#'   \code{"Satterthwaite"}.
 #' @param coefs Character, integer, or logical vector specifying which
 #'   coefficients should be tested. The default value \code{"All"} will test all
 #'   estimated coefficients.
-#' @param p_values Logical indicating whether to report p-values. The default value is \code{TRUE}.
+#' @param p_values Logical indicating whether to report p-values. The default
+#'   value is \code{TRUE}.
 #' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only
 #'   needed if \code{vcov} is a character string.
 #'
@@ -109,21 +113,22 @@ get_which_coef <- function(beta, coefs) {
 #'
 #' @seealso \code{\link{vcovCR}}
 #'
-#' @examples 
+#' @examples
 #' data("Produc", package = "plm")
 #' lm_individual <- lm(log(gsp) ~ 0 + state + log(pcap) + log(pc) + log(emp) + unemp, data = Produc)
 #' individual_index <- !grepl("state", names(coef(lm_individual)))
 #' coef_test(lm_individual, vcov = "CR2", cluster = Produc$state, coefs = individual_index)
-#' 
+#'
 #' V_CR2 <- vcovCR(lm_individual, cluster = Produc$state, type = "CR2")
 #' coef_test(lm_individual, vcov = V_CR2, coefs = individual_index)
-#' 
+#'
 #' @export
 
 coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values = TRUE, ...) {
   
   beta_full <- coef_CS(obj)
   beta_NA <- is.na(beta_full)
+  p <- sum(!beta_NA)
   
   which_beta <- get_which_coef(beta_full, coefs)
   
@@ -132,7 +137,7 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!inherits(vcov, "clubSandwich")) stop("Variance-covariance matrix must be a clubSandwich.")
   
-  all_tests <- c("z","naive-t","Satterthwaite","saddlepoint")
+  all_tests <- c("z","naive-t","naive-tp","Satterthwaite","saddlepoint")
   if (all(test == "All")) test <- all_tests
   test <- match.arg(test, all_tests, several.ok = TRUE)
 
@@ -156,6 +161,11 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values
     J <- nlevels(attr(vcov, "cluster"))
     result$df_t <- J - 1
     result$p_t <-  2 * pt(abs(result$tstat), df = J - 1, lower.tail = FALSE)
+  }
+  if ("naive-tp" %in% test) {
+    J <- nlevels(attr(vcov, "cluster"))
+    result$df_tp <- J - p
+    result$p_tp <-  2 * pt(abs(result$tstat), df = J - p, lower.tail = FALSE)
   }
   if ("Satterthwaite" %in% test) {
     Satt <- Satterthwaite(beta = beta, SE = SE, P_array = P_array)
@@ -211,6 +221,13 @@ print.coef_test_clubSandwich <- function(x, digits = 3, ...) {
     res <- cbind(res, "d.f. (naive-t)" = x$df_t, "p-val (naive-t)" = p_t, "Sig." = Sig_t)
   }
   
+  if ("p_tp" %in% names(x)) {
+    p_tp <- format.pval(x$p_tp, digits = digits, eps = 10^-digits)
+    Sig_tp <- cut(x$p_tp, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 
+                 labels = c("***", "**", "*", ".", " "), include.lowest = TRUE)
+    res <- cbind(res, "d.f. (naive-tp)" = x$df_tp, "p-val (naive-tp)" = p_tp, "Sig." = Sig_tp)
+  }
+
   if ("p_Satt" %in% names(x)) {
     p_Satt <- format.pval(x$p_Satt, digits = digits, eps = 10^-digits)
     Sig_Satt <- cut(x$p_Satt, breaks = c(0, 0.001, 0.01, 0.05, 0.1, 1), 

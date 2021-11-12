@@ -444,13 +444,18 @@ test_that("clubSandwich agrees with metafor::robust() for CR0.", {
   meta_CR0 <- robust(corr_meta, cluster = corrdat$studyid, adjust = FALSE)
   rob_CR0 <- coef_test(meta_CR0, vcov = "CR0", test = "All")
   expect_equal(test_CR0$SE, meta_CR0$se)
+  expect_equal(test_CR0$df_tp, rep(meta_CR0$df, length(test_CR0$df_tp)))
+  expect_equal(test_CR0$p_tp, meta_CR0$pval)
   expect_equal(rob_CR0, test_CR0)
   
   club_F_CR0 <- Wald_test(corr_meta, constraints = constrain_zero(2:4), 
-                          vcov = "CR0", test = "Naive-F")
+                          vcov = "CR0", test = "Naive-Fp")
   rob_F_CR0 <- Wald_test(meta_CR0, constraints = constrain_zero(2:4), 
-                         vcov = "CR0", test = "Naive-F")
+                         vcov = "CR0", test = "Naive-Fp")
   expect_equal(club_F_CR0$Fstat, meta_CR0$QM)
+  expect_equal(club_F_CR0$df_num, meta_CR0$QMdf[1])
+  expect_equal(club_F_CR0$df_denom, meta_CR0$QMdf[2])
+  expect_equal(club_F_CR0$p_val, meta_CR0$QMp)
   expect_equal(club_F_CR0, rob_F_CR0)
   
 })
@@ -461,14 +466,20 @@ test_that("clubSandwich agrees with metafor::robust() for CR1p.", {
   meta_CR1 <- robust(corr_meta, cluster = corrdat$studyid, adjust = TRUE)
   rob_CR1 <- coef_test(meta_CR1, vcov = "CR1p", test = "All")
   expect_equal(test_CR1$SE, meta_CR1$se)
+  expect_equal(test_CR1$df_tp, rep(meta_CR1$df, length(test_CR1$df_tp)))
+  expect_equal(test_CR1$p_tp, meta_CR1$pval)
   expect_equal(rob_CR1, test_CR1)
   
   club_F_CR1 <- Wald_test(corr_meta, constraints = constrain_zero(2:4), 
-                          vcov = "CR1p", test = "Naive-F")
+                          vcov = "CR1p", test = "Naive-Fp")
   rob_F_CR1 <- Wald_test(meta_CR1, constraints = constrain_zero(2:4), 
-                         vcov = "CR1p", test = "Naive-F")
+                         vcov = "CR1p", test = "Naive-Fp")
   expect_equal(club_F_CR1$Fstat, meta_CR1$QM)
+  expect_equal(club_F_CR1$df_num, meta_CR1$QMdf[1])
+  expect_equal(club_F_CR1$df_denom, meta_CR1$QMdf[2])
+  expect_equal(club_F_CR1$p_val, meta_CR1$QMp)
   expect_equal(club_F_CR1, rob_F_CR1)
+  
 })
 
 test_that("clubSandwich agrees with metafor::robust() for CR2.", {

@@ -23,15 +23,19 @@ calculate the variance-covariance.}
 \item{test}{Character vector specifying which small-sample corrections to
 calculate. \code{"z"} returns a z test (i.e., using a standard normal
 reference distribution). \code{"naive-t"} returns a t test with \code{m -
-1} degrees of freedom. \code{"Satterthwaite"} returns a Satterthwaite
-correction. \code{"saddlepoint"} returns a saddlepoint correction. Default
-is \code{"Satterthwaite"}.}
+1} degrees of freedom, where \code{m} is the number of unique clusters.
+\code{"naive-tp"} returns a t test with \code{m - p} degrees of freedom,
+where \code{p} is the number of regression coefficients in \code{obj}.
+\code{"Satterthwaite"} returns a Satterthwaite correction.
+\code{"saddlepoint"} returns a saddlepoint correction. Default is
+\code{"Satterthwaite"}.}
 
 \item{coefs}{Character, integer, or logical vector specifying which
 coefficients should be tested. The default value \code{"All"} will test all
 estimated coefficients.}
 
-\item{p_values}{Logical indicating whether to report p-values. The default value is \code{TRUE}.}
+\item{p_values}{Logical indicating whether to report p-values. The default
+value is \code{TRUE}.}
 
 \item{...}{Further arguments passed to \code{\link{vcovCR}}, which are only
 needed if \code{vcov} is a character string.}

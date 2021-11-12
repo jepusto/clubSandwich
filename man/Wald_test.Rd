@@ -18,7 +18,7 @@ calculate the variance-covariance.}
 
 \item{test}{Character vector specifying which small-sample correction(s) to
 calculate. The following corrections are available: \code{"chi-sq"},
-\code{"Naive-F"}, \code{"HTA"}, \code{"HTB"}, \code{"HTZ"}, \code{"EDF"},
+\code{"Naive-F"}, \code{"Naive-Fp"}, \code{"HTA"}, \code{"HTB"}, \code{"HTZ"}, \code{"EDF"},
 \code{"EDT"}. Default is \code{"HTZ"}.}
 
 \item{tidy}{Logical value controlling whether to tidy the test results. If
