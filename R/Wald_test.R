@@ -422,8 +422,6 @@ Wald_testing <- function(C_mat, beta, vcov, test, p, GH) {
     
     if ("HTA" %in% test) {
       nu_A <- 2 * sum(Var_mat) / sum(Cov_arr^2)
-      HTA_res <- 
-      
       result <- rbind(result, data.frame(test = "HTA", Hotelling_Tsq(Q, q, nu = nu_A)))
     } 
     
