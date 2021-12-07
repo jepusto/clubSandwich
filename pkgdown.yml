@@ -1,10 +1,10 @@
 pandoc: 2.7.3
-pkgdown: 1.6.1
+pkgdown: 2.0.1
 pkgdown_sha: ~
 articles:
   Robust-Variance-Estimation-with-clubSandwich: Robust-Variance-Estimation-with-clubSandwich.html
   Wald-tests-in-clubSandwich: Wald-tests-in-clubSandwich.html
   meta-analysis-with-CRVE: meta-analysis-with-CRVE.html
   panel-data-CRVE: panel-data-CRVE.html
-last_built: 2021-11-19T16:16Z
+last_built: 2021-12-07T23:06Z
 
