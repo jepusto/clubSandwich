@@ -172,3 +172,23 @@ test_that("weight scale doesn't matter", {
   
 })
 
+test_that("clubSandwich works with weights of zero.", {
+  
+  data("LifeCycleSavings")
+  LifeCycleSavings$cl <- substr(rownames(LifeCycleSavings), 1, 1)
+  table(LifeCycleSavings$cl)
+  LifeCycleSavings$wt <- rpois(nrow(LifeCycleSavings), lambda = 0.8)
+  table(LifeCycleSavings$wt)
+  
+  lm_full <- lm(cbind(dpi, ddpi) ~ pop15 + pop75 + sr, data = LifeCycleSavings, weights = wt)
+  LCS_sub <- subset(LifeCycleSavings, wt > 0)
+  lm_sub <- lm(cbind(dpi, ddpi) ~ pop15 + pop75 + sr, data = LCS_sub, weights = wt)
+  
+  CR_full <- lapply(CR_types, function(x) vcovCR(lm_full, cluster = LifeCycleSavings$cl, type = x))
+  CR_sub <- lapply(CR_types, function(x) vcovCR(lm_sub, cluster = LCS_sub$cl, type = x))
+  expect_equal(CR_full, CR_sub, check.attributes = FALSE)
+  
+  test_full <- lapply(CR_types, function(x) coef_test(lm_full, vcov = x, cluster = LifeCycleSavings$cl, test = c("z","naive-t","Satterthwaite"), p_values = TRUE))
+  test_sub <- lapply(CR_types, function(x) coef_test(lm_sub, vcov = x, cluster = LCS_sub$cl, test = c("z","naive-t","Satterthwaite"), p_values = TRUE))
+  expect_equal(test_full, test_sub, check.attributes = FALSE)
+})

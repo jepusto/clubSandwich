@@ -244,6 +244,38 @@ test_that("weight scale doesn't matter", {
   
 })
 
+test_that("clubSandwich works with weights of zero.", {
+  
+  data("LifeCycleSavings")
+  LifeCycleSavings$cl <- substr(rownames(LifeCycleSavings), 1, 1)
+  table(LifeCycleSavings$cl)
+  LifeCycleSavings$wt <- rpois(nrow(LifeCycleSavings), lambda = 0.8)
+  table(LifeCycleSavings$wt)
+  
+  lm_full <- lm(sr ~ pop15 + pop75 + dpi + ddpi, data = LifeCycleSavings, weights = wt)
+  LCS_sub <- subset(LifeCycleSavings, wt > 0)
+  lm_sub <- lm(sr ~ pop15 + pop75 + dpi + ddpi, data = LCS_sub, weights = wt)
+  
+  with(LifeCycleSavings, addmargins(table(wt > 0, cl), margin = 1))
+  CR2_full <- vcovCR(lm_full, cluster = LifeCycleSavings$cl, type = "CR2")
+  cl_full <- droplevels(as.factor(LifeCycleSavings$cl))
+  W_full <- weightMatrix(lm_full, cluster = cl_full)
+  emat_full <- attr(CR2_full, "est_mats")
+  A_full <- attr(CR2_full, "adjustments")
+  r_full <- split(residuals_CS(lm_full), cl_full)
+  Ar_full <- unsplit(Map(function(a, r) a %*% r, a = A_full, r = r_full), cl_full)
+  
+  CR2_sub <- vcovCR(lm_sub, cluster = LCS_sub$cl, type = "CR2")
+  
+  CR_full <- lapply(CR_types, function(x) vcovCR(lm_full, cluster = LifeCycleSavings$cl, type = x))
+  CR_sub <- lapply(CR_types, function(x) vcovCR(lm_sub, cluster = LCS_sub$cl, type = x))
+  expect_equal(CR_full, CR_sub, check.attributes = FALSE)
+  
+  test_full <- lapply(CR_types, function(x) coef_test(lm_full, vcov = x, cluster = LifeCycleSavings$cl, test = c("z","naive-t","Satterthwaite"), p_values = TRUE))
+  test_sub <- lapply(CR_types, function(x) coef_test(lm_sub, vcov = x, cluster = LCS_sub$cl, test = c("z","naive-t","Satterthwaite"), p_values = TRUE))
+  expect_equal(test_full, test_sub, check.attributes = FALSE)
+})
+
 test_that("vcovCR errors when there is only one cluster.", {
   
   single_cluster_error_msg <- "Cluster-robust variance estimation will not work when the data only includes a single cluster."

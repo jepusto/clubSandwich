@@ -7,7 +7,7 @@ targetVariance <- function(obj, cluster) UseMethod("targetVariance")
 #' @export
 
 targetVariance.default <- function(obj, cluster) {
-  matrix_list(rep(1, nobs(obj)), cluster, "both")
+  matrix_list(rep(1, length(cluster)), cluster, "both")
 }
 
 #----------------------------------------------
@@ -26,7 +26,7 @@ weightMatrix.default <- function(obj, cluster) {
     w_scale <- mean(weights)
     weights <- weights / w_scale
   }
-  W <- rep(weights, length.out = nobs(obj))
+  W <- rep(weights, length.out = length(cluster))
   W_list <- matrix_list(W, cluster, "both")
   attr(W_list, "w_scale") <- w_scale
   W_list

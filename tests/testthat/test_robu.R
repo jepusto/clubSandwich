@@ -135,8 +135,8 @@ test_that("CR2 t-tests agree with robumeta for user weighting", {
   expect_equivalent(robu_CR2, lm_CR2)
   
   CR2_ttests <- coef_test(user_small, vcov = robu_CR2, test = "Satterthwaite", p_values = FALSE)
-#   expect_equal(user_small$dfs, CR2_ttests$df)
-#   expect_equal(user_small$reg_table$prob, CR2_ttests$p_Satt)
+  # expect_equal(user_small$dfs, CR2_ttests$df)
+  # expect_equal(user_small$reg_table$prob, CR2_ttests$p_Satt)
   lm_CR2_ttests <- coef_test(user_lm, vcov = "CR2", 
                              cluster = hierdat$studyid, 
                              target = user_small$data.full$avg.var.eff.size,
