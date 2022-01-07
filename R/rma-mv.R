@@ -491,8 +491,29 @@ parse_structure <- function(obj) {
   list(level_dat = level_dat, cluster_dat = cluster_dat)
 }
 
+#' Detect cluster structure of an rma.mv object
+#' 
+#' \code{findCluster.rma.mv} returns a vector of ID variables for the highest level of clustering in a fitted \code{rma.mv} model.
+#' 
+#' @param obj A fitted \code{rma.mv} object.
+#'   
+#' @return A a vector of ID variables for the highest level of clustering in \code{obj}.
+#'   
+#' @export
+#' 
+#' @examples
+#' library(metafor)
+#' data(hierdat, package = "robumeta")
+#' 
+#' mfor_fit <- rma.mv(effectsize ~ binge + followup + sreport + age, 
+#'                  V = var, random = list(~ 1 | esid, ~ 1 | studyid),
+#'                  data = hierdat)
+#' findcluster.rma.mv(mfor_fit)
+#' 
 
 findCluster.rma.mv <- function(obj) {
+  
+  if (!inherits(obj, "rma.mv")) stop("`obj` must be a fitted rma.mv model.")
   
   if (obj$withR) stop("vcovCR.rma.mv() does not work with fixed correlation matrices in the R argument.")
   
