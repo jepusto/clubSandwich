@@ -145,6 +145,23 @@ vcovCR.default <- function(obj, cluster, type, target = NULL, inverse_var = FALS
 # Cluster-robust variance estimator
 #---------------------------------------------
 
+handle_vectors <- function(x, obj) {
+  
+  # Handle omitted observations due to missing outcome or predictors
+  if (inherits(na.action(obj), "omit")) {
+    x <- x[-na.action(obj)]
+  }
+  
+  # Handle observations omitted due to weights of zero
+  if (!is.null(wts <- weights(obj))) {
+    pos_wts <- wts > 0
+    if (!all(pos_wts)) x <- x[pos_wts]
+  }
+  
+  return(x)
+}
+
+
 adjust_est_mats <- function(type, est_mats, adjustments) {
   switch(type,
          CR0 = est_mats,
@@ -156,8 +173,13 @@ adjust_est_mats <- function(type, est_mats, adjustments) {
          CR4 = Map(function(e, a) a %*% e, e = est_mats, a = adjustments))
 }
 
-# uses methods residuals_CS(), model_matrix(), weightMatrix(), 
-# targetVariance(), bread(), v_scale()
+# uses methods:
+#   residuals_CS(), 
+#   model_matrix(), 
+#   weightMatrix(), 
+#   targetVariance(), 
+#   bread(), 
+#   v_scale()
 
 vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form = "sandwich", ignore_FE = FALSE) {
   
@@ -172,12 +194,16 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   p <- NCOL(X)
   N <- NROW(X)
   
-  if (length(cluster) != N) {
-    if (class(na.action(obj)) == "omit") {
-      cluster <- droplevels(cluster[-na.action(obj)])
-    } else {
-      stop("Clustering variable must have length equal to nrow(model_matrix(obj)).")
+  cluster_length <- length(cluster)
+  
+  if (cluster_length != N) {
+    
+    cluster <- droplevels(handle_vectors(cluster, obj))
+    
+    if (length(cluster) != N) {
+      stop("Clustering variable must have length equal to the number of rows in the data used to fit obj.")
     }
+
   } 
   
   if (any(is.na(cluster))) stop("Clustering variable cannot have missing values.")
@@ -197,6 +223,9 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
     }
   } else {
     if (!is.list(target)) {
+      if (length(target) != N) {
+        target <- handle_vectors(target, obj)
+      }
       Theta_list <- matrix_list(target, cluster, "both")
     } else {
       Theta_list <- target

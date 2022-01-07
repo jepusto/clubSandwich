@@ -175,6 +175,8 @@ test_that("weight scale doesn't matter", {
 test_that("clubSandwich works with weights of zero.", {
   
   data("LifeCycleSavings")
+  n_life <- nrow(LifeCycleSavings)
+  
   LifeCycleSavings$cl <- substr(rownames(LifeCycleSavings), 1, 1)
   table(LifeCycleSavings$cl)
   LifeCycleSavings$wt <- rpois(nrow(LifeCycleSavings), lambda = 0.8)
@@ -184,6 +186,14 @@ test_that("clubSandwich works with weights of zero.", {
   LCS_sub <- subset(LifeCycleSavings, wt > 0)
   lm_sub <- lm(cbind(dpi, ddpi) ~ pop15 + pop75 + sr, data = LCS_sub, weights = wt)
   
+  CR_full <- lapply(CR_types, function(x) vcovCR(lm_full, type = x))
+  CR_sub <- lapply(CR_types, function(x) vcovCR(lm_sub, type = x))
+  expect_equal(CR_full, CR_sub, check.attributes = FALSE)
+  
+  test_full <- lapply(CR_types, function(x) coef_test(lm_full, vcov = x, test = c("z","naive-t","Satterthwaite"), p_values = TRUE))
+  test_sub <- lapply(CR_types, function(x) coef_test(lm_sub, vcov = x, test = c("z","naive-t","Satterthwaite"), p_values = TRUE))
+  expect_equal(test_full, test_sub, check.attributes = FALSE)
+  
   CR_full <- lapply(CR_types, function(x) vcovCR(lm_full, cluster = LifeCycleSavings$cl, type = x))
   CR_sub <- lapply(CR_types, function(x) vcovCR(lm_sub, cluster = LCS_sub$cl, type = x))
   expect_equal(CR_full, CR_sub, check.attributes = FALSE)
@@ -191,4 +201,31 @@ test_that("clubSandwich works with weights of zero.", {
   test_full <- lapply(CR_types, function(x) coef_test(lm_full, vcov = x, cluster = LifeCycleSavings$cl, test = c("z","naive-t","Satterthwaite"), p_values = TRUE))
   test_sub <- lapply(CR_types, function(x) coef_test(lm_sub, vcov = x, cluster = LCS_sub$cl, test = c("z","naive-t","Satterthwaite"), p_values = TRUE))
   expect_equal(test_full, test_sub, check.attributes = FALSE)
+  
+  dat_miss <- LifeCycleSavings
+  miss_indicator <- sample.int(n_life, size = round(n_life / 5))
+  dat_miss$pop15[miss_indicator] <- NA
+  dat_miss$cl[miss_indicator] <- NA
+  with(dat_miss, table(wt, is.na(pop15)))
+  
+  lm_dropped <- lm(cbind(dpi, ddpi) ~ pop15 + pop75 + sr, data = dat_miss, weights = wt)
+  dat_complete <- subset(dat_miss, !is.na(pop15))
+  lm_complete <- lm(cbind(dpi, ddpi) ~ pop15 + pop75 + sr, data = dat_complete, weights = wt)
+  
+  CR_drop <- lapply(CR_types, function(x) vcovCR(lm_dropped, type = x))
+  CR_complete <- lapply(CR_types, function(x) vcovCR(lm_complete, type = x))
+  expect_equal(CR_drop, CR_complete)
+  
+  test_drop <- lapply(CR_types, function(x) coef_test(lm_dropped, vcov = x, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(lm_complete, vcov = x, test = "All", p_values = FALSE))
+  expect_equal(test_drop, test_complete)
+  
+  CR_drop <- lapply(CR_types, function(x) vcovCR(lm_dropped, cluster = dat_miss$cl, type = x))
+  CR_complete <- lapply(CR_types, function(x) vcovCR(lm_complete, cluster = dat_complete$cl, type = x))
+  expect_equal(CR_drop, CR_complete)
+  
+  test_drop <- lapply(CR_types, function(x) coef_test(lm_dropped, vcov = x, cluster = dat_miss$cl, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(lm_complete, vcov = x, cluster = dat_complete$cl, test = "All", p_values = FALSE))
+  expect_equal(test_drop, test_complete)
+  
 })

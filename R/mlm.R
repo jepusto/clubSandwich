@@ -30,10 +30,27 @@
 #' @export
 
 vcovCR.mlm <- function(obj, cluster, type, target, inverse_var, form = "sandwich", ...) {
-  d <- ncol(residuals(obj))
-  if (missing(cluster)) cluster <- 1:nobs(obj)
-  if (length(cluster) == nobs(obj)) cluster <- rep(cluster, each = d)
-  if (length(cluster) != d * nobs(obj)) stop("Clustering variable is not correct length.")  
+  resids <- residuals(obj)
+  d <- ncol(resids)
+  N <- nrow(resids)
+  
+  # Cluster by observation if clustering variable is not specified
+  if (missing(cluster)) cluster <- 1:N
+  
+  # Handle omitted observations in the clustering variable
+  if (inherits(na.action(obj), "omit") && length(cluster) != N) {
+    cluster <- cluster[-na.action(obj)]
+  }
+  
+  # Handle weights of zero in the clustering variable
+  if (!is.null(wts <- weights(obj))) {
+    pos_wts <- wts > 0
+    if (!all(pos_wts)) cluster <- cluster[pos_wts]
+    N <- sum(pos_wts)
+  }
+  
+  if (length(cluster) == N) cluster <- rep(cluster, each = d)
+  if (length(cluster) != d * N) stop("Clustering variable is not correct length.")  
   if (missing(target)) target <- NULL
   if (missing(inverse_var)) inverse_var <- is.null(weights(obj)) & is.null(target)
   vcov_CR(obj, cluster = cluster, type = type, 
@@ -49,7 +66,12 @@ vcovCR.mlm <- function(obj, cluster, type, target, inverse_var, form = "sandwich
 #' @export
 
 residuals_CS.mlm <- function(obj) {
-  res <- residuals(obj)
+  w <- obj$weights
+  if (is.null(w) || all(pos_wts <- w > 0)) {
+    res <- residuals(obj)
+  } else {
+    res <- residuals(obj)[pos_wts,,drop=FALSE]
+  }
   as.vector(t(res))
 }
 
@@ -61,6 +83,12 @@ residuals_CS.mlm <- function(obj) {
 
 model_matrix.mlm <- function(obj) {
   X <- model.matrix(obj)
+  
+  w <- obj$weights
+  if (!is.null(w) && !all(pos_wts <- w > 0)) {
+    X <- X[pos_wts > 0,,drop=FALSE]
+  } 
+  
   d <- ncol(residuals(obj))
   X_mat <- X %x% diag(1L, nrow = d)
   rownames(X_mat) <- rep(dimnames(X)[[1]], each = d)
@@ -91,6 +119,7 @@ weightMatrix.mlm <- function(obj, cluster) {
   if (is.null(weights)) {
     weights <- w_scale <- 1
   } else {
+    weights <- weights[weights > 0]
     w_scale <- mean(weights)
     weights <- weights / w_scale
   }

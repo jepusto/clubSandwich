@@ -23,6 +23,7 @@ weightMatrix.default <- function(obj, cluster) {
   if (is.null(weights)) {
     weights <- w_scale <- 1
   } else {
+    weights <- weights[weights > 0]
     w_scale <- mean(weights)
     weights <- weights / w_scale
   }
@@ -41,7 +42,14 @@ model_matrix <- function(obj) UseMethod("model_matrix")
 #' @export
 
 model_matrix.default <- function(obj) {
-  model.matrix(obj)
+  model_matrix <- model.matrix(obj)
+  
+  w <- obj$weights
+  if (is.null(w) || all(pos_wts <- w > 0)) {
+    return(model_matrix)
+  } else {
+    return(model_matrix[pos_wts > 0,,drop=FALSE])
+  }
 }
 
 #----------------------------------------------
@@ -65,7 +73,12 @@ residuals_CS <- function(obj) UseMethod("residuals_CS")
 #' @export
 
 residuals_CS.default <- function(obj) {
-  residuals(obj)
+  w <- obj$weights
+  if (is.null(w) || all(pos_wts <- w > 0)) {
+    residuals(obj)
+  } else {
+    residuals(obj)[pos_wts]
+  }
 }
 
 #----------------------------------------------

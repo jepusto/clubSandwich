@@ -197,4 +197,40 @@ test_that("weight scale doesn't matter", {
   
 })
 
+test_that("clubSandwich works with weights of zero.", {
+  
+  n_Cigs <- nrow(Cigs)
+  Cigs$awt <- rpois(n_Cigs, lambda = 1.4)
+  table(Cigs$awt)
+  
+  iv_full <- update(obj_un, weights = awt)
+  Cigs_sub <- subset(Cigs, awt > 0)
+  iv_sub <- update(iv_full, data = Cigs_sub)
+  
+  CR_full <- lapply(CR_types, function(x) vcovCR(iv_full, cluster = Cigs$state, type = x))
+  CR_sub <- lapply(CR_types, function(x) vcovCR(iv_sub, cluster = Cigs_sub$state, type = x))
+  expect_equal(CR_full, CR_sub, check.attributes = FALSE)
+  
+  test_full <- lapply(CR_types, function(x) coef_test(iv_full, vcov = x, cluster = Cigs$state, test = c("z","naive-t","Satterthwaite"), p_values = TRUE))
+  test_sub <- lapply(CR_types, function(x) coef_test(iv_sub, vcov = x, cluster = Cigs_sub$state, test = c("z","naive-t","Satterthwaite"), p_values = TRUE))
+  expect_equal(test_full, test_sub, check.attributes = FALSE)
+  
+  dat_miss <- Cigs
+  miss_indicator <- sample.int(n_Cigs, size = round(n_Cigs / 10))
+  dat_miss$rincome[miss_indicator] <- NA
+  with(dat_miss, table(awt, is.na(rincome)))
+  
+  iv_dropped <- update(iv_full, data = dat_miss)
+  dat_complete <- subset(dat_miss, !is.na(rincome))
+  iv_complete <- update(iv_full, data = dat_complete)
+  
+  CR_drop <- lapply(CR_types, function(x) vcovCR(iv_dropped, cluster = dat_miss$state, type = x))
+  CR_complete <- lapply(CR_types, function(x) vcovCR(iv_complete, cluster = dat_complete$state, type = x))
+  expect_equal(CR_drop, CR_complete)
+  
+  test_drop <- lapply(CR_types, function(x) coef_test(iv_dropped, vcov = x, cluster = dat_miss$state, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(iv_complete, vcov = x, cluster = dat_complete$state, test = "All", p_values = FALSE))
+  expect_equal(test_drop, test_complete)
+  
+})
 

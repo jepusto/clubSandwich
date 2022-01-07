@@ -72,7 +72,15 @@ is_nested_lmerMod <- function(obj, cluster = get_outer_group(obj)) {
 
 
 # nobs()
+#-------------------------------------
 # model_matrix()
+#-------------------------------------
+
+#' @export
+
+model_matrix.lmerMod <- function(obj) {
+  model_matrix <- model.matrix(obj)
+}
 
 #-------------------------------------
 # coef_CS()

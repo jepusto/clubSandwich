@@ -45,6 +45,6 @@ Suggests:
     testthat,
     rmarkdown,
     covr
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Encoding: UTF-8
 Language: en-US

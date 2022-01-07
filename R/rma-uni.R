@@ -39,9 +39,11 @@
 
 
 vcovCR.rma.uni <- function(obj, cluster, type, target, inverse_var, form = "sandwich", ...) {
+
   if (missing(cluster)) stop("You must specify a clustering variable.")
-  if (length(cluster) != nrow(model_matrix(obj))) cluster <- droplevels(as.factor(cluster[obj$not.na]))
-  if (length(cluster) != nrow(model_matrix(obj))) stop("Clustering variable must have length equal to nrow(model_matrix(obj)).")
+  
+  # if (length(cluster) != nrow(model_matrix(obj))) cluster <- droplevels(as.factor(cluster[obj$not.na]))
+  # if (length(cluster) != nrow(model_matrix(obj))) stop("Clustering variable must have length equal to nrow(model_matrix(obj)).")
 
   if (missing(target)) {
     target <- NULL
@@ -62,8 +64,12 @@ residuals_CS.rma <- function(obj) {
   res <- residuals(obj)
   not_na <- obj$not.na
   
-  if (length(res) == length(not_na)) res[not_na] else res
+  if (length(res) == length(not_na)) res <- res[not_na]
+  if (!is.null(wts <- weights(obj)) && !all(pos_wts <- wts > 0)) {
+    res <- res[pos_wts]
+  }
   
+  return(res)
 }
 
 # coef()
@@ -75,9 +81,13 @@ residuals_CS.rma <- function(obj) {
 #' @export
 
 na.action.rma <- function(object, ...) {
+  
+  if (all(object$not.na)) return(NULL)
+  
   res <- which(!object$not.na)
   class(res) <- "omit"
   res
+  
 }
 
 #-------------------------------------
@@ -87,7 +97,14 @@ na.action.rma <- function(object, ...) {
 #' @export
 
 targetVariance.rma.uni <- function(obj, cluster) {
-  matrix_list(obj$vi + obj$tau2, cluster, "both")
+  
+  vi <- obj$vi
+  
+  if (obj$weighted && !is.null(wts <- obj$weights) && !all(pos_wts <- wts > 0)) {
+    vi <- vi[pos_wts]
+  }
+  
+  matrix_list(vi + obj$tau2, cluster, "both")
 }
 
 #-------------------------------------
@@ -102,6 +119,7 @@ weightMatrix.rma.uni <- function(obj, cluster) {
       wi <- 1 / (obj$vi + obj$tau2)  
     } else {
       wi <- obj$weights
+      wi <- wi[wi > 0]
     }
   } else {
     wi <- rep(1, obj$k)
@@ -127,6 +145,7 @@ bread.rma.uni <- function(x, ...) {
       wi <- 1 / (x$vi + x$tau2)  
     } else {
       wi <- x$weights
+      wi <- wi[wi > 0]
     }
     XWX <- crossprod(X_mat, wi * X_mat)
   } else {

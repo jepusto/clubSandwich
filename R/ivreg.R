@@ -58,7 +58,15 @@ vcovCR.ivreg <- function(obj, cluster, type, target = NULL, inverse_var = FALSE,
 #' @export
 
 model_matrix.ivreg <- function(obj) {
-  model.matrix(obj, component = "projected")
+  model_matrix <- model.matrix(obj, component = "projected")
+  
+  w <- obj$weights
+  if (is.null(w) || all(pos_wts <- w > 0)) {
+    return(model_matrix)
+  } else {
+    return(model_matrix[pos_wts > 0,,drop=FALSE])
+  }
+  
 }
 
 #---------------------------------------

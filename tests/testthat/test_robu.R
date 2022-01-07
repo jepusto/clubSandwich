@@ -95,7 +95,7 @@ test_that("CR2 t-tests agree with robumeta for hierarchical effects", {
   expect_equal(hier_small$reg_table$prob, CR2_ttests$p_Satt)
 })
 
-hierdat$user_wt <- 1 + rpois(nrow(hierdat), lambda = 3)
+hierdat$user_wt <- 1 + rpois(nrow(hierdat), lambda = 1.2)
 
 user_large <- robu(effectsize ~ binge + followup + sreport + age,
                    data = hierdat, studynum = studyid,
@@ -125,7 +125,6 @@ test_that("CR2 t-tests agree with robumeta for user weighting", {
   
   robu_CR2 <- vcovCR(user_small, type = "CR2")
   expect_true(check_CR(user_small, vcov = robu_CR2))
-  # expect_true(check_CR(user_small, vcov = "CR4"))
   
   expect_equivalent(user_small$VR.r, as.matrix(robu_CR2))
   
@@ -137,13 +136,13 @@ test_that("CR2 t-tests agree with robumeta for user weighting", {
   CR2_ttests <- coef_test(user_small, vcov = robu_CR2, test = "Satterthwaite", p_values = FALSE)
   # expect_equal(user_small$dfs, CR2_ttests$df)
   # expect_equal(user_small$reg_table$prob, CR2_ttests$p_Satt)
+  
   lm_CR2_ttests <- coef_test(user_lm, vcov = "CR2", 
                              cluster = hierdat$studyid, 
                              target = user_small$data.full$avg.var.eff.size,
                              test = "Satterthwaite", p_values = FALSE)
   compare_ttests(CR2_ttests, lm_CR2_ttests)
 })
-
 
 test_that("bread works", {
   vcov_corr_large <- with(corr_large, chol2inv(chol(crossprod(Xreg, data.full$r.weights * Xreg))))
@@ -332,4 +331,91 @@ test_that("Wald test problem.", {
   Wald1 <- Wald_test(mod1, constraints = constrain_zero(2), vcov = "CR2", test = "All")
   
   compare_Waldtests(Wald0, Wald1)
+})
+
+
+test_that("CR0 and CR2 agree with robumeta for user weighting with some zeros.", {
+  
+  hierdat$user_wt <- rpois(nrow(hierdat), lambda = 1.2)
+  table(hierdat$user_wt)
+  
+  user_large <- robu(effectsize ~ binge + followup + sreport + age,
+                     data = hierdat, studynum = studyid,
+                     var.eff.size = var, userweights = user_wt, small = FALSE)
+  
+  p <- length(coef_CS(user_large))
+  N <- user_large$N
+  robu_CR0 <- vcovCR(user_large, type = "CR0")
+  ztests <- coef_test(user_large, vcov = robu_CR0 * N / (N - p), test = "z")
+  
+  expect_equivalent(user_large$VR.r, as.matrix(robu_CR0))
+  expect_equivalent(user_large$reg_table$SE, ztests$SE)
+  expect_equal(with(user_large$reg_table, 2 * pnorm(abs(b.r / SE),lower.tail=FALSE)), 
+               ztests$p_z)
+  
+  user_small <- robu(effectsize ~ binge + followup + sreport + age,
+                     data = hierdat, studynum = studyid,
+                     var.eff.size = var, userweights = user_wt)
+  
+  user_lm <- lm(effectsize ~ binge + followup + sreport + age, data = hierdat,
+                weights = user_wt)
+  expect_equivalent(coef_CS(user_lm), coef(user_lm))
+  
+  robu_CR2 <- vcovCR(user_small, type = "CR2")
+  expect_true(check_CR(user_small, vcov = robu_CR2))
+  
+  target <- user_small$data.full$avg.var.eff.size
+  
+  lm_CR2 <- vcovCR(user_lm, cluster = hierdat$studyid, type = "CR2", target = target)
+  expect_equivalent(robu_CR2, lm_CR2)
+  
+  CR2_ttests <- coef_test(user_small, vcov = robu_CR2, test = "Satterthwaite", p_values = FALSE)
+  
+  lm_CR2_ttests <- coef_test(user_lm, vcov = "CR2", 
+                             cluster = hierdat$studyid, 
+                             target = user_small$data.full$avg.var.eff.size,
+                             test = "Satterthwaite", p_values = FALSE)
+  compare_ttests(CR2_ttests, lm_CR2_ttests)
+  
+})
+
+test_that("clubSandwich works with weights of zero (kind of).", {
+  
+  hierdat$user_wt <- rpois(nrow(hierdat), lambda = 1.2)
+  table(hierdat$user_wt)
+  
+  user_full <- robu(effectsize ~ binge + followup + sreport + age,
+                    data = hierdat, studynum = studyid,
+                    var.eff.size = var, userweights = user_wt, small = FALSE)
+  
+  hierdat_sub <- subset(hierdat, user_wt > 0)
+  user_sub <- robu(effectsize ~ binge + followup + sreport + age,
+                   data = hierdat_sub, studynum = studyid,
+                   var.eff.size = var, userweights = user_wt)
+  
+  CR_full <- lapply(CR_types, function(x) vcovCR(user_full, type = x))
+  CR_sub <- lapply(CR_types, function(x) vcovCR(user_sub, type = x))
+  expect_equal(CR_full[c(1,2,4)], CR_sub[c(1,2,4)], check.attributes = FALSE)
+  
+  dat_miss <- hierdat
+  miss_indicator <- sample.int(nrow(hierdat), size = round(nrow(hierdat) / 10))
+  dat_miss$binge[miss_indicator] <- NA
+  with(dat_miss, table(user_wt, is.na(binge)))
+  
+  user_dropped <- robu(effectsize ~ binge + followup + sreport + age,
+                       data = dat_miss, studynum = studyid,
+                       var.eff.size = var, userweights = user_wt)
+  dat_complete <- subset(dat_miss, !is.na(binge))
+  user_complete <- robu(effectsize ~ binge + followup + sreport + age,
+                        data = dat_complete, studynum = studyid,
+                        var.eff.size = var, userweights = user_wt)
+  
+  CR_drop <- lapply(CR_types, function(x) vcovCR(user_dropped, type = x))
+  CR_complete <- lapply(CR_types, function(x) vcovCR(user_complete, type = x))
+  expect_equal(CR_drop, CR_complete)
+  
+  test_drop <- lapply(CR_types, function(x) coef_test(user_dropped, vcov = x, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(user_complete, vcov = x, test = "All", p_values = FALSE))
+  expect_equal(test_drop, test_complete)
+  
 })
