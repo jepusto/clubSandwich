@@ -22,6 +22,6 @@ data(hierdat, package = "robumeta")
 mfor_fit <- rma.mv(effectsize ~ binge + followup + sreport + age, 
                  V = var, random = list(~ 1 | esid, ~ 1 | studyid),
                  data = hierdat)
-findcluster.rma.mv(mfor_fit)
+findCluster.rma.mv(mfor_fit)
 
 }
