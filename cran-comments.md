@@ -6,8 +6,7 @@ Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey 
 
 ## Test environments
 
-* local Windows 10 Pro, R 4.0.3
-* local Windows 10 Education, R 4.0.2
+* local Windows 11 Pro, R 4.1.2
 * ubuntu 20.04.3 LTS (on Github), R devel, release, oldrelease
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release
@@ -36,6 +35,10 @@ There were 2 NOTES:
   All of the identified words are spelled correctly. 
 
 * Found the following (possibly) invalid URLs:
+  URL: https://doi.org/10.3102/1076998615606099
+    From: man/dropoutPrevention.Rd
+    Status: 503
+    Message: Service Unavailable
   URL: https://doi.org/10.1037/1082-989X.1.3.227
     From: man/SATcoaching.Rd
     Status: 400
@@ -50,3 +53,16 @@ There were 2 NOTES:
     Message: SSL certificate problem: unable to get local issuer certificate
     
   The flagged URLs are correct.
+
+## revdepcheck results
+
+We checked 7 reverse dependencies (6 from CRAN + 1 from Bioconductor), comparing R CMD check results across CRAN and dev versions of this package.
+
+ * We saw 0 new problems
+ * We failed to check 1 packages
+
+Issues with CRAN packages are summarised below.
+
+### Failed to check
+
+* ggeffects (NA)
