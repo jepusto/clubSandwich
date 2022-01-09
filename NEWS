@@ -1,3 +1,7 @@
+clubSandwich 0.5.4.9999
+=======================
+* Corrected precision of unit test leading to error on M1mac.
+
 clubSandwich 0.5.4
 =======================
 * Wald_test() gains an option for test = "Naive-Fp", which uses denominator degrees of freedom equal to the number of clusters minus the number of coefficients in the fitted model. 

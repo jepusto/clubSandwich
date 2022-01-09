@@ -71,7 +71,7 @@ test_that("withS and withG model specifications agree.", {
   
   tests_G <- lapply(CR_types, function(x) coef_test(rma_G, vcov = x, test = "All", p_values = FALSE))
   tests_S <- lapply(CR_types, function(x) coef_test(rma_S, vcov = x, test = "All", p_values = FALSE))
-  expect_equal(tests_G, tests_S, tolerance = 10^-6)
+  expect_equal(tests_G, tests_S, tolerance = 1e-6)
 })
 
 test_that("bread works", {
@@ -175,7 +175,7 @@ test_that("clubSandwich works with missing vcov matrix", {
   
   CR_drop <- lapply(CR_types, function(x) vcovCR(corr_drop, cluster = dat_miss$studyid, type = x))
   CR_complete <- lapply(CR_types, function(x) vcovCR(corr_complete, type = x))
-  expect_equal(CR_drop, CR_complete, tol = 10^-5)
+  expect_equal(CR_drop, CR_complete, tolerance = 1e-5)
   
   
   # V_complete <- impute_covariance_matrix(corrdat$var, cluster = corrdat$studyid, r = 0.8)
@@ -468,7 +468,7 @@ test_that("clubSandwich agrees with metafor::robust() for CR1p.", {
   expect_equal(test_CR1$SE, meta_CR1$se)
   expect_equal(test_CR1$df_tp, rep(meta_CR1$df, length(test_CR1$df_tp)))
   expect_equal(test_CR1$p_tp, meta_CR1$pval)
-  expect_equal(rob_CR1, test_CR1)
+  expect_equal(rob_CR1, test_CR1, tolerance = 1e-6)
   
   club_F_CR1 <- Wald_test(corr_meta, constraints = constrain_zero(2:4), 
                           vcov = "CR1p", test = "Naive-Fp")
@@ -477,8 +477,8 @@ test_that("clubSandwich agrees with metafor::robust() for CR1p.", {
   expect_equal(club_F_CR1$Fstat, meta_CR1$QM)
   expect_equal(club_F_CR1$df_num, meta_CR1$QMdf[1])
   expect_equal(club_F_CR1$df_denom, meta_CR1$QMdf[2])
-  expect_equal(club_F_CR1$p_val, meta_CR1$QMp)
-  expect_equal(club_F_CR1, rob_F_CR1)
+  expect_equal(club_F_CR1$p_val, meta_CR1$QMp, tolerance = 1e-6)
+  expect_equal(club_F_CR1, rob_F_CR1, tolerance = 1e-6)
   
 })
 
@@ -489,7 +489,7 @@ test_that("clubSandwich agrees with metafor::robust() for CR2.", {
   meta_CR2 <- robust(corr_meta, cluster = corrdat$studyid, clubSandwich = TRUE)
   rob_CR2 <- coef_test(meta_CR2, vcov = "CR2", test = "All")
   expect_equal(test_CR2$SE, meta_CR2$se)
-  expect_equal(rob_CR2, test_CR2)
+  expect_equal(rob_CR2, test_CR2, tolerance = 1e-6)
   
   club_F_CR2 <- Wald_test(corr_meta, constraints = constrain_zero(2:4), 
                           vcov = "CR2", test = "All")
@@ -498,8 +498,8 @@ test_that("clubSandwich agrees with metafor::robust() for CR2.", {
   expect_equal(subset(club_F_CR2, test == "HTZ")$Fstat, meta_CR2$QM)
   expect_equal(subset(club_F_CR2, test == "HTZ")$df_num, meta_CR2$QMdf[1])
   expect_equal(subset(club_F_CR2, test == "HTZ")$df_denom, meta_CR2$QMdf[2])
-  expect_equal(subset(club_F_CR2, test == "HTZ")$p_val, meta_CR2$QMp)
-  expect_equal(club_F_CR2, rob_F_CR2)
+  expect_equal(subset(club_F_CR2, test == "HTZ")$p_val, meta_CR2$QMp, tolerance = 1e-6)
+  expect_equal(club_F_CR2, rob_F_CR2, tolerance = 1e-6)
 })
 
 test_that("clubSandwich methods work on robust.rma objects.", {
