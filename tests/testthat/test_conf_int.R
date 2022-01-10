@@ -34,8 +34,8 @@ test_that("printing works", {
   expect_output(print(CIs))
   
   CIs <- conf_int(gls_fit, vcov = "CR0", p_values = TRUE)
-  expect_output(print(CIs))
-  expect_true(all(c("p-value","Sig.") %in% names(print(CIs))))
+  expect_output(x <- print(CIs))
+  expect_true(all(c("p-value","Sig.") %in% names(x)))
 })
 
 test_that("level checks work", {
