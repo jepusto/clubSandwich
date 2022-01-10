@@ -5,7 +5,7 @@ clubSandwich 0.5.4.9999
 clubSandwich 0.5.4
 =======================
 * Wald_test() gains an option for test = "Naive-Fp", which uses denominator degrees of freedom equal to the number of clusters minus the number of coefficients in the fitted model. 
-* coef_test() and conf_int() gain an option for test = "naive-tp", , which uses denominator degrees of freedom equal to the number of clusters minus the number of coefficients in the fitted model.
+* coef_test() and conf_int() gain an option for test = "naive-tp", which uses denominator degrees of freedom equal to the number of clusters minus the number of coefficients in the fitted model.
 * Corrected a bug in the Satterthwaite degrees of freedom calculations for models that include only an intercept.
 * Output of coef_test() and conf_int() now include a variable containing the coefficient names, so that the results are "tidy."
 * conf_int() now includes an option to report a p-value for each coefficient.
