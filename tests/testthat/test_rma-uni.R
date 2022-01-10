@@ -287,42 +287,51 @@ test_that("clubSandwich methods work on robust.rma objects.", {
 
 test_that("clubSandwich works with weights of zero.", {
   
-  data("dat.konstantopoulos2011", package = "metafor")
-  n_konst <- nrow(dat.konstantopoulos2011)
-  dat.konstantopoulos2011$wt <- rpois(n_konst, lambda = 0.8)
-  table(dat.konstantopoulos2011$wt)
+  data("SATcoaching")
+  n_SAT <- nrow(SATcoaching)
+  SATcoaching$wt <- rpois(n_SAT, lambda = 0.8)
+  table(SATcoaching$wt)
 
-  rma_full <- rma.uni(yi ~ year, vi = vi, weights = wt, data = dat.konstantopoulos2011, method = "FE")
-  konst_sub <- subset(dat.konstantopoulos2011, wt > 0)
-  rma_sub <- rma.uni(yi ~ year, vi = vi, weights = wt, data = konst_sub, method = "FE")
+  rma_full <- rma.uni(yi = d, vi = V, weights = wt, 
+                      mods = ~ year + test, 
+                      data = SATcoaching, method = "FE")
+  
+  SAT_sub <- subset(SATcoaching, wt > 0)
+  rma_sub <- rma.uni(yi = d, vi = V, weights = wt, 
+                     mods = ~ year + test, 
+                     data = SAT_sub, method = "FE")
   # Note that this only works for method = "FE" because 
   # tau.sq estimators differ between rma_full and rma_sub
   
-  CR_full <- lapply(CR_types, function(x) vcovCR(rma_full, cluster = dat.konstantopoulos2011$district, type = x))
-  CR_sub <- lapply(CR_types, function(x) vcovCR(rma_sub, cluster = konst_sub$district, type = x))
+  CR_full <- lapply(CR_types, function(x) vcovCR(rma_full, cluster = SATcoaching$study, type = x))
+  CR_sub <- lapply(CR_types, function(x) vcovCR(rma_sub, cluster = SAT_sub$study, type = x))
   expect_equal(CR_full, CR_sub, check.attributes = FALSE)
   
-  test_full <- lapply(CR_types, function(x) coef_test(rma_full, vcov = x, cluster = dat.konstantopoulos2011$district, test = c("z","naive-t","Satterthwaite"), p_values = TRUE))
-  test_sub <- lapply(CR_types, function(x) coef_test(rma_sub, vcov = x, cluster = konst_sub$district, test = c("z","naive-t","Satterthwaite"), p_values = TRUE))
+  test_full <- lapply(CR_types, function(x) coef_test(rma_full, vcov = x, cluster = SATcoaching$study, test = c("z","naive-t","Satterthwaite"), p_values = TRUE))
+  test_sub <- lapply(CR_types, function(x) coef_test(rma_sub, vcov = x, cluster = SAT_sub$study, test = c("z","naive-t","Satterthwaite"), p_values = TRUE))
   expect_equal(test_full, test_sub, check.attributes = FALSE)
   
-  dat_miss <- dat.konstantopoulos2011
-  miss_indicator <- sample.int(n_konst, size = round(n_konst / 10))
+  dat_miss <- SATcoaching
+  miss_indicator <- sample.int(n_SAT, size = round(n_SAT / 10))
   dat_miss$year[miss_indicator] <- NA
   with(dat_miss, table(wt, is.na(year)))
   
   expect_warning(
-    rma_dropped <- rma.uni(yi ~ year, vi, weights = wt, data = dat_miss)
+    rma_dropped <- rma.uni(yi = d, vi = V, weights = wt, 
+                           mods = ~ year + test, 
+                           data = dat_miss, method = "FE")
   )
   dat_complete <- subset(dat_miss, !is.na(year))
-  rma_complete <- rma.uni(yi ~ year, vi, weights = wt, data = dat_complete)
+  rma_complete <- rma.uni(yi = d, vi = V, weights = wt, 
+                          mods = ~ year + test, 
+                          data = dat_complete, method = "FE")
   
-  CR_drop <- lapply(CR_types, function(x) vcovCR(rma_dropped, cluster = dat_miss$district, type = x))
-  CR_complete <- lapply(CR_types, function(x) vcovCR(rma_complete, cluster = dat_complete$district, type = x))
+  CR_drop <- lapply(CR_types, function(x) vcovCR(rma_dropped, cluster = dat_miss$study, type = x))
+  CR_complete <- lapply(CR_types, function(x) vcovCR(rma_complete, cluster = dat_complete$study, type = x))
   expect_equal(CR_drop, CR_complete)
   
-  test_drop <- lapply(CR_types, function(x) coef_test(rma_dropped, vcov = x, cluster = dat_miss$district, test = "All", p_values = FALSE))
-  test_complete <- lapply(CR_types, function(x) coef_test(rma_complete, vcov = x, cluster = dat_complete$district, test = "All", p_values = FALSE))
+  test_drop <- lapply(CR_types, function(x) coef_test(rma_dropped, vcov = x, cluster = dat_miss$study, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(rma_complete, vcov = x, cluster = dat_complete$study, test = "All", p_values = FALSE))
   expect_equal(test_drop, test_complete)
   
 })
