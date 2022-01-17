@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a re-submission. This version includes miscellaneous bug fixes, error-handling, and corrections to the documentation.
+This is a re-submission. This version is a maintenance release that fixes an outstanding error on M1Mac, which Dr. Ripley requested that we address by 2022-01-23.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
