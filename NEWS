@@ -1,4 +1,4 @@
-clubSandwich 0.5.4.9999
+clubSandwich 0.5.5
 =======================
 * New function linear_contrast() calculates robust confidence intervals and p-values for linear contrasts of regression coefficients from a fitted model. Works with constrain_pairwise() and other constrain_*() helper functions.
 * Corrected precision of unit test leading to error on M1mac.
