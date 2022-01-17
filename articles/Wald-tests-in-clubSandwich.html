@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">clubSandwich</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.4.9999</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.5.5</span>
       </span>
     </div>
 
@@ -87,7 +87,7 @@
       <h1 data-toc-skip>Wald tests of multiple-constraint null hypotheses</h1>
                         <h4 data-toc-skip class="author">James E. Pustejovsky</h4>
             
-            <h4 data-toc-skip class="date">2022-01-10</h4>
+            <h4 data-toc-skip class="date">2022-01-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jepusto/clubSandwich/blob/HEAD/vignettes/Wald-tests-in-clubSandwich.Rmd" class="external-link"><code>vignettes/Wald-tests-in-clubSandwich.Rmd</code></a></small>
       <div class="hidden name"><code>Wald-tests-in-clubSandwich.Rmd</code></div>
@@ -116,9 +116,9 @@
 <span class="co">## 1277        69    rural regular   male      cauc   584 non-free</span>
 <span class="co">## 1292        79    rural   small   male      cauc   545     free</span>
 <span class="co">## 1308         5    rural regular   male      cauc   553     free</span></code></pre>
-<div class="section level1">
-<h1 id="the-wald-test-function">The Wald test function<a class="anchor" aria-label="anchor" href="#the-wald-test-function"></a>
-</h1>
+<div class="section level2">
+<h2 id="the-wald-test-function">The Wald test function<a class="anchor" aria-label="anchor" href="#the-wald-test-function"></a>
+</h2>
 <p>The <code><a href="../reference/Wald_test.html">Wald_test()</a></code> function can be used to conduct hypothesis tests that involve multiple constraints on the regression coefficients. Consider a linear model for an outcome <span class="math inline">\(Y_{ij}\)</span> regressed on a <span class="math inline">\(1 \times p\)</span> row vector of predictors <span class="math inline">\(\mathbf{x}_{ij}\)</span> (which might include a constant intercept term): <span class="math display">\[
 Y_{ij} = \mathbf{x}_{ij} \boldsymbol\beta + \epsilon_{ij}
 \]</span> The regression coefficient vector is <span class="math inline">\(\boldsymbol\beta\)</span>. In quite general terms, a set of constraints on the regression coefficient vector can be expressed in terms of a <span class="math inline">\(q \times p\)</span> matrix <span class="math inline">\(\mathbf{C}\)</span>, where each row of <span class="math inline">\(\mathbf{C}\)</span> corresponds to one constraint. A joint null hypothesis is then <span class="math inline">\(H_0: \mathbf{C} \boldsymbol\beta = \mathbf{0}\)</span>, where <span class="math inline">\(\mathbf{0}\)</span> is a <span class="math inline">\(q \times 1\)</span> vector of zeros.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></p>
@@ -137,9 +137,9 @@ Q = \left(\mathbf{C}\boldsymbol{\hat\beta}\right)' \left(\mathbf{C} \mathbf{V}^{
 <li>the <code>vcov</code> argument is a cluster-robust variance matrix, which is used to construct the test statistic. (Alternately, <code>vcov</code> can be the type of cluster-robust variance matrix to construct, in which case it will be computed internally.)</li>
 </ul>
 <p>By default, <code><a href="../reference/Wald_test.html">Wald_test()</a></code> will use the HTZ small-sample approximation. Other options are available (via the <code>test</code> argument) but not recommended for routine use. The optional <code>tidy</code> argument will be demonstrated below.</p>
-<div class="section level2">
-<h2 id="testing-treatment-effects">Testing treatment effects<a class="anchor" aria-label="anchor" href="#testing-treatment-effects"></a>
-</h2>
+<div class="section level3">
+<h3 id="testing-treatment-effects">Testing treatment effects<a class="anchor" aria-label="anchor" href="#testing-treatment-effects"></a>
+</h3>
 <p>Returning to the STAR data, let’s suppose we want to examine differences in math performance across class sizes. This can be done with a simple linear regression model, while clustering the standard errors by <code>schoolidk</code>. The estimating equation is <span class="math display">\[
 \left(\text{Math}\right)_{ij} = \beta_0 + \beta_1 \left(\text{small}\right)_{ij} + \beta_2 \left(\text{aide}\right)_{ij} + e_{ij},
 \]</span> which can be estimated in R as follows:</p>
@@ -166,10 +166,10 @@ Q = \left(\mathbf{C}\boldsymbol{\hat\beta}\right)' \left(\mathbf{C} \mathbf{V}^{
 <p>The result includes details about the form of <code>test</code> computed, the <span class="math inline">\(F\)</span>-statistic, the numerator and denominator degrees of freedom used to compute the reference distribution, and the <span class="math inline">\(p\)</span>-value corresponding to the specified null hypothesis. In this example, <span class="math inline">\(p = 0.000141\)</span>, so we can rule out the null hypothesis that there are no differences in math performance across conditions.</p>
 <p>The representation of null hypotheses as arbitrary constraint matrices is useful for developing theory about how to test such hypotheses, but it is not all that helpful for actually running tests—constructing constraint matrices “by hand” is just too cumbersome of an exercise. Moreover, <span class="math inline">\(\mathbf{C}\)</span> matrices typically follow one of a small number of patterns. Two common use cases are a) constraining a set of <span class="math inline">\(q &gt; 1\)</span> parameters to all be equal to zero and b) constraining a set of <span class="math inline">\(q + 1\)</span> parameters to be equal to a common value. The <code>clubSandwich</code> package now includes a set of helper functions to create constraint matrices for these common use cases.</p>
 </div>
-<div class="section level2">
-<h2 id="constrain_zero">
+<div class="section level3">
+<h3 id="constrain_zero">
 <code>constrain_zero()</code><a class="anchor" aria-label="anchor" href="#constrain_zero"></a>
-</h2>
+</h3>
 <p>To constrain a set of <span class="math inline">\(q\)</span> regression coefficients to all be equal to zero, the simplest form of the <span class="math inline">\(\mathbf{C}\)</span> matrix would consist of a set of <span class="math inline">\(q\)</span> rows, where a single entry in each row would be equal to 1 and the remaining entries would all be zero. For the <code>lm_trt</code> model, the C matrix would look like this: <span class="math display">\[
 \mathbf{C} = \left[\begin{array}{ccc} 0 &amp; 1 &amp; 0 \\ 0 &amp; 0 &amp; 1 \end{array} \right],
 \]</span> so that <span class="math display">\[
@@ -215,10 +215,10 @@ Q = \left(\mathbf{C}\boldsymbol{\hat\beta}\right)' \left(\mathbf{C} \mathbf{V}^{
 <pre><code><span class="co">##  test Fstat df_num df_denom  p_val sig</span>
 <span class="co">##   HTZ  10.2      2     65.3 &lt;0.001 ***</span></code></pre>
 </div>
-<div class="section level2">
-<h2 id="constrain_equal">
+<div class="section level3">
+<h3 id="constrain_equal">
 <code>constrain_equal()</code><a class="anchor" aria-label="anchor" href="#constrain_equal"></a>
-</h2>
+</h3>
 <p>Another common type of constraints involve setting a set of <span class="math inline">\(q + 1\)</span> regression coefficients to be all equal to a common (but unknown) value (<span class="math inline">\(q + 1\)</span> because it takes <span class="math inline">\(q\)</span> constraints to do this). There are many equivalent ways to express such a set of constraints in terms of a <span class="math inline">\(\mathbf{C}\)</span> matrix. One fairly simple form consists of a set of <span class="math inline">\(q\)</span> rows, where the entry corresponding to one of the coefficients of interest is equal to -1 and the entry corresponding to another coefficient of interest is equal to 1.</p>
 <p>To see how this works, let’s look at a different way of parameterizing our simple model for the STAR data, by using separate intercepts for each treatment condition. The estimating equation would then be <span class="math display">\[
 \left(\text{Math}\right)_{ij} = \beta_0 \left(\text{regular}\right)_{ij} + \beta_1 \left(\text{small}\right)_{ij} + \beta_2 \left(\text{aide}\right)_{ij} + e_{ij}.
@@ -275,9 +275,9 @@ Q = \left(\mathbf{C}\boldsymbol{\hat\beta}\right)' \left(\mathbf{C} \mathbf{V}^{
 <p>Note that these test results are exactly equal to the tests based on <code>lm_trt</code> with <code><a href="../reference/constraint_matrices.html">constrain_zero()</a></code>. They’re algebraically equivalent—just different ways of parameterizing the same model and constraints.</p>
 </div>
 </div>
-<div class="section level1">
-<h1 id="testing-an-interaction">Testing an interaction<a class="anchor" aria-label="anchor" href="#testing-an-interaction"></a>
-</h1>
+<div class="section level2">
+<h2 id="testing-an-interaction">Testing an interaction<a class="anchor" aria-label="anchor" href="#testing-an-interaction"></a>
+</h2>
 <p>Let’s now consider how these functions can be applied in a more complex model. Suppose that we are interested in understanding whether the effect of being in a small class is consistent across schools in different areas, where areas are categorized as urban, suburban, or rural. To answer this question, we need to test for an interaction between urbanicity and treatment condition. One estimating equation that would let us examine this question is: <span class="math display">\[
 \begin{aligned}
 \left(\text{Math}\right)_{ij} &amp;= \beta_0 + \beta_1 \left(\text{suburban}\right)_{ij} + \beta_2 \left(\text{rural}\right)_{ij} \\
@@ -337,9 +337,9 @@ Q = \left(\mathbf{C}\boldsymbol{\hat\beta}\right)' \left(\mathbf{C} \mathbf{V}^{
           vcov <span class="op">=</span> <span class="va">V_urbanicity</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">##  test Fstat df_num df_denom p_val sig</span>
 <span class="co">##   HTZ 0.189      2     34.5 0.828</span></code></pre>
-<div class="section level2">
-<h2 id="lists-of-constraints">Lists of constraints<a class="anchor" aria-label="anchor" href="#lists-of-constraints"></a>
-</h2>
+<div class="section level3">
+<h3 id="lists-of-constraints">Lists of constraints<a class="anchor" aria-label="anchor" href="#lists-of-constraints"></a>
+</h3>
 <p>In models like the urbanicity-by-treatment interaction specification, we may need to run multiple tests on the same estimating equation. This can be accomplished with <code>Wald_test</code> by providing a <em>list</em> of constraints to the <code>constraints</code> argument. For example, we could test the hypotheses described above by creating a list of several constraint matrices and then passing it to <code>Wald_test</code>:</p>
 <div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">C_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
@@ -384,9 +384,9 @@ Q = \left(\mathbf{C}\boldsymbol{\hat\beta}\right)' \left(\mathbf{C} \mathbf{V}^{
 <span class="co">##  Small vs regular  HTZ 0.189      2     34.5 0.828</span></code></pre>
 </div>
 </div>
-<div class="section level1">
-<h1 id="pairwise-t-tests">Pairwise t-tests<a class="anchor" aria-label="anchor" href="#pairwise-t-tests"></a>
-</h1>
+<div class="section level2">
+<h2 id="pairwise-t-tests">Pairwise t-tests<a class="anchor" aria-label="anchor" href="#pairwise-t-tests"></a>
+</h2>
 <p>The <code>clubSandwich</code> package also provides a further convenience function, <code><a href="../reference/constraint_matrices.html">constrain_pairwise()</a></code> that can be used in combination with <code><a href="../reference/Wald_test.html">Wald_test()</a></code> to conduct pairwise comparisons among a set of regression coefficients. This function differs from the other two <code>constrain_*()</code> functions because it returns a <em>list</em> of constraint matrices, each of which corresponds to a single linear combination of covariates. Specifically, the <code><a href="../reference/constraint_matrices.html">constrain_pairwise()</a></code> function provides a list of constraints that represent the differences between every possible pair among a specified set of coefficients. The syntax is very similar to the other <code>constrain_*()</code> functions.</p>
 <p>To demonstrate, consider the separate-intercepts specification of the simpler regression model:</p>
 <div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
@@ -475,14 +475,14 @@ Q = \left(\mathbf{C}\boldsymbol{\hat\beta}\right)' \left(\mathbf{C} \mathbf{V}^{
 <span class="co">##      24.4 0.551</span></code></pre>
 <p>Again, the results of the first two tests are identical to the t-tests reported in <code><a href="../reference/coef_test.html">coef_test()</a></code>.</p>
 </div>
-<div class="section level1">
-<h1 id="remark">Remark<a class="anchor" aria-label="anchor" href="#remark"></a>
-</h1>
+<div class="section level2">
+<h2 id="remark">Remark<a class="anchor" aria-label="anchor" href="#remark"></a>
+</h2>
 <p>All of the preceding examples were based on ordinary linear regression models with clustered standard errors. However, <code><a href="../reference/Wald_test.html">Wald_test()</a></code> and its helper functions all work identically for all of the other models with supporting <code>clubSandwich</code> methods, including <code><a href="https://rdrr.io/pkg/nlme/man/lme.html" class="external-link">nlme::lme()</a></code>, <code><a href="https://rdrr.io/pkg/nlme/man/gls.html" class="external-link">nlme::gls()</a></code>, <code><a href="https://rdrr.io/pkg/lme4/man/lmer.html" class="external-link">lme4::lmer()</a></code>, <code><a href="https://wviechtb.github.io/metafor/reference/rma.uni.html" class="external-link">rma.uni()</a></code>, <code><a href="https://wviechtb.github.io/metafor/reference/rma.mv.html" class="external-link">rma.mv()</a></code>, and <code><a href="https://rdrr.io/pkg/robumeta/man/robu.html" class="external-link">robu()</a></code>, among others.</p>
 </div>
-<div class="section level1 unnumbered">
-<h1 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
-</h1>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <div id="refs" class="references">
 <div id="ref-pustejovsky2018small">
 <p>Pustejovsky, J. E., &amp; Tipton, E. (2018). Small-Sample Methods for Cluster-Robust Variance Estimation and Hypothesis Testing in Fixed Effects Models. <em>Journal of Business &amp; Economic Statistics</em>, <em>36</em>(4), 672–683. <a href="https://doi.org/10.1080/07350015.2016.1247004" class="external-link">https://doi.org/10.1080/07350015.2016.1247004</a></p>
@@ -524,7 +524,7 @@ Q = \left(\mathbf{C}\boldsymbol{\hat\beta}\right)' \left(\mathbf{C} \mathbf{V}^{
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
