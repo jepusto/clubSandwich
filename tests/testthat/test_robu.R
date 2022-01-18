@@ -416,6 +416,6 @@ test_that("clubSandwich works with weights of zero (kind of).", {
   
   test_drop <- lapply(CR_types, function(x) coef_test(user_dropped, vcov = x, test = "All", p_values = FALSE))
   test_complete <- lapply(CR_types, function(x) coef_test(user_complete, vcov = x, test = "All", p_values = FALSE))
-  expect_equal(test_drop, test_complete)
+  expect_equal(test_drop, test_complete, tolerance = 1e-6)
   
 })
