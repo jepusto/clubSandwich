@@ -411,7 +411,9 @@ vcovCR.rma.mv <- function(obj, cluster, type, target, inverse_var, form = "sandw
 #' @export
 
 targetVariance.rma.mv <- function(obj, cluster) {
-  matrix_list(obj$M, cluster, "both")
+  tV <- matrix_list(obj$M, cluster, "both")
+  if (!all(sapply(tV, is.matrix))) tV <- lapply(tV, as.matrix)
+  return(tV)
 }
 
 #-------------------------------------
@@ -423,10 +425,12 @@ targetVariance.rma.mv <- function(obj, cluster) {
 weightMatrix.rma.mv <- function(obj, cluster) {
   if (is.null(obj$W)) {
     V_list <- targetVariance(obj, cluster)
-    lapply(V_list, function(v) chol2inv(chol(v)))
+    Wm <- lapply(V_list, function(v) chol2inv(chol(v)))
   } else{
-    matrix_list(obj$W, cluster, "both")
+    Wm <- matrix_list(obj$W, cluster, "both")
+    if (!all(sapply(Wm, is.matrix))) Wm <- lapply(Wm, as.matrix)
   }
+  return(Wm)
 }
 
 #-----------------------------------------------

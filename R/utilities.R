@@ -124,8 +124,6 @@ compare_Waldtests <- function(a, b, tol = 10^-4) {
   if (!inherits(b,"data.frame")) b <- do.call(rbind, b)
   
   testthat::expect_equal(a$Fstat, b$Fstat, tolerance = tol)
-  # testthat::expect_equal(a$delta, b$delta, tolerance = tol)
   testthat::expect_equal(a$df, b$df, tolerance = tol)
-  # testthat::expect_equal(a$p_val, b$p_val, tolerance = tol)
   
 }
