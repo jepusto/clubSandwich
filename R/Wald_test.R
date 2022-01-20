@@ -408,7 +408,7 @@ Wald_testing <- function(C_mat, beta, vcov, test, p, GH) {
   if ("Naive-Fp" %in% test) {
     p_val <- pf(Q / q, df1 = q, df2 = J - p, lower.tail = FALSE)
     result <- rbind(result, 
-                    data.frame(test = "Naive-F", Fstat = Q / q, 
+                    data.frame(test = "Naive-Fp", Fstat = Q / q, 
                                delta = 1, df_num = q, df_denom = J - p, p_val = p_val))
   }
   
