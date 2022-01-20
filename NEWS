@@ -1,3 +1,7 @@
+clubSandwich 0.5.5.9999
+=======================
+* Corrected bug how Wald_test() labeled results when test = "Naive-Fp".
+
 clubSandwich 0.5.5
 =======================
 * New function linear_contrast() calculates robust confidence intervals and p-values for linear contrasts of regression coefficients from a fitted model. Works with constrain_pairwise() and other constrain_*() helper functions.
