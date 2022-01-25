@@ -3,6 +3,10 @@ template:
   bootstrap: 5
   bootswatch: spacelab
   
+news:
+  one_page: true
+  cran_dates: true
+  
 reference:
 - title: "Cluster-robust variance covariance estimation"
   desc: >
