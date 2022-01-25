@@ -1,0 +1,38 @@
+url: http://jepusto.github.io/clubSandwich/
+template:
+  bootstrap: 5
+  bootswatch: spacelab
+  
+reference:
+- title: "Cluster-robust variance covariance estimation"
+  desc: >
+    S3 methods for calculating cluster-robust variance-covariance matrices 
+    for various fitted model objects.
+  contents: 
+  - vcovCR
+  - starts_with("vcovCR")
+- title: "Inference functions"
+  desc: >
+    Functions for inference based on cluster-robust variance-covariance matrices.
+  contents: 
+    - coef_test
+    - conf_int
+    - linear_contrast
+    - Wald_test
+    - starts_with("constrain_")
+- title: "Helper functions for multivariate meta-analysis"
+  desc: >
+    Helper functions for use in estimating multivariate meta-analysis models 
+    with `metafor::rma.mv()`.
+  contents:
+  - ends_with("covariance_matrix")
+  - findCluster.rma.mv
+- title: "Data"
+  desc: "Example datasets"
+  contents:
+  - AchievementAwardsRCT
+  - dropoutPrevention
+  - MortalityRates
+  - SATcoaching
+  
+

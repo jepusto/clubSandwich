@@ -128,11 +128,7 @@ To reduce redundancy in the syntax, we can also omit the `coefs` argument to `co
 Wald_test(lm_trt, constraints = constrain_zero(2:3), vcov = V_trt)
 ```
 
-[^under-the-hood]: How does this work? If we omit the `coefs` argument, `constrain_zero()` acts as a functional, by returning a function equivalent to 
-    ```{r, eval = FALSE}
-    function(coefs) constrain_zero(constraints, coefs = coefs)    
-    ```
-    If this function is fed into the `constraints` argument of `Wald_test()`, `Wald_test()` recognizes that it is a function and evaluates the function with `coef(obj)`. It's a kinda-sorta hacky substitute for lazy evaluation. If you have suggestions for how to do this more elegantly, please send them my way.
+[^under-the-hood]: How does this work? If we omit the `coefs` argument, `constrain_zero()` acts as a functional, by returning a function equivalent to `function(coefs) constrain_zero(constraints, coefs = coefs)`. If this function is fed into the `constraints` argument of `Wald_test()`, `Wald_test()` recognizes that it is a function and evaluates the function with `coef(obj)`. It's a kinda-sorta hacky substitute for lazy evaluation. If you have suggestions for how to do this more elegantly, please send them my way.
 
 ## `constrain_equal()`
 
