@@ -19,7 +19,8 @@ Methods are provided for a variety of fitted models, including
 `lm`, `mlm`, `glm`, 
 `ivreg` (from package `AER`),
 `plm` (from package `plm`), 
-`gls` and `lme` (from `nlme`), 
+`gls` and `lme` (from `nlme`),
+`lmer` (from `lme4`),
 `robu` (from `robumeta`), and 
 `rma.uni` and `rma.mv` (from `metafor`). 
 
