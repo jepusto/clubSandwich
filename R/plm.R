@@ -340,7 +340,7 @@ inverse_nested_block_mat <- function(nj, r1, r2) {
   const <- 1 / sqrt(1 / r2 + sum(nj / (1 + r1 * nj)))
   vec <- const * rep(1 / (1 + nj * r1), nj)
   indices <- factor(names(vec), levels = names(nj))
-  add_submatrices(indices, small_mat = V_inv, big_mat = tcrossprod(vec))
+  add_submatrices(indices, small_mat = V_inv, big_mat = -tcrossprod(vec))
 }
 
 #' @export

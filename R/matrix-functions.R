@@ -47,7 +47,7 @@ add_submatrices <- function(indices, small_mat, big_mat) {
   levs <- levels(indices)
   for (i in 1:length(levs)) {
     ind <- levs[i] == indices
-    big_mat[ind,ind] <- big_mat[ind,ind] + small_mat[[i]]
+    big_mat[ind,ind] <- small_mat[[i]] + big_mat[ind,ind]
   }
   big_mat
 }
