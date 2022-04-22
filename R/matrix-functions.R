@@ -60,3 +60,11 @@ add_bdiag <- function(small_mats, big_mats, crosswalk) {
   Map(add_submatrices, indices = small_indices, small_mat = small_mats, big_mat = big_mats)
 }
 
+nest_bdiag <- function(mats, crosswalk) {
+  small_indices <- lapply(split(crosswalk[[1]], crosswalk[[2]]), droplevels)
+  big_indices <- unique(crosswalk)
+  big_indices <- big_indices[[2]][order(big_indices[[1]])]
+  mat_groups <- split(mats, big_indices)
+  Map(unblock, A = mat_groups)
+}
+

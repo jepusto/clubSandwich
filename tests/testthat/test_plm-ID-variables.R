@@ -133,3 +133,157 @@ test_that("Clustering works for various ways of specifying unit and time indices
   
 })
 
+
+test_that("findCluster works for plm objects.", {
+  
+  pool_individual <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+                         data = Produc, index = c("state","year","region"), 
+                         effect = "individual", model = "pooling")
+  index <- attr(model.frame(pool_individual),"index")
+  
+  expect_equal(findCluster.plm(pool_individual), index$state)
+  expect_equal(findCluster.plm(pool_individual, "individual"), index$state)
+  expect_equal(findCluster.plm(pool_individual, "time"), index$year)
+  expect_equal(findCluster.plm(pool_individual, "group"), index$region)
+  expect_equal(findCluster.plm(pool_individual, "state"), index$state)
+  expect_equal(findCluster.plm(pool_individual, "year"), index$year)
+  expect_equal(findCluster.plm(pool_individual, "region"), index$region)
+  expect_equal(findCluster.plm(pool_individual, Produc$region), index$region)
+  
+  within_individual <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+                           data = Produc, index = c("state","year","region"), 
+                           effect = "individual", model = "within")
+  expect_equal(findCluster.plm(within_individual), index$state)
+  expect_equal(findCluster.plm(within_individual, "individual"), index$state)
+  expect_equal(findCluster.plm(within_individual, "time"), index$year)
+  expect_equal(findCluster.plm(within_individual, "group"), index$region)
+  expect_equal(findCluster.plm(within_individual, "state"), index$state)
+  expect_equal(findCluster.plm(within_individual, "year"), index$year)
+  expect_equal(findCluster.plm(within_individual, "region"), index$region)
+  expect_equal(findCluster.plm(within_individual, Produc$region), index$region)
+  
+  between_individual <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+                            data = Produc, index = c("state","year","region"), 
+                            effect = "individual", model = "between")
+  
+  expect_equal(findCluster.plm(between_individual), index$state)
+  expect_equal(findCluster.plm(between_individual, "individual"), index$state)
+  expect_equal(findCluster.plm(between_individual, "time"), index$year)
+  expect_equal(findCluster.plm(between_individual, "group"), index$region)
+  expect_equal(findCluster.plm(between_individual, "state"), index$state)
+  expect_equal(findCluster.plm(between_individual, "year"), index$year)
+  expect_equal(findCluster.plm(between_individual, "region"), index$region)
+  expect_equal(findCluster.plm(between_individual, Produc$region), index$region)
+  
+  RE_individual <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+                       data = Produc, index = c("state","year","region"), 
+                       effect = "individual", model = "random")
+  
+  expect_equal(findCluster.plm(RE_individual), index$state)
+  expect_equal(findCluster.plm(RE_individual, "individual"), index$state)
+  expect_error(findCluster.plm(RE_individual, "time"))
+  expect_equal(findCluster.plm(RE_individual, "group"), index$region)
+  expect_equal(findCluster.plm(RE_individual, "state"), index$state)
+  expect_error(findCluster.plm(RE_individual, "year"))
+  expect_equal(findCluster.plm(RE_individual, "region"), index$region)
+  expect_equal(findCluster.plm(RE_individual, Produc$region), index$region)
+  
+  pool_time <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+                   data = Produc, index = c("state","year","region"), 
+                   effect = "time", model = "pooling")
+  expect_equal(findCluster.plm(pool_time), index$year)
+  expect_equal(findCluster.plm(pool_time, "individual"), index$state)
+  expect_equal(findCluster.plm(pool_time, "time"), index$year)
+  expect_equal(findCluster.plm(pool_time, "group"), index$region)
+  expect_equal(findCluster.plm(pool_time, "state"), index$state)
+  expect_equal(findCluster.plm(pool_time, "year"), index$year)
+  expect_equal(findCluster.plm(pool_time, "region"), index$region)
+  expect_equal(findCluster.plm(pool_time, Produc$region), index$region)
+  
+  within_time <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+                     data = Produc, index = c("state","year","region"), 
+                     effect = "time", model = "within")
+  expect_equal(findCluster.plm(within_time), index$year)
+  expect_equal(findCluster.plm(within_time, "individual"), index$state)
+  expect_equal(findCluster.plm(within_time, "time"), index$year)
+  expect_equal(findCluster.plm(within_time, "group"), index$region)
+  expect_equal(findCluster.plm(within_time, "state"), index$state)
+  expect_equal(findCluster.plm(within_time, "year"), index$year)
+  expect_equal(findCluster.plm(within_time, "region"), index$region)
+  expect_equal(findCluster.plm(within_time, Produc$region), index$region)
+  
+  between_time <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+                      data = Produc, index = c("state","year","region"), 
+                      effect = "time", model = "between")
+  expect_equal(findCluster.plm(between_time), index$year)
+  expect_equal(findCluster.plm(between_time, "individual"), index$state)
+  expect_equal(findCluster.plm(between_time, "time"), index$year)
+  expect_equal(findCluster.plm(between_time, "group"), index$region)
+  expect_equal(findCluster.plm(between_time, "state"), index$state)
+  expect_equal(findCluster.plm(between_time, "year"), index$year)
+  expect_equal(findCluster.plm(between_time, "region"), index$region)
+  expect_equal(findCluster.plm(between_time, Produc$region), index$region)
+  
+  RE_time <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+                 data = Produc, index = c("state","year","region"), 
+                 effect = "time", model = "random")
+  expect_equal(findCluster.plm(RE_time), index$year)
+  expect_error(findCluster.plm(RE_time, "individual"))
+  expect_equal(findCluster.plm(RE_time, "time"), index$year)
+  expect_error(findCluster.plm(RE_time, "group"))
+  expect_error(findCluster.plm(RE_time, "state"))
+  expect_equal(findCluster.plm(RE_time, "year"), index$year)
+  expect_error(findCluster.plm(RE_time, "region"))
+  expect_error(findCluster.plm(RE_time, Produc$region))
+  
+  pool_twoways <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+                      data = Produc, index = c("state","year","region"), 
+                      effect = "twoways", model = "pooling")
+  expect_error(findCluster.plm(pool_twoways))
+  expect_equal(findCluster.plm(pool_twoways, "individual"), index$state)
+  expect_equal(findCluster.plm(pool_twoways, "time"), index$year)
+  expect_equal(findCluster.plm(pool_twoways, "group"), index$region)
+  expect_equal(findCluster.plm(pool_twoways, "state"), index$state)
+  expect_equal(findCluster.plm(pool_twoways, "year"), index$year)
+  expect_equal(findCluster.plm(pool_twoways, "region"), index$region)
+  expect_equal(findCluster.plm(pool_twoways, Produc$region), index$region)
+  
+  within_twoways <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+                        data = Produc, index = c("state","year","region"), 
+                        effect = "twoways", model = "within")
+  expect_error(findCluster.plm(within_twoways))
+  expect_equal(findCluster.plm(within_twoways, "individual"), index$state)
+  expect_equal(findCluster.plm(within_twoways, "time"), index$year)
+  expect_equal(findCluster.plm(within_twoways, "group"), index$region)
+  expect_equal(findCluster.plm(within_twoways, "state"), index$state)
+  expect_equal(findCluster.plm(within_twoways, "year"), index$year)
+  expect_equal(findCluster.plm(within_twoways, "region"), index$region)
+  expect_equal(findCluster.plm(within_twoways, Produc$region), index$region)
+  
+  RE_twoways <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+                    data = Produc, index = c("state","year","region"), 
+                    effect = "twoways", model = "random")
+  expect_error(findCluster.plm(RE_twoways))
+  expect_error(findCluster.plm(RE_twoways, "individual"))
+  expect_error(findCluster.plm(RE_twoways, "time"))
+  expect_error(findCluster.plm(RE_twoways, "group"))
+  expect_error(findCluster.plm(RE_twoways, "state"))
+  expect_error(findCluster.plm(RE_twoways, "year"))
+  expect_error(findCluster.plm(RE_twoways, "region"))
+  expect_error(findCluster.plm(RE_twoways, Produc$region))
+  
+  RE_nested <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+                   data = Produc, index = c("state","year","region"), 
+                   effect = "nested", model = "random")
+  expect_equal(findCluster.plm(RE_nested), index$region)
+  expect_error(findCluster.plm(RE_nested, "individual"))
+  expect_error(findCluster.plm(RE_nested, "time"))
+  expect_equal(findCluster.plm(RE_nested, "group"), index$region)
+  expect_error(findCluster.plm(RE_nested, "state"))
+  expect_error(findCluster.plm(RE_nested, "year"))
+  expect_equal(findCluster.plm(RE_nested, "region"), index$region)
+  expect_equal(findCluster.plm(RE_nested, Produc$region), index$region)
+  
+})
+
+
