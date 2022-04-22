@@ -20,7 +20,7 @@ based on a Satterthwaite approximation."><!-- mathjax --><script src="https://cd
     
     <a class="navbar-brand me-2" href="../index.html">clubSandwich</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.5.9999</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -146,22 +146,22 @@ value is <code>FALSE</code>.</p></dd>
 <span class="r-in">                contrasts <span class="op">=</span> <span class="fu"><a href="constraint_matrices.html">constrain_pairwise</a></span><span class="op">(</span><span class="st">":education"</span>, reg_ex <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span class="r-in">                test <span class="op">=</span> <span class="st">"Satterthwaite"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                  Coef. Estimate    SE d.f. Lower 95% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  typeprof:education - typebc:education   0.0186 0.315 4.41       -0.826</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    typewc:education - typebc:education   0.1068 0.271 4.14       -0.637</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  typewc:education - typeprof:education   0.0882 0.253 2.76       -0.758</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  typeprof:education - typebc:education   0.0186 0.431 3.81       -1.200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    typewc:education - typebc:education   0.1068 0.311 4.79       -0.702</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  typewc:education - typeprof:education   0.0882 0.201 3.05       -0.545</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Upper 95% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         0.863</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         0.851</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         0.935</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         1.238</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         0.916</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         0.722</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Pairwise comparisons of type-by-income interactions</span></span>
 <span class="r-in"><span class="fu">linear_contrast</span><span class="op">(</span><span class="va">Duncan_fit</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span>, cluster <span class="op">=</span> <span class="va">Duncan</span><span class="op">$</span><span class="va">cluster</span>,</span>
 <span class="r-in">                contrasts <span class="op">=</span> <span class="fu"><a href="constraint_matrices.html">constrain_pairwise</a></span><span class="op">(</span><span class="st">":income"</span>, reg_ex <span class="op">=</span> <span class="cn">TRUE</span>, with_zero <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span class="r-in">                test <span class="op">=</span> <span class="st">"Satterthwaite"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                            Coef. Estimate    SE d.f. Lower 95% CI Upper 95% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  typeprof:income -0.36914 0.455 3.35        -1.74        0.998</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    typewc:income -0.36031 0.232 2.96        -1.11        0.384</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  typewc:income - typeprof:income  0.00883 0.429 3.30        -1.29        1.306</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  typeprof:income -0.36914 0.266 3.37       -1.165       0.4270</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    typewc:income -0.36031 0.115 2.95       -0.731       0.0103</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  typewc:income - typeprof:income  0.00883 0.252 2.95       -0.802       0.8194</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
