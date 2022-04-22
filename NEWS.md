@@ -1,5 +1,8 @@
-# clubSandwich 0.5.5.9999
+# clubSandwich 0.5.6
 
+* Corrected bug in methods for `plm` objects estimated by random effects, which occurred when a user-specified clustering variable was at a higher level than the random effects.
+* Added support for `plm` objects with nested random effects (`effects = "nested"`).
+* Added additional syntactic options for specifying clustering variable with `plm` objects. See `?plm`.
 * Corrected bug in how `Wald_test()` labeled results when `test = "Naive-Fp"`.
 
 # clubSandwich 0.5.5
