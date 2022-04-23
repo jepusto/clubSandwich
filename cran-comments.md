@@ -11,7 +11,6 @@ Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey 
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release
 * win-builder (devel, release, oldrelease)
-* macOS builder:  macOS 11.5.2, Apple M1 (release)
 * r-hub:
   * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
   * Ubuntu Linux 16.04 LTS, R-release, GCC
@@ -64,13 +63,8 @@ There were 2 NOTES:
 
 ## revdepcheck results
 
-We checked 7 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+We checked 11 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
 
  * We saw 0 new problems
- * We failed to check 1 packages
-
-Issues with CRAN packages are summarised below.
-
-### Failed to check
-
-* panelr (NA)
+ * We failed to check 0 packages
+ 
