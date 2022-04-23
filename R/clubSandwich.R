@@ -13,7 +13,7 @@
 #'   automatically if not specified.
 #' @param type Character string specifying which small-sample adjustment should 
 #'   be used, with available options \code{"CR0"}, \code{"CR1"}, \code{"CR1p"},
-#'   \code{"CR1S"}, \code{"CR2"}, or \code{"CR3"}. See "Details" section of 
+#'   \code{"CR1S"}, \code{"CR2"}, \code{"CR3"}, or \code{"CR3f"}. See "Details" section of 
 #'   \code{\link{vcovCR}} for further information.
 #' @param target Optional matrix or vector describing the working 
 #'   variance-covariance model used to calculate the \code{CR2} and \code{CR4} 
@@ -60,8 +60,9 @@
 #'   adjustment is chosen so that the variance-covariance estimator is exactly
 #'   unbiased under a user-specified working model.} 
 #'   \item{"CR3"}{approximates the leave-one-cluster-out jackknife variance estimator (Bell & McCaffrey,
-#'   2002).} }
-#'   
+#'   2002).}
+#'   \item{"CR3f"}{implements the leave-one-cluster-out jackknife variance estimator (MacKinnon, Nielsen & Webb, 2022).}
+#'   }
 #' @references Bell, R. M., & McCaffrey, D. F. (2002). Bias reduction in
 #' standard errors for linear regression with multi-stage samples. Survey
 #' Methodology, 28(2), 169-181.
@@ -170,6 +171,7 @@ adjust_est_mats <- function(type, est_mats, adjustments) {
          CR1S = lapply(est_mats, function(e) e * adjustments),
          CR2 = Map(function(e, a) e %*% a, e = est_mats, a = adjustments),
          CR3 = Map(function(e, a) e %*% a, e = est_mats, a = adjustments),
+         CR3f = lapply(est_mats, function(e) e * adjustments),
          CR4 = Map(function(e, a) a %*% e, e = est_mats, a = adjustments))
 }
 
@@ -211,9 +213,13 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   J <- nlevels(cluster)
   if (J < 2) stop("Cluster-robust variance estimation will not work when the data only includes a single cluster.")
   
+  # X_g's in MNW notation
   X_list <- matrix_list(X, cluster, "row")
+  # W_g's in MNW notation
   W_list <- weightMatrix(obj, cluster)
+  # list of weight adjusted X's
   XW_list <- Map(function(x, w) as.matrix(t(x) %*% w), x = X_list, w = W_list)
+  
   
   if (is.null(target)) {
     if (inverse_var) {
@@ -232,6 +238,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
     }
   }
   
+  # can be ignored
   if (type %in% c("CR2","CR4")) {
     S <- augmented_model_matrix(obj, cluster, inverse_var, ignore_FE)
     
@@ -249,19 +256,47 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
     UWU_list <- Map(function(uw, u) uw %*% u, uw = UW_list, u = U_list)
     M_U <- matrix_power(Reduce("+",UWU_list), p = -1)
   }
-  
+  # get small sample adjustments
   adjustments <- do.call(type, args = mget(names(formals(type))))
-  
+  # multiply design matrices XW by sqrt(small_sample_adjustments)
   E_list <- adjust_est_mats(type = type, est_mats = XW_list, adjustments = adjustments)
   
+  # get list of regression residuals, u_g in MNW notation
   resid <- residuals_CS(obj)
   res_list <- split(resid, cluster)
   
-  components <- do.call(cbind, Map(function(e, r) e %*% r, e = E_list, r = res_list))
+  # X_g' %*% u_g
+  if(type == "CR3f"){
+    XWg_XWg <- Map(function(e) tcrossprod(e), e = E_list)
+    y <- resid + predict(obj) # better way to get depvar without creating model.frame?
+    y_list <- split(y, cluster)
+    yWg_XWg <-  Map(function(e,y) e %*% y, e = E_list, y = y_list)
+    tXX <- Reduce("+", XWg_XWg)
+    tXy <- Reduce("+", yWg_XWg)
+    # beta_g - beta
+    coef_list <- Map(function(a = tXX, b, c = tXy, d, beta = coef(obj)) solve(a - b) %*% (c - d) - beta, b = XWg_XWg, d = yWg_XWg)
+    vcov <- Reduce("+",Map(function(x) tcrossprod(x), x = coef_list) )
+    
+    vcov <- vcov * (J-1)/J
+    
+    v_scale <- v_scale(obj)
+    w_scale <- attr(W_list, "w_scale")
+    if (is.null(w_scale)) w_scale <- 1L
+    
+    if (form == "estfun") {
+      stop("The option 'estfun' for function arg 'form' is currently not supported for 'CR3f' variance-covariance matrices.")
+    }
+    
+    bread <- sandwich::bread(obj)
+
+    
+  } else {
   
-  v_scale <- v_scale(obj)
-  w_scale <- attr(W_list, "w_scale")
-  if (is.null(w_scale)) w_scale <- 1L
+    components <- do.call(cbind, Map(function(e, r) e %*% r, e = E_list, r = res_list))
+
+    v_scale <- v_scale(obj)
+    w_scale <- attr(W_list, "w_scale")
+    if (is.null(w_scale)) w_scale <- 1L
   
   if (form == "estfun") {
     bread <- sandwich::bread(obj)
@@ -283,6 +318,9 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   vcov <- switch(form, 
                  sandwich = bread %*% meat %*% bread / v_scale,
                  meat = meat)
+  
+  }
+  
   rownames(vcov) <- colnames(vcov) <- colnames(X)
   attr(vcov, "type") <- type
   attr(vcov, "cluster") <- cluster

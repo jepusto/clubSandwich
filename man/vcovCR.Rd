@@ -26,7 +26,7 @@ automatically if not specified.}
 
 \item{type}{Character string specifying which small-sample adjustment should 
 be used, with available options \code{"CR0"}, \code{"CR1"}, \code{"CR1p"},
-\code{"CR1S"}, \code{"CR2"}, or \code{"CR3"}. See "Details" section of 
+\code{"CR1S"}, \code{"CR2"}, \code{"CR3"}, or \code{"CR3f"}. See "Details" section of 
 \code{\link{vcovCR}} for further information.}
 
 \item{target}{Optional matrix or vector describing the working 
@@ -99,7 +99,9 @@ Several different small sample corrections are available, which run
   adjustment is chosen so that the variance-covariance estimator is exactly
   unbiased under a user-specified working model.} 
   \item{"CR3"}{approximates the leave-one-cluster-out jackknife variance estimator (Bell & McCaffrey,
-  2002).} }
+  2002).}
+  \item{"CR3f"}{implements the leave-one-cluster-out jackknife variance estimator (MacKinnon, Nielsen & Webb, 2022).}
+  }
 }
 \examples{
 
