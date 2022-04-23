@@ -36,10 +36,6 @@ There were 2 NOTES:
   All of the identified words are spelled correctly. 
 
 * Found the following (possibly) invalid URLs:
-  URL: https://doi.org/10.3102/1076998615606099
-    From: man/dropoutPrevention.Rd
-    Status: 503
-    Message: Service Unavailable
   URL: https://doi.org/10.1037/1082-989X.1.3.227
     From: man/SATcoaching.Rd
     Status: 400
@@ -48,6 +44,17 @@ There were 2 NOTES:
     From: inst/doc/meta-analysis-with-CRVE.html
     Status: 400
     Message: Bad Request
+  URL: https://doi.org/10.3102/1076998615606099
+    From: man/dropoutPrevention.Rd
+          inst/doc/Wald-tests-in-clubSandwich.html
+          inst/doc/meta-analysis-with-CRVE.html
+    Status: 503
+    Message: Service Unavailable
+  URL: https://doi.org/10.4073/csr.2011.8
+    From: man/dropoutPrevention.Rd
+          inst/doc/meta-analysis-with-CRVE.html
+    Status: 503
+    Message: Service Unavailable
   URL: https://economics.mit.edu/faculty/angrist/data1/data/angrist
     From: man/AchievementAwardsRCT.Rd
     Status: Error
