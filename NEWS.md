@@ -1,3 +1,5 @@
+# clubSandwich 0.5.6.9999
+
 # clubSandwich 0.5.6
 
 * Corrected bug in methods for `plm` objects estimated by random effects, which occurred when a user-specified clustering variable was at a higher level than the random effects.
