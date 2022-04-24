@@ -221,13 +221,27 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   J <- nlevels(cluster)
   if (J < 2) stop("Cluster-robust variance estimation will not work when the data only includes a single cluster.")
   
+  # get list of regression residuals, u_g in MNW notation
+  resid <- residuals_CS(obj)
+  res_list <- split(resid, cluster)
+  
   # X_g's in MNW notation
   X_list <- matrix_list(X, cluster, "row")
   # W_g's in MNW notation
   W_list <- weightMatrix(obj, cluster)
-  # list of weight adjusted X's
-  XW_list <- Map(function(x, w) as.matrix(t(x) %*% w), x = X_list, w = W_list)
-  
+  if(type == "CR3f"){
+    if(!inherits(obj, "lm")){
+      stop("Vcov type 'CR3f' is currently only supported for objects of type 'lm'.")
+    }
+    # list of weight adjusted X's
+    XW_list <- Map(function(x, w) as.matrix(t(x) %*% sqrt(w)), x = X_list, w = W_list)
+    y <- resid + predict(obj) # better way to get depvar without creating model.frame?
+    y_list <- split(y, cluster)
+    yW_list <- Map(function(y, w) as.matrix(t(y) %*% sqrt(w)), y = y_list, w = W_list)
+  } else {
+    XW_list <- Map(function(x, w) as.matrix(t(x) %*% w), x = X_list, w = W_list)
+  }
+
   
   if (is.null(target)) {
     if (inverse_var) {
@@ -269,16 +283,10 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   # multiply design matrices XW by sqrt(small_sample_adjustments)
   E_list <- adjust_est_mats(type = type, est_mats = XW_list, adjustments = adjustments)
   
-  # get list of regression residuals, u_g in MNW notation
-  resid <- residuals_CS(obj)
-  res_list <- split(resid, cluster)
-  
   # X_g' %*% u_g
   if(type == "CR3f"){
     XWg_XWg <- Map(function(e) tcrossprod(e), e = E_list)
-    y <- resid + predict(obj) # better way to get depvar without creating model.frame?
-    y_list <- split(y, cluster)
-    yWg_XWg <-  Map(function(e,y) e %*% y, e = E_list, y = y_list)
+    yWg_XWg <-  Map(function(e,y) e %*% y, e = E_list, y = yW_list)
     tXX <- Reduce("+", XWg_XWg)
     tXy <- Reduce("+", yWg_XWg)
     # beta_g - beta
