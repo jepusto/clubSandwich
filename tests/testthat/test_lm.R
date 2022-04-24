@@ -138,6 +138,8 @@ test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
   expect_equal(vcovHC(lm_fit, type = "HC2"), as.matrix(CR2))
   CR3 <- vcovCR(lm_fit, cluster = dat$row, type = "CR3")
   expect_equal(vcovHC(lm_fit, type = "HC3"), as.matrix(CR3))
+  CR3f <- vcovCR(lm_fit, cluster = dat$row, type = "CR3f")
+  expect_equal(vcovHC(lm_fit, type = "HC3"), nobs(lm_fit) / (nobs(lm_fit) - 1) *as.matrix(CR3f))
 })
 
 test_that("CR2 is equivalent to Welch t-test for DiD design", {
