@@ -296,8 +296,8 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
     }
     
     # instead of sandwich::bread(obj), faster as tXX already computed
-    bread <- N * solve(tXX)
-
+    # bread <- N * solve(tXX)
+    bread <- sandwich::bread(obj)
     
   } else {
   
