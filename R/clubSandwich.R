@@ -213,7 +213,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
     if (length(cluster) != N) {
       stop("Clustering variable must have length equal to the number of rows in the data used to fit obj.")
     }
-
+    
   } 
   
   if (any(is.na(cluster))) stop("Clustering variable cannot have missing values.")
@@ -241,7 +241,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   } else {
     XW_list <- Map(function(x, w) as.matrix(t(x) %*% w), x = X_list, w = W_list)
   }
-
+  
   
   if (is.null(target)) {
     if (inverse_var) {
@@ -274,7 +274,7 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
       U_list <- matrix_list(U, cluster, "row")
       UW_list <- Map(function(u, w) as.matrix(t(u) %*% w), u = U_list, w = W_list)
     }
-
+    
     UWU_list <- Map(function(uw, u) uw %*% u, uw = UW_list, u = U_list)
     M_U <- matrix_power(Reduce("+",UWU_list), p = -1)
   }
@@ -308,34 +308,34 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
     bread <- sandwich::bread(obj)
     
   } else {
-  
+    
     components <- do.call(cbind, Map(function(e, r) e %*% r, e = E_list, r = res_list))
-
+    
     v_scale <- v_scale(obj)
     w_scale <- attr(W_list, "w_scale")
     if (is.null(w_scale)) w_scale <- 1L
-  
-  if (form == "estfun") {
-    bread <- sandwich::bread(obj)
-    estfun <- bread %*% components
-    return(estfun * (w_scale / v_scale))
-  }
-  
-  meat <- tcrossprod(components) * w_scale^2 / v_scale
-  
-  if (form == "sandwich") {
-    bread <- sandwich::bread(obj)
-  } else if (form == "meat") {
-    bread <- NULL
-  } else if (is.matrix(form)) {
-    bread <- form
-    form <- "sandwich"
-  } 
-  
-  vcov <- switch(form, 
-                 sandwich = bread %*% meat %*% bread / v_scale,
-                 meat = meat)
-  
+    
+    if (form == "estfun") {
+      bread <- sandwich::bread(obj)
+      estfun <- bread %*% components
+      return(estfun * (w_scale / v_scale))
+    }
+    
+    meat <- tcrossprod(components) * w_scale^2 / v_scale
+    
+    if (form == "sandwich") {
+      bread <- sandwich::bread(obj)
+    } else if (form == "meat") {
+      bread <- NULL
+    } else if (is.matrix(form)) {
+      bread <- form
+      form <- "sandwich"
+    } 
+    
+    vcov <- switch(form, 
+                   sandwich = bread %*% meat %*% bread / v_scale,
+                   meat = meat)
+    
   }
   
   rownames(vcov) <- colnames(vcov) <- colnames(X)
@@ -343,7 +343,12 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
   attr(vcov, "cluster") <- cluster
   attr(vcov, "bread") <- bread
   attr(vcov, "v_scale") <- v_scale
-  attr(vcov, "est_mats") <- XW_list
+  attr(vcov, "est_mats") <- 
+    # required because CR3f computes t(X) %*% sqrt(w)
+    ifelse(type == "CR3f", 
+           Map(function(x, w) as.matrix(t(x) %*% w), x = X_list, w = W_list),
+           XW_list
+    )
   attr(vcov, "adjustments") <- adjustments
   attr(vcov, "target") <- Theta_list
   attr(vcov, "inverse_var") <- inverse_var
