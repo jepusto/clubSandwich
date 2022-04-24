@@ -61,7 +61,8 @@
 #'   unbiased under a user-specified working model.} 
 #'   \item{"CR3"}{approximates the leave-one-cluster-out jackknife variance estimator (Bell & McCaffrey,
 #'   2002).}
-#'   \item{"CR3f"}{implements the leave-one-cluster-out jackknife variance estimator (MacKinnon, Nielsen & Webb, 2022).}
+#'   \item{"CR3f"}{implements the leave-one-cluster-out jackknife variance estimator (MacKinnon, Nielsen & Webb, 2022) - 
+#'   only for models of type `lm()`.}
 #'   }
 #' @references Bell, R. M., & McCaffrey, D. F. (2002). Bias reduction in
 #' standard errors for linear regression with multi-stage samples. Survey
@@ -78,6 +79,13 @@
 #' Liang, K.-Y., & Zeger, S. L. (1986). Longitudinal data analysis using
 #' generalized linear models. \emph{Biometrika, 73}(1), 13-22.
 #' \doi{10.1093/biomet/73.1.13}
+#' 
+#' MacKinnon, J.-G., & Oerregaard Nielsen, M. & Webb, M. (2022). Fast and 
+#' reliable jackknife and bootstrap methods for cluster-robust inference. 
+#' \emph{Queen’s Economics Department Working Paper No. 1485}
+#' 
+#' Niccodemi, G., Wansbeek, T., 2022. A new estimator for standard errors with few unbalanced
+#' clusters. \emph{Econometrics} (10), 1–7.
 #' 
 #' Pustejovsky, J. E. & Tipton, E. (2018). Small sample methods for
 #' cluster-robust variance estimation and hypothesis testing in fixed effects
@@ -287,7 +295,8 @@ vcov_CR <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form
       stop("The option 'estfun' for function arg 'form' is currently not supported for 'CR3f' variance-covariance matrices.")
     }
     
-    bread <- sandwich::bread(obj)
+    # instead of sandwich::bread(obj), faster as tXX already computed
+    bread <- N * solve(tXX)
 
     
   } else {
