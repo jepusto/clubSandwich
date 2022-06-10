@@ -1,6 +1,8 @@
 context("robu objects")
 set.seed(20190513)
 
+skip_if_not_installed("robumeta")
+
 library(robumeta, quietly=TRUE)
 data(corrdat)
 

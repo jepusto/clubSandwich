@@ -1,5 +1,8 @@
 context("estfun objects")
 
+skip_if_not_installed("zoo")
+skip_if_not_installed("AER")
+
 library(zoo, quietly=TRUE)
 library(AER, quietly=TRUE)
 

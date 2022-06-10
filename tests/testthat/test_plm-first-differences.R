@@ -1,6 +1,9 @@
 context("plm objects - first differences model")
 set.seed(20190513)
 
+skip_if_not_installed("plm")
+skip_if_not_installed("AER")
+
 library(plm, quietly=TRUE)
 
 data(Fatalities, package = "AER")

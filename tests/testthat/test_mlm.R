@@ -174,7 +174,7 @@ test_that("weight scale doesn't matter", {
 
 test_that("clubSandwich works with weights of zero.", {
   
-  data("LifeCycleSavings")
+  data("LifeCycleSavings", package = "datasets")
   n_life <- nrow(LifeCycleSavings)
   
   LifeCycleSavings$cl <- substr(rownames(LifeCycleSavings), 1, 1)

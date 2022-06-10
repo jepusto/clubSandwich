@@ -1,6 +1,9 @@
 context("Wald tests")
 set.seed(20190513)
 
+
+skip_if_not_installed("carData")
+
 data(Duncan, package = "carData")
 Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
 Duncan_int <- lm(prestige ~ type * (income + education), data=Duncan)
@@ -200,6 +203,7 @@ test_that("Wald test is equivalent to Satterthwaite for q = 1.", {
 })
 
 
+skip_if_not_installed("AER")
 data(STAR, package = "AER")
 
 # clean up a few variables
