@@ -23,15 +23,24 @@
 #' @seealso \code{\link{vcovCR}}
 #'  
 #' @examples 
-#' library(nlme)
-#' rat_weight <- lme(weight ~ Time * Diet, data=BodyWeight, ~ Time | Rat) 
-#' vcovCR(rat_weight, type = "CR2")
 #' 
-#' data(egsingle, package = "mlmRev")
-#' math_model <- lme(math ~ year * size + female + black + hispanic, 
-#'                   random = list(~ year | schoolid, ~ 1 | childid), 
-#'                   data = egsingle)
-#' vcovCR(math_model, type = "CR2")
+#' if (requireNamespace("nlme", quietly = TRUE)) {
+#' 
+#'   library(nlme)
+#'   rat_weight <- lme(weight ~ Time * Diet, data=BodyWeight, ~ Time | Rat) 
+#'   vcovCR(rat_weight, type = "CR2")
+#' 
+#' }
+#' 
+#' if (requireNamespace("nlme", quietly = TRUE) & requireNamespace("mlmRev", quietly = TRUE)) {
+#' 
+#'   data(egsingle, package = "mlmRev")
+#'   math_model <- lme(math ~ year * size + female + black + hispanic, 
+#'                     random = list(~ year | schoolid, ~ 1 | childid), 
+#'                     data = egsingle)
+#'   vcovCR(math_model, type = "CR2")
+#'   
+#' }
 #' 
 #' @export
 

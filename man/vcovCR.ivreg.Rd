@@ -53,19 +53,25 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
 of a set of regression coefficient estimates from an \code{\link[AER]{ivreg}} object.
 }
 \examples{
-library(AER)
-data("CigarettesSW")
-Cigs <- within(CigarettesSW, {
-  rprice <- price/cpi
-  rincome <- income/population/cpi
-  tdiff <- (taxs - tax)/cpi
-})
 
-iv_fit <- ivreg(log(packs) ~ log(rprice) + log(rincome) | 
-                log(rincome) + tdiff + I(tax/cpi), data = Cigs)
-vcovCR(iv_fit, cluster = Cigs$state, type = "CR2")
-coef_test(iv_fit, vcov = "CR2", cluster = Cigs$state)
-      
+
+if (requireNamespace("AER", quietly = TRUE)) {
+
+  library(AER)
+  data("CigarettesSW")
+  Cigs <- within(CigarettesSW, {
+    rprice <- price/cpi
+    rincome <- income/population/cpi
+    tdiff <- (taxs - tax)/cpi
+  })
+
+  iv_fit <- ivreg(log(packs) ~ log(rprice) + log(rincome) | 
+                  log(rincome) + tdiff + I(tax/cpi), data = Cigs)
+  vcovCR(iv_fit, cluster = Cigs$state, type = "CR2")
+  coef_test(iv_fit, vcov = "CR2", cluster = Cigs$state)
+
+}
+
 }
 \seealso{
 \code{\link{vcovCR}}

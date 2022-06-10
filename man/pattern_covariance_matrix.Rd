@@ -92,6 +92,8 @@ A block-diagonal variance-covariance matrix (possibly represented as
   \eqn{i=1,...,n_j}{i=1,...,n-j} and \eqn{j=1,...,k}{j=1,...,k}.
 }
 \examples{
+
+if (requireNamespace("metafor", quietly = TRUE) & requireNamespace("robumeta", quietly = TRUE)) {
 library(metafor)
 
 data(oswald2013, package = "robumeta")
@@ -118,5 +120,7 @@ MVFE <- rma.mv(yi ~ 0 + Crit.Cat, V = V_list,
                data = dat)
                
 conf_int(MVFE, vcov = "CR2")
+
+}
 
 }

@@ -103,6 +103,9 @@ A block-diagonal variance-covariance matrix (possibly represented as
   \eqn{i=1,...,n_j}{i=1,...,n-j} and \eqn{j=1,...,k}{j=1,...,k}.
 }
 \examples{
+
+if (requireNamespace("metafor", quietly = TRUE)) {
+
 library(metafor)
 
 # Constant correlation
@@ -110,5 +113,7 @@ data(SATcoaching)
 V_list <- impute_covariance_matrix(vi = SATcoaching$V, cluster = SATcoaching$study, r = 0.66)
 MVFE <- rma.mv(d ~ 0 + test, V = V_list, data = SATcoaching)
 conf_int(MVFE, vcov = "CR2", cluster = SATcoaching$study)
+
+}
 
 }

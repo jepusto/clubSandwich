@@ -46,7 +46,7 @@ We also demonstrate random effects estimation and implement a cluster-robust Hau
 
 The following code does some simple data-munging and the estimates the model by OLS:
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 library(clubSandwich)
 data(MortalityRates)
 
@@ -83,13 +83,18 @@ For the effect of legal drinking age, the degrees of freedom are about half of w
 The p-value for the CR2+Satterthwaite test is about twice as large as the p-value based on the standard Wald test, although the coefficient is still statistically significant at conventional levels. 
 Note, however, that the degrees of freedom on the beer taxation rate are considerably smaller because there are only a few states with substantial variability in taxation rates over time. 
 
+```{r, echo = FALSE, results = "asis"}
+plm_available <- requireNamespace("plm", quietly = TRUE)
+if (!plm_available) cat("## Building the remainder of the vignette requires the plm package. Please install it. {-}")
+```
+
 ## Unweighted "within" estimation
 
 The `plm` package in R provides another way to estimate the same model. 
 It is convenient because it absorbs the state and year fixed effects before estimating the effect of `legal`. 
 The `clubSandwich` package works with fitted `plm` models too:
 
-```{r, message = FALSE}
+```{r, message = FALSE, eval = plm_available}
 library(plm)
 plm_unweighted <- plm(mrate ~ legal + beertaxa, data = MV_deaths, 
                       effect = "twoways", index = c("state","year"))
@@ -133,7 +138,7 @@ The new working model leads to slightly smaller standard errors and a couple of 
 
 If the unobserved effects $\alpha_1,...,\alpha_{51}$ are uncorrelated with the regressors, then a more efficient way to estimate $\gamma,\delta$ is by weighted least squares, with weights based on a random effects model. We still treat the year effects as fixed. 
 
-```{r}
+```{r, eval = plm_available}
 plm_random <- plm(mrate ~ 0 + legal + beertaxa + year, data = MV_deaths, 
                   effect = "individual", index = c("state","year"),
                   model = "random")
@@ -157,7 +162,7 @@ which does not include state fixed effects. The parameters $\gamma_2,\delta_2$ r
 
 For efficiency, we estimate this specification using weighted least squares (although OLS would be valid too):
 
-```{r}
+```{r, eval = plm_available}
 MV_deaths <- within(MV_deaths, {
   legal_cent <- legal - tapply(legal, state, mean)[factor(state)]
   beer_cent <- beertaxa - tapply(beertaxa, state, mean)[factor(state)]
@@ -172,7 +177,7 @@ coef_test(plm_Hausman, vcov = "CR2", test = "Satterthwaite")[1:4,]
 
 To conduct a joint test on the centered covariates, we can use the `Wald_test` function. The usual way to test this hypothesis would be to use the `CR1` variance estimator to calculate the robust Wald statistic, then use a $\chi^2_2$ reference distribution (or equivalently, compare a re-scaled Wald statistic to an $F(2,\infty)$ distribution). The `Wald_test` function reports the latter version: 
 
-```{r}
+```{r, eval = plm_available}
 Wald_test(plm_Hausman, 
           constraints = constrain_zero(c("legal_cent","beer_cent")), 
           vcov = "CR1", test = "chi-sq")
@@ -180,7 +185,7 @@ Wald_test(plm_Hausman,
 
 The test is just shy of significance at the 5% level. If we instead use the `CR2` variance estimator and our newly proposed approximate F-test (which is the default in `Wald_test`), then we get:
 
-```{r}
+```{r, eval = plm_available}
 Wald_test(plm_Hausman, 
           constraints = constrain_zero(c("legal_cent","beer_cent")), 
           vcov = "CR2")
