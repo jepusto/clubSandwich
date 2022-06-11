@@ -140,13 +140,14 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 <span class="r-in">                 data <span class="op">=</span> <span class="va">dat.assink2016</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">mfor_fit</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">mfor_CR2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">mfor_fit</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">mfor_CR2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">mfor_fit</span>, type <span class="op">=</span> <span class="st">"CR2"</span>, cluster <span class="op">=</span> <span class="va">dat.assink2016</span><span class="op">$</span><span class="va">study</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">mfor_CR2</span></span>
 <span class="r-in"><span class="fu"><a href="coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">mfor_fit</span>, vcov <span class="op">=</span> <span class="va">mfor_CR2</span>, test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Satterthwaite"</span>, <span class="st">"saddlepoint"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="Wald_test.html">Wald_test</a></span><span class="op">(</span><span class="va">mfor_fit</span>, constraints <span class="op">=</span> <span class="fu"><a href="constraint_matrices.html">constrain_zero</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>, vcov <span class="op">=</span> <span class="va">mfor_CR2</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="op">}</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in vcovCR.rma.uni(mfor_fit, type = "CR2"):</span> You must specify a clustering variable.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  test Fstat df_num df_denom p_val sig</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ  14.9      3     2.63 0.036   *</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

@@ -148,28 +148,29 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"lme4"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"mlmRev"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">egsingle</span>, package <span class="op">=</span> <span class="st">"mlmRev"</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">subset_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">egsingle</span><span class="op">$</span><span class="va">schoolid</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
 <span class="r-in"><span class="va">math_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html" class="external-link">lmer</a></span><span class="op">(</span><span class="va">math</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">size</span> <span class="op">+</span> <span class="va">female</span> <span class="op">+</span> <span class="va">black</span> <span class="op">+</span> <span class="va">hispanic</span> </span>
 <span class="r-in">                   <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">schoolid</span><span class="op">)</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">childid</span><span class="op">)</span>, </span>
-<span class="r-in">                   data <span class="op">=</span> <span class="va">egsingle</span><span class="op">)</span></span>
+<span class="r-in">                   data <span class="op">=</span> <span class="va">egsingle</span>, subset <span class="op">=</span> <span class="va">schoolid</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">subset_ids</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">math_model</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Some predictor variables are on very different scales: consider rescaling</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               (Intercept)          year          size    femaleMale</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  1.863011e-02  1.594001e-03 -2.150755e-05 -5.152966e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> year         1.594001e-03  1.781083e-03 -2.254868e-06 -2.116067e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> size        -2.150755e-05 -2.254868e-06  3.545270e-08 -9.546631e-07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> femaleMale  -5.152966e-04 -2.116067e-04 -9.546631e-07  1.874630e-03</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> black1      -3.900798e-03  8.564705e-05  7.891296e-07 -4.272396e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> hispanic1   -2.084991e-03  8.134093e-05 -2.478816e-06 -1.071708e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> year:size   -2.209581e-06 -1.869085e-06  3.494674e-09  1.068855e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  3.783504e-02  4.761424e-03 -4.339283e-05 -7.507229e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> year         4.761424e-03  1.055863e-02 -2.769442e-06 -3.659318e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> size        -4.339283e-05 -2.769442e-06  8.544313e-08  6.516501e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> femaleMale  -7.507229e-03 -3.659318e-03  6.516501e-06  9.417936e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> black1      -7.037054e-03  3.942316e-04 -1.389714e-06 -4.086193e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> hispanic1    1.603050e-02  6.423355e-03 -1.644442e-05 -4.676825e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> year:size   -6.313796e-06 -1.201793e-05  8.181337e-09  3.644258e-06</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                    black1     hispanic1     year:size</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -3.900798e-03 -2.084991e-03 -2.209581e-06</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> year         8.564705e-05  8.134093e-05 -1.869085e-06</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> size         7.891296e-07 -2.478816e-06  3.494674e-09</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> femaleMale  -4.272396e-04 -1.071708e-04  1.068855e-07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> black1       5.612436e-03  3.819343e-03  6.989508e-08</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> hispanic1    3.819343e-03  7.923234e-03 -6.929796e-08</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> year:size    6.989508e-08 -6.929796e-08  2.267422e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -7.037054e-03  1.603050e-02 -6.313796e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> year         3.942316e-04  6.423355e-03 -1.201793e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> size        -1.389714e-06 -1.644442e-05  8.181337e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> femaleMale  -4.086193e-03 -4.676825e-03  3.644258e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> black1       2.086591e-02  3.779849e-03  9.422996e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> hispanic1    3.779849e-03  1.375137e-02 -6.919886e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> year:size    9.422996e-07 -6.919886e-06  1.553385e-08</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
