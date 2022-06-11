@@ -184,6 +184,8 @@ test_that("impute_covariance_matrix works with unobserved factors.", {
 })
 
 test_that("impute_covariance_matrix works with missing variances.", {
+  skip_if_not_installed("robumeta")
+  
   data(corrdat, package = "robumeta")
   dat_miss <- corrdat
   dat_miss$var[sample.int(nrow(corrdat), size = round(nrow(corrdat) / 10))] <- NA
@@ -203,6 +205,7 @@ test_that("impute_covariance_matrix works with missing variances.", {
 
 
 test_that("pattern_covariance_matrix works.", {
+  skip_if_not_installed("robumeta")
   
   data(oswald2013, package = "robumeta")
   dat <- metafor::escalc(data = oswald2013, measure = "ZCOR", ri = R, ni = N)

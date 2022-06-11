@@ -48,15 +48,23 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
 of a set of regression coefficient estimates from \code{\link[lme4:merMod-class]{merMod}} object.
 }
 \examples{
+
+if (requireNamespace("lme4", quietly = TRUE)) {
+
 library(lme4)
 sleep_fit <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
 vcovCR(sleep_fit, type = "CR2")
+
+}
+
+if (requireNamespace("lme4", quietly = TRUE) & requireNamespace("mlmRev", quietly = TRUE)) {
 
 data(egsingle, package = "mlmRev")
 math_model <- lmer(math ~ year * size + female + black + hispanic 
                    + (1 | schoolid) + (1 | childid), 
                    data = egsingle)
 vcovCR(math_model, type = "CR2")
+}
 
 }
 \seealso{

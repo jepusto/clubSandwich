@@ -1,5 +1,6 @@
 context("plm objects - balanced panel with cluster-level interactions")
 
+skip_if_not_installed("plm")
 library(plm, quietly=TRUE)
 
 set.seed(20200721)

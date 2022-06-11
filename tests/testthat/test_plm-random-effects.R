@@ -1,8 +1,10 @@
 context("plm objects - random effects")
 set.seed(20190513)
 
+skip_if_not_installed("nlme")
+skip_if_not_installed("plm")
+
 library(nlme, quietly=TRUE)
-library(lme4, quietly=TRUE)
 library(plm, quietly=TRUE)
 
 data("Grunfeld", package = "plm")
@@ -77,6 +79,9 @@ plm_nested <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp,
                   effect = "nested", model = "random")
 
 test_that("nested effects agree with lmer", {
+  
+  skip_if_not_installed("lme4")
+  library(lme4, quietly=TRUE)
   
   Produc_sort_order <- with(Produc, order(region, state))
   

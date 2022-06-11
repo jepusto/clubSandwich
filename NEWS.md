@@ -1,3 +1,7 @@
+# clubSandwich 0.5.6.9999
+
+* Updated vignettes, examples, and unit tests so that the package can be compiled without any packages from SUGGESTS.
+
 # clubSandwich 0.5.6
 
 * Corrected bug in methods for `plm` objects estimated by random effects, which occurred when a user-specified clustering variable was at a higher level than the random effects.

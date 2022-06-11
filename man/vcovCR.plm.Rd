@@ -74,39 +74,47 @@ object.
 }
 \examples{
 
-library(plm)
-# fixed effects
-data("Produc", package = "plm")
-plm_FE <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp,
-              data = Produc, index = c("state","year","region"),
-              effect = "individual", model = "within")
-vcovCR(plm_FE, type="CR2")
-vcovCR(plm_FE, type = "CR2", cluster = Produc$region) # clustering on region
+if (requireNamespace("plm", quietly = TRUE)) {
 
-# random effects
-plm_RE <- update(plm_FE, model = "random")
-vcovCR(plm_RE, type = "CR2")
-vcovCR(plm_RE, type = "CR2", cluster = Produc$region) # clustering on region
+  library(plm)
+  # fixed effects
+  data("Produc", package = "plm")
+  plm_FE <- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp,
+                data = Produc, index = c("state","year","region"),
+                effect = "individual", model = "within")
+  vcovCR(plm_FE, type="CR2")
+  vcovCR(plm_FE, type = "CR2", cluster = Produc$region) # clustering on region
+}
 
-# nested random effects
-plm_nested <- update(plm_FE, effect = "nested", model = "random")
-vcovCR(plm_nested, type = "CR2") # clustering on region
+if (requireNamespace("plm", quietly = TRUE)) {
+  # random effects
+  plm_RE <- update(plm_FE, model = "random")
+  vcovCR(plm_RE, type = "CR2")
+  vcovCR(plm_RE, type = "CR2", cluster = Produc$region) # clustering on region
+}
 
-# first differencing
-data(Fatalities, package = "AER")
-Fatalities <- within(Fatalities, {
-  frate <- 10000 * fatal / pop
-  drinkagec <- cut(drinkage, breaks = 18:22, include.lowest = TRUE, right = FALSE)
-  drinkagec <- relevel(drinkagec, ref = 4)
-})
+if (requireNamespace("plm", quietly = TRUE)) {
+  # nested random effects
+  plm_nested <- update(plm_FE, effect = "nested", model = "random")
+  vcovCR(plm_nested, type = "CR2") # clustering on region
+}
 
-plm_FD <- plm(frate ~ beertax + drinkagec + miles + unemp + log(income),
-              data = Fatalities, index = c("state", "year"),
-              model = "fd")
-vcovHC(plm_FD, method="arellano", type = "sss", cluster = "group")
-vcovCR(plm_FD, type = "CR1S")
-vcovCR(plm_FD, type = "CR2")
+if (requireNamespace("plm", quietly = TRUE) & requireNamespace("AER", quietly = TRUE)) {
+  # first differencing
+  data(Fatalities, package = "AER")
+  Fatalities <- within(Fatalities, {
+    frate <- 10000 * fatal / pop
+    drinkagec <- cut(drinkage, breaks = 18:22, include.lowest = TRUE, right = FALSE)
+    drinkagec <- relevel(drinkagec, ref = 4)
+  })
 
+  plm_FD <- plm(frate ~ beertax + drinkagec + miles + unemp + log(income),
+                data = Fatalities, index = c("state", "year"),
+                model = "fd")
+  vcovHC(plm_FD, method="arellano", type = "sss", cluster = "group")
+  vcovCR(plm_FD, type = "CR1S")
+  vcovCR(plm_FD, type = "CR2")
+}
 
 }
 \seealso{

@@ -1,6 +1,8 @@
 context("rma.mv objects")
 set.seed(20190513)
 
+skip_if_not_installed("robumeta")
+skip_if_not_installed("metafor")
 
 CR_types <- paste0("CR",0:4)
 

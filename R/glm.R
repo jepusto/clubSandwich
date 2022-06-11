@@ -23,11 +23,15 @@
 #' 
 #' @examples 
 #' 
-#' data(dietox, package = "geepack")
-#' dietox$Cu <- as.factor(dietox$Cu)
-#' weight_fit <- glm(Weight ~ Cu * poly(Time, 3), data=dietox, family = "quasipoisson")
-#' V_CR <- vcovCR(weight_fit, cluster = dietox$Pig, type = "CR2")
-#' coef_test(weight_fit, vcov = V_CR, test = "Satterthwaite")
+#' if (requireNamespace("geepack", quietly = TRUE)) {
+#' 
+#'   data(dietox, package = "geepack")
+#'   dietox$Cu <- as.factor(dietox$Cu)
+#'   weight_fit <- glm(Weight ~ Cu * poly(Time, 3), data=dietox, family = "quasipoisson")
+#'   V_CR <- vcovCR(weight_fit, cluster = dietox$Pig, type = "CR2")
+#'   coef_test(weight_fit, vcov = V_CR, test = "Satterthwaite")
+#'   
+#' }
 #' 
 #' @export
 
