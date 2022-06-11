@@ -18,7 +18,7 @@ small-sample correction is based on a Satterthwaite approximation."><!-- mathjax
     
     <a class="navbar-brand me-2" href="../index.html">clubSandwich</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.6.9999</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -86,12 +86,18 @@ small-sample correction is based on a Satterthwaite approximation.</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>obj</dt>
 <dd><p>Fitted model for which to calculate confidence intervals.</p></dd>
+
+
 <dt>vcov</dt>
 <dd><p>Variance covariance matrix estimated using <code>vcovCR</code> or a
 character string specifying which small-sample adjustment should be used to
 calculate the variance-covariance.</p></dd>
+
+
 <dt>level</dt>
 <dd><p>Desired coverage level for confidence intervals.</p></dd>
+
+
 <dt>test</dt>
 <dd><p>Character vector specifying which small-sample corrections to
 calculate. <code>"z"</code> returns a z test (i.e., using a standard normal
@@ -103,20 +109,29 @@ where <code>p</code> is the number of regression coefficients in <code>obj</code
 <code><a href="coef_test.html">coef_test()</a></code>, <code>"saddlepoint"</code> is not currently supported in
 <code>conf_int()</code> because saddlepoint confidence intervals do not have a
 closed-form solution.</p></dd>
+
+
 <dt>coefs</dt>
 <dd><p>Character, integer, or logical vector specifying which
 coefficients should be tested. The default value <code>"All"</code> will test all
 estimated coefficients.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Further arguments passed to <code><a href="vcovCR.html">vcovCR</a></code>, which are only
 needed if <code>vcov</code> is a character string.</p></dd>
+
+
 <dt>p_values</dt>
 <dd><p>Logical indicating whether to report p-values. The default
 value is <code>FALSE</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data frame containing estimated regression coefficients, standard
+    
+
+<p>A data frame containing estimated regression coefficients, standard
   errors, confidence intervals, and (optionally) p-values.</p>
     </div>
     <div class="section level2">
@@ -126,23 +141,22 @@ value is <code>FALSE</code>.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Produc"</span>, package <span class="op">=</span> <span class="st">"plm"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">lm_individual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">gsp</span><span class="op">)</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">state</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pcap</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pc</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">emp</span><span class="op">)</span> <span class="op">+</span> <span class="va">unemp</span>, data <span class="op">=</span> <span class="va">Produc</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">individual_index</span> <span class="op">&lt;-</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"state"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm_individual</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">conf_int</span><span class="op">(</span><span class="va">lm_individual</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span>, cluster <span class="op">=</span> <span class="va">Produc</span><span class="op">$</span><span class="va">state</span>, coefs <span class="op">=</span> <span class="va">individual_index</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Coef. Estimate     SE d.f. Lower 95% CI Upper 95% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  log(pcap)  -0.0261 0.0625 22.9      -0.1554     1.03e-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    log(pc)   0.2920 0.0646 22.2       0.1580     4.26e-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   log(emp)   0.7682 0.0855 20.4       0.5900     9.46e-01</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      unemp  -0.0053 0.0026 32.0      -0.0106    -6.94e-06</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"ChickWeight"</span>, package <span class="op">=</span> <span class="st">"datasets"</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">weight</span> <span class="op">~</span> <span class="va">Diet</span>  <span class="op">*</span> <span class="va">Time</span>, data <span class="op">=</span> <span class="va">ChickWeight</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">diet_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Diet.:Time"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm_fit</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">conf_int</span><span class="op">(</span><span class="va">lm_fit</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span>, cluster <span class="op">=</span> <span class="va">ChickWeight</span><span class="op">$</span><span class="va">Chick</span>, coefs <span class="op">=</span> <span class="va">diet_index</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Coef. Estimate   SE d.f. Lower 95% CI Upper 95% CI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Diet2:Time     1.77 1.49 18.8       -1.349         4.88</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Diet3:Time     4.58 1.35 18.8        1.751         7.41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Diet4:Time     2.87 1.01 18.3        0.757         4.99</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">V_CR2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_individual</span>, cluster <span class="op">=</span> <span class="va">Produc</span><span class="op">$</span><span class="va">state</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">conf_int</span><span class="op">(</span><span class="va">lm_individual</span>, vcov <span class="op">=</span> <span class="va">V_CR2</span>, level <span class="op">=</span> <span class="fl">.99</span>, coefs <span class="op">=</span> <span class="va">individual_index</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Coef. Estimate     SE d.f. Lower 99% CI Upper 99% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  log(pcap)  -0.0261 0.0625 22.9      -0.2016      0.14927</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    log(pc)   0.2920 0.0646 22.2       0.1099      0.47407</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   log(emp)   0.7682 0.0855 20.4       0.5253      1.01102</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      unemp  -0.0053 0.0026 32.0      -0.0124      0.00182</span>
+<span class="r-in"><span class="va">V_CR2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_fit</span>, cluster <span class="op">=</span> <span class="va">ChickWeight</span><span class="op">$</span><span class="va">Chick</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">conf_int</span><span class="op">(</span><span class="va">lm_fit</span>, vcov <span class="op">=</span> <span class="va">V_CR2</span>, level <span class="op">=</span> <span class="fl">.99</span>, coefs <span class="op">=</span> <span class="va">diet_index</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Coef. Estimate   SE d.f. Lower 99% CI Upper 99% CI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Diet2:Time     1.77 1.49 18.8      -2.4946         6.03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Diet3:Time     4.58 1.35 18.8       0.7115         8.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Diet4:Time     2.87 1.01 18.3      -0.0237         5.77</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
@@ -155,7 +169,7 @@ value is <code>FALSE</code>.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
     </footer></div>

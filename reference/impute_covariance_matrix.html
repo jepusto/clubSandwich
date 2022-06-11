@@ -18,7 +18,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">clubSandwich</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.6.9999</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,44 +88,67 @@
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>vi</dt>
 <dd><p>Vector of variances</p></dd>
+
+
 <dt>cluster</dt>
 <dd><p>Vector indicating which effects belong to the same cluster.
 Effects with the same value of `cluster` will be treated as correlated.</p></dd>
+
+
 <dt>r</dt>
 <dd><p>Vector or numeric value of assumed constant correlation(s) between
 effect size estimates from each study.</p></dd>
+
+
 <dt>ti</dt>
 <dd><p>Vector of time-points describing temporal spacing of effects, for
 use with auto-regressive correlation structures.</p></dd>
+
+
 <dt>ar1</dt>
 <dd><p>Vector or numeric value of assumed AR(1) auto-correlation(s)
 between effect size estimates from each study. If specified, then <code>ti</code>
 argument must be specified.</p></dd>
+
+
 <dt>smooth_vi</dt>
 <dd><p>Logical indicating whether to smooth the marginal variances
 by taking the average <code>vi</code> within each cluster. Defaults to
 <code>FALSE</code>.</p></dd>
+
+
 <dt>subgroup</dt>
 <dd><p>Vector of category labels describing sub-groups of effects.
 If non-null, effects that share the same category label and the same
 cluster will be treated as correlated, but effects with different category
 labels will be treated as uncorrelated, even if they come from the same
 cluster.</p></dd>
+
+
 <dt>return_list</dt>
 <dd><p>Optional logical indicating whether to return a list of
 matrices (with one entry per block) or the full variance-covariance matrix.</p></dd>
+
+
 <dt>check_PD</dt>
 <dd><p>Optional logical indicating whether to check whether each
 covariance matrix is positive definite. If <code>TRUE</code> (the default), the
 function will display a warning if any covariance matrix is not positive
 definite.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>If <code>cluster</code> is appropriately sorted, then a list of matrices,
-  with one entry per cluster, will be returned by default. If <code>cluster</code>  is out of order, then the full variance-covariance matrix will be returned
-  by default. The output structure can be controlled with the optional
-<code>return_list</code> argument.</p>
+    
+
+<p>If <code>cluster</code> is appropriately sorted, then a list of matrices,
+  with one entry per cluster, will be returned by default. If <code>cluster</code></p>
+
+
+<p>is out of order, then the full variance-covariance matrix will be returned
+  by default. The output structure can be controlled with the optional</p>
+<p></p>
+<p><code>return_list</code> argument.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -169,13 +192,18 @@ definite.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.metafor-project.org" class="external-link">metafor</a></span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"metafor"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.metafor-project.org" class="external-link">metafor</a></span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Constant correlation</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">SATcoaching</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">V_list</span> <span class="op">&lt;-</span> <span class="fu">impute_covariance_matrix</span><span class="op">(</span>vi <span class="op">=</span> <span class="va">SATcoaching</span><span class="op">$</span><span class="va">V</span>, cluster <span class="op">=</span> <span class="va">SATcoaching</span><span class="op">$</span><span class="va">study</span>, r <span class="op">=</span> <span class="fl">0.66</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">MVFE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://wviechtb.github.io/metafor/reference/rma.mv.html" class="external-link">rma.mv</a></span><span class="op">(</span><span class="va">d</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">test</span>, V <span class="op">=</span> <span class="va">V_list</span>, data <span class="op">=</span> <span class="va">SATcoaching</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="conf_int.html">conf_int</a></span><span class="op">(</span><span class="va">MVFE</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span>, cluster <span class="op">=</span> <span class="va">SATcoaching</span><span class="op">$</span><span class="va">study</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="op">}</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       Coef. Estimate     SE d.f. Lower 95% CI Upper 95% CI</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    testMath    0.132 0.0376 13.2       0.0506        0.213</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  testVerbal    0.122 0.0250 16.9       0.0686        0.174</span>
@@ -191,7 +219,7 @@ definite.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
     </footer></div>

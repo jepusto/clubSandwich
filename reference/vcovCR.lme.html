@@ -12,7 +12,7 @@ of a set of regression coefficient estimates from a lme object."><!-- mathjax --
     
     <a class="navbar-brand me-2" href="../index.html">clubSandwich</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.6.9999</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,24 +70,34 @@ of a set of regression coefficient estimates from a <code><a href="https://rdrr.
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>obj</dt>
 <dd><p>Fitted model for which to calculate the variance-covariance matrix</p></dd>
+
+
 <dt>cluster</dt>
 <dd><p>Optional expression or vector indicating which observations 
 belong to the same cluster. If not specified, will be set to 
 <code>getGroups(obj)</code>.</p></dd>
+
+
 <dt>type</dt>
 <dd><p>Character string specifying which small-sample adjustment should 
 be used, with available options <code>"CR0"</code>, <code>"CR1"</code>, <code>"CR1p"</code>,
 <code>"CR1S"</code>, <code>"CR2"</code>, or <code>"CR3"</code>. See "Details" section of 
 <code><a href="vcovCR.html">vcovCR</a></code> for further information.</p></dd>
+
+
 <dt>target</dt>
 <dd><p>Optional matrix or vector describing the working 
 variance-covariance model used to calculate the <code>CR2</code> and <code>CR4</code> 
 adjustment matrices. If not specified, the target is taken to be the
 estimated variance-covariance structure of the <code>lme</code> object.</p></dd>
+
+
 <dt>inverse_var</dt>
 <dd><p>Optional logical indicating whether the weights used in 
 fitting the model are inverse-variance. If not specified, <code>vcovCR</code> 
 will attempt to infer a value.</p></dd>
+
+
 <dt>form</dt>
 <dd><p>Controls the form of the returned matrix. The default 
 <code>"sandwich"</code> will return the sandwich variance-covariance matrix. 
@@ -97,12 +107,17 @@ appropriate dimension, will return the sandwich variance-covariance matrix
 calculated using <code>B</code> as the bread. <code>form = "estfun"</code> will return the 
 (appropriately scaled) estimating function, the transposed crossproduct of 
 which is equal to the sandwich variance-covariance matrix.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Additional arguments available for some classes of objects.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An object of class <code>c("vcovCR","clubSandwich")</code>, which consists 
+    
+
+<p>An object of class <code>c("vcovCR","clubSandwich")</code>, which consists 
   of a matrix of the estimated variance of and covariances between the 
   regression coefficient estimates.</p>
     </div>
@@ -113,9 +128,14 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://svn.r-project.org/R-packages/trunk/nlme/" class="external-link">nlme</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="va">rat_weight</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html" class="external-link">lme</a></span><span class="op">(</span><span class="va">weight</span> <span class="op">~</span> <span class="va">Time</span> <span class="op">*</span> <span class="va">Diet</span>, data<span class="op">=</span><span class="va">BodyWeight</span>, <span class="op">~</span> <span class="va">Time</span> <span class="op">|</span> <span class="va">Rat</span><span class="op">)</span> </span>
-<span class="r-in"><span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">rat_weight</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"nlme"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"></span>
+<span class="r-in">  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://svn.r-project.org/R-packages/trunk/nlme/" class="external-link">nlme</a></span><span class="op">)</span></span>
+<span class="r-in">  <span class="va">rat_weight</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html" class="external-link">lme</a></span><span class="op">(</span><span class="va">weight</span> <span class="op">~</span> <span class="va">Time</span> <span class="op">*</span> <span class="va">Diet</span>, data<span class="op">=</span><span class="va">BodyWeight</span>, <span class="op">~</span> <span class="va">Time</span> <span class="op">|</span> <span class="va">Rat</span><span class="op">)</span> </span>
+<span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">rat_weight</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="op">}</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              (Intercept)          Time         Diet2        Diet3    Time:Diet2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  20.50523572 -0.0586895628  -20.50523572 -20.50523572  0.0586895628</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Time         -0.05868956  0.0008918201    0.05868956   0.05868956 -0.0008918201</span>
@@ -131,11 +151,15 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Time:Diet2   0.0008918201</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Time:Diet3   0.0237304192</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">egsingle</span>, package <span class="op">=</span> <span class="st">"mlmRev"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">math_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html" class="external-link">lme</a></span><span class="op">(</span><span class="va">math</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">size</span> <span class="op">+</span> <span class="va">female</span> <span class="op">+</span> <span class="va">black</span> <span class="op">+</span> <span class="va">hispanic</span>, </span>
-<span class="r-in">                  random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">~</span> <span class="va">year</span> <span class="op">|</span> <span class="va">schoolid</span>, <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">childid</span><span class="op">)</span>, </span>
-<span class="r-in">                  data <span class="op">=</span> <span class="va">egsingle</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">math_model</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"nlme"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"mlmRev"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"></span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">egsingle</span>, package <span class="op">=</span> <span class="st">"mlmRev"</span><span class="op">)</span></span>
+<span class="r-in">  <span class="va">math_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html" class="external-link">lme</a></span><span class="op">(</span><span class="va">math</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">size</span> <span class="op">+</span> <span class="va">female</span> <span class="op">+</span> <span class="va">black</span> <span class="op">+</span> <span class="va">hispanic</span>, </span>
+<span class="r-in">                    random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">~</span> <span class="va">year</span> <span class="op">|</span> <span class="va">schoolid</span>, <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">childid</span><span class="op">)</span>, </span>
+<span class="r-in">                    data <span class="op">=</span> <span class="va">egsingle</span><span class="op">)</span></span>
+<span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">math_model</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
+<span class="r-in">  </span>
+<span class="r-in"><span class="op">}</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               (Intercept)          year          size    femaleMale</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  1.736519e-02  1.401158e-03 -2.038097e-05 -2.612966e-04</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> year         1.401158e-03  1.731819e-03 -1.427005e-06 -3.077206e-04</span>
@@ -164,7 +188,7 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
     </footer></div>

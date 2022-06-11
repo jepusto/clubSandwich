@@ -12,7 +12,7 @@ of a set of regression coefficient estimates from an lm object."><!-- mathjax --
     
     <a class="navbar-brand me-2" href="../index.html">clubSandwich</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.6.9999</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,23 +78,33 @@ of a set of regression coefficient estimates from an <code><a href="https://rdrr
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>obj</dt>
 <dd><p>Fitted model for which to calculate the variance-covariance matrix</p></dd>
+
+
 <dt>cluster</dt>
 <dd><p>Expression or vector indicating which observations belong to
 the same cluster. Required for <code>lm</code> objects.</p></dd>
+
+
 <dt>type</dt>
 <dd><p>Character string specifying which small-sample adjustment should 
 be used, with available options <code>"CR0"</code>, <code>"CR1"</code>, <code>"CR1p"</code>,
 <code>"CR1S"</code>, <code>"CR2"</code>, or <code>"CR3"</code>. See "Details" section of 
 <code><a href="vcovCR.html">vcovCR</a></code> for further information.</p></dd>
+
+
 <dt>target</dt>
 <dd><p>Optional matrix or vector describing the working
 variance-covariance model used to calculate the <code>CR2</code> and <code>CR4</code>
 adjustment matrices. If a vector, the target matrix is assumed to be
 diagonal. If not specified, the target is taken to be an identity matrix.</p></dd>
+
+
 <dt>inverse_var</dt>
 <dd><p>Optional logical indicating whether the weights used in 
 fitting the model are inverse-variance. If not specified, <code>vcovCR</code> 
 will attempt to infer a value.</p></dd>
+
+
 <dt>form</dt>
 <dd><p>Controls the form of the returned matrix. The default 
 <code>"sandwich"</code> will return the sandwich variance-covariance matrix. 
@@ -104,12 +114,17 @@ appropriate dimension, will return the sandwich variance-covariance matrix
 calculated using <code>B</code> as the bread. <code>form = "estfun"</code> will return the 
 (appropriately scaled) estimating function, the transposed crossproduct of 
 which is equal to the sandwich variance-covariance matrix.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Additional arguments available for some classes of objects.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An object of class <code>c("vcovCR","clubSandwich")</code>, which consists
+    
+
+<p>An object of class <code>c("vcovCR","clubSandwich")</code>, which consists
   of a matrix of the estimated variance of and covariances between the
   regression coefficient estimates.</p>
     </div>
@@ -120,21 +135,31 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Produc"</span>, package <span class="op">=</span> <span class="st">"plm"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">lm_individual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">gsp</span><span class="op">)</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">state</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pcap</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pc</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">emp</span><span class="op">)</span> <span class="op">+</span> <span class="va">unemp</span>, data <span class="op">=</span> <span class="va">Produc</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">individual_index</span> <span class="op">&lt;-</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"state"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://wviechtb.github.io/metafor/reference/coef.rma.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm_individual</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_individual</span>, cluster <span class="op">=</span> <span class="va">Produc</span><span class="op">$</span><span class="va">state</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span><span class="op">[</span><span class="va">individual_index</span>,<span class="va">individual_index</span><span class="op">]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               log(pcap)       log(pc)      log(emp)         unemp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log(pcap)  3.900840e-03 -7.382313e-04 -0.0024837779 -7.825846e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log(pc)   -7.382313e-04  4.177767e-03 -0.0040101610 -9.960967e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log(emp)  -2.483778e-03 -4.010161e-03  0.0073152051  1.736024e-04</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> unemp     -7.825846e-05 -9.960967e-05  0.0001736024  6.745842e-06</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"ChickWeight"</span>, package <span class="op">=</span> <span class="st">"datasets"</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">weight</span> <span class="op">~</span> <span class="va">Time</span> <span class="op">+</span> <span class="va">Diet</span><span class="op">:</span><span class="va">Time</span>, data <span class="op">=</span> <span class="va">ChickWeight</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_fit</span>, cluster <span class="op">=</span> <span class="va">ChickWeight</span><span class="op">$</span><span class="va">Chick</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             (Intercept)       Time Time:Diet2 Time:Diet3 Time:Diet4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)   3.9317840 -0.7851508 -0.2560762 -0.0750498  0.2695861</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time         -0.7851508  0.4360726 -0.3314209 -0.3436398 -0.3665016</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time:Diet2   -0.2560762 -0.3314209  1.3680862  0.3475327  0.3482061</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time:Diet3   -0.0750498 -0.3436398  0.3475327  1.1195632  0.3483146</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Time:Diet4    0.2695861 -0.3665016  0.3482061  0.3483146  0.5416587</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="co"># compare to plm()</span></span>
-<span class="r-in"><span class="va">plm_FE</span> <span class="op">&lt;-</span> <span class="fu">plm</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plm/man/plm.html" class="external-link">plm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">gsp</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pcap</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pc</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">emp</span><span class="op">)</span> <span class="op">+</span> <span class="va">unemp</span>, </span>
-<span class="r-in">                   data <span class="op">=</span> <span class="va">Produc</span>, index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"state"</span>,<span class="st">"year"</span><span class="op">)</span>, </span>
-<span class="r-in">                   effect <span class="op">=</span> <span class="st">"individual"</span>, model <span class="op">=</span> <span class="st">"within"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">plm_FE</span>, type<span class="op">=</span><span class="st">"CR2"</span><span class="op">)</span></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"plm"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"></span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Produc"</span>, package <span class="op">=</span> <span class="st">"plm"</span><span class="op">)</span></span>
+<span class="r-in">  <span class="va">lm_individual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">gsp</span><span class="op">)</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">state</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pcap</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pc</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">emp</span><span class="op">)</span> <span class="op">+</span> <span class="va">unemp</span>, data <span class="op">=</span> <span class="va">Produc</span><span class="op">)</span></span>
+<span class="r-in">  <span class="va">individual_index</span> <span class="op">&lt;-</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"state"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://wviechtb.github.io/metafor/reference/coef.rma.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm_individual</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_individual</span>, cluster <span class="op">=</span> <span class="va">Produc</span><span class="op">$</span><span class="va">state</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span><span class="op">[</span><span class="va">individual_index</span>,<span class="va">individual_index</span><span class="op">]</span></span>
+<span class="r-in"></span>
+<span class="r-in">  <span class="co"># compare to plm()</span></span>
+<span class="r-in">  <span class="va">plm_FE</span> <span class="op">&lt;-</span> <span class="fu">plm</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/plm/man/plm.html" class="external-link">plm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">gsp</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pcap</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pc</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">emp</span><span class="op">)</span> <span class="op">+</span> <span class="va">unemp</span>, </span>
+<span class="r-in">                     data <span class="op">=</span> <span class="va">Produc</span>, index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"state"</span>,<span class="st">"year"</span><span class="op">)</span>, </span>
+<span class="r-in">                     effect <span class="op">=</span> <span class="st">"individual"</span>, model <span class="op">=</span> <span class="st">"within"</span><span class="op">)</span></span>
+<span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">plm_FE</span>, type<span class="op">=</span><span class="st">"CR2"</span><span class="op">)</span></span>
+<span class="r-in">  </span>
+<span class="r-in"><span class="op">}</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               log(pcap)       log(pc)      log(emp)         unemp</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> log(pcap)  3.900840e-03 -7.382313e-04 -0.0024837779 -7.825846e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> log(pc)   -7.382313e-04  4.177767e-03 -0.0040101610 -9.960967e-05</span>
@@ -152,7 +177,7 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
     </footer></div>

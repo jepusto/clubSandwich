@@ -16,7 +16,7 @@ based on a Satterthwaite approximation or a saddlepoint approximation."><!-- mat
     
     <a class="navbar-brand me-2" href="../index.html">clubSandwich</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.6.9999</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,10 +82,14 @@ based on a Satterthwaite approximation or a saddlepoint approximation.</p>
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>obj</dt>
 <dd><p>Fitted model for which to calculate t-tests.</p></dd>
+
+
 <dt>vcov</dt>
 <dd><p>Variance covariance matrix estimated using <code>vcovCR</code> or a
 character string specifying which small-sample adjustment should be used to
 calculate the variance-covariance.</p></dd>
+
+
 <dt>test</dt>
 <dd><p>Character vector specifying which small-sample corrections to
 calculate. <code>"z"</code> returns a z test (i.e., using a standard normal
@@ -96,20 +100,29 @@ where <code>p</code> is the number of regression coefficients in <code>obj</code
 <code>"Satterthwaite"</code> returns a Satterthwaite correction.
 <code>"saddlepoint"</code> returns a saddlepoint correction. Default is
 <code>"Satterthwaite"</code>.</p></dd>
+
+
 <dt>coefs</dt>
 <dd><p>Character, integer, or logical vector specifying which
 coefficients should be tested. The default value <code>"All"</code> will test all
 estimated coefficients.</p></dd>
+
+
 <dt>p_values</dt>
 <dd><p>Logical indicating whether to report p-values. The default
 value is <code>TRUE</code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Further arguments passed to <code><a href="vcovCR.html">vcovCR</a></code>, which are only
 needed if <code>vcov</code> is a character string.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data frame containing estimated regression coefficients, standard
+    
+
+<p>A data frame containing estimated regression coefficients, standard
   errors, and test results. For the Satterthwaite approximation, degrees of
   freedom and a p-value are reported. For the saddlepoint approximation, the
   saddlepoint and a p-value are reported.</p>
@@ -121,23 +134,22 @@ needed if <code>vcov</code> is a character string.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Produc"</span>, package <span class="op">=</span> <span class="st">"plm"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">lm_individual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">gsp</span><span class="op">)</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">state</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pcap</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pc</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">emp</span><span class="op">)</span> <span class="op">+</span> <span class="va">unemp</span>, data <span class="op">=</span> <span class="va">Produc</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">individual_index</span> <span class="op">&lt;-</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"state"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm_individual</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">coef_test</span><span class="op">(</span><span class="va">lm_individual</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span>, cluster <span class="op">=</span> <span class="va">Produc</span><span class="op">$</span><span class="va">state</span>, coefs <span class="op">=</span> <span class="va">individual_index</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Coef. Estimate     SE t-stat d.f. (Satt) p-val (Satt) Sig.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  log(pcap)  -0.0261 0.0625 -0.419        22.9       0.6794     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    log(pc)   0.2920 0.0646  4.518        22.2       &lt;0.001  ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   log(emp)   0.7682 0.0855  8.981        20.4       &lt;0.001  ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      unemp  -0.0053 0.0026 -2.040        32.0       0.0497    *</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"ChickWeight"</span>, package <span class="op">=</span> <span class="st">"datasets"</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">weight</span> <span class="op">~</span> <span class="va">Diet</span>  <span class="op">*</span> <span class="va">Time</span>, data <span class="op">=</span> <span class="va">ChickWeight</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">diet_index</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"Diet.:Time"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">lm_fit</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">coef_test</span><span class="op">(</span><span class="va">lm_fit</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span>, cluster <span class="op">=</span> <span class="va">ChickWeight</span><span class="op">$</span><span class="va">Chick</span>, coefs <span class="op">=</span> <span class="va">diet_index</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Coef. Estimate   SE t-stat d.f. (Satt) p-val (Satt) Sig.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Diet2:Time     1.77 1.49   1.19        18.8       0.2497     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Diet3:Time     4.58 1.35   3.39        18.8       0.0031   **</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Diet4:Time     2.87 1.01   2.85        18.3       0.0105    *</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">V_CR2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_individual</span>, cluster <span class="op">=</span> <span class="va">Produc</span><span class="op">$</span><span class="va">state</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">coef_test</span><span class="op">(</span><span class="va">lm_individual</span>, vcov <span class="op">=</span> <span class="va">V_CR2</span>, coefs <span class="op">=</span> <span class="va">individual_index</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      Coef. Estimate     SE t-stat d.f. (Satt) p-val (Satt) Sig.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  log(pcap)  -0.0261 0.0625 -0.419        22.9       0.6794     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    log(pc)   0.2920 0.0646  4.518        22.2       &lt;0.001  ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   log(emp)   0.7682 0.0855  8.981        20.4       &lt;0.001  ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>      unemp  -0.0053 0.0026 -2.040        32.0       0.0497    *</span>
+<span class="r-in"><span class="va">V_CR2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_fit</span>, cluster <span class="op">=</span> <span class="va">ChickWeight</span><span class="op">$</span><span class="va">Chick</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">coef_test</span><span class="op">(</span><span class="va">lm_fit</span>, vcov <span class="op">=</span> <span class="va">V_CR2</span>, coefs <span class="op">=</span> <span class="va">diet_index</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Coef. Estimate   SE t-stat d.f. (Satt) p-val (Satt) Sig.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Diet2:Time     1.77 1.49   1.19        18.8       0.2497     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Diet3:Time     4.58 1.35   3.39        18.8       0.0031   **</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Diet4:Time     2.87 1.01   2.85        18.3       0.0105    *</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
@@ -150,7 +162,7 @@ needed if <code>vcov</code> is a character string.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
     </footer></div>

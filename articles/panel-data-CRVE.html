@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">clubSandwich</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.6.9999</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,11 +71,11 @@
 
 
 <script src="panel-data-CRVE_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
-  <main id="main"><div class="page-header">
+  <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Cluster-robust standard errors and hypothesis tests in panel data models</h1>
                         <h4 data-toc-skip class="author">James E. Pustejovsky</h4>
             
-            <h4 data-toc-skip class="date">2022-06-01</h4>
+            <h4 data-toc-skip class="date">2022-06-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jepusto/clubSandwich/blob/HEAD/vignettes/panel-data-CRVE.Rmd" class="external-link"><code>vignettes/panel-data-CRVE.Rmd</code></a></small>
       <div class="d-none name"><code>panel-data-CRVE.Rmd</code></div>
@@ -100,12 +100,8 @@
 </h2>
 <p>The following code does some simple data-munging and the estimates the model by OLS:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://jepusto.github.io/clubSandwich/">clubSandwich</a></span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## Registered S3 method overwritten by 'clubSandwich':</span>
-<span class="co">##   method    from    </span>
-<span class="co">##   bread.mlm sandwich</span></code></pre>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">MortalityRates</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://jepusto.github.io/clubSandwich/">clubSandwich</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">MortalityRates</span><span class="op">)</span>
 
 <span class="co"># subset for deaths in motor vehicle accidents, 1970-1983</span>
 <span class="va">MV_deaths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">MortalityRates</span>, <span class="va">cause</span><span class="op">==</span><span class="st">"Motor Vehicle"</span> <span class="op">&amp;</span> 
@@ -115,14 +111,14 @@
 <span class="va">lm_unweighted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">mrate</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">legal</span> <span class="op">+</span> <span class="va">beertaxa</span> <span class="op">+</span> 
                       <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">state</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">MV_deaths</span><span class="op">)</span></code></pre></div>
 <p>The <code>coef_test</code> function from <code>clubSandwich</code> can then be used to test the hypothesis that changing the minimum legal drinking age has no effect on motor vehicle deaths in this cohort (i.e., <span class="math inline">\(H_0: \delta = 0\)</span>). The usual way to test this is to cluster the standard errors by state, calculate the robust Wald statistic, and compare that to a standard normal reference distribution. The code and results are as follows:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">lm_unweighted</span>, vcov <span class="op">=</span> <span class="st">"CR1"</span>, 
           cluster <span class="op">=</span> <span class="va">MV_deaths</span><span class="op">$</span><span class="va">state</span>, test <span class="op">=</span> <span class="st">"naive-t"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,<span class="op">]</span></code></pre></div>
 <pre><code><span class="co">##     Coef. Estimate   SE t-stat d.f. (naive-t) p-val (naive-t) Sig.</span>
 <span class="co">##     legal     7.59 2.44  3.108             49         0.00313   **</span>
 <span class="co">##  beertaxa     3.82 5.14  0.743             49         0.46128</span></code></pre>
 <p>A better approach would be to use the generalized, bias-reduced linearization CRVE, together with Satterthwaite degrees of freedom. In the <code>clubSandwich</code> package, the BRL adjustment is called “CR2” because it is directly analogous to the HC2 correction used in heteroskedasticity-robust variance estimation. When applied to an OLS model estimated by <code>lm</code>, the default working model is an identity matrix, which amounts to the “working” assumption that the errors are all uncorrelated and homoskedastic. Here’s how to apply this approach in the example:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">lm_unweighted</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span>, 
           cluster <span class="op">=</span> <span class="va">MV_deaths</span><span class="op">$</span><span class="va">state</span>, test <span class="op">=</span> <span class="st">"Satterthwaite"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,<span class="op">]</span></code></pre></div>
 <pre><code><span class="co">##     Coef. Estimate   SE t-stat d.f. (Satt) p-val (Satt) Sig.</span>
@@ -134,7 +130,7 @@
 <h2 id="unweighted-within-estimation">Unweighted “within” estimation<a class="anchor" aria-label="anchor" href="#unweighted-within-estimation"></a>
 </h2>
 <p>The <code>plm</code> package in R provides another way to estimate the same model. It is convenient because it absorbs the state and year fixed effects before estimating the effect of <code>legal</code>. The <code>clubSandwich</code> package works with fitted <code>plm</code> models too:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cran.r-project.org/package=plm" class="external-link">plm</a></span><span class="op">)</span>
 <span class="va">plm_unweighted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/plm/man/plm.html" class="external-link">plm</a></span><span class="op">(</span><span class="va">mrate</span> <span class="op">~</span> <span class="va">legal</span> <span class="op">+</span> <span class="va">beertaxa</span>, data <span class="op">=</span> <span class="va">MV_deaths</span>, 
                       effect <span class="op">=</span> <span class="st">"twoways"</span>, index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"state"</span>,<span class="st">"year"</span><span class="op">)</span><span class="op">)</span>
@@ -142,7 +138,7 @@
 <pre><code><span class="co">##     Coef. Estimate   SE t-stat d.f. (naive-t) p-val (naive-t) Sig.</span>
 <span class="co">##     legal     7.59 2.44  3.108             49         0.00313   **</span>
 <span class="co">##  beertaxa     3.82 5.14  0.743             49         0.46128</span></code></pre>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">plm_unweighted</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span>, cluster <span class="op">=</span> <span class="st">"individual"</span>, test <span class="op">=</span> <span class="st">"Satterthwaite"</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">##     Coef. Estimate   SE t-stat d.f. (Satt) p-val (Satt) Sig.</span>
 <span class="co">##     legal     7.59 2.51  3.019       24.58      0.00583   **</span>
@@ -152,7 +148,7 @@
 <h2 id="population-weighted-estimation">Population-weighted estimation<a class="anchor" aria-label="anchor" href="#population-weighted-estimation"></a>
 </h2>
 <p>The difference between the standard method and the new method are not terribly exciting in the above example. However, things change quite a bit if the model is estimated using population weights. We go back to fitting in <code>lm</code> with dummies for all the fixed effects because <code>plm</code> does not handle weighted least squares.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lm_weighted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">mrate</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">legal</span> <span class="op">+</span> <span class="va">beertaxa</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">state</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">year</span><span class="op">)</span>, 
                   weights <span class="op">=</span> <span class="va">pop</span>, data <span class="op">=</span> <span class="va">MV_deaths</span><span class="op">)</span>
 <span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">lm_weighted</span>, vcov <span class="op">=</span> <span class="st">"CR1"</span>, 
@@ -160,7 +156,7 @@
 <pre><code><span class="co">##     Coef. Estimate   SE t-stat d.f. (naive-t) p-val (naive-t) Sig.</span>
 <span class="co">##     legal     7.78 2.01   3.87             49          &lt;0.001  ***</span>
 <span class="co">##  beertaxa    11.16 4.20   2.66             49          0.0106    *</span></code></pre>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">lm_weighted</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span>, 
           cluster <span class="op">=</span> <span class="va">MV_deaths</span><span class="op">$</span><span class="va">state</span>, test <span class="op">=</span> <span class="st">"Satterthwaite"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,<span class="op">]</span></code></pre></div>
 <pre><code><span class="co">##     Coef. Estimate   SE t-stat d.f. (Satt) p-val (Satt) Sig.</span>
@@ -168,7 +164,7 @@
 <span class="co">##  beertaxa    11.16 4.37   2.55        6.85      0.03854    *</span></code></pre>
 <p>Using population weights slightly reduces the point estimate of the effect, while also slightly increasing its precision. If you were following the standard approach, you would probably be happy with the weighted estimates and wouldn’t think about it any further. However, using the CR2 variance estimator and Satterthwaite correction produces a p-value that is an order of magnitude larger (though still significant at the conventional 5% level). The degrees of freedom are just 8.5—drastically smaller than would be expected based on the number of clusters.</p>
 <p>Even with weights, the <code>coef_test</code> function uses an “independent, homoskedastic” working model as a default for <code>lm</code> objects. In the present example, the outcome is a standardized rate and so a better assumption might be that the error variances are inversely proportional to population size. The following code uses this alternate working model:</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">lm_weighted</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span>, 
           cluster <span class="op">=</span> <span class="va">MV_deaths</span><span class="op">$</span><span class="va">state</span>, target <span class="op">=</span> <span class="fl">1</span> <span class="op">/</span> <span class="va">MV_deaths</span><span class="op">$</span><span class="va">pop</span>, 
           test <span class="op">=</span> <span class="st">"Satterthwaite"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,<span class="op">]</span></code></pre></div>
@@ -181,7 +177,7 @@
 <h2 id="random-effects-estimation">Random effects estimation<a class="anchor" aria-label="anchor" href="#random-effects-estimation"></a>
 </h2>
 <p>If the unobserved effects <span class="math inline">\(\alpha_1,...,\alpha_{51}\)</span> are uncorrelated with the regressors, then a more efficient way to estimate <span class="math inline">\(\gamma,\delta\)</span> is by weighted least squares, with weights based on a random effects model. We still treat the year effects as fixed.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plm_random</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/plm/man/plm.html" class="external-link">plm</a></span><span class="op">(</span><span class="va">mrate</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">legal</span> <span class="op">+</span> <span class="va">beertaxa</span> <span class="op">+</span> <span class="va">year</span>, data <span class="op">=</span> <span class="va">MV_deaths</span>, 
                   effect <span class="op">=</span> <span class="st">"individual"</span>, index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"state"</span>,<span class="st">"year"</span><span class="op">)</span>,
                   model <span class="op">=</span> <span class="st">"random"</span><span class="op">)</span>
@@ -189,7 +185,7 @@
 <pre><code><span class="co">##     Coef. Estimate   SE t-stat d.f. (naive-t) p-val (naive-t) Sig.</span>
 <span class="co">##     legal     7.31 2.39  3.054             49         0.00364   **</span>
 <span class="co">##  beertaxa     3.37 5.11  0.661             49         0.51202</span></code></pre>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">plm_random</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span>, test <span class="op">=</span> <span class="st">"Satterthwaite"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,<span class="op">]</span></code></pre></div>
 <pre><code><span class="co">##     Coef. Estimate   SE t-stat d.f. (Satt) p-val (Satt) Sig.</span>
 <span class="co">##     legal     7.31 2.46  2.966       25.18      0.00652   **</span>
@@ -204,7 +200,7 @@
 <p><span class="math display">\[y_{it} = \beta_t + \gamma_1 b_{it} + \gamma_2 \tilde{b}_{it} + \delta_1 d_{it} + \delta_2 \tilde{d}_{it} + \epsilon_{it},\]</span></p>
 <p>which does not include state fixed effects. The parameters <span class="math inline">\(\gamma_2,\delta_2\)</span> represent the differences between the within-groups and between-groups estimands of <span class="math inline">\(\gamma_1, \delta_1\)</span>. If these are both zero, then the random effects estimator is unbiased. Thus, the joint test for <span class="math inline">\(H_0: \gamma_2 = \delta_2 = 0\)</span> amounts to a test for exogeneity of the unobserved effects.</p>
 <p>For efficiency, we estimate this specification using weighted least squares (although OLS would be valid too):</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">MV_deaths</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">within</a></span><span class="op">(</span><span class="va">MV_deaths</span>, <span class="op">{</span>
   <span class="va">legal_cent</span> <span class="op">&lt;-</span> <span class="va">legal</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span><span class="va">legal</span>, <span class="va">state</span>, <span class="va">mean</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">state</span><span class="op">)</span><span class="op">]</span>
   <span class="va">beer_cent</span> <span class="op">&lt;-</span> <span class="va">beertaxa</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/tapply.html" class="external-link">tapply</a></span><span class="op">(</span><span class="va">beertaxa</span>, <span class="va">state</span>, <span class="va">mean</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">state</span><span class="op">)</span><span class="op">]</span>
@@ -221,14 +217,14 @@
 <span class="co">##  legal_cent   16.768 8.53  1.9665       25.44       0.0602    .</span>
 <span class="co">##   beer_cent    0.424 9.25  0.0458        6.42       0.9648</span></code></pre>
 <p>To conduct a joint test on the centered covariates, we can use the <code>Wald_test</code> function. The usual way to test this hypothesis would be to use the <code>CR1</code> variance estimator to calculate the robust Wald statistic, then use a <span class="math inline">\(\chi^2_2\)</span> reference distribution (or equivalently, compare a re-scaled Wald statistic to an <span class="math inline">\(F(2,\infty)\)</span> distribution). The <code>Wald_test</code> function reports the latter version:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/Wald_test.html">Wald_test</a></span><span class="op">(</span><span class="va">plm_Hausman</span>, 
           constraints <span class="op">=</span> <span class="fu"><a href="../reference/constraint_matrices.html">constrain_zero</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"legal_cent"</span>,<span class="st">"beer_cent"</span><span class="op">)</span><span class="op">)</span>, 
           vcov <span class="op">=</span> <span class="st">"CR1"</span>, test <span class="op">=</span> <span class="st">"chi-sq"</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">##    test Fstat df_num df_denom  p_val sig</span>
 <span class="co">##  chi-sq  2.93      2      Inf 0.0534   .</span></code></pre>
 <p>The test is just shy of significance at the 5% level. If we instead use the <code>CR2</code> variance estimator and our newly proposed approximate F-test (which is the default in <code>Wald_test</code>), then we get:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/Wald_test.html">Wald_test</a></span><span class="op">(</span><span class="va">plm_Hausman</span>, 
           constraints <span class="op">=</span> <span class="fu"><a href="../reference/constraint_matrices.html">constrain_zero</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"legal_cent"</span>,<span class="st">"beer_cent"</span><span class="op">)</span><span class="op">)</span>, 
           vcov <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></code></pre></div>
@@ -262,7 +258,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
     </footer>
