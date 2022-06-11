@@ -35,9 +35,10 @@
 #' if (requireNamespace("lme4", quietly = TRUE) & requireNamespace("mlmRev", quietly = TRUE)) {
 #' 
 #' data(egsingle, package = "mlmRev")
+#' subset_ids <- levels(egsingle$schoolid)[1:10]
 #' math_model <- lmer(math ~ year * size + female + black + hispanic 
 #'                    + (1 | schoolid) + (1 | childid), 
-#'                    data = egsingle)
+#'                    data = egsingle, subset = schoolid %in% subset_ids)
 #' vcovCR(math_model, type = "CR2")
 #' }
 #' 

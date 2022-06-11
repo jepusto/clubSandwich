@@ -58,7 +58,7 @@ mfor_fit <- rma.uni(yi ~ year + deltype, vi = vi,
                  data = dat.assink2016)
 mfor_fit
 
-mfor_CR2 <- vcovCR(mfor_fit, type = "CR2")
+mfor_CR2 <- vcovCR(mfor_fit, type = "CR2", cluster = dat.assink2016$study)
 mfor_CR2
 coef_test(mfor_fit, vcov = mfor_CR2, test = c("Satterthwaite", "saddlepoint"))
 Wald_test(mfor_fit, constraints = constrain_zero(2:4), vcov = mfor_CR2)

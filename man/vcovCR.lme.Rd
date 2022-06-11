@@ -60,9 +60,10 @@ if (requireNamespace("nlme", quietly = TRUE)) {
 if (requireNamespace("nlme", quietly = TRUE) & requireNamespace("mlmRev", quietly = TRUE)) {
 
   data(egsingle, package = "mlmRev")
+  subset_ids <- levels(egsingle$schoolid)[1:10]
   math_model <- lme(math ~ year * size + female + black + hispanic, 
                     random = list(~ year | schoolid, ~ 1 | childid), 
-                    data = egsingle)
+                    data = egsingle, subset = schoolid \%in\% subset_ids)
   vcovCR(math_model, type = "CR2")
   
 }
