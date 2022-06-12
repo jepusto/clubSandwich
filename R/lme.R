@@ -40,9 +40,12 @@
 #' 
 #'   data(egsingle, package = "mlmRev")
 #'   subset_ids <- levels(egsingle$schoolid)[1:10]
+#'   egsingle_subset <- subset(egsingle, schoolid %in% subset_ids)
+#'   
 #'   math_model <- lme(math ~ year * size + female + black + hispanic, 
 #'                     random = list(~ year | schoolid, ~ 1 | childid), 
-#'                     data = egsingle, subset = schoolid %in% subset_ids)
+#'                     data = egsingl_subset)
+#'                     
 #'   vcovCR(math_model, type = "CR2")
 #'   
 #' }
