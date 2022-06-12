@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a re-submission. This version is a maintenance release that brings the package into compliance with CRAN policies on conditional use of packages listed in SUGGESTS. All tests and examples can now be run even if suggested packages are not installed.
+This is a re-submission. This version is a maintenance release that brings the package into compliance with CRAN policies on conditional use of packages listed in SUGGESTS. All tests, vignettes, and examples can now be run even if suggested packages are not installed.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
