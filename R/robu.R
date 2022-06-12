@@ -28,7 +28,7 @@
 #' 
 #' @examples 
 #' 
-#' if (requireNamespace("robumeta", quietly = TRUE)) {
+#' if (requireNamespace("robumeta", quietly = TRUE)) withAutoprint({
 #' library(robumeta)
 #' data(hierdat)
 #' 
@@ -43,7 +43,8 @@
 #' 
 #' Wald_test(robu_fit, constraints = constrain_zero(c(2,4)), vcov = robu_CR2)
 #' Wald_test(robu_fit, constraints = constrain_zero(2:5), vcov = robu_CR2)
-#' }
+#' 
+#' })
 #' 
 
 

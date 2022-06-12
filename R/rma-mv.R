@@ -240,8 +240,11 @@ impute_covariance_matrix <- function(vi, cluster, r, ti, ar1,
 #'
 #' @examples
 #' 
-#' if (requireNamespace("metafor", quietly = TRUE) & requireNamespace("robumeta", quietly = TRUE)) {
-
+#' pkgs_available <- 
+#'   requireNamespace("metafor", quietly = TRUE) & 
+#'   requireNamespace("robumeta", quietly = TRUE)
+#'   
+#' if (pkgs_available) withAutoprint({
 #' library(metafor)
 #'
 #' data(oswald2013, package = "robumeta")
@@ -269,7 +272,7 @@ impute_covariance_matrix <- function(vi, cluster, r, ti, ar1,
 #'                
 #' conf_int(MVFE, vcov = "CR2")
 #' 
-#' }
+#' })
 #' 
 
 
@@ -367,7 +370,11 @@ pattern_covariance_matrix <- function(vi, cluster, pattern_level, r_pattern, r,
 #' 
 #' @examples
 #' 
-#' if (requireNamespace("metafor", quietly = TRUE) & requireNamespace("metadat", quietly = TRUE)) {
+#' pkgs_available <- 
+#'   requireNamespace("metafor", quietly = TRUE) & 
+#'   requireNamespace("metadat", quietly = TRUE)
+#'
+#' if (pkgs_available) withAutoprint({
 #' 
 #' library(metafor)
 #' data(dat.assink2016, package = "metadat")
@@ -379,10 +386,11 @@ pattern_covariance_matrix <- function(vi, cluster, pattern_level, r_pattern, r,
 #' 
 #' mfor_CR2 <- vcovCR(mfor_fit, type = "CR2")
 #' mfor_CR2
+#' 
 #' coef_test(mfor_fit, vcov = mfor_CR2, test = c("Satterthwaite", "saddlepoint"))
 #' Wald_test(mfor_fit, constraints = constrain_zero(3:4), vcov = mfor_CR2)
 #' 
-#' }
+#' })
 #' 
 
 vcovCR.rma.mv <- function(obj, cluster, type, target, inverse_var, form = "sandwich", ...) {

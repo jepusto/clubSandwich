@@ -25,7 +25,7 @@
 #' @examples 
 #' 
 #' 
-#' if (requireNamespace("AER", quietly = TRUE)) {
+#' if (requireNamespace("AER", quietly = TRUE)) withAutoprint({
 #' 
 #'   library(AER)
 #'   data("CigarettesSW")
@@ -40,7 +40,7 @@
 #'   vcovCR(iv_fit, cluster = Cigs$state, type = "CR2")
 #'   coef_test(iv_fit, vcov = "CR2", cluster = Cigs$state)
 #'
-#' }
+#' })
 #' 
 #' @export
 

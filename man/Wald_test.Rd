@@ -45,7 +45,7 @@ Constraints can be specified directly as q X p matrices or
 \examples{
 
 
-if (requireNamespace("carData", quietly = TRUE)) {
+if (requireNamespace("carData", quietly = TRUE)) withAutoprint({
 
 data(Duncan, package = "carData")
 Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
@@ -79,7 +79,7 @@ Wald_test(Duncan_fit,
           constraints = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
           vcov = "CR2", cluster = Duncan$cluster)
           
-}
+})
 
 }
 \seealso{

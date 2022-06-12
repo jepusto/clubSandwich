@@ -32,7 +32,11 @@
 #' 
 #' }
 #' 
-#' if (requireNamespace("nlme", quietly = TRUE) & requireNamespace("mlmRev", quietly = TRUE)) {
+#' pkgs_available <- 
+#'   requireNamespace("nlme", quietly = TRUE) & 
+#'   requireNamespace("mlmRev", quietly = TRUE)
+#' 
+#' if (pkgs_available) {
 #' 
 #'   data(egsingle, package = "mlmRev")
 #'   subset_ids <- levels(egsingle$schoolid)[1:10]

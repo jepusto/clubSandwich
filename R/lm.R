@@ -27,7 +27,7 @@
 #' lm_fit <- lm(weight ~ Time + Diet:Time, data = ChickWeight)
 #' vcovCR(lm_fit, cluster = ChickWeight$Chick, type = "CR2")
 #' 
-#' if (requireNamespace("plm", quietly = TRUE)) {
+#' if (requireNamespace("plm", quietly = TRUE)) withAutoprint({
 #' 
 #'   data("Produc", package = "plm")
 #'   lm_individual <- lm(log(gsp) ~ 0 + state + log(pcap) + log(pc) + log(emp) + unemp, data = Produc)
@@ -40,7 +40,7 @@
 #'                      effect = "individual", model = "within")
 #'   vcovCR(plm_FE, type="CR2")
 #'   
-#' }
+#' })
 #' 
 #' @export
 

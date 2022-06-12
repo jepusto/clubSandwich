@@ -56,7 +56,7 @@ Constraints can be specified as character vectors, regular
 }
 \examples{
 
-if (requireNamespace("carData", quietly = TRUE)) {
+if (requireNamespace("carData", quietly = TRUE)) withAutoprint({
 
 data(Duncan, package = "carData")
 Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
@@ -92,7 +92,7 @@ constrain_pairwise(":education", Duncan_coefs,
 constrain_pairwise(":income", Duncan_coefs, 
                    reg_ex = TRUE, with_zero = TRUE)
                    
-}
+})
 
 }
 \seealso{

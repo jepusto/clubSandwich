@@ -74,7 +74,7 @@ object.
 }
 \examples{
 
-if (requireNamespace("plm", quietly = TRUE)) {
+if (requireNamespace("plm", quietly = TRUE)) withAutoprint({
 
   library(plm)
   # fixed effects
@@ -84,22 +84,20 @@ if (requireNamespace("plm", quietly = TRUE)) {
                 effect = "individual", model = "within")
   vcovCR(plm_FE, type="CR2")
   vcovCR(plm_FE, type = "CR2", cluster = Produc$region) # clustering on region
-}
-
-if (requireNamespace("plm", quietly = TRUE)) {
+  
   # random effects
   plm_RE <- update(plm_FE, model = "random")
   vcovCR(plm_RE, type = "CR2")
   vcovCR(plm_RE, type = "CR2", cluster = Produc$region) # clustering on region
-}
-
-if (requireNamespace("plm", quietly = TRUE)) {
+  
   # nested random effects
   plm_nested <- update(plm_FE, effect = "nested", model = "random")
   vcovCR(plm_nested, type = "CR2") # clustering on region
-}
+})
 
-if (requireNamespace("plm", quietly = TRUE) & requireNamespace("AER", quietly = TRUE)) {
+pkgs_available <- requireNamespace("plm", quietly = TRUE) & requireNamespace("AER", quietly = TRUE)
+
+if (pkgs_available) withAutoprint({
   # first differencing
   data(Fatalities, package = "AER")
   Fatalities <- within(Fatalities, {
@@ -114,7 +112,8 @@ if (requireNamespace("plm", quietly = TRUE) & requireNamespace("AER", quietly = 
   vcovHC(plm_FD, method="arellano", type = "sss", cluster = "group")
   vcovCR(plm_FD, type = "CR1S")
   vcovCR(plm_FD, type = "CR2")
-}
+  
+})
 
 }
 \seealso{

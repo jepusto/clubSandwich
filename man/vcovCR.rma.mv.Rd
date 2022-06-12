@@ -51,7 +51,11 @@ of a set of regression coefficient estimates from a
 }
 \examples{
 
-if (requireNamespace("metafor", quietly = TRUE) & requireNamespace("metadat", quietly = TRUE)) {
+pkgs_available <- 
+  requireNamespace("metafor", quietly = TRUE) & 
+  requireNamespace("metadat", quietly = TRUE)
+
+if (pkgs_available) withAutoprint({
 
 library(metafor)
 data(dat.assink2016, package = "metadat")
@@ -63,10 +67,11 @@ mfor_fit
 
 mfor_CR2 <- vcovCR(mfor_fit, type = "CR2")
 mfor_CR2
+
 coef_test(mfor_fit, vcov = mfor_CR2, test = c("Satterthwaite", "saddlepoint"))
 Wald_test(mfor_fit, constraints = constrain_zero(3:4), vcov = mfor_CR2)
 
-}
+})
 
 }
 \seealso{

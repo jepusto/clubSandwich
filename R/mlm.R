@@ -26,6 +26,7 @@
 #' iris_fit <- lm(cbind(Sepal.Length, Sepal.Width) ~ Species + 
 #'                Petal.Length + Petal.Width, data = iris)
 #' Vcluster <- vcovCR(iris_fit, type = "CR2")
+#' Vcluster
 #'
 #' @export
 

@@ -26,7 +26,11 @@
 #' 
 #' @examples
 #' 
-#' if (requireNamespace("metafor", quietly = TRUE) & requireNamespace("metadat", quietly = TRUE)) {
+#' pkgs_available <- 
+#'   requireNamespace("metafor", quietly = TRUE) & 
+#'   requireNamespace("metadat", quietly = TRUE)
+#'   
+#' if (pkgs_available) withAutoprint({
 #' 
 #' library(metafor)
 #' data(dat.assink2016, package = "metadat")
@@ -40,7 +44,7 @@
 #' coef_test(mfor_fit, vcov = mfor_CR2, test = c("Satterthwaite", "saddlepoint"))
 #' Wald_test(mfor_fit, constraints = constrain_zero(2:4), vcov = mfor_CR2)
 #' 
-#' }
+#' })
 #' 
 
 

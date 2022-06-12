@@ -57,7 +57,11 @@ vcovCR(sleep_fit, type = "CR2")
 
 }
 
-if (requireNamespace("lme4", quietly = TRUE) & requireNamespace("mlmRev", quietly = TRUE)) {
+pkgs_available <- 
+  requireNamespace("lme4", quietly = TRUE) & 
+  requireNamespace("mlmRev", quietly = TRUE)
+
+if (pkgs_available) {
 
 data(egsingle, package = "mlmRev")
 subset_ids <- levels(egsingle$schoolid)[1:10]

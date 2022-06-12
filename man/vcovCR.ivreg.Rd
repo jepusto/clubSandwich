@@ -55,7 +55,7 @@ of a set of regression coefficient estimates from an \code{\link[AER]{ivreg}} ob
 \examples{
 
 
-if (requireNamespace("AER", quietly = TRUE)) {
+if (requireNamespace("AER", quietly = TRUE)) withAutoprint({
 
   library(AER)
   data("CigarettesSW")
@@ -70,7 +70,7 @@ if (requireNamespace("AER", quietly = TRUE)) {
   vcovCR(iv_fit, cluster = Cigs$state, type = "CR2")
   coef_test(iv_fit, vcov = "CR2", cluster = Cigs$state)
 
-}
+})
 
 }
 \seealso{

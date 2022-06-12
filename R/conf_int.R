@@ -142,7 +142,6 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
 #'
 #' @examples
 #' 
-#' 
 #' data("ChickWeight", package = "datasets")
 #' lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
 #' 
@@ -151,7 +150,7 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
 #'                 contrasts = constrain_pairwise("Diet.:Time", reg_ex = TRUE))
 #'
 #' 
-#' if (requireNamespace("carData", quietly = TRUE)) {
+#' if (requireNamespace("carData", quietly = TRUE)) withAutoprint({
 #' 
 #'   data(Duncan, package = "carData")
 #'   Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
@@ -164,15 +163,13 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
 #'   linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
 #'                   contrasts = constrain_pairwise(":education", reg_ex = TRUE),
 #'                   test = "Satterthwaite")
-#'  }
 #'  
-#' if (requireNamespace("carData", quietly = TRUE)) {
 #'   # Pairwise comparisons of type-by-income interactions
 #'   linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
 #'                   contrasts = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
 #'                   test = "Satterthwaite")
 #'                   
-#' }
+#' })
 #'
 #' @export
 
