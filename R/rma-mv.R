@@ -244,7 +244,7 @@ impute_covariance_matrix <- function(vi, cluster, r, ti, ar1,
 #'   requireNamespace("metafor", quietly = TRUE) & 
 #'   requireNamespace("robumeta", quietly = TRUE)
 #'   
-#' if (pkgs_available) withAutoprint({
+#' if (pkgs_available) {
 #' library(metafor)
 #'
 #' data(oswald2013, package = "robumeta")
@@ -272,7 +272,7 @@ impute_covariance_matrix <- function(vi, cluster, r, ti, ar1,
 #'                
 #' conf_int(MVFE, vcov = "CR2")
 #' 
-#' })
+#' }
 #' 
 
 
