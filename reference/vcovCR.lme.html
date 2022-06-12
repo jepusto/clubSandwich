@@ -12,7 +12,7 @@ of a set of regression coefficient estimates from a lme object."><!-- mathjax --
     
     <a class="navbar-brand me-2" href="../index.html">clubSandwich</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.6.9999</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -159,13 +159,31 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 <span class="r-in"></span>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">egsingle</span>, package <span class="op">=</span> <span class="st">"mlmRev"</span><span class="op">)</span></span>
 <span class="r-in">  <span class="va">subset_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">egsingle</span><span class="op">$</span><span class="va">schoolid</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
+<span class="r-in">  <span class="va">egsingle_subset</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">egsingle</span>, <span class="va">schoolid</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">subset_ids</span><span class="op">)</span></span>
+<span class="r-in">  </span>
 <span class="r-in">  <span class="va">math_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html" class="external-link">lme</a></span><span class="op">(</span><span class="va">math</span> <span class="op">~</span> <span class="va">year</span> <span class="op">*</span> <span class="va">size</span> <span class="op">+</span> <span class="va">female</span> <span class="op">+</span> <span class="va">black</span> <span class="op">+</span> <span class="va">hispanic</span>, </span>
 <span class="r-in">                    random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">~</span> <span class="va">year</span> <span class="op">|</span> <span class="va">schoolid</span>, <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">childid</span><span class="op">)</span>, </span>
-<span class="r-in">                    data <span class="op">=</span> <span class="va">egsingle</span>, subset <span class="op">=</span> <span class="va">schoolid</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">subset_ids</span><span class="op">)</span></span>
+<span class="r-in">                    data <span class="op">=</span> <span class="va">egsingle_subset</span><span class="op">)</span></span>
+<span class="r-in">                    </span>
 <span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">math_model</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
 <span class="r-in">  </span>
 <span class="r-in"><span class="op">}</span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in schoolid %in% subset_ids:</span> object 'subset_ids' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               (Intercept)          year          size    femaleMale</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  4.398970e-02  1.018504e-02 -5.251581e-05 -7.784067e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> year         1.018504e-02  2.000100e-02 -6.243677e-06 -3.116308e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> size        -5.251581e-05 -6.243677e-06  9.759313e-08  9.072820e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> femaleMale  -7.784067e-03 -3.116308e-03  9.072820e-06  8.999071e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> black1      -6.030535e-03 -5.258604e-03 -3.438467e-06 -5.458323e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> hispanic1    1.347498e-02  4.667589e-03 -1.564763e-05 -4.631514e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> year:size   -1.206983e-05 -2.477655e-05  9.626510e-09  1.923760e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    black1     hispanic1     year:size</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -6.030535e-03  1.347498e-02 -1.206983e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> year        -5.258604e-03  4.667589e-03 -2.477655e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> size        -3.438467e-06 -1.564763e-05  9.626510e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> femaleMale  -5.458323e-03 -4.631514e-03  1.923760e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> black1       2.304693e-02  5.559583e-03  8.910563e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> hispanic1    5.559583e-03  1.063522e-02 -4.438542e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> year:size    8.910563e-06 -4.438542e-06  3.239673e-08</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

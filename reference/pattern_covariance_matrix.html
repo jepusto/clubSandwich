@@ -16,7 +16,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">clubSandwich</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.6.9999</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -181,11 +181,13 @@ definite.</p></dd>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"metafor"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;</span> </span>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"robumeta"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in">  </span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="va">pkgs_available</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/source.html" class="external-link">withAutoprint</a></span><span class="op">(</span><span class="op">{</span></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="va">pkgs_available</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.metafor-project.org" class="external-link">metafor</a></span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">oswald2013</span>, package <span class="op">=</span> <span class="st">"robumeta"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://wviechtb.github.io/metafor/reference/escalc.html" class="external-link">escalc</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">oswald2013</span>, measure <span class="op">=</span> <span class="st">"ZCOR"</span>, ri <span class="op">=</span> <span class="va">R</span>, ni <span class="op">=</span> <span class="va">N</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">subset_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">dat</span><span class="op">$</span><span class="va">Study</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span></span>
+<span class="r-in"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">dat</span>, <span class="va">Study</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">subset_ids</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># make a patterned correlation matrix </span></span>
 <span class="r-in"></span>
@@ -209,26 +211,21 @@ definite.</p></dd>
 <span class="r-in">               </span>
 <span class="r-in"><span class="fu"><a href="conf_int.html">conf_int</a></span><span class="op">(</span><span class="va">MVFE</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="op">}</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; library(metafor)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; data(oswald2013, package = "robumeta")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; dat &lt;- escalc(data = oswald2013, measure = "ZCOR", ri = R, ni = N)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; p_levels &lt;- levels(dat$Crit.Cat)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; r_pattern &lt;- 0.7^as.matrix(dist(1:length(p_levels)))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; diag(r_pattern) &lt;- seq(0.75, 0.95, length.out = 6)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; rownames(r_pattern) &lt;- colnames(r_pattern) &lt;- p_levels</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; V_list &lt;- pattern_covariance_matrix(vi = dat$vi, cluster = dat$Study, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +     pattern_level = dat$Crit.Cat, r_pattern = r_pattern, smooth_vi = TRUE)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; MVFE &lt;- rma.mv(yi ~ 0 + Crit.Cat, V = V_list, random = ~Crit.Cat | Study, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +     data = dat)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; conf_int(MVFE, vcov = "CR2")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                           Coef. Estimate     SE  d.f. Lower 95% CI Upper 95% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Crit.CatBrain Activity   0.1826 0.3323  4.55      -0.6979        1.063</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Crit.CatInterpersonal Behavior   0.1469 0.0456  3.97       0.0199        0.274</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           Crit.CatMicrobehavior   0.0852 0.0320  8.56       0.0122        0.158</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       Crit.CatPerson Perception   0.1364 0.0249 16.77       0.0839        0.189</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       Crit.CatPolicy Preference   0.1334 0.0252  4.64       0.0669        0.200</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           Crit.CatResponse Time   0.1835 0.1410  1.76      -0.5118        0.879</span>
+<span class="r-in"><span class="op">}</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                           Coef. Estimate       SE d.f. Lower 95% CI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          Crit.CatBrain Activity   0.1425 4.49e-01 2.84     -1.33431</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Crit.CatInterpersonal Behavior   0.0167 3.65e-03 1.63     -0.00307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           Crit.CatMicrobehavior   0.1308 3.43e-02 3.64      0.03178</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Crit.CatPerson Perception   0.1544 1.94e-02 8.08      0.10963</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       Crit.CatPolicy Preference   0.0864 5.10e-02 1.98     -0.13561</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           Crit.CatResponse Time   0.2988 4.25e-14 1.00      0.29882</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Upper 95% CI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        1.6193</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        0.0364</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        0.2298</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        0.1991</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        0.3084</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        0.2988</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
