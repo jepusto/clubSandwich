@@ -249,6 +249,8 @@ impute_covariance_matrix <- function(vi, cluster, r, ti, ar1,
 #'
 #' data(oswald2013, package = "robumeta")
 #' dat <- escalc(data = oswald2013, measure = "ZCOR", ri = R, ni = N)
+#' subset_ids <- unique(dat$Study)[1:20]
+#' dat <- subset(dat, Study %in% subset_ids)
 #' 
 #' # make a patterned correlation matrix 
 #' 
