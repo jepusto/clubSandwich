@@ -1,4 +1,4 @@
-# clubSandwich 0.5.6.9999
+# clubSandwich 0.5.7
 
 * Updated vignettes, examples, and unit tests so that the package can be compiled without any packages from SUGGESTS.
 
