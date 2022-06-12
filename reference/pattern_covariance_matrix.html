@@ -177,7 +177,11 @@ definite.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"metafor"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"robumeta"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="va">pkgs_available</span> <span class="op">&lt;-</span> </span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"metafor"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;</span> </span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"robumeta"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in">  </span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="va">pkgs_available</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/source.html" class="external-link">withAutoprint</a></span><span class="op">(</span><span class="op">{</span></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.metafor-project.org" class="external-link">metafor</a></span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">oswald2013</span>, package <span class="op">=</span> <span class="st">"robumeta"</span><span class="op">)</span></span>
@@ -205,7 +209,19 @@ definite.</p></dd>
 <span class="r-in">               </span>
 <span class="r-in"><span class="fu"><a href="conf_int.html">conf_int</a></span><span class="op">(</span><span class="va">MVFE</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span class="op">}</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; library(metafor)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; data(oswald2013, package = "robumeta")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; dat &lt;- escalc(data = oswald2013, measure = "ZCOR", ri = R, ni = N)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; p_levels &lt;- levels(dat$Crit.Cat)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; r_pattern &lt;- 0.7^as.matrix(dist(1:length(p_levels)))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; diag(r_pattern) &lt;- seq(0.75, 0.95, length.out = 6)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; rownames(r_pattern) &lt;- colnames(r_pattern) &lt;- p_levels</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; V_list &lt;- pattern_covariance_matrix(vi = dat$vi, cluster = dat$Study, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     pattern_level = dat$Crit.Cat, r_pattern = r_pattern, smooth_vi = TRUE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; MVFE &lt;- rma.mv(yi ~ 0 + Crit.Cat, V = V_list, random = ~Crit.Cat | Study, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     data = dat)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; conf_int(MVFE, vcov = "CR2")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                           Coef. Estimate     SE  d.f. Lower 95% CI Upper 95% CI</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          Crit.CatBrain Activity   0.1826 0.3323  4.55      -0.6979        1.063</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Crit.CatInterpersonal Behavior   0.1469 0.0456  3.97       0.0199        0.274</span>

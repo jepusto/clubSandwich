@@ -158,7 +158,7 @@ effects are estimated through absorption.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"plm"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"plm"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/source.html" class="external-link">withAutoprint</a></span><span class="op">(</span><span class="op">{</span></span>
 <span class="r-in"></span>
 <span class="r-in">  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cran.r-project.org/package=plm" class="external-link">plm</a></span><span class="op">)</span></span>
 <span class="r-in">  <span class="co"># fixed effects</span></span>
@@ -168,19 +168,47 @@ effects are estimated through absorption.</p></dd>
 <span class="r-in">                effect <span class="op">=</span> <span class="st">"individual"</span>, model <span class="op">=</span> <span class="st">"within"</span><span class="op">)</span></span>
 <span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">plm_FE</span>, type<span class="op">=</span><span class="st">"CR2"</span><span class="op">)</span></span>
 <span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">plm_FE</span>, type <span class="op">=</span> <span class="st">"CR2"</span>, cluster <span class="op">=</span> <span class="va">Produc</span><span class="op">$</span><span class="va">region</span><span class="op">)</span> <span class="co"># clustering on region</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in">  </span>
+<span class="r-in">  <span class="co"># random effects</span></span>
+<span class="r-in">  <span class="va">plm_RE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">plm_FE</span>, model <span class="op">=</span> <span class="st">"random"</span><span class="op">)</span></span>
+<span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">plm_RE</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
+<span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">plm_RE</span>, type <span class="op">=</span> <span class="st">"CR2"</span>, cluster <span class="op">=</span> <span class="va">Produc</span><span class="op">$</span><span class="va">region</span><span class="op">)</span> <span class="co"># clustering on region</span></span>
+<span class="r-in">  </span>
+<span class="r-in">  <span class="co"># nested random effects</span></span>
+<span class="r-in">  <span class="va">plm_nested</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">plm_FE</span>, effect <span class="op">=</span> <span class="st">"nested"</span>, model <span class="op">=</span> <span class="st">"random"</span><span class="op">)</span></span>
+<span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">plm_nested</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span> <span class="co"># clustering on region</span></span>
+<span class="r-in"><span class="op">}</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; library(plm)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; data("Produc", package = "plm")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; plm_FE &lt;- plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, data = Produc, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     index = c("state", "year", "region"), effect = "individual", model = "within")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; vcovCR(plm_FE, type = "CR2")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               log(pcap)       log(pc)      log(emp)         unemp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(pcap)  3.900840e-03 -7.382313e-04 -0.0024837779 -7.825846e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(pc)   -7.382313e-04  4.177767e-03 -0.0040101610 -9.960967e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(emp)  -2.483778e-03 -4.010161e-03  0.0073152051  1.736024e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> unemp     -7.825846e-05 -9.960967e-05  0.0001736024  6.745842e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; vcovCR(plm_FE, type = "CR2", cluster = Produc$region)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               log(pcap)       log(pc)      log(emp)         unemp</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> log(pcap)  6.973505e-03 -0.0022279395 -0.0044833594 -6.786254e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> log(pc)   -2.227940e-03  0.0054359010 -0.0043767642 -1.297104e-04</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> log(emp)  -4.483359e-03 -0.0043767642  0.0108260634  2.011267e-04</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> unemp     -6.786254e-05 -0.0001297104  0.0002011267  1.170089e-05</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"plm"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="co"># random effects</span></span>
-<span class="r-in">  <span class="va">plm_RE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">plm_FE</span>, model <span class="op">=</span> <span class="st">"random"</span><span class="op">)</span></span>
-<span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">plm_RE</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
-<span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">plm_RE</span>, type <span class="op">=</span> <span class="st">"CR2"</span>, cluster <span class="op">=</span> <span class="va">Produc</span><span class="op">$</span><span class="va">region</span><span class="op">)</span> <span class="co"># clustering on region</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; plm_RE &lt;- update(plm_FE, model = "random")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; vcovCR(plm_RE, type = "CR2")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               (Intercept)     log(pcap)       log(pc)      log(emp)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.0608153880 -8.772256e-03 -7.015754e-03  0.0136354448</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(pcap)   -0.0087722560  3.221991e-03  3.731861e-05 -0.0031502393</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(pc)     -0.0070157539  3.731861e-05  2.060851e-03 -0.0020993882</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(emp)     0.0136354448 -3.150239e-03 -2.099388e-03  0.0054047466</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> unemp        0.0004200323 -7.947309e-05 -6.416279e-05  0.0001390737</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                     unemp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  4.200323e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(pcap)   -7.947309e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(pc)     -6.416279e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(emp)     1.390737e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> unemp        5.848168e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; vcovCR(plm_RE, type = "CR2", cluster = Produc$region)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               (Intercept)     log(pcap)       log(pc)      log(emp)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.0565942863 -0.0138696773 -0.0056768267  0.0190768009</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> log(pcap)   -0.0138696773  0.0065345184 -0.0003786724 -0.0063601303</span>
@@ -193,12 +221,8 @@ effects are estimated through absorption.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> log(pc)     -8.395370e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> log(emp)     1.715663e-04</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> unemp        1.057574e-05</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"plm"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span class="r-in">  <span class="co"># nested random effects</span></span>
-<span class="r-in">  <span class="va">plm_nested</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/update.html" class="external-link">update</a></span><span class="op">(</span><span class="va">plm_FE</span>, effect <span class="op">=</span> <span class="st">"nested"</span>, model <span class="op">=</span> <span class="st">"random"</span><span class="op">)</span></span>
-<span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">plm_nested</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span> <span class="co"># clustering on region</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; plm_nested &lt;- update(plm_FE, effect = "nested", model = "random")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; vcovCR(plm_nested, type = "CR2")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               (Intercept)     log(pcap)       log(pc)      log(emp)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.0537315947 -1.210951e-02 -0.0073309652  0.0193853190</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> log(pcap)   -0.0121095110  6.078432e-03 -0.0003141431 -0.0060636185</span>
@@ -212,7 +236,9 @@ effects are estimated through absorption.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> log(emp)     1.852566e-04</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> unemp        1.135799e-05</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"plm"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"AER"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="va">pkgs_available</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"plm"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"AER"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="va">pkgs_available</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/source.html" class="external-link">withAutoprint</a></span><span class="op">(</span><span class="op">{</span></span>
 <span class="r-in">  <span class="co"># first differencing</span></span>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Fatalities</span>, package <span class="op">=</span> <span class="st">"AER"</span><span class="op">)</span></span>
 <span class="r-in">  <span class="va">Fatalities</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">within</a></span><span class="op">(</span><span class="va">Fatalities</span>, <span class="op">{</span></span>
@@ -227,7 +253,57 @@ effects are estimated through absorption.</p></dd>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/pkg/plm/man/vcovHC.plm.html" class="external-link">vcovHC</a></span><span class="op">(</span><span class="va">plm_FD</span>, method<span class="op">=</span><span class="st">"arellano"</span>, type <span class="op">=</span> <span class="st">"sss"</span>, cluster <span class="op">=</span> <span class="st">"group"</span><span class="op">)</span></span>
 <span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">plm_FD</span>, type <span class="op">=</span> <span class="st">"CR1S"</span><span class="op">)</span></span>
 <span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">plm_FD</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in">  </span>
+<span class="r-in"><span class="op">}</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; data(Fatalities, package = "AER")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Fatalities &lt;- within(Fatalities, {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     frate &lt;- 10000 * fatal/pop</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     drinkagec &lt;- cut(drinkage, breaks = 18:22, include.lowest = TRUE, right = FALSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     drinkagec &lt;- relevel(drinkagec, ref = 4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> + })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; plm_FD &lt;- plm(frate ~ beertax + drinkagec + miles + unemp + log(income), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     data = Fatalities, index = c("state", "year"), model = "fd")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; vcovHC(plm_FD, method = "arellano", type = "sss", cluster = "group")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    (Intercept)       beertax drinkagec[18,19) drinkagec[19,20)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)       4.491252e-04  1.312107e-03     3.177175e-05    -3.224139e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> beertax           1.312107e-03  6.112682e-02    -1.374164e-03    -2.155192e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> drinkagec[18,19)  3.177175e-05 -1.374164e-03     5.978249e-03     2.531421e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> drinkagec[19,20) -3.224139e-05 -2.155192e-03     2.531421e-03     2.130959e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> drinkagec[20,21) -2.531288e-04 -9.279081e-04     1.738413e-03     1.185214e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> miles             4.688676e-09 -1.642830e-07    -8.440044e-08    -5.492005e-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> unemp            -7.197958e-05 -3.079273e-04    -4.794408e-05    -3.200981e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(income)      -1.853129e-02 -2.489411e-02     3.443431e-03     4.787025e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  drinkagec[20,21)         miles         unemp   log(income)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)         -2.531288e-04  4.688676e-09 -7.197958e-05 -1.853129e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> beertax             -9.279081e-04 -1.642830e-07 -3.079273e-04 -2.489411e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> drinkagec[18,19)     1.738413e-03 -8.440044e-08 -4.794408e-05  3.443431e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> drinkagec[19,20)     1.185214e-03 -5.492005e-08 -3.200981e-05  4.787025e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> drinkagec[20,21)     2.529571e-03 -9.131630e-08  1.900456e-04  1.890722e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> miles               -9.131630e-08  1.570809e-11  1.928974e-09 -6.148657e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> unemp                1.900456e-04  1.928974e-09  1.970444e-04  8.234312e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(income)          1.890722e-02 -6.148657e-07  8.234312e-03  1.034150e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"cluster")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "group"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; vcovCR(plm_FD, type = "CR1S")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    (Intercept)       beertax drinkagec[18,19) drinkagec[19,20)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)       4.491252e-04  1.312107e-03     3.177175e-05    -3.224139e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> beertax           1.312107e-03  6.112682e-02    -1.374164e-03    -2.155192e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> drinkagec[18,19)  3.177175e-05 -1.374164e-03     5.978249e-03     2.531421e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> drinkagec[19,20) -3.224139e-05 -2.155192e-03     2.531421e-03     2.130959e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> drinkagec[20,21) -2.531288e-04 -9.279081e-04     1.738413e-03     1.185214e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> miles             4.688676e-09 -1.642830e-07    -8.440044e-08    -5.492005e-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> unemp            -7.197958e-05 -3.079273e-04    -4.794408e-05    -3.200981e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(income)      -1.853129e-02 -2.489411e-02     3.443431e-03     4.787025e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  drinkagec[20,21)         miles         unemp   log(income)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)         -2.531288e-04  4.688676e-09 -7.197958e-05 -1.853129e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> beertax             -9.279081e-04 -1.642830e-07 -3.079273e-04 -2.489411e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> drinkagec[18,19)     1.738413e-03 -8.440044e-08 -4.794408e-05  3.443431e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> drinkagec[19,20)     1.185214e-03 -5.492005e-08 -3.200981e-05  4.787025e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> drinkagec[20,21)     2.529571e-03 -9.131630e-08  1.900456e-04  1.890722e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> miles               -9.131630e-08  1.570809e-11  1.928974e-09 -6.148657e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> unemp                1.900456e-04  1.928974e-09  1.970444e-04  8.234312e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(income)          1.890722e-02 -6.148657e-07  8.234312e-03  1.034150e+00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; vcovCR(plm_FD, type = "CR2")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                    (Intercept)       beertax drinkagec[18,19) drinkagec[19,20)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)       4.926777e-04  0.0014903060     5.194011e-05    -1.917433e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> beertax           1.490306e-03  0.0639227452    -1.545309e-03    -2.356755e-03</span>

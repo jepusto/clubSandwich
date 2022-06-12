@@ -135,7 +135,7 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"AER"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"AER"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/source.html" class="external-link">withAutoprint</a></span><span class="op">(</span><span class="op">{</span></span>
 <span class="r-in"></span>
 <span class="r-in">  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">AER</span><span class="op">)</span></span>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"CigarettesSW"</span><span class="op">)</span></span>
@@ -150,7 +150,8 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 <span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">iv_fit</span>, cluster <span class="op">=</span> <span class="va">Cigs</span><span class="op">$</span><span class="va">state</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
 <span class="r-in">  <span class="fu"><a href="coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">iv_fit</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span>, cluster <span class="op">=</span> <span class="va">Cigs</span><span class="op">$</span><span class="va">state</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span class="op">}</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; library(AER)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: car</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: carData</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
@@ -167,6 +168,20 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     as.Date, as.Date.numeric</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: sandwich</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: survival</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; data("CigarettesSW")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Cigs &lt;- within(CigarettesSW, {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     rprice &lt;- price/cpi</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     rincome &lt;- income/population/cpi</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     tdiff &lt;- (taxs - tax)/cpi</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> + })</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; iv_fit &lt;- ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     tdiff + I(tax/cpi), data = Cigs)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; vcovCR(iv_fit, cluster = Cigs$state, type = "CR2")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              (Intercept) log(rprice) log(rincome)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)   0.31782384 -0.08285646   0.02774789</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(rprice)  -0.08285646  0.03453204  -0.03009923</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(rincome)  0.02774789 -0.03009923   0.04292233</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; coef_test(iv_fit, vcov = "CR2", cluster = Cigs$state)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         Coef. Estimate    SE t-stat d.f. (Satt) p-val (Satt) Sig.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   (Intercept)    9.736 0.564  17.27        22.0       &lt;0.001  ***</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   log(rprice)   -1.229 0.186  -6.61        21.1       &lt;0.001  ***</span>

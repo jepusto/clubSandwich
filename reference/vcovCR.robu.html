@@ -133,7 +133,7 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"robumeta"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"robumeta"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/source.html" class="external-link">withAutoprint</a></span><span class="op">(</span><span class="op">{</span></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/zackfisher/robumeta" class="external-link">robumeta</a></span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">hierdat</span><span class="op">)</span></span>
 <span class="r-in"></span>
@@ -148,7 +148,62 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="Wald_test.html">Wald_test</a></span><span class="op">(</span><span class="va">robu_fit</span>, constraints <span class="op">=</span> <span class="fu"><a href="constraint_matrices.html">constrain_zero</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">4</span><span class="op">)</span><span class="op">)</span>, vcov <span class="op">=</span> <span class="va">robu_CR2</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="Wald_test.html">Wald_test</a></span><span class="op">(</span><span class="va">robu_fit</span>, constraints <span class="op">=</span> <span class="fu"><a href="constraint_matrices.html">constrain_zero</a></span><span class="op">(</span><span class="fl">2</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>, vcov <span class="op">=</span> <span class="va">robu_CR2</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="op">}</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; library(robumeta)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; data(hierdat)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; robu_fit &lt;- robu(effectsize ~ binge + followup + sreport + age, data = hierdat, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     studynum = studyid, var.eff.size = var, modelweights = "HIER")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; robu_fit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> RVE: Hierarchical Effects Model with Small-Sample Corrections </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Model: effectsize ~ binge + followup + sreport + age </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of clusters = 15 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Number of outcomes = 68 (min = 1 , mean = 4.53 , median = 2 , max = 29 )</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Omega.sq = 0.1086551 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Tau.sq = 0.02362071 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                Estimate   StdErr t-value  dfs P(|t|&gt;) 95% CI.L 95% CI.U Sig</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 X.Intercept.  0.39695 0.658006   0.603 3.06  0.5882 -1.67534  2.46924    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        binge  0.45158 0.101641   4.443 3.59  0.0144  0.15628  0.74689  **</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     followup  0.00133 0.000723   1.842 2.03  0.2048 -0.00173  0.00439    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      sreport  0.53876 0.143398   3.757 4.36  0.0170  0.15324  0.92428  **</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5          age -0.04371 0.037874  -1.154 2.69  0.3404 -0.17235  0.08492    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Signif. codes: &lt; .01 *** &lt; .05 ** &lt; .10 *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Note: If df &lt; 4, do not trust the results&gt; robu_CR2 &lt;- vcovCR(robu_fit, type = "CR2")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; robu_CR2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               X.Intercept.         binge      followup       sreport</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.Intercept.  0.4329720570 -8.055322e-03 -2.957783e-04 -7.180868e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> binge        -0.0080553221  1.033098e-02 -1.580973e-05  3.890863e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> followup     -0.0002957783 -1.580973e-05  5.221116e-07 -1.951302e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sreport      -0.0007180868  3.890863e-03 -1.951302e-05  2.056284e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> age          -0.0245235730  3.757319e-04  1.683702e-05 -8.892270e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        age</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X.Intercept. -2.452357e-02</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> binge         3.757319e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> followup      1.683702e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sreport      -8.892270e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> age           1.434475e-03</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; coef_test(robu_fit, vcov = robu_CR2, test = c("Satterthwaite", "saddlepoint"))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Coef. Estimate       SE t-stat d.f. (Satt) p-val (Satt) Sig.    s.p.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  X.Intercept.  0.39695 0.658006  0.603        3.06       0.5882      -0.6440</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         binge  0.45158 0.101641  4.443        3.59       0.0144    *  0.4170</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      followup  0.00133 0.000723  1.842        2.03       0.2048       0.2537</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       sreport  0.53876 0.143398  3.757        4.36       0.0170    *  0.4112</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           age -0.04371 0.037874 -1.154        2.69       0.3404       0.0919</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  p-val (Saddle) Sig.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         0.59343     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         0.00424   **</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         0.18900     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         0.00767   **</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         0.34522     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Wald_test(robu_fit, constraints = constrain_zero(c(2, 4)), vcov = robu_CR2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  test Fstat df_num df_denom  p_val sig</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ  10.4      2     3.48 0.0339   *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Wald_test(robu_fit, constraints = constrain_zero(2:5), vcov = robu_CR2)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  test Fstat df_num df_denom p_val sig</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ 0.176      4   0.0388 0.962    </span>
 <span class="r-in"></span>

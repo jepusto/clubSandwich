@@ -133,7 +133,11 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"metafor"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"metadat"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="va">pkgs_available</span> <span class="op">&lt;-</span> </span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"metafor"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;</span> </span>
+<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"metadat"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="va">pkgs_available</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/source.html" class="external-link">withAutoprint</a></span><span class="op">(</span><span class="op">{</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.metafor-project.org" class="external-link">metafor</a></span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">dat.assink2016</span>, package <span class="op">=</span> <span class="st">"metadat"</span><span class="op">)</span></span>
@@ -145,10 +149,61 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">mfor_CR2</span> <span class="op">&lt;-</span> <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">mfor_fit</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">mfor_CR2</span></span>
+<span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">mfor_fit</span>, vcov <span class="op">=</span> <span class="va">mfor_CR2</span>, test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Satterthwaite"</span>, <span class="st">"saddlepoint"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="Wald_test.html">Wald_test</a></span><span class="op">(</span><span class="va">mfor_fit</span>, constraints <span class="op">=</span> <span class="fu"><a href="constraint_matrices.html">constrain_zero</a></span><span class="op">(</span><span class="fl">3</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span>, vcov <span class="op">=</span> <span class="va">mfor_CR2</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span class="op">}</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; library(metafor)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; data(dat.assink2016, package = "metadat")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; mfor_fit &lt;- rma.mv(yi ~ year + deltype, V = vi, random = ~1 | study/esid, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     data = dat.assink2016)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; mfor_fit</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Multivariate Meta-Analysis Model (k = 100; method: REML)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Variance Components:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             estim    sqrt  nlvls  fixed      factor </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma^2.1  0.1493  0.3863     17     no       study </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sigma^2.2  0.0853  0.2920    100     no  study/esid </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Test for Residual Heterogeneity:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> QE(df = 96) = 610.2644, p-val &lt; .0001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Test of Moderators (coefficients 2:4):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> QM(df = 3) = 19.2399, p-val = 0.0002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Model Results:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 estimate      se     zval    pval    ci.lb    ci.ub     ​ </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> intrcpt          -0.2438  0.2101  -1.1605  0.2458  -0.6556   0.1680      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> year             -0.0380  0.0183  -2.0773  0.0378  -0.0738  -0.0021    * </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> deltypegeneral    0.7094  0.1914   3.7069  0.0002   0.3343   1.0845  *** </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> deltypeovert      0.5054  0.2099   2.4078  0.0160   0.0940   0.9168    * </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; mfor_CR2 &lt;- vcovCR(mfor_fit, type = "CR2")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; mfor_CR2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                     intrcpt          year deltypegeneral deltypeovert</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> intrcpt         0.015081059 -0.0020131555  -0.0036579995 -0.007130740</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> year           -0.002013156  0.0007603265  -0.0002607379  0.000218784</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> deltypegeneral -0.003658000 -0.0002607379   0.0042972555  0.004769307</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> deltypeovert   -0.007130740  0.0002187840   0.0047693066  0.010075586</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; coef_test(mfor_fit, vcov = mfor_CR2, test = c("Satterthwaite", "saddlepoint"))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           Coef. Estimate     SE t-stat d.f. (Satt) p-val (Satt) Sig.  s.p.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         intrcpt   -0.244 0.1228  -1.99        5.35      0.10015      0.327</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            year   -0.038 0.0276  -1.38        7.22      0.20977      0.209</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  deltypegeneral    0.709 0.0656  10.82        2.25      0.00555   ** 0.437</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    deltypeovert    0.505 0.1004   5.03        2.03      0.03614    * 0.344</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  p-val (Saddle) Sig.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          0.0915    .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          0.2103     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          &lt;0.001  ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          0.0278    *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Wald_test(mfor_fit, constraints = constrain_zero(3:4), vcov = mfor_CR2)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  test Fstat df_num df_denom p_val sig</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ  30.6      2    0.842 0.164    </span>
 <span class="r-in"></span>

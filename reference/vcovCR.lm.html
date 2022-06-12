@@ -146,7 +146,7 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Time:Diet3   -0.0750498 -0.3436398  0.3475327  1.1195632  0.3483146</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Time:Diet4    0.2695861 -0.3665016  0.3482061  0.3483146  0.5416587</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"plm"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"plm"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/source.html" class="external-link">withAutoprint</a></span><span class="op">(</span><span class="op">{</span></span>
 <span class="r-in"></span>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Produc"</span>, package <span class="op">=</span> <span class="st">"plm"</span><span class="op">)</span></span>
 <span class="r-in">  <span class="va">lm_individual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">gsp</span><span class="op">)</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">state</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pcap</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pc</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">emp</span><span class="op">)</span> <span class="op">+</span> <span class="va">unemp</span>, data <span class="op">=</span> <span class="va">Produc</span><span class="op">)</span></span>
@@ -159,7 +159,21 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 <span class="r-in">                     effect <span class="op">=</span> <span class="st">"individual"</span>, model <span class="op">=</span> <span class="st">"within"</span><span class="op">)</span></span>
 <span class="r-in">  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">plm_FE</span>, type<span class="op">=</span><span class="st">"CR2"</span><span class="op">)</span></span>
 <span class="r-in">  </span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span class="op">}</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; data("Produc", package = "plm")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; lm_individual &lt;- lm(log(gsp) ~ 0 + state + log(pcap) + log(pc) + log(emp) + </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     unemp, data = Produc)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; individual_index &lt;- !grepl("state", names(coef(lm_individual)))</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; vcovCR(lm_individual, cluster = Produc$state, type = "CR2")[individual_index, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     individual_index]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               log(pcap)       log(pc)      log(emp)         unemp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(pcap)  3.900840e-03 -7.382313e-04 -0.0024837779 -7.825846e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(pc)   -7.382313e-04  4.177767e-03 -0.0040101610 -9.960967e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(emp)  -2.483778e-03 -4.010161e-03  0.0073152051  1.736024e-04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> unemp     -7.825846e-05 -9.960967e-05  0.0001736024  6.745842e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; plm_FE &lt;- plm::plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     data = Produc, index = c("state", "year"), effect = "individual", model = "within")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; vcovCR(plm_FE, type = "CR2")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               log(pcap)       log(pc)      log(emp)         unemp</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> log(pcap)  3.900840e-03 -7.382313e-04 -0.0024837779 -7.825846e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> log(pc)   -7.382313e-04  4.177767e-03 -0.0040101610 -9.960967e-05</span>

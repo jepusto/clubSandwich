@@ -131,6 +131,95 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">iris_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">Sepal.Length</span>, <span class="va">Sepal.Width</span><span class="op">)</span> <span class="op">~</span> <span class="va">Species</span> <span class="op">+</span> </span>
 <span class="r-in">               <span class="va">Petal.Length</span> <span class="op">+</span> <span class="va">Petal.Width</span>, data <span class="op">=</span> <span class="va">iris</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">Vcluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">iris_fit</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">Vcluster</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                Sepal.Length:(Intercept)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:(Intercept)                    0.012547708</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Speciesversicolor              0.013463389</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Speciesvirginica               0.022738726</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Petal.Length                  -0.007227063</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Petal.Width                    0.002810727</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:(Intercept)                     0.006324275</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Speciesversicolor               0.004545412</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Speciesvirginica                0.007262239</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Petal.Length                   -0.003231810</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Petal.Width                     0.002072658</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                Sepal.Length:Speciesversicolor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:(Intercept)                         0.0134633889</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Speciesversicolor                   0.0380390801</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Speciesvirginica                    0.0579846604</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Petal.Length                       -0.0087024291</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Petal.Width                        -0.0109399201</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:(Intercept)                          0.0045454124</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Speciesversicolor                    0.0125587855</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Speciesvirginica                     0.0176278866</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Petal.Length                        -0.0039842873</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Petal.Width                         -0.0000394729</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                Sepal.Length:Speciesvirginica</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:(Intercept)                         0.022738726</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Speciesversicolor                   0.057984660</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Speciesvirginica                    0.096974290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Petal.Length                       -0.013179441</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Petal.Width                        -0.021314939</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:(Intercept)                          0.007262239</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Speciesversicolor                    0.017627887</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Speciesvirginica                     0.026715559</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Petal.Length                        -0.005518284</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Petal.Width                         -0.001400422</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                Sepal.Length:Petal.Length</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:(Intercept)                    -0.007227063</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Speciesversicolor              -0.008702429</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Speciesvirginica               -0.013179441</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Petal.Length                    0.005876684</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Petal.Width                    -0.006412572</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:(Intercept)                     -0.003231810</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Speciesversicolor               -0.003984287</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Speciesvirginica                -0.005518284</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Petal.Length                     0.002335906</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Petal.Width                     -0.001991957</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                Sepal.Length:Petal.Width Sepal.Width:(Intercept)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:(Intercept)                   0.0028107268             0.006324275</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Speciesversicolor            -0.0109399201             0.004545412</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Speciesvirginica             -0.0213149395             0.007262239</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Petal.Length                 -0.0064125723            -0.003231810</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Petal.Width                   0.0272498285             0.002072658</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:(Intercept)                    0.0020726578             0.013117244</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Speciesversicolor             -0.0000394729             0.013714416</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Speciesvirginica              -0.0014004219             0.019456928</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Petal.Length                  -0.0019919567            -0.007453511</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Petal.Width                    0.0049052390             0.003506130</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                Sepal.Width:Speciesversicolor</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:(Intercept)                        0.0045454124</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Speciesversicolor                  0.0125587855</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Speciesvirginica                   0.0176278866</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Petal.Length                      -0.0039842873</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Petal.Width                       -0.0000394729</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:(Intercept)                         0.0137144162</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Speciesversicolor                   0.0349169656</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Speciesvirginica                    0.0472678537</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Petal.Length                       -0.0105186360</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Petal.Width                        -0.0025487274</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                Sepal.Width:Speciesvirginica</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:(Intercept)                        0.007262239</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Speciesversicolor                  0.017627887</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Speciesvirginica                   0.026715559</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Petal.Length                      -0.005518284</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Petal.Width                       -0.001400422</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:(Intercept)                         0.019456928</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Speciesversicolor                   0.047267854</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Speciesvirginica                    0.069056876</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Petal.Length                       -0.013526991</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Petal.Width                        -0.007668001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                Sepal.Width:Petal.Length Sepal.Width:Petal.Width</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:(Intercept)                   -0.003231810            0.0020726578</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Speciesversicolor             -0.003984287           -0.0000394729</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Speciesvirginica              -0.005518284           -0.0014004219</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Petal.Length                   0.002335906           -0.0019919567</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Length:Petal.Width                   -0.001991957            0.0049052390</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:(Intercept)                    -0.007453511            0.0035061303</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Speciesversicolor              -0.010518636           -0.0025487274</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Speciesvirginica               -0.013526991           -0.0076680010</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Petal.Length                    0.005576498           -0.0042578708</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Sepal.Width:Petal.Width                    -0.004257871            0.0131707991</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

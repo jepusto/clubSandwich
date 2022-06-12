@@ -126,7 +126,7 @@ compared to zero. Defaults to <code>FALSE</code>.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"carData"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"carData"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/source.html" class="external-link">withAutoprint</a></span><span class="op">(</span><span class="op">{</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">Duncan</span>, package <span class="op">=</span> <span class="st">"carData"</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">Duncan</span><span class="op">$</span><span class="va">cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span>, size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">Duncan</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -162,7 +162,61 @@ compared to zero. Defaults to <code>FALSE</code>.</p></dd>
 <span class="r-in"><span class="fu">constrain_pairwise</span><span class="op">(</span><span class="st">":income"</span>, <span class="va">Duncan_coefs</span>, </span>
 <span class="r-in">                   reg_ex <span class="op">=</span> <span class="cn">TRUE</span>, with_zero <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span class="r-in">                   </span>
-<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"><span class="op">}</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; data(Duncan, package = "carData")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Duncan$cluster &lt;- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Duncan_fit &lt;- lm(prestige ~ 0 + type + income + type:income + type:education, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     data = Duncan)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Duncan_coefs &lt;- coef(Duncan_fit)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; constrain_zero(constraints = c("typeprof:income", "typewc:income"), coefs = Duncan_coefs)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0    0    0    1    0    0    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0    0    0    0    0    1    0    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; constrain_zero(constraints = ":income", coefs = Duncan_coefs, reg_ex = TRUE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0    0    0    1    0    0    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0    0    0    0    0    1    0    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; constrain_zero(constraints = 5:6, coefs = Duncan_coefs)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0    0    0    1    0    0    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0    0    0    0    0    1    0    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; constrain_zero(constraints = c(FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     FALSE, FALSE, FALSE), coefs = Duncan_coefs)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0    0    0    1    0    0    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0    0    0    0    0    1    0    0    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; constrain_equal(c("typebc:education", "typeprof:education", "typewc:education"), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     Duncan_coefs)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0    0    0    0    0   -1    1    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0    0    0    0    0    0   -1    0    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; constrain_equal(":education", Duncan_coefs, reg_ex = TRUE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0    0    0    0    0   -1    1    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0    0    0    0    0    0   -1    0    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; constrain_equal(7:9, Duncan_coefs)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0    0    0    0    0   -1    1    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0    0    0    0    0    0   -1    0    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; constrain_equal(c(FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     TRUE), Duncan_coefs)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0    0    0    0    0   -1    1    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,]    0    0    0    0    0    0   -1    0    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; constrain_pairwise(":education", Duncan_coefs, reg_ex = TRUE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`typeprof:education - typebc:education`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0    0    0    0    0   -1    1    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`typewc:education - typebc:education`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0    0    0    0    0   -1    0    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`typewc:education - typeprof:education`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0    0    0    0    0    0   -1    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; constrain_pairwise(":income", Duncan_coefs, reg_ex = TRUE, with_zero = TRUE)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`typeprof:income`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,]    0    0    0    0    1    0    0    0    0</span>
