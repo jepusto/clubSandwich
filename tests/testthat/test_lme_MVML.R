@@ -9,6 +9,9 @@ dat$na <- rowMeans(dat[, grepl("na", names(dat))])
 # keep only variables that are needed
 dat <- dat[, c("id", "sex", "beep", "pa", "na")]
 
+# keep only the first 10 IDs
+dat <- subset(dat, id <= 10)
+
 # change into very long format
 dat <- reshape(dat, direction="long", varying=c("pa","na"), v.names="y", idvar="obs", timevar="outcome")
 dat$obs <- NULL
@@ -85,15 +88,33 @@ test_that("Order doesn't matter.", {
   tol3 = tol
   seed <- 20200530
   
+  if (!is.null(seed)) set.seed(seed)
   re_order <- sample(nrow(dat))
   dat_scramble <- dat[re_order,]
   obj_scramble <- update(obj, data = dat_scramble)
   constraints <- utils::combn(length(coef_CS(obj)), 2, simplify = FALSE)
+  constraint_mats <- lapply(constraints, constrain_zero, coefs = coef_CS(obj))
+
+  CR_fit <- lapply(CR_types, function(x) vcovCR(obj, type = x))
+  CR_scramble <- lapply(CR_types, function(x) vcovCR(obj_scramble, type = x))
+  test_fit <- lapply(CR_types, function(x) coef_test(obj, vcov = x, test = "All", p_values = FALSE))
+  test_scramble <- lapply(CR_types, function(x) coef_test(obj_scramble, vcov = x, test = "All", p_values = FALSE))
+  Wald_fit <- Wald_test(obj, constraints = constraint_mats, vcov = "CR2", test = "All")
+  Wald_scramble <- Wald_test(obj_scramble, constraints = constraint_mats, vcov = "CR2", test = "All")
+
+  testthat::expect_equivalent(CR_fit, CR_scramble, tolerance = tol)
+  compare_ttests(test_fit, test_scramble, tol = tol2)
+  compare_Waldtests(Wald_fit, Wald_scramble, tol = tol3)
   
   V_dat <- build_var_cor_mats(obj)
   V_scram <- build_var_cor_mats(obj_scramble)
   V_mat <- unblock(V_dat)[re_order, re_order]
   V_mat_scram <- unblock(V_scram)
+  scram_grps <- attr(V_scram, "groups")
+  i <- levels(scram_grps)[4]
+  for (i in levels(scram_grps)) {
+    print(all.equal(V_mat[scram_grps==i,scram_grps==i], V_mat_scram[scram_grps==i,scram_grps==i]))
+  }
   V_dat <- matrix_list(V_mat, fac = attr(V_scram, "groups"), dim = "both")
   
   Sigma_dat <- targetVariance(obj)
@@ -128,7 +149,7 @@ test_that("Possible to cluster at higher level than random effects", {
   skip_on_cran()
   
   # create 4th level
-  n_groups <- nlevels(factor(dat$id)) / 4
+  n_groups <- nlevels(factor(dat$id))
   group_id <- rep(1:n_groups, each = 4)[dat$id]
   
   # cluster at level 4
