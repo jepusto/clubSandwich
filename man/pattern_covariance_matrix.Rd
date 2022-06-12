@@ -97,7 +97,7 @@ pkgs_available <-
   requireNamespace("metafor", quietly = TRUE) & 
   requireNamespace("robumeta", quietly = TRUE)
   
-if (pkgs_available) withAutoprint({
+if (pkgs_available) {
 library(metafor)
 
 data(oswald2013, package = "robumeta")
@@ -125,6 +125,6 @@ MVFE <- rma.mv(yi ~ 0 + Crit.Cat, V = V_list,
                
 conf_int(MVFE, vcov = "CR2")
 
-})
+}
 
 }

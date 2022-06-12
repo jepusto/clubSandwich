@@ -69,7 +69,7 @@ if (pkgs_available) {
   
   math_model <- lme(math ~ year * size + female + black + hispanic, 
                     random = list(~ year | schoolid, ~ 1 | childid), 
-                    data = egsingl_subset)
+                    data = egsingle_subset)
                     
   vcovCR(math_model, type = "CR2")
   
