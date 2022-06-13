@@ -116,6 +116,7 @@ get_cor_grouping <- function(obj, levels = NULL) {
 
 get_sort_order <- function(obj) {
   groups <- obj$groups
+  
   if (is.data.frame(groups)) {
     order(do.call(order, groups))
   } else if (!is.null(groups)) {
@@ -170,26 +171,26 @@ build_var_cor_mats <- function(obj) {
     
     if (!is.list(R_list)) R_list <- list(A = R_list)
     
-    grps <- get_cor_grouping(obj)
-    missing_grps <- setdiff(levels(grps), names(R_list))
-    
+    cor_grps <- attr(obj$modelStruct$corStruct, "groups")
+    missing_grps <- setdiff(levels(cor_grps), names(R_list))
+
     if (length(missing_grps) > 0) {
-      R_full <- rep(list(matrix(1,1,1)), nlevels(grps))
-      names(R_full) <- levels(grps)
+      R_full <- rep(list(matrix(1,1,1)), nlevels(cor_grps))
+      names(R_full) <- levels(cor_grps)
       R_full[names(R_list)] <- R_list
       R_list <- R_full
-    } else {
-      R_list <- R_list[levels(grps)]
-    }
+    } 
     
     if (is.null(obj$modelStruct$varStruct)) {
       V_list <- R_list
     } else {
-      sort_order <- get_sort_order(obj)
-      sd_vec <- 1 / as.numeric(nlme::varWeights(obj$modelStruct$varStruct))[sort_order]
-      sd_list <- split(sd_vec, grps)
+      sd_vec <- 1 / as.numeric(nlme::varWeights(obj$modelStruct$varStruct))
+      sd_list <- split(sd_vec, cor_grps)
       V_list <- Map(function(R, s) tcrossprod(s) * R, R = R_list, s = sd_list)
     }
+    
+    grps <- get_cor_grouping(obj)
+    V_list <- V_list[levels(grps)]
     
     attr(V_list, "groups") <- grps
   }

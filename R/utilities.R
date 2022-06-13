@@ -105,6 +105,7 @@ check_sort_order <- function(obj, dat, cluster = NULL,
   testthat::expect_equivalent(CR_fit, CR_scramble, tolerance = tol)
   compare_ttests(test_fit, test_scramble, tol = tol2)
   compare_Waldtests(Wald_fit, Wald_scramble, tol = tol3)
+  
 }
 
 compare_ttests <- function(a, b, tol = 10^-6) {

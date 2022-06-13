@@ -1,3 +1,7 @@
+# clubSandwich 0.5.7.9999
+
+* Fixed bug in methods for multi-variate multi-level models estimated with lme().
+
 # clubSandwich 0.5.7
 
 * Updated vignettes, examples, and unit tests so that the package can be compiled without any packages from SUGGESTS.
