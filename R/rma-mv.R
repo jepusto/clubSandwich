@@ -179,7 +179,7 @@ impute_covariance_matrix <- function(vi, cluster, r, ti, ar1,
   if (return_list) {
     return(vcov_list)
   } else {
-    vcov_mat <- metafor::bldiag(vcov_list)
+    vcov_mat <- unblock(vcov_list)
     cluster_index <- order(order(cluster))
     return(vcov_mat[cluster_index, cluster_index])
   }
@@ -336,7 +336,7 @@ pattern_covariance_matrix <- function(vi, cluster, pattern_level, r_pattern, r,
   if (return_list) {
     return(vcov_list)
   } else {
-    vcov_mat <- metafor::bldiag(vcov_list)
+    vcov_mat <- unblock(vcov_list)
     cluster_index <- order(order(cluster))
     return(vcov_mat[cluster_index, cluster_index])
   }
