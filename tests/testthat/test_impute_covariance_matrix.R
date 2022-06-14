@@ -52,7 +52,8 @@ test_that("impute_covariance_matrix returns correct correlations.", {
   V_resorted <- V_mat[order(dat_scramble$study), order(dat_scramble$study)]
   dat_unscramble <- dat_scramble[order(dat_scramble$study),]
   V_unscramble <- impute_covariance_matrix(vi = dat_unscramble$vi, cluster = dat_unscramble$study, r = r)
-  expect_equal(V_resorted, metafor::bldiag(V_unscramble))
+  expect_equal(V_resorted, unblock(V_unscramble))
+  
 })
 
 
@@ -180,7 +181,7 @@ test_that("impute_covariance_matrix works with unobserved factors.", {
   V_resorted <- V_mat[order(dat_scramble$study), order(dat_scramble$study)]
   dat_unscramble <- dat_scramble[order(dat_scramble$study),]
   V_unscramble <- impute_covariance_matrix(vi = dat_unscramble$vi, cluster = dat_unscramble$study, r = r)
-  expect_equal(V_resorted, metafor::bldiag(V_unscramble))
+  expect_equal(V_resorted, unblock(V_unscramble))
 })
 
 test_that("impute_covariance_matrix works with missing variances.", {
@@ -206,6 +207,7 @@ test_that("impute_covariance_matrix works with missing variances.", {
 
 test_that("pattern_covariance_matrix works.", {
   skip_if_not_installed("robumeta")
+  skip_if_not_installed("metafor")
   
   data(oswald2013, package = "robumeta")
   dat <- metafor::escalc(data = oswald2013, measure = "ZCOR", ri = R, ni = N)
