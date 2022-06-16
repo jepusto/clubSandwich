@@ -26,7 +26,7 @@ automatically if not specified.}
 
 \item{type}{Character string specifying which small-sample adjustment should 
 be used, with available options \code{"CR0"}, \code{"CR1"}, \code{"CR1p"},
-\code{"CR1S"}, \code{"CR2"}, or \code{"CR3"}. See "Details" section of 
+\code{"CR1S"}, \code{"CR2"}, \code{"CR3"}, or \code{"CR3f"}. See "Details" section of 
 \code{\link{vcovCR}} for further information.}
 
 \item{target}{Optional matrix or vector describing the working 
@@ -99,7 +99,10 @@ Several different small sample corrections are available, which run
   adjustment is chosen so that the variance-covariance estimator is exactly
   unbiased under a user-specified working model.} 
   \item{"CR3"}{approximates the leave-one-cluster-out jackknife variance estimator (Bell & McCaffrey,
-  2002).} }
+  2002).}
+  \item{"CR3f"}{implements the leave-one-cluster-out jackknife variance estimator (MacKinnon, Nielsen & Webb, 2022) - 
+  only for models of type `lm()`.}
+  }
 }
 \examples{
 
@@ -142,6 +145,13 @@ Some practical advice. \emph{Review of Economics and Statistics, 98}(4),
 Liang, K.-Y., & Zeger, S. L. (1986). Longitudinal data analysis using
 generalized linear models. \emph{Biometrika, 73}(1), 13-22.
 \doi{10.1093/biomet/73.1.13}
+
+MacKinnon, J.-G., & Oerregaard Nielsen, M. & Webb, M. (2022). Fast and 
+reliable jackknife and bootstrap methods for cluster-robust inference. 
+\emph{Queen’s Economics Department Working Paper No. 1485}
+
+Niccodemi, G., Wansbeek, T., 2022. A new estimator for standard errors with few unbalanced
+clusters. \emph{Econometrics} (10), 1–7.
 
 Pustejovsky, J. E. & Tipton, E. (2018). Small sample methods for
 cluster-robust variance estimation and hypothesis testing in fixed effects

@@ -49,6 +49,9 @@ CR3 <- function(X_list, XW_list) {
   lapply(IH_jj, solve)
 }
 
+CR3f <- function(J){1}
+#CR3f <- function(J){sqrt(J / (J - 1))}
+
 CR4 <- function(M_U, U_list, UW_list, X_list, XW_list, Theta_list, inverse_var = FALSE) {
   
   if (inverse_var) {
