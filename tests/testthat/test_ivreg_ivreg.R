@@ -1,6 +1,6 @@
 #############################
 
-context("ivreg objects")
+context("ivreg::ivreg objects")
 set.seed(20190513)
 
 skip_if_not_installed("ivreg")
@@ -37,13 +37,12 @@ test_that("Basic calculations from ivreg agree for unweighted model.", {
   expect_equal(coef(obj_un), lm.fit(XZ, y)$coefficients)
   expect_equal (bread(obj_un), chol2inv(chol(t(XZ) %*% XZ)) * nobs(obj_un), check.attributes=FALSE)
   
-  hii <- diag(X %*% chol2inv(chol(t(XZ) %*% XZ)) %*% t(XZ))
-  expect_equal(hatvalues(obj_un, type = "stage1"), hii) # hatvalues(obj_un_ivreg) will be different from hatvalues(obj_un_AER)
+  hii <- diag(XZ %*% chol2inv(chol(t(XZ) %*% XZ)) %*% t(XZ))
+  expect_equal(hatvalues(obj_un, type = "stage2"), hii)
   
   r <- as.vector(y - X %*% coef(obj_un))
   expect_equal(r, as.vector(residuals_CS(obj_un)))
 })
-# average diff: 0.00391
 
 test_that("Basic calculations from ivreg agree for weighted model.", {
   XZ <- model.matrix(obj_wt, component = "projected")
@@ -239,3 +238,24 @@ test_that("clubSandwich works with weights of zero.", {
   
 })
 
+
+#-------------------------------------------------------------------------------
+# Other estimation methods
+
+ols_un <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
+                       data = Cigs, method = "OLS")
+ols_wt <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
+                       data = Cigs, 
+                       weights = population, method = "OLS")
+
+mom_un <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
+                       data = Cigs, method = "M")
+mom_wt <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
+                       data = Cigs, 
+                       weights = population, method = "M")
+
+rob_un <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
+                       data = Cigs, method = "MM")
+rob_wt <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
+                       data = Cigs, 
+                       weights = population, method = "MM")
