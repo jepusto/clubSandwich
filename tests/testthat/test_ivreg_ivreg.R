@@ -259,3 +259,11 @@ rob_un <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + 
 rob_wt <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
                        data = Cigs, 
                        weights = population, method = "MM")
+
+test_that("vcovCR does not currently support ivreg models estimated using method = 'M' or method = 'MM'", {
+  expect_error(vcovCR(mom_un, cluster = Cigs$state, type = "CR2"))
+  expect_error(vcovCR(mom_wt, cluster = Cigs$state, type = "CR2"))
+  expect_error(vcovCR(rob_un, cluster = Cigs$state, type = "CR2"))
+  expect_error(vcovCR(rob_wt, cluster = Cigs$state, type = "CR2"))
+})
+
