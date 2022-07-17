@@ -52,7 +52,7 @@
 #'   requireNamespace("AER", quietly = TRUE) & 
 #'   requireNamespace("ivreg", quietly = TRUE)
 #'
-#' if (pkgs_available) withAutoprint{
+#' if (pkgs_available) withAutoprint ({
 #' 
 #' data("CigarettesSW")
 #'   Cigs <- within(CigarettesSW, {
@@ -64,14 +64,14 @@
 #'                   log(rincome) + tdiff + I(tax/cpi), data = Cigs)
 #'   vcovCR(iv_fit_ivreg, cluster = Cigs$state, type = "CR2")
 #'   coef_test(iv_fit_ivreg, vcov = "CR2", cluster = Cigs$state)
-#' }
+#' })
 #' 
 #' @export
 
 vcovCR.ivreg <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form = "sandwich", ...) {
   if (missing(cluster)) stop("You must specify a clustering variable.")
   if (inverse_var != FALSE) stop("Unfortunately, the inverse_var option is not available for ivreg models.")
-  if (obj$method == "M" | obj$method == "MM") stop("clubSandwich does not currently support ivreg models estimated using method = 'M' or method = 'MM'.")
+  if (!is.null(obj$method) && obj$method %in% c("M", "MM")) stop("clubSandwich does not currently support ivreg models estimated using method = 'M' or method = 'MM'.")
   vcov_CR(obj, cluster = cluster, type = type, 
           target = target, inverse_var = inverse_var, form = form)
 }
