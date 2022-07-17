@@ -50,10 +50,17 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
 }
 \description{
 \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
-of a set of regression coefficient estimates from an \code{\link[AER]{ivreg}} object.
+of a set of regression coefficient estimates from an ivreg object fitted
+from the \CRANpkg{AER} package or the \CRANpkg{ivreg} package.
+}
+\details{
+For any "ivreg" objects fitted via the \code{\link[ivreg]{ivreg}} 
+  function from the \CRANpkg{ivreg} package, only traditional 2SLS 
+  regression method (method = "OLS") is supported.
+  clubSandwich currently cannot support robust-regression methods such as
+  M-estimation (method = "M") or MM-estimation (method = "MM").
 }
 \examples{
-
 
 if (requireNamespace("AER", quietly = TRUE)) withAutoprint({
 
@@ -65,11 +72,29 @@ if (requireNamespace("AER", quietly = TRUE)) withAutoprint({
     tdiff <- (taxs - tax)/cpi
   })
 
-  iv_fit <- ivreg(log(packs) ~ log(rprice) + log(rincome) | 
+  iv_fit_AER <- AER::ivreg(log(packs) ~ log(rprice) + log(rincome) | 
                   log(rincome) + tdiff + I(tax/cpi), data = Cigs)
-  vcovCR(iv_fit, cluster = Cigs$state, type = "CR2")
-  coef_test(iv_fit, vcov = "CR2", cluster = Cigs$state)
+  vcovCR(iv_fit_AER, cluster = Cigs$state, type = "CR2")
+  coef_test(iv_fit_AER, vcov = "CR2", cluster = Cigs$state)
 
+})
+
+pkgs_available <- 
+  requireNamespace("AER", quietly = TRUE) & 
+  requireNamespace("ivreg", quietly = TRUE)
+
+if (pkgs_available) withAutoprint ({
+
+data("CigarettesSW")
+  Cigs <- within(CigarettesSW, {
+    rprice <- price/cpi
+    rincome <- income/population/cpi
+    tdiff <- (taxs - tax)/cpi
+  })
+iv_fit_ivreg <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | 
+                  log(rincome) + tdiff + I(tax/cpi), data = Cigs)
+  vcovCR(iv_fit_ivreg, cluster = Cigs$state, type = "CR2")
+  coef_test(iv_fit_ivreg, vcov = "CR2", cluster = Cigs$state)
 })
 
 }
