@@ -76,7 +76,7 @@
       <img src="" class="logo" alt=""><h1>Meta-analysis with cluster-robust variance estimation</h1>
                         <h4 data-toc-skip class="author">James E. Pustejovsky</h4>
             
-            <h4 data-toc-skip class="date">2022-06-16</h4>
+            <h4 data-toc-skip class="date">2022-07-17</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jepusto/clubSandwich/blob/HEAD/vignettes/meta-analysis-with-CRVE.Rmd" class="external-link"><code>vignettes/meta-analysis-with-CRVE.Rmd</code></a></small>
       <div class="d-none name"><code>meta-analysis-with-CRVE.Rmd</code></div>
@@ -90,163 +90,163 @@
 <h2 id="robumeta-model">robumeta model<a class="anchor" aria-label="anchor" href="#robumeta-model"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://jepusto.github.io/clubSandwich/">clubSandwich</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/zackfisher/robumeta" class="external-link">robumeta</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">)</span>
-
-<span class="co"># clean formatting</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">)</span><span class="op">[</span><span class="fl">7</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"eval"</span>,<span class="st">"implement"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">$</span><span class="va">eval</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"independent"</span>,<span class="st">"indirect"</span>,<span class="st">"planning"</span>,<span class="st">"delivery"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">$</span><span class="va">implement</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"low"</span>,<span class="st">"medium"</span>,<span class="st">"high"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">$</span><span class="va">program_site</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"community"</span>,<span class="st">"mixed"</span>,<span class="st">"classroom"</span>,<span class="st">"school"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">$</span><span class="va">study_design</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"matched"</span>,<span class="st">"unmatched"</span>,<span class="st">"RCT"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">$</span><span class="va">adjusted</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"no"</span>,<span class="st">"yes"</span><span class="op">)</span>
-
-<span class="va">m3_robu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/robumeta/man/robu.html" class="external-link">robu</a></span><span class="op">(</span><span class="va">LOR1</span> <span class="op">~</span> <span class="va">study_design</span> <span class="op">+</span> <span class="va">attrition</span> <span class="op">+</span> <span class="va">group_equivalence</span> <span class="op">+</span> <span class="va">adjusted</span>
-                <span class="op">+</span> <span class="va">outcome</span> <span class="op">+</span> <span class="va">eval</span> <span class="op">+</span> <span class="va">male_pct</span> <span class="op">+</span> <span class="va">white_pct</span> <span class="op">+</span> <span class="va">average_age</span>
-                <span class="op">+</span> <span class="va">implement</span> <span class="op">+</span> <span class="va">program_site</span> <span class="op">+</span> <span class="va">duration</span> <span class="op">+</span> <span class="va">service_hrs</span>, 
-                data <span class="op">=</span> <span class="va">dropoutPrevention</span>, studynum <span class="op">=</span> <span class="va">studyID</span>, var.eff.size <span class="op">=</span> <span class="va">varLOR</span>, 
-                modelweights <span class="op">=</span> <span class="st">"HIER"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">m3_robu</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## RVE: Hierarchical Effects Model with Small-Sample Corrections </span>
-<span class="co">## </span>
-<span class="co">## Model: LOR1 ~ study_design + attrition + group_equivalence + adjusted + outcome + eval + male_pct + white_pct + average_age + implement + program_site + duration + service_hrs </span>
-<span class="co">## </span>
-<span class="co">## Number of clusters = 152 </span>
-<span class="co">## Number of outcomes = 385 (min = 1 , mean = 2.53 , median = 1 , max = 30 )</span>
-<span class="co">## Omega.sq = 0.24907 </span>
-<span class="co">## Tau.sq = 0.1024663 </span>
-<span class="co">## </span>
-<span class="co">##                           Estimate   StdErr t-value  dfs    P(|t|&gt;) 95% CI.L 95% CI.U Sig</span>
-<span class="co">## 1           X.Intercept.  0.016899 0.615399  0.0275 16.9 0.97841541 -1.28228  1.31608    </span>
-<span class="co">## 2  study_designunmatched -0.002626 0.185142 -0.0142 40.5 0.98875129 -0.37667  0.37141    </span>
-<span class="co">## 3        study_designRCT -0.086872 0.140044 -0.6203 38.6 0.53869676 -0.37024  0.19650    </span>
-<span class="co">## 4              attrition  0.118889 0.247228  0.4809 15.5 0.63732597 -0.40666  0.64444    </span>
-<span class="co">## 5      group_equivalence  0.502463 0.195838  2.5657 28.7 0.01579282  0.10174  0.90318  **</span>
-<span class="co">## 6            adjustedyes -0.322480 0.125413 -2.5713 33.8 0.01470796 -0.57741 -0.06755  **</span>
-<span class="co">## 7        outcomeenrolled  0.097059 0.139842  0.6941 16.5 0.49727848 -0.19862  0.39274    </span>
-<span class="co">## 8      outcomegraduation  0.147643 0.134938  1.0942 30.2 0.28253825 -0.12786  0.42315    </span>
-<span class="co">## 9  outcomegraduation.ged  0.258034 0.169134  1.5256 16.3 0.14632629 -0.10006  0.61613    </span>
-<span class="co">## 10          evalindirect -0.765085 0.399109 -1.9170  6.2 0.10212896 -1.73406  0.20389    </span>
-<span class="co">## 11          evalplanning -0.920874 0.346536 -2.6574  5.6 0.04027061 -1.78381 -0.05794  **</span>
-<span class="co">## 12          evaldelivery -0.916673 0.304303 -3.0124  4.7 0.03212299 -1.71432 -0.11903  **</span>
-<span class="co">## 13              male_pct  0.167965 0.181538  0.9252 16.4 0.36824526 -0.21609  0.55202    </span>
-<span class="co">## 14             white_pct  0.022915 0.149394  0.1534 21.8 0.87950385 -0.28704  0.33287    </span>
-<span class="co">## 15           average_age  0.037102 0.027053  1.3715 21.2 0.18458247 -0.01913  0.09333    </span>
-<span class="co">## 16       implementmedium  0.411779 0.128898  3.1946 26.7 0.00358205  0.14714  0.67642 ***</span>
-<span class="co">## 17         implementhigh  0.658570 0.123874  5.3164 34.6 0.00000635  0.40699  0.91015 ***</span>
-<span class="co">## 18     program_sitemixed  0.444384 0.172635  2.5741 28.6 0.01550504  0.09109  0.79768  **</span>
-<span class="co">## 19 program_siteclassroom  0.426658 0.159773  2.6704 37.4 0.01115192  0.10303  0.75028  **</span>
-<span class="co">## 20    program_siteschool  0.262517 0.160519  1.6354 30.1 0.11236814 -0.06525  0.59028    </span>
-<span class="co">## 21              duration  0.000427 0.000873  0.4895 36.7 0.62736846 -0.00134  0.00220    </span>
-<span class="co">## 22           service_hrs -0.003434 0.005012 -0.6852 36.7 0.49752503 -0.01359  0.00672    </span>
-<span class="co">## ---</span>
-<span class="co">## Signif. codes: &lt; .01 *** &lt; .05 ** &lt; .10 *</span>
-<span class="co">## ---</span>
-<span class="co">## Note: If df &lt; 4, do not trust the results</span></code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://jepusto.github.io/clubSandwich/">clubSandwich</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/zackfisher/robumeta" class="external-link">robumeta</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># clean formatting</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">)</span><span class="op">[</span><span class="fl">7</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"eval"</span>,<span class="st">"implement"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">$</span><span class="va">eval</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"independent"</span>,<span class="st">"indirect"</span>,<span class="st">"planning"</span>,<span class="st">"delivery"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">$</span><span class="va">implement</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"low"</span>,<span class="st">"medium"</span>,<span class="st">"high"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">$</span><span class="va">program_site</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"community"</span>,<span class="st">"mixed"</span>,<span class="st">"classroom"</span>,<span class="st">"school"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">$</span><span class="va">study_design</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"matched"</span>,<span class="st">"unmatched"</span>,<span class="st">"RCT"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">$</span><span class="va">adjusted</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"no"</span>,<span class="st">"yes"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">m3_robu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/robumeta/man/robu.html" class="external-link">robu</a></span><span class="op">(</span><span class="va">LOR1</span> <span class="op">~</span> <span class="va">study_design</span> <span class="op">+</span> <span class="va">attrition</span> <span class="op">+</span> <span class="va">group_equivalence</span> <span class="op">+</span> <span class="va">adjusted</span></span>
+<span>                <span class="op">+</span> <span class="va">outcome</span> <span class="op">+</span> <span class="va">eval</span> <span class="op">+</span> <span class="va">male_pct</span> <span class="op">+</span> <span class="va">white_pct</span> <span class="op">+</span> <span class="va">average_age</span></span>
+<span>                <span class="op">+</span> <span class="va">implement</span> <span class="op">+</span> <span class="va">program_site</span> <span class="op">+</span> <span class="va">duration</span> <span class="op">+</span> <span class="va">service_hrs</span>, </span>
+<span>                data <span class="op">=</span> <span class="va">dropoutPrevention</span>, studynum <span class="op">=</span> <span class="va">studyID</span>, var.eff.size <span class="op">=</span> <span class="va">varLOR</span>, </span>
+<span>                modelweights <span class="op">=</span> <span class="st">"HIER"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">m3_robu</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## RVE: Hierarchical Effects Model with Small-Sample Corrections </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Model: LOR1 ~ study_design + attrition + group_equivalence + adjusted + outcome + eval + male_pct + white_pct + average_age + implement + program_site + duration + service_hrs </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Number of clusters = 152 </span></span>
+<span><span class="co">## Number of outcomes = 385 (min = 1 , mean = 2.53 , median = 1 , max = 30 )</span></span>
+<span><span class="co">## Omega.sq = 0.24907 </span></span>
+<span><span class="co">## Tau.sq = 0.1024663 </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##                           Estimate   StdErr t-value  dfs    P(|t|&gt;) 95% CI.L 95% CI.U Sig</span></span>
+<span><span class="co">## 1           X.Intercept.  0.016899 0.615399  0.0275 16.9 0.97841541 -1.28228  1.31608    </span></span>
+<span><span class="co">## 2  study_designunmatched -0.002626 0.185142 -0.0142 40.5 0.98875129 -0.37667  0.37141    </span></span>
+<span><span class="co">## 3        study_designRCT -0.086872 0.140044 -0.6203 38.6 0.53869676 -0.37024  0.19650    </span></span>
+<span><span class="co">## 4              attrition  0.118889 0.247228  0.4809 15.5 0.63732597 -0.40666  0.64444    </span></span>
+<span><span class="co">## 5      group_equivalence  0.502463 0.195838  2.5657 28.7 0.01579282  0.10174  0.90318  **</span></span>
+<span><span class="co">## 6            adjustedyes -0.322480 0.125413 -2.5713 33.8 0.01470796 -0.57741 -0.06755  **</span></span>
+<span><span class="co">## 7        outcomeenrolled  0.097059 0.139842  0.6941 16.5 0.49727848 -0.19862  0.39274    </span></span>
+<span><span class="co">## 8      outcomegraduation  0.147643 0.134938  1.0942 30.2 0.28253825 -0.12786  0.42315    </span></span>
+<span><span class="co">## 9  outcomegraduation.ged  0.258034 0.169134  1.5256 16.3 0.14632629 -0.10006  0.61613    </span></span>
+<span><span class="co">## 10          evalindirect -0.765085 0.399109 -1.9170  6.2 0.10212896 -1.73406  0.20389    </span></span>
+<span><span class="co">## 11          evalplanning -0.920874 0.346536 -2.6574  5.6 0.04027061 -1.78381 -0.05794  **</span></span>
+<span><span class="co">## 12          evaldelivery -0.916673 0.304303 -3.0124  4.7 0.03212299 -1.71432 -0.11903  **</span></span>
+<span><span class="co">## 13              male_pct  0.167965 0.181538  0.9252 16.4 0.36824526 -0.21609  0.55202    </span></span>
+<span><span class="co">## 14             white_pct  0.022915 0.149394  0.1534 21.8 0.87950385 -0.28704  0.33287    </span></span>
+<span><span class="co">## 15           average_age  0.037102 0.027053  1.3715 21.2 0.18458247 -0.01913  0.09333    </span></span>
+<span><span class="co">## 16       implementmedium  0.411779 0.128898  3.1946 26.7 0.00358205  0.14714  0.67642 ***</span></span>
+<span><span class="co">## 17         implementhigh  0.658570 0.123874  5.3164 34.6 0.00000635  0.40699  0.91015 ***</span></span>
+<span><span class="co">## 18     program_sitemixed  0.444384 0.172635  2.5741 28.6 0.01550504  0.09109  0.79768  **</span></span>
+<span><span class="co">## 19 program_siteclassroom  0.426658 0.159773  2.6704 37.4 0.01115192  0.10303  0.75028  **</span></span>
+<span><span class="co">## 20    program_siteschool  0.262517 0.160519  1.6354 30.1 0.11236814 -0.06525  0.59028    </span></span>
+<span><span class="co">## 21              duration  0.000427 0.000873  0.4895 36.7 0.62736846 -0.00134  0.00220    </span></span>
+<span><span class="co">## 22           service_hrs -0.003434 0.005012 -0.6852 36.7 0.49752503 -0.01359  0.00672    </span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Signif. codes: &lt; .01 *** &lt; .05 ** &lt; .10 *</span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Note: If df &lt; 4, do not trust the results</span></span></code></pre>
 <p>Note that <code>robumeta</code> produces small-sample corrected standard errors and t-tests, and so there is no need to repeat those calculations with <code>clubSandwich</code>. The <code>eval</code> variable has four levels, and it might be of interest to test whether the average program effects differ by the degree of evaluator independence. The null hypothesis in this case is that the 10th, 11th, and 12th regression coefficients are all equal to zero. A small-sample adjusted F-test for this hypothesis can be obtained as follows. The <code>vcov = "CR2"</code> option means that the standard errors will be corrected using the bias-reduced linearization estimator described in Tipton and Pustejovsky (2015).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/Wald_test.html">Wald_test</a></span><span class="op">(</span><span class="va">m3_robu</span>, constraints <span class="op">=</span> <span class="fu"><a href="../reference/constraint_matrices.html">constrain_zero</a></span><span class="op">(</span><span class="fl">10</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##  test Fstat df_num df_denom  p_val sig</span>
-<span class="co">##   HTZ  2.78      3     16.8 0.0732   .</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/Wald_test.html">Wald_test</a></span><span class="op">(</span><span class="va">m3_robu</span>, constraints <span class="op">=</span> <span class="fu"><a href="../reference/constraint_matrices.html">constrain_zero</a></span><span class="op">(</span><span class="fl">10</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##  test Fstat df_num df_denom  p_val sig</span></span>
+<span><span class="co">##   HTZ  2.78      3     16.8 0.0732   .</span></span></code></pre>
 <p>By default, the <code>Wald_test</code> function provides an F-type test with degrees of freedom estimated using the approximate Hotelling’s <span class="math inline">\(T^2_Z\)</span> method. The test has less than 17 degrees of freedom, even though there are 152 independent studies in the data, and has a p-value that is not quite significant at conventional levels. The low degrees of freedom are a consequence of the fact that one of the levels of <code>evaluator independence</code> has only a few effect sizes in it:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">$</span><span class="va">eval</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## </span>
-<span class="co">## independent    indirect    planning    delivery </span>
-<span class="co">##           6          33          43         303</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">$</span><span class="va">eval</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## independent    indirect    planning    delivery </span></span>
+<span><span class="co">##           6          33          43         303</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="metafor-model">metafor model<a class="anchor" aria-label="anchor" href="#metafor-model"></a>
 </h2>
 <p><code>clubSandwich</code> also works with models fit using the <code>metafor</code> package. Here we re-fit the same regression specification, but use REML to estimate the variance components (<code>robumeta</code> uses a method-of-moments estimator), as well as a somewhat different weighting scheme than that used in <code>robumeta</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.metafor-project.org" class="external-link">metafor</a></span><span class="op">)</span>
-<span class="va">m3_metafor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://wviechtb.github.io/metafor/reference/rma.mv.html" class="external-link">rma.mv</a></span><span class="op">(</span><span class="va">LOR1</span> <span class="op">~</span> <span class="va">study_design</span> <span class="op">+</span> <span class="va">attrition</span> <span class="op">+</span> <span class="va">group_equivalence</span> <span class="op">+</span> <span class="va">adjusted</span>
-                      <span class="op">+</span> <span class="va">outcome</span> <span class="op">+</span> <span class="va">eval</span>
-                      <span class="op">+</span> <span class="va">male_pct</span> <span class="op">+</span> <span class="va">white_pct</span> <span class="op">+</span> <span class="va">average_age</span>
-                      <span class="op">+</span> <span class="va">implement</span> <span class="op">+</span> <span class="va">program_site</span> <span class="op">+</span> <span class="va">duration</span> <span class="op">+</span> <span class="va">service_hrs</span>, 
-                      V <span class="op">=</span> <span class="va">varLOR</span>, random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">studyID</span>, <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">studySample</span><span class="op">)</span>,
-                     data <span class="op">=</span> <span class="va">dropoutPrevention</span><span class="op">)</span>
-<span class="fu"><a href="https://wviechtb.github.io/metafor/reference/print.rma.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">m3_metafor</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## </span>
-<span class="co">## Multivariate Meta-Analysis Model (k = 385; method: REML)</span>
-<span class="co">## </span>
-<span class="co">##    logLik   Deviance        AIC        BIC       AICc  ​ </span>
-<span class="co">## -489.0357   978.0714  1026.0714  1119.5371  1029.6217   </span>
-<span class="co">## </span>
-<span class="co">## Variance Components:</span>
-<span class="co">## </span>
-<span class="co">##             estim    sqrt  nlvls  fixed       factor </span>
-<span class="co">## sigma^2.1  0.2274  0.4769    152     no      studyID </span>
-<span class="co">## sigma^2.2  0.1145  0.3384    317     no  studySample </span>
-<span class="co">## </span>
-<span class="co">## Test for Residual Heterogeneity:</span>
-<span class="co">## QE(df = 363) = 1588.4397, p-val &lt; .0001</span>
-<span class="co">## </span>
-<span class="co">## Test of Moderators (coefficients 2:22):</span>
-<span class="co">## QM(df = 21) = 293.8694, p-val &lt; .0001</span>
-<span class="co">## </span>
-<span class="co">## Model Results:</span>
-<span class="co">## </span>
-<span class="co">##                        estimate      se     zval    pval    ci.lb    ci.ub     ​ </span>
-<span class="co">## intrcpt                  0.5296  0.7250   0.7304  0.4651  -0.8915   1.9506      </span>
-<span class="co">## study_designunmatched   -0.0494  0.1722  -0.2871  0.7741  -0.3870   0.2881      </span>
-<span class="co">## study_designRCT          0.0653  0.1628   0.4010  0.6884  -0.2538   0.3843      </span>
-<span class="co">## attrition               -0.1366  0.2429  -0.5623  0.5739  -0.6126   0.3395      </span>
-<span class="co">## group_equivalence        0.4071  0.1573   2.5877  0.0097   0.0988   0.7155   ** </span>
-<span class="co">## adjustedyes             -0.3581  0.1532  -2.3371  0.0194  -0.6585  -0.0578    * </span>
-<span class="co">## outcomeenrolled         -0.2831  0.0771  -3.6709  0.0002  -0.4343  -0.1320  *** </span>
-<span class="co">## outcomegraduation       -0.0913  0.0657  -1.3896  0.1646  -0.2201   0.0375      </span>
-<span class="co">## outcomegraduation/ged    0.6983  0.0805   8.6750  &lt;.0001   0.5406   0.8561  *** </span>
-<span class="co">## evalindirect            -0.7530  0.4949  -1.5214  0.1282  -1.7230   0.2171      </span>
-<span class="co">## evalplanning            -0.7700  0.4869  -1.5814  0.1138  -1.7242   0.1843      </span>
-<span class="co">## evaldelivery            -1.0016  0.4600  -2.1774  0.0294  -1.9033  -0.1000    * </span>
-<span class="co">## male_pct                 0.1021  0.1715   0.5951  0.5518  -0.2341   0.4382      </span>
-<span class="co">## white_pct                0.1223  0.1804   0.6777  0.4979  -0.2313   0.4758      </span>
-<span class="co">## average_age              0.0061  0.0291   0.2091  0.8344  -0.0509   0.0631      </span>
-<span class="co">## implementmedium          0.4738  0.1609   2.9445  0.0032   0.1584   0.7892   ** </span>
-<span class="co">## implementhigh            0.6318  0.1471   4.2965  &lt;.0001   0.3436   0.9201  *** </span>
-<span class="co">## program_sitemixed        0.3289  0.2413   1.3631  0.1729  -0.1440   0.8019      </span>
-<span class="co">## program_siteclassroom    0.2920  0.1736   1.6821  0.0926  -0.0482   0.6321    . </span>
-<span class="co">## program_siteschool       0.1616  0.1898   0.8515  0.3945  -0.2104   0.5337      </span>
-<span class="co">## duration                 0.0013  0.0009   1.3423  0.1795  -0.0006   0.0031      </span>
-<span class="co">## service_hrs             -0.0003  0.0047  -0.0654  0.9478  -0.0096   0.0090      </span>
-<span class="co">## </span>
-<span class="co">## ---</span>
-<span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></code></pre>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.metafor-project.org" class="external-link">metafor</a></span><span class="op">)</span></span>
+<span><span class="va">m3_metafor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://wviechtb.github.io/metafor/reference/rma.mv.html" class="external-link">rma.mv</a></span><span class="op">(</span><span class="va">LOR1</span> <span class="op">~</span> <span class="va">study_design</span> <span class="op">+</span> <span class="va">attrition</span> <span class="op">+</span> <span class="va">group_equivalence</span> <span class="op">+</span> <span class="va">adjusted</span></span>
+<span>                      <span class="op">+</span> <span class="va">outcome</span> <span class="op">+</span> <span class="va">eval</span></span>
+<span>                      <span class="op">+</span> <span class="va">male_pct</span> <span class="op">+</span> <span class="va">white_pct</span> <span class="op">+</span> <span class="va">average_age</span></span>
+<span>                      <span class="op">+</span> <span class="va">implement</span> <span class="op">+</span> <span class="va">program_site</span> <span class="op">+</span> <span class="va">duration</span> <span class="op">+</span> <span class="va">service_hrs</span>, </span>
+<span>                      V <span class="op">=</span> <span class="va">varLOR</span>, random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">studyID</span>, <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">studySample</span><span class="op">)</span>,</span>
+<span>                     data <span class="op">=</span> <span class="va">dropoutPrevention</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">m3_metafor</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## </span></span>
+<span><span class="co">## Multivariate Meta-Analysis Model (k = 385; method: REML)</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##    logLik   Deviance        AIC        BIC       AICc  ​ </span></span>
+<span><span class="co">## -489.0357   978.0714  1026.0714  1119.5371  1029.6217   </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Variance Components:</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##             estim    sqrt  nlvls  fixed       factor </span></span>
+<span><span class="co">## sigma^2.1  0.2274  0.4769    152     no      studyID </span></span>
+<span><span class="co">## sigma^2.2  0.1145  0.3384    317     no  studySample </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Test for Residual Heterogeneity:</span></span>
+<span><span class="co">## QE(df = 363) = 1588.4397, p-val &lt; .0001</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Test of Moderators (coefficients 2:22):</span></span>
+<span><span class="co">## QM(df = 21) = 293.8694, p-val &lt; .0001</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## Model Results:</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##                        estimate      se     zval    pval    ci.lb    ci.ub     ​ </span></span>
+<span><span class="co">## intrcpt                  0.5296  0.7250   0.7304  0.4651  -0.8915   1.9506      </span></span>
+<span><span class="co">## study_designunmatched   -0.0494  0.1722  -0.2871  0.7741  -0.3870   0.2881      </span></span>
+<span><span class="co">## study_designRCT          0.0653  0.1628   0.4010  0.6884  -0.2538   0.3843      </span></span>
+<span><span class="co">## attrition               -0.1366  0.2429  -0.5623  0.5739  -0.6126   0.3395      </span></span>
+<span><span class="co">## group_equivalence        0.4071  0.1573   2.5877  0.0097   0.0988   0.7155   ** </span></span>
+<span><span class="co">## adjustedyes             -0.3581  0.1532  -2.3371  0.0194  -0.6585  -0.0578    * </span></span>
+<span><span class="co">## outcomeenrolled         -0.2831  0.0771  -3.6709  0.0002  -0.4343  -0.1320  *** </span></span>
+<span><span class="co">## outcomegraduation       -0.0913  0.0657  -1.3896  0.1646  -0.2201   0.0375      </span></span>
+<span><span class="co">## outcomegraduation/ged    0.6983  0.0805   8.6750  &lt;.0001   0.5406   0.8561  *** </span></span>
+<span><span class="co">## evalindirect            -0.7530  0.4949  -1.5214  0.1282  -1.7230   0.2171      </span></span>
+<span><span class="co">## evalplanning            -0.7700  0.4869  -1.5814  0.1138  -1.7242   0.1843      </span></span>
+<span><span class="co">## evaldelivery            -1.0016  0.4600  -2.1774  0.0294  -1.9033  -0.1000    * </span></span>
+<span><span class="co">## male_pct                 0.1021  0.1715   0.5951  0.5518  -0.2341   0.4382      </span></span>
+<span><span class="co">## white_pct                0.1223  0.1804   0.6777  0.4979  -0.2313   0.4758      </span></span>
+<span><span class="co">## average_age              0.0061  0.0291   0.2091  0.8344  -0.0509   0.0631      </span></span>
+<span><span class="co">## implementmedium          0.4738  0.1609   2.9445  0.0032   0.1584   0.7892   ** </span></span>
+<span><span class="co">## implementhigh            0.6318  0.1471   4.2965  &lt;.0001   0.3436   0.9201  *** </span></span>
+<span><span class="co">## program_sitemixed        0.3289  0.2413   1.3631  0.1729  -0.1440   0.8019      </span></span>
+<span><span class="co">## program_siteclassroom    0.2920  0.1736   1.6821  0.0926  -0.0482   0.6321    . </span></span>
+<span><span class="co">## program_siteschool       0.1616  0.1898   0.8515  0.3945  -0.2104   0.5337      </span></span>
+<span><span class="co">## duration                 0.0013  0.0009   1.3423  0.1795  -0.0006   0.0031      </span></span>
+<span><span class="co">## service_hrs             -0.0003  0.0047  -0.0654  0.9478  -0.0096   0.0090      </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## ---</span></span>
+<span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre>
 <p><code>metafor</code> produces model-based standard errors, t-tests, and confidence intervals. The <code>coef_test</code> function from <code>clubSandwich</code> will calculate robust standard errors and robust t-tests for each of the coefficients:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">m3_metafor</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##                  Coef.  Estimate       SE  t-stat d.f. (Satt) p-val (Satt) Sig.</span>
-<span class="co">##                intrcpt  0.529569 0.724851  0.7306       20.08      0.47347     </span>
-<span class="co">##  study_designunmatched -0.049434 0.204152 -0.2421       58.42      0.80952     </span>
-<span class="co">##        study_designRCT  0.065272 0.149146  0.4376       53.17      0.66342     </span>
-<span class="co">##              attrition -0.136575 0.306429 -0.4457       10.52      0.66485     </span>
-<span class="co">##      group_equivalence  0.407108 0.210917  1.9302       23.10      0.06595    .</span>
-<span class="co">##            adjustedyes -0.358124 0.136132 -2.6307       43.20      0.01176    *</span>
-<span class="co">##        outcomeenrolled -0.283124 0.237199 -1.1936        7.08      0.27108     </span>
-<span class="co">##      outcomegraduation -0.091295 0.091465 -0.9981        9.95      0.34188     </span>
-<span class="co">##  outcomegraduation/ged  0.698328 0.364882  1.9138        8.02      0.09188    .</span>
-<span class="co">##           evalindirect -0.752994 0.447670 -1.6820        6.56      0.13929     </span>
-<span class="co">##           evalplanning -0.769968 0.403898 -1.9063        6.10      0.10446     </span>
-<span class="co">##           evaldelivery -1.001648 0.355989 -2.8137        4.89      0.03834    *</span>
-<span class="co">##               male_pct  0.102055 0.148410  0.6877        9.68      0.50782     </span>
-<span class="co">##              white_pct  0.122255 0.141470  0.8642       16.88      0.39961     </span>
-<span class="co">##            average_age  0.006084 0.033387  0.1822       15.79      0.85772     </span>
-<span class="co">##        implementmedium  0.473789 0.148660  3.1871       22.44      0.00419   **</span>
-<span class="co">##          implementhigh  0.631842 0.138073  4.5761       28.68      &lt; 0.001  ***</span>
-<span class="co">##      program_sitemixed  0.328941 0.196848  1.6710       27.47      0.10607     </span>
-<span class="co">##  program_siteclassroom  0.291952 0.146014  1.9995       42.70      0.05195    .</span>
-<span class="co">##     program_siteschool  0.161640 0.171700  0.9414       29.27      0.35420     </span>
-<span class="co">##               duration  0.001270 0.000978  1.2988       31.96      0.20332     </span>
-<span class="co">##            service_hrs -0.000309 0.004828 -0.0641       49.63      0.94915</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">m3_metafor</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##                  Coef.  Estimate       SE  t-stat d.f. (Satt) p-val (Satt) Sig.</span></span>
+<span><span class="co">##                intrcpt  0.529569 0.724851  0.7306       20.08      0.47347     </span></span>
+<span><span class="co">##  study_designunmatched -0.049434 0.204152 -0.2421       58.42      0.80952     </span></span>
+<span><span class="co">##        study_designRCT  0.065272 0.149146  0.4376       53.17      0.66342     </span></span>
+<span><span class="co">##              attrition -0.136575 0.306429 -0.4457       10.52      0.66485     </span></span>
+<span><span class="co">##      group_equivalence  0.407108 0.210917  1.9302       23.10      0.06595    .</span></span>
+<span><span class="co">##            adjustedyes -0.358124 0.136132 -2.6307       43.20      0.01176    *</span></span>
+<span><span class="co">##        outcomeenrolled -0.283124 0.237199 -1.1936        7.08      0.27108     </span></span>
+<span><span class="co">##      outcomegraduation -0.091295 0.091465 -0.9981        9.95      0.34188     </span></span>
+<span><span class="co">##  outcomegraduation/ged  0.698328 0.364882  1.9138        8.02      0.09188    .</span></span>
+<span><span class="co">##           evalindirect -0.752994 0.447670 -1.6820        6.56      0.13929     </span></span>
+<span><span class="co">##           evalplanning -0.769968 0.403898 -1.9063        6.10      0.10446     </span></span>
+<span><span class="co">##           evaldelivery -1.001648 0.355989 -2.8137        4.89      0.03834    *</span></span>
+<span><span class="co">##               male_pct  0.102055 0.148410  0.6877        9.68      0.50782     </span></span>
+<span><span class="co">##              white_pct  0.122255 0.141470  0.8642       16.88      0.39961     </span></span>
+<span><span class="co">##            average_age  0.006084 0.033387  0.1822       15.79      0.85772     </span></span>
+<span><span class="co">##        implementmedium  0.473789 0.148660  3.1871       22.44      0.00419   **</span></span>
+<span><span class="co">##          implementhigh  0.631842 0.138073  4.5761       28.68      &lt; 0.001  ***</span></span>
+<span><span class="co">##      program_sitemixed  0.328941 0.196848  1.6710       27.47      0.10607     </span></span>
+<span><span class="co">##  program_siteclassroom  0.291952 0.146014  1.9995       42.70      0.05195    .</span></span>
+<span><span class="co">##     program_siteschool  0.161640 0.171700  0.9414       29.27      0.35420     </span></span>
+<span><span class="co">##               duration  0.001270 0.000978  1.2988       31.96      0.20332     </span></span>
+<span><span class="co">##            service_hrs -0.000309 0.004828 -0.0641       49.63      0.94915</span></span></code></pre>
 <p>Note that <code>coef_test</code> assumed that it should cluster based on <code>studyID</code>, which is the outer-most random effect in the metafor model. This can be specified explicitly by including the option <code>cluster = dropoutPrevention$studyID</code> in the call.</p>
 <p>The F-test for degree of evaluator independence uses the same syntax as before:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/Wald_test.html">Wald_test</a></span><span class="op">(</span><span class="va">m3_metafor</span>, constraints <span class="op">=</span> <span class="fu"><a href="../reference/constraint_matrices.html">constrain_zero</a></span><span class="op">(</span><span class="fl">10</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">##  test Fstat df_num df_denom  p_val sig</span>
-<span class="co">##   HTZ  2.71      3     18.3 0.0753   .</span></code></pre>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/Wald_test.html">Wald_test</a></span><span class="op">(</span><span class="va">m3_metafor</span>, constraints <span class="op">=</span> <span class="fu"><a href="../reference/constraint_matrices.html">constrain_zero</a></span><span class="op">(</span><span class="fl">10</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##  test Fstat df_num df_denom  p_val sig</span></span>
+<span><span class="co">##   HTZ  2.71      3     18.3 0.0753   .</span></span></code></pre>
 <p>Despite some differences in weighting schemes, the p-value is very close to the result obtained using <code>robumeta</code>.</p>
 </div>
 <div class="section level2">
@@ -271,7 +271,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer>

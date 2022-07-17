@@ -77,18 +77,18 @@ of a set of regression coefficient estimates.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">vcovCR</span><span class="op">(</span><span class="va">obj</span>, <span class="va">cluster</span>, <span class="va">type</span>, <span class="va">target</span>, <span class="va">inverse_var</span>, <span class="va">form</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="co"># S3 method for default</span>
-<span class="fu">vcovCR</span><span class="op">(</span>
-  <span class="va">obj</span>,
-  <span class="va">cluster</span>,
-  <span class="va">type</span>,
-  target <span class="op">=</span> <span class="cn">NULL</span>,
-  inverse_var <span class="op">=</span> <span class="cn">FALSE</span>,
-  form <span class="op">=</span> <span class="st">"sandwich"</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">vcovCR</span><span class="op">(</span><span class="va">obj</span>, <span class="va">cluster</span>, <span class="va">type</span>, <span class="va">target</span>, <span class="va">inverse_var</span>, <span class="va">form</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">vcovCR</span><span class="op">(</span></span>
+<span>  <span class="va">obj</span>,</span>
+<span>  <span class="va">cluster</span>,</span>
+<span>  <span class="va">type</span>,</span>
+<span>  target <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  inverse_var <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  form <span class="op">=</span> <span class="st">"sandwich"</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -238,44 +238,44 @@ models. <em>Journal of Business and Economic Statistics, 36</em>(4), 672-683.
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co"># simulate design with cluster-dependence</span></span>
-<span class="r-in"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fl">8</span></span>
-<span class="r-in"><span class="va">cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">m</span><span class="op">]</span>, <span class="fl">3</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="va">m</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">cluster</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">3</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span>, <span class="va">n</span>, <span class="fl">3</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">nu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">[</span><span class="va">cluster</span><span class="op">]</span></span>
-<span class="r-in"><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/pkg/Matrix/man/matrix-products.html" class="external-link">%*%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.4</span>, <span class="fl">.3</span>, <span class="op">-</span><span class="fl">.3</span><span class="op">)</span> <span class="op">+</span> <span class="va">nu</span> <span class="op">+</span> <span class="va">e</span></span>
-<span class="r-in"><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">X</span>, <span class="va">cluster</span>, row <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># fit linear model</span></span>
-<span class="r-in"><span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="va">X3</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://wviechtb.github.io/metafor/reference/vcov.rma.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">lm_fit</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               (Intercept)            X1           X2           X3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.0316376588 -0.0005113036  0.002901136  0.002992401</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X1          -0.0005113036  0.0322500772 -0.002677685 -0.006634365</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X2           0.0029011358 -0.0026776853  0.029172079  0.008019503</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X3           0.0029924008 -0.0066343654  0.008019503  0.043110917</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># cluster-robust variance estimator with CR2 small-sample correction</span></span>
-<span class="r-in"><span class="fu">vcovCR</span><span class="op">(</span><span class="va">lm_fit</span>, cluster <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">cluster</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># simulate design with cluster-dependence</span></span></span>
+<span class="r-in"><span><span class="va">m</span> <span class="op">&lt;-</span> <span class="fl">8</span></span></span>
+<span class="r-in"><span><span class="va">cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="va">m</span><span class="op">]</span>, <span class="fl">3</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="va">m</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">cluster</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">3</span> <span class="op">*</span> <span class="va">n</span><span class="op">)</span>, <span class="va">n</span>, <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">nu</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">m</span><span class="op">)</span><span class="op">[</span><span class="va">cluster</span><span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">X</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.4</span>, <span class="fl">.3</span>, <span class="op">-</span><span class="fl">.3</span><span class="op">)</span> <span class="op">+</span> <span class="va">nu</span> <span class="op">+</span> <span class="va">e</span></span></span>
+<span class="r-in"><span><span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">y</span>, <span class="va">X</span>, <span class="va">cluster</span>, row <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">n</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># fit linear model</span></span></span>
+<span class="r-in"><span><span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="va">X3</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">lm_fit</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             (Intercept)            X1            X2           X3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 0.053667357  0.0063820661  0.0020435964  0.002598112</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X1          0.006382066  0.0484419339 -0.0007046319 -0.006104988</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X2          0.002043596 -0.0007046319  0.0523104697  0.009706671</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X3          0.002598112 -0.0061049878  0.0097066714  0.033611638</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># cluster-robust variance estimator with CR2 small-sample correction</span></span></span>
+<span class="r-in"><span><span class="fu">vcovCR</span><span class="op">(</span><span class="va">lm_fit</span>, cluster <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">cluster</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              (Intercept)           X1           X2           X3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.219771122  0.067191080 -0.008310896 -0.060897060</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X1           0.067191080  0.054900865 -0.009285722 -0.009327177</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X2          -0.008310896 -0.009285722  0.022620944  0.011926341</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X3          -0.060897060 -0.009327177  0.011926341  0.095234323</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># compare small-sample adjustments</span></span>
-<span class="r-in"><span class="va">CR_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CR"</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0"</span>,<span class="st">"1"</span>,<span class="st">"1S"</span>,<span class="st">"2"</span>,<span class="st">"3"</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">CR_types</span>, <span class="kw">function</span><span class="op">(</span><span class="va">type</span><span class="op">)</span> </span>
-<span class="r-in">       <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu">vcovCR</span><span class="op">(</span><span class="va">lm_fit</span>, cluster <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">cluster</span>, type <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.256831206  0.014141758 -0.058206468  0.003239288</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X1           0.014141758  0.045422897 -0.002884902 -0.001317780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X2          -0.058206468 -0.002884902  0.048833021  0.014360969</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X3           0.003239288 -0.001317780  0.014360969  0.010723863</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># compare small-sample adjustments</span></span></span>
+<span class="r-in"><span><span class="va">CR_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CR"</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0"</span>,<span class="st">"1"</span>,<span class="st">"1S"</span>,<span class="st">"2"</span>,<span class="st">"3"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">CR_types</span>, <span class="kw">function</span><span class="op">(</span><span class="va">type</span><span class="op">)</span> </span></span>
+<span class="r-in"><span>       <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu">vcovCR</span><span class="op">(</span><span class="va">lm_fit</span>, cluster <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">cluster</span>, type <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   CR0       CR1      CR1S       CR2       CR3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 0.4196939 0.4486717 0.4587554 0.4687975 0.5263257</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X1          0.1962194 0.2097673 0.2144818 0.2343093 0.2823815</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X2          0.1338212 0.1430609 0.1462761 0.1504026 0.1696976</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X3          0.2452772 0.2622124 0.2681055 0.3086006 0.3885062</span>
-<span class="r-in"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 0.4650317 0.4971398 0.5112793 0.5067852 0.5533485</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X1          0.1871911 0.2001157 0.2058074 0.2131265 0.2442627</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X2          0.1947973 0.2082471 0.2141700 0.2209819 0.2517107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X3          0.0940494 0.1005430 0.1034026 0.1035561 0.1148084</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -287,7 +287,7 @@ models. <em>Journal of Business and Economic Statistics, 36</em>(4), 672-683.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>

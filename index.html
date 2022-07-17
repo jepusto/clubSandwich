@@ -17,7 +17,7 @@
     coefficients use Satterthwaite or saddle-point corrections. Tests of multiple-
     contrast hypotheses use an approximation to Hotellings T-squared distribution.
     Methods are provided for a variety of fitted models, including lm() and mlm
-    objects, glm(), ivreg() (from package AER), plm() (from package plm), gls()
+    objects, glm(), ivreg() (from package AER), ivreg() (from package ivreg when estimated by OLS), plm() (from package plm), gls()
     and lme() (from nlme), lmer() (from `lme4`), robu() (from robumeta), and 
     rma.uni() and rma.mv() (from metafor').">
 <title>Cluster-Robust (Sandwich) Variance Estimators with Small-Sample
@@ -40,7 +40,7 @@
     coefficients use Satterthwaite or saddle-point corrections. Tests of multiple-
     contrast hypotheses use an approximation to Hotellings T-squared distribution.
     Methods are provided for a variety of fitted models, including lm() and mlm
-    objects, glm(), ivreg() (from package AER), plm() (from package plm), gls()
+    objects, glm(), ivreg() (from package AER), ivreg() (from package ivreg when estimated by OLS), plm() (from package plm), gls()
     and lme() (from nlme), lmer() (from `lme4`), robu() (from robumeta), and 
     rma.uni() and rma.mv() (from metafor').">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -108,12 +108,12 @@
 <h1 id="installing-clubsandwich">Installing clubSandwich<a class="anchor" aria-label="anchor" href="#installing-clubsandwich"></a>
 </h1>
 <p>The package is available on the Comprehensive R Archive Network. To install it, type</p>
-<pre class="{r}"><code><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"clubSandwich"</span><span class="op">)</span></code></pre>
+<pre class="{r}"><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"clubSandwich"</span><span class="op">)</span></span></code></pre>
 <p>To install the latest development version directly from Github, type:</p>
-<pre class="{r}"><code><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"jepusto/clubSandwich"</span><span class="op">)</span></code></pre>
+<pre class="{r}"><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"jepusto/clubSandwich"</span><span class="op">)</span></span></code></pre>
 <p>Once installed, have a look at the available vignettes by typing:</p>
-<pre class="{r}"><code><span class="fu"><a href="https://rdrr.io/r/utils/browseVignettes.html" class="external-link">browseVignettes</a></span><span class="op">(</span>package<span class="op">=</span><span class="st">"clubSandwich"</span><span class="op">)</span></code></pre>
+<pre class="{r}"><code><span><span class="fu"><a href="https://rdrr.io/r/utils/browseVignettes.html" class="external-link">browseVignettes</a></span><span class="op">(</span>package<span class="op">=</span><span class="st">"clubSandwich"</span><span class="op">)</span></span></code></pre>
 </div>
 
   </main><aside class="col-md-3"><div class="links">
@@ -169,7 +169,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer>
