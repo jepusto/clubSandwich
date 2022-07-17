@@ -83,7 +83,7 @@ pkgs_available <-
   requireNamespace("AER", quietly = TRUE) & 
   requireNamespace("ivreg", quietly = TRUE)
 
-if (pkgs_available) withAutoprint{
+if (pkgs_available) withAutoprint ({
 
 data("CigarettesSW")
   Cigs <- within(CigarettesSW, {
@@ -95,7 +95,7 @@ iv_fit_ivreg <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) |
                   log(rincome) + tdiff + I(tax/cpi), data = Cigs)
   vcovCR(iv_fit_ivreg, cluster = Cigs$state, type = "CR2")
   coef_test(iv_fit_ivreg, vcov = "CR2", cluster = Cigs$state)
-}
+})
 
 }
 \seealso{
