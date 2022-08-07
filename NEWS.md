@@ -22,8 +22,8 @@
 
 ## New features
 
-* `Wald_test()` gains an option for test = "Naive-Fp", which uses denominator degrees of freedom equal to the number of clusters minus the number of coefficients in the fitted model. 
-* `coef_test()` and `conf_int()` gain an option for test = "naive-tp", which uses denominator degrees of freedom equal to the number of clusters minus the number of coefficients in the fitted model.
+* `Wald_test()` gains an option for `test = "Naive-Fp"`, which uses denominator degrees of freedom equal to the number of clusters minus the number of coefficients in the fitted model. 
+* `coef_test()` and `conf_int()` gain an option for `test = "naive-tp"`, which uses denominator degrees of freedom equal to the number of clusters minus the number of coefficients in the fitted model.
 
 ## Minor improvements and bug fixes
 
