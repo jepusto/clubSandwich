@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a re-submission. This version is a maintenance release that brings the package into compliance with CRAN policies on conditional use of packages listed in SUGGESTS. All tests, vignettes, and examples can now be run even if suggested packages are not installed. (I have verified this using R CMD check with _R_CHECK_DEPENDS_ONLY_ = TRUE.)
+This is a re-submission. This version is a maintenance release that updates the package unit tests for compatibility with an upcoming release of the plm package (version 2.6-2 and higher). 
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
@@ -11,6 +11,7 @@ Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey 
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release
 * win-builder (devel, release, oldrelease)
+* mac-builder (release)
 * r-hub:
   * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
   * Ubuntu Linux 16.04 LTS, R-release, GCC
@@ -49,15 +50,15 @@ There were 2 NOTES:
           inst/doc/meta-analysis-with-CRVE.html
     Status: 503
     Message: Service Unavailable
+  URL: https://economics.mit.edu/faculty/angrist/data1/data/angrist
+    From: man/AchievementAwardsRCT.Rd
+    Status: Error
+    Message: SSL certificate problem: unable to get local issuer certificate
   URL: https://doi.org/10.4073/csr.2011.8
     From: man/dropoutPrevention.Rd
           inst/doc/meta-analysis-with-CRVE.html
     Status: 503
     Message: Service Unavailable
-  URL: https://economics.mit.edu/faculty/angrist/data1/data/angrist
-    From: man/AchievementAwardsRCT.Rd
-    Status: Error
-    Message: SSL certificate problem: unable to get local issuer certificate
     
   The flagged URLs are correct.
 

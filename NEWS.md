@@ -1,4 +1,7 @@
-# clubSandwich 0.5.7.9999
+# clubSandwich 0.5.8
+
+* Added support for `ivreg::ivreg` objects when estimated by ordinary least squares (support for objects estimated by 2SM and 2SMM is not yet implemented).
+* Updated unit tests for `plm::plm()` when `method = "FD"` to account for bug fixes in version 2.6-2 of plm. 
 
 # clubSandwich 0.5.7
 
