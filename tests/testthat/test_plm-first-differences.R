@@ -34,6 +34,11 @@ test_that("CR0 and CR1S agree with arellano vcov", {
                as.matrix(vcovCR(plm_FD, type = "CR0")), check.attributes = FALSE)
   expect_equal(vcovHC(plm_FD, method="arellano", type = "sss", cluster = "group"), 
                as.matrix(vcovCR(plm_FD, type = "CR1S")), check.attributes = FALSE)
+})
+
+test_that("CR0 and CR1S agree with arellano vcov for versions <= 2.6-1", {
+  
+  skip_if(packageVersion("plm") > "2.6-1")
   
   X <- model_matrix(plm_FD)
   e <- residuals(plm_FD)
@@ -53,6 +58,16 @@ test_that("CR0 and CR1S agree with arellano vcov", {
   attr(vcov_baloney, "dimnames") <- attr(baloney, "dimnames")
   expect_equal(vcov_baloney, 
                vcovHC(plm_FD, method="arellano", type = "HC0", cluster = "time"), check.attributes = FALSE)
+})
+
+test_that("CR0 and CR1S agree with arellano vcov for versions > 2.6-1", {
+  
+  skip_if_not_installed("plm", minimum_version = "2.6-2")
+  
+  expect_equal(vcovHC(plm_FD, method="arellano", type = "HC0", cluster = "time"), 
+               as.matrix(vcovCR(plm_FD, type = "CR0", cluster = "time")), check.attributes = FALSE)
+  expect_equal(vcovHC(plm_FD, method="arellano", type = "sss", cluster = "time"), 
+               as.matrix(vcovCR(plm_FD, type = "CR1S", cluster = "time")), check.attributes = FALSE)
 })
 
 test_that("vcovCR options work for CR2", {
