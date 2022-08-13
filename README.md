@@ -15,14 +15,18 @@ The package includes functions for estimating the variance-covariance matrix and
 for testing single- and multiple-contrast hypotheses based on Wald test statistics. 
 Tests of single regression coefficients use Satterthwaite or saddlepoint corrections.
 Tests of multiple-contrast hypotheses use an approximation to Hotelling's T-squared distribution. 
-Methods are provided for a variety of fitted models, including
-`lm`, `mlm`, `glm`, 
-`ivreg` (from package `AER`),
-`plm` (from package `plm`), 
-`gls` and `lme` (from `nlme`),
-`lmer` (from `lme4`),
-`robu` (from `robumeta`), and 
-`rma.uni` and `rma.mv` (from `metafor`). 
+Methods are provided for a variety of fitted models, including:
+
+- `lm()`
+- `mlm()`
+- `glm()` 
+- `ivreg` (from package `ivreg`, when estimated using `method = "OLS"`)
+- `ivreg` (from package `AER`)
+- `plm` (from package `plm`), 
+- `gls` and `lme` (from `nlme`)
+- `lmer` (from `lme4`)
+- `robu` (from `robumeta`)
+- `rma.uni` and `rma.mv` (from `metafor`) 
 
 # Installing clubSandwich
 
