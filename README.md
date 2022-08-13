@@ -20,13 +20,13 @@ Methods are provided for a variety of fitted models, including:
 - `lm()`
 - `mlm()`
 - `glm()` 
-- `ivreg` (from package `ivreg`, when estimated using `method = "OLS"`)
-- `ivreg` (from package `AER`)
-- `plm` (from package `plm`), 
-- `gls` and `lme` (from `nlme`)
-- `lmer` (from `lme4`)
-- `robu` (from `robumeta`)
-- `rma.uni` and `rma.mv` (from `metafor`) 
+- `ivreg()` (from package `ivreg`, when estimated using `method = "OLS"`)
+- `ivreg()` (from package `AER`)
+- `plm()` (from package `plm`), 
+- `gls()` and `lme()` (from package `nlme`)
+- `lmer()` (from package `lme4`)
+- `robu()` (from package `robumeta`)
+- `rma.uni()` and `rma.mv()` (from package `metafor`) 
 
 # Installing clubSandwich
 
