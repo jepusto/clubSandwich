@@ -126,6 +126,9 @@ CR_types <- paste0("CR",0:3)
 test_that("Order doesn't matter.", {
   skip_on_cran()
   
+  check_sort_order(obj_A1, egsingle)
+  check_sort_order(obj_A2, egsingle)
+  check_sort_order(obj_A3, egsingle)
   check_sort_order(obj_A4, egsingle)
   
 })

@@ -53,7 +53,7 @@ vcovCR.gls <- function(obj, cluster, type, target, inverse_var, form = "sandwich
 # model_matrix()
 #-------------------------------------
 
-getData <- function (object) {
+get_data <- function (object) {
   if ("data" %in% names(object)) {
     data <- object$data
   } else {
@@ -84,7 +84,7 @@ getData <- function (object) {
 #' @export
 
 model_matrix.gls <- function(obj) {
-  dat <- getData(obj)
+  dat <- get_data(obj)
   model.matrix(formula(obj), data = dat)
 }
 

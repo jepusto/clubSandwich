@@ -1,6 +1,7 @@
 context("multi-variate multi-level lme objects")
 set.seed(20190513)
-skip("Not yet ready to test.")
+
+skip_on_cran()
 
 dat <- read.table(file="https://raw.githubusercontent.com/wviechtb/multivariate_multilevel_models/master/data.dat", header=TRUE, sep="\t")
 dat$pa <- rowMeans(dat[, grepl("pa", names(dat))])
@@ -54,7 +55,6 @@ test_that("bread works", {
 
 
 test_that("vcovCR options work for CR2", {
-  skip_on_cran()
   
   expect_identical(vcovCR(MVML_full, cluster = dat$id, type = "CR2"), CR2_mats[["MVML_full"]])
   expect_equal(vcovCR(MVML_full, type = "CR2", inverse_var = TRUE), CR2_mats[["MVML_full"]])
@@ -68,7 +68,7 @@ test_that("vcovCR options work for CR2", {
 
 
 test_that("CR2 is target-unbiased", {
-  skip_on_cran()
+  
   CR2_checks <- mapply(check_CR, obj = objects, vcov = CR2_mats)
   expect_true(all(CR2_checks))
 })
@@ -77,51 +77,7 @@ test_that("CR2 is target-unbiased", {
 CR_types <- paste0("CR",0:3)
 
 test_that("Order doesn't matter.", {
-  skip_on_cran()
   
-  obj <- MVML_full
-  dat <- dat
-  cluster = NULL
-  CR_types = paste0("CR",0:3)
-  tol = 10^-6
-  tol2 = tol
-  tol3 = tol
-  seed <- 20200530
-  
-  if (!is.null(seed)) set.seed(seed)
-  re_order <- sample(nrow(dat))
-  dat_scramble <- dat[re_order,]
-  obj_scramble <- update(obj, data = dat_scramble)
-  constraints <- utils::combn(length(coef_CS(obj)), 2, simplify = FALSE)
-  constraint_mats <- lapply(constraints, constrain_zero, coefs = coef_CS(obj))
-
-  CR_fit <- lapply(CR_types, function(x) vcovCR(obj, type = x))
-  CR_scramble <- lapply(CR_types, function(x) vcovCR(obj_scramble, type = x))
-  test_fit <- lapply(CR_types, function(x) coef_test(obj, vcov = x, test = "All", p_values = FALSE))
-  test_scramble <- lapply(CR_types, function(x) coef_test(obj_scramble, vcov = x, test = "All", p_values = FALSE))
-  Wald_fit <- Wald_test(obj, constraints = constraint_mats, vcov = "CR2", test = "All")
-  Wald_scramble <- Wald_test(obj_scramble, constraints = constraint_mats, vcov = "CR2", test = "All")
-
-  testthat::expect_equivalent(CR_fit, CR_scramble, tolerance = tol)
-  compare_ttests(test_fit, test_scramble, tol = tol2)
-  compare_Waldtests(Wald_fit, Wald_scramble, tol = tol3)
-  
-  V_dat <- build_var_cor_mats(obj)
-  V_scram <- build_var_cor_mats(obj_scramble)
-  V_mat <- unblock(V_dat)[re_order, re_order]
-  V_mat_scram <- unblock(V_scram)
-  scram_grps <- attr(V_scram, "groups")
-  i <- levels(scram_grps)[4]
-  for (i in levels(scram_grps)) {
-    print(all.equal(V_mat[scram_grps==i,scram_grps==i], V_mat_scram[scram_grps==i,scram_grps==i]))
-  }
-  V_dat <- matrix_list(V_mat, fac = attr(V_scram, "groups"), dim = "both")
-  
-  Sigma_dat <- targetVariance(obj)
-  Sigma_scram <- targetVariance(obj_scramble)
-  
-  obj <- obj_scramble
-
   check_sort_order(MVML_full, dat, seed = 20200530)
   check_sort_order(MVML_diag, dat, seed = 20200530)
   
@@ -129,7 +85,7 @@ test_that("Order doesn't matter.", {
 
 
 test_that("clubSandwich works with dropped observations", {
-  skip_on_cran()
+  
   dat_miss <- dat
   dat_miss$y[sample.int(nrow(dat), size = round(nrow(dat) / 10))] <- NA
   obj_dropped <- update(MVML_full, data = dat_miss, na.action = na.omit)
@@ -146,7 +102,6 @@ test_that("clubSandwich works with dropped observations", {
 
 
 test_that("Possible to cluster at higher level than random effects", {
-  skip_on_cran()
   
   # create 4th level
   n_groups <- nlevels(factor(dat$id))
@@ -155,4 +110,5 @@ test_that("Possible to cluster at higher level than random effects", {
   # cluster at level 4
   expect_is(vcovCR(MVML_full, type = "CR2", cluster = group_id), "vcovCR")
   expect_is(vcovCR(MVML_diag, type = "CR2", cluster = group_id), "vcovCR")
+  
 })

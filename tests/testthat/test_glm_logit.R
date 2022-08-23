@@ -193,6 +193,8 @@ test_that("clubSandwich works with aliased predictors", {
 
 
 test_that("clubSandwich results are equivalent to geepack", {
+  
+  skip_if_not_installed("geepack")
   library(geepack)
   
   # check CR0 with logit

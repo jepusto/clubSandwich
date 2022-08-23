@@ -1,5 +1,11 @@
+# clubSandwich 0.5.8
+
+* Added support for `ivreg::ivreg` objects when estimated by ordinary least squares (support for objects estimated by 2SM and 2SMM is not yet implemented).
+* Updated unit tests for `plm::plm()` when `method = "FD"` to account for bug fixes in version 2.6-2 of plm. 
+
 # clubSandwich 0.5.7
 
+* Fixed bug in methods for multi-variate multi-level models estimated with lme().
 * Updated vignettes, examples, and unit tests so that the package can be compiled without any packages from SUGGESTS.
 
 # clubSandwich 0.5.6
@@ -19,8 +25,8 @@
 
 ## New features
 
-* `Wald_test()` gains an option for test = "Naive-Fp", which uses denominator degrees of freedom equal to the number of clusters minus the number of coefficients in the fitted model. 
-* `coef_test()` and `conf_int()` gain an option for test = "naive-tp", which uses denominator degrees of freedom equal to the number of clusters minus the number of coefficients in the fitted model.
+* `Wald_test()` gains an option for `test = "Naive-Fp"`, which uses denominator degrees of freedom equal to the number of clusters minus the number of coefficients in the fitted model. 
+* `coef_test()` and `conf_int()` gain an option for `test = "naive-tp"`, which uses denominator degrees of freedom equal to the number of clusters minus the number of coefficients in the fitted model.
 
 ## Minor improvements and bug fixes
 
