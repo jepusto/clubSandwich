@@ -139,10 +139,14 @@ test_that("vcovCR is equivalent to vcovHC when clusters are all of size 1", {
   CR3 <- vcovCR(lm_fit, cluster = dat$row, type = "CR3")
   expect_equal(vcovHC(lm_fit, type = "HC3"), as.matrix(CR3))
   # add tests for CR3f
+  
   CR3f <- vcovCR(lm_fit, cluster = dat$row, type = "CR3f")
   expect_equal(vcovHC(lm_fit, type = "HC3"), nobs(lm_fit) / (nobs(lm_fit) - 1) *as.matrix(CR3f))
-  CR3f <- vcovCR(WLS_fit, cluster = dat$row, type = "CR3f")
-  expect_equal(vcovHC(WLS_fit, type = "HC3"), nobs(WLS_fit) / (nobs(WLS_fit) - 1) *as.matrix(CR3f))
+  CR3fw <- vcovCR(WLS_fit, cluster = dat$row, type = "CR3f")
+  expect_equal(vcovHC(WLS_fit, type = "HC3"), nobs(WLS_fit) / (nobs(WLS_fit) - 1) *as.matrix(CR3fw))
+  # test against summclust
+  summ_crv3 <- summclust::vcov_CR3J(lm_fit, cluster = ~ row, type = "CRV3")
+  expect_equal(matrix(summ_crv3, 4, 4), matrix(CR3f, 4, 4), ignore_attr = TRUE)
   
 })
 

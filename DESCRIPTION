@@ -45,7 +45,9 @@ Suggests:
     testthat,
     rmarkdown,
     covr, 
-    MASS
+    MASS, 
+    summclust
+Remotes: s3alfisc/summclust
 RoxygenNote: 7.2.0
 Encoding: UTF-8
 Language: en-US
