@@ -50,20 +50,29 @@ of a set of regression coefficient estimates from a
 \code{\link[metafor]{rma.mv}} object.
 }
 \examples{
-library(metafor)
-data(hierdat, package = "robumeta")
 
-mfor_fit <- rma.mv(effectsize ~ binge + followup + sreport + age, 
-                 V = var, random = list(~ 1 | esid, ~ 1 | studyid),
-                 data = hierdat)
+pkgs_available <- 
+  requireNamespace("metafor", quietly = TRUE) & 
+  requireNamespace("metadat", quietly = TRUE)
+
+if (pkgs_available) withAutoprint({
+
+library(metafor)
+data(dat.assink2016, package = "metadat")
+
+mfor_fit <- rma.mv(yi ~ year + deltype, 
+                 V = vi, random = ~ 1 | study / esid,
+                 data = dat.assink2016)
 mfor_fit
 
 mfor_CR2 <- vcovCR(mfor_fit, type = "CR2")
 mfor_CR2
-coef_test(mfor_fit, vcov = mfor_CR2, test = c("Satterthwaite", "saddlepoint"))
 
-Wald_test(mfor_fit, constraints = constrain_zero(c(2,4)), vcov = mfor_CR2)
-Wald_test(mfor_fit, constraints = constrain_zero(2:5), vcov = mfor_CR2)
+coef_test(mfor_fit, vcov = mfor_CR2, test = c("Satterthwaite", "saddlepoint"))
+Wald_test(mfor_fit, constraints = constrain_zero(3:4), vcov = mfor_CR2)
+
+})
+
 }
 \seealso{
 \code{\link{vcovCR}}

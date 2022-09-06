@@ -1,6 +1,7 @@
 context("plm objects - unbalanced fixed effects")
 set.seed(20190513)
 
+skip_if_not_installed("plm")
 library(plm, quietly=TRUE)
 
 #-------------------------------------

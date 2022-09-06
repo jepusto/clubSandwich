@@ -92,10 +92,18 @@ A block-diagonal variance-covariance matrix (possibly represented as
   \eqn{i=1,...,n_j}{i=1,...,n-j} and \eqn{j=1,...,k}{j=1,...,k}.
 }
 \examples{
+
+pkgs_available <- 
+  requireNamespace("metafor", quietly = TRUE) & 
+  requireNamespace("robumeta", quietly = TRUE)
+  
+if (pkgs_available) {
 library(metafor)
 
 data(oswald2013, package = "robumeta")
 dat <- escalc(data = oswald2013, measure = "ZCOR", ri = R, ni = N)
+subset_ids <- unique(dat$Study)[1:20]
+dat <- subset(dat, Study \%in\% subset_ids)
 
 # make a patterned correlation matrix 
 
@@ -118,5 +126,7 @@ MVFE <- rma.mv(yi ~ 0 + Crit.Cat, V = V_list,
                data = dat)
                
 conf_int(MVFE, vcov = "CR2")
+
+}
 
 }

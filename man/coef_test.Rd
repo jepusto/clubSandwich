@@ -53,13 +53,14 @@ and a small sample correction for the p-value. The small-sample correction is
 based on a Satterthwaite approximation or a saddlepoint approximation.
 }
 \examples{
-data("Produc", package = "plm")
-lm_individual <- lm(log(gsp) ~ 0 + state + log(pcap) + log(pc) + log(emp) + unemp, data = Produc)
-individual_index <- !grepl("state", names(coef(lm_individual)))
-coef_test(lm_individual, vcov = "CR2", cluster = Produc$state, coefs = individual_index)
 
-V_CR2 <- vcovCR(lm_individual, cluster = Produc$state, type = "CR2")
-coef_test(lm_individual, vcov = V_CR2, coefs = individual_index)
+data("ChickWeight", package = "datasets")
+lm_fit <- lm(weight ~ Diet  * Time, data = ChickWeight)
+diet_index <- grepl("Diet.:Time", names(coef(lm_fit)))
+coef_test(lm_fit, vcov = "CR2", cluster = ChickWeight$Chick, coefs = diet_index)
+
+V_CR2 <- vcovCR(lm_fit, cluster = ChickWeight$Chick, type = "CR2")
+coef_test(lm_fit, vcov = V_CR2, coefs = diet_index)
 
 }
 \seealso{

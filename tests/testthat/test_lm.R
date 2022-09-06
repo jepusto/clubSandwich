@@ -209,6 +209,7 @@ test_that("clubSandwich requires no missing values on the clustering variable", 
 
 
 test_that("clubSandwich works with aliased predictors", {
+  
   data(npk, package = "datasets")
   npk_alias <- lm(yield ~ block + N*P*K, npk)
   npk_drop <- lm(yield ~ block + N + P + K + N:P + N:K + P:K, npk)
@@ -246,7 +247,8 @@ test_that("weight scale doesn't matter", {
 
 test_that("clubSandwich works with weights of zero.", {
   
-  data("LifeCycleSavings")
+  data("LifeCycleSavings", package = "datasets")
+  
   n_life <- nrow(LifeCycleSavings)
   LifeCycleSavings$cl <- substr(rownames(LifeCycleSavings), 1, 1)
   table(LifeCycleSavings$cl)

@@ -24,12 +24,16 @@
 #' 
 #' @examples
 #' 
-#' library(nlme)
-#' data(Ovary, package = "nlme")
-#' Ovary$time_int <- 1:nrow(Ovary)
-#' lm_AR1 <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), data = Ovary, 
-#'               correlation = corAR1(form = ~ time_int | Mare))
-#' vcovCR(lm_AR1, type = "CR2")
+#' if (requireNamespace("nlme", quietly = TRUE)) {
+#' 
+#'   library(nlme)
+#'   data(Ovary, package = "nlme")
+#'   Ovary$time_int <- 1:nrow(Ovary)
+#'   lm_AR1 <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), data = Ovary, 
+#'                 correlation = corAR1(form = ~ time_int | Mare))
+#'   vcovCR(lm_AR1, type = "CR2")
+#' 
+#' }
 #'     
 #' @export
 
@@ -49,7 +53,7 @@ vcovCR.gls <- function(obj, cluster, type, target, inverse_var, form = "sandwich
 # model_matrix()
 #-------------------------------------
 
-getData <- function (object) {
+get_data <- function (object) {
   if ("data" %in% names(object)) {
     data <- object$data
   } else {
@@ -80,7 +84,7 @@ getData <- function (object) {
 #' @export
 
 model_matrix.gls <- function(obj) {
-  dat <- getData(obj)
+  dat <- get_data(obj)
   model.matrix(formula(obj), data = dat)
 }
 

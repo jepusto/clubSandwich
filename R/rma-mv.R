@@ -105,6 +105,9 @@ check_PD <- function(vcov_list) {
 #' @export
 #'
 #' @examples
+#' 
+#' if (requireNamespace("metafor", quietly = TRUE)) {
+#' 
 #' library(metafor)
 #'
 #' # Constant correlation
@@ -112,6 +115,8 @@ check_PD <- function(vcov_list) {
 #' V_list <- impute_covariance_matrix(vi = SATcoaching$V, cluster = SATcoaching$study, r = 0.66)
 #' MVFE <- rma.mv(d ~ 0 + test, V = V_list, data = SATcoaching)
 #' conf_int(MVFE, vcov = "CR2", cluster = SATcoaching$study)
+#' 
+#' }
 #' 
 
 
@@ -174,7 +179,7 @@ impute_covariance_matrix <- function(vi, cluster, r, ti, ar1,
   if (return_list) {
     return(vcov_list)
   } else {
-    vcov_mat <- metafor::bldiag(vcov_list)
+    vcov_mat <- unblock(vcov_list)
     cluster_index <- order(order(cluster))
     return(vcov_mat[cluster_index, cluster_index])
   }
@@ -234,10 +239,18 @@ impute_covariance_matrix <- function(vi, cluster, r, ti, ar1,
 #' @export
 #'
 #' @examples
+#' 
+#' pkgs_available <- 
+#'   requireNamespace("metafor", quietly = TRUE) & 
+#'   requireNamespace("robumeta", quietly = TRUE)
+#'   
+#' if (pkgs_available) {
 #' library(metafor)
 #'
 #' data(oswald2013, package = "robumeta")
 #' dat <- escalc(data = oswald2013, measure = "ZCOR", ri = R, ni = N)
+#' subset_ids <- unique(dat$Study)[1:20]
+#' dat <- subset(dat, Study %in% subset_ids)
 #' 
 #' # make a patterned correlation matrix 
 #' 
@@ -260,6 +273,8 @@ impute_covariance_matrix <- function(vi, cluster, r, ti, ar1,
 #'                data = dat)
 #'                
 #' conf_int(MVFE, vcov = "CR2")
+#' 
+#' }
 #' 
 
 
@@ -321,7 +336,7 @@ pattern_covariance_matrix <- function(vi, cluster, pattern_level, r_pattern, r,
   if (return_list) {
     return(vcov_list)
   } else {
-    vcov_mat <- metafor::bldiag(vcov_list)
+    vcov_mat <- unblock(vcov_list)
     cluster_index <- order(order(cluster))
     return(vcov_mat[cluster_index, cluster_index])
   }
@@ -356,20 +371,29 @@ pattern_covariance_matrix <- function(vi, cluster, pattern_level, r_pattern, r,
 #' @export
 #' 
 #' @examples
-#' library(metafor)
-#' data(hierdat, package = "robumeta")
 #' 
-#' mfor_fit <- rma.mv(effectsize ~ binge + followup + sreport + age, 
-#'                  V = var, random = list(~ 1 | esid, ~ 1 | studyid),
-#'                  data = hierdat)
+#' pkgs_available <- 
+#'   requireNamespace("metafor", quietly = TRUE) & 
+#'   requireNamespace("metadat", quietly = TRUE)
+#'
+#' if (pkgs_available) withAutoprint({
+#' 
+#' library(metafor)
+#' data(dat.assink2016, package = "metadat")
+#' 
+#' mfor_fit <- rma.mv(yi ~ year + deltype, 
+#'                  V = vi, random = ~ 1 | study / esid,
+#'                  data = dat.assink2016)
 #' mfor_fit
 #' 
 #' mfor_CR2 <- vcovCR(mfor_fit, type = "CR2")
 #' mfor_CR2
-#' coef_test(mfor_fit, vcov = mfor_CR2, test = c("Satterthwaite", "saddlepoint"))
 #' 
-#' Wald_test(mfor_fit, constraints = constrain_zero(c(2,4)), vcov = mfor_CR2)
-#' Wald_test(mfor_fit, constraints = constrain_zero(2:5), vcov = mfor_CR2)
+#' coef_test(mfor_fit, vcov = mfor_CR2, test = c("Satterthwaite", "saddlepoint"))
+#' Wald_test(mfor_fit, constraints = constrain_zero(3:4), vcov = mfor_CR2)
+#' 
+#' })
+#' 
 
 vcovCR.rma.mv <- function(obj, cluster, type, target, inverse_var, form = "sandwich", ...) {
   
@@ -506,13 +530,19 @@ parse_structure <- function(obj) {
 #' @export
 #' 
 #' @examples
-#' library(metafor)
-#' data(hierdat, package = "robumeta")
 #' 
-#' mfor_fit <- rma.mv(effectsize ~ binge + followup + sreport + age, 
-#'                  V = var, random = list(~ 1 | esid, ~ 1 | studyid),
-#'                  data = hierdat)
+#' if (requireNamespace("metafor", quietly = TRUE)) {
+#' 
+#' library(metafor)
+#' data(dat.assink2016, package = "metadat")
+#' 
+#' mfor_fit <- rma.mv(yi ~ year + deltype, 
+#'                  V = vi, random = ~ 1 | study / esid,
+#'                  data = dat.assink2016)
+#'                  
 #' findCluster.rma.mv(mfor_fit)
+#' 
+#' }
 #' 
 
 findCluster.rma.mv <- function(obj) {

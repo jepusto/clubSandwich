@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a re-submission. This version is a maintenance release that fixes an outstanding error on M1Mac, which Dr. Ripley requested that we address by 2022-01-23.
+This is a re-submission. This version is a maintenance release that updates the package unit tests for compatibility with an upcoming release of the plm package (version 2.6-2 and higher). 
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
@@ -11,7 +11,7 @@ Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey 
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release
 * win-builder (devel, release, oldrelease)
-* macOS builder:  macOS 11.5.2, Apple M1 (release)
+* mac-builder (release)
 * r-hub:
   * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
   * Ubuntu Linux 16.04 LTS, R-release, GCC
@@ -36,10 +36,6 @@ There were 2 NOTES:
   All of the identified words are spelled correctly. 
 
 * Found the following (possibly) invalid URLs:
-  URL: https://doi.org/10.3102/1076998615606099
-    From: man/dropoutPrevention.Rd
-    Status: 503
-    Message: Service Unavailable
   URL: https://doi.org/10.1037/1082-989X.1.3.227
     From: man/SATcoaching.Rd
     Status: 400
@@ -48,22 +44,28 @@ There were 2 NOTES:
     From: inst/doc/meta-analysis-with-CRVE.html
     Status: 400
     Message: Bad Request
+  URL: https://doi.org/10.3102/1076998615606099
+    From: man/dropoutPrevention.Rd
+          inst/doc/Wald-tests-in-clubSandwich.html
+          inst/doc/meta-analysis-with-CRVE.html
+    Status: 503
+    Message: Service Unavailable
   URL: https://economics.mit.edu/faculty/angrist/data1/data/angrist
     From: man/AchievementAwardsRCT.Rd
     Status: Error
     Message: SSL certificate problem: unable to get local issuer certificate
+  URL: https://doi.org/10.4073/csr.2011.8
+    From: man/dropoutPrevention.Rd
+          inst/doc/meta-analysis-with-CRVE.html
+    Status: 503
+    Message: Service Unavailable
     
   The flagged URLs are correct.
 
 ## revdepcheck results
 
-We checked 7 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+We checked 11 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
 
  * We saw 0 new problems
- * We failed to check 1 packages
+ * We failed to check 0 packages
 
-Issues with CRAN packages are summarised below.
-
-### Failed to check
-
-* panelr (NA)

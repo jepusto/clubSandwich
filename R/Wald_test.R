@@ -42,7 +42,9 @@
 #' @seealso \code{\link{Wald_test}}
 #'
 #' @examples
-#'
+#' 
+#' if (requireNamespace("carData", quietly = TRUE)) withAutoprint({
+#' 
 #' data(Duncan, package = "carData")
 #' Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
 #'
@@ -76,8 +78,9 @@
 #' # Test pairwise equality of the income slopes, plus compare against zero
 #' constrain_pairwise(":income", Duncan_coefs, 
 #'                    reg_ex = TRUE, with_zero = TRUE)
+#'                    
+#' })
 #' 
-
 #' @rdname constraint_matrices
 #' @export
 
@@ -267,6 +270,9 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #'
 #' @examples
 #'
+#'
+#' if (requireNamespace("carData", quietly = TRUE)) withAutoprint({
+#' 
 #' data(Duncan, package = "carData")
 #' Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
 #'
@@ -298,6 +304,8 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #' Wald_test(Duncan_fit,
 #'           constraints = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
 #'           vcov = "CR2", cluster = Duncan$cluster)
+#'           
+#' })
 #'
 #' @export
 

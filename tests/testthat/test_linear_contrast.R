@@ -1,6 +1,9 @@
 context("linear contrasts")
 set.seed(20210110)
 
+skip_if_not_installed("carData")
+
+
 # Duncan example
 data(Duncan, package = "carData")
 Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
@@ -16,6 +19,7 @@ Duncan_sep_CR2 <- vcovCR(Duncan_sep, type = "CR2", cluster = Duncan$cluster)
 
 
 # STAR example
+skip_if_not_installed("AER")
 data(STAR, package = "AER")
 levels(STAR$stark)[3] <- "aide"
 levels(STAR$schoolk)[1] <- "urban"

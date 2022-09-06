@@ -1,6 +1,9 @@
 context("rma.uni objects")
 set.seed(20190513)
 
+skip_if_not_installed("robumeta")
+skip_if_not_installed("metafor")
+
 library(robumeta, quietly=TRUE)
 suppressMessages(library(metafor, quietly=TRUE))
 

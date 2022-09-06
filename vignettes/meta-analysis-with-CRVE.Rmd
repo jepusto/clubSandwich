@@ -9,6 +9,16 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
+robu_available <- requireNamespace("robumeta", quietly = TRUE) 
+meta_available <- requireNamespace("metafor", quietly = TRUE)
+
+knitr::opts_chunk$set(eval = robu_available & meta_available)
+
+if (!robu_available) cat("## Building this vignette requires the robumeta package. Please install it. {-} \n")
+if (!meta_available) cat("## Building this vignette requires the metafor package. Please install it. {-} \n")
+```
+
 This vignette demonstrates how to use the `clubSandwich` package to conduct a meta-analysis of dependent effect sizes with robust variance estimation. 
 Tests of meta-regression coefficients and F-tests of multiple-coefficient hypotheses are calculated using small-sample corrections proposed by Tipton (2015) and Tipton and Pustejovsky (2015). 
 The example uses a dataset of effect sizes from a Campbell Collaboration systematic review of dropout prevention programs, conducted by Sandra Jo Wilson and colleagues (2011).

@@ -16,12 +16,18 @@ A a vector of ID variables for the highest level of clustering in \code{obj}.
 \code{findCluster.rma.mv} returns a vector of ID variables for the highest level of clustering in a fitted \code{rma.mv} model.
 }
 \examples{
-library(metafor)
-data(hierdat, package = "robumeta")
 
-mfor_fit <- rma.mv(effectsize ~ binge + followup + sreport + age, 
-                 V = var, random = list(~ 1 | esid, ~ 1 | studyid),
-                 data = hierdat)
+if (requireNamespace("metafor", quietly = TRUE)) {
+
+library(metafor)
+data(dat.assink2016, package = "metadat")
+
+mfor_fit <- rma.mv(yi ~ year + deltype, 
+                 V = vi, random = ~ 1 | study / esid,
+                 data = dat.assink2016)
+                 
 findCluster.rma.mv(mfor_fit)
+
+}
 
 }

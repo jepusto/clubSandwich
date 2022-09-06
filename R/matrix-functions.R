@@ -47,7 +47,7 @@ add_submatrices <- function(indices, small_mat, big_mat) {
   levs <- levels(indices)
   for (i in 1:length(levs)) {
     ind <- levs[i] == indices
-    big_mat[ind,ind] <- big_mat[ind,ind] + small_mat[[i]]
+    big_mat[ind,ind] <- small_mat[[i]] + big_mat[ind,ind]
   }
   big_mat
 }
@@ -58,5 +58,13 @@ add_bdiag <- function(small_mats, big_mats, crosswalk) {
   big_indices <- big_indices[[2]][order(big_indices[[1]])]
   small_mats <- split(small_mats, big_indices)
   Map(add_submatrices, indices = small_indices, small_mat = small_mats, big_mat = big_mats)
+}
+
+nest_bdiag <- function(mats, crosswalk) {
+  small_indices <- lapply(split(crosswalk[[1]], crosswalk[[2]]), droplevels)
+  big_indices <- unique(crosswalk)
+  big_indices <- big_indices[[2]][order(big_indices[[1]])]
+  mat_groups <- split(mats, big_indices)
+  Map(unblock, A = mat_groups)
 }
 

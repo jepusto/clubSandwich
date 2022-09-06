@@ -1,6 +1,10 @@
 context("lmerMod objects")
 set.seed(20191217)
 
+skip_if_not_installed("lme4")
+skip_if_not_installed("nlme")
+skip_if_not_installed("mlmRev")
+
 suppressMessages(library(lme4, quietly=TRUE))
 library(nlme, quietly=TRUE, warn.conflicts=FALSE)
 

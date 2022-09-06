@@ -1,8 +1,11 @@
-context("ivreg objects")
+#############################
+
+context("ivreg::ivreg objects")
 set.seed(20190513)
 
-library(zoo, quietly=TRUE)
-library(AER, quietly=TRUE)
+skip_if_not_installed("ivreg")
+
+library(ivreg, quietly=TRUE)
 
 data("CigarettesSW", package = "AER")
 
@@ -14,9 +17,9 @@ Cigs <- within(CigarettesSW, {
 
 CR_types <- paste0("CR",0:4)
 
-obj_un <- ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
+obj_un <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
              data = Cigs)
-obj_wt <- ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
+obj_wt <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
             data = Cigs, 
             weights = population)
 
@@ -34,8 +37,8 @@ test_that("Basic calculations from ivreg agree for unweighted model.", {
   expect_equal(coef(obj_un), lm.fit(XZ, y)$coefficients)
   expect_equal (bread(obj_un), chol2inv(chol(t(XZ) %*% XZ)) * nobs(obj_un), check.attributes=FALSE)
   
-  hii <- diag(X %*% chol2inv(chol(t(XZ) %*% XZ)) %*% t(XZ))
-  expect_equal(hatvalues(obj_un), hii)
+  hii <- diag(XZ %*% chol2inv(chol(t(XZ) %*% XZ)) %*% t(XZ))
+  expect_equal(hatvalues(obj_un, type = "stage2"), hii)
   
   r <- as.vector(y - X %*% coef(obj_un))
   expect_equal(r, as.vector(residuals_CS(obj_un)))
@@ -157,6 +160,7 @@ test_that("Order doesn't matter.",{
   check_sort_order(obj_wt, Cigs, "state")
   
 })
+# Clustering variable must have length equal to the number of rows in the data used to fit obj.
 
 test_that("clubSandwich works with dropped observations", {
   dat_miss <- Cigs
@@ -232,5 +236,34 @@ test_that("clubSandwich works with weights of zero.", {
   test_complete <- lapply(CR_types, function(x) coef_test(iv_complete, vcov = x, cluster = dat_complete$state, test = "All", p_values = FALSE))
   expect_equal(test_drop, test_complete)
   
+})
+
+
+#-------------------------------------------------------------------------------
+# Other estimation methods
+
+ols_un <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
+                       data = Cigs, method = "OLS")
+ols_wt <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
+                       data = Cigs, 
+                       weights = population, method = "OLS")
+
+mom_un <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
+                       data = Cigs, method = "M")
+mom_wt <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
+                       data = Cigs, 
+                       weights = population, method = "M")
+
+rob_un <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
+                       data = Cigs, method = "MM")
+rob_wt <- ivreg::ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rincome) + tdiff + I(tax/cpi),
+                       data = Cigs, 
+                       weights = population, method = "MM")
+
+test_that("vcovCR does not currently support ivreg models estimated using method = 'M' or method = 'MM'", {
+  expect_error(vcovCR(mom_un, cluster = Cigs$state, type = "CR2"))
+  expect_error(vcovCR(mom_wt, cluster = Cigs$state, type = "CR2"))
+  expect_error(vcovCR(rob_un, cluster = Cigs$state, type = "CR2"))
+  expect_error(vcovCR(rob_wt, cluster = Cigs$state, type = "CR2"))
 })
 

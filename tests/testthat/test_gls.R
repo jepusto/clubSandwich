@@ -1,6 +1,8 @@
 context("gls objects")
 set.seed(20190513)
 
+skip_if_not_installed("nlme")
+
 library(nlme, quietly=TRUE, warn.conflicts=FALSE)
 
 data(Ovary, package = "nlme")
@@ -79,12 +81,12 @@ test_that("CR2 and CR4 are target-unbiased", {
   expect_true(check_CR(lm_AR1_power, vcov = "CR4"))
 })
 
-test_that("getData works.", {
+test_that("get_data works.", {
   re_order <- sample(nrow(Ovary))
   egg_scramble <- Ovary[re_order,]
   gls_scramble <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), 
                       data = egg_scramble)
-  scramble_dat <- getData(gls_scramble)
+  scramble_dat <- get_data(gls_scramble)
   expect_equal(egg_scramble, scramble_dat)
 })
 

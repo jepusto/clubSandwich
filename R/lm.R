@@ -22,16 +22,25 @@
 #' @seealso \code{\link{vcovCR}}
 #' 
 #' @examples 
-#' data("Produc", package = "plm")
-#' lm_individual <- lm(log(gsp) ~ 0 + state + log(pcap) + log(pc) + log(emp) + unemp, data = Produc)
-#' individual_index <- !grepl("state", names(coef(lm_individual)))
-#' vcovCR(lm_individual, cluster = Produc$state, type = "CR2")[individual_index,individual_index]
 #' 
-#' # compare to plm()
-#' plm_FE <- plm::plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
-#'                    data = Produc, index = c("state","year"), 
-#'                    effect = "individual", model = "within")
-#' vcovCR(plm_FE, type="CR2")
+#' data("ChickWeight", package = "datasets")
+#' lm_fit <- lm(weight ~ Time + Diet:Time, data = ChickWeight)
+#' vcovCR(lm_fit, cluster = ChickWeight$Chick, type = "CR2")
+#' 
+#' if (requireNamespace("plm", quietly = TRUE)) withAutoprint({
+#' 
+#'   data("Produc", package = "plm")
+#'   lm_individual <- lm(log(gsp) ~ 0 + state + log(pcap) + log(pc) + log(emp) + unemp, data = Produc)
+#'   individual_index <- !grepl("state", names(coef(lm_individual)))
+#'   vcovCR(lm_individual, cluster = Produc$state, type = "CR2")[individual_index,individual_index]
+#' 
+#'   # compare to plm()
+#'   plm_FE <- plm::plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+#'                      data = Produc, index = c("state","year"), 
+#'                      effect = "individual", model = "within")
+#'   vcovCR(plm_FE, type="CR2")
+#'   
+#' })
 #' 
 #' @export
 

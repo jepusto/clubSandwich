@@ -34,13 +34,14 @@
 #' @seealso \code{\link{vcovCR}}
 #'
 #' @examples
-#' data("Produc", package = "plm")
-#' lm_individual <- lm(log(gsp) ~ 0 + state + log(pcap) + log(pc) + log(emp) + unemp, data = Produc)
-#' individual_index <- !grepl("state", names(coef(lm_individual)))
-#' conf_int(lm_individual, vcov = "CR2", cluster = Produc$state, coefs = individual_index)
+#' 
+#' data("ChickWeight", package = "datasets")
+#' lm_fit <- lm(weight ~ Diet  * Time, data = ChickWeight)
+#' diet_index <- grepl("Diet.:Time", names(coef(lm_fit)))
+#' conf_int(lm_fit, vcov = "CR2", cluster = ChickWeight$Chick, coefs = diet_index)
 #'
-#' V_CR2 <- vcovCR(lm_individual, cluster = Produc$state, type = "CR2")
-#' conf_int(lm_individual, vcov = V_CR2, level = .99, coefs = individual_index)
+#' V_CR2 <- vcovCR(lm_fit, cluster = ChickWeight$Chick, type = "CR2")
+#' conf_int(lm_fit, vcov = V_CR2, level = .99, coefs = diet_index)
 #'
 #' @export
 
@@ -140,22 +141,35 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
 #' @seealso \code{\link{vcovCR}}
 #'
 #' @examples
-#' data(Duncan, package = "carData")
-#' Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
+#' 
+#' data("ChickWeight", package = "datasets")
+#' lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
+#' 
+#' # Pairwise comparisons of diet-by-time slopes
+#' linear_contrast(lm_fit, vcov = "CR2", cluster = ChickWeight$Chick, 
+#'                 contrasts = constrain_pairwise("Diet.:Time", reg_ex = TRUE))
 #'
-#' Duncan_fit <- lm(prestige ~ 0 + type + income + type:income + type:education, data=Duncan)
-#' # Note that type:income terms are interactions because main effect of income is included
-#' # but type:education terms are separate slopes for each unique level of type
+#' 
+#' if (requireNamespace("carData", quietly = TRUE)) withAutoprint({
+#' 
+#'   data(Duncan, package = "carData")
+#'   Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
 #'
-#' # Pairwise comparisons of type-by-education slopes
-#' linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
-#'                 contrasts = constrain_pairwise(":education", reg_ex = TRUE),
-#'                 test = "Satterthwaite")
+#'   Duncan_fit <- lm(prestige ~ 0 + type + income + type:income + type:education, data=Duncan)
+#'   # Note that type:income terms are interactions because main effect of income is included
+#'   # but type:education terms are separate slopes for each unique level of type
 #'
-#' # Pairwise comparisons of type-by-income interactions
-#' linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
-#'                 contrasts = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
-#'                 test = "Satterthwaite")
+#'   # Pairwise comparisons of type-by-education slopes
+#'   linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
+#'                   contrasts = constrain_pairwise(":education", reg_ex = TRUE),
+#'                   test = "Satterthwaite")
+#'  
+#'   # Pairwise comparisons of type-by-income interactions
+#'   linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
+#'                   contrasts = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
+#'                   test = "Satterthwaite")
+#'                   
+#' })
 #'
 #' @export
 

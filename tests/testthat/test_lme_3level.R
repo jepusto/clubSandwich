@@ -1,7 +1,11 @@
 context("3-level lme objects")
 set.seed(20190513)
 
-suppressMessages(library(lme4, quietly=TRUE))
+# skip_if_not_installed("lme4")
+skip_if_not_installed("nlme")
+skip_if_not_installed("mlmRev")
+
+# suppressMessages(library(lme4, quietly=TRUE))
 library(nlme, quietly=TRUE, warn.conflicts=FALSE)
 library(mlmRev, quietly=TRUE, warn.conflicts=FALSE)
 
@@ -122,6 +126,9 @@ CR_types <- paste0("CR",0:3)
 test_that("Order doesn't matter.", {
   skip_on_cran()
   
+  check_sort_order(obj_A1, egsingle)
+  check_sort_order(obj_A2, egsingle)
+  check_sort_order(obj_A3, egsingle)
   check_sort_order(obj_A4, egsingle)
   
 })

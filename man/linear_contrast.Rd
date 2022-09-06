@@ -61,22 +61,35 @@ Constraints can be specified directly as q X p matrices or
   \code{\link{constrain_equal}}, or \code{\link{constrain_zero}}.
 }
 \examples{
-data(Duncan, package = "carData")
-Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
 
-Duncan_fit <- lm(prestige ~ 0 + type + income + type:income + type:education, data=Duncan)
-# Note that type:income terms are interactions because main effect of income is included
-# but type:education terms are separate slopes for each unique level of type
+data("ChickWeight", package = "datasets")
+lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
 
-# Pairwise comparisons of type-by-education slopes
-linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
-                contrasts = constrain_pairwise(":education", reg_ex = TRUE),
-                test = "Satterthwaite")
+# Pairwise comparisons of diet-by-time slopes
+linear_contrast(lm_fit, vcov = "CR2", cluster = ChickWeight$Chick, 
+                contrasts = constrain_pairwise("Diet.:Time", reg_ex = TRUE))
 
-# Pairwise comparisons of type-by-income interactions
-linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
-                contrasts = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
-                test = "Satterthwaite")
+
+if (requireNamespace("carData", quietly = TRUE)) withAutoprint({
+
+  data(Duncan, package = "carData")
+  Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
+
+  Duncan_fit <- lm(prestige ~ 0 + type + income + type:income + type:education, data=Duncan)
+  # Note that type:income terms are interactions because main effect of income is included
+  # but type:education terms are separate slopes for each unique level of type
+
+  # Pairwise comparisons of type-by-education slopes
+  linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
+                  contrasts = constrain_pairwise(":education", reg_ex = TRUE),
+                  test = "Satterthwaite")
+ 
+  # Pairwise comparisons of type-by-income interactions
+  linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
+                  contrasts = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
+                  test = "Satterthwaite")
+                  
+})
 
 }
 \seealso{

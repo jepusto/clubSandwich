@@ -50,6 +50,8 @@ of a set of regression coefficient estimates from a
 \code{\link[robumeta]{robu}} object.
 }
 \examples{
+
+if (requireNamespace("robumeta", quietly = TRUE)) withAutoprint({
 library(robumeta)
 data(hierdat)
 
@@ -64,6 +66,8 @@ coef_test(robu_fit, vcov = robu_CR2, test = c("Satterthwaite", "saddlepoint"))
 
 Wald_test(robu_fit, constraints = constrain_zero(c(2,4)), vcov = robu_CR2)
 Wald_test(robu_fit, constraints = constrain_zero(2:5), vcov = robu_CR2)
+
+})
 
 }
 \seealso{

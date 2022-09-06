@@ -14,12 +14,22 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, echo = FALSE, results = "asis", message = FALSE, warning = FALSE}
+library(clubSandwich)
+AER_available <- requireNamespace("AER", quietly = TRUE)
+
+knitr::opts_chunk$set(eval = AER_available)
+
+if (!AER_available) cat("# Building this vignette requires the AER package. Please install it. {-}")
+```
+
 Version 0.5.0 of `clubSandwich` introduced a new syntax for `Wald_test()`, a function for conducting tests of multiple-constraint hypotheses. In previous versions, this function was poorly documented and, consequently, probably little used. This vignette will demonstrate the new syntax. 
 
 For purposes of illustration, I will use the `STAR` data (available in the `AER` package), which is drawn from a randomized trial evaluating the effects of elementary school class size on student achievement. The data consist of individual-level measures for students in each of several dozen schools. For purposes of illustration, I will look at effects on math performance in first grade. Treatment conditions (the variable called `stark`) were assigned at the classroom level, and consisted of either a) a regular-size class, b) a small-size class, or c) a regular-size class but with the addition of a teacher's aide. In all of what follows, I will cluster standard errors by school in order to allow for generalization to a super-population of schools. 
 
 ```{r, message = FALSE, warning = FALSE}
 library(clubSandwich)
+
 data(STAR, package = "AER")
 
 # clean up a few variables
@@ -81,7 +91,7 @@ C_trt <- matrix(c(0,0,1,0,0,1), 2, 3)
 C_trt
 Wald_test(lm_trt, constraints = C_trt, vcov = V_trt)
 ```
-The result includes details about the form of `test` computed, the $F$-statistic, the numerator and denominator degrees of freedom used to compute the reference distribution, and the $p$-value corresponding to the specified null hypothesis. In this example, $p = `r format.pval(Wald_test(lm_trt, constraints = C_trt, vcov = V_trt)$p_val, digits = 3)`$, so we can rule out the null hypothesis that there are no differences in math performance across conditions. 
+The result includes details about the form of `test` computed, the $F$-statistic, the numerator and denominator degrees of freedom used to compute the reference distribution, and the $p$-value corresponding to the specified null hypothesis. In this example, $p = `r if (AER_available) format.pval(Wald_test(lm_trt, constraints = C_trt, vcov = V_trt)$p_val, digits = 3)`$, so we can rule out the null hypothesis that there are no differences in math performance across conditions. 
 
 The representation of null hypotheses as arbitrary constraint matrices is useful for developing theory about how to test such hypotheses, but it is not all that helpful for actually running tests---constructing constraint matrices "by hand" is just too cumbersome of an exercise. Moreover, $\mathbf{C}$ matrices typically follow one of a small number of patterns. Two common use cases are a) constraining a set of $q > 1$ parameters to all be equal to zero and b) constraining a set of $q + 1$ parameters to be equal to a common value. The `clubSandwich` package now includes a set of helper functions to create constraint matrices for these common use cases.
 
