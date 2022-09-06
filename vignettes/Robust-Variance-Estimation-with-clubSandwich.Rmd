@@ -2,19 +2,87 @@
 title: "Cluster-robust variance estimation with clubSandwich"
 author: "James E. Pustejovsky"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    number_sections: true
+bibliography: bibliography.bib
 vignette: >
   %\VignetteIndexEntry{Cluster-robust variance estimation with clubSandwich}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-Linear regression models, estimated by ordinary least squares or weighted least squares, are a ubiquitous tool across a diverse range of fields. Classically, inference in such models is based on the assumption that the model's errors are independent and homoskedastic (or more generally, that the errors follow a known structure of a low-dimensional parameter). However, such assumptions will be unreasonable in many applications. Cluster-robust variance estimation methods provide a basis for inference under the weaker assumption that the observations can be grouped into clusters, where the errors in different clusters are independent but errors within a common cluster may be correlated. 
+Linear regression models, estimated by ordinary least squares or weighted least squares, are a ubiquitous tool across a diverse range of fields. Classically, inference in such models is based on the assumption that the model's errors are independent and homoskedastic (or more generally, that the errors follow a known structure of a low-dimensional parameter). However, such assumptions will be unreasonable in many applications. Cluster-robust variance estimation methods provide a basis for inference under the weaker assumption that the observations can be grouped into clusters, where the errors in different clusters are independent but errors within a common cluster may be correlated. These methods can be applied across a broad scope of models, including not only ordinary linear regression, but also hierarchical (random effects) linear models, meta-analytic models, generalized linear models and generalized estimating equations, and instrumental variables models. 
 
 Let us consider the linear regression model
-
 $$
-y_{ij} = \beta_0 + \beta_1 x_{1ij} + \beta_2 x_{2ij} + \cdots + \beta_{p-1} x_{p-1,ij} + e_{ij},
+\begin{aligned}
+y_{ij} &= \beta_0 + \beta_1 x_{1ij} + \beta_2 x_{2ij} + \cdots + \beta_{p-1} x_{p-1,ij} + e_{ij}, \\
+ &= \mathbf{x}_{ij} \boldsymbol\beta + e_{ij}
+\end{aligned}
 $$
 
-where 
+where $\mathbf{x}_{ij}$ is a $1 \times p$ row vector of predictors (possibly including an intercept term) and $e_{ij}$ is an error term, both for observation $i = 1,...,n_j$ in cluster $j = 1,...,J$. It will be convenient to write this model using vectors and matrices for each cluster, as
+$$
+\mathbf{y}_j = \mathbf{X}_j \boldsymbol\beta + \mathbf{e}_j,
+$$
+where $\mathbf{y}_j = (y_{1j} \cdots y_{n_j j})'$ is the $n_j \times 1$ vector of outcomes for cluster $j$, $\mathbf{X}_j = (\mathbf{x}_{1j}' \cdots \mathbf{x}_{n_j j}')'$ is the $n_j \times p$ matrix of predictors for cluster $j$, and $\mathbf{e}_j$ is the $n_j \times 1$ vector of errors for cluster $j$, all for $j = 1,...,J$. 
+
+# Variance estimation
+
+- CRO
+
+## Small-sample corrections
+
+- General form
+
+- CR1, CR1S, CR1p
+- CR2
+- CR3
+
+# Model-specific considerations
+
+## `lm()`
+
+## `mlm()`
+
+## `nlme::gls()`, `nlme::lme()`, and `lme4::lmer()`
+
+## `plm::plm()`
+
+## `glm()` and `geepack::geeglm()`
+
+## `robumeta::robu()`
+
+## `metafor::rma.uni()` and `metafor::rma.mv()`
+
+# Single-coefficient hypothesis tests and confidence intervals
+
+## Degrees of freedom corrections
+
+- z
+- naive-t, naive-tp
+- Satterthwaite correction
+
+## Saddlepoint correction
+
+## `coef_test()`
+
+## `conf_int()`
+
+## `linear_contrast()`
+
+
+# Multiple-constraint hypothesis tests
+
+- `Wald_test()`
+
+## Convenience functions for constraint matrices
+
+- `constrain_equal()`
+- `constrain_zero()`
+- `constrain_pairwise()`
+
+# Computational considerations
+
+# References {-}
