@@ -20,9 +20,12 @@ dat <- cbind(data.frame(y, id, tm), U = Umat)
 
 lme_dummy <- lmer(y ~ 0 + id + id:tm + U.1 + U.2 + (0 + U.1 + U.2 || id), data = dat)
 W_list <- weightMatrix(lme_dummy)
+<<<<<<< HEAD
 Phi_list <- targetVariance(lme_dummy, cluster = id)
 D_list <- lapply(Phi_list, chol)
 D_inv <- lapply(D_list, solve)
+=======
+>>>>>>> 8a49c25037ac50e92c8ef7b771150a0b66f75108
 
 # Absorbed matrices
 reg_by <- function(x, w, y) {
