@@ -1,5 +1,5 @@
 library(lme4)
-set.seed(20220906)
+set.seed(20220914)
 J <- 5
 nj <- 2 + rpois(J, 7)
 N <- sum(nj)
@@ -20,12 +20,9 @@ dat <- cbind(data.frame(y, id, tm), U = Umat)
 
 lme_dummy <- lmer(y ~ 0 + id + id:tm + U.1 + U.2 + (0 + U.1 + U.2 || id), data = dat)
 W_list <- weightMatrix(lme_dummy)
-<<<<<<< HEAD
 Phi_list <- targetVariance(lme_dummy, cluster = id)
 D_list <- lapply(Phi_list, chol)
 D_inv <- lapply(D_list, solve)
-=======
->>>>>>> 8a49c25037ac50e92c8ef7b771150a0b66f75108
 
 # Absorbed matrices
 reg_by <- function(x, w, y) {
@@ -62,9 +59,25 @@ fixef(lme_dummy)[c("U.1","U.2")]
 TtWT_list <- Map(function(x, w) t(x) %*% w %*% x, x = T_full, w = W_list)
 TtWT <- Reduce("+", TtWT_list) 
 MT <- chol2inv(chol(TtWT))
+TMTTt <- Map(\(x) x %*% MT %*% t(x), x = T_full)
 
-inner_list <- Map(function(phi, u, tmat) matrix_power(phi - u %*% MUd %*% t(u) - tmat %*% MT %*% t(tmat), -1), 
-                  phi = Phi_list, u = U_dot, tmat = T_full)
+B_list <- Map(function(d, phi, u, tmat) d %*% (phi - u %*% MUd %*% t(u) - tmat %*% MT %*% t(tmat)) %*% t(d), 
+                  d = D_list, phi = Phi_list, u = U_dot, tmat = T_full)
+B_ginv <- Map(matrix_power, B_list, p = -1)
+
+Btilde_list <- Map(function(d, phi, u, tmat) d %*% (phi - u %*% MUd %*% t(u)) %*% t(d), 
+                    d = D_list, phi = Phi_list, u = U_dot, tmat = T_full)
+Btilde_ginv <- Map(matrix_power, Btilde_list, p = -1)
+
+B_diff <- Map(\(x,y) x - y, x = Btilde_ginv, y = B_ginv)
+B_diff
+
+A_list <- Map(\(b, d) t(d) %*% matrix_power(b, p = -1/2) %*% d, b = B_list, d = D_list)
+Atilde_list <- Map(\(b, d) t(d) %*% matrix_power(b, p = -1/2) %*% d, b = Btilde_list, d = D_list)
+UtWA <- Map(\(u,w,a) t(u) %*% w %*% a, u = U_dot, w = W_list, a = A_list)
+UtWAtilde <- Map(\(u,w,a) t(u) %*% w %*% a, u = U_dot, w = W_list, a = Atilde_list)
+UtWA[[4]]
+UtWAtilde[[4]]
 
 Psi_list <- Map(function(phi, u) matrix_power(phi - u %*% MUd %*% t(u), -1), 
                 phi = Phi_list, u = U_dot)
@@ -72,28 +85,17 @@ Psi_T <- Map(function(psi, tmat) psi %*% tmat, psi = Psi_list, tmat = T_list)
 W_T <- Map(function(w, tmat) w %*% tmat, w = W_list, tmat = T_list)
 all.equal(Psi_T, W_T)
 
-all.equal(inner_list, Psi_list)
-
-missing_list <- Map(function(w, tmat) w %*% tmat %*% MT %*% t(tmat) %*% w, w = W_list, tmat = T_full)
-inner_sum <- Map(function(psi, miss) psi - miss, psi = Psi_list, miss = missing_list)
-Map(function(a, b) b - a, a = inner_list, b = Psi_list)
-
 MTspace_list <- lapply(TtWT_list, \(twt) MT - MT %*% twt %*% MT)
 MTspace_inv <- lapply(MTspace_list, matrix_power, p = -1)
 MTspace_check <- Map(function(a, ai) a %*% ai %*% a, a = MTspace_list, ai = MTspace_inv)
 all.equal(MTspace_list, MTspace_check)
 
 Tspace_list <- Map(function(w, tmat, mtspace) w %*% tmat %*% MT %*% mtspace %*% MT %*% t(tmat) %*% w,
-                   w = W_list, tmat = T_full, twt = TtWT_list)
+                   w = W_list, tmat = T_full, mtspace = MTspace_list)
   
 A_dummy <- attr(vcovCR(lme_dummy, type = "CR2"), "adjustments")
-
-A_list <- Map(function(di, inn) t(di) %*% inn %*% di, di = D_inv, inn = inner_list)
-
-UtWA_dummy <- Map(function(u, w, a) t(u) %*% w %*% a, 
-                  u = U_dot, w = W_list, a = A_dummy)
-UtWA_absorb <- Map(function(u, w, a) t(u) %*% w %*% a, 
-                   u = U_dot, w = W_list, a = A_absorb)
-
-UtWA_dummy[[1]]
-UtWA_absorb[[1]]
+all.equal(A_dummy[[1]], A_list[[1]], check.attributes = FALSE)
+all.equal(A_dummy[[2]], A_list[[2]], check.attributes = FALSE)
+all.equal(A_dummy[[3]], A_list[[3]], check.attributes = FALSE)
+all.equal(A_dummy[[4]], A_list[[4]], check.attributes = FALSE)
+all.equal(A_dummy[[5]], A_list[[5]], check.attributes = FALSE)
