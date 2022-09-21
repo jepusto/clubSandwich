@@ -1,6 +1,6 @@
 ---
 title: "Cluster-robust variance estimation with clubSandwich"
-author: "James E. Pustejovsky, Hanna Kim"
+author: "James E. Pustejovsky and Hanna Kim"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
@@ -11,6 +11,19 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+$$
+\newcommand{\Prob}{\text{Pr}}
+\newcommand{\E}{\text{E}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\corr}{\text{corr}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\bmat}[1]{\mathbf{#1}}
+\newcommand{\bs}{\boldsymbol}
+\newcommand{\half}[1]{#1^{\frac{1}{2}}}
+\newcommand{\halfinv}[1]{#1^{-\frac{1}{2}}}
+$$
 
 Linear regression models, estimated by ordinary least squares or weighted least squares, are a ubiquitous tool across a diverse range of fields. Classically, inference in such models is based on the assumption that the model's errors are independent and homoskedastic (or more generally, that the errors follow a known structure of a low-dimensional parameter). However, such assumptions will be unreasonable in many applications. Cluster-robust variance estimation methods provide a basis for inference under the weaker assumption that the observations can be grouped into clusters, where the errors in different clusters are independent but errors within a common cluster may be correlated. These methods can be applied across a broad scope of models, including not only ordinary linear regression, but also hierarchical (random effects) linear models, meta-analytic models, generalized linear models and generalized estimating equations, and instrumental variables models. 
 
@@ -28,41 +41,47 @@ $$
 $$
 where $\mathbf{y}_j = (y_{1j} \cdots y_{n_j j})'$ is the $n_j \times 1$ vector of outcomes for cluster $j$, $\mathbf{X}_j = (\mathbf{x}_{1j}' \cdots \mathbf{x}_{n_j j}')'$ is the $n_j \times p$ matrix of predictors for cluster $j$, and $\mathbf{e}_j$ is the $n_j \times 1$ vector of errors for cluster $j$, all for $j = 1,...,J$. 
 
-(Note that $j = 1,...,J$ is used to denote clusters instead of $g = 1,...,G$ and $e_j$ to denote cluster-specific error terms instead of $u_g$, unlike the clubSandwich notes. Let's keep notations consistent throughout this vignette. - H: With the $j$ notation, it is kind of difficult to denote distinct clusters as with clusters $g, h$. I'm sticking to $j, j'$ for now.)
+<!-- (Note that $j = 1,...,J$ is used to denote clusters instead of $g = 1,...,G$ and $e_j$ to denote cluster-specific error terms instead of $u_g$, unlike the clubSandwich notes. Let's keep notations consistent throughout this vignette. - H: With the $j$ notation, it is kind of difficult to denote distinct clusters as with clusters $g, h$. I'm sticking to $j, j'$ for now.) -->
 
-
-# Variance estimation
-
-Unlike the homoskedasticity assumption, we will assume the following for the cluster-robust variances to be estimated:
-
+We will maintain the following assumptions regarding the errors in the regression:
 $$
 \begin{aligned}
 A1:& \qquad \E(\bmat{e}_j | \bmat{X}_j) = \bmat{0} \\ 
-A2:& \qquad \E(\bmat{e}_j \bmat{e}_{j'}' | \bmat{X}_j, \bmat{X}_{j'}) = \bmat{0}, \qquad \text{when} \qquad j \neq {j'} \\
-A3:& \qquad \E(\bmat{e}_j \bmat{e}_j' | \bmat{X}_j) = \Var(\bmat{e}_j) = \bs\Omega_j
+A2:& \qquad \E(\bmat{e}_j \bmat{e}_{k}' | \bmat{X}_j, \bmat{X}_{k}) = \bmat{0}, \qquad \text{when} \qquad j \neq {k} \\
+A3:& \qquad \E(\bmat{e}_j \bmat{e}_j' | \bmat{X}_j) = \Var(\bmat{e}_j) = \bs\Omega_j.
 \end{aligned}
 $$
-The $n_j \times n_j$ cluster-specific variance-covariance matrix $\bs\Omega_j$ will be treated as unknown. These assumptions characterize the idea of cluster-robust variance estimation that relaxes the homoskedasticity assumption and allows for correlated residuals for units within the same cluster.
+The $n_j \times n_j$ matrices $\bs\Omega_j$ captures the cluster-specific variance-covariance matrix of the errors. A common strategy for estimation and inference about the regression coefficients is to make further assumptions regarding the form of these matrices, such as by assuming that all errors are independent and homoskedastic (i.e., $\bs\Omega_j = \sigma^2 \bmat{I}_j$) or that they have a structure characterized by a low-dimensional parameter (as in a hierarchical linear model or random effects model). Robust variance estimation methods provide a method for characterizing uncertainty and conducting inference without imposing such additional assumptions. Rather, we will treat the variance-covariance matrices as following an unknown form. Thus, the errors within a cluster need not be homoskedastic or independent, but can instead be arbitrarily correlated within the same cluster.
 
-- CRO
+Researchers will often estimate the regression coefficient vector $\bs\beta$ using ordinary least squares (OLS) or, more generally, some form of weighted least squares (WLS). The weighted least squares estimator might involve non-unit weights for each observation or some form of weight matrices for each cluster, potentially including off-diagonal terms (as in a hierarchical linear model). 
+We will consider a general set of symmetric weight matrices $\bmat{W}_1,...,\bmat{W}_J$.
+The weighted least squares estimator for $\bs\beta$ is then defined as
+$$
+\bs{\hat\beta} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{y}_j\right), \quad \text{where} \quad \bmat{M} = \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{X}_j\right)^{-1}.
+$$
 
-(Working model idea should come first.)
-(To use the Satterthwaite approximation, we need the mean and variance of $V$. These are generally unknown (because they depend on $\bs\Omega$), but we can approximate them by assuming that the working model is correct. - H: I think this is the key idea/motivation behind cluster-robust variance estimation. It seems necessary though to state why we need to use the Satterthwaite approximation over the Wald test.)
+Sometimes, the weight matrices used for WLS estimation are motivated by a working model for the structure of the error variance-covariances $\bs\Omega_j$. 
+In this approach,
+the analyst posits a structure $\bs\Omega_j = \bs\Psi_j(\bs\theta)$ for some low-dimensional, estimable parameter $\bs\theta$. 
+If the working model captures the true form of the error variances, then the weights that make the sampling variance of $\bs{\hat\beta}$ as small as possible are $\bs\Psi_j^{-1}$, which depend on the parameter $\bs\theta$. In practice, the analyst will use the inverse of the _estimated_ working model, so
+$$
+\bmat{W}_j = \bs{\hat\Psi}_j^{-1}
+$$
+as the weights. When the weight matrices are so derived, we will refer to them as "inverse-variance" weights.
 
+# Robust Variance Estimation
 
-Let us consider the weighted least squares estimator for $\bs\beta$, defined as
+Treating the weight matrices as fixed, the sampling variance of $\bs{\hat\beta}$ is 
 $$
-\bs{\hat\beta} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{y}_j\right), \quad \text{where} \quad \bmat{M} = \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{X}_j\right)^{-1}
+\Var\left(\bs{\hat\beta}\right) = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bs\Omega_j \bmat{W}_j \bmat{X}_j \right) \bmat{M},
 $$
-for symmetric weight matrices $\bmat{W}_1,...,\bmat{W}_J$. Here, we bring in a working model for $\bs\Omega_j$, the cluster-specific variance-covariance matrix, to specify/estimate the weights $\bmat{W}_j$. That is, we first assume that $\bs\Omega_j = \bs\Psi_j(\bs\theta)$ for some low-dimensional, estimable parameter $\bs\theta$. If the working model is correct, then the weights that make the sampling variance of $\bs{\hat\beta}$ as small as possible are $\bs\Psi_j^{-1}$, which depends on the parameter $\bs\theta$. In practice, we use the inverse of the _estimated_ working model
+which depends on the unknown variance-covariances $\bs\Omega_1,...,\bs\Omega_J$. On strategy for estimating $\Var\left(\bs{\hat\beta}\right)$ is to substitute an estimated working model $\bs{\hat\Psi}_j$ for the unknown variance-covariance matrices $\bs\Omega_j$, giving a model-based variance estimator:
 $$
-\bmat{W}_g = \bs{\hat\Psi}_g^{-1}
+\bmat{V}^{model} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bs{\hat\Psi}_j \bmat{W}_j \bmat{X}_j \right) \bmat{M}.
 $$
-as the weights. Then, the sampling variance of $\bs{\hat\beta}$ is 
-$$
-\Var\left(\bs{\hat\beta}\right) = \bmat{M} \left(\sum_{g=1}^G \bmat{X}_g'\bmat{W}_g \bs\Omega_g \bmat{W}_g\bmat{X}_g\right) \bmat{M},
-$$
-which depends on the unknown variance-covariances $\bs\Omega_1,...,\bs\Omega_J$.
+If the working model is correctly specified and precisely estimated, then the model-based variance estimator will closely approximate the true sampling variance. If the analyst uses inverse-variance weights based on the same working model, then the model-based variance estimator has the simpler form $\bmat{V}^{model} = \bmat{M}$. However, if the working model is inaccurate or incorrectly specified in some way, then there is no guarantee that the model-based variance estimator will be valid. 
+
+Robust variance estimators provide an alternative strategy that does not rely on assumptions about the form of the working model....
 
 When we use the regression residuals as rough estimates of $\bs\Omega$, that becomes the basic cluster-robust variance estimator (CR0): 
 $$
@@ -75,11 +94,47 @@ where $\bmat{\hat{u}}_j = \bmat{y}_j - \bmat{X}_j \bs{\hat\beta}$.
 
 ## Small-sample corrections
 
-- General form
+A number of variations on the basic cluster-robust variance estimator have been proposed, all of which aim to provide more accurate approximations when the number of clusters is limited. The variations implemented in the `clubSandwich` package all have the form
+$$
+\bmat{V}^{CR} = f \times \bmat{M} \left(\sum_{j=1}^J \bmat{E}_j' \bs{\hat\Psi}_j \bmat{E}_j \right) \bmat{M}
+$$
+for some constant $f$ and some estimating matrices $\bmat{E}_1,...,\bm{E}_J$. With this representation, the CRO estimator corresponds to $f_0 = 1$ and $\bmat{E}^0_j = \bmat{W}_j \bmat{X}_j$. 
 
 - CR1, CR1S, CR1p
-- CR2
-- CR3
+$$
+\begin{aligned}
+\text{CR1}: f_1 &= \frac{J}{J - 1}, \\
+\text{CR1S}: f_{1S} &= \frac{J}{J - 1}, \\
+\text{CR1p}: f_{1p} &= \frac{J}{J - p}, 
+\end{aligned}
+$$
+all with $\bmat{E}^1_j = \bmat{W}_j \bmat{X}_j$.
+
+- CR2 uses $f_2 = 1$ and
+$$
+\bmat{E}_j = \bmat{A}_j \bmat{W}_j \bmat{X}_j,
+$$
+where $\bmat{A}_j$ are adjustment matrices...
+
+- CR2f uses $f_2 = 1$ and
+$$
+\bmat{E}_j = \half{\bmat{W}}_j \bmat{A}_j \half{\bmat{W}}_j \bmat{X}_j,
+$$
+where $\bmat{A}_j$ are adjustment matrices...
+
+- CR3 uses $f_3 = 1$ and 
+$$
+\bmat{E}_j = \bmat{A}_j \bmat{W}_j \bmat{X}_j,
+$$
+where $\bmat{A}_j$ are adjustment matrices...
+
+- CR4 uses $f_4 = 1$ and
+$$
+\bmat{E}_j = \bmat{W}_j \bmat{X}_j \bmat{D}_j,
+$$
+
+where $\bmat{D}_j$ are adjustment matrices...
+
 
 # Model-specific considerations
 
@@ -98,6 +153,8 @@ where $\bmat{\hat{u}}_j = \bmat{y}_j - \bmat{X}_j \bs{\hat\beta}$.
 ## `metafor::rma.uni()` and `metafor::rma.mv()`
 
 # Single-coefficient hypothesis tests and confidence intervals
+
+<!-- (To use the Satterthwaite approximation, we need the mean and variance of $V$. These are generally unknown (because they depend on $\bs\Omega$), but we can approximate them by assuming that the working model is correct. - H: I think this is the key idea/motivation behind cluster-robust variance estimation. It seems necessary though to state why we need to use the Satterthwaite approximation over the Wald test.) -->
 
 ## Degrees of freedom corrections
 
