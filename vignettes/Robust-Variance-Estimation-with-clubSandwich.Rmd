@@ -41,7 +41,7 @@ $$
 $$
 where $\mathbf{y}_j = (y_{1j} \cdots y_{n_j j})'$ is the $n_j \times 1$ vector of outcomes for cluster $j$, $\mathbf{X}_j = (\mathbf{x}_{1j}' \cdots \mathbf{x}_{n_j j}')'$ is the $n_j \times p$ matrix of predictors for cluster $j$, and $\mathbf{e}_j$ is the $n_j \times 1$ vector of errors for cluster $j$, all for $j = 1,...,J$. 
 
-<!-- (Note that $j = 1,...,J$ is used to denote clusters instead of $g = 1,...,G$ and $e_j$ to denote cluster-specific error terms instead of $u_g$, unlike the clubSandwich notes. Let's keep notations consistent throughout this vignette. - H: With the $j$ notation, it is kind of difficult to denote distinct clusters as with clusters $g, h$. I'm sticking to $j, j'$ for now.) -->
+<!-- (Note that $j = 1,...,J$ is used to denote clusters instead of $g = 1,...,G$ and $e_j$ to denote cluster-specific error terms instead of $u_g$, unlike the clubSandwich notes. Let's keep notations consistent throughout this vignette. - H: With the $j$ notation, it is kind of difficult to denote distinct clusters as with clusters $g, h$. - James changed j' to k.) -->
 
 We will maintain the following assumptions regarding the errors in the regression:
 $$
@@ -61,13 +61,14 @@ $$
 $$
 
 Sometimes, the weight matrices used for WLS estimation are motivated by a working model for the structure of the error variance-covariances $\bs\Omega_j$. 
-In this approach,
-the analyst posits a structure $\bs\Omega_j = \bs\Psi_j(\bs\theta)$ for some low-dimensional, estimable parameter $\bs\theta$. 
-If the working model captures the true form of the error variances, then the weights that make the sampling variance of $\bs{\hat\beta}$ as small as possible are $\bs\Psi_j^{-1}$, which depend on the parameter $\bs\theta$. In practice, the analyst will use the inverse of the _estimated_ working model, so
+In this approach, the analyst posits a structure $\bs\Omega_j = \bs\Psi_j(\bs\theta)$ for some low-dimensional, estimable parameter $\bs\theta$. 
+If the working model captures the true form of the error variances, then the weights that make the sampling variance of $\bs{\hat\beta}$ as small as possible are $\bs\Psi_j^{-1}$, which depend on the parameter $\bs\theta$. In practice, the analyst will use the inverse of the _estimated_ working model, so that they/we use
 $$
 \bmat{W}_j = \bs{\hat\Psi}_j^{-1}
 $$
 as the weights. When the weight matrices are so derived, we will refer to them as "inverse-variance" weights.
+
+<!-- H: As you may have noticed, I leave two or more words that come into my mind grouped with / so that we may choose from or replace them as we see fit later. Feel free to make your edits :-) -->
 
 # Robust Variance Estimation
 
@@ -75,7 +76,7 @@ Treating the weight matrices as fixed, the sampling variance of $\bs{\hat\beta}$
 $$
 \Var\left(\bs{\hat\beta}\right) = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bs\Omega_j \bmat{W}_j \bmat{X}_j \right) \bmat{M},
 $$
-which depends on the unknown variance-covariances $\bs\Omega_1,...,\bs\Omega_J$. On strategy for estimating $\Var\left(\bs{\hat\beta}\right)$ is to substitute an estimated working model $\bs{\hat\Psi}_j$ for the unknown variance-covariance matrices $\bs\Omega_j$, giving a model-based variance estimator:
+which depends on the unknown variance-covariances $\bs\Omega_1,...,\bs\Omega_J$. One strategy for estimating $\Var\left(\bs{\hat\beta}\right)$ is to substitute an estimated working model $\bs{\hat\Psi}_j$ for the unknown variance-covariance matrices $\bs\Omega_j$, giving a model-based variance estimator:
 $$
 \bmat{V}^{model} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bs{\hat\Psi}_j \bmat{W}_j \bmat{X}_j \right) \bmat{M}.
 $$
@@ -83,14 +84,15 @@ If the working model is correctly specified and precisely estimated, then the mo
 
 Robust variance estimators provide an alternative strategy that does not rely on assumptions about the form of the working model....
 
+<!-- H: We would need to explain more about the above sentence or remove it from this section. -->
+
 When we use the regression residuals as rough estimates of $\bs\Omega$, that becomes the basic cluster-robust variance estimator (CR0): 
 $$
 \bmat{V}^{CR0} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{W}_j\bmat{X}_j\right) \bmat{M},
 $$
 where $\bmat{\hat{u}}_j = \bmat{y}_j - \bmat{X}_j \bs{\hat\beta}$.
 
-(Any additional ideas/properties of CR0?)
-
+<!-- 9/21: We might add some brief sentences about the limitations of CR0 referring to Cameron & Miller (2015) or others. Otherwise, we will stop here with CR0. -->
 
 ## Small-sample corrections
 
@@ -154,7 +156,7 @@ where $\bmat{D}_j$ are adjustment matrices...
 
 # Single-coefficient hypothesis tests and confidence intervals
 
-<!-- (To use the Satterthwaite approximation, we need the mean and variance of $V$. These are generally unknown (because they depend on $\bs\Omega$), but we can approximate them by assuming that the working model is correct. - H: I think this is the key idea/motivation behind cluster-robust variance estimation. It seems necessary though to state why we need to use the Satterthwaite approximation over the Wald test.) -->
+<!-- (To use the Satterthwaite approximation (instead of the Wald-test assuming large samples), we need the mean and variance of $V$. These are generally unknown (because they depend on $\bs\Omega$), but we can approximate them by assuming that the working model is correct. - H: I think this is the key idea/motivation behind cluster-robust variance estimation. -->
 
 ## Degrees of freedom corrections
 
