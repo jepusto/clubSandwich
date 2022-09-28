@@ -40,11 +40,14 @@ all.equal(B, B_alt)
 B_inv <- lapply(B_alt, matrix_power, p = -1)
 
 Psi <- lapply(Btilde, matrix_power, p = -1)
+Psi_alt <- lapply(Ui, \(u) diag(nrow = length(u)) + u %*% MU %*% (1 / (MU - MU %*% crossprod(u) %*% MU)) %*% MU %*% t(u))
+all.equal(Psi, Psi_alt)
+
 inner <- mapply(\(psi, x) matrix_power(MT  - MT %*% t(x) %*% psi %*% x %*% MT, -1), 
                 psi = Psi, x = Ti, SIMPLIFY = FALSE)
 B_inv_alt <- mapply(\(psi, x, inn) psi + psi %*% x %*% MT %*% inn %*% MT %*% t(x) %*% psi,
                     psi = Psi, x = Ti, inn = inner, SIMPLIFY = FALSE)
-
+all.equal(B_inv, B_inv_alt)
 
 D <- mapply(`+`, Btilde, tiMTtit)
 Dinner <- mapply(\(psi, x) matrix_power(MT  + MT %*% t(x) %*% psi %*% x %*% MT, -1), 
@@ -52,3 +55,12 @@ Dinner <- mapply(\(psi, x) matrix_power(MT  + MT %*% t(x) %*% psi %*% x %*% MT, 
 D_alt <- mapply(\(psi, x, inn) psi - psi %*% x %*% MT %*% inn %*% MT %*% t(x) %*% psi,
                     psi = Psi, x = Ti, inn = Dinner, SIMPLIFY = FALSE)
 all.equal(D, D_alt, check.attributes = FALSE)
+
+mapply(`%*%`, Btilde, Psi) |> lapply(round, digits = 3)
+
+
+library(Matrix)
+table(id)
+lapply(B, rankMatrix)
+lapply(Btilde, rankMatrix)
+lapply(tiMTtit, rankMatrix)
