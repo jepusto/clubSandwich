@@ -1,0 +1,301 @@
+% !TeX program = pdfLaTeX
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{graphicx,psfrag,epsf}
+\usepackage{enumerate}
+
+
+\usepackage{textcomp}
+\usepackage[hyphens]{url} % not crucial - just used below for the URL
+\usepackage{hyperref}
+
+%\pdfminorversion=4
+% NOTE: To produce blinded version, replace "0" with "1" below.
+\newcommand{\blind}{0}
+
+% DON'T change margins - should be 1 inch all around.
+\addtolength{\oddsidemargin}{-.5in}%
+\addtolength{\evensidemargin}{-1in}%
+\addtolength{\textwidth}{1in}%
+\addtolength{\textheight}{1.7in}%
+\addtolength{\topmargin}{-1in}%
+
+%% load any required packages here
+
+
+
+% tightlist command for lists without linebreak
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+% Pandoc citation processing
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+% for Pandoc 2.8 to 2.10.1
+\newenvironment{cslreferences}%
+  {}%
+  {\par}
+% For Pandoc 2.11+
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+
+\usepackage{amsthm}
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}{Lemma}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage[natbibapa]{apacite}
+\usepackage{caption}
+\usepackage{multirow}
+\usepackage{float}    % for fig.pos='H'
+\usepackage{rotfloat} % for sidewaysfigure
+\hypersetup{hidelinks}
+\newcommand{\Prob}{\text{Pr}}
+\newcommand{\E}{\text{E}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\corr}{\text{corr}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\iid}{\stackrel{\text{iid}}{\sim}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\bm}{\mathbf}
+\newcommand{\bs}{\boldsymbol}
+
+\begin{document}
+
+
+\def\spacingset#1{\renewcommand{\baselinestretch}%
+{#1}\small\normalsize} \spacingset{1}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\if0\blind
+{
+  \title{\bf Erratum: Small sample methods for cluster-robust variance
+estimation and hypothesis testing in fixed effects models}
+
+  \author{
+        James E. Pustejovsky \thanks{Department of Educational
+Psychology, University of Wisconsin - Madison, 1025 West Johnson Street,
+Madison, WI 53706. Email:
+\href{mailto:pustejovsky@wisc.edu}{\nolinkurl{pustejovsky@wisc.edu}}} \\
+    University of Wisconsin - Madison\\
+     and \\     Elizabeth Tipton \thanks{Department of Statistics,
+Northwestern University. Email:
+\href{mailto:tipton@northwestern.edu}{\nolinkurl{tipton@northwestern.edu}}} \\
+    Northwestern University\\
+      }
+  \maketitle
+} \fi
+
+\if1\blind
+{
+  \bigskip
+  \bigskip
+  \bigskip
+  \begin{center}
+    {\LARGE\bf Erratum: Small sample methods for cluster-robust variance
+estimation and hypothesis testing in fixed effects models}
+  \end{center}
+  \medskip
+} \fi
+
+\bigskip
+
+\noindent%
+ 
+
+\vfill
+
+\newpage
+\spacingset{1.9} % DON'T change the spacing!
+
+Pustejovsky and Tipton (2018) considered how to do cluster-robust
+variance estimation in fixed effects models estimated by weighted (or
+unweighted) least squares. Theorem 2 of the paper concerns a
+computational short cut for a certain cluster-robust variance estimator
+in models with cluster-specific fixed effects. The theorem is incorrect
+as stated. In this correction, we review the CR2 variance estimator,
+describe the assertion of the theorem as originally stated, and explain
+the error. We then provide a revised version of the theorem.
+
+\hypertarget{a-fixed-effects-model}{%
+\section{A fixed effects model}\label{a-fixed-effects-model}}
+
+For data that can be grouped into \(m\) clusters of observations,
+Pustejovsky and Tipton (2018) considered the model \begin{equation}
+\label{eq:regression}
+\mathbf{y}_i = \mathbf{R}_i \boldsymbol\beta + \mathbf{S}_i \boldsymbol\gamma + \mathbf{T}_i \boldsymbol\mu + \boldsymbol\epsilon_i,
+\end{equation} where \(\mathbf{y}_i\) is an \(n_i \times 1\) vector of
+responses for cluster \(i\), \(\mathbf{R}_i\) is an \(n_i \times r\)
+matrix of focal predictors, \(\mathbf{S}_i\) is an \(n_i \times s\)
+matrix of additional covariates that vary across multiple clusters, and
+\(\mathbf{T}_i\) is an \(n_i \times t\) matrix encoding cluster-specific
+fixed effects, all for \(i = 1,...,m\). The cluster-specific fixed
+effects satisfy \(\mathbf{T}_h \mathbf{T}_i' = \mathbf{0}\) for
+\(h \neq i\). Interest centers on inference for the coefficients on the
+focal predictors \(\boldsymbol\beta\).
+
+Pustejovsky and Tipton (2018) considered estimation of Model
+@ref(eq:regression) by weighted least squares (WLS). Let
+\(\mathbf{W}_1,...,\mathbf{W}_m\) be a set of symmetric weight matrices
+used for WLS estimation. The CR2 variance estimator involves specifying
+a working model for the structure of the errors. Consider a working
+model
+\(\text{Var}\left(\boldsymbol\epsilon_i | \mathbf{R}_i, \mathbf{S}_i, \mathbf{T}_i\right) = \sigma^2 \boldsymbol\Phi_i\)
+where \(\boldsymbol\Phi_i\) is a symmetric \(n_i \times n_i\) matrix
+that may be a function of a low-dimensional, estimable parameter. Under
+some circumstances, the weight matrices might be taken as
+\(\mathbf{W}_i = \boldsymbol{\hat\Phi}_i^{-1}\), where
+\(\boldsymbol{\hat\Phi}_i\) is an estimate of \(\boldsymbol\Phi_i\).
+
+\hypertarget{the-cr2-variance-estimator}{%
+\section{The CR2 variance estimator}\label{the-cr2-variance-estimator}}
+
+Pustejovsky and Tipton (2018) provided a generalization of the
+bias-reduced linearization estimator introduced by McCaffrey, Bell, and
+Botts (2001) and Bell and McCaffrey (2002) that can be applied to Model
+@ref(eq:regression), referred to as CR2. In order to define the CR2
+variance estimator, some further notation will be required, just as
+defined in Pustejovsky and Tipton (2018). Let \(N = \sum_{i=1}^m n_i\)
+be the total sample size. Let
+\(\mathbf{U}_i = \left[ \mathbf{R}_i \ \mathbf{S}_i \right]\) be the set
+of predictors that vary across clusters and
+\(\mathbf{X}_i = \left[ \mathbf{R}_i \ \mathbf{S}_i \ \mathbf{T}_i \right]\)
+be the full set of predictors. Let \(\mathbf{R}\), \(\mathbf{S}\),
+\(\mathbf{T}\), \(\mathbf{U}\), and \(\mathbf{X}\) denote the stacked
+versions of the cluster-specific matrices (i.e.,
+\(\mathbf{R} = \left[\mathbf{R}_1' \ \mathbf{R}_2' \ \cdots \ \mathbf{R}_m'\right]'\),
+etc.). Let \(\mathbf{W} = \bigoplus_{i=1}^m \mathbf{W}_i\) and
+\(\boldsymbol\Phi = \bigoplus_{i=1}^m \boldsymbol\Phi_i\). For a generic
+matrix \(\mathbf{Z}\), let
+\(\mathbf{M}_{Z} = \left(\mathbf{Z}'\mathbf{W}\mathbf{Z}\right)^{-1}\)
+and
+\(\mathbf{H}_{\mathbf{Z}} = \mathbf{Z} \mathbf{M}_{\mathbf{Z}}\mathbf{Z}'\mathbf{W}\).
+Let \(\mathbf{C}_i\) be the \(n_i \times N\) matrix that selects the
+rows of cluster \(i\) from the full set of observations, such that
+\(\mathbf{X}_i = \mathbf{C}_i \mathbf{X}\). Finally, let
+\(\mathbf{D}_i\) be the upper-right Cholesky factorization of
+\(\mathbf{\Phi}_i\).
+
+These operators provide a means to define absorbed versions of the
+predictors. Let
+\(\mathbf{\ddot{S}} = \left(\mathbf{I} - \mathbf{H}_{\mathbf{T}}\right) \mathbf{S}\)
+be the covariates after absorbing the cluster-specific effects, let
+\(\mathbf{\ddot{U}} = \left(\mathbf{I} - \mathbf{H}_{\mathbf{T}}\right) \mathbf{U}\)
+be an absorbed version of the focal predictors and the covariates, and
+let
+\(\mathbf{\ddot{R}} = \left(\mathbf{I} - \mathbf{H}_{\mathbf{\ddot{S}}}\right)\left(\mathbf{I} - \mathbf{H}_{\mathbf{T}}\right) \mathbf{R}\)
+be the focal predictors after absorbing the covariates and the
+cluster-specific fixed effects.
+
+With this notation established, the CR2 variance estimator has the form
+\begin{equation}
+\mathbf{V}^{CR2} = \mathbf{M}_{\mathbf{\ddot{R}}} \left(\sum_{i=1}^m \mathbf{\ddot{R}}_i' \mathbf{W}_i \mathbf{A}_i \mathbf{e}_i \mathbf{e}_i' \mathbf{A}_i \mathbf{W}_i \mathbf{\ddot{R}}_i \right) \mathbf{M}_{\mathbf{\ddot{R}}},
+\end{equation} where
+\(\mathbf{\ddot{R}}_i = \mathbf{C}_i \mathbf{\ddot{R}}\) is the
+cluster-specific matrix of absorbed focal predictors, \(\mathbf{e}_i\)
+is the vector of weighted least squares residuals from cluster \(i\),
+and \(\mathbf{A}_1,...,\mathbf{A}_m\) are a set of adjustment matrices
+that correct the bias of the residual cross-products. The adjustment
+matrices are calculated as follows. Define the matrices \begin{equation}
+\label{eq:B-matrix}
+\mathbf{B}_i = \mathbf{D}_i \mathbf{C}_i \left(\mathbf{I} - \mathbf{H}_{\mathbf{X}}\right) \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H}_{\mathbf{X}}\right)'\mathbf{C}_i' \mathbf{D}_i'
+\end{equation} for \(i = 1,...,m\). The adjustment matrices are then
+calculated as \begin{equation}
+\label{eq:A-matrix}
+\mathbf{A}_i = \mathbf{D}_i' \mathbf{B}_i^{+1/2} \mathbf{D}_i,
+\end{equation} where \(\mathbf{B}_i^{+1/2}\) is the symmetric square
+root of the Moore-Penrose inverse of \(\mathbf{B}_i\). Theorem 1 of
+Pustejovsky and Tipton (2018) shows that, if the working model
+\(\boldsymbol\Phi\) is correctly specified and some conditions on the
+rank of \(\mathbf{U}\) are satisfied, then the CR2 estimator is exactly
+unbiased for the sampling variance of the weighted least squares
+estimator of \(\boldsymbol\beta\). Although it is defined based on a
+working model, the CR2 estimator remains close to unbiased and
+outperforms alternative sandwich estimators even when the working model
+is not correctly specified.
+
+\hypertarget{the-original-statement-of-theorem-2}{%
+\section{The original statement of Theorem
+2}\label{the-original-statement-of-theorem-2}}
+
+The adjustment matrices given in @ref(eq:A-matrix) can be expensive to
+compute directly because the \(\mathbf{B}_i\) matrices involve computing
+a ``residualized'' version of the \(N \times N\) matrix
+\(\boldsymbol\Phi\) involving the full set of predictors
+\(\mathbf{X}\)---including the cluster-specific fixed effects
+\(\mathbf{T}_1,...,\mathbf{T}_m\). Theorem 2 considered whether one can
+take a computational short cut by omitting the cluster-specific fixed
+effects from the calculation of the \(\mathbf{B}_i\) matrices.
+Specifically, define the modified matrices \begin{equation}
+\label{eq:B-modified}
+\mathbf{\tilde{B}}_i = \mathbf{D}_i \mathbf{C}_i \left(\mathbf{I} - \mathbf{H}_{\mathbf{\ddot{U}}}\right) \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H}_{\mathbf{\ddot{U}}}\right)'\mathbf{C}_i' \mathbf{D}_i'
+\end{equation} and \begin{equation}
+\label{eq:A-modified}
+\mathbf{\tilde{A}}_i = \mathbf{D}_i' \mathbf{\tilde{B}}_i^{+1/2} \mathbf{D}_i.
+\end{equation} Theorem 2 claimed that if the weight matrices are inverse
+of the working model, such that
+\(\mathbf{W}_i = \boldsymbol\Phi_i^{-1}\) for \(i = 1,...,m\), then
+\(\mathbf{\tilde{B}}_i^{+1/2} = \mathbf{B}_i^{+1/2}\) and hence
+\(\mathbf{\tilde{A}}_i = \mathbf{A}_i\). The implication is that the
+cluster-specific fixed effects can be ignored when calculating the
+adjustment matrices. However, the claimed equivalence does not actually
+hold. The proof of Theorem 2 as given in Pustejovsky and Tipton (2018)
+relied on a Woodbury identity for generalized inverses that does not
+hold for \(\mathbf{B}_i\) because the rank conditions are not satisfied.
+
+\hypertarget{a-revised-theorem-2}{%
+\section{A revised Theorem 2}\label{a-revised-theorem-2}}
+
+\hypertarget{references}{%
+\section*{References}\label{references}}
+\addcontentsline{toc}{section}{References}
+
+\hypertarget{refs}{}
+\begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-Bell2002bias}{}}%
+Bell, Robert M, and Daniel F McCaffrey. 2002. {``{Bias reduction in
+standard errors for linear regression with multi-stage samples}.''}
+\emph{Survey Methodology} 28 (2): 169--81.
+
+\leavevmode\vadjust pre{\hypertarget{ref-McCaffrey2001generalizations}{}}%
+McCaffrey, Daniel F, Robert M Bell, and Carsten H Botts. 2001.
+{``{Generalizations of biased reduced linearization}.''} In
+\emph{Proceedings of the Annual Meeting of the American Statistical
+Association}. 1994.
+
+\leavevmode\vadjust pre{\hypertarget{ref-pustejovsky2018small}{}}%
+Pustejovsky, James E., and Elizabeth Tipton. 2018. {``Small-Sample
+Methods for Cluster-Robust Variance Estimation and Hypothesis Testing in
+Fixed Effects Models.''} \emph{Journal of Business \& Economic
+Statistics} 36 (4): 672--83.
+\url{https://doi.org/10.1080/07350015.2016.1247004}.
+
+\end{CSLReferences}
+
+\bibliographystyle{agsm}
+\bibliography{bibliography.bib}
+
+
+\end{document}

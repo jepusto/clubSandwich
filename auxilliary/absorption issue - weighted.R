@@ -1,7 +1,7 @@
 library(lme4)
-set.seed(20220914)
+set.seed(20220929)
 J <- 5
-nj <- 2 + rpois(J, 7)
+nj <- 2 + rpois(J, 3)
 N <- sum(nj)
 
 id <- factor(rep(LETTERS[1:J], nj))
@@ -42,7 +42,7 @@ mapply(function(x, w, y) t(x) %*% w %*% y,
 # Calculate absorbed beta coefficients
 UtWU <- 
   Map(function(x, w) t(x) %*% w %*% x, x = U_dot, w = W_list) %>%
-  Reduce("+", .) 
+  Reduce("+", .)
 
 MUd <- chol2inv(chol(UtWU))
 
@@ -61,16 +61,27 @@ TtWT <- Reduce("+", TtWT_list)
 MT <- chol2inv(chol(TtWT))
 TMTTt <- Map(\(x) x %*% MT %*% t(x), x = T_full)
 
+# Omit the D matrices
+B_list <- Map(function(phi, u, tmat) (phi - u %*% MUd %*% t(u) - tmat %*% MT %*% t(tmat)), 
+                  phi = Phi_list, u = U_dot, tmat = T_full)
+B_ginv <- Map(matrix_power, B_list, p = -1)
+
+Btilde_list <- Map(function(phi, u) (phi - u %*% MUd %*% t(u)), 
+                    phi = Phi_list, u = U_dot)
+Btilde_ginv <- Map(matrix_power, Btilde_list, p = -1)
+
+WTMTTtW <- Map(\(w, t) w %*% t %*% w, w = W_list, t = TMTTt)
+B2_ginv <- Map(`-`, Btilde_ginv, WTMTTtW)
+all.equal(B_ginv, B2_ginv)
+
+# Now with the D matrices
 B_list <- Map(function(d, phi, u, tmat) d %*% (phi - u %*% MUd %*% t(u) - tmat %*% MT %*% t(tmat)) %*% t(d), 
-                  d = D_list, phi = Phi_list, u = U_dot, tmat = T_full)
+              d = D_list, phi = Phi_list, u = U_dot, tmat = T_full)
 B_ginv <- Map(matrix_power, B_list, p = -1)
 
 Btilde_list <- Map(function(d, phi, u, tmat) d %*% (phi - u %*% MUd %*% t(u)) %*% t(d), 
-                    d = D_list, phi = Phi_list, u = U_dot, tmat = T_full)
+                   d = D_list, phi = Phi_list, u = U_dot, tmat = T_full)
 Btilde_ginv <- Map(matrix_power, Btilde_list, p = -1)
-
-B_diff <- Map(\(x,y) x - y, x = Btilde_ginv, y = B_ginv)
-B_diff
 
 A_list <- Map(\(b, d) t(d) %*% matrix_power(b, p = -1/2) %*% d, b = B_list, d = D_list)
 Atilde_list <- Map(\(b, d) t(d) %*% matrix_power(b, p = -1/2) %*% d, b = Btilde_list, d = D_list)

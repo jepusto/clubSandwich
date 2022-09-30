@@ -1,0 +1,95 @@
+---
+title: "Erratum: Small sample methods for cluster-robust variance estimation and hypothesis testing in fixed effects models"
+blinded: 0
+authors:
+  - name: James E. Pustejovsky
+    affiliation: University of Wisconsin - Madison
+    thanks: "Department of Educational Psychology, University of Wisconsin - Madison, 1025 West Johnson Street, Madison, WI 53706. Email: pustejovsky@wisc.edu"
+  - name: Elizabeth Tipton
+    affiliation: Northwestern University
+    thanks: "Department of Statistics, Northwestern University. Email: tipton@northwestern.edu"
+bibliography: bibliography.bib
+biblio-style: agsm
+keep_tex: yes
+output:
+  rticles::asa_article: 
+    citation_package: default
+    number_sections: false
+header-includes:
+- \usepackage{amsthm}
+- \newtheorem{thm}{Theorem}
+- \newtheorem{lem}{Lemma}
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage[natbibapa]{apacite}
+- \usepackage{caption}
+- \usepackage{multirow}
+- \usepackage{float}    % for fig.pos='H'
+- \usepackage{rotfloat} % for sidewaysfigure
+- \hypersetup{hidelinks}
+- \newcommand{\Prob}{\text{Pr}}
+- \newcommand{\E}{\text{E}}
+- \newcommand{\Cov}{\text{Cov}}
+- \newcommand{\corr}{\text{corr}}
+- \newcommand{\Var}{\text{Var}}
+- \newcommand{\iid}{\stackrel{\text{iid}}{\sim}}
+- \newcommand{\tr}{\text{tr}}
+- \newcommand{\bm}{\mathbf}
+- \newcommand{\bs}{\boldsymbol}
+---
+
+@pustejovsky2018small considered how to do cluster-robust variance estimation in fixed effects models estimated by weighted (or unweighted) least squares. Theorem 2 of the paper concerns a computational short cut for a certain cluster-robust variance estimator in models with cluster-specific fixed effects. The theorem is incorrect as stated. In this correction, we  review the CR2 variance estimator, describe the assertion of the theorem as originally stated, and explain the error. We then provide a revised version of the theorem.
+
+# A fixed effects model
+
+For data that can be grouped into $m$ clusters of observations, @pustejovsky2018small considered the model
+\begin{equation}
+\label{eq:regression}
+\bm{y}_i = \bm{R}_i \bs\beta + \bm{S}_i \bs\gamma + \bm{T}_i \bs\mu + \bs\epsilon_i,
+\end{equation}
+where $\bm{y}_i$ is an $n_i \times 1$ vector of responses for cluster $i$, $\bm{R}_i$ is an $n_i \times r$ matrix of focal predictors, $\bm{S}_i$ is an $n_i \times s$ matrix of additional covariates that vary across multiple clusters, and $\bm{T}_i$ is an $n_i \times t$ matrix encoding cluster-specific fixed effects, all for $i = 1,...,m$. The cluster-specific fixed effects satisfy $\bm{T}_h \bm{T}_i' = \bm{0}$ for $h \neq i$. Interest centers on inference for the coefficients on the focal predictors $\bs\beta$. 
+
+@pustejovsky2018small considered estimation of Model \@ref(eq:regression) by weighted least squares (WLS). Let $\bm{W}_1,...,\bm{W}_m$ be a set of symmetric weight matrices used for WLS estimation. The CR2 variance estimator involves specifying a working model for the structure of the errors. Consider a working model $\Var\left(\bs\epsilon_i | \bm{R}_i, \bm{S}_i, \bm{T}_i\right) = \sigma^2 \bs\Phi_i$ where $\bs\Phi_i$ is a symmetric $n_i \times n_i$ matrix that may be a function of a low-dimensional, estimable parameter. Under some circumstances, the weight matrices might be taken as $\bm{W}_i = \bs{\hat\Phi}_i^{-1}$, where $\bs{\hat\Phi}_i$ is an estimate of $\bs\Phi_i$. 
+
+# The CR2 variance estimator 
+
+@pustejovsky2018small provided a generalization of the bias-reduced linearization estimator introduced by @McCaffrey2001generalizations and @Bell2002bias that can be applied to Model \@ref(eq:regression), referred to as CR2. 
+In order to define the CR2 variance estimator, some further notation will be required, just as defined in @pustejovsky2018small. Let $N = \sum_{i=1}^m n_i$ be the total sample size. Let $\bm{U}_i = \left[ \bm{R}_i \ \bm{S}_i \right]$ be the set of predictors that vary across clusters and $\bm{X}_i = \left[ \bm{R}_i \ \bm{S}_i \ \bm{T}_i \right]$ be the full set of predictors. Let $\bm{R}$, $\bm{S}$, $\bm{T}$, $\bm{U}$, and $\bm{X}$ denote the stacked versions of the cluster-specific matrices (i.e., $\bm{R} = \left[\bm{R}_1' \ \bm{R}_2' \ \cdots \ \bm{R}_m'\right]'$, etc.). Let $\bm{W} = \bigoplus_{i=1}^m \bm{W}_i$ and $\bs\Phi = \bigoplus_{i=1}^m \bs\Phi_i$. For a generic matrix $\bm{Z}$, let $\bm{M}_{Z} = \left(\bm{Z}'\bm{W}\bm{Z}\right)^{-1}$ and $\bm{H}_{\bm{Z}} = \bm{Z} \bm{M}_{\bm{Z}}\bm{Z}'\bm{W}$. Let $\bm{C}_i$ be the $n_i \times N$ matrix that selects the rows of cluster $i$ from the full set of observations, such that $\bm{X}_i = \bm{C}_i \bm{X}$. Finally, let $\bm{D}_i$ be the upper-right Cholesky factorization of $\bm{\Phi}_i$.
+
+These operators provide a means to define absorbed versions of the predictors. Let $\bm{\ddot{S}} = \left(\bm{I} - \bm{H}_{\bm{T}}\right) \bm{S}$ be the covariates after absorbing the cluster-specific effects, let $\bm{\ddot{U}} = \left(\bm{I} - \bm{H}_{\bm{T}}\right) \bm{U}$ be an absorbed version of the focal predictors and the covariates, and let $\bm{\ddot{R}} = \left(\bm{I} - \bm{H}_{\bm{\ddot{S}}}\right)\left(\bm{I} - \bm{H}_{\bm{T}}\right) \bm{R}$ be the focal predictors after absorbing the covariates and the cluster-specific fixed effects. 
+
+With this notation established, the CR2 variance estimator has the form 
+\begin{equation}
+\bm{V}^{CR2} = \bm{M}_{\bm{\ddot{R}}} \left(\sum_{i=1}^m \bm{\ddot{R}}_i' \bm{W}_i \bm{A}_i \bm{e}_i \bm{e}_i' \bm{A}_i \bm{W}_i \bm{\ddot{R}}_i \right) \bm{M}_{\bm{\ddot{R}}},
+\end{equation}
+where $\bm{\ddot{R}}_i = \bm{C}_i \bm{\ddot{R}}$ is the cluster-specific matrix of absorbed focal predictors, $\bm{e}_i$ is the vector of weighted least squares residuals from cluster $i$, and $\bm{A}_1,...,\bm{A}_m$ are a set of adjustment matrices that correct the bias of the residual cross-products. 
+The adjustment matrices are calculated as follows. Define the matrices 
+\begin{equation}
+\label{eq:B-matrix}
+\bm{B}_i = \bm{D}_i \bm{C}_i \left(\bm{I} - \bm{H}_{\bm{X}}\right) \bs\Phi \left(\bm{I} - \bm{H}_{\bm{X}}\right)'\bm{C}_i' \bm{D}_i'
+\end{equation}
+for $i = 1,...,m$. The adjustment matrices are then calculated as
+\begin{equation}
+\label{eq:A-matrix}
+\bm{A}_i = \bm{D}_i' \bm{B}_i^{+1/2} \bm{D}_i,
+\end{equation}
+where $\bm{B}_i^{+1/2}$ is the symmetric square root of the Moore-Penrose inverse of $\bm{B}_i$. 
+Theorem 1 of @pustejovsky2018small shows that, if the working model $\bs\Phi$ is correctly specified and some conditions on the rank of $\bm{U}$ are satisfied, then the CR2 estimator is exactly unbiased for the sampling variance of the weighted least squares estimator of $\bs\beta$. Although it is defined based on a working model, the CR2 estimator remains close to unbiased and outperforms alternative sandwich estimators even when the working model is not correctly specified.
+
+# The original statement of Theorem 2
+
+The adjustment matrices given in \@ref(eq:A-matrix) can be expensive to compute directly because the $\bm{B}_i$ matrices involve computing a "residualized" version of the $N \times N$ matrix $\bs\Phi$ involving the full set of predictors $\bm{X}$---including the cluster-specific fixed effects $\bm{T}_1,...,\bm{T}_m$. Theorem 2 considered whether one can take a computational short cut by omitting the cluster-specific fixed effects from the calculation of the $\bm{B}_i$ matrices. Specifically, define the modified matrices
+\begin{equation}
+\label{eq:B-modified}
+\bm{\tilde{B}}_i = \bm{D}_i \bm{C}_i \left(\bm{I} - \bm{H}_{\bm{\ddot{U}}}\right) \bs\Phi \left(\bm{I} - \bm{H}_{\bm{\ddot{U}}}\right)'\bm{C}_i' \bm{D}_i'
+\end{equation}
+and 
+\begin{equation}
+\label{eq:A-modified}
+\bm{\tilde{A}}_i = \bm{D}_i' \bm{\tilde{B}}_i^{+1/2} \bm{D}_i.
+\end{equation}
+Theorem 2 claimed that if the weight matrices are inverse of the working model, such that $\bm{W}_i = \bs\Phi_i^{-1}$ for $i = 1,...,m$, then $\bm{\tilde{B}}_i^{+1/2} = \bm{B}_i^{+1/2}$ and hence $\bm{\tilde{A}}_i = \bm{A}_i$. The implication is that the cluster-specific fixed effects can be ignored when calculating the adjustment matrices. However, the claimed equivalence does not actually hold. The proof of Theorem 2 as given in @pustejovsky2018small relied on a Woodbury identity for generalized inverses that does not hold for $\bm{B}_i$ because the rank conditions are not satisfied.
+
+# A revised Theorem 2
+
+# References {-}
