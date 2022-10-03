@@ -42,8 +42,6 @@ $$
 $$
 where $\mathbf{y}_j = (y_{1j} \cdots y_{n_j j})'$ is the $n_j \times 1$ vector of outcomes for cluster $j$, $\mathbf{X}_j = (\mathbf{x}_{1j}' \cdots \mathbf{x}_{n_j j}')'$ is the $n_j \times p$ matrix of predictors for cluster $j$, and $\mathbf{e}_j$ is the $n_j \times 1$ vector of errors for cluster $j$, all for $j = 1,...,J$. 
 
-<!-- (Note that $j = 1,...,J$ is used to denote clusters instead of $g = 1,...,G$ and $e_j$ to denote cluster-specific error terms instead of $u_g$, unlike the clubSandwich notes. Let's keep notations consistent throughout this vignette. - H: With the $j$ notation, it is kind of difficult to denote distinct clusters as with clusters $g, h$. - James changed j' to k.) -->
-
 We will maintain the following assumptions regarding the errors in the regression:
 $$
 \begin{aligned}
