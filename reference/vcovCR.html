@@ -252,29 +252,29 @@ models. <em>Journal of Business and Economic Statistics, 36</em>(4), 672-683.
 <span class="r-in"><span><span class="co"># fit linear model</span></span></span>
 <span class="r-in"><span><span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y</span> <span class="op">~</span> <span class="va">X1</span> <span class="op">+</span> <span class="va">X2</span> <span class="op">+</span> <span class="va">X3</span>, data <span class="op">=</span> <span class="va">dat</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">lm_fit</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              (Intercept)           X1           X2           X3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.048548298  0.009558992 -0.004519784  0.000484485</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X1           0.009558992  0.053580567  0.002879118 -0.003504607</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X2          -0.004519784  0.002879118  0.065569753  0.012230730</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X3           0.000484485 -0.003504607  0.012230730  0.050268736</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               (Intercept)            X1            X2            X3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.0202031198 -0.0028049393 -0.0026570406  0.0001158073</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X1          -0.0028049393  0.0195176735  0.0008179868 -0.0020184816</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X2          -0.0026570406  0.0008179868  0.0159116866 -0.0022046299</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X3           0.0001158073 -0.0020184816 -0.0022046299  0.0180458146</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># cluster-robust variance estimator with CR2 small-sample correction</span></span></span>
 <span class="r-in"><span><span class="fu">vcovCR</span><span class="op">(</span><span class="va">lm_fit</span>, cluster <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">cluster</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             (Intercept)           X1          X2          X3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.22984674 -0.001126250 0.066527094 0.047719137</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X1          -0.00112625  0.039611847 0.019819200 0.004798738</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X2           0.06652709  0.019819200 0.051068498 0.004864024</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X3           0.04771914  0.004798738 0.004864024 0.025522583</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              (Intercept)            X1            X2            X3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.102523467 -0.0087090585 -0.0040240942 -0.0012792020</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X1          -0.008709059  0.0186443847  0.0005232948 -0.0009449821</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X2          -0.004024094  0.0005232948  0.0102649658 -0.0046245330</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X3          -0.001279202 -0.0009449821 -0.0046245330  0.0123260314</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># compare small-sample adjustments</span></span></span>
 <span class="r-in"><span><span class="va">CR_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"CR"</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0"</span>,<span class="st">"1"</span>,<span class="st">"1S"</span>,<span class="st">"2"</span>,<span class="st">"3"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">CR_types</span>, <span class="kw">function</span><span class="op">(</span><span class="va">type</span><span class="op">)</span> </span></span>
 <span class="r-in"><span>       <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu">vcovCR</span><span class="op">(</span><span class="va">lm_fit</span>, cluster <span class="op">=</span> <span class="va">dat</span><span class="op">$</span><span class="va">cluster</span>, type <span class="op">=</span> <span class="va">type</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   CR0       CR1      CR1S       CR2       CR3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 0.4383951 0.4686641 0.4819937 0.4794233 0.5256646</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X1          0.1796235 0.1920256 0.1974871 0.1990273 0.2220132</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X2          0.1942153 0.2076249 0.2135301 0.2259834 0.2629115</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> X3          0.1385678 0.1481352 0.1523484 0.1597579 0.1854959</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    CR0        CR1       CR1S       CR2       CR3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) 0.29269476 0.31290386 0.31953861 0.3201929 0.3514999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X1          0.11941765 0.12766284 0.13036977 0.1365444 0.1574306</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X2          0.08957534 0.09576006 0.09779054 0.1013162 0.1157269</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X3          0.10130325 0.10829773 0.11059405 0.1110227 0.1229406</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
