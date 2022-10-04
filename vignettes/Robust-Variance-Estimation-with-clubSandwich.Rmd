@@ -86,6 +86,7 @@ Robust variance estimators provide an alternative strategy that does not rely on
 <!-- H: We would need to explain more about the above sentence or remove it from this section. -->
 
 ### CR0
+
 When we use the regression residuals as rough estimates of $\bs\Omega$, that becomes the basic cluster-robust variance estimator (CR0): 
 
 <!-- H: Is this somehow related to the idea from White (1980) as Cameron & Miller (2015) explains on p. 4? -->
@@ -113,13 +114,11 @@ for some constant $f$ and some estimating matrices $\bmat{E}_1,...,\bm{E}_J$. Wi
 $$
 \begin{aligned}
 \text{CR1}: f_1 &= \frac{J}{J - 1}, \\
-\text{CR1S}: f_{1S} &= \frac{J}{J - 1}, \\
+\text{CR1S}: f_{1S} &= \frac{J (N - 1)}{(J - 1)(N - p)} , \\
 \text{CR1p}: f_{1p} &= \frac{J}{J - p}, 
 \end{aligned}
 $$
 all with $\bmat{E}^1_j = \bmat{W}_j \bmat{X}_j$.
-
-<!-- H: Is there a difference between CR1 and CR1S then? -->
 
 - CR2 uses $f_2 = 1$ and
 $$
