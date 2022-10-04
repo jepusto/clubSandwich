@@ -1,5 +1,5 @@
 ---
-title: "Erratum: Small sample methods for cluster-robust variance estimation and hypothesis testing in fixed effects models"
+title: "Corrigendum: Small sample methods for cluster-robust variance estimation and hypothesis testing in fixed effects models"
 blinded: 0
 authors:
   - name: James E. Pustejovsky
@@ -88,7 +88,7 @@ and
 \label{eq:A-modified}
 \bm{\tilde{A}}_i = \bm{D}_i' \bm{\tilde{B}}_i^{+1/2} \bm{D}_i.
 \end{equation}
-Theorem 2 claimed that if the weight matrices are inverse of the working model, such that $\bm{W}_i = \bs\Phi_i^{-1}$ for $i = 1,...,m$, then $\bm{\tilde{B}}_i^{+1/2} = \bm{B}_i^{+1/2}$ and hence $\bm{\tilde{A}}_i = \bm{A}_i$. The implication is that the cluster-specific fixed effects can be ignored when calculating the adjustment matrices. However, the claimed equivalence does not actually hold. The proof of Theorem 2 as given in @pustejovsky2018small relied on a Woodbury identity for generalized inverses that does not hold for $\bm{B}_i$ because the rank conditions are not satisfied.
+Theorem 2 claimed that if the weight matrices are inverse of the working model, such that $\bm{W}_i = \bs\Phi_i^{-1}$ for $i = 1,...,m$, then $\bm{\tilde{B}}_i^{+1/2} = \bm{B}_i^{+1/2}$ and hence $\bm{\tilde{A}}_i = \bm{A}_i$. The implication is that the cluster-specific fixed effects can be ignored when calculating the adjustment matrices. However, the claimed equivalence does not actually hold. The proof of Theorem 2 as given in @pustejovsky2018small relied on a Woodbury identity for generalized inverses that does not hold for $\bm{B}_i$ because necessary rank conditions are not satisfied.
 
 # A revised Theorem 2
 
