@@ -15,10 +15,10 @@
 
 % DON'T change margins - should be 1 inch all around.
 \addtolength{\oddsidemargin}{-.5in}%
-\addtolength{\evensidemargin}{-1in}%
+\addtolength{\evensidemargin}{-.5in}%
 \addtolength{\textwidth}{1in}%
-\addtolength{\textheight}{1.7in}%
-\addtolength{\topmargin}{-1in}%
+\addtolength{\textheight}{1.3in}%
+\addtolength{\topmargin}{-.8in}%
 
 %% load any required packages here
 
@@ -91,8 +91,8 @@
 
 \if0\blind
 {
-  \title{\bf Erratum: Small sample methods for cluster-robust variance
-estimation and hypothesis testing in fixed effects models}
+  \title{\bf Corrigendum: Small sample methods for cluster-robust
+variance estimation and hypothesis testing in fixed effects models}
 
   \author{
         James E. Pustejovsky \thanks{Department of Educational
@@ -114,21 +114,23 @@ Northwestern University. Email:
   \bigskip
   \bigskip
   \begin{center}
-    {\LARGE\bf Erratum: Small sample methods for cluster-robust variance
-estimation and hypothesis testing in fixed effects models}
+    {\LARGE\bf Corrigendum: Small sample methods for cluster-robust
+variance estimation and hypothesis testing in fixed effects models}
   \end{center}
   \medskip
 } \fi
 
 \bigskip
+\begin{abstract}
+
+\end{abstract}
 
 \noindent%
- 
-
+{\it Keywords:} 
 \vfill
 
 \newpage
-\spacingset{1.9} % DON'T change the spacing!
+\spacingset{1.45} % DON'T change the spacing!
 
 Pustejovsky and Tipton (2018) considered how to do cluster-robust
 variance estimation in fixed effects models estimated by weighted (or
@@ -157,17 +159,20 @@ effects satisfy \(\mathbf{T}_h \mathbf{T}_i' = \mathbf{0}\) for
 focal predictors \(\boldsymbol\beta\).
 
 Pustejovsky and Tipton (2018) considered estimation of Model
-@ref(eq:regression) by weighted least squares (WLS). Let
+\ref{eq:regression} by weighted least squares (WLS). Let
 \(\mathbf{W}_1,...,\mathbf{W}_m\) be a set of symmetric weight matrices
 used for WLS estimation. The CR2 variance estimator involves specifying
 a working model for the structure of the errors. Consider a working
 model
 \(\text{Var}\left(\boldsymbol\epsilon_i | \mathbf{R}_i, \mathbf{S}_i, \mathbf{T}_i\right) = \sigma^2 \boldsymbol\Phi_i\)
 where \(\boldsymbol\Phi_i\) is a symmetric \(n_i \times n_i\) matrix
-that may be a function of a low-dimensional, estimable parameter. Under
-some circumstances, the weight matrices might be taken as
+that may be a function of a low-dimensional, estimable parameter. In
+some applications, the weight matrices might be taken as
 \(\mathbf{W}_i = \boldsymbol{\hat\Phi}_i^{-1}\), where
-\(\boldsymbol{\hat\Phi}_i\) is an estimate of \(\boldsymbol\Phi_i\).
+\(\boldsymbol{\hat\Phi}_i\) is an estimate of \(\boldsymbol\Phi_i\). In
+other applications, the weight matrices may be something else, such as
+diagonal matrices consisting of sampling weights or identity matrices
+(i.e., ordinary least squares).
 
 \hypertarget{the-cr2-variance-estimator}{%
 \section{The CR2 variance estimator}\label{the-cr2-variance-estimator}}
@@ -175,10 +180,9 @@ some circumstances, the weight matrices might be taken as
 Pustejovsky and Tipton (2018) provided a generalization of the
 bias-reduced linearization estimator introduced by McCaffrey, Bell, and
 Botts (2001) and Bell and McCaffrey (2002) that can be applied to Model
-@ref(eq:regression), referred to as CR2. In order to define the CR2
-variance estimator, some further notation will be required, just as
-defined in Pustejovsky and Tipton (2018). Let \(N = \sum_{i=1}^m n_i\)
-be the total sample size. Let
+\ref{eq:regression}, referred to as the CR2 variance estimator. In order
+to define CR2, we follow the same notation as Pustejovsky and Tipton
+(2018). Let \(N = \sum_{i=1}^m n_i\) be the total sample size. Let
 \(\mathbf{U}_i = \left[ \mathbf{R}_i \ \mathbf{S}_i \right]\) be the set
 of predictors that vary across clusters and
 \(\mathbf{X}_i = \left[ \mathbf{R}_i \ \mathbf{S}_i \ \mathbf{T}_i \right]\)
@@ -231,8 +235,8 @@ Pustejovsky and Tipton (2018) shows that, if the working model
 \(\boldsymbol\Phi\) is correctly specified and some conditions on the
 rank of \(\mathbf{U}\) are satisfied, then the CR2 estimator is exactly
 unbiased for the sampling variance of the weighted least squares
-estimator of \(\boldsymbol\beta\). Although it is defined based on a
-working model, the CR2 estimator remains close to unbiased and
+estimator of \(\boldsymbol\beta\). Moreover, although the CR2 estimator
+is defined based on a working model, it remains close to unbiased and
 outperforms alternative sandwich estimators even when the working model
 is not correctly specified.
 
@@ -240,7 +244,7 @@ is not correctly specified.
 \section{The original statement of Theorem
 2}\label{the-original-statement-of-theorem-2}}
 
-The adjustment matrices given in @ref(eq:A-matrix) can be expensive to
+The adjustment matrices given in (\ref{eq:A-matrix}) can be expensive to
 compute directly because the \(\mathbf{B}_i\) matrices involve computing
 a ``residualized'' version of the \(N \times N\) matrix
 \(\boldsymbol\Phi\) involving the full set of predictors
@@ -261,12 +265,25 @@ of the working model, such that
 \(\mathbf{\tilde{A}}_i = \mathbf{A}_i\). The implication is that the
 cluster-specific fixed effects can be ignored when calculating the
 adjustment matrices. However, the claimed equivalence does not actually
-hold. The proof of Theorem 2 as given in Pustejovsky and Tipton (2018)
-relied on a Woodbury identity for generalized inverses that does not
-hold for \(\mathbf{B}_i\) because the rank conditions are not satisfied.
+hold. The proof of Theorem 2 as given in the supplementary materials of
+Pustejovsky and Tipton (2018) relied on a Woodbury identity for
+generalized inverses that does not hold for \(\mathbf{B}_i\) because
+necessary rank conditions are not satisfied.
 
 \hypertarget{a-revised-theorem-2}{%
 \section{A revised Theorem 2}\label{a-revised-theorem-2}}
+
+From the fact that
+\(\mathbf{\ddot{U}}_i'\mathbf{W}_i\mathbf{T}_i = \mathbf{0}\) for
+\(i = 1,...,m\), it follows that \begin{align*}
+\mathbf{B}_i &= \mathbf{D}_i \mathbf{C}_i \left(\mathbf{I} - \mathbf{H_{\ddot{U}}}\right) \left(\mathbf{I} - \mathbf{H_T}\right) \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H_T}\right)' \left(\mathbf{I} - \mathbf{H_{\ddot{U}}}\right) \mathbf{C}_i' \mathbf{D}_i'\\
+&= \mathbf{D}_i \mathbf{C}_i \left(\mathbf{I} - \mathbf{H_{\ddot{U}}} - \mathbf{H_T}\right) \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H_{\ddot{U}}} - \mathbf{H_T}\right) \mathbf{C}_i' \mathbf{D}_i' \\
+&= \mathbf{D}_i \left(\boldsymbol\Phi_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i' - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right)\mathbf{D}_i'
+\end{align*} and \begin{equation}
+\label{eq:B_i_inverse}
+\mathbf{B}_i^+ = \left(\mathbf{D}_i'\right)^{-1} \left(\boldsymbol\Phi_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i' - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right)^+ \mathbf{D}_i^{-1}.
+\end{equation} Let
+\(\boldsymbol\Psi_i = \left(\boldsymbol\Phi_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\right)^+\).
 
 \hypertarget{references}{%
 \section*{References}\label{references}}

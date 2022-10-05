@@ -85,28 +85,10 @@ Btilde_ginv <- Map(matrix_power, Btilde_list, p = -1)
 
 A_list <- Map(\(b, d) t(d) %*% matrix_power(b, p = -1/2) %*% d, b = B_list, d = D_list)
 Atilde_list <- Map(\(b, d) t(d) %*% matrix_power(b, p = -1/2) %*% d, b = Btilde_list, d = D_list)
+all.equal(A_list, Atilde_list)
+
 UtWA <- Map(\(u,w,a) t(u) %*% w %*% a, u = U_dot, w = W_list, a = A_list)
 UtWAtilde <- Map(\(u,w,a) t(u) %*% w %*% a, u = U_dot, w = W_list, a = Atilde_list)
 UtWA[[4]]
 UtWAtilde[[4]]
-
-Psi_list <- Map(function(phi, u) matrix_power(phi - u %*% MUd %*% t(u), -1), 
-                phi = Phi_list, u = U_dot)
-Psi_T <- Map(function(psi, tmat) psi %*% tmat, psi = Psi_list, tmat = T_list)
-W_T <- Map(function(w, tmat) w %*% tmat, w = W_list, tmat = T_list)
-all.equal(Psi_T, W_T)
-
-MTspace_list <- lapply(TtWT_list, \(twt) MT - MT %*% twt %*% MT)
-MTspace_inv <- lapply(MTspace_list, matrix_power, p = -1)
-MTspace_check <- Map(function(a, ai) a %*% ai %*% a, a = MTspace_list, ai = MTspace_inv)
-all.equal(MTspace_list, MTspace_check)
-
-Tspace_list <- Map(function(w, tmat, mtspace) w %*% tmat %*% MT %*% mtspace %*% MT %*% t(tmat) %*% w,
-                   w = W_list, tmat = T_full, mtspace = MTspace_list)
-  
-A_dummy <- attr(vcovCR(lme_dummy, type = "CR2"), "adjustments")
-all.equal(A_dummy[[1]], A_list[[1]], check.attributes = FALSE)
-all.equal(A_dummy[[2]], A_list[[2]], check.attributes = FALSE)
-all.equal(A_dummy[[3]], A_list[[3]], check.attributes = FALSE)
-all.equal(A_dummy[[4]], A_list[[4]], check.attributes = FALSE)
-all.equal(A_dummy[[5]], A_list[[5]], check.attributes = FALSE)
+all.equal(UtWA, UtWAtilde)
