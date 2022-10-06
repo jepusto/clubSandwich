@@ -103,9 +103,9 @@ The implication of the revised theorem is effectively identical to the original 
 The proof of Theorem 2 relies on a Woodbury-type identity for Moore-Penrose inverses, as given in @rao1971generalized [Exercise 22, p. 70]; see also @cline1979rank [Eq. 1.4]. We restate it here for reference. 
 \begin{lem}
 \label{lemma}
-Let $\bm{G}$ be a $g \times g$ matrix with Moore-Penrose inverse $\bm{G}^+$. Let $\bm{J}$ and $\bm{M}$ be $g \times k$ matrices, and let $\bm{K}$ be a $k \times k$ matrix of full rank. If $\bm{G} \bm{G}^+ \bm{J} = \bm{J}$, $\bm{M}' \bm{G}^+ \bm{G} = \bm{M}'$ and $\bm{R}^{-1} - \bm{M}' \bm{K} \bm{J}$ is non-singular, then
+Let $\bm{G}$ be a $g \times g$ matrix with Moore-Penrose inverse $\bm{G}^+$. Let $\bm{J}$ and $\bm{M}$ be $g \times k$ matrices, and let $\bm{K}$ be a $k \times k$ matrix of full rank. If $\bm{G} \bm{G}^+ \bm{J} = \bm{J}$, $\bm{M}' \bm{G}^+ \bm{G} = \bm{M}'$ and $\bm{K}^{-1} - \bm{M}' \bm{G}^+ \bm{J}$ is non-singular, then
 \begin{equation}
-\left(\bm{G} - \bm{J} \bm{K} \bm{M}'\right)^+ = \bm{G}^+ + \bm{G}^+ \bm{J}\left( \bm{R}^{-1} - \bm{M}' \bm{K} \bm{J}\right)\bm{M}'\bm{G}^+.
+\left(\bm{G} - \bm{J} \bm{K} \bm{M}'\right)^+ = \bm{G}^+ + \bm{G}^+ \bm{J}\left( \bm{K}^{-1} - \bm{M}' \bm{G}^+ \bm{J}\right)^{-1} \bm{M}'\bm{G}^+.
 \end{equation}
 \end{lem}
 
@@ -120,9 +120,9 @@ From the fact that $\bm{\ddot{U}}_i'\bm{W}_i\bm{T}_i = \bm{0}$ for $i = 1,...,m$
 and similarly,
 \begin{equation}
 \label{eq:Btilde_i}
-\tilde{\bm{B}}_i = \bm{D}_i \left(\bm{I}_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\bm{W}_i\right) \bs\Psi_i \bm{D}_i'.
+\tilde{\bm{B}}_i = \bm{D}_i \left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\right) \bm{D}_i' = \bm{D}_i \left(\bm{I}_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\bm{W}_i\right) \bs\Phi_i \bm{D}_i'.
 \end{equation}
-The conditions of Lemma \ref{lemma} hold for the inner term in (\ref{eq:Btilde_i}) because we have assumed that $\bm{L}_i = \bm{M_{\ddot{U}}}^{-1} - \bm{\ddot{U}}_i' \bm{W}_i \bm{\ddot{U}}_i$ is non-singular. Thus, 
+The conditions of Lemma \ref{lemma} hold for the inner term in (\ref{eq:Btilde_i}) because we have assumed that $\bm{L}_i = \bm{M}_\bm{\ddot{U}}^{-1} - \bm{\ddot{U}}_i' \bm{W}_i \bm{\ddot{U}}_i$ is non-singular. Thus, 
 \begin{align}
 \tilde{\bm{B}}_i^+ &= \left(\bm{D}_i'\right)^{-1} \bs\Phi_i \left(\bm{I}_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\bm{W}_i\right)^+ \bm{D}_i^{-1} \nonumber \\
 &= \left(\bm{D}_i'\right)^{-1} \bm{W}_i \left(\bm{I}_i + \bm{\ddot{U}}_i \bm{L}_i^{-1} \bm{\ddot{U}}_i' \bm{W}_i\right) \bm{D}_i^{-1}.

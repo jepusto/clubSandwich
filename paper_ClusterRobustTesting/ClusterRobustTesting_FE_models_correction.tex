@@ -293,9 +293,9 @@ for reference.
 
 \begin{lem}
 \label{lemma}
-Let $\mathbf{G}$ be a $g \times g$ matrix with Moore-Penrose inverse $\mathbf{G}^+$. Let $\mathbf{J}$ and $\mathbf{M}$ be $g \times k$ matrices, and let $\mathbf{K}$ be a $k \times k$ matrix of full rank. If $\mathbf{G} \mathbf{G}^+ \mathbf{J} = \mathbf{J}$, $\mathbf{M}' \mathbf{G}^+ \mathbf{G} = \mathbf{M}'$ and $\mathbf{R}^{-1} - \mathbf{M}' \mathbf{K} \mathbf{J}$ is non-singular, then
+Let $\mathbf{G}$ be a $g \times g$ matrix with Moore-Penrose inverse $\mathbf{G}^+$. Let $\mathbf{J}$ and $\mathbf{M}$ be $g \times k$ matrices, and let $\mathbf{K}$ be a $k \times k$ matrix of full rank. If $\mathbf{G} \mathbf{G}^+ \mathbf{J} = \mathbf{J}$, $\mathbf{M}' \mathbf{G}^+ \mathbf{G} = \mathbf{M}'$ and $\mathbf{K}^{-1} - \mathbf{M}' \mathbf{G}^+ \mathbf{J}$ is non-singular, then
 \begin{equation}
-\left(\mathbf{G} - \mathbf{J} \mathbf{K} \mathbf{M}'\right)^+ = \mathbf{G}^+ + \mathbf{G}^+ \mathbf{J}\left( \mathbf{R}^{-1} - \mathbf{M}' \mathbf{K} \mathbf{J}\right)\mathbf{M}'\mathbf{G}^+.
+\left(\mathbf{G} - \mathbf{J} \mathbf{K} \mathbf{M}'\right)^+ = \mathbf{G}^+ + \mathbf{G}^+ \mathbf{J}\left( \mathbf{K}^{-1} - \mathbf{M}' \mathbf{G}^+ \mathbf{J}\right)^{-1} \mathbf{M}'\mathbf{G}^+.
 \end{equation}
 \end{lem}
 
@@ -309,10 +309,10 @@ From the fact that
 &= \mathbf{D}_i \left(\mathbf{I}_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\mathbf{W}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\mathbf{W}_i\right) \boldsymbol\Phi_i \mathbf{D}_i'
 \end{align} and similarly, \begin{equation}
 \label{eq:Btilde_i}
-\tilde{\mathbf{B}}_i = \mathbf{D}_i \left(\mathbf{I}_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\mathbf{W}_i\right) \boldsymbol\Psi_i \mathbf{D}_i'.
+\tilde{\mathbf{B}}_i = \mathbf{D}_i \left(\boldsymbol\Phi_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\right) \mathbf{D}_i' = \mathbf{D}_i \left(\mathbf{I}_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\mathbf{W}_i\right) \boldsymbol\Phi_i \mathbf{D}_i'.
 \end{equation} The conditions of Lemma \ref{lemma} hold for the inner
 term in (\ref{eq:Btilde_i}) because we have assumed that
-\(\mathbf{L}_i = \mathbf{M_{\ddot{U}}}^{-1} - \mathbf{\ddot{U}}_i' \mathbf{W}_i \mathbf{\ddot{U}}_i\)
+\(\mathbf{L}_i = \mathbf{M}_\mathbf{\ddot{U}}^{-1} - \mathbf{\ddot{U}}_i' \mathbf{W}_i \mathbf{\ddot{U}}_i\)
 is non-singular. Thus, \begin{align}
 \tilde{\mathbf{B}}_i^+ &= \left(\mathbf{D}_i'\right)^{-1} \boldsymbol\Phi_i \left(\mathbf{I}_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\mathbf{W}_i\right)^+ \mathbf{D}_i^{-1} \nonumber \\
 &= \left(\mathbf{D}_i'\right)^{-1} \mathbf{W}_i \left(\mathbf{I}_i + \mathbf{\ddot{U}}_i \mathbf{L}_i^{-1} \mathbf{\ddot{U}}_i' \mathbf{W}_i\right) \mathbf{D}_i^{-1}.
