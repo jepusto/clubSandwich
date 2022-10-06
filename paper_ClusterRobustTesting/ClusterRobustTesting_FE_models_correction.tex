@@ -60,7 +60,7 @@
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 \usepackage{amsthm}
-\newtheorem{thm}{Theorem}
+\newtheorem*{thm}{Theorem}
 \newtheorem{lem}{Lemma}
 \usepackage{booktabs}
 \usepackage{longtable}
@@ -273,17 +273,72 @@ necessary rank conditions are not satisfied.
 \hypertarget{a-revised-theorem-2}{%
 \section{A revised Theorem 2}\label{a-revised-theorem-2}}
 
+\begin{thm}
+\label{thm:absorb}
+Let $\mathbf{L}_i = \left(\mathbf{\ddot{U}}'\mathbf{W}\mathbf{\ddot{U}} - \mathbf{\ddot{U}}_i'\mathbf{W}_i\mathbf{\ddot{U}}_i\right)$ and assume that $\mathbf{L}_1,...,\mathbf{L}_m$ have full rank $r + s$. If $\mathbf{W} = \boldsymbol\Phi^{-1}$ and $\mathbf{T}_i \mathbf{T}_k' = \mathbf{0}$ for $i \neq k$, then $\mathbf{A}_i\mathbf{W}_i \mathbf{\ddot{R}}_i = \mathbf{\tilde{A}}_i \mathbf{W}_i \mathbf{\ddot{R}}_i$, where $\mathbf{A}_i$ and $\tilde{\mathbf{A}}_i$ are as defined in (\ref{eq:A-matrix}) and (\ref{eq:A-modified}), respectively.
+\end{thm}
+
+The implication of the revised theorem is effectively identical to the
+original statement: using the modified adjustment matrices
+\(\tilde{\mathbf{A}}_i\) to calculate the CR2 estimator yields the same
+result as using the full adjustment matrices \(\mathbf{A}_i\).
+
+\hypertarget{proof}{%
+\subsection{Proof}\label{proof}}
+
+The proof of Theorem 2 relies on a Woodbury-type identity for
+Moore-Penrose inverses, as given in Rao and Mitra (1971, Exercise 22,
+p.~70); see also Cline and Funderlic (1979, Eq. 1.4). We restate it here
+for reference.
+
+\begin{lem}
+\label{lemma}
+Let $\mathbf{G}$ be a $g \times g$ matrix with Moore-Penrose inverse $\mathbf{G}^+$. Let $\mathbf{J}$ and $\mathbf{M}$ be $g \times k$ matrices, and let $\mathbf{K}$ be a $k \times k$ matrix of full rank. If $\mathbf{G} \mathbf{G}^+ \mathbf{J} = \mathbf{J}$, $\mathbf{M}' \mathbf{G}^+ \mathbf{G} = \mathbf{M}'$ and $\mathbf{R}^{-1} - \mathbf{M}' \mathbf{K} \mathbf{J}$ is non-singular, then
+\begin{equation}
+\left(\mathbf{G} - \mathbf{J} \mathbf{K} \mathbf{M}'\right)^+ = \mathbf{G}^+ + \mathbf{G}^+ \mathbf{J}\left( \mathbf{R}^{-1} - \mathbf{M}' \mathbf{K} \mathbf{J}\right)\mathbf{M}'\mathbf{G}^+.
+\end{equation}
+\end{lem}
+
 From the fact that
 \(\mathbf{\ddot{U}}_i'\mathbf{W}_i\mathbf{T}_i = \mathbf{0}\) for
-\(i = 1,...,m\), it follows that \begin{align*}
-\mathbf{B}_i &= \mathbf{D}_i \mathbf{C}_i \left(\mathbf{I} - \mathbf{H_{\ddot{U}}}\right) \left(\mathbf{I} - \mathbf{H_T}\right) \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H_T}\right)' \left(\mathbf{I} - \mathbf{H_{\ddot{U}}}\right) \mathbf{C}_i' \mathbf{D}_i'\\
-&= \mathbf{D}_i \mathbf{C}_i \left(\mathbf{I} - \mathbf{H_{\ddot{U}}} - \mathbf{H_T}\right) \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H_{\ddot{U}}} - \mathbf{H_T}\right) \mathbf{C}_i' \mathbf{D}_i' \\
-&= \mathbf{D}_i \left(\boldsymbol\Phi_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i' - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right)\mathbf{D}_i'
-\end{align*} and \begin{equation}
-\label{eq:B_i_inverse}
-\mathbf{B}_i^+ = \left(\mathbf{D}_i'\right)^{-1} \left(\boldsymbol\Phi_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i' - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right)^+ \mathbf{D}_i^{-1}.
-\end{equation} Let
-\(\boldsymbol\Psi_i = \left(\boldsymbol\Phi_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\right)^+\).
+\(i = 1,...,m\), it follows that \begin{align}
+\mathbf{B}_i &= \mathbf{D}_i \mathbf{C}_i \left(\mathbf{I} - \mathbf{H_{\ddot{U}}}\right) \left(\mathbf{I} - \mathbf{H_T}\right) \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H_T}\right)' \left(\mathbf{I} - \mathbf{H_{\ddot{U}}}\right)' \mathbf{C}_i' \mathbf{D}_i' \nonumber \\ 
+&= \mathbf{D}_i \mathbf{C}_i \left(\mathbf{I} - \mathbf{H_{\ddot{U}}} - \mathbf{H_T}\right) \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H_{\ddot{U}}} - \mathbf{H_T}\right) \mathbf{C}_i' \mathbf{D}_i' \nonumber\\ 
+&= \mathbf{D}_i \left(\boldsymbol\Phi_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i' - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right)\mathbf{D}_i' \nonumber\\ 
+\label{eq:B_i}
+&= \mathbf{D}_i \left(\mathbf{I}_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\mathbf{W}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\mathbf{W}_i\right) \boldsymbol\Phi_i \mathbf{D}_i'
+\end{align} and similarly, \begin{equation}
+\label{eq:Btilde_i}
+\tilde{\mathbf{B}}_i = \mathbf{D}_i \left(\mathbf{I}_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\mathbf{W}_i\right) \boldsymbol\Psi_i \mathbf{D}_i'.
+\end{equation} The conditions of Lemma \ref{lemma} hold for the inner
+term in (\ref{eq:Btilde_i}) because we have assumed that
+\(\mathbf{L}_i = \mathbf{M_{\ddot{U}}}^{-1} - \mathbf{\ddot{U}}_i' \mathbf{W}_i \mathbf{\ddot{U}}_i\)
+is non-singular. Thus, \begin{align}
+\tilde{\mathbf{B}}_i^+ &= \left(\mathbf{D}_i'\right)^{-1} \boldsymbol\Phi_i \left(\mathbf{I}_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\mathbf{W}_i\right)^+ \mathbf{D}_i^{-1} \nonumber \\
+&= \left(\mathbf{D}_i'\right)^{-1} \mathbf{W}_i \left(\mathbf{I}_i + \mathbf{\ddot{U}}_i \mathbf{L}_i^{-1} \mathbf{\ddot{U}}_i' \mathbf{W}_i\right) \mathbf{D}_i^{-1}.
+\end{align} Next, let
+\(\mathbf{Z}_i = \mathbf{I}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\mathbf{W}_i\).
+Because \(\mathbf{T}_i\) consists of cluster-specific predictors,
+\(\mathbf{T}_i \mathbf{M_T} \mathbf{T}_i' \mathbf{W}_i = \mathbf{T}_i \left(\mathbf{T}_i' \mathbf{W}_i\mathbf{T}_i\right)^{-1} \mathbf{T}_i' \mathbf{W}_i\).
+It follows that \(\mathbf{Z}_i\) is idempotent, with
+\(\mathbf{Z}_i^+ = \mathbf{Z}_i\). Further,
+\(\mathbf{Z}_i \mathbf{Z}_i^+ \mathbf{\ddot{U}}_i = \mathbf{Z}_i \mathbf{\ddot{U}}_i = \mathbf{\ddot{U}}_i\)
+and
+\(\mathbf{\ddot{U}}_i' \mathbf{W}_i \mathbf{Z}_i^+ \mathbf{Z}_i = \mathbf{\ddot{U}}_i' \mathbf{W}_i \mathbf{Z}_i = \mathbf{\ddot{U}}_i' \mathbf{W}_i\).
+As previously noted, \(\mathbf{L}_i\) is non-singular, and so the
+conditions of Lemma \ref{lemma} are satisfied for the matrix difference
+\((\mathbf{Z}_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\mathbf{W}_i)\).
+Thus \begin{align*}
+(\mathbf{Z}_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\mathbf{W}_i)^+ &= \mathbf{Z}_i + \mathbf{Z}_i \mathbf{\ddot{U}}_i \mathbf{L}_i^{-1} \mathbf{\ddot{U}}_i' \mathbf{W}_i \mathbf{Z}_i \\
+&= \mathbf{I}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\mathbf{W}_i + \mathbf{\ddot{U}}_i \mathbf{L}_i^{-1} \mathbf{\ddot{U}}_i' \mathbf{W}_i.
+\end{align*} Substituting into (\ref{eq:B_i}), we have \begin{align}
+\mathbf{B}_i^+ &= \left(\mathbf{D}_i'\right)^{-1} \mathbf{W}_i \left(\mathbf{Z}_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\mathbf{W}_i \right)^+ \mathbf{D}_i^{-1} \nonumber \\
+&= \left(\mathbf{D}_i'\right)^{-1} \mathbf{W}_i \left(\mathbf{I}_i + \mathbf{\ddot{U}}_i \mathbf{L}_i^{-1} \mathbf{\ddot{U}}_i' \mathbf{W}_i  - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\mathbf{W}_i\right) \mathbf{D}_i^{-1} \nonumber \\
+&= \tilde{\mathbf{B}}_i^+ - \left(\mathbf{D}_i'\right)^{-1} \mathbf{W}_i \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\mathbf{W}_i \mathbf{D}_i^{-1}.
+\end{align} Need to show that \[
+\mathbf{B}_i^{+1/2} = \tilde{\mathbf{B}}_i^{+1/2} - \left(\mathbf{D}_i'\right)^{-1} \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\mathbf{D}_i^{-1}
+\] or something similar, so that
+\(\mathbf{A}_i = \tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\).
 
 \hypertarget{references}{%
 \section*{References}\label{references}}
@@ -295,6 +350,12 @@ From the fact that
 Bell, Robert M, and Daniel F McCaffrey. 2002. {``{Bias reduction in
 standard errors for linear regression with multi-stage samples}.''}
 \emph{Survey Methodology} 28 (2): 169--81.
+
+\leavevmode\vadjust pre{\hypertarget{ref-cline1979rank}{}}%
+Cline, R. E., and R. E. Funderlic. 1979. {``The Rank of a Difference of
+Matrices and Associated Generalized Inverses.''} \emph{Linear Algebra
+and Its Applications} 24 (April): 185--215.
+\url{https://doi.org/10.1016/0024-3795(79)90158-7}.
 
 \leavevmode\vadjust pre{\hypertarget{ref-McCaffrey2001generalizations}{}}%
 McCaffrey, Daniel F, Robert M Bell, and Carsten H Botts. 2001.
@@ -308,6 +369,11 @@ Methods for Cluster-Robust Variance Estimation and Hypothesis Testing in
 Fixed Effects Models.''} \emph{Journal of Business \& Economic
 Statistics} 36 (4): 672--83.
 \url{https://doi.org/10.1080/07350015.2016.1247004}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-rao1971generalized}{}}%
+Rao, C. Radhakrishna, and Sujit Kumar Mitra. 1971. \emph{{Generalized
+Inverse of Matrices and its Applications}}. New York, NY: John Wiley \&
+Sons.
 
 \end{CSLReferences}
 

@@ -17,7 +17,7 @@ output:
     number_sections: false
 header-includes:
 - \usepackage{amsthm}
-- \newtheorem{thm}{Theorem}
+- \newtheorem*{thm}{Theorem}
 - \newtheorem{lem}{Lemma}
 - \usepackage{booktabs}
 - \usepackage{longtable}
@@ -92,18 +92,56 @@ Theorem 2 claimed that if the weight matrices are inverse of the working model, 
 
 # A revised Theorem 2
 
-From the fact that $\bm{\ddot{U}}_i'\bm{W}_i\bm{T}_i = \bm{0}$ for $i = 1,...,m$, it follows that 
-\begin{align*}
-\bm{B}_i &= \bm{D}_i \bm{C}_i \left(\bm{I} - \bm{H_{\ddot{U}}}\right) \left(\bm{I} - \bm{H_T}\right) \bs\Phi \left(\bm{I} - \bm{H_T}\right)' \left(\bm{I} - \bm{H_{\ddot{U}}}\right) \bm{C}_i' \bm{D}_i'\\
-&= \bm{D}_i \bm{C}_i \left(\bm{I} - \bm{H_{\ddot{U}}} - \bm{H_T}\right) \bs\Phi \left(\bm{I} - \bm{H_{\ddot{U}}} - \bm{H_T}\right) \bm{C}_i' \bm{D}_i' \\
-&= \bm{D}_i \left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i' - \bm{T}_i \bm{M_T}\bm{T}_i'\right)\bm{D}_i'
-\end{align*}
-and 
-\begin{equation}
-\label{eq:B_i_inverse}
-\bm{B}_i^+ = \left(\bm{D}_i'\right)^{-1} \left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i' - \bm{T}_i \bm{M_T}\bm{T}_i'\right)^+ \bm{D}_i^{-1}.
-\end{equation}
-Let $\bs\Psi_i = \left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\right)^+$.
+\begin{thm}
+\label{thm:absorb}
+Let $\bm{L}_i = \left(\bm{\ddot{U}}'\bm{W}\bm{\ddot{U}} - \bm{\ddot{U}}_i'\bm{W}_i\bm{\ddot{U}}_i\right)$ and assume that $\bm{L}_1,...,\bm{L}_m$ have full rank $r + s$. If $\bm{W} = \bs\Phi^{-1}$ and $\bm{T}_i \bm{T}_k' = \bm{0}$ for $i \neq k$, then $\bm{A}_i\bm{W}_i \bm{\ddot{R}}_i = \bm{\tilde{A}}_i \bm{W}_i \bm{\ddot{R}}_i$, where $\bm{A}_i$ and $\tilde{\bm{A}}_i$ are as defined in (\ref{eq:A-matrix}) and (\ref{eq:A-modified}), respectively.
+\end{thm}
+The implication of the revised theorem is effectively identical to the original statement:  using the modified adjustment matrices $\tilde{\bm{A}}_i$ to calculate the CR2 estimator yields the same result as using the full adjustment matrices $\bm{A}_i$.
 
+## Proof
+
+The proof of Theorem 2 relies on a Woodbury-type identity for Moore-Penrose inverses, as given in @rao1971generalized [Exercise 22, p. 70]; see also @cline1979rank [Eq. 1.4]. We restate it here for reference. 
+\begin{lem}
+\label{lemma}
+Let $\bm{G}$ be a $g \times g$ matrix with Moore-Penrose inverse $\bm{G}^+$. Let $\bm{J}$ and $\bm{M}$ be $g \times k$ matrices, and let $\bm{K}$ be a $k \times k$ matrix of full rank. If $\bm{G} \bm{G}^+ \bm{J} = \bm{J}$, $\bm{M}' \bm{G}^+ \bm{G} = \bm{M}'$ and $\bm{R}^{-1} - \bm{M}' \bm{K} \bm{J}$ is non-singular, then
+\begin{equation}
+\left(\bm{G} - \bm{J} \bm{K} \bm{M}'\right)^+ = \bm{G}^+ + \bm{G}^+ \bm{J}\left( \bm{R}^{-1} - \bm{M}' \bm{K} \bm{J}\right)\bm{M}'\bm{G}^+.
+\end{equation}
+\end{lem}
+
+From the fact that $\bm{\ddot{U}}_i'\bm{W}_i\bm{T}_i = \bm{0}$ for $i = 1,...,m$, it follows that
+\begin{align}
+\bm{B}_i &= \bm{D}_i \bm{C}_i \left(\bm{I} - \bm{H_{\ddot{U}}}\right) \left(\bm{I} - \bm{H_T}\right) \bs\Phi \left(\bm{I} - \bm{H_T}\right)' \left(\bm{I} - \bm{H_{\ddot{U}}}\right)' \bm{C}_i' \bm{D}_i' \nonumber \\ 
+&= \bm{D}_i \bm{C}_i \left(\bm{I} - \bm{H_{\ddot{U}}} - \bm{H_T}\right) \bs\Phi \left(\bm{I} - \bm{H_{\ddot{U}}} - \bm{H_T}\right) \bm{C}_i' \bm{D}_i' \nonumber\\ 
+&= \bm{D}_i \left(\bs\Phi_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i' - \bm{T}_i \bm{M_T}\bm{T}_i'\right)\bm{D}_i' \nonumber\\ 
+\label{eq:B_i}
+&= \bm{D}_i \left(\bm{I}_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\bm{W}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\bm{W}_i\right) \bs\Phi_i \bm{D}_i'
+\end{align}
+and similarly,
+\begin{equation}
+\label{eq:Btilde_i}
+\tilde{\bm{B}}_i = \bm{D}_i \left(\bm{I}_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\bm{W}_i\right) \bs\Psi_i \bm{D}_i'.
+\end{equation}
+The conditions of Lemma \ref{lemma} hold for the inner term in (\ref{eq:Btilde_i}) because we have assumed that $\bm{L}_i = \bm{M_{\ddot{U}}}^{-1} - \bm{\ddot{U}}_i' \bm{W}_i \bm{\ddot{U}}_i$ is non-singular. Thus, 
+\begin{align}
+\tilde{\bm{B}}_i^+ &= \left(\bm{D}_i'\right)^{-1} \bs\Phi_i \left(\bm{I}_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\bm{W}_i\right)^+ \bm{D}_i^{-1} \nonumber \\
+&= \left(\bm{D}_i'\right)^{-1} \bm{W}_i \left(\bm{I}_i + \bm{\ddot{U}}_i \bm{L}_i^{-1} \bm{\ddot{U}}_i' \bm{W}_i\right) \bm{D}_i^{-1}.
+\end{align}
+Next, let $\bm{Z}_i = \bm{I}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\bm{W}_i$. Because $\bm{T}_i$ consists of cluster-specific predictors, $\bm{T}_i \bm{M_T} \bm{T}_i' \bm{W}_i = \bm{T}_i \left(\bm{T}_i' \bm{W}_i\bm{T}_i\right)^{-1} \bm{T}_i' \bm{W}_i$. It follows that $\bm{Z}_i$ is idempotent, with $\bm{Z}_i^+ = \bm{Z}_i$. Further, $\bm{Z}_i \bm{Z}_i^+ \bm{\ddot{U}}_i = \bm{Z}_i \bm{\ddot{U}}_i = \bm{\ddot{U}}_i$ and $\bm{\ddot{U}}_i' \bm{W}_i \bm{Z}_i^+ \bm{Z}_i = \bm{\ddot{U}}_i' \bm{W}_i \bm{Z}_i = \bm{\ddot{U}}_i' \bm{W}_i$. As previously noted, $\bm{L}_i$ is non-singular, and so the conditions of Lemma \ref{lemma} are satisfied for the matrix difference $(\bm{Z}_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\bm{W}_i)$. Thus
+\begin{align*}
+(\bm{Z}_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\bm{W}_i)^+ &= \bm{Z}_i + \bm{Z}_i \bm{\ddot{U}}_i \bm{L}_i^{-1} \bm{\ddot{U}}_i' \bm{W}_i \bm{Z}_i \\
+&= \bm{I}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\bm{W}_i + \bm{\ddot{U}}_i \bm{L}_i^{-1} \bm{\ddot{U}}_i' \bm{W}_i.
+\end{align*}
+Substituting into (\ref{eq:B_i}), we have
+\begin{align}
+\bm{B}_i^+ &= \left(\bm{D}_i'\right)^{-1} \bm{W}_i \left(\bm{Z}_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\bm{W}_i \right)^+ \bm{D}_i^{-1} \nonumber \\
+&= \left(\bm{D}_i'\right)^{-1} \bm{W}_i \left(\bm{I}_i + \bm{\ddot{U}}_i \bm{L}_i^{-1} \bm{\ddot{U}}_i' \bm{W}_i  - \bm{T}_i \bm{M_T}\bm{T}_i'\bm{W}_i\right) \bm{D}_i^{-1} \nonumber \\
+&= \tilde{\bm{B}}_i^+ - \left(\bm{D}_i'\right)^{-1} \bm{W}_i \bm{T}_i \bm{M_T}\bm{T}_i'\bm{W}_i \bm{D}_i^{-1}.
+\end{align}
+Need to show that 
+$$
+\bm{B}_i^{+1/2} = \tilde{\bm{B}}_i^{+1/2} - \left(\bm{D}_i'\right)^{-1} \bm{T}_i \bm{M_T}\bm{T}_i'\bm{D}_i^{-1}
+$$
+or something similar, so that $\bm{A}_i = \tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'$.
 
 # References {-}
