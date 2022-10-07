@@ -80,27 +80,49 @@ targetVariance.geeglm <- function(obj, cluster) {
   mu <- fitted.values(obj)
   var_fun <- obj$family$variance
   v <- as.numeric(var_fun(mu))
+  w <- weights(obj, type = "prior")
+  matrix_list(v / w, cluster, "both")
   a <- tapply(v, obj$id, sqrt)
   aa <- lapply(a, Matrix::tcrossprod)
   if (obj$corstr %in% c("independence", "exchangeable", "ar1", "unstructured", "userdefined") == F) {
     stop("Working correlation matrix must be a matrix with the following correlation structures: independence, exchangeable, ar1, unstructured, or userdefined")
   } 
   else if 
-     (obj$corstr == "ar1") {
+  (obj$corstr == "ar1") {
+    if (is.null(obj$call$waves))  {
       ar1_cor <- function(n, alpha) {
         exponent <- abs(matrix(1:n - 1, nrow = n, ncol = n, byrow = TRUE) - 
                           (1:n - 1))
         alpha^exponent
       }
-      r_ar1 <- lapply(obj$geese$clusz, ar1_cor, alpha = obj$geese$alpha)
-      v <- mapply("*", aa, r_ar1)
-      v <- unlist(v) # To solve
-      w <- weights(obj, type = "prior")
-      matrix_list(v / w, cluster, "both")
-     }
-  else {
-    paste("0") # Try "ar1" for now, will add others
+      r <- lapply(obj$geese$clusz, ar1_cor, alpha = obj$geese$alpha)
+    }
+    else {
+      get_dist <- function(v) {
+        mat_dist <- as.matrix(dist(v, diag = TRUE, upper = TRUE))
+        mat_dist
+      }
+      wave <- eval(obj$call$waves, envir = obj$data)
+      wave_vec <- split(wave, ceiling(seq_along(wave) / obj$geese$clusz))
+      exponent <- lapply(wave_vec, get_dist)
+      get_str <- function(alpha, exponent) {
+        alpha_str <- alpha^exponent
+        alpha_str
+      }
+      r <- lapply(exponent, get_str, alpha = obj$geese$alpha)
+    }
   }
+  else {
+    other_cor <- function(n, alpha) {
+      x <- matrix(1, nrow = n, ncol = n)
+      x[lower.tri(x)] <- as.numeric(obj$geese$alpha)
+      x[upper.tri(x)] <- as.numeric(obj$geese$alpha)
+      x
+    }
+    r <- lapply(obj$geese$clusz, other_cor, alpha = obj$geese$alpha)
+  }
+  v <- mapply("*", aa, r)
+  v <- unlist(v) # To solve
 }
 
 #-------------------------------------
