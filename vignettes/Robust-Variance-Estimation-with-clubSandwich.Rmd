@@ -83,13 +83,11 @@ If the working model is correctly specified and precisely estimated, then the mo
 
 Robust variance estimators provide an alternative strategy that does not rely on assumptions about the form of the working model....
 
-<!-- H: We would need to explain more about the above sentence or remove it from this section. -->
+<!-- H: Maybe come back later on it. -->
 
 ### CR0
 
 When we use the regression residuals as rough estimates of $\bs\Omega$, that becomes the basic cluster-robust variance estimator (CR0): 
-
-<!-- H: Is this somehow related to the idea from White (1980) as Cameron & Miller (2015) explains on p. 4? -->
 
 $$
 \bmat{V}^{CR0} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{W}_j\bmat{X}_j\right) \bmat{M},
@@ -102,7 +100,7 @@ where $\bmat{\hat{u}}_j = \bmat{y}_j - \bmat{X}_j \bs{\hat\beta}$.
 
 A number of variations on the basic cluster-robust variance estimator have been proposed, all of which aim to provide more accurate approximations when the number of clusters is limited. 
 
-<!-- H: Would we like to explain what problems could arise by using CR0 for cases with a small number of clusters? Or would that be too much detail for this vignette? -->
+<!-- H: Briefly explain what problems could arise by using CR0 for cases with a small number of clusters. -->
 
 The variations implemented in the `clubSandwich` package all have the form
 $$
@@ -119,6 +117,8 @@ $$
 \end{aligned}
 $$
 all with $\bmat{E}^1_j = \bmat{W}_j \bmat{X}_j$.
+
+<!-- H: Is CR1 the same as the standard linearization estimator (Skinner, 1989; Kott, 1994; v_LIN) mentioned in McCaffrey, Bell, & Botts (2001)? -->
 
 - CR2 uses $f_2 = 1$ and
 $$
@@ -138,8 +138,6 @@ $$
 \bmat{B}_j = \half{\bs\Psi}_j \left(\bs\Psi_j - \bmat{X}_j \bmat{M} \bmat{X}_j'\right) \half{\bs\Psi}_j.
 $$
 
-<!-- H: Is there a way to express A_j without condensing the middle part as B_j? I suppose that would be too messy a formula though. -->
-
 <!-- H: Add explanations to other solutions if you see any in the literature. Remember to see if they result in symmetric adjustment matrices. If not, check if the above E_j notation (AWX instead of A'WX) is correct. -->
 
 - CR2f uses $f_2 = 1$ and
@@ -153,8 +151,6 @@ $$
 \bmat{E}_j = \bmat{A}_j \bmat{W}_j \bmat{X}_j,
 $$
 where $\bmat{A}_j$ are adjustment matrices...
-
-<!-- H: Highlight differences between CR2 and CR3, if any. -->
 
 - CR4 uses $f_4 = 1$ and
 $$
