@@ -38,6 +38,10 @@ test_that("bread works", {
 
 })
 
+test_that("vcovCR works for clustering variables higher than id variable.", {
+  
+})
+
 test_that("vcovCR options work for CR2", {
   
   CR2_iv <- vcovCR(mod_ar1_wav, cluster = mod_ar1_wav$cluster, type = "CR2")

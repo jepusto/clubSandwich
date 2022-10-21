@@ -74,30 +74,41 @@ residuals_CS.geeglm <- function(obj) {
 # Get (model-based) working variance matrix 
 #-----------------------------------------------
 
+ar1_cor <- function(n, alpha) {
+  exponent <- abs(matrix(1:n - 1, nrow = n, ncol = n, byrow = TRUE) - 
+                    (1:n - 1))
+  alpha^exponent
+}
+
+get_dist <- function(v) {
+  mat_dist <- as.matrix(dist(v, diag = TRUE, upper = TRUE))
+  mat_dist
+}
+
+other_cor <- function(n, alpha) {
+  x <- matrix(1, nrow = n, ncol = n)
+  x[lower.tri(x)] <- alpha
+  x[upper.tri(x)] <- alpha
+  x
+}
+
 #' @export
 
 targetVariance.geeglm <- function(obj, cluster) {
+  
   mu <- fitted.values(obj)
   var_fun <- obj$family$variance
   v <- as.numeric(var_fun(mu))
   w <- weights(obj, type = "prior") # v_scale?
-  a <- tapply(v/w, obj$id, sqrt)
+  a <- tapply(v / w, obj$id, sqrt)
   aa <- lapply(a, tcrossprod)
+  
   if (obj$corstr %in% c("independence", "exchangeable", "ar1", "unstructured", "userdefined") == F) {
     stop("Working correlation matrix must be a matrix with the following correlation structures: independence, exchangeable, ar1, unstructured, or userdefined")
   } else if (obj$corstr == "ar1") {
     if (is.null(obj$call$waves)) {
-      ar1_cor <- function(n, alpha) {
-        exponent <- abs(matrix(1:n - 1, nrow = n, ncol = n, byrow = TRUE) - 
-                          (1:n - 1))
-        alpha^exponent
-      }
       r <- lapply(obj$geese$clusz, ar1_cor, alpha = obj$geese$alpha)
     } else {
-      get_dist <- function(v) {
-        mat_dist <- as.matrix(dist(v, diag = TRUE, upper = TRUE))
-        mat_dist
-      }
       wave <- eval(obj$call$waves, envir = obj$data)
       wave_vec <- split(wave, ceiling(seq_along(wave) / obj$geese$clusz))
       exponent <- lapply(wave_vec, get_dist)
@@ -108,13 +119,7 @@ targetVariance.geeglm <- function(obj, cluster) {
       r <- lapply(exponent, get_str, alpha = obj$geese$alpha)
     }
   } else {
-    other_cor <- function(n, alpha) {
-      x <- matrix(1, nrow = n, ncol = n)
-      x[lower.tri(x)] <- as.numeric(obj$geese$alpha)
-      x[upper.tri(x)] <- as.numeric(obj$geese$alpha)
-      x
-    }
-    r <- lapply(obj$geese$clusz, other_cor, alpha = obj$geese$alpha)
+    r <- lapply(obj$geese$clusz, other_cor, alpha = as.numeric(obj$geese$alpha))
   }
   v <- mapply("*", aa, r, SIMPLIFY = FALSE)
   v # dispersion parameter in the target variance
@@ -124,11 +129,73 @@ targetVariance.geeglm <- function(obj, cluster) {
 # Get weighting matrix
 #-------------------------------------
 
+ar1_cor_inv <- function(n, alpha) {
+  if (n == 1) {
+    matrix(1)
+  } else {
+    r_inv <- diag(c(1,rep(1 + alpha^2, n - 2), 1), nrow = n)
+    index <- cbind(2:n, 1:(n-1))
+    r_inv[index] <- r_inv[index[,2:1]] <- -alpha
+    r_inv
+  }
+}
+
+exch_inv <- function(n, alpha) {
+  diag(1 / (1 - alpha), nrow = n) - alpha / ((1 - alpha) * (alpha * (n - 1) + 1))
+}
+
 #' @export
 
 weightMatrix.geeglm <- function(obj, cluster) {
-  V_list <- targetVariance(obj, cluster)
-  lapply(V_list, function(v) chol2inv(chol(v)))
+  if (obj$corstr %in% c("independence", "exchangeable", "ar1", "unstructured", "userdefined") == F) {
+    stop("Working correlation matrix must be a matrix with the following correlation structures: independence, exchangeable, ar1, unstructured, or userdefined")
+  } else if (obj$corstr %in% c("unstructured","userdefined")) {
+    
+    # Invert the targetVariance for unstructured or user-defined working models
+    V_list <- targetVariance(obj, cluster)
+    W_list <- lapply(V_list, function(v) chol2inv(chol(v)))
+  
+  } else {
+    
+    # Otherwise use analytic formulas for inverse of targetVariance
+    
+    mu <- fitted.values(obj)
+    var_fun <- obj$family$variance
+    v <- as.numeric(var_fun(mu))
+    w <- weights(obj, type = "prior") # v_scale?
+    
+    if (obj$corstr %in% c("exchangeable","ar1")) {
+      a <- tapply(w / v, obj$id, sqrt)
+      aa <- lapply(a, tcrossprod)
+      
+      if (obj$corstr == "ar1") {
+      
+        if (is.null(obj$call$waves)) {
+          r_inv <- lapply(obj$geese$clusz, ar1_cor_inv, alpha = obj$geese$alpha)
+        } else {
+          wave <- eval(obj$call$waves, envir = obj$data)
+          wave_vec <- split(wave, ceiling(seq_along(wave) / obj$geese$clusz))
+          exponent <- lapply(wave_vec, get_dist)
+          get_str <- function(alpha, exponent) {
+            alpha_str <- alpha^exponent
+            alpha_str
+          }
+          r <- lapply(exponent, get_str, alpha = obj$geese$alpha)
+          r_inv <- lapply(r, function(x) chol2inv(chol(x)))
+        }
+      } else if (obj$corstr == "exchangeable") {
+        r_inv <- lapply(obj$geese$clusz, exch_inv, alpha = obj$geese$alpha)
+      }
+      
+      W_list <- mapply("*", aa, r_inv, SIMPLIFY = FALSE)
+      
+    } else {
+      W_list <- matrix_list(w / v, cluster, dim = "both")
+    }
+  }
+  
+  return(W_list)
+  
 }
 
 #---------------------------------------
