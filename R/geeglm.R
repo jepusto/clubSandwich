@@ -81,10 +81,8 @@ targetVariance.geeglm <- function(obj, cluster) {
   var_fun <- obj$family$variance
   v <- as.numeric(var_fun(mu))
   w <- weights(obj, type = "prior") # v_scale?
-  wv <- matrix_list(v / w, cluster, "both")
-  d <- unlist(lapply(wv, diag))
-  a <- tapply(d, obj$id, sqrt)
-  aa <- lapply(a, Matrix::tcrossprod)
+  a <- tapply(v/w, obj$id, sqrt)
+  aa <- lapply(a, tcrossprod)
   if (obj$corstr %in% c("independence", "exchangeable", "ar1", "unstructured", "userdefined") == F) {
     stop("Working correlation matrix must be a matrix with the following correlation structures: independence, exchangeable, ar1, unstructured, or userdefined")
   } else if (obj$corstr == "ar1") {
@@ -137,7 +135,18 @@ weightMatrix.geeglm <- function(obj, cluster) {
 # Get bread matrix and scaling constant
 #---------------------------------------
 
-# bread.glm() is in sandwich package
+#' @export
+
+bread.geeglm <- function(x, ...) {
+  cluster <- droplevels(as.factor(x$id))
+  X <- model_matrix(x)
+  X_list <- matrix_list(X, cluster, "row")
+  W_list <- weightMatrix(x, cluster)
+  XWX <- Reduce("+", Map(function(x, w) t(x) %*% w %*% x, x = X_list, w = W_list))
+  M <- chol2inv(chol(XWX / v_scale(x)))
+  rownames(M) <- colnames(M) <- colnames(X)
+  M
+}
 
 #' @export
 

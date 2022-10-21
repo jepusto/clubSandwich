@@ -1,7 +1,7 @@
 context("logit glm objects")
 set.seed(202201007)
 
-library(doBy)
+# library(doBy)
 library(geepack)
 
 # For ar1
@@ -10,35 +10,34 @@ timeorder <- rep(1:5, 6)
 tvar      <- timeorder + rnorm(length(timeorder))
 idvar <- rep(1:6, each=5)
 uuu   <- rep(rnorm(6), each=5)
-yvar  <- 1 + 2*tvar + uuu + rnorm(length(tvar))
+yvar  <- 1 + 2 * tvar + uuu + rnorm(length(tvar))
 simdat <- data.frame(idvar, timeorder, tvar, yvar)
 
 simdatPerm <- simdat[sample(nrow(simdat)),]
 simdatPerm <- simdatPerm[order(simdatPerm$idvar),]
 wav <- simdatPerm$timeorder
 
-mod_ar1_wav <- geeglm(yvar~tvar, id=idvar, data=simdatPerm, corstr="ar1", waves=wav)
+mod_ar1_wav <- geeglm(yvar ~ tvar, id = idvar, 
+                      data = simdatPerm, 
+                      corstr = "ar1", waves = wav)
 
 ## No waves
 data(dietox)
 dietox$Cu <- as.factor(dietox$Cu)
 mf <- formula(Weight ~ Cu * (Time + I(Time^2) + I(Time^3)))
-mod_ar1 <- geeglm(mf, data=dietox, id=Pig, family=poisson("identity"), corstr="ar1")
+mod_ar1 <- geeglm(mf, data = dietox, 
+                  id = Pig, 
+                  family = poisson("identity"), 
+                  corstr = "ar1")
 
-
-bread(mod_ar1_wav)
-v_scale.geeglm(mod_ar1_wav)
-vcov(mod_ar1_wav)
 
 test_that("bread works", {
   
+  expect_true(check_bread(mod_ar1, cluster = dietox$Pig, y = dietox$Weight))
   expect_true(check_bread(mod_ar1_wav, cluster = simdatPerm$idvar, y = simdatPerm$yvar))
-  geeglm_vcov <- bread(mod_ar1_wav) * summary(mod_ar1_wav)$dispersion[1,1]  / v_scale(mod_ar1_wav) #  already has dispersion
-  expect_equal(vcov(mod_ar1_wav), geeglm_vcov)
-  
+
 })
-sandwich::bread(mod_ar1_wav)
-###########################################
+
 test_that("vcovCR options work for CR2", {
   
   CR2_iv <- vcovCR(mod_ar1_wav, cluster = mod_ar1_wav$cluster, type = "CR2")
