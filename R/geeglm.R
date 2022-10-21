@@ -80,24 +80,22 @@ targetVariance.geeglm <- function(obj, cluster) {
   mu <- fitted.values(obj)
   var_fun <- obj$family$variance
   v <- as.numeric(var_fun(mu))
-  w <- weights(obj, type = "prior")
-  matrix_list(v / w, cluster, "both")
-  a <- tapply(v, obj$id, sqrt)
+  w <- weights(obj, type = "prior") # v_scale?
+  wv <- matrix_list(v / w, cluster, "both")
+  d <- unlist(lapply(wv, diag))
+  a <- tapply(d, obj$id, sqrt)
   aa <- lapply(a, Matrix::tcrossprod)
   if (obj$corstr %in% c("independence", "exchangeable", "ar1", "unstructured", "userdefined") == F) {
     stop("Working correlation matrix must be a matrix with the following correlation structures: independence, exchangeable, ar1, unstructured, or userdefined")
-  } 
-  else if 
-  (obj$corstr == "ar1") {
-    if (is.null(obj$call$waves))  {
+  } else if (obj$corstr == "ar1") {
+    if (is.null(obj$call$waves)) {
       ar1_cor <- function(n, alpha) {
         exponent <- abs(matrix(1:n - 1, nrow = n, ncol = n, byrow = TRUE) - 
                           (1:n - 1))
         alpha^exponent
       }
       r <- lapply(obj$geese$clusz, ar1_cor, alpha = obj$geese$alpha)
-    }
-    else {
+    } else {
       get_dist <- function(v) {
         mat_dist <- as.matrix(dist(v, diag = TRUE, upper = TRUE))
         mat_dist
@@ -111,8 +109,7 @@ targetVariance.geeglm <- function(obj, cluster) {
       }
       r <- lapply(exponent, get_str, alpha = obj$geese$alpha)
     }
-  }
-  else {
+  } else {
     other_cor <- function(n, alpha) {
       x <- matrix(1, nrow = n, ncol = n)
       x[lower.tri(x)] <- as.numeric(obj$geese$alpha)
@@ -121,8 +118,8 @@ targetVariance.geeglm <- function(obj, cluster) {
     }
     r <- lapply(obj$geese$clusz, other_cor, alpha = obj$geese$alpha)
   }
-  v <- mapply("*", aa, r)
-  v <- unlist(v) # To solve
+  v <- mapply("*", aa, r, SIMPLIFY = FALSE)
+  v # dispersion parameter in the target variance
 }
 
 #-------------------------------------
@@ -132,11 +129,8 @@ targetVariance.geeglm <- function(obj, cluster) {
 #' @export
 
 weightMatrix.geeglm <- function(obj, cluster) {
-  mu <- fitted.values(obj)
-  var_fun <- obj$family$variance
-  v <- as.numeric(var_fun(mu))
-  w <- weights(obj, type = "prior")
-  matrix_list(w / v, cluster, "both")
+  V_list <- targetVariance(obj, cluster)
+  lapply(V_list, function(v) chol2inv(chol(v)))
 }
 
 #---------------------------------------
