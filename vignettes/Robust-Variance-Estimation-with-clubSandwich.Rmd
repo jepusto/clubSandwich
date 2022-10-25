@@ -106,9 +106,10 @@ The variations implemented in the `clubSandwich` package all have the form
 $$
 \bmat{V}^{CR} = f \times \bmat{M} \left(\sum_{j=1}^J \bmat{E}_j' \bs{\hat\Psi}_j \bmat{E}_j \right) \bmat{M}
 $$
-for some constant $f$ and some estimating matrices $\bmat{E}_1,...,\bm{E}_J$. With this representation, the CRO estimator corresponds to $f_0 = 1$ and $\bmat{E}^0_j = \bmat{W}_j \bmat{X}_j$. 
+for some constant $f$ and some estimating matrices $\bmat{E}_1,...,\bm{E}_J$. With this representation, the CRO estimator corresponds to $f_0 = 1$ and $\bmat{E}^0_j = \bmat{W}_j \bmat{X}_j$.
 
-- CR1, CR1S, CR1p
+The CR1, CR1S, and CR1p estimators are variants that use the following constants with $\bmat{E}^1_j = \bmat{W}_j \bmat{X}_j$.
+
 $$
 \begin{aligned}
 \text{CR1}: f_1 &= \frac{J}{J - 1}, \\
@@ -116,19 +117,26 @@ $$
 \text{CR1p}: f_{1p} &= \frac{J}{J - p}, 
 \end{aligned}
 $$
-all with $\bmat{E}^1_j = \bmat{W}_j \bmat{X}_j$.
+It is notable that the CR1 estimator is equivalent to the standard linearization estimator $v_{LIN}$ estimator as described in [@mccaffrey2001generalizations]. The same variance estimator can be applied to unweighted OLS estimation by using the design matrix $\bmat{M} = \left(\sum_{j=1}^J \bmat{X}_j'\bmat{X}_j\right)^{-1}$ instead of $\bmat{M} = \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{X}_j\right)^{-1}$ [@bell2002bias]. The CR1 estimator can still be biased when the number of clusters is small [@mccaffrey2001generalizations]. Therefore, a class of bias reduced linearization (BRL) variance estimators have been proposed for weighted least squares [@mccaffrey2001generalizations] as well as for OLS estimation ($\bs{\hat\Psi}_j = \bmat{I}, \bmat{W} = \bmat{I}$) [@bell2002bias]. 
 
-<!-- H: Is CR1 the same as the standard linearization estimator (Skinner, 1989; Kott, 1994; v_LIN) mentioned in McCaffrey, Bell, & Botts (2001)? -->
+<!-- Q: Check if the CR1 estimator is truly the same as the standard linearization estimator (Skinner, 1989; Kott, 1994; v_LIN) mentioned in McCaffrey, Bell, & Botts (2001).
+Q: Check citation formats (bibs and how they are referenced) too. I couldn't find the bib for McCaffrey & Bell (2002) so took Bell & McCaffrey (2002) instead.
+Q: Confirm that the CR2 is equivalent to the basic BRL estimator. -->
+
+<!-- H: James, please add a sentence about CR1S and CR1p if you can. I just called them variants of CR1 and nothing more. -->
 
 - CR2 uses $f_2 = 1$ and
 $$
 \bmat{E}_j = \bmat{A}_j \bmat{W}_j \bmat{X}_j,
 $$
-where $\bmat{A}_j$ are (symmetric) adjustment matrices that make $\bmat{V}^{CR2}$ _exactly unbiased_ when the working model is _correct_. To ensure such property, 
+where $\bmat{A}_j$ are adjustment matrices that make $\bmat{V}^{CR2}$ _exactly unbiased_ when the working model is _correct_. To ensure such property, 
 $$
 \E\left(\bmat{A}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{A}_j'\right) = \bmat{A}_j \left(\bs\Psi_j - \bmat{X}_j \bmat{M} \bmat{X}_j'\right) \bmat{A}_j' = \bs\Psi_j.
 $$
 needs to hold for the adjustment matrix $\bmat{A}_j$. (Note that the first equality follows from the distribution of the residuals.)
+
+<!-- Note: McCaffrey and colleagues explain this condition slightly differently with the "outer product of adjusted residuals". -->
+
 Then, one possible solution is to use
 $$
 \bmat{A}_j = \half{\bs\Psi}_j \halfinv{\bmat{B}}_j \half{\bs\Psi}_j,
@@ -140,11 +148,16 @@ $$
 
 <!-- H: Add explanations to other solutions if you see any in the literature. Remember to see if they result in symmetric adjustment matrices. If not, check if the above E_j notation (AWX instead of A'WX) is correct. -->
 
+Still, the symmetric solutions to $\bmat{A}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{A}_j' = \bs\Psi_j$ or $\bmat{A}_j \bmat{(I - G})_j \bs\Psi_j \bmat{(I - G)}_j' \bmat{A}_j' = \bs\Psi_j$ is useful because ... symmetric solutions are found to minimize the squared error between the OLS residuals and the the true errors when the errors are i.i.d. When the errors were not independent, the symmetric adjustment matrix also yielded the smallest bias (Bell & McCaffrey, 2000/2002).
+
+
 - CR2f uses $f_2 = 1$ and
 $$
 \bmat{E}_j = \half{\bmat{W}}_j \bmat{A}_j \half{\bmat{W}}_j \bmat{X}_j,
 $$
 where $\bmat{A}_j$ are adjustment matrices...
+
+
 
 - CR3 uses $f_3 = 1$ and 
 $$
@@ -208,3 +221,23 @@ where $\bmat{D}_j$ are adjustment matrices...
 # Computational considerations
 
 # References {-}
+@inproceedings{mccaffrey2001generalizations,
+  title={Generalizations of biased reduced linearization},
+  author={McCaffrey, Daniel F and Bell, Robert M and Botts, Carsten H},
+  booktitle={Proceedings of the Annual Meeting of the American Statistical Association},
+  number={1994},
+  pages={673},
+  year={2001}
+}
+
+@article{bell2002bias,
+  title={Bias reduction in standard errors for linear regression with multi-stage samples},
+  author={Bell, Robert M and McCaffrey, Daniel F},
+  journal={Survey Methodology},
+  volume={28},
+  number={2},
+  pages={169--182},
+  year={2002}
+}
+
+<!-- H: Is this the right way to place the bibs to refer to? I placed them in the bib file (bibliography.bib) as well. -->
