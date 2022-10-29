@@ -88,7 +88,7 @@ get_dist <- function(v) {
 other_cor <- function(n, alpha) {
   x <- matrix(1, nrow = n, ncol = n)
   x[lower.tri(x)] <- alpha
-  x[upper.tri(x)] <- alpha
+  x[upper.tri(x)] <- t(x)[upper.tri(x)]
   x
 }
 
