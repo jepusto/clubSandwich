@@ -85,9 +85,10 @@ get_dist <- function(v) {
   mat_dist
 }
 
-other_cor <- function(n, alpha) {
+other_cor <- function(r_vec) {
+  n <- (1 + sqrt(1 + 4 * 2 * length(rvec))) / 2
   x <- matrix(1, nrow = n, ncol = n)
-  x[lower.tri(x)] <- alpha
+  x[lower.tri(x)] <- r_vec
   x[upper.tri(x)] <- t(x)[upper.tri(x)]
   x
 }
@@ -119,7 +120,10 @@ targetVariance.geeglm <- function(obj, cluster) {
       r <- lapply(exponent, get_str, alpha = obj$geese$alpha)
     }
   } else {
-    r <- lapply(obj$geese$clusz, other_cor, alpha = as.numeric(obj$geese$alpha))
+    zcor <- eval(obj$call$zcor, envir = parent.frame())
+    alpha <- as.numeric(obj$geese$alpha)
+    r_vec <- as.numeric(zcor %*% alpha)
+    r <- tapply(obj$id, r_vec, other_cor)
   }
   v <- mapply("*", aa, r, SIMPLIFY = FALSE)
   v # dispersion parameter in the target variance

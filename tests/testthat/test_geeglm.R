@@ -1,13 +1,15 @@
 context("geeglm objects")
-set.seed(202201028)
+set.seed(202201030)
 
 library(geepack)
 
+J <- 30
+tp <- 5
 # Simulating a dataset
-timeorder <- rep(1:5, 10)
+timeorder <- rep(1:tp, J)
 tvar      <- timeorder + rnorm(length(timeorder))
-idvar <- rep(1:10, each=5)
-uuu   <- rep(rnorm(10), each=5)
+idvar <- rep(1:J, each=tp)
+uuu   <- rep(rnorm(J), each=tp)
 yvar  <- 1 + 2 * tvar + uuu + rnorm(length(tvar))
 simdat <- data.frame(idvar, timeorder, tvar, yvar)
 
@@ -41,15 +43,15 @@ geeglm_unstr
 zcor <- genZcor(clusz = table(simdat$idvar), 
                 waves = simdat$timeorder, 
                 corstrv = 4)
-nrow(zcor)
-clusz <- table(simdat$idvar)
-sum(clusz * (clusz - 1) / 2)
 
 geeglm_user <- geeglm(yvar ~ tvar, 
                       id = idvar, waves = timeorder, 
                       data = simdat, 
                       zcor = zcor, corstr = "userdefined")
+debugonce(targetVariance.geeglm)
+targetVariance((geeglm_user))
 
+# User-defined, Toeplitz
 zcor_toep     <- matrix(NA, nrow(zcor), 4)
 zcor_toep[,1] <- apply(zcor[,c(1, 5, 8,10)], 1, sum)
 zcor_toep[,2] <- apply(zcor[,c(2, 6, 9)], 1, sum)
@@ -61,7 +63,19 @@ geeglm_toep <- geeglm(yvar ~ tvar,
                       data = simdat, 
                       zcor = zcor_toep, corstr = "userdefined")
 
+# Fixed correlation
+cor_fix <- matrix(c(1    , 0.5  , 0.25,  0.125, 0.125,
+                    0.5  , 1    , 0.25,  0.125, 0.125,
+                    0.25 , 0.25 , 1   ,  0.5  , 0.125,
+                    0.125, 0.125, 0.5  , 1    , 0.125,
+                    0.125, 0.125, 0.125, 0.125, 1     ), nrow=5, ncol=5)
+zcor_fix <- fixed2Zcor(cor_fix, id=simdat$idvar, waves=simdat$timeorder)
 
+geeglm_fix <- geeglm(yvar ~ tvar, 
+                      id = idvar, waves = timeorder, 
+                      data = simdat, 
+                      zcor = zcor_fix, corstr = "fixed")
+geeglm_fix
 
 test_that("bread works", {
   
@@ -72,6 +86,7 @@ test_that("bread works", {
   expect_true(check_bread(geeglm_unstr, cluster = simdat$idvar, y = simdat$yvar))
   expect_true(check_bread(geeglm_user, cluster = simdat$idvar, y = simdat$yvar))
   expect_true(check_bread(geeglm_toep, cluster = simdat$idvar, y = simdat$yvar))
+  expect_true(check_bread(geeglm_fix, cluster = simdat$idvar, y = simdat$yvar))
   
 })
 
