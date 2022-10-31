@@ -17,7 +17,7 @@ check_bread <- function(obj, cluster, y, check_coef = TRUE, tol = 10^-6) {
     coef <- coef_CS(obj)
     y_list <- split(y, cluster)
     XWy <- Reduce("+", Map(function(x, w, y) t(x) %*% w %*% y, x = X_list, w = W_list, y = y_list))
-    beta <- as.vector(M %*% XWy)
+    beta <- as.vector(solve(XWX,XWy))
     names(beta) <- names(coef)
     
     eq_coef <- all.equal(beta, coef, tol = tol)

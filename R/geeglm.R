@@ -85,10 +85,9 @@ get_dist <- function(v) {
   mat_dist
 }
 
-other_cor <- function(r_vec) {
-  n <- (1 + sqrt(1 + 4 * 2 * length(rvec))) / 2
+other_cor <- function(alpha, n = (1 + sqrt(1 + 4 * 2 * length(alpha))) / 2) {
   x <- matrix(1, nrow = n, ncol = n)
-  x[lower.tri(x)] <- r_vec
+  x[lower.tri(x)] <- alpha
   x[upper.tri(x)] <- t(x)[upper.tri(x)]
   x
 }
@@ -104,7 +103,7 @@ targetVariance.geeglm <- function(obj, cluster) {
   a <- tapply(v / w, obj$id, sqrt)
   aa <- lapply(a, tcrossprod)
   
-  if (obj$corstr %in% c("independence", "exchangeable", "ar1", "unstructured", "userdefined") == F) {
+  if (obj$corstr %in% c("independence", "exchangeable", "ar1", "unstructured", "userdefined", "fixed") == F) {
     stop("Working correlation matrix must be a matrix with the following correlation structures: independence, exchangeable, ar1, unstructured, or userdefined")
   } else if (obj$corstr == "ar1") {
     if (is.null(obj$call$waves)) {
@@ -119,14 +118,25 @@ targetVariance.geeglm <- function(obj, cluster) {
       }
       r <- lapply(exponent, get_str, alpha = obj$geese$alpha)
     }
-  } else {
+  } else if (obj$corstr == "unstructured") {
+    r <- lapply(obj$geese$clusz, other_cor, alpha = as.numeric(obj$geese$alpha))
+  } else if (obj$corstr == "userdefined") {
     zcor <- eval(obj$call$zcor, envir = parent.frame())
     alpha <- as.numeric(obj$geese$alpha)
     r_vec <- as.numeric(zcor %*% alpha)
-    r <- tapply(obj$id, r_vec, other_cor)
+    id_cor <- table(obj$id)
+    id_cor <- rep(names(id_cor), id_cor * (id_cor - 1) / 2)
+    r <- tapply(r_vec, id_cor, other_cor)
+  } else if (obj$corstr == "fixed") {
+    zcor <- eval(obj$call$zcor, envir = parent.frame())
+    id_cor <- table(obj$id)
+    id_cor <- rep(names(id_cor), id_cor * (id_cor - 1) / 2)
+    r <- tapply(zcor, id_cor, other_cor)
   }
+  
   v <- mapply("*", aa, r, SIMPLIFY = FALSE)
   v # dispersion parameter in the target variance
+  
 }
 
 #-------------------------------------
@@ -151,9 +161,9 @@ exch_inv <- function(n, alpha) {
 #' @export
 
 weightMatrix.geeglm <- function(obj, cluster) {
-  if (obj$corstr %in% c("independence", "exchangeable", "ar1", "unstructured", "userdefined") == F) {
+  if (obj$corstr %in% c("independence", "exchangeable", "ar1", "unstructured", "userdefined", "fixed") == F) {
     stop("Working correlation matrix must be a matrix with the following correlation structures: independence, exchangeable, ar1, unstructured, or userdefined")
-  } else if (obj$corstr %in% c("unstructured","userdefined")) {
+  } else if (obj$corstr %in% c("unstructured","userdefined", "fixed")) {
     
     # Invert the targetVariance for unstructured or user-defined working models
     V_list <- targetVariance(obj, cluster)

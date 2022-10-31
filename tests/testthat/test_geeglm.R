@@ -48,8 +48,6 @@ geeglm_user <- geeglm(yvar ~ tvar,
                       id = idvar, waves = timeorder, 
                       data = simdat, 
                       zcor = zcor, corstr = "userdefined")
-debugonce(targetVariance.geeglm)
-targetVariance((geeglm_user))
 
 # User-defined, Toeplitz
 zcor_toep     <- matrix(NA, nrow(zcor), 4)
