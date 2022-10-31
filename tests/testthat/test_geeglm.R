@@ -123,10 +123,10 @@ test_that("vcovCR options work for CR2", {
     
   target <- targetVariance(geeglm_AR1_wav, cluster = simdatPerm$idvar) 
   expect_equal(vcovCR(geeglm_AR1_wav, type = "CR2", cluster = simdatPerm$idvar, 
-                        target = target, inverse_var = TRUE), CR2_AR1_wav, check.attributes = FALSE)
+                        target = target, inverse_var = TRUE), CR2_AR1_wav, ignore_attr = TRUE)
   attr(CR2_AR1_wav, "inverse_var") <- FALSE
   expect_equal(vcovCR(geeglm_AR1_wav, type = "CR2", cluster = simdatPerm$idvar, 
-                        target = target, inverse_var = FALSE), CR2_AR1_wav, check.attributes = FALSE)
+                        target = target, inverse_var = FALSE), CR2_AR1_wav, ignore_attr = TRUE)
     
 })
   
@@ -139,10 +139,10 @@ test_that("vcovCR options work for CR4", {
   
   target <- targetVariance(geeglm_AR1_wav)
   expect_equal(vcovCR(geeglm_AR1_wav, cluster = simdatPerm$idvar, type = "CR4", 
-                      target = target, inverse_var = TRUE), CR4_AR1_wav, check.attributes = FALSE)
+                      target = target, inverse_var = TRUE), CR4_AR1_wav, ignore_attr = TRUE)
   attr(CR4_AR1_wav, "inverse_var") <- FALSE
   expect_equal(vcovCR(geeglm_AR1_wav, cluster = simdatPerm$idvar, type = "CR4", 
-                      target = target, inverse_var = FALSE), CR4_AR1_wav, check.attributes = FALSE)
+                      target = target, inverse_var = FALSE), CR4_AR1_wav, ignore_attr = TRUE)
 })
 
 
