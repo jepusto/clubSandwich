@@ -148,20 +148,25 @@ test_that("vcovCR options work for CR4", {
 
 test_that("CR2 and CR4 are target-unbiased", {
   expect_true(check_CR(geeglm_AR1_wav, cluster = simdatPerm$idvar, vcov = "CR2"))
-  expect_true(check_CR(geeglm_AR1_wav, cluster = simdatPerm$idvar,vcov = "CR2"))
-  expect_true(check_CR(geeglm_AR1_wav, cluster = simdatPerm$idvar,vcov = "CR4"))
-  expect_true(check_CR(geeglm_AR1_wav, cluster = simdatPerm$idvar,vcov = "CR4"))
+  expect_true(check_CR(geeglm_AR1, cluster = simdat$idvar, vcov = "CR2"))
+  expect_true(check_CR(geeglm_ind, cluster = simdat$idvar, vcov = "CR2"))
+  expect_true(check_CR(geeglm_exch, cluster = simdat$idvar, vcov = "CR2"))
+  expect_true(check_CR(geeglm_unstr, cluster = simdat$idvar, vcov = "CR2"))
+  expect_true(check_CR(geeglm_user, cluster = simdat$idvar, vcov = "CR2"))
+  expect_true(check_CR(geeglm_toep, cluster = simdat$idvar, vcov = "CR2"))
+  expect_true(check_CR(geeglm_fix, cluster = simdat$idvar, vcov = "CR2"))
+
+  expect_true(check_CR(geeglm_AR1_wav, cluster = simdatPerm$idvar, vcov = "CR4"))
+  expect_true(check_CR(geeglm_AR1, cluster = simdat$idvar, vcov = "CR4"))
+  expect_true(check_CR(geeglm_ind, cluster = simdat$idvar, vcov = "CR4"))
+  expect_true(check_CR(geeglm_exch, cluster = simdat$idvar, vcov = "CR4"))
+  expect_true(check_CR(geeglm_unstr, cluster = simdat$idvar, vcov = "CR4"))
+  expect_true(check_CR(geeglm_user, cluster = simdat$idvar, vcov = "CR4"))
+  expect_true(check_CR(geeglm_toep, cluster = simdat$idvar, vcov = "CR4"))
+  expect_true(check_CR(geeglm_fix, cluster = simdat$idvar, vcov = "CR4"))
+  
 })
 
-test_that("get_data works.", {
-  re_order <- sample(nrow(simdatPerm))
-  sim_scramble <- simdatPerm[re_order,]
-  geeglm_AR1_wav_scramble <- geeglm(yvar ~ tvar, id = idvar, 
-                        data = sim_scramble, 
-                        corstr = "ar1", waves = wav)
-  scramble_dat <- get_data(geeglm_AR1_wav_scramble)
-  expect_equal(sim_scramble, scramble_dat)
-})
 
 
 CR_types <- paste0("CR",0:4)
