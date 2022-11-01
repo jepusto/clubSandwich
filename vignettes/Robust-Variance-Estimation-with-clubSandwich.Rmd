@@ -169,7 +169,7 @@ $\bmat{A}_j$ satisfying (4) is not unique and the bias of resulting variance est
 
 Still, the symmetric solutions to $\bmat{A}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{A}_j' = \bs\Psi_j$ or $\bmat{A}_j \bmat{(I - G})_j \bs\Psi_j \bmat{(I - G)}_j' \bmat{A}_j' = \bs\Psi_j$ is useful because symmetric solutions are found to minimize the squared error between the OLS residuals and the the true errors when the errors are i.i.d. Even when the errors were not independent, the symmetric adjustment matrix also yielded the smallest bias [@mccaffrey2001generalizations].
 
-- CR2f uses $f_2 = 1$ and
+CR2f uses $f_2 = 1$ and
 $$
 \bmat{E}_j = \half{\bmat{W}}_j \bmat{A}_j \half{\bmat{W}}_j \bmat{X}_j,
 $$
