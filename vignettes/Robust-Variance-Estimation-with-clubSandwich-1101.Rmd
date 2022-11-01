@@ -123,7 +123,11 @@ It is notable that the CR1 estimator is equivalent to the standard linearization
 
 ### CR2
 
+<<<<<<< HEAD
 The CR2 estimator uses $f_2 = 1$ and
+=======
+- CR2 uses $f_2 = 1$ and
+>>>>>>> ed1435699fcdce8c62d5e2bece32676e792d6540
 $$
 \bmat{E}_j = \bmat{A}_j' \bmat{W}_j \bmat{X}_j,
 $$
@@ -154,6 +158,8 @@ From [@mccaffrey2001generalizations],
 
 <!-- U (working mat), W (weight mat) -> Psi, W -->
 <!-- Check notation below for consistency -->
+<<<<<<< HEAD
+=======
 
 $$v_{WL} = l' \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j' \bmat{A}_j \bs{r}_j \bs{r}_j' \bmat{A}_j' \bmat{X}_j \right) \bmat{M} l$$
 
@@ -168,6 +174,7 @@ The solution to (4) is not unique and the bias of resulting variance estimators 
 ...
 
 Still, the symmetric solutions to $\bmat{A}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{A}_j' = \bs\Psi_j$ or $\bmat{A}_j \bmat{(I - G})_j \bs\Psi_j \bmat{(I - G)}_j' \bmat{A}_j' = \bs\Psi_j$ is useful because symmetric solutions are found to minimize the squared error between the OLS residuals and the the true errors when the errors are i.i.d. Even when the errors were not independent, the symmetric adjustment matrix also yielded the smallest bias [@mccaffrey2001generalizations].
+>>>>>>> ed1435699fcdce8c62d5e2bece32676e792d6540
 
 $$v_{WL} = l' \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j' \bmat{A}_j \bs{r}_j \bs{r}_j' \bmat{A}_j' \bmat{X}_j \right) \bmat{M} l$$
 
