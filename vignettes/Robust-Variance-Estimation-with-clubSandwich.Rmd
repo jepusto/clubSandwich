@@ -61,13 +61,11 @@ $$
 
 Sometimes, the weight matrices used for WLS estimation are motivated by a working model for the structure of the error variance-covariances $\bs\Omega_j$. 
 In this approach, the analyst posits a structure $\bs\Omega_j = \bs\Psi_j(\bs\theta)$ for some low-dimensional, estimable parameter $\bs\theta$. 
-If the working model captures the true form of the error variances, then the weights that make the sampling variance of $\bs{\hat\beta}$ as small as possible are $\bs\Psi_j^{-1}$, which depend on the parameter $\bs\theta$. In practice, the analyst will use the inverse of the _estimated_ working model, so that they/we use
+If the working model captures the true form of the error variances, then the weights that make the sampling variance of $\bs{\hat\beta}$ as small as possible (the most precise) are the inverse variance weights $\bs\Psi_j^{-1}$, which depend on the parameter $\bs\theta$. It is recommended that the weights are (approximately) inverse variance to ensure high precision for the sampling variance of $\bs{\hat\beta}$ [@tipton2015meta]. In practice, the analyst will use the inverse of the _estimated_ working model, so that they/we use
 $$
 \bmat{W}_j = \bs{\hat\Psi}_j^{-1}
 $$
 as the weights. When the weight matrices are so derived, we will refer to them as "inverse-variance" weights.
-
-<!-- H: As you may have noticed, I leave two or more words that come into my mind grouped with / so that we may choose from or replace them as we see fit later. Feel free to make your edits :-) -->
 
 # Robust Variance Estimation
 
@@ -83,7 +81,7 @@ If the working model is correctly specified and precisely estimated, then the mo
 
 Robust variance estimators provide an alternative strategy that does not rely on assumptions about the form of the working model....
 
-<!-- H: Maybe come back later on it. -->
+<!-- H: Maybe come back later... -->
 
 ### CR0
 
@@ -108,6 +106,8 @@ $$
 $$
 for some constant $f$ and some estimating matrices $\bmat{E}_1,...,\bm{E}_J$. With this representation, the CRO estimator corresponds to $f_0 = 1$ and $\bmat{E}^0_j = \bmat{W}_j \bmat{X}_j$.
 
+### CR1
+
 The CR1, CR1S, and CR1p estimators are variants that use the following constants with $\bmat{E}^1_j = \bmat{W}_j \bmat{X}_j$.
 
 $$
@@ -120,6 +120,8 @@ $$
 It is notable that the CR1 estimator is equivalent to the standard linearization estimator $v_{LIN}$ estimator as described in [@mccaffrey2001generalizations]. The same variance estimator can be applied to unweighted OLS estimation by using the design matrix $\bmat{M} = \left(\sum_{j=1}^J \bmat{X}_j'\bmat{X}_j\right)^{-1}$ instead of $\bmat{M} = \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{X}_j\right)^{-1}$ [@bell2002bias]. Because the CR1 estimator can still be biased when the number of clusters is small, a class of bias reduced linearization (BRL) variance estimators have been proposed for weighted least squares [@mccaffrey2001generalizations] as well as for OLS estimation with $\bs{\hat\Psi}_j = \bmat{I}, \bmat{W} = \bmat{I}$ [@bell2002bias]. 
 
 <!-- H: Please add a sentence about CR1S and CR1p if you can. I just called them variants of CR1 and nothing more. -->
+
+### CR2
 
 - CR2 uses $f_2 = 1$ and
 $$
@@ -142,11 +144,26 @@ $$
 \bmat{B}_j = \half{\bs\Psi}_j \left(\bs\Psi_j - \bmat{X}_j \bmat{M} \bmat{X}_j'\right) \half{\bs\Psi}_j.
 $$
 
-<!-- H: Add explanations to other solutions from literature. -->
+<!-- BRL,S1 and BRL,A1 -->
 
-Still, the symmetric solutions to $\bmat{A}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{A}_j' = \bs\Psi_j$ or $\bmat{A}_j \bmat{(I - G})_j \bs\Psi_j \bmat{(I - G)}_j' \bmat{A}_j' = \bs\Psi_j$ is useful because ... symmetric solutions are found to minimize the squared error between the OLS residuals and the the true errors when the errors are i.i.d. When the errors were not independent, the symmetric adjustment matrix also yielded the smallest bias (Bell & McCaffrey, 2000/2002).
+From [@mccaffrey2001generalizations],
 
-<!-- H: Check citation for logic reference on favoring symmetric solutions and incorporate bib. -->
+<!-- U (working mat), W (weight mat) -> Psi, W -->
+<!-- Check notation below for consistency -->
+
+$$v_{WL} = l' \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j' \bmat{A}_j \bs{r}_j \bs{r}_j' \bmat{A}_j' \bmat{X}_j \right) \bmat{M} l$$
+
+$$ \bmat{A}_j [(\bmat{I} - \bmat{G})_j \bmat{\Psi} (\bmat{I} - \bmat{G})_j'] \bmat{A}_j = \bmat{\Psi}_j \space (4)$$
+$$ \bmat{G} = \bmat{X} \bmat{M} \bmat{X}' \bmat{W} $$
+
+<!-- Q. Should we keep the _j notation or should we convert to multiplying c_j anywhere applicable? -->
+
+The solution to (4) is not unique and the bias of resulting variance estimators can differ according to the choice of $\bmat{A}_j$, unless the working covariance matrix is a correct reflection of the true covariance matrix ($\bs{\Omega} = k \bs{\Psi}$) [@mccaffrey2001generalizations].  
+
+
+...
+
+Still, the symmetric solutions to $\bmat{A}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{A}_j' = \bs\Psi_j$ or $\bmat{A}_j \bmat{(I - G})_j \bs\Psi_j \bmat{(I - G)}_j' \bmat{A}_j' = \bs\Psi_j$ is useful because symmetric solutions are found to minimize the squared error between the OLS residuals and the the true errors when the errors are i.i.d. Even when the errors were not independent, the symmetric adjustment matrix also yielded the smallest bias [@mccaffrey2001generalizations].
 
 - CR2f uses $f_2 = 1$ and
 $$
@@ -161,6 +178,8 @@ $$
 \bmat{E}_j = \bmat{A}_j \bmat{W}_j \bmat{X}_j,
 $$
 where $\bmat{A}_j$ are adjustment matrices...
+
+<!-- Jackknife - See Tipton (2015) for some arguments -->
 
 - CR4 uses $f_4 = 1$ and
 $$
