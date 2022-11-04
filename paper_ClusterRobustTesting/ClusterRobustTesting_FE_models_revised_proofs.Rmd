@@ -1,0 +1,76 @@
+## Proof of Theorem 1
+
+The Moore-Penrose inverse of $\bm{B}_i$ can be computed from its eigen-decomposition. Let $b \leq n_i$ denote the rank of $\bm{B}_i$. 
+Let $\bs\Lambda$ be the $b \times b$ diagonal matrix of the positive eigenvalues of $\bm{B}_i$ and $\bm{V}$ be the $n_i \times b$ matrix of corresponding eigen-vectors, so that $\bm{B}_i = \bm{V}\bs\Lambda\bm{V}'$. 
+Then $\bm{B}_i^+ = \bm{V}\bs\Lambda^{-1}\bm{V}'$ and $\bm{B}_i^{+1/2} = \bm{V}\bs\Lambda^{-1/2}\bm{V}'$. Now, observe that 
+\begin{equation}\begin{aligned}
+\label{eq:step1}
+\bm{\ddot{R}}_i' \bm{W}_i \bm{A}_i \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i' \bm{A}_i' \bm{W}_i \bm{\ddot{R}}_i &= \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{B}_i^{+1/2} \bm{B}_i \bm{B}_i^{+1/2} \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i \\
+&= \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{V}\bm{V}' \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i. 
+\end{aligned}\end{equation}
+
+Because $\bm{D}_i$, and $\bs\Phi$ are positive definite and $\bm{B}_i$ is symmetric, the eigen-vectors $\bm{V}$ define an orthonormal basis for the column span of $\left(\bm{I} - \bm{H_X}\right)_i$.
+We now show that $\bm{\ddot{U}}_i$ is in the column space of $\left(\bm{I} - \bm{H_X}\right)_i$. 
+Let $\bm{Z}_i$ be an $n_i \times (r + s)$ matrix of zeros. 
+Let $\bm{Z}_k = - \bm{\ddot{U}}_k \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1}$, for $k \neq i$ and take $\bm{Z} = \left(\bm{Z}_1',...,\bm{Z}_m'\right)'$. 
+Now observe that $\left(\bm{I} - \bm{H_T}\right) \bm{Z} = \bm{Z}$. 
+It follows that 
+\begin{align*}
+\left(\bm{I} - \bm{H_X}\right)_i \bm{Z} &= \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \left(\bm{I} - \bm{H_T}\right) \bm{Z} = \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \bm{Z} \\
+&= \bm{Z}_i - \bm{\ddot{U}}_i\bm{M_{\ddot{U}}}\sum_{k=1}^m \bm{\ddot{U}}_k'\bm{W}_k\bm{Z}_k \\
+&= \bm{\ddot{U}}_i\bm{M_{\ddot{U}}} \left(\sum_{k \neq i} \bm{\ddot{U}}_k' \bm{W}_k \bm{\ddot{U}} \right) \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1} = \bm{\ddot{U}}_i.
+\end{align*}
+Thus, there exists an $N \times (r + s)$ matrix $\bm{Z}$ such that $\left(\bm{I} - \bm{H_{\ddot{X}}}\right)_i \bm{Z} = \bm{\ddot{U}}_i$, i.e., $\bm{\ddot{U}}_i$ is in the column span of $\left(\bm{I} - \bm{H_X}\right)_i$. Because $\bm{D}_i \bm{W}_i$ is positive definite and $\bm{\ddot{R}}_i$ is a sub-matrix of $\bm{\ddot{U}}_i$, $\bm{D}_i\bm{W}_i\bm{\ddot{R}}_i$ is also in the column span of $\left(\bm{I} - \bm{H_X}\right)_i$. It follows that 
+\begin{equation}
+\label{eq:step2}
+\bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{V}\bm{V}' \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i = \bm{\ddot{R}}_i' \bm{W}_i \bs\Phi_i \bm{W}_i \bm{\ddot{R}}_i.
+\end{equation}
+Substituting (\ref{eq:step2}) into (\ref{eq:step1}) demonstrates that $\bm{A}_i$ satisfies the generalized BRL criterion (Eq. 6 of the main paper).
+
+Under the working model, the residuals from cluster $i$ have mean $\bm{0}$ and variance \[
+\Var\left(\bm{\ddot{e}}_i\right) = \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i',\] 
+It follows that 
+\begin{align*}
+\E\left(\bm{V}^{CR2}\right) &= \bm{M_{\ddot{R}}}\left[\sum_{i=1}^m \bm{\ddot{R}}_i' \bm{W}_i \bm{A}_i \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i' \bm{A}_i \bm{W}_i \bm{\ddot{R}}_i \right] \bm{M_{\ddot{R}}} \\
+&= \bm{M_{\ddot{R}}}\left[\sum_{i=1}^m \bm{\ddot{R}}_i' \bm{W}_i \bs\Phi_i \bm{W}_i \bm{\ddot{R}}_i \right] \bm{M_{\ddot{R}}} \\
+&= \Var\left(\bs{\hat\beta}\right)
+\end{align*}
+
+## Proof of Theorem 2
+
+Setting $\bs\Phi_i = \bm{I}_i$ and observing that $\bm{\ddot{U}}_i'\bm{T}_i = \bm{0}$ for $i = 1,...,m$, it follows that
+\begin{align}
+\bm{B}_i &= \bm{D}_i \bm{C}_i \left(\bm{I} - \bm{H_{\ddot{U}}}\right) \left(\bm{I} - \bm{H_T}\right) \bs\Phi \left(\bm{I} - \bm{H_T}\right)' \left(\bm{I} - \bm{H_{\ddot{U}}}\right)' \bm{C}_i' \bm{D}_i' \nonumber \\ 
+&= \bm{C}_i \left(\bm{I} - \bm{H_{\ddot{U}}} - \bm{H_T}\right) \left(\bm{I} - \bm{H_{\ddot{U}}} - \bm{H_T}\right) \bm{C}_i' \nonumber\\ 
+\label{eq:B_i}
+&= \left(\bm{I}_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i' - \bm{T}_i \bm{M_T}\bm{T}_i'\right)
+\end{align}
+and similarly,
+\begin{equation}
+\label{eq:Btilde_i}
+\tilde{\bm{B}}_i = \left(\bm{I}_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\right).
+\end{equation}
+
+We now show that $\tilde{\bm{A}}_i \bm{T}_i = \bm{T}_i$. Denote the rank of $\bm{\ddot{U}}_i$ as $u_i \leq \min \left\{n_i, r + s \right\}$ and take the thin QR decomposition of $\bm{\ddot{U}}_i$ as $\bm{\ddot{U}}_i = \bm{Q}_i \bm{R}_i$, where $\bm{Q}_i$ is an $n_i \times u_i$ semi-orthonormal matrix and $\bm{R}_i$ is a $u_i \times r + s$ matrix of rank $u_i$, with $\bm{Q}_i'\bm{Q}_i = \bm{I}$. Note that $\bm{Q}_i'\bm{T}_i = \bm{0}$. From the observation that $\tilde{\bm{B}}_i$ can be written as 
+$$
+\tilde{\bm{B}}_i = \bm{I}_i - \bm{Q}_i \bm{Q}_i' + \bm{Q}_i \left(\bm{I} - \bm{R}_i \bm{M}_{\bm{\ddot{U}}} \bm{R}_i'\right)\bm{Q}_i',
+$$
+it can be seen that
+\begin{equation}
+\tilde{\bm{A}}_i = \tilde{\bm{B}}_i^{+1/2} = \bm{I}_i - \bm{Q}_i \bm{Q}_i' + \bm{Q}_i \left(\bm{I} - \bm{R}_i \bm{M}_{\bm{\ddot{U}}} \bm{R}_i'\right)^{+1/2} \bm{Q}_i'.
+\end{equation}
+It follows that $\tilde{\bm{A}}_i \bm{T}_i = \bm{T}_i$.
+
+Setting
+\begin{equation}
+\bm{A}_i = \tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i',
+\end{equation}
+observe that
+\begin{align*}
+\bm{B}_i \bm{A}_i \bm{B}_i \bm{A}_i &= \left(\tilde{\bm{B}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right) \left(\tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right)\left(\tilde{\bm{B}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right) \left(\tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right) \\
+&= \left(\tilde{\bm{B}}_i\tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right)\left(\tilde{\bm{B}}_i\tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right) \\
+&= \left(\tilde{\bm{B}}_i\tilde{\bm{A}}_i\tilde{\bm{B}}_i\tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right) \\
+&= \left(\tilde{\bm{B}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right) \\
+&= \bm{B}_i.
+\end{align*}
+It follows that $\bm{A}_i$ is the symmetric square root of the Moore-Penrose inverse of $\bm{B}_i$, i.e., $\bm{A}_i = \bm{B}_i^{+1/2}$. Finally, because $\bm{T}_i ' \bm{\ddot{R}}_i= \bm{0}$, it can be seen that $\bm{A}_i \bm{\ddot{R}}_i = \left(\tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right)\bm{\ddot{R}}_i = \tilde{\bm{A}}_i \bm{\ddot{R}}_i$.

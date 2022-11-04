@@ -140,7 +140,8 @@ the Satterthwaite approximation for t-tests. In simulations covering a
 wide range of scenarios, we find that the conventional cluster-robust
 Wald test can severely over-reject while the proposed small-sample test
 maintains Type I error close to nominal levels. The proposed methods are
-implemented in an R package called clubSandwich.
+implemented in an R package called clubSandwich. \textbf{This paper has
+been revised to correct an error in the statement of Theorem 2.}
 \end{abstract}
 
 \noindent%
@@ -496,7 +497,7 @@ adjustment matrices are chosen to satisfy the criterion \begin{equation}
 \(\mathbf{I} - \mathbf{H_X}\) corresponding to cluster \(i\). If the
 working model and weight matrices are both taken to be identity
 matrices, then the adjustment matrices simplify to
-\(\mathbf{A}_i = \left(\mathbf{I}_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}} \mathbf{\ddot{U}}_i'\right)^{-1/2}\),
+\(\mathbf{A}_i = \left(\mathbf{I}_i - \mathbf{X}_i \mathbf{M_{X}} \mathbf{X}_i'\right)^{-1/2}\),
 where \(\mathbf{Z}^{-1/2}\) denotes the symmetric square-root of the
 matrix \(\mathbf{Z}\).
 
@@ -596,34 +597,43 @@ into components as
 In certain circumstances, further computational efficiency can be
 achieved by computing the adjustment matrices after absorbing the
 within-cluster fixed effects \(\mathbf{T}\) (but not the between-cluster
-fixed effects \(\mathbf{S}\)). Specifically, if the weights used for WLS
-estimation are the inverses of the working covariance model, so that
-\(\mathbf{W}_i = \boldsymbol\Phi_i^{-1}\) for \(i = 1,...,m\), then the
-adjustment matrices can be calculated without accounting for the
-within-cluster fixed effects. This result is formalized in the following
-theorem.
+fixed effects \(\mathbf{S}\)). Specifically, for ordinary (i.e.,
+unweighted) least squares estimation with an identity working model
+\((\boldsymbol\Phi = \mathbf{I})\), then the adjustment matrices can be
+calculated without accounting for the within-cluster fixed effects, as
+\begin{equation}
+\label{eq:CR2_tilde}
+\mathbf{\tilde{A}}_i = \left(\mathbf{I}_i - \mathbf{\ddot{U}}_i\mathbf{M}_{\mathbf{\ddot{U}}} \mathbf{\ddot{U}}_i'\right)^{-1/2}
+\end{equation} This result is formalized in the following
+theorem.\footnote{In a previous version of the paper, we gave a more
+  general claim about the equivalence of the adjustment matrices
+  calculated with or without accounting for the within-cluster fixed
+  effects. The previous statement of the theorem claimed that the
+  equivalence holds for weighted least squares so long as the weights
+  are inverse of the working model,
+  \(\mathbf{W}_i = \boldsymbol\Phi^{-1}\) for \(i = 1,..,m\). However,
+  the claimed equivalence does not hold generally. The proof of the
+  previous statement of Theorem \ref{thm:absorb} relied on a Woodbury
+  identity for generalized inverses that does not hold for
+  \(\mathbf{B}_i\) because necessary rank conditions are not satisfied.}
 
 \begin{thm}
 \label{thm:absorb}
-Let $\mathbf{\tilde{A}}_i = \mathbf{D}_i'\mathbf{\tilde{B}}_i^{+1/2} \mathbf{D}_i$, where 
-\begin{equation}
-\label{eq:CR2_B_tilde}
-\mathbf{\tilde{B}}_i = \mathbf{D}_i\left(\mathbf{I} - \mathbf{H_{\ddot{R}}}\right)_i \left(\mathbf{I} - \mathbf{H_{\ddot{S}}}\right) \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H_{\ddot{S}}}\right)' \left(\mathbf{I} - \mathbf{H_{\ddot{R}}}\right)_i' \mathbf{D}_i'.
-\end{equation}
-If $\mathbf{W} = \boldsymbol\Phi^{-1}$ and $\mathbf{T}_i \mathbf{T}_k' = \mathbf{0}$ for $i \neq k$, then $\mathbf{A}_i = \mathbf{\tilde{A}}_i$. 
+Let $\mathbf{\tilde{V}}^{CR}$ be the CRVE calculated using $\mathbf{\tilde{A}}_i$ as defined in (\ref{eq:CR2_tilde}) and $\mathbf{V}^{CR}$ be calculated using the full adjustment matrices as defined in (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}).
+If $\mathbf{W}_i = \mathbf{I}_i$ and $\boldsymbol\Phi_i = \mathbf{I}_i$ for $i = 1,...,m$, then $\mathbf{A}_i \mathbf{\ddot{R}}_i = \mathbf{\tilde{A}}_i \mathbf{\ddot{R}}_i$ and $\mathbf{\tilde{V}}^{CR} = \mathbf{V}^{CR}$.
 \end{thm}
 
-Proof is given in the supplementary materials. The main implication of
-Theorem \ref{thm:absorb} is that the more computationally tractable
-formula \(\mathbf{\tilde{B}}_i\) can be used in the common case that the
-weighting matrices are the inverse of the working covariance model.
-Following the working model suggested by Bell and McCaffrey (2002), in
-which \(\boldsymbol\Phi = \mathbf{I}\), the theorem shows that the
-adjustment method is invariant to the choice of estimator so long as the
-model is estimated by OLS (i.e., with \(\mathbf{W} = \mathbf{I}\)). In
-contrast, if the working model proposed by Imbens and Kolesar (2016) is
-instead used (while still using OLS), then the the CR2 adjustments might
-differ depending on whether LSDV or the fixed effects estimator is used.
+Proof is given in Appendix A. The main implication of Theorem
+\ref{thm:absorb} is that the more computationally tractable formula
+\(\mathbf{\tilde{A}}_i\) can be used in the common case of unweighted
+least squares estimation. Following the working model suggested by Bell
+and McCaffrey (2002), in which \(\boldsymbol\Phi = \mathbf{I}\), the
+theorem shows that the adjustment method is invariant to the choice of
+estimator so long as the model is estimated by OLS (i.e., with
+\(\mathbf{W} = \mathbf{I}\)). In contrast, if the working model proposed
+by Imbens and Kolesar (2016) is instead used (while still using OLS),
+then the the CR2 adjustments might differ depending on whether LSDV or
+the fixed effects estimator is used.
 
 \hypertarget{sec:testing}{%
 \section{HYPOTHESIS TESTING}\label{sec:testing}}
@@ -1413,15 +1423,9 @@ Population Research Center, and the American Institutes for Research, as
 well as an associate editor and referees. The authors thank Dan Knopf
 for helpful discussions about the linear algebra behind the
 cluster-robust variance estimator, and David Figlio and Coady Wing for
-advice about empirical applications and context.
-
-\hypertarget{supplementary-materials}{%
-\section*{SUPPLEMENTARY MATERIALS}\label{supplementary-materials}}
-\addcontentsline{toc}{section}{SUPPLEMENTARY MATERIALS}
-
-Supplementary materials include proofs of Theorems 1 and 2; additional
-details, results, and replication code from the simulation study; and
-replication code for the examples in Section \ref{sec:examples}.
+advice about empirical applications and context. Finally, we thank
+Michael Pfaffenmayr for drawing our attention to an error in an earlier
+version of Theorem 2.
 
 \hypertarget{references}{%
 \section*{REFERENCES}\label{references}}
@@ -1660,6 +1664,119 @@ and Inference} 142 (1): 336--46.
 \url{https://doi.org/10.1016/j.jspi.2011.07.023}.
 
 \end{CSLReferences}
+
+\newpage
+
+\hypertarget{appendix-a-proofs}{%
+\section{Appendix A: Proofs}\label{appendix-a-proofs}}
+
+\hypertarget{proof-of-theorem-1}{%
+\subsection{Proof of Theorem 1}\label{proof-of-theorem-1}}
+
+The Moore-Penrose inverse of \(\mathbf{B}_i\) can be computed from its
+eigen-decomposition. Let \(b \leq n_i\) denote the rank of
+\(\mathbf{B}_i\). Let \(\boldsymbol\Lambda\) be the \(b \times b\)
+diagonal matrix of the positive eigenvalues of \(\mathbf{B}_i\) and
+\(\mathbf{V}\) be the \(n_i \times b\) matrix of corresponding
+eigen-vectors, so that
+\(\mathbf{B}_i = \mathbf{V}\boldsymbol\Lambda\mathbf{V}'\). Then
+\(\mathbf{B}_i^+ = \mathbf{V}\boldsymbol\Lambda^{-1}\mathbf{V}'\) and
+\(\mathbf{B}_i^{+1/2} = \mathbf{V}\boldsymbol\Lambda^{-1/2}\mathbf{V}'\).
+Now, observe that \begin{equation}\begin{aligned}
+\label{eq:step1}
+\mathbf{\ddot{R}}_i' \mathbf{W}_i \mathbf{A}_i \left(\mathbf{I} - \mathbf{H_X}\right)_i \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H_X}\right)_i' \mathbf{A}_i' \mathbf{W}_i \mathbf{\ddot{R}}_i &= \mathbf{\ddot{R}}_i' \mathbf{W}_i \mathbf{D}_i \mathbf{B}_i^{+1/2} \mathbf{B}_i \mathbf{B}_i^{+1/2} \mathbf{D}_i' \mathbf{W}_i \mathbf{\ddot{R}}_i \\
+&= \mathbf{\ddot{R}}_i' \mathbf{W}_i \mathbf{D}_i \mathbf{V}\mathbf{V}' \mathbf{D}_i' \mathbf{W}_i \mathbf{\ddot{R}}_i. 
+\end{aligned}\end{equation}
+
+Because \(\mathbf{D}_i\), and \(\boldsymbol\Phi\) are positive definite
+and \(\mathbf{B}_i\) is symmetric, the eigen-vectors \(\mathbf{V}\)
+define an orthonormal basis for the column span of
+\(\left(\mathbf{I} - \mathbf{H_X}\right)_i\). We now show that
+\(\mathbf{\ddot{U}}_i\) is in the column space of
+\(\left(\mathbf{I} - \mathbf{H_X}\right)_i\). Let \(\mathbf{Z}_i\) be an
+\(n_i \times (r + s)\) matrix of zeros. Let
+\(\mathbf{Z}_k = - \mathbf{\ddot{U}}_k \mathbf{L}^{-1}\mathbf{M}_{\mathbf{\ddot{U}}}^{-1}\),
+for \(k \neq i\) and take
+\(\mathbf{Z} = \left(\mathbf{Z}_1',...,\mathbf{Z}_m'\right)'\). Now
+observe that
+\(\left(\mathbf{I} - \mathbf{H_T}\right) \mathbf{Z} = \mathbf{Z}\). It
+follows that \begin{align*}
+\left(\mathbf{I} - \mathbf{H_X}\right)_i \mathbf{Z} &= \left(\mathbf{I} - \mathbf{H_{\ddot{U}}}\right)_i \left(\mathbf{I} - \mathbf{H_T}\right) \mathbf{Z} = \left(\mathbf{I} - \mathbf{H_{\ddot{U}}}\right)_i \mathbf{Z} \\
+&= \mathbf{Z}_i - \mathbf{\ddot{U}}_i\mathbf{M_{\ddot{U}}}\sum_{k=1}^m \mathbf{\ddot{U}}_k'\mathbf{W}_k\mathbf{Z}_k \\
+&= \mathbf{\ddot{U}}_i\mathbf{M_{\ddot{U}}} \left(\sum_{k \neq i} \mathbf{\ddot{U}}_k' \mathbf{W}_k \mathbf{\ddot{U}} \right) \mathbf{L}^{-1}\mathbf{M}_{\mathbf{\ddot{U}}}^{-1} = \mathbf{\ddot{U}}_i.
+\end{align*} Thus, there exists an \(N \times (r + s)\) matrix
+\(\mathbf{Z}\) such that
+\(\left(\mathbf{I} - \mathbf{H_{\ddot{X}}}\right)_i \mathbf{Z} = \mathbf{\ddot{U}}_i\),
+i.e., \(\mathbf{\ddot{U}}_i\) is in the column span of
+\(\left(\mathbf{I} - \mathbf{H_X}\right)_i\). Because
+\(\mathbf{D}_i \mathbf{W}_i\) is positive definite and
+\(\mathbf{\ddot{R}}_i\) is a sub-matrix of \(\mathbf{\ddot{U}}_i\),
+\(\mathbf{D}_i\mathbf{W}_i\mathbf{\ddot{R}}_i\) is also in the column
+span of \(\left(\mathbf{I} - \mathbf{H_X}\right)_i\). It follows that
+\begin{equation}
+\label{eq:step2}
+\mathbf{\ddot{R}}_i' \mathbf{W}_i \mathbf{D}_i \mathbf{V}\mathbf{V}' \mathbf{D}_i' \mathbf{W}_i \mathbf{\ddot{R}}_i = \mathbf{\ddot{R}}_i' \mathbf{W}_i \boldsymbol\Phi_i \mathbf{W}_i \mathbf{\ddot{R}}_i.
+\end{equation} Substituting (\ref{eq:step2}) into (\ref{eq:step1})
+demonstrates that \(\mathbf{A}_i\) satisfies the generalized BRL
+criterion (Eq. 6 of the main paper).
+
+Under the working model, the residuals from cluster \(i\) have mean
+\(\mathbf{0}\) and variance \[
+\text{Var}\left(\mathbf{\ddot{e}}_i\right) = \left(\mathbf{I} - \mathbf{H_X}\right)_i \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H_X}\right)_i',\]
+It follows that \begin{align*}
+\text{E}\left(\mathbf{V}^{CR2}\right) &= \mathbf{M_{\ddot{R}}}\left[\sum_{i=1}^m \mathbf{\ddot{R}}_i' \mathbf{W}_i \mathbf{A}_i \left(\mathbf{I} - \mathbf{H_X}\right)_i \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H_X}\right)_i' \mathbf{A}_i \mathbf{W}_i \mathbf{\ddot{R}}_i \right] \mathbf{M_{\ddot{R}}} \\
+&= \mathbf{M_{\ddot{R}}}\left[\sum_{i=1}^m \mathbf{\ddot{R}}_i' \mathbf{W}_i \boldsymbol\Phi_i \mathbf{W}_i \mathbf{\ddot{R}}_i \right] \mathbf{M_{\ddot{R}}} \\
+&= \text{Var}\left(\boldsymbol{\hat\beta}\right)
+\end{align*}
+
+\hypertarget{proof-of-theorem-2}{%
+\subsection{Proof of Theorem 2}\label{proof-of-theorem-2}}
+
+Setting \(\boldsymbol\Phi_i = \mathbf{I}_i\) and observing that
+\(\mathbf{\ddot{U}}_i'\mathbf{T}_i = \mathbf{0}\) for \(i = 1,...,m\),
+it follows that \begin{align}
+\mathbf{B}_i &= \mathbf{D}_i \mathbf{C}_i \left(\mathbf{I} - \mathbf{H_{\ddot{U}}}\right) \left(\mathbf{I} - \mathbf{H_T}\right) \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H_T}\right)' \left(\mathbf{I} - \mathbf{H_{\ddot{U}}}\right)' \mathbf{C}_i' \mathbf{D}_i' \nonumber \\ 
+&= \mathbf{C}_i \left(\mathbf{I} - \mathbf{H_{\ddot{U}}} - \mathbf{H_T}\right) \left(\mathbf{I} - \mathbf{H_{\ddot{U}}} - \mathbf{H_T}\right) \mathbf{C}_i' \nonumber\\ 
+\label{eq:B_i}
+&= \left(\mathbf{I}_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i' - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right)
+\end{align} and similarly, \begin{equation}
+\label{eq:Btilde_i}
+\tilde{\mathbf{B}}_i = \left(\mathbf{I}_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\right).
+\end{equation}
+
+We now show that \(\tilde{\mathbf{A}}_i \mathbf{T}_i = \mathbf{T}_i\).
+Denote the rank of \(\mathbf{\ddot{U}}_i\) as
+\(u_i \leq \min \left\{n_i, r + s \right\}\) and take the thin QR
+decomposition of \(\mathbf{\ddot{U}}_i\) as
+\(\mathbf{\ddot{U}}_i = \mathbf{Q}_i \mathbf{R}_i\), where
+\(\mathbf{Q}_i\) is an \(n_i \times u_i\) semi-orthonormal matrix and
+\(\mathbf{R}_i\) is a \(u_i \times r + s\) matrix of rank \(u_i\), with
+\(\mathbf{Q}_i'\mathbf{Q}_i = \mathbf{I}\). Note that
+\(\mathbf{Q}_i'\mathbf{T}_i = \mathbf{0}\). From the observation that
+\(\tilde{\mathbf{B}}_i\) can be written as \[
+\tilde{\mathbf{B}}_i = \mathbf{I}_i - \mathbf{Q}_i \mathbf{Q}_i' + \mathbf{Q}_i \left(\mathbf{I} - \mathbf{R}_i \mathbf{M}_{\mathbf{\ddot{U}}} \mathbf{R}_i'\right)\mathbf{Q}_i',
+\] it can be seen that \begin{equation}
+\tilde{\mathbf{A}}_i = \tilde{\mathbf{B}}_i^{+1/2} = \mathbf{I}_i - \mathbf{Q}_i \mathbf{Q}_i' + \mathbf{Q}_i \left(\mathbf{I} - \mathbf{R}_i \mathbf{M}_{\mathbf{\ddot{U}}} \mathbf{R}_i'\right)^{+1/2} \mathbf{Q}_i'.
+\end{equation} It follows that
+\(\tilde{\mathbf{A}}_i \mathbf{T}_i = \mathbf{T}_i\).
+
+Setting \begin{equation}
+\mathbf{A}_i = \tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i',
+\end{equation} observe that \begin{align*}
+\mathbf{B}_i \mathbf{A}_i \mathbf{B}_i \mathbf{A}_i &= \left(\tilde{\mathbf{B}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \left(\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right)\left(\tilde{\mathbf{B}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \left(\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \\
+&= \left(\tilde{\mathbf{B}}_i\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right)\left(\tilde{\mathbf{B}}_i\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \\
+&= \left(\tilde{\mathbf{B}}_i\tilde{\mathbf{A}}_i\tilde{\mathbf{B}}_i\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \\
+&= \left(\tilde{\mathbf{B}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \\
+&= \mathbf{B}_i.
+\end{align*} It follows that \(\mathbf{A}_i\) is the symmetric square
+root of the Moore-Penrose inverse of \(\mathbf{B}_i\), i.e.,
+\(\mathbf{A}_i = \mathbf{B}_i^{+1/2}\). Finally, because
+\(\mathbf{T}_i ' \mathbf{\ddot{R}}_i= \mathbf{0}\), it can be seen that
+\(\mathbf{A}_i \mathbf{\ddot{R}}_i = \left(\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right)\mathbf{\ddot{R}}_i = \tilde{\mathbf{A}}_i \mathbf{\ddot{R}}_i\).
+
+\hypertarget{appendix-c-further-details-of-the-simulations}{%
+\section{Appendix C: Further details of the
+simulations}\label{appendix-c-further-details-of-the-simulations}}
 
 \bibliographystyle{agsm}
 \bibliography{bibliography.bib}

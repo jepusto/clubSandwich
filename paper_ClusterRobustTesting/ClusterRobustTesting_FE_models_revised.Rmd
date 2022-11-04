@@ -16,6 +16,9 @@ abstract: |
   We also propose a small-sample test for multiple-parameter hypotheses, which generalizes the Satterthwaite approximation for t-tests. 
   In simulations covering a wide range of scenarios, we find that the conventional cluster-robust Wald test can severely over-reject while the proposed small-sample test maintains Type I error close to nominal levels. 
   The proposed methods are implemented in an R package called clubSandwich. 
+  
+  __This paper has been revised to correct an error in the statement of Theorem 2.__
+  
 keywords:
   - cluster dependence
   - fixed effects
@@ -198,7 +201,7 @@ In the original formulation of @Bell2002bias, the BRL adjustment matrices are ch
 \bm{A}_i \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i' \bm{A}_i'  =  \bs\Phi_i 
 \end{equation}
 for a given working model, where $\left(\bm{I} - \bm{H_X}\right)_i$ denotes the rows of $\bm{I} - \bm{H_X}$ corresponding to cluster $i$.
-If the working model and weight matrices are both taken to be identity matrices, then the adjustment matrices simplify to $\bm{A}_i =  \left(\bm{I}_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}} \bm{\ddot{U}}_i'\right)^{-1/2}$, where $\bm{Z}^{-1/2}$ denotes the symmetric square-root of the matrix $\bm{Z}$. 
+If the working model and weight matrices are both taken to be identity matrices, then the adjustment matrices simplify to $\bm{A}_i =  \left(\bm{I}_i - \bm{X}_i \bm{M_{X}} \bm{X}_i'\right)^{-1/2}$, where $\bm{Z}^{-1/2}$ denotes the symmetric square-root of the matrix $\bm{Z}$. 
 
 ## A more general BRL criterion
 
@@ -251,23 +254,24 @@ Given that the entire advantage of using absorption to calculate $\hat{\bs\beta}
 Some computational efficiency can be gained by using the fact that the residual projection matrix $\bm{I} - \bm{H_X}$ can be factored into components as $\left(\bm{I} - \bm{H_X}\right)_i = \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_i \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \left(\bm{I} - \bm{H_T}\right)$.
 
 In certain circumstances, further computational efficiency can be achieved by computing the adjustment matrices after absorbing the within-cluster fixed effects $\bm{T}$ (but not the between-cluster fixed effects $\bm{S}$). 
-Specifically, if the weights used for WLS estimation are the inverses of the working covariance model, so that $\bm{W}_i = \bs\Phi_i^{-1}$ for $i = 1,...,m$, then the adjustment matrices can be calculated without accounting for the within-cluster fixed effects. 
-This result is formalized in the following theorem.  
+Specifically, for ordinary (i.e., unweighted) least squares estimation with an identity working model $(\bs\Phi = \bm{I})$, then the adjustment matrices can be calculated without accounting for the within-cluster fixed effects, as 
+\begin{equation}
+\label{eq:CR2_tilde}
+\bm{\tilde{A}}_i = \left(\bm{I}_i - \bm{\ddot{U}}_i\bm{M}_{\bm{\ddot{U}}} \bm{\ddot{U}}_i'\right)^{-1/2}
+\end{equation}
+This result is formalized in the following theorem.[^correction]
+
+[^correction]: In a previous version of the paper, we gave a more general claim about the equivalence of the adjustment matrices calculated with or without accounting for the within-cluster fixed effects. The previous statement of the theorem claimed that the equivalence holds for weighted least squares so long as the weights are inverse of the working model, $\bm{W}_i = \bs\Phi^{-1}$ for $i = 1,..,m$. However, the claimed equivalence does not hold generally. The proof of the previous statement of Theorem \ref{thm:absorb} relied on a Woodbury identity for generalized inverses that does not hold for $\bm{B}_i$ because necessary rank conditions are not satisfied.
 
 \begin{thm}
 \label{thm:absorb}
-Let $\bm{\tilde{A}}_i = \bm{D}_i'\bm{\tilde{B}}_i^{+1/2} \bm{D}_i$, where 
-\begin{equation}
-\label{eq:CR2_B_tilde}
-\bm{\tilde{B}}_i = \bm{D}_i\left(\bm{I} - \bm{H_{\ddot{R}}}\right)_i \left(\bm{I} - \bm{H_{\ddot{S}}}\right) \bs\Phi \left(\bm{I} - \bm{H_{\ddot{S}}}\right)' \left(\bm{I} - \bm{H_{\ddot{R}}}\right)_i' \bm{D}_i'.
-\end{equation}
-If $\bm{W} = \bs\Phi^{-1}$ and $\bm{T}_i \bm{T}_k' = \bm{0}$ for $i \neq k$, then $\bm{A}_i = \bm{\tilde{A}}_i$. 
+Let $\bm{\tilde{V}}^{CR}$ be the CRVE calculated using $\bm{\tilde{A}}_i$ as defined in (\ref{eq:CR2_tilde}) and $\bm{V}^{CR}$ be calculated using the full adjustment matrices as defined in (\ref{eq:CR2_adjustment}) and (\ref{eq:CR2_Bmatrix}).
+If $\bm{W}_i = \bm{I}_i$ and $\bs\Phi_i = \bm{I}_i$ for $i = 1,...,m$, then $\bm{A}_i \bm{\ddot{R}}_i = \bm{\tilde{A}}_i \bm{\ddot{R}}_i$ and $\bm{\tilde{V}}^{CR} = \bm{V}^{CR}$.
 \end{thm}
 
-Proof is given in the supplementary materials.
-The main implication of Theorem \ref{thm:absorb} is that the more computationally tractable formula $\bm{\tilde{B}}_i$ can be used in the common case that the weighting matrices are the inverse of the working covariance model.
+Proof is given in Appendix A.
+The main implication of Theorem \ref{thm:absorb} is that the more computationally tractable formula $\bm{\tilde{A}}_i$ can be used in the common case of unweighted least squares estimation.
 Following the working model suggested by @Bell2002bias, in which $\bs\Phi = \bm{I}$, the theorem shows that the adjustment method is invariant to the choice of estimator so long as the model is estimated by OLS (i.e., with $\bm{W} = \bm{I}$).
-<!-- In this case, the CR2 adjustment matrices then simplify further to $\bm{A}_i = \left(\bm{I}_i - \bm{\ddot{U}}_i\left(\bm{\ddot{U}}'\bm{\ddot{U}}\right)^{-1}\bm{\ddot{U}}_i'\right)^{+1/2}$. -->
 In contrast, if the working model proposed by @Imbens2015robust is instead used (while still using OLS), then the the CR2 adjustments might differ depending on whether LSDV or the fixed effects estimator is used.
 
 # HYPOTHESIS TESTING {#sec:testing}
@@ -717,10 +721,17 @@ Extensions to linear regression models with clustering in multiple, non-nested d
 
 # ACKNOWLEDGMENTS {-}
 
-This article has benefited from the feedback of seminar participants at the PRIISM Center at New York University, the University of Texas Population Research Center, and the American Institutes for Research, as well as an associate editor and referees. The authors thank Dan Knopf for helpful discussions about the linear algebra behind the cluster-robust variance estimator, and David Figlio and Coady Wing for advice about empirical applications and context.
-
-# SUPPLEMENTARY MATERIALS {-}
-
-Supplementary materials include proofs of Theorems 1 and 2; additional details, results, and replication code from the simulation study; and replication code for the examples in Section \ref{sec:examples}.
+This article has benefited from the feedback of seminar participants at the PRIISM Center at New York University, the University of Texas Population Research Center, and the American Institutes for Research, as well as an associate editor and referees. The authors thank Dan Knopf for helpful discussions about the linear algebra behind the cluster-robust variance estimator, and David Figlio and Coady Wing for advice about empirical applications and context. Finally, we thank Michael Pfaffenmayr for drawing our attention to an error in an earlier version of Theorem 2.
 
 # REFERENCES {-}
+
+<div id="refs"></div>
+
+\newpage
+
+# Appendix A: Proofs
+
+```{r, child='ClusterRobustTesting_FE_models_revised_proofs.Rmd'}
+```
+
+# Appendix C: Further details of the simulations
