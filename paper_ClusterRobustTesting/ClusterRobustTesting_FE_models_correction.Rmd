@@ -16,7 +16,7 @@ output:
     citation_package: default
     number_sections: false
 abstract: |
-  @pustejovsky2018small considered how to do cluster-robust variance estimation in fixed effects models estimated by weighted (or unweighted) least squares. Theorem 2 of the paper concerns a computational short cut for a certain cluster-robust variance estimator in models with cluster-specific fixed effects. The theorem is incorrect as stated. In this correction, we  review the CR2 variance estimator, describe the assertion of the theorem as originally stated, and explain the error. We then provide a revised version of the theorem.
+  @pustejovsky2018small considered how to implement cluster-robust variance estimators for fixed effects models estimated by weighted (or unweighted) least squares. Theorem 2 of the paper concerns a computational short cut for a certain cluster-robust variance estimator in models with cluster-specific fixed effects. The theorem is incorrect as stated. In this correction, we  review the CR2 variance estimator, describe the assertion of the theorem as originally stated, and explain the error. We then provide a revised version of the theorem.
 
 header-includes:
 - \usepackage{amsthm}
@@ -56,7 +56,7 @@ where $\bm{y}_i$ is an $n_i \times 1$ vector of responses for cluster $i$, $\bm{
 # The CR2 variance estimator 
 
 @pustejovsky2018small provided a generalization of the bias-reduced linearization estimator introduced by @McCaffrey2001generalizations and @Bell2002bias that can be applied to Model \ref{eq:regression}, referred to as the CR2 variance estimator. 
-In order to define CR2, we follow the same notation as @pustejovsky2018small. Let $N = \sum_{i=1}^m n_i$ be the total sample size. Let $\bm{U}_i = \left[ \bm{R}_i \ \bm{S}_i \right]$ be the set of predictors that vary across clusters and $\bm{X}_i = \left[ \bm{R}_i \ \bm{S}_i \ \bm{T}_i \right]$ be the full set of predictors. Let $\bm{R}$, $\bm{S}$, $\bm{T}$, $\bm{U}$, and $\bm{X}$ denote the stacked versions of the cluster-specific matrices (i.e., $\bm{R} = \left[\bm{R}_1' \ \bm{R}_2' \ \cdots \ \bm{R}_m'\right]'$, etc.). Let $\bm{W} = \bigoplus_{i=1}^m \bm{W}_i$ and $\bs\Phi = \bigoplus_{i=1}^m \bs\Phi_i$. For a generic matrix $\bm{Z}$, let $\bm{M}_{Z} = \left(\bm{Z}'\bm{W}\bm{Z}\right)^{-1}$ and $\bm{H}_{\bm{Z}} = \bm{Z} \bm{M}_{\bm{Z}}\bm{Z}'\bm{W}$. Let $\bm{C}_i$ be the $n_i \times N$ matrix that selects the rows of cluster $i$ from the full set of observations, such that $\bm{X}_i = \bm{C}_i \bm{X}$. Finally, let $\bm{D}_i$ be the upper-right Cholesky factorization of $\bm{\Phi}_i$.
+We follow the same notation as @pustejovsky2018small to define CR2. Let $N = \sum_{i=1}^m n_i$ be the total sample size. Let $\bm{U}_i = \left[ \bm{R}_i \ \bm{S}_i \right]$ be the set of predictors that vary across clusters and $\bm{X}_i = \left[ \bm{R}_i \ \bm{S}_i \ \bm{T}_i \right]$ be the full set of predictors. Let $\bm{R}$, $\bm{S}$, $\bm{T}$, $\bm{U}$, and $\bm{X}$ denote the stacked versions of the cluster-specific matrices (i.e., $\bm{R} = \left[\bm{R}_1' \ \bm{R}_2' \ \cdots \ \bm{R}_m'\right]'$, etc.). Let $\bm{W} = \bigoplus_{i=1}^m \bm{W}_i$ and $\bs\Phi = \bigoplus_{i=1}^m \bs\Phi_i$. For a generic matrix $\bm{Z}$, let $\bm{M}_{Z} = \left(\bm{Z}'\bm{W}\bm{Z}\right)^{-1}$ and $\bm{H}_{\bm{Z}} = \bm{Z} \bm{M}_{\bm{Z}}\bm{Z}'\bm{W}$. Let $\bm{C}_i$ be the $n_i \times N$ matrix that selects the rows of cluster $i$ from the full set of observations, such that $\bm{X}_i = \bm{C}_i \bm{X}$. Finally, let $\bm{D}_i$ be the upper-right Cholesky factorization of $\bm{\Phi}_i$.
 
 These operators provide a means to define absorbed versions of the predictors. Let $\bm{\ddot{S}} = \left(\bm{I} - \bm{H}_{\bm{T}}\right) \bm{S}$ be the covariates after absorbing the cluster-specific effects, let $\bm{\ddot{U}} = \left(\bm{I} - \bm{H}_{\bm{T}}\right) \bm{U}$ be an absorbed version of the focal predictors and the covariates, and let $\bm{\ddot{R}} = \left(\bm{I} - \bm{H}_{\bm{\ddot{S}}}\right)\left(\bm{I} - \bm{H}_{\bm{T}}\right) \bm{R}$ be the focal predictors after absorbing the covariates and the cluster-specific fixed effects. 
 
@@ -64,7 +64,8 @@ With this notation established, the CR2 variance estimator has the form
 \begin{equation}
 \bm{V}^{CR2} = \bm{M}_{\bm{\ddot{R}}} \left(\sum_{i=1}^m \bm{\ddot{R}}_i' \bm{W}_i \bm{A}_i \bm{e}_i \bm{e}_i' \bm{A}_i \bm{W}_i \bm{\ddot{R}}_i \right) \bm{M}_{\bm{\ddot{R}}},
 \end{equation}
-where $\bm{\ddot{R}}_i = \bm{C}_i \bm{\ddot{R}}$ is the cluster-specific matrix of absorbed focal predictors, $\bm{e}_i$ is the vector of weighted least squares residuals from cluster $i$, and $\bm{A}_1,...,\bm{A}_m$ are a set of adjustment matrices that correct the bias of the residual cross-products. 
+where $\bm{\ddot{R}}_i = \bm{C}_i \bm{\ddot{R}}$ is the cluster-specific matrix of absorbed focal predictors, $\bm{e}_i$ is the vector of weighted least squares residuals from cluster $i$, and $\bm{A}_1,...,\bm{A}_m$ are a set of adjustment matrices that correct the bias of the residual cross-products.
+
 The adjustment matrices are calculated as follows. Define the matrices 
 \begin{equation}
 \label{eq:B-matrix}
@@ -105,7 +106,7 @@ The implication of the revised theorem is that, for ordinary least squares regre
 
 ## Proof
 
-From the fact that $\bm{\ddot{U}}_i'\bm{T}_i = \bm{0}$ for $i = 1,...,m$, it follows that
+Setting $\bs\Phi_i = \bm{I}_i$ and observing that $\bm{\ddot{U}}_i'\bm{T}_i = \bm{0}$ for $i = 1,...,m$, it follows that
 \begin{align}
 \bm{B}_i &= \bm{D}_i \bm{C}_i \left(\bm{I} - \bm{H_{\ddot{U}}}\right) \left(\bm{I} - \bm{H_T}\right) \bs\Phi \left(\bm{I} - \bm{H_T}\right)' \left(\bm{I} - \bm{H_{\ddot{U}}}\right)' \bm{C}_i' \bm{D}_i' \nonumber \\ 
 &= \bm{C}_i \left(\bm{I} - \bm{H_{\ddot{U}}} - \bm{H_T}\right) \left(\bm{I} - \bm{H_{\ddot{U}}} - \bm{H_T}\right) \bm{C}_i' \nonumber\\ 
@@ -118,15 +119,15 @@ and similarly,
 \tilde{\bm{B}}_i = \left(\bm{I}_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\right).
 \end{equation}
 
-Now, we can show that $\tilde{\bm{A}}_i \bm{T}_i = \bm{T}_i$. Denote the rank of $\bm{\ddot{U}}_i$ as $u_i \leq r + s$ and take the thin QR decomposition of $\bm{\ddot{U}}_i$ as $\bm{\ddot{U}}_i = \bm{Q}_i \bm{R}_i$, where $\bm{Q}_i$ is an $n_i \times u_i$ semi-orthonormal matrix and $\bm{R}_i$ is a $u_i \times r + s$ matrix of rank $u_i$, with $\bm{Q}_i'\bm{Q}_i = \bm{I}$. Note that $\bm{Q}_i'\bm{T}_i = \bm{0}$. Now observe that $\tilde{\bm{B}}_i$ can be written as 
+We now show that $\tilde{\bm{A}}_i \bm{T}_i = \bm{T}_i$. Denote the rank of $\bm{\ddot{U}}_i$ as $u_i \leq \min \left\{n_i, r + s \right\}$ and take the thin QR decomposition of $\bm{\ddot{U}}_i$ as $\bm{\ddot{U}}_i = \bm{Q}_i \bm{R}_i$, where $\bm{Q}_i$ is an $n_i \times u_i$ semi-orthonormal matrix and $\bm{R}_i$ is a $u_i \times r + s$ matrix of rank $u_i$, with $\bm{Q}_i'\bm{Q}_i = \bm{I}$. Note that $\bm{Q}_i'\bm{T}_i = \bm{0}$. From the observation that $\tilde{\bm{B}}_i$ can be written as 
 $$
-\tilde{\bm{B}}_i = \bm{I}_i - \bm{Q}_i \bm{Q}_i' + \bm{Q}_i \left(\bm{I} - \bm{R}_i \bm{M}_{\bm{\ddot{U}}} \bm{R}_i'\right)\bm{Q}_i'
+\tilde{\bm{B}}_i = \bm{I}_i - \bm{Q}_i \bm{Q}_i' + \bm{Q}_i \left(\bm{I} - \bm{R}_i \bm{M}_{\bm{\ddot{U}}} \bm{R}_i'\right)\bm{Q}_i',
 $$
-and it can be seen that
+it can be seen that
 \begin{equation}
 \tilde{\bm{A}}_i = \tilde{\bm{B}}_i^{+1/2} = \bm{I}_i - \bm{Q}_i \bm{Q}_i' + \bm{Q}_i \left(\bm{I} - \bm{R}_i \bm{M}_{\bm{\ddot{U}}} \bm{R}_i'\right)^{+1/2} \bm{Q}_i'.
 \end{equation}
-It follows that $\tilde{\bm{A}}_i \bm{T}_i = \tilde{\bm{B}}_i^{+1/2} \bm{T}_i = \bm{T}_i$.
+It follows that $\tilde{\bm{A}}_i \bm{T}_i = \bm{T}_i$.
 
 Setting
 \begin{equation}

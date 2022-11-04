@@ -1,12 +1,13 @@
-% Options for packages loaded elsewhere
-\PassOptionsToPackage{unicode}{hyperref}
-\PassOptionsToPackage{hyphens}{url}
 % !TeX program = pdfLaTeX
 \documentclass[12pt]{article}
 \usepackage{amsmath}
 \usepackage{graphicx,psfrag,epsf}
 \usepackage{enumerate}
+
+
 \usepackage{textcomp}
+\usepackage[hyphens]{url} % not crucial - just used below for the URL
+\usepackage{hyperref}
 
 %\pdfminorversion=4
 % NOTE: To produce blinded version, replace "0" with "1" below.
@@ -14,10 +15,10 @@
 
 % DON'T change margins - should be 1 inch all around.
 \addtolength{\oddsidemargin}{-.5in}%
-\addtolength{\evensidemargin}{-1in}%
+\addtolength{\evensidemargin}{-.5in}%
 \addtolength{\textwidth}{1in}%
-\addtolength{\textheight}{1.7in}%
-\addtolength{\topmargin}{-1in}%
+\addtolength{\textheight}{1.3in}%
+\addtolength{\topmargin}{-.8in}%
 
 %% load any required packages here
 
@@ -78,15 +79,6 @@
 \newcommand{\bm}{\mathbf}
 \newcommand{\bs}{\boldsymbol}
 
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\hypersetup{
-  pdftitle={Corrigendum: Small sample methods for cluster-robust variance estimation and hypothesis testing in fixed effects models},
-  hidelinks,
-  pdfcreator={LaTeX via pandoc}}
-
-
-
 \begin{document}
 
 
@@ -129,8 +121,8 @@ variance estimation and hypothesis testing in fixed effects models}
 
 \bigskip
 \begin{abstract}
-Pustejovsky and Tipton (2018) considered how to do cluster-robust
-variance estimation in fixed effects models estimated by weighted (or
+Pustejovsky and Tipton (2018) considered how to implement cluster-robust
+variance estimators for fixed effects models estimated by weighted (or
 unweighted) least squares. Theorem 2 of the paper concerns a
 computational short cut for a certain cluster-robust variance estimator
 in models with cluster-specific fixed effects. The theorem is incorrect
@@ -140,12 +132,11 @@ the error. We then provide a revised version of the theorem.
 \end{abstract}
 
 \noindent%
- 
-
+{\it Keywords:} 
 \vfill
 
 \newpage
-\spacingset{1.9} % DON'T change the spacing!
+\spacingset{1.45} % DON'T change the spacing!
 
 \hypertarget{a-fixed-effects-model}{%
 \section{A fixed effects model}\label{a-fixed-effects-model}}
@@ -186,9 +177,9 @@ diagonal matrices consisting of sampling weights or identity matrices
 Pustejovsky and Tipton (2018) provided a generalization of the
 bias-reduced linearization estimator introduced by McCaffrey, Bell, and
 Botts (2001) and Bell and McCaffrey (2002) that can be applied to Model
-\ref{eq:regression}, referred to as the CR2 variance estimator. In order
-to define CR2, we follow the same notation as Pustejovsky and Tipton
-(2018). Let \(N = \sum_{i=1}^m n_i\) be the total sample size. Let
+\ref{eq:regression}, referred to as the CR2 variance estimator. We
+follow the same notation as Pustejovsky and Tipton (2018) to define CR2.
+Let \(N = \sum_{i=1}^m n_i\) be the total sample size. Let
 \(\mathbf{U}_i = \left[ \mathbf{R}_i \ \mathbf{S}_i \right]\) be the set
 of predictors that vary across clusters and
 \(\mathbf{X}_i = \left[ \mathbf{R}_i \ \mathbf{S}_i \ \mathbf{T}_i \right]\)
@@ -227,8 +218,10 @@ With this notation established, the CR2 variance estimator has the form
 cluster-specific matrix of absorbed focal predictors, \(\mathbf{e}_i\)
 is the vector of weighted least squares residuals from cluster \(i\),
 and \(\mathbf{A}_1,...,\mathbf{A}_m\) are a set of adjustment matrices
-that correct the bias of the residual cross-products. The adjustment
-matrices are calculated as follows. Define the matrices \begin{equation}
+that correct the bias of the residual cross-products.
+
+The adjustment matrices are calculated as follows. Define the matrices
+\begin{equation}
 \label{eq:B-matrix}
 \mathbf{B}_i = \mathbf{D}_i \mathbf{C}_i \left(\mathbf{I} - \mathbf{H}_{\mathbf{X}}\right) \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H}_{\mathbf{X}}\right)'\mathbf{C}_i' \mathbf{D}_i'
 \end{equation} for \(i = 1,...,m\). The adjustment matrices are then
@@ -304,8 +297,9 @@ than \(\boldsymbol\Phi_i = \mathbf{I}_i\).
 \hypertarget{proof}{%
 \subsection{Proof}\label{proof}}
 
-From the fact that \(\mathbf{\ddot{U}}_i'\mathbf{T}_i = \mathbf{0}\) for
-\(i = 1,...,m\), it follows that \begin{align}
+Setting \(\boldsymbol\Phi_i = \mathbf{I}_i\) and observing that
+\(\mathbf{\ddot{U}}_i'\mathbf{T}_i = \mathbf{0}\) for \(i = 1,...,m\),
+it follows that \begin{align}
 \mathbf{B}_i &= \mathbf{D}_i \mathbf{C}_i \left(\mathbf{I} - \mathbf{H_{\ddot{U}}}\right) \left(\mathbf{I} - \mathbf{H_T}\right) \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H_T}\right)' \left(\mathbf{I} - \mathbf{H_{\ddot{U}}}\right)' \mathbf{C}_i' \mathbf{D}_i' \nonumber \\ 
 &= \mathbf{C}_i \left(\mathbf{I} - \mathbf{H_{\ddot{U}}} - \mathbf{H_T}\right) \left(\mathbf{I} - \mathbf{H_{\ddot{U}}} - \mathbf{H_T}\right) \mathbf{C}_i' \nonumber\\ 
 \label{eq:B_i}
@@ -315,21 +309,21 @@ From the fact that \(\mathbf{\ddot{U}}_i'\mathbf{T}_i = \mathbf{0}\) for
 \tilde{\mathbf{B}}_i = \left(\mathbf{I}_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\right).
 \end{equation}
 
-Now, we can show that
-\(\tilde{\mathbf{A}}_i \mathbf{T}_i = \mathbf{T}_i\). Denote the rank of
-\(\mathbf{\ddot{U}}_i\) as \(u_i \leq r + s\) and take the thin QR
+We now show that \(\tilde{\mathbf{A}}_i \mathbf{T}_i = \mathbf{T}_i\).
+Denote the rank of \(\mathbf{\ddot{U}}_i\) as
+\(u_i \leq \min \left\{n_i, r + s \right\}\) and take the thin QR
 decomposition of \(\mathbf{\ddot{U}}_i\) as
 \(\mathbf{\ddot{U}}_i = \mathbf{Q}_i \mathbf{R}_i\), where
 \(\mathbf{Q}_i\) is an \(n_i \times u_i\) semi-orthonormal matrix and
 \(\mathbf{R}_i\) is a \(u_i \times r + s\) matrix of rank \(u_i\), with
 \(\mathbf{Q}_i'\mathbf{Q}_i = \mathbf{I}\). Note that
-\(\mathbf{Q}_i'\mathbf{T}_i = \mathbf{0}\). Now observe that
+\(\mathbf{Q}_i'\mathbf{T}_i = \mathbf{0}\). From the observation that
 \(\tilde{\mathbf{B}}_i\) can be written as \[
-\tilde{\mathbf{B}}_i = \mathbf{I}_i - \mathbf{Q}_i \mathbf{Q}_i' + \mathbf{Q}_i \left(\mathbf{I} - \mathbf{R}_i \mathbf{M}_{\mathbf{\ddot{U}}} \mathbf{R}_i'\right)\mathbf{Q}_i'
-\] and it can be seen that \begin{equation}
+\tilde{\mathbf{B}}_i = \mathbf{I}_i - \mathbf{Q}_i \mathbf{Q}_i' + \mathbf{Q}_i \left(\mathbf{I} - \mathbf{R}_i \mathbf{M}_{\mathbf{\ddot{U}}} \mathbf{R}_i'\right)\mathbf{Q}_i',
+\] it can be seen that \begin{equation}
 \tilde{\mathbf{A}}_i = \tilde{\mathbf{B}}_i^{+1/2} = \mathbf{I}_i - \mathbf{Q}_i \mathbf{Q}_i' + \mathbf{Q}_i \left(\mathbf{I} - \mathbf{R}_i \mathbf{M}_{\mathbf{\ddot{U}}} \mathbf{R}_i'\right)^{+1/2} \mathbf{Q}_i'.
 \end{equation} It follows that
-\(\tilde{\mathbf{A}}_i \mathbf{T}_i = \tilde{\mathbf{B}}_i^{+1/2} \mathbf{T}_i = \mathbf{T}_i\).
+\(\tilde{\mathbf{A}}_i \mathbf{T}_i = \mathbf{T}_i\).
 
 Setting \begin{equation}
 \mathbf{A}_i = \tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i',
@@ -371,6 +365,8 @@ Statistics} 36 (4): 672--83.
 
 \end{CSLReferences}
 
+\bibliographystyle{agsm}
+\bibliography{bibliography.bib}
 
 
 \end{document}
