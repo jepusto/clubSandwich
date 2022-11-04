@@ -74,9 +74,10 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Meta-analysis with cluster-robust variance estimation</h1>
-                        <h4 data-toc-skip class="author">James E. Pustejovsky</h4>
+                        <h4 data-toc-skip class="author">James E.
+Pustejovsky</h4>
             
-            <h4 data-toc-skip class="date">2022-10-07</h4>
+            <h4 data-toc-skip class="date">2022-11-04</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jepusto/clubSandwich/blob/HEAD/vignettes/meta-analysis-with-CRVE.Rmd" class="external-link"><code>vignettes/meta-analysis-with-CRVE.Rmd</code></a></small>
       <div class="d-none name"><code>meta-analysis-with-CRVE.Rmd</code></div>
@@ -84,8 +85,25 @@
 
     
     
-<p>This vignette demonstrates how to use the <code>clubSandwich</code> package to conduct a meta-analysis of dependent effect sizes with robust variance estimation. Tests of meta-regression coefficients and F-tests of multiple-coefficient hypotheses are calculated using small-sample corrections proposed by Tipton (2015) and Tipton and Pustejovsky (2015). The example uses a dataset of effect sizes from a Campbell Collaboration systematic review of dropout prevention programs, conducted by Sandra Jo Wilson and colleagues (2011).</p>
-<p>The original analysis included a meta-regression with covariates that capture methodological, participant, and program characteristics. The regression specification used here is similar to Model III from Wilson et al. (2011), but treats the <code>evaluator_independence</code> and <code>implementation_quality</code> variables as categorical rather than interval-level. Also, the original analysis clustered at the level of the sample (some studies reported results from multiple samples), whereas here we cluster at the study level. The meta-regression can be fit in several different ways. We first demonstrate using the <code>robumeta</code> package (Fisher &amp; Tipton, 2015) and then using the <code>metafor</code> package (Viechtbauer, 2010).</p>
+<p>This vignette demonstrates how to use the <code>clubSandwich</code>
+package to conduct a meta-analysis of dependent effect sizes with robust
+variance estimation. Tests of meta-regression coefficients and F-tests
+of multiple-coefficient hypotheses are calculated using small-sample
+corrections proposed by Tipton (2015) and Tipton and Pustejovsky (2015).
+The example uses a dataset of effect sizes from a Campbell Collaboration
+systematic review of dropout prevention programs, conducted by Sandra Jo
+Wilson and colleagues (2011).</p>
+<p>The original analysis included a meta-regression with covariates that
+capture methodological, participant, and program characteristics. The
+regression specification used here is similar to Model III from Wilson
+et al. (2011), but treats the <code>evaluator_independence</code> and
+<code>implementation_quality</code> variables as categorical rather than
+interval-level. Also, the original analysis clustered at the level of
+the sample (some studies reported results from multiple samples),
+whereas here we cluster at the study level. The meta-regression can be
+fit in several different ways. We first demonstrate using the
+<code>robumeta</code> package (Fisher &amp; Tipton, 2015) and then using
+the <code>metafor</code> package (Viechtbauer, 2010).</p>
 <div class="section level2">
 <h2 id="robumeta-model">robumeta model<a class="anchor" aria-label="anchor" href="#robumeta-model"></a>
 </h2>
@@ -144,12 +162,29 @@
 <span><span class="co">## Signif. codes: &lt; .01 *** &lt; .05 ** &lt; .10 *</span></span>
 <span><span class="co">## ---</span></span>
 <span><span class="co">## Note: If df &lt; 4, do not trust the results</span></span></code></pre>
-<p>Note that <code>robumeta</code> produces small-sample corrected standard errors and t-tests, and so there is no need to repeat those calculations with <code>clubSandwich</code>. The <code>eval</code> variable has four levels, and it might be of interest to test whether the average program effects differ by the degree of evaluator independence. The null hypothesis in this case is that the 10th, 11th, and 12th regression coefficients are all equal to zero. A small-sample adjusted F-test for this hypothesis can be obtained as follows. The <code>vcov = "CR2"</code> option means that the standard errors will be corrected using the bias-reduced linearization estimator described in Tipton and Pustejovsky (2015).</p>
+<p>Note that <code>robumeta</code> produces small-sample corrected
+standard errors and t-tests, and so there is no need to repeat those
+calculations with <code>clubSandwich</code>. The <code>eval</code>
+variable has four levels, and it might be of interest to test whether
+the average program effects differ by the degree of evaluator
+independence. The null hypothesis in this case is that the 10th, 11th,
+and 12th regression coefficients are all equal to zero. A small-sample
+adjusted F-test for this hypothesis can be obtained as follows. The
+<code>vcov = "CR2"</code> option means that the standard errors will be
+corrected using the bias-reduced linearization estimator described in
+Tipton and Pustejovsky (2015).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/Wald_test.html">Wald_test</a></span><span class="op">(</span><span class="va">m3_robu</span>, constraints <span class="op">=</span> <span class="fu"><a href="../reference/constraint_matrices.html">constrain_zero</a></span><span class="op">(</span><span class="fl">10</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  test Fstat df_num df_denom  p_val sig</span></span>
 <span><span class="co">##   HTZ  2.78      3     16.8 0.0732   .</span></span></code></pre>
-<p>By default, the <code>Wald_test</code> function provides an F-type test with degrees of freedom estimated using the approximate Hotelling’s <span class="math inline">\(T^2_Z\)</span> method. The test has less than 17 degrees of freedom, even though there are 152 independent studies in the data, and has a p-value that is not quite significant at conventional levels. The low degrees of freedom are a consequence of the fact that one of the levels of <code>evaluator independence</code> has only a few effect sizes in it:</p>
+<p>By default, the <code>Wald_test</code> function provides an F-type
+test with degrees of freedom estimated using the approximate Hotelling’s
+<span class="math inline">\(T^2_Z\)</span> method. The test has less
+than 17 degrees of freedom, even though there are 152 independent
+studies in the data, and has a p-value that is not quite significant at
+conventional levels. The low degrees of freedom are a consequence of the
+fact that one of the levels of <code>evaluator independence</code> has
+only a few effect sizes in it:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">dropoutPrevention</span><span class="op">$</span><span class="va">eval</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
@@ -159,7 +194,12 @@
 <div class="section level2">
 <h2 id="metafor-model">metafor model<a class="anchor" aria-label="anchor" href="#metafor-model"></a>
 </h2>
-<p><code>clubSandwich</code> also works with models fit using the <code>metafor</code> package. Here we re-fit the same regression specification, but use REML to estimate the variance components (<code>robumeta</code> uses a method-of-moments estimator), as well as a somewhat different weighting scheme than that used in <code>robumeta</code>.</p>
+<p><code>clubSandwich</code> also works with models fit using the
+<code>metafor</code> package. Here we re-fit the same regression
+specification, but use REML to estimate the variance components
+(<code>robumeta</code> uses a method-of-moments estimator), as well as a
+somewhat different weighting scheme than that used in
+<code>robumeta</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://www.metafor-project.org" class="external-link">metafor</a></span><span class="op">)</span></span>
 <span><span class="va">m3_metafor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://wviechtb.github.io/metafor/reference/rma.mv.html" class="external-link">rma.mv</a></span><span class="op">(</span><span class="va">LOR1</span> <span class="op">~</span> <span class="va">study_design</span> <span class="op">+</span> <span class="va">attrition</span> <span class="op">+</span> <span class="va">group_equivalence</span> <span class="op">+</span> <span class="va">adjusted</span></span>
@@ -215,7 +255,10 @@
 <span><span class="co">## </span></span>
 <span><span class="co">## ---</span></span>
 <span><span class="co">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span></code></pre>
-<p><code>metafor</code> produces model-based standard errors, t-tests, and confidence intervals. The <code>coef_test</code> function from <code>clubSandwich</code> will calculate robust standard errors and robust t-tests for each of the coefficients:</p>
+<p><code>metafor</code> produces model-based standard errors, t-tests,
+and confidence intervals. The <code>coef_test</code> function from
+<code>clubSandwich</code> will calculate robust standard errors and
+robust t-tests for each of the coefficients:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">m3_metafor</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##                  Coef.  Estimate       SE  t-stat d.f. (Satt) p-val (Satt) Sig.</span></span>
@@ -241,22 +284,39 @@
 <span><span class="co">##     program_siteschool  0.161640 0.171700  0.9414       29.27      0.35420     </span></span>
 <span><span class="co">##               duration  0.001270 0.000978  1.2988       31.96      0.20332     </span></span>
 <span><span class="co">##            service_hrs -0.000309 0.004828 -0.0641       49.63      0.94915</span></span></code></pre>
-<p>Note that <code>coef_test</code> assumed that it should cluster based on <code>studyID</code>, which is the outer-most random effect in the metafor model. This can be specified explicitly by including the option <code>cluster = dropoutPrevention$studyID</code> in the call.</p>
-<p>The F-test for degree of evaluator independence uses the same syntax as before:</p>
+<p>Note that <code>coef_test</code> assumed that it should cluster based
+on <code>studyID</code>, which is the outer-most random effect in the
+metafor model. This can be specified explicitly by including the option
+<code>cluster = dropoutPrevention$studyID</code> in the call.</p>
+<p>The F-test for degree of evaluator independence uses the same syntax
+as before:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/Wald_test.html">Wald_test</a></span><span class="op">(</span><span class="va">m3_metafor</span>, constraints <span class="op">=</span> <span class="fu"><a href="../reference/constraint_matrices.html">constrain_zero</a></span><span class="op">(</span><span class="fl">10</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  test Fstat df_num df_denom  p_val sig</span></span>
 <span><span class="co">##   HTZ  2.71      3     18.3 0.0753   .</span></span></code></pre>
-<p>Despite some differences in weighting schemes, the p-value is very close to the result obtained using <code>robumeta</code>.</p>
+<p>Despite some differences in weighting schemes, the p-value is very
+close to the result obtained using <code>robumeta</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>Fisher, Z., &amp; Tipton, E. (2015). robumeta: An R-package for robust variance estimation in meta-analysis. <a href="https://arxiv.org/abs/1503.02220" class="external-link">arXiv:1503.02220</a></p>
-<p>Tipton, E. (2015). Small sample adjustments for robust variance estimation with meta-regression. <em>Psychological Methods, 20</em>(3), 375-393. <a href="https://doi.org/10.1037/met0000011" class="external-link uri">https://doi.org/10.1037/met0000011</a></p>
-<p>Tipton, E., &amp; Pustejovsky, J. E. (2015). Small-sample adjustments for tests of moderators and model fit using robust variance estimation in meta-regression. <em>Journal of Educational and Behavioral Statistics, 40</em>(6), 604-634. <a href="https://doi.org/10.3102/1076998615606099" class="external-link uri">https://doi.org/10.3102/1076998615606099</a></p>
-<p>Viechtbauer, W. (2010). Conducting meta-analyses in R with the metafor package. <em>Journal of Statistical Software, 36</em>(3), 1-48. URL: <a href="https://doi.org/10.18637/jss.v036.i03" class="external-link uri">https://doi.org/10.18637/jss.v036.i03</a></p>
-<p>Wilson, S. J., Lipsey, M. W., Tanner-Smith, E., Huang, C. H., &amp; Steinka-Fry, K. T. (2011). Dropout prevention and intervention programs: Effects on school completion and dropout Among school-aged children and youth: A systematic review. <em>Campbell Systematic Reviews, 7</em>(1), 1-61. <a href="https://doi.org/10.4073/csr.2011.8" class="external-link uri">https://doi.org/10.4073/csr.2011.8</a></p>
+<p>Fisher, Z., &amp; Tipton, E. (2015). robumeta: An R-package for
+robust variance estimation in meta-analysis. <a href="https://arxiv.org/abs/1503.02220" class="external-link">arXiv:1503.02220</a></p>
+<p>Tipton, E. (2015). Small sample adjustments for robust variance
+estimation with meta-regression. <em>Psychological Methods, 20</em>(3),
+375-393. <a href="https://doi.org/10.1037/met0000011" class="external-link uri">https://doi.org/10.1037/met0000011</a></p>
+<p>Tipton, E., &amp; Pustejovsky, J. E. (2015). Small-sample adjustments
+for tests of moderators and model fit using robust variance estimation
+in meta-regression. <em>Journal of Educational and Behavioral
+Statistics, 40</em>(6), 604-634. <a href="https://doi.org/10.3102/1076998615606099" class="external-link uri">https://doi.org/10.3102/1076998615606099</a></p>
+<p>Viechtbauer, W. (2010). Conducting meta-analyses in R with the
+metafor package. <em>Journal of Statistical Software, 36</em>(3), 1-48.
+URL: <a href="https://doi.org/10.18637/jss.v036.i03" class="external-link uri">https://doi.org/10.18637/jss.v036.i03</a></p>
+<p>Wilson, S. J., Lipsey, M. W., Tanner-Smith, E., Huang, C. H., &amp;
+Steinka-Fry, K. T. (2011). Dropout prevention and intervention programs:
+Effects on school completion and dropout Among school-aged children and
+youth: A systematic review. <em>Campbell Systematic Reviews, 7</em>(1),
+1-61. <a href="https://doi.org/10.4073/csr.2011.8" class="external-link uri">https://doi.org/10.4073/csr.2011.8</a></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

@@ -52,7 +52,9 @@
       <small>Source: <a href="https://github.com/jepusto/clubSandwich/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
-    <div class="section level2"><h2 class="pkg-version" data-toc-text="0.5.8.9999" id="clubsandwich-0589999">clubSandwich 0.5.8.9999<a class="anchor" aria-label="anchor" href="#clubsandwich-0589999"></a></h2></div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.5.8.9999" id="clubsandwich-0589999">clubSandwich 0.5.8.9999<a class="anchor" aria-label="anchor" href="#clubsandwich-0589999"></a></h2>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.8" id="clubsandwich-058">clubSandwich 0.5.8<a class="anchor" aria-label="anchor" href="#clubsandwich-058"></a></h2><p class="text-muted">CRAN release: 2022-08-15</p>
 <ul><li>Added support for <code><a href="https://john-d-fox.github.io/ivreg//reference/ivreg.html" class="external-link">ivreg::ivreg</a></code> objects when estimated by ordinary least squares (support for objects estimated by 2SM and 2SMM is not yet implemented).</li>
@@ -100,15 +102,18 @@
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.3" id="clubsandwich-053">clubSandwich 0.5.3<a class="anchor" aria-label="anchor" href="#clubsandwich-053"></a></h2><p class="text-muted">CRAN release: 2021-01-23</p>
-<ul><li>Removed dependency on mathjaxr</li></ul></div>
+<ul><li>Removed dependency on mathjaxr</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.2" id="clubsandwich-052">clubSandwich 0.5.2<a class="anchor" aria-label="anchor" href="#clubsandwich-052"></a></h2><p class="text-muted">CRAN release: 2020-11-14</p>
-<ul><li>Added mathjaxr to Imports</li></ul></div>
+<ul><li>Added mathjaxr to Imports</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.1" id="clubsandwich-051">clubSandwich 0.5.1<a class="anchor" aria-label="anchor" href="#clubsandwich-051"></a></h2><p class="text-muted">CRAN release: 2020-10-12</p>
 <div class="section level3">
 <h3 id="new-features-0-5-1">New features<a class="anchor" aria-label="anchor" href="#new-features-0-5-1"></a></h3>
-<ul><li>New functionality for <code><a href="../reference/impute_covariance_matrix.html">impute_covariance_matrix()</a></code>:<ul><li>Compute covariance matrices with AR1 correlation structure or with a combination of constant correlation and AR1 correlation structure.</li>
+<ul><li>New functionality for <code><a href="../reference/impute_covariance_matrix.html">impute_covariance_matrix()</a></code>:
+<ul><li>Compute covariance matrices with AR1 correlation structure or with a combination of constant correlation and AR1 correlation structure.</li>
 <li>Compute covariance matrices that are blocked by subgroup.</li>
 <li>Average the variance estimates by cluster before computing covariance matrices.</li>
 </ul></li>
@@ -116,7 +121,8 @@
 </ul></div>
 <div class="section level3">
 <h3 id="minor-improvements-and-bug-fixes-0-5-1">Minor improvements and bug fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-bug-fixes-0-5-1"></a></h3>
-<ul><li>Corrected bug in methods for <code>rma.mv</code> objects, which previously led to incorrect identification of clustering variables in models with multiple levels of random effects, where at least one set of random effects has inner | outer structure.</li></ul></div>
+<ul><li>Corrected bug in methods for <code>rma.mv</code> objects, which previously led to incorrect identification of clustering variables in models with multiple levels of random effects, where at least one set of random effects has inner | outer structure.</li>
+</ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.5.0" id="clubsandwich-050">clubSandwich 0.5.0<a class="anchor" aria-label="anchor" href="#clubsandwich-050"></a></h2><p class="text-muted">CRAN release: 2020-09-01</p>
@@ -139,10 +145,12 @@
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.2" id="clubsandwich-042">clubSandwich 0.4.2<a class="anchor" aria-label="anchor" href="#clubsandwich-042"></a></h2><p class="text-muted">CRAN release: 2020-04-17</p>
-<ul><li>Updated and streamlined unit tests for R 4.0.0.</li></ul></div>
+<ul><li>Updated and streamlined unit tests for R 4.0.0.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.1" id="clubsandwich-041">clubSandwich 0.4.1<a class="anchor" aria-label="anchor" href="#clubsandwich-041"></a></h2><p class="text-muted">CRAN release: 2020-01-28</p>
-<ul><li>Updated unit tests to satisfy obscure CRAN checks.</li></ul></div>
+<ul><li>Updated unit tests to satisfy obscure CRAN checks.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.4.0" id="clubsandwich-040">clubSandwich 0.4.0<a class="anchor" aria-label="anchor" href="#clubsandwich-040"></a></h2><p class="text-muted">CRAN release: 2019-12-18</p>
 <ul><li><p>Added methods for <code>lmerMod</code> objects fitted by <code><a href="https://rdrr.io/pkg/lme4/man/lmer.html" class="external-link">lme4::lmer()</a></code>.</p></li>
@@ -202,12 +210,14 @@
 <ul><li><p>Refactored internal functions for degrees of freedom calculation to improve speed and memory usage.</p></li>
 <li>
 <p>Bug fixes:</p>
-<ul><li>updated <code>nobs.plm()</code> method to handle first-differenced models</li></ul></li>
+<ul><li>updated <code>nobs.plm()</code> method to handle first-differenced models</li>
+</ul></li>
 </ul></div>
 </div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.2.1" id="clubsandwich-021">clubSandwich 0.2.1<a class="anchor" aria-label="anchor" href="#clubsandwich-021"></a></h2><p class="text-muted">CRAN release: 2016-07-23</p>
-<ul><li>First version released on CRAN.</li></ul></div>
+<ul><li>First version released on CRAN.</li>
+</ul></div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
