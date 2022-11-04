@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="James E. Pustejovsky and Hanna Kim" />
+
+<meta name="date" content="2022-11-03" />
+
+<title>Cluster-robust variance estimation with clubSandwich</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Cluster-robust variance estimation with
+clubSandwich</h1>
+<h4 class="author">James E. Pustejovsky and Hanna Kim</h4>
+<h4 class="date">2022-11-03</h4>
+
+
+
+<p><span class="math display">\[
+\newcommand{\Prob}{\text{Pr}}
+\newcommand{\E}{\text{E}}
+\newcommand{\Cov}{\text{Cov}}
+\newcommand{\corr}{\text{corr}}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\tr}{\text{tr}}
+\newcommand{\bmat}[1]{\mathbf{#1}}
+\newcommand{\bs}{\boldsymbol}
+\newcommand{\half}[1]{#1^{\frac{1}{2}}}
+\newcommand{\halfinv}[1]{#1^{-\frac{1}{2}}}
+\]</span></p>
+<p>Linear regression models, estimated by ordinary least squares
+weighted least squares, are a ubiquitous tool across a diverse range of
+fields. Classically, inference in such models is based on the assumption
+that the model’s errors are independent and homoskedastic (or more
+generally, that the errors follow a known structure of a low-dimensional
+parameter). However, such assumptions will be unreasonable in many
+applications. For instance, using the classical assumptions can lead to
+underestimated standard errors when observations are draw from groups or
+clusters that are subject to shared sources of error. Cluster-robust
+variance estimation methods provide a basis for inference under the
+weaker assumption that the errors of observations different clusters are
+independent but errors within a given cluster may be correlated. These
+methods can be applied across a broad scope of models, including not
+only ordinary linear regression, but also hierarchical (random effects)
+linear models, meta-analytic models, generalized linear models,
+generalized estimating equations, and instrumental variables models.</p>
+<p>Let us consider the linear regression model <span class="math display">\[
+\begin{aligned}
+y_{ij} &amp;= \beta_0 + \beta_1 x_{1ij} + \beta_2 x_{2ij} + \cdots +
+\beta_{p-1} x_{p-1,ij} + e_{ij}, \\
+&amp;= \mathbf{x}_{ij} \boldsymbol\beta + e_{ij}
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(\mathbf{x}_{ij}\)</span> is a <span class="math inline">\(1 \times p\)</span> row vector of predictors
+(possibly including an intercept term) and <span class="math inline">\(e_{ij}\)</span> is an error term, both for
+observation <span class="math inline">\(i = 1,...,n_j\)</span> in
+cluster <span class="math inline">\(j = 1,...,J\)</span>. It will be
+convenient to write this model using vectors and matrices for each
+cluster, as <span class="math display">\[
+\mathbf{y}_j = \mathbf{X}_j \boldsymbol\beta + \mathbf{e}_j,
+\]</span> where <span class="math inline">\(\mathbf{y}_j = (y_{1j}
+\cdots y_{n_j j})&#39;\)</span> is the <span class="math inline">\(n_j
+\times 1\)</span> vector of outcomes for cluster <span class="math inline">\(j\)</span>, <span class="math inline">\(\mathbf{X}_j = (\mathbf{x}_{1j}&#39; \cdots
+\mathbf{x}_{n_j j}&#39;)&#39;\)</span> is the <span class="math inline">\(n_j \times p\)</span> matrix of predictors for
+cluster <span class="math inline">\(j\)</span>, and <span class="math inline">\(\mathbf{e}_j\)</span> is the <span class="math inline">\(n_j \times 1\)</span> vector of errors for cluster
+<span class="math inline">\(j\)</span>, all for <span class="math inline">\(j = 1,...,J\)</span>.</p>
+<p>We will maintain the following assumptions regarding the errors in
+the regression: <span class="math display">\[
+\begin{aligned}
+A1:&amp; \qquad \E(\bmat{e}_j | \bmat{X}_j) = \bmat{0} \\
+A2:&amp; \qquad \E(\bmat{e}_j \bmat{e}_{k}&#39; | \bmat{X}_j,
+\bmat{X}_{k}) = \bmat{0}, \qquad \text{when} \qquad j \neq {k} \\
+A3:&amp; \qquad \E(\bmat{e}_j \bmat{e}_j&#39; | \bmat{X}_j) =
+\Var(\bmat{e}_j) = \bs\Omega_j.
+\end{aligned}
+\]</span> The <span class="math inline">\(n_j \times n_j\)</span>
+matrices <span class="math inline">\(\bs\Omega_j\)</span> captures the
+cluster-specific variance-covariance matrix of the errors. A common
+strategy for estimation and inference about the regression coefficients
+is to make further assumptions regarding the form of these matrices,
+such as by assuming that all errors are independent and homoskedastic
+(i.e., <span class="math inline">\(\bs\Omega_j = \sigma^2
+\bmat{I}_j\)</span>) or that they have a structure characterized by a
+low-dimensional parameter (as in a hierarchical linear model or random
+effects model). Robust variance estimation methods provide a method for
+characterizing uncertainty and conducting inference without relying on
+such additional assumptions. Rather, we will treat the
+variance-covariance matrices as following an unknown form. Thus, the
+errors within a cluster need not be homoskedastic or independent, but
+can instead be arbitrarily correlated within the same cluster.</p>
+<p>Researchers will often estimate the regression coefficient vector
+<span class="math inline">\(\bs\beta\)</span> using ordinary least
+squares (OLS) or, more generally, some form of weighted least squares
+(WLS). The weighted least squares estimator might involve non-unit
+weights for each observation or some form of weight matrices for each
+cluster, potentially including off-diagonal terms (as in a hierarchical
+linear model). We will consider a general set of symmetric weight
+matrices <span class="math inline">\(\bmat{W}_1,...,\bmat{W}_J\)</span>.
+The weighted least squares estimator for <span class="math inline">\(\bs\beta\)</span> is then defined as <span class="math display">\[
+\bs{\hat\beta} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j
+\bmat{y}_j\right), \quad \text{where} \quad \bmat{M} =
+\left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j \bmat{X}_j\right)^{-1}.
+\]</span></p>
+<p>In some applications, the weight matrices used for WLS estimation are
+motivated by a working model for the structure of the error
+variance-covariances <span class="math inline">\(\bs\Omega_j\)</span>.
+In this approach, the analyst posits a structure <span class="math inline">\(\bs\Omega_j = \bs\Psi_j(\bs\theta)\)</span> for
+some low-dimensional, estimable parameter <span class="math inline">\(\bs\theta\)</span>. If the working model captures
+the true form of the error variances, then the weights that make the
+sampling variance of <span class="math inline">\(\bs{\hat\beta}\)</span>
+as small as possible (the most precise) are the inverse variance weights
+<span class="math inline">\(\bs\Psi_j^{-1}\)</span>, which depend on the
+parameter <span class="math inline">\(\bs\theta\)</span>. In practice,
+the variance parameter <span class="math inline">\(\bs\theta\)</span> is
+unknown and so the analyst will use the inverse of the
+<em>estimated</em> working model as the weights, with <span class="math inline">\(\bmat{W}_j = \bs{\hat\Psi}_j^{-1}\)</span>. When
+the weight matrices are so derived, we will refer to them as
+“inverse-variance” weights.</p>
+<div id="robust-variance-estimation" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Robust Variance
+Estimation</h1>
+<p>Treating the weight matrices as fixed, the sampling variance of <span class="math inline">\(\bs{\hat\beta}\)</span> is <span class="math display">\[
+\Var\left(\bs{\hat\beta}\right) = \bmat{M} \left(\sum_{j=1}^J
+\bmat{X}_j&#39;\bmat{W}_j \bs\Omega_j \bmat{W}_j \bmat{X}_j \right)
+\bmat{M},
+\]</span> which depends on the unknown variance-covariances <span class="math inline">\(\bs\Omega_1,...,\bs\Omega_J\)</span>. One strategy
+for estimating <span class="math inline">\(\Var\left(\bs{\hat\beta}\right)\)</span> is to
+substitute an estimated working model <span class="math inline">\(\bs{\hat\Psi}_j\)</span> for the unknown
+variance-covariance matrices <span class="math inline">\(\bs\Omega_j\)</span>, giving a model-based
+variance estimator: <span class="math display">\[
+\bmat{V}^{model} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j
+\bs{\hat\Psi}_j \bmat{W}_j \bmat{X}_j \right) \bmat{M}.
+\]</span> If the working model is correctly specified and precisely
+estimated, then the model-based variance estimator will closely
+approximate the true sampling variance. If the analyst uses
+inverse-variance weights based on the same working model, then the
+model-based variance estimator has the simpler form <span class="math inline">\(\bmat{V}^{model} = \bmat{M}\)</span>. However, if
+the working model is inaccurate or incorrectly specified in some way,
+then there is no guarantee that the model-based variance estimator will
+be valid.</p>
+<p>Robust variance estimators provide an alternative strategy that does
+not rely on assumptions about the form of the working model….</p>
+<!-- H: Maybe come back later... -->
+<div id="cr0" class="section level3" number="1.0.1">
+<h3><span class="header-section-number">1.0.1</span> CR0</h3>
+<!-- 11/3: Cite White (1985), Liang & Zeger (1986) as source for CR0 -->
+<p>The original form of the robust variance estimator uses the residuals
+from each cluster to derive rough estimates of the unknown error
+variance matrices. This estimator substitutes the cross product of the
+residuals <span class="math inline">\(\bmat{\hat{u}}_j\bmat{\hat{u}}_j&#39;\)</span> in
+place of <span class="math inline">\(\bs\Omega\)</span>, leading to the
+variance estimator <span class="math display">\[
+\bmat{V}^{CR0} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j
+\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; \bmat{W}_j\bmat{X}_j\right)
+\bmat{M}.
+\]</span> Each</p>
+<!-- 9/21: We might add some brief sentences about the limitations of CR0 referring to Cameron & Miller (2015) or others. -->
+<!-- H: Briefly explain what problems could arise by using CR0 for cases with a small number of clusters. -->
+</div>
+<div id="small-sample-corrections" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Small-sample
+corrections</h2>
+<p>A number of variations on the basic cluster-robust variance estimator
+have been proposed, all of which aim to provide more accurate
+approximations when the number of clusters is limited. The variations
+implemented in the <code>clubSandwich</code> package all have the form
+<span class="math display">\[
+\bmat{V}^{CR} = f \times \bmat{M} \left(\sum_{j=1}^J \bmat{E}_j&#39;
+\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; \bmat{E}_j \right) \bmat{M}
+\]</span> for some constant <span class="math inline">\(f\)</span> and
+some estimating matrices <span class="math inline">\(\bmat{E}_1,...,\bmat{E}_J\)</span>. With this
+representation, the CRO estimator corresponds to <span class="math inline">\(f_0 = 1\)</span> and <span class="math inline">\(\bmat{E}^{CR0}_j = \bmat{W}_j
+\bmat{X}_j\)</span>.</p>
+<div id="cr1" class="section level3" number="1.1.1">
+<h3><span class="header-section-number">1.1.1</span> CR1</h3>
+<p>The CR1, CR1S, and CR1p estimators are variants that use the
+following constants with <span class="math inline">\(\bmat{E}^{CR1}_j =
+\bmat{W}_j \bmat{X}_j\)</span>. <span class="math display">\[
+\begin{aligned}
+\text{CR1}: f_1 &amp;= \frac{J}{J - 1}, \\
+\text{CR1S}: f_{1S} &amp;= \frac{J (N - 1)}{(J - 1)(N - p)} , \\
+\text{CR1p}: f_{1p} &amp;= \frac{J}{J - p},
+\end{aligned}
+\]</span></p>
+<p>These corrections are all motivated by the observation that the
+sandwich estimator corresponds to a sample variance-covariance matrix
+across terms for each cluster. Thus, inflating it by an amount depending
+on the number of clusters should tend to reduce the small-sample bias of
+CR0. However, the exact bias of CR0 depends on features of the data
+beyond simply the number of clusters and predictors, including the
+distribution of cluster sizes and the distribution of the predictors
+within and across clusters <span class="citation">(McCaffrey, Bell, and
+Botts 2001; Tipton and Pustejovsky 2015; Pustejovsky and Tipton
+2018)</span>. Thus, the simple multiplicative corrections involved in
+the CR1 and related estimators are only very rough approximations.</p>
+</div>
+<div id="cr2" class="section level3" number="1.1.2">
+<h3><span class="header-section-number">1.1.2</span> CR2</h3>
+<p><span class="citation">Bell and McCaffrey (2002)</span> and <span class="citation">McCaffrey, Bell, and Botts (2001)</span> introduced a
+class of more refined robust variance estimators, termed “bias-reduced
+linearization” estimators, that account for variation in cluster sizes
+and the distribution of predictors. These estimators require positing a
+working model for the error structure, which might or might not also be
+used to derive the weight matrices. Based on this working model, the
+estimators incorporate adjustments to the residuals used in the middle
+of the sandwich estimator, such that the whole estimator is exactly
+unbiased when the working model is correctly specified.</p>
+<p>The CR2 estimator uses <span class="math inline">\(f_2 = 1\)</span>
+and <span class="math display">\[
+\bmat{E}^{CR2}_j = \bmat{A}_j&#39; \bmat{W}_j \bmat{X}_j,
+\]</span> for <span class="math inline">\(j=1,...,J\)</span>, where
+<span class="math inline">\(\bmat{A}_1,...,\bm{A}_J\)</span> are
+adjustment matrices that satisfy the criteria <span class="math display">\[
+\E\left(\bmat{A}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39;
+\bmat{A}_j&#39;\right) = \bs\Psi_j.
+\]</span> where <span class="math inline">\(\bs\Psi_j\)</span> denotes
+the working model for cluster <span class="math inline">\(j\)</span> and
+the expectation is taken assuming that the working model is correct.
+Thus, if the working model is correctly specified, <span class="math display">\[
+\E\left({\bmat{E}^{CR2}_j}&#39;\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39;
+\bmat{E}_j^{CR2}\right) = \bmat{X}_j&#39;\bmat{W}_j \bs\Psi_j \bmat{W}_j
+\bmat{X}_j,
+\]</span> and so <span class="math inline">\(\E\left(\bmat{V}^{CR2}\right) =
+\Var\left(\bs{\hat\beta}\right)\)</span>.</p>
+<p>To derive expressions for <span class="math inline">\(\bmat{A}_j\)</span>, observe that the residuals
+from cluster <span class="math inline">\(j\)</span> may be written as
+<span class="math inline">\(\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right)
+\bmat{Y}\)</span>, where <span class="math inline">\(\bmat{H} =
+\bmat{X}\bmat{M}\bmat{X}&#39;\bmat{W}\)</span> and <span class="math inline">\(\bmat{C}_j\)</span> is an <span class="math inline">\(n_j \times N\)</span> matrix that selects the rows
+of the full data that correspond to cluster <span class="math inline">\(j\)</span> (i.e., <span class="math inline">\(\bmat{X}_j = \bmat{C}_j \bmat{X}\)</span>).
+Because the residuals have mean zero, the expectation of the
+cross-product of residuals from cluster <span class="math inline">\(j\)</span> is <span class="math display">\[
+\E\left(\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39;\right) =
+\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N -
+\bmat{H}&#39;\right)\bmat{C}_j.
+\]</span> The adjustment matrices therefore satisfy the criteria <span class="math display">\[
+\bmat{A}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi
+\left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j \bmat{A}_j&#39; =
+\bs\Psi_j
+\]</span> for <span class="math inline">\(j = 1,...,J\)</span>. There
+are multiple possible solutions to the above. <span class="citation">McCaffrey, Bell, and Botts (2001)</span> considered
+several possible solutions to the above. A symmetric solution is given
+by <span class="math display">\[
+\bmat{A}_j = \bmat{D}_j&#39; \halfinv{\bmat{B}}_j \bmat{D}_j,
+\]</span> where <span class="math inline">\(\bmat{D}_j\)</span> is the
+upper-right triangular Cholesky factorization of <span class="math inline">\(\bs\Psi_j\)</span>, so that <span class="math inline">\(\bmat{D}_j&#39; \bmat{D}_j =
+\bs\Psi_j\)</span>,<br />
+<span class="math display">\[
+\bmat{B}_j = \bmat{D}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right)
+\bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j
+\bmat{D}_j&#39;,
+\]</span> and <span class="math inline">\(\halfinv{\bmat{B}}_j\)</span>
+is the inverse of the symmetric square root of <span class="math inline">\(\bmat{B}_j\)</span>. If the weight matrices are
+inverse-variance, then the matrix <span class="math inline">\(\bmat{B}_j\)</span> has the simpler form <span class="math display">\[
+\bmat{B}_j = \bmat{D}_j \left(\bs\Psi_j -
+\bmat{X}\bmat{M}\bmat{X}&#39;\right)\bmat{D}_j&#39;.
+\]</span> For the special case of ordinary least squares, the adjustment
+matrices simplify even further to <span class="math display">\[
+\bmat{A}_j = \halfinv{\left(\bmat{I}_j - \bmat{X}_j
+\bmat{M}\bmat{X}_j&#39;\right)}
+\]</span> if the working model is based on the assumption of
+independent, homoskedastic errors.</p>
+<p><span class="citation">McCaffrey, Bell, and Botts (2001)</span> also
+considered an asymmetric solution to the criteria. However, they
+recommended the symmetric one because it minimizes the squared error
+between the OLS residuals and the the true errors when the errors are
+i.i.d. Even when the errors were not independent, <span class="citation">McCaffrey, Bell, and Botts (2001)</span> found that the
+symmetric adjustment matrices yielded smaller bias than asymmetric
+ones.</p>
+<p><span class="citation">Niccodemi et al. (2020)</span> described an
+efficient method of calculating the CR2 for the special case of ordinary
+least squares with an independence working model…</p>
+<p>Unfortunately, their computational approach does not generalize to
+the CR2 adjustment matrices for weighted least squares or working models
+other than <span class="math inline">\(\Psi_j = \sigma^2
+\bmat{I}_j\)</span>.</p>
+</div>
+<div id="cr2f" class="section level3" number="1.1.3">
+<h3><span class="header-section-number">1.1.3</span> CR2f</h3>
+<p><span class="citation">McCaffrey, Bell, and Botts (2001)</span> also
+considered another approach to correcting the bias of the residuals,
+using a different set of adjustment matrices that we term CR2f. The CR2f
+estimator uses <span class="math inline">\(f_2 = 1\)</span> and <span class="math display">\[
+\bmat{E}^{CR2f}_j = \half{\bmat{W}}_j \bmat{A}_j \half{\bmat{W}}_j
+\bmat{X}_j,
+\]</span> where <span class="math inline">\(\bmat{A}_1,...,\bmat{A}_j\)</span> are adjustment
+matrices that satisfy the criteria <span class="math display">\[
+\E\left(\bmat{A}_j\half{\bmat{W}}_j\bmat{\hat{u}}_j
+\bmat{\hat{u}}_j&#39;\half{\bmat{W}}_j \bmat{A}_j&#39;\right) =
+\bmat{A}_j \half{\bmat{W}}_j \bmat{C}_j\left(\bmat{I}_N -
+\bmat{H}\right) \bs\Psi \left(\bmat{I}_N -
+\bmat{H}&#39;\right)\bmat{C}_j \half{\bmat{W}}_j \bmat{A}_j&#39; =
+\half{\bmat{W}}_j \bs\Psi_j\half{\bmat{W}}_j.
+\]</span> Following the same reasoning as with the CR2 estimator,
+adjustment matrices that satisfy these criteria lead to a variance
+estimator that is exactly unbiased if the working model is correctly
+specified. A symmetric solution is given by <span class="math display">\[
+\bmat{A}_j = \bmat{D}_j&#39; \halfinv{\bmat{B}}_j \bmat{D}_j,
+\]</span> where <span class="math inline">\(\bmat{D}_j\)</span> is the
+upper-right triangular Cholesky factorization of <span class="math inline">\(\bs\Psi_j\)</span> and<br />
+<span class="math display">\[
+\bmat{B}_j = \bmat{D}_j \half{\bmat{W}}_j\bmat{C}_j\left(\bmat{I}_N -
+\bmat{H}\right) \bs\Psi \left(\bmat{I}_N -
+\bmat{H}&#39;\right)\bmat{C}_j \half{\bmat{W}}_j \bmat{D}_j&#39;.
+\]</span> If the weight matrices are inverse-variance, then the CR2f
+adjustment matrices have the simpler form <span class="math display">\[
+\bmat{A}_j = \halfinv{\left(\bmat{I}_j -
+\half{\bmat{W}}_j\bmat{X}\bmat{M}\bmat{X}&#39;\half{\bmat{W}}_j\right)}.
+\]</span> For ordinary (unweighted) least squares, the CR2 and CR2f
+adjustment matrices are equivalent.</p>
+</div>
+<div id="cr3" class="section level3" number="1.1.4">
+<h3><span class="header-section-number">1.1.4</span> CR3</h3>
+<ul>
+<li>CR3 uses <span class="math inline">\(f_3 = 1\)</span> and <span class="math display">\[
+\bmat{E}_j = \bmat{A}_j \bmat{W}_j \bmat{X}_j,
+\]</span> where <span class="math inline">\(\bmat{A}_j\)</span> are
+adjustment matrices…</li>
+</ul>
+<!-- Jackknife - See Tipton (2015) for some arguments -->
+</div>
+<div id="cr4" class="section level3" number="1.1.5">
+<h3><span class="header-section-number">1.1.5</span> CR4</h3>
+<ul>
+<li>CR4 uses <span class="math inline">\(f_4 = 1\)</span> and <span class="math display">\[
+\bmat{E}_j = \bmat{W}_j \bmat{X}_j \bmat{D}_j,
+\]</span> where <span class="math inline">\(\bmat{D}_j\)</span> are
+adjustment matrices…</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="model-specific-considerations" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Model-specific
+considerations</h1>
+<div id="lm" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span>
+<code>lm()</code></h2>
+</div>
+<div id="mlm" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span>
+<code>mlm()</code></h2>
+</div>
+<div id="nlmegls-nlmelme-and-lme4lmer" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span>
+<code>nlme::gls()</code>, <code>nlme::lme()</code>, and
+<code>lme4::lmer()</code></h2>
+</div>
+<div id="plmplm" class="section level2" number="2.4">
+<h2><span class="header-section-number">2.4</span>
+<code>plm::plm()</code></h2>
+</div>
+<div id="glm-and-geepackgeeglm" class="section level2" number="2.5">
+<h2><span class="header-section-number">2.5</span> <code>glm()</code>
+and <code>geepack::geeglm()</code></h2>
+</div>
+<div id="robumetarobu" class="section level2" number="2.6">
+<h2><span class="header-section-number">2.6</span>
+<code>robumeta::robu()</code></h2>
+</div>
+<div id="metaforrma.uni-and-metaforrma.mv" class="section level2" number="2.7">
+<h2><span class="header-section-number">2.7</span>
+<code>metafor::rma.uni()</code> and <code>metafor::rma.mv()</code></h2>
+</div>
+</div>
+<div id="single-coefficient-hypothesis-tests-and-confidence-intervals" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Single-coefficient
+hypothesis tests and confidence intervals</h1>
+<!-- (To use the Satterthwaite approximation (instead of the Wald-test assuming large samples), we need the mean and variance of $V$. These are generally unknown (because they depend on $\bs\Omega$), but we can approximate them by assuming that the working model is correct. - H: I think this is the key idea/motivation behind cluster-robust variance estimation. -->
+<div id="degrees-of-freedom-corrections" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Degrees of freedom
+corrections</h2>
+<ul>
+<li>z</li>
+<li>naive-t, naive-tp</li>
+<li>Satterthwaite correction</li>
+</ul>
+</div>
+<div id="saddlepoint-correction" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Saddlepoint
+correction</h2>
+</div>
+<div id="coef_test" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span>
+<code>coef_test()</code></h2>
+</div>
+<div id="conf_int" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span>
+<code>conf_int()</code></h2>
+</div>
+<div id="linear_contrast" class="section level2" number="3.5">
+<h2><span class="header-section-number">3.5</span>
+<code>linear_contrast()</code></h2>
+</div>
+</div>
+<div id="multiple-constraint-hypothesis-tests" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Multiple-constraint
+hypothesis tests</h1>
+<ul>
+<li><code>Wald_test()</code></li>
+</ul>
+<div id="convenience-functions-for-constraint-matrices" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Convenience functions
+for constraint matrices</h2>
+<ul>
+<li><code>constrain_equal()</code></li>
+<li><code>constrain_zero()</code></li>
+<li><code>constrain_pairwise()</code></li>
+</ul>
+</div>
+</div>
+<div id="computational-considerations" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Computational
+considerations</h1>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-bell2002bias" class="csl-entry">
+Bell, Robert M, and Daniel F McCaffrey. 2002. <span>“Bias Reduction in
+Standard Errors for Linear Regression with Multi-Stage Samples.”</span>
+<em>Survey Methodology</em> 28 (2): 169–82.
+</div>
+<div id="ref-mccaffrey2001generalizations" class="csl-entry">
+McCaffrey, Daniel F, Robert M Bell, and Carsten H Botts. 2001.
+<span>“Generalizations of Biased Reduced Linearization.”</span> In
+<em>Proceedings of the Annual Meeting of the American Statistical
+Association</em>, 673. 1994.
+</div>
+<div id="ref-niccodemi2020refining" class="csl-entry">
+Niccodemi, Gianmaria, Rob Alessie, Viola Angelini, Jochen Mierau, and
+Thomas Wansbeek. 2020. <span>“Refining Clustered Standard Errors with
+Few Clusters.”</span> 2020002-EEF. SOM Research Reports. Munich:
+University of Groningen, SOM research school.
+</div>
+<div id="ref-pustejovsky2018small" class="csl-entry">
+Pustejovsky, James E., and Elizabeth Tipton. 2018.
+<span>“Small-<span>Sample</span> <span>Methods</span> for
+<span>Cluster</span>-<span>Robust</span> <span>Variance</span>
+<span>Estimation</span> and <span>Hypothesis</span> <span>Testing</span>
+in <span>Fixed</span> <span>Effects</span> <span>Models</span>.”</span>
+<em>Journal of Business &amp; Economic Statistics</em> 36 (4): 672–83.
+<a href="https://doi.org/10.1080/07350015.2016.1247004">https://doi.org/10.1080/07350015.2016.1247004</a>.
+</div>
+<div id="ref-tipton2015small" class="csl-entry">
+Tipton, Elizabeth, and James E. Pustejovsky. 2015. <span>“Small-Sample
+Adjustments for Tests of Moderators and Model Fit Using Robust Variance
+Estimation in Meta-Regression.”</span> <em>Journal of Educational and
+Behavioral Statistics</em> 40 (6): 604–34. <a href="https://doi.org/10.3102/1076998615606099">https://doi.org/10.3102/1076998615606099</a>.
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
