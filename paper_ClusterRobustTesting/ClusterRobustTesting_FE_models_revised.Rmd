@@ -17,7 +17,7 @@ abstract: |
   In simulations covering a wide range of scenarios, we find that the conventional cluster-robust Wald test can severely over-reject while the proposed small-sample test maintains Type I error close to nominal levels. 
   The proposed methods are implemented in an R package called clubSandwich. 
   
-  __This paper has been revised to correct an error in the statement of Theorem 2.__
+  __This paper has been revised to correct an error in the statement of Theorem 2 and minor typos in the proof of Theorem 1.__
   
 keywords:
   - cluster dependence
@@ -741,8 +741,10 @@ This article has benefited from the feedback of seminar participants at the PRII
 \setcounter{section}{0}
 \setcounter{table}{0}
 \setcounter{figure}{0}
+\setcounter{equation}{0}
 \renewcommand{\thefigure}{A\arabic{figure}}
 \renewcommand{\thetable}{A\arabic{table}}
+\renewcommand{\theequation}{A\arabic{equation}}
 
 ```{r, child='ClusterRobustTesting_FE_models_revised_proofs.Rmd'}
 ```

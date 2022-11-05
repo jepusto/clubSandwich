@@ -1,31 +1,39 @@
 # Proof of Theorem 1 {#app:proof1}
 
+Consider the matrix $\bm{B}_i$ as defined in (\ref{eq:CR2_Bmatrix}): 
+$$
+\bm{B}_i = \bm{D}_i\left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i' \bm{D}_i',
+$$
 The Moore-Penrose inverse of $\bm{B}_i$ can be computed from its eigen-decomposition. Let $b \leq n_i$ denote the rank of $\bm{B}_i$. 
 Let $\bs\Lambda$ be the $b \times b$ diagonal matrix of the positive eigenvalues of $\bm{B}_i$ and $\bm{V}$ be the $n_i \times b$ matrix of corresponding eigen-vectors, so that $\bm{B}_i = \bm{V}\bs\Lambda\bm{V}'$. 
-Then $\bm{B}_i^+ = \bm{V}\bs\Lambda^{-1}\bm{V}'$ and $\bm{B}_i^{+1/2} = \bm{V}\bs\Lambda^{-1/2}\bm{V}'$. Now, observe that 
+Then $\bm{B}_i^+ = \bm{V}\bs\Lambda^{-1}\bm{V}'$ and $\bm{B}_i^{+1/2} = \bm{V}\bs\Lambda^{-1/2}\bm{V}'$. Because the adjustment matrices taken to be $\bm{A}_i = \bm{D}_i' \bm{B}_i^{+1/2} \bm{D}_i$, we have that
 \begin{equation}\begin{aligned}
 \label{eq:step1}
-\bm{\ddot{R}}_i' \bm{W}_i \bm{A}_i \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i' \bm{A}_i' \bm{W}_i \bm{\ddot{R}}_i &= \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{B}_i^{+1/2} \bm{B}_i \bm{B}_i^{+1/2} \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i \\
-&= \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{V}\bm{V}' \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i. 
+\bm{\ddot{R}}_i' \bm{W}_i \bm{A}_i \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i' \bm{A}_i' \bm{W}_i \bm{\ddot{R}}_i &= \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i' \bm{B}_i^{+1/2} \bm{B}_i \bm{B}_i^{+1/2} \bm{D}_i \bm{W}_i \bm{\ddot{R}}_i \\
+&= \bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i' \bm{V}\bm{V}' \bm{D}_i \bm{W}_i \bm{\ddot{R}}_i. 
 \end{aligned}\end{equation}
+Thus, it will suffice to show that $\bm{V}'\bm{D}_i \bm{W}_i \bm{\ddot{R}}_i = \bm{D}_i \bm{W}_i \bm{\ddot{R}}_i$.
 
-Because $\bm{D}_i$, and $\bs\Phi$ are positive definite and $\bm{B}_i$ is symmetric, the eigen-vectors $\bm{V}$ define an orthonormal basis for the column span of $\left(\bm{I} - \bm{H_X}\right)_i$.
+Now, because $\bm{D}_i$ and $\bs\Phi$ are positive definite and $\bm{B}_i$ is symmetric, the eigen-vectors $\bm{V}$ define an orthonormal basis for the column span of $\left(\bm{I} - \bm{H_X}\right)_i$.
 We now show that $\bm{\ddot{U}}_i$ is in the column space of $\left(\bm{I} - \bm{H_X}\right)_i$. 
 Let $\bm{Z}_i$ be an $n_i \times (r + s)$ matrix of zeros. 
-Let $\bm{Z}_k = - \bm{\ddot{U}}_k \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1}$, for $k \neq i$ and take $\bm{Z} = \left(\bm{Z}_1',...,\bm{Z}_m'\right)'$. 
-Now observe that $\left(\bm{I} - \bm{H_T}\right) \bm{Z} = \bm{Z}$. 
+With $\bm{L}_i$ as defined in Theorem \ref{thm:BRL_FE}, take $\bm{Z}_k = - \bm{\ddot{U}}_k \bm{L}_i^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1}$, for $k \neq i$ and $\bm{Z} = \left(\bm{Z}_1',...,\bm{Z}_m'\right)'$. 
+Observe that $\left(\bm{I} - \bm{H_T}\right) \bm{Z} = \bm{Z}$. 
 It follows that 
 \begin{align*}
-\left(\bm{I} - \bm{H_X}\right)_i \bm{Z} &= \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \left(\bm{I} - \bm{H_T}\right) \bm{Z} = \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \bm{Z} \\
+\left(\bm{I} - \bm{H_X}\right)_i \bm{Z} &= \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \left(\bm{I} - \bm{H_T}\right) \bm{Z} \\
+&= \left(\bm{I} - \bm{H_{\ddot{U}}}\right)_i \bm{Z} \\
 &= \bm{Z}_i - \bm{\ddot{U}}_i\bm{M_{\ddot{U}}}\sum_{k=1}^m \bm{\ddot{U}}_k'\bm{W}_k\bm{Z}_k \\
-&= \bm{\ddot{U}}_i\bm{M_{\ddot{U}}} \left(\sum_{k \neq i} \bm{\ddot{U}}_k' \bm{W}_k \bm{\ddot{U}} \right) \bm{L}^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1} = \bm{\ddot{U}}_i.
+&= \bm{\ddot{U}}_i\bm{M_{\ddot{U}}} \left(\sum_{k \neq i} \bm{\ddot{U}}_k' \bm{W}_k \bm{\ddot{U}} \right) \bm{L}_i^{-1}\bm{M}_{\bm{\ddot{U}}}^{-1} \\
+&= \bm{\ddot{U}}_i\bm{M_{\ddot{U}}} \bm{L}_i \bm{L}_i^{-1} \bm{M}_{\bm{\ddot{U}}}^{-1} \\
+&= \bm{\ddot{U}}_i.
 \end{align*}
 Thus, there exists an $N \times (r + s)$ matrix $\bm{Z}$ such that $\left(\bm{I} - \bm{H_{\ddot{X}}}\right)_i \bm{Z} = \bm{\ddot{U}}_i$, i.e., $\bm{\ddot{U}}_i$ is in the column span of $\left(\bm{I} - \bm{H_X}\right)_i$. Because $\bm{D}_i \bm{W}_i$ is positive definite and $\bm{\ddot{R}}_i$ is a sub-matrix of $\bm{\ddot{U}}_i$, $\bm{D}_i\bm{W}_i\bm{\ddot{R}}_i$ is also in the column span of $\left(\bm{I} - \bm{H_X}\right)_i$. It follows that 
 \begin{equation}
 \label{eq:step2}
-\bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i \bm{V}\bm{V}' \bm{D}_i' \bm{W}_i \bm{\ddot{R}}_i = \bm{\ddot{R}}_i' \bm{W}_i \bs\Phi_i \bm{W}_i \bm{\ddot{R}}_i.
+\bm{\ddot{R}}_i' \bm{W}_i \bm{D}_i' \bm{V}\bm{V}' \bm{D}_i \bm{W}_i \bm{\ddot{R}}_i = \bm{\ddot{R}}_i' \bm{W}_i \bs\Phi_i \bm{W}_i \bm{\ddot{R}}_i.
 \end{equation}
-Substituting (\ref{eq:step2}) into (\ref{eq:step1}) demonstrates that $\bm{A}_i$ satisfies the generalized BRL criterion (Eq. 6 of the main paper).
+Substituting (\ref{eq:step2}) into (\ref{eq:step1}) demonstrates that $\bm{A}_i$ satisfies the generalized BRL criterion (Equation \ref{eq:CR2_criterion} of the main text).
 
 Under the working model, the residuals from cluster $i$ have mean $\bm{0}$ and variance \[
 \Var\left(\bm{\ddot{e}}_i\right) = \left(\bm{I} - \bm{H_X}\right)_i \bs\Phi \left(\bm{I} - \bm{H_X}\right)_i',\] 

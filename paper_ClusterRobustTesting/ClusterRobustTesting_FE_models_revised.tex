@@ -144,7 +144,7 @@ maintains Type I error close to nominal levels. The proposed methods are
 implemented in an R package called clubSandwich.
 
 \textbf{This paper has been revised to correct an error in the statement
-of Theorem 2.}
+of Theorem 2 and minor typos in the proof of Theorem 1.}
 \end{abstract}
 
 \noindent%
@@ -1689,14 +1689,19 @@ and Inference} 142 (1): 336--46.
 \setcounter{section}{0}
 \setcounter{table}{0}
 \setcounter{figure}{0}
+\setcounter{equation}{0}
 \renewcommand{\thefigure}{A\arabic{figure}}
 \renewcommand{\thetable}{A\arabic{table}}
+\renewcommand{\theequation}{A\arabic{equation}}
 
 \hypertarget{app:proof1}{%
 \section{Proof of Theorem 1}\label{app:proof1}}
 
-The Moore-Penrose inverse of \(\mathbf{B}_i\) can be computed from its
-eigen-decomposition. Let \(b \leq n_i\) denote the rank of
+Consider the matrix \(\mathbf{B}_i\) as defined in
+(\ref{eq:CR2_Bmatrix}): \[
+\mathbf{B}_i = \mathbf{D}_i\left(\mathbf{I} - \mathbf{H_X}\right)_i \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H_X}\right)_i' \mathbf{D}_i',
+\] The Moore-Penrose inverse of \(\mathbf{B}_i\) can be computed from
+its eigen-decomposition. Let \(b \leq n_i\) denote the rank of
 \(\mathbf{B}_i\). Let \(\boldsymbol\Lambda\) be the \(b \times b\)
 diagonal matrix of the positive eigenvalues of \(\mathbf{B}_i\) and
 \(\mathbf{V}\) be the \(n_i \times b\) matrix of corresponding
@@ -1704,28 +1709,34 @@ eigen-vectors, so that
 \(\mathbf{B}_i = \mathbf{V}\boldsymbol\Lambda\mathbf{V}'\). Then
 \(\mathbf{B}_i^+ = \mathbf{V}\boldsymbol\Lambda^{-1}\mathbf{V}'\) and
 \(\mathbf{B}_i^{+1/2} = \mathbf{V}\boldsymbol\Lambda^{-1/2}\mathbf{V}'\).
-Now, observe that \begin{equation}\begin{aligned}
+Because the adjustment matrices taken to be
+\(\mathbf{A}_i = \mathbf{D}_i' \mathbf{B}_i^{+1/2} \mathbf{D}_i\), we
+have that \begin{equation}\begin{aligned}
 \label{eq:step1}
-\mathbf{\ddot{R}}_i' \mathbf{W}_i \mathbf{A}_i \left(\mathbf{I} - \mathbf{H_X}\right)_i \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H_X}\right)_i' \mathbf{A}_i' \mathbf{W}_i \mathbf{\ddot{R}}_i &= \mathbf{\ddot{R}}_i' \mathbf{W}_i \mathbf{D}_i \mathbf{B}_i^{+1/2} \mathbf{B}_i \mathbf{B}_i^{+1/2} \mathbf{D}_i' \mathbf{W}_i \mathbf{\ddot{R}}_i \\
-&= \mathbf{\ddot{R}}_i' \mathbf{W}_i \mathbf{D}_i \mathbf{V}\mathbf{V}' \mathbf{D}_i' \mathbf{W}_i \mathbf{\ddot{R}}_i. 
-\end{aligned}\end{equation}
+\mathbf{\ddot{R}}_i' \mathbf{W}_i \mathbf{A}_i \left(\mathbf{I} - \mathbf{H_X}\right)_i \boldsymbol\Phi \left(\mathbf{I} - \mathbf{H_X}\right)_i' \mathbf{A}_i' \mathbf{W}_i \mathbf{\ddot{R}}_i &= \mathbf{\ddot{R}}_i' \mathbf{W}_i \mathbf{D}_i' \mathbf{B}_i^{+1/2} \mathbf{B}_i \mathbf{B}_i^{+1/2} \mathbf{D}_i \mathbf{W}_i \mathbf{\ddot{R}}_i \\
+&= \mathbf{\ddot{R}}_i' \mathbf{W}_i \mathbf{D}_i' \mathbf{V}\mathbf{V}' \mathbf{D}_i \mathbf{W}_i \mathbf{\ddot{R}}_i. 
+\end{aligned}\end{equation} Thus, it will suffice to show that
+\(\mathbf{V}'\mathbf{D}_i \mathbf{W}_i \mathbf{\ddot{R}}_i = \mathbf{D}_i \mathbf{W}_i \mathbf{\ddot{R}}_i\).
 
-Because \(\mathbf{D}_i\), and \(\boldsymbol\Phi\) are positive definite
-and \(\mathbf{B}_i\) is symmetric, the eigen-vectors \(\mathbf{V}\)
-define an orthonormal basis for the column span of
+Now, because \(\mathbf{D}_i\) and \(\boldsymbol\Phi\) are positive
+definite and \(\mathbf{B}_i\) is symmetric, the eigen-vectors
+\(\mathbf{V}\) define an orthonormal basis for the column span of
 \(\left(\mathbf{I} - \mathbf{H_X}\right)_i\). We now show that
 \(\mathbf{\ddot{U}}_i\) is in the column space of
 \(\left(\mathbf{I} - \mathbf{H_X}\right)_i\). Let \(\mathbf{Z}_i\) be an
-\(n_i \times (r + s)\) matrix of zeros. Let
-\(\mathbf{Z}_k = - \mathbf{\ddot{U}}_k \mathbf{L}^{-1}\mathbf{M}_{\mathbf{\ddot{U}}}^{-1}\),
-for \(k \neq i\) and take
-\(\mathbf{Z} = \left(\mathbf{Z}_1',...,\mathbf{Z}_m'\right)'\). Now
-observe that
-\(\left(\mathbf{I} - \mathbf{H_T}\right) \mathbf{Z} = \mathbf{Z}\). It
-follows that \begin{align*}
-\left(\mathbf{I} - \mathbf{H_X}\right)_i \mathbf{Z} &= \left(\mathbf{I} - \mathbf{H_{\ddot{U}}}\right)_i \left(\mathbf{I} - \mathbf{H_T}\right) \mathbf{Z} = \left(\mathbf{I} - \mathbf{H_{\ddot{U}}}\right)_i \mathbf{Z} \\
+\(n_i \times (r + s)\) matrix of zeros. With \(\mathbf{L}_i\) as defined
+in Theorem \ref{thm:BRL_FE}, take
+\(\mathbf{Z}_k = - \mathbf{\ddot{U}}_k \mathbf{L}_i^{-1}\mathbf{M}_{\mathbf{\ddot{U}}}^{-1}\),
+for \(k \neq i\) and
+\(\mathbf{Z} = \left(\mathbf{Z}_1',...,\mathbf{Z}_m'\right)'\). Observe
+that \(\left(\mathbf{I} - \mathbf{H_T}\right) \mathbf{Z} = \mathbf{Z}\).
+It follows that \begin{align*}
+\left(\mathbf{I} - \mathbf{H_X}\right)_i \mathbf{Z} &= \left(\mathbf{I} - \mathbf{H_{\ddot{U}}}\right)_i \left(\mathbf{I} - \mathbf{H_T}\right) \mathbf{Z} \\
+&= \left(\mathbf{I} - \mathbf{H_{\ddot{U}}}\right)_i \mathbf{Z} \\
 &= \mathbf{Z}_i - \mathbf{\ddot{U}}_i\mathbf{M_{\ddot{U}}}\sum_{k=1}^m \mathbf{\ddot{U}}_k'\mathbf{W}_k\mathbf{Z}_k \\
-&= \mathbf{\ddot{U}}_i\mathbf{M_{\ddot{U}}} \left(\sum_{k \neq i} \mathbf{\ddot{U}}_k' \mathbf{W}_k \mathbf{\ddot{U}} \right) \mathbf{L}^{-1}\mathbf{M}_{\mathbf{\ddot{U}}}^{-1} = \mathbf{\ddot{U}}_i.
+&= \mathbf{\ddot{U}}_i\mathbf{M_{\ddot{U}}} \left(\sum_{k \neq i} \mathbf{\ddot{U}}_k' \mathbf{W}_k \mathbf{\ddot{U}} \right) \mathbf{L}_i^{-1}\mathbf{M}_{\mathbf{\ddot{U}}}^{-1} \\
+&= \mathbf{\ddot{U}}_i\mathbf{M_{\ddot{U}}} \mathbf{L}_i \mathbf{L}_i^{-1} \mathbf{M}_{\mathbf{\ddot{U}}}^{-1} \\
+&= \mathbf{\ddot{U}}_i.
 \end{align*} Thus, there exists an \(N \times (r + s)\) matrix
 \(\mathbf{Z}\) such that
 \(\left(\mathbf{I} - \mathbf{H_{\ddot{X}}}\right)_i \mathbf{Z} = \mathbf{\ddot{U}}_i\),
@@ -1737,10 +1748,10 @@ i.e., \(\mathbf{\ddot{U}}_i\) is in the column span of
 span of \(\left(\mathbf{I} - \mathbf{H_X}\right)_i\). It follows that
 \begin{equation}
 \label{eq:step2}
-\mathbf{\ddot{R}}_i' \mathbf{W}_i \mathbf{D}_i \mathbf{V}\mathbf{V}' \mathbf{D}_i' \mathbf{W}_i \mathbf{\ddot{R}}_i = \mathbf{\ddot{R}}_i' \mathbf{W}_i \boldsymbol\Phi_i \mathbf{W}_i \mathbf{\ddot{R}}_i.
+\mathbf{\ddot{R}}_i' \mathbf{W}_i \mathbf{D}_i' \mathbf{V}\mathbf{V}' \mathbf{D}_i \mathbf{W}_i \mathbf{\ddot{R}}_i = \mathbf{\ddot{R}}_i' \mathbf{W}_i \boldsymbol\Phi_i \mathbf{W}_i \mathbf{\ddot{R}}_i.
 \end{equation} Substituting (\ref{eq:step2}) into (\ref{eq:step1})
 demonstrates that \(\mathbf{A}_i\) satisfies the generalized BRL
-criterion (Eq. 6 of the main paper).
+criterion (Equation \ref{eq:CR2_criterion} of the main text).
 
 Under the working model, the residuals from cluster \(i\) have mean
 \(\mathbf{0}\) and variance \[
@@ -1890,7 +1901,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 
 \subsection{Rejection rates of AHT and standard tests}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/overview_005-1} 
 
@@ -1899,7 +1910,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of AHT and standard tests for $\alpha = .005$, by dimension of hypothesis ($q$) and sample size ($m$).}\label{fig:overview_005}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/overview_01-1} 
 
@@ -1908,7 +1919,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of AHT and standard tests for $\alpha = .01$, by dimension of hypothesis ($q$) and sample size ($m$).}\label{fig:overview_01}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/overview_10-1} 
 
@@ -1919,7 +1930,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 
 \subsection{Rejection rates of AHT and standard tests by study design}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_005_15-1} 
 
@@ -1928,7 +1939,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\alpha = .005$ and $m = 15$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.}\label{fig:balance_005_15}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_01_15-1} 
 
@@ -1937,7 +1948,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\alpha = .01$ and $m = 15$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.}\label{fig:balance_01_15}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_05_15-1} 
 
@@ -1946,7 +1957,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\alpha = .05$ and $m = 15$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.}\label{fig:balance_05_15}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_10_15-1} 
 
@@ -1955,7 +1966,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\alpha = .10$ and $m = 15$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.}\label{fig:balance_10_15}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_005_30-1} 
 
@@ -1964,7 +1975,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\alpha = .005$ and $m = 30$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.}\label{fig:balance_005_30}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_01_30-1} 
 
@@ -1973,7 +1984,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\alpha = .01$ and $m = 30$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.}\label{fig:balance_01_30}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_05_30-1} 
 
@@ -1982,7 +1993,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\alpha = .05$ and $m = 30$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.}\label{fig:balance_05_30}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_10_30-1} 
 
@@ -1991,7 +2002,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\alpha = .10$ and $m = 30$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.}\label{fig:balance_10_30}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_005_50-1} 
 
@@ -2000,7 +2011,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\alpha = .005$ and $m = 50$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.}\label{fig:balance_005_50}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_01_50-1} 
 
@@ -2009,7 +2020,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\alpha = .01$ and $m = 50$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.}\label{fig:balance_01_50}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_05_50-1} 
 
@@ -2018,7 +2029,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of AHT and standard tests, by study design and dimension of hypothesis ($q$) for $\alpha = .05$ and $m = 50$. CR = cluster-randomized design; DD = difference-in-differences design; RB = randomized block design; B = balanced; U = unbalanced.}\label{fig:balance_05_50}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/balance_10_50-1} 
 
@@ -2029,7 +2040,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 
 \subsection{Rejection rates of AHT test using CR1 or CR2, with and without accounting for absorption}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/absorption_005-1} 
 
@@ -2038,7 +2049,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of AHT tests using CR1, CR2, or CR2 calculated without accounting for absorption of fixed effects (CR2*), by sample size ($m$) and dimension of hypothesis ($q$), for $\alpha = .005$.}\label{fig:absorption_005}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/absorption_01-1} 
 
@@ -2047,7 +2058,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of AHT tests using CR1, CR2, or CR2 calculated without accounting for absorption of fixed effects (CR2*), by sample size ($m$) and dimension of hypothesis ($q$), for $\alpha = .01$.}\label{fig:absorption_01}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/absorption_05-1} 
 
@@ -2056,7 +2067,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of AHT tests using CR1, CR2, or CR2 calculated without accounting for absorption of fixed effects (CR2*), by sample size ($m$) and dimension of hypothesis ($q$), for $\alpha = .05$.}\label{fig:absorption_05}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/absorption_10-1} 
 
@@ -2067,7 +2078,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 
 \subsection{Rejection rates of AHT test by degree of working model misspecification}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/misspecification_005-1} 
 
@@ -2076,7 +2087,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of CR2 AHT test, by treatment effect variance and intra-class correlation for $\alpha = .005$.}\label{fig:misspecification_005}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/misspecification_01-1} 
 
@@ -2085,7 +2096,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of CR2 AHT test, by treatment effect variance and intra-class correlation for $\alpha = .01$.}\label{fig:misspecification_01}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/misspecification_05-1} 
 
@@ -2094,7 +2105,7 @@ Randomized Block & Balanced & 1 & $m_1 = m$ & $n_{11i} = n / 2, n_{12i} = n / 3,
 \caption{Rejection rates of CR2 AHT test, by treatment effect variance and intra-class correlation for $\alpha = .05$.}\label{fig:misspecification_05}
 \end{figure}
 
-\begin{figure}[p]
+\begin{figure}[H]
 
 {\centering \includegraphics[width=\linewidth]{CR_fig/misspecification_10-1} 
 

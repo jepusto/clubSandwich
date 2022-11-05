@@ -72,7 +72,7 @@ library(ggplot2)
 
 # set global chunk options
 opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, cache = FALSE, 
-               fig.path='CR_fig/', fig.align='center', fig.show='hold', fig.pos = "p")
+               fig.path='CR_fig/', fig.align='center', fig.show='hold', fig.pos = "H")
 
 source("R/format results for figures.R")
 
