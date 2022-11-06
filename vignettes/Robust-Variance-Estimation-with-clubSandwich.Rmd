@@ -28,8 +28,8 @@ $$
 Linear regression models, estimated by ordinary least squares weighted least squares, are a ubiquitous tool across a diverse range of fields. 
 Classically, inference in such models is based on the assumption that the model's errors are independent and homoskedastic (or more generally, that the errors follow a known structure of a low-dimensional parameter). 
 However, such assumptions will be unreasonable in many applications. 
-For instance, using the classical assumptions can lead to underestimated standard errors when observations are draw from groups or clusters that are subject to shared sources of error.
-Cluster-robust variance estimation methods provide a basis for inference under the weaker assumption that the errors of observations different clusters are independent but errors within a given cluster may be correlated. 
+For instance, using the classical assumptions can lead to underestimated standard errors when observations are drawn from groups or clusters that are subject to shared sources of error.
+Cluster-robust variance estimation methods provide a basis for inference under the weaker assumption that the errors of observations from different clusters are independent but errors within a given cluster may be correlated. 
 These methods can be applied across a broad scope of models, including not only ordinary linear regression, but also hierarchical (random effects) linear models, meta-analytic models, generalized linear models, generalized estimating equations, and instrumental variables models. 
 
 Let us consider the linear regression model
@@ -54,7 +54,7 @@ A2:& \qquad \E(\bmat{e}_j \bmat{e}_{k}' | \bmat{X}_j, \bmat{X}_{k}) = \bmat{0}, 
 A3:& \qquad \E(\bmat{e}_j \bmat{e}_j' | \bmat{X}_j) = \Var(\bmat{e}_j) = \bs\Omega_j.
 \end{aligned}
 $$
-The $n_j \times n_j$ matrices $\bs\Omega_j$ captures the cluster-specific variance-covariance matrix of the errors. 
+The $n_j \times n_j$ matrices $\bs\Omega_j$ capture the cluster-specific variance-covariance matrix of the errors.
 A common strategy for estimation and inference about the regression coefficients is to make further assumptions regarding the form of these matrices, such as by assuming that all errors are independent and homoskedastic (i.e., $\bs\Omega_j = \sigma^2 \bmat{I}_j$) or that they have a structure characterized by a low-dimensional parameter (as in a hierarchical linear model or random effects model). 
 Robust variance estimation methods provide a method for characterizing uncertainty and conducting inference without relying on such additional assumptions. 
 Rather, we will treat the variance-covariance matrices as following an unknown form. 
@@ -84,20 +84,17 @@ $$
 $$
 If the working model is correctly specified and precisely estimated, then the model-based variance estimator will closely approximate the true sampling variance. If the analyst uses inverse-variance weights based on the same working model, then the model-based variance estimator has the simpler form $\bmat{V}^{model} = \bmat{M}$. However, if the working model is inaccurate or incorrectly specified in some way, then there is no guarantee that the model-based variance estimator will be valid. 
 
-Robust variance estimators provide an alternative strategy that does not rely on assumptions about the form of the working model....
-
-<!-- H: Maybe come back later... -->
-
 ### CR0
 
 <!-- 11/3: Cite White (1985), Liang & Zeger (1986) as source for CR0 --> 
 
-The original form of the robust variance estimator uses the residuals from each cluster to derive rough estimates of the unknown error variance matrices. This estimator substitutes the cross product of the residuals $\bmat{\hat{u}}_j\bmat{\hat{u}}_j'$ in place of $\bs\Omega$, leading to the variance estimator
+The original form of the robust variance estimator uses the residuals from each cluster to derive rough estimates of the unknown error variance matrices. This estimator substitutes the cross product of the residuals $\bmat{\hat{u}}_j\bmat{\hat{u}}_j'$ in place of $\bs\Omega$ (or $\bs{\hat\Psi}_j$), leading to the variance estimator
 $$
 \bmat{V}^{CR0} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{W}_j\bmat{X}_j\right) \bmat{M}.
 $$
 Each 
 
+<!-- H: Should we number the equations to refer to them? -->
 
 <!-- 9/21: We might add some brief sentences about the limitations of CR0 referring to Cameron & Miller (2015) or others. -->
 <!-- H: Briefly explain what problems could arise by using CR0 for cases with a small number of clusters. -->
@@ -124,12 +121,12 @@ $$
 \end{aligned}
 $$
 
-These corrections are all motivated by the observation that the sandwich estimator corresponds to a sample variance-covariance matrix across terms for each cluster. Thus, inflating it by an amount depending on the number of clusters should tend to reduce the small-sample bias of CR0. However, the exact bias of CR0 depends on features of the data beyond simply the number of clusters and predictors, including the distribution of cluster sizes and the distribution of the predictors within and across clusters [@mccaffrey2001generalizations;@tipton2015small;@pustejovsky2018small]. Thus, the simple multiplicative corrections involved in the CR1 and related estimators are only very rough approximations. 
+These corrections are all motivated by the observation that the sandwich estimator corresponds to a sample variance-covariance matrix across terms for each cluster. Thus, inflating it by an amount depending on the number of clusters should tend to reduce the small-sample bias of CR0. However, the exact bias of CR0 depends on features of the data beyond simply the number of clusters and predictors, including the distribution of cluster sizes and the distribution of the predictors within and across clusters [@mccaffrey2001generalizations;@tipton2015small;@pustejovsky2018small]. Thus, the simple multiplicative corrections involved in the CR1 and related estimators are only very rough approximations.
 
 
 ### CR2
 
-@bell2002bias and @mccaffrey2001generalizations introduced a class of more refined robust variance estimators, termed "bias-reduced linearization" estimators, that account for variation in cluster sizes and the distribution of predictors. These estimators require positing a working model for the error structure, which might or might not also be used to derive the weight matrices. Based on this working model, the estimators incorporate adjustments to the residuals used in the middle of the sandwich estimator, such that the whole estimator is exactly unbiased when the working model is correctly specified. 
+@bell2002bias and @mccaffrey2001generalizations introduced a class of more refined robust variance estimators, termed "bias-reduced linearization" estimators, that account for variation in cluster sizes and the distribution of predictors. These estimators require positing a working model for the error structure, which might or might not also be used to derive the weight matrices. Based on this working model, the estimators incorporate adjustments to the residuals used in the middle of the sandwich estimator, such that the whole estimator is exactly unbiased when the working model is correctly specified.
 
 The CR2 estimator uses $f_2 = 1$ and
 $$
