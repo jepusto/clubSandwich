@@ -126,6 +126,8 @@ These corrections are all motivated by the observation that the sandwich estimat
 
 ### CR2
 
+<!-- Let's clarify the (known) working model. The theory behind CR2. Although in practice we choose to use the estimated working model ~ priors in Bayesian. -->
+
 @bell2002bias and @mccaffrey2001generalizations introduced a class of more refined robust variance estimators, termed "bias-reduced linearization" estimators, that account for variation in cluster sizes and the distribution of predictors. These estimators require positing a working model for the error structure, which might or might not also be used to derive the weight matrices. Based on this working model, the estimators incorporate adjustments to the residuals used in the middle of the sandwich estimator, such that the whole estimator is exactly unbiased when the working model is correctly specified.
 
 The CR2 estimator uses $f_2 = 1$ and
