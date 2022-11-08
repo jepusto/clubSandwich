@@ -3,8 +3,8 @@ title: "Cluster-robust variance estimation with clubSandwich"
 author: "James E. Pustejovsky and Hanna Kim"
 date: "`r Sys.Date()`"
 output: 
-  rmarkdown::html_vignette:
-    number_sections: true
+  bookdown::html_document2:
+    number_sections: false
 bibliography: bibliography.bib
 vignette: >
   %\VignetteIndexEntry{Cluster-robust variance estimation with clubSandwich}
@@ -69,8 +69,8 @@ $$
 
 In some applications, the weight matrices used for WLS estimation are motivated by a working model for the structure of the error variance-covariances $\bs\Omega_j$. 
 In this approach, the analyst posits a structure $\bs\Omega_j = \bs\Psi_j(\bs\theta)$ for some low-dimensional, estimable parameter $\bs\theta$. 
-If the working model captures the true form of the error variances, then the weights that make the sampling variance of $\bs{\hat\beta}$ as small as possible (the most precise) are the inverse variance weights $\bs\Psi_j^{-1}$, which depend on the parameter $\bs\theta$. 
-In practice, the variance parameter $\bs\theta$ is unknown and so the analyst will use the inverse of the _estimated_ working model as the weights, with $\bmat{W}_j = \bs{\hat\Psi}_j^{-1}$. When the weight matrices are so derived, we will refer to them as "inverse-variance" weights.
+If the working model captures the true form of the error variances, then the weights that make the sampling variance of $\bs{\hat\beta}$ as small as possible (the most precise) are the inverse of the variance-covariance matrix of the errors, which depend on the parameter $\bs\theta$. 
+In practice, the variance parameter $\bs\theta$ is unknown and so the analyst will use the inverse of the _estimated_ working model as the weights, with $\bmat{W}_j = \bs{\hat\Psi}_j^{-1} = \bs\Psi_j^{-1}(\bs{\hat\theta})$. When the weight matrices are obtained following this strategy, we will refer to them as "inverse-variance" weights.
 
 # Robust Variance Estimation
 
@@ -84,17 +84,13 @@ $$
 $$
 If the working model is correctly specified and precisely estimated, then the model-based variance estimator will closely approximate the true sampling variance. If the analyst uses inverse-variance weights based on the same working model, then the model-based variance estimator has the simpler form $\bmat{V}^{model} = \bmat{M}$. However, if the working model is inaccurate or incorrectly specified in some way, then there is no guarantee that the model-based variance estimator will be valid. 
 
-### CR0
-
 <!-- 11/3: Cite White (1985), Liang & Zeger (1986) as source for CR0 --> 
 
-The original form of the robust variance estimator uses the residuals from each cluster to derive rough estimates of the unknown error variance matrices. This estimator substitutes the cross product of the residuals $\bmat{\hat{u}}_j\bmat{\hat{u}}_j'$ in place of $\bs\Omega$ (or $\bs{\hat\Psi}_j$), leading to the variance estimator
+The original form of the robust variance estimator uses the residuals from each cluster to derive rough estimates of the unknown error variance matrices. This estimator substitutes the cross product of the residuals $\bmat{\hat{u}}_j\bmat{\hat{u}}_j'$ in place of $\bs\Omega$, leading to the variance estimator
 $$
 \bmat{V}^{CR0} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{W}_j\bmat{X}_j\right) \bmat{M}.
 $$
-Each 
-
-<!-- H: Should we number the equations to refer to them? -->
+The cross-product of the residuals from a given cluster is a very crude estimator for the error variance matrix from that cluster. However, we do not need to estimate each cluster-specific variance matrix accurately. Rather, we only need to approximate the _sum_ of the terms involving the error variance matrix, and even the crude CR0 estimator works for this purpose if the number of independent clusters is sufficiently large. 
 
 <!-- 9/21: We might add some brief sentences about the limitations of CR0 referring to Cameron & Miller (2015) or others. -->
 <!-- H: Briefly explain what problems could arise by using CR0 for cases with a small number of clusters. -->
@@ -132,7 +128,7 @@ The CR2 estimator uses $f_2 = 1$ and
 $$
 \bmat{E}^{CR2}_j = \bmat{A}_j' \bmat{W}_j \bmat{X}_j,
 $$
-for $j=1,...,J$, where $\bmat{A}_1,...,\bm{A}_J$ are adjustment matrices that satisfy the criteria
+for $j=1,...,J$, where $\bmat{A}_1,...,\bmat{A}_J$ are adjustment matrices that satisfy the criteria
 $$
 \E\left(\bmat{A}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{A}_j'\right) = \bs\Psi_j.
 $$
@@ -146,7 +142,7 @@ To derive expressions for $\bmat{A}_j$, observe that the residuals from cluster 
 $$
 \E\left(\bmat{\hat{u}}_j \bmat{\hat{u}}_j'\right) = \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j.
 $$
-The adjustment matrices therefore satisfy the criteria
+The adjustment matrices therefore need to satisfy the criteria
 $$
 \bmat{A}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j \bmat{A}_j' = \bs\Psi_j
 $$
@@ -161,7 +157,7 @@ $$
 and $\halfinv{\bmat{B}}_j$ is the inverse of the symmetric square root of $\bmat{B}_j$. 
 If the weight matrices are inverse-variance, then the matrix $\bmat{B}_j$ has the simpler form
 $$
-\bmat{B}_j = \bmat{D}_j \left(\bs\Psi_j - \bmat{X}\bmat{M}\bmat{X}'\right)\bmat{D}_j'.
+\bmat{B}_j = \bmat{D}_j \left(\bs\Psi_j - \bmat{X}_j\bmat{M}\bmat{X}_j'\right)\bmat{D}_j'.
 $$
 For the special case of ordinary least squares, the adjustment matrices simplify even further to
 $$
@@ -169,10 +165,9 @@ $$
 $$
 if the working model is based on the assumption of independent, homoskedastic errors. 
 
-@mccaffrey2001generalizations also considered an asymmetric solution to the criteria. However, they recommended the symmetric one because it minimizes the squared error between the OLS residuals and the the true errors when the errors are i.i.d. Even when the errors were not independent, @mccaffrey2001generalizations found that the symmetric adjustment matrices yielded smaller bias than asymmetric ones.
+@mccaffrey2001generalizations also considered an asymmetric solution to the criteria. However, they recommended the symmetric one because it minimizes the squared error between the OLS residuals and the true errors when they are independent and homoskedastic. Even when the errors were not independent, @mccaffrey2001generalizations found that the symmetric adjustment matrices yielded smaller bias than asymmetric ones.
 
 @niccodemi2020refining described an efficient method of calculating the CR2 for the special case of ordinary least squares with an independence working model...
-
 Unfortunately, their computational approach does not generalize to the CR2 adjustment matrices for weighted least squares or working models other than $\Psi_j = \sigma^2 \bmat{I}_j$. 
 
 
@@ -200,11 +195,15 @@ $$
 $$
 For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices are equivalent.
 
-### CR3 
+### CRJ and CR3
+
+The cluster-level jackknife technique is closely related to cluster-robust variance estimation. The cluster-level jack-knife 
+Estimating the sampling variance of $\bs{\hat\beta}$ using a cluster-level jack-knife is closely related to using
 
 - CR3 uses $f_3 = 1$ and 
 $$
 \bmat{E}_j = \bmat{A}_j \bmat{W}_j \bmat{X}_j,
+(\#eq:CR3)
 $$
 where $\bmat{A}_j$ are adjustment matrices...
 
