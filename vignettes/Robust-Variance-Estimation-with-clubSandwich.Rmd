@@ -122,6 +122,8 @@ These corrections are all motivated by the observation that the sandwich estimat
 
 ### CR2
 
+<!-- Let's clarify the (known) working model. The theory behind CR2. Although in practice we choose to use the estimated working model ~ priors in Bayesian. -->
+
 @bell2002bias and @mccaffrey2001generalizations introduced a class of more refined robust variance estimators, termed "bias-reduced linearization" estimators, that account for variation in cluster sizes and the distribution of predictors. These estimators require positing a working model for the error structure, which might or might not also be used to derive the weight matrices. Based on this working model, the estimators incorporate adjustments to the residuals used in the middle of the sandwich estimator, such that the whole estimator is exactly unbiased when the working model is correctly specified.
 
 The CR2 estimator uses $f_2 = 1$ and
@@ -138,27 +140,40 @@ $$
 $$
 and so $\E\left(\bmat{V}^{CR2}\right) = \Var\left(\bs{\hat\beta}\right)$.
 
+<!-- H: Do we need to clarify the cluster-specific notations (_j vs. the summation) as compared to the $\Var\left(\bs{\hat\beta}\right)$ equation in line 79? -->
+
 To derive expressions for $\bmat{A}_j$, observe that the residuals from cluster $j$ may be written as $\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bmat{Y}$, where $\bmat{H} = \bmat{X}\bmat{M}\bmat{X}'\bmat{W}$ and $\bmat{C}_j$ is an $n_j \times N$ matrix that selects the rows of the full data that correspond to cluster $j$ (i.e., $\bmat{X}_j = \bmat{C}_j \bmat{X}$). Because the residuals have mean zero, the expectation of the cross-product of residuals from cluster $j$ is
 $$
 \E\left(\bmat{\hat{u}}_j \bmat{\hat{u}}_j'\right) = \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j.
 $$
-The adjustment matrices therefore need to satisfy the criteria
+
+<!-- H: Is it correct dimension-wise to not transpose the C_j at the end? -->
+
+The adjustment matrices therefore satisfy the criteria
 $$
 \bmat{A}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j \bmat{A}_j' = \bs\Psi_j
 $$
-for $j = 1,...,J$. There are multiple possible solutions to the above. @mccaffrey2001generalizations considered several possible solutions to the above. A symmetric solution is given by 
+for $j = 1,...,J$. 
+
+<!-- H: Same here. Is it correct dimension-wise to not transpose the C_j at the end? -->
+
+There are multiple possible solutions to the above. @mccaffrey2001generalizations considered several possible solutions to the above, including a symmetric solution given by 
 $$
 \bmat{A}_j = \bmat{D}_j' \halfinv{\bmat{B}}_j \bmat{D}_j,
 $$
-where $\bmat{D}_j$ is the upper-right triangular Cholesky factorization of $\bs\Psi_j$, so that $\bmat{D}_j' \bmat{D}_j = \bs\Psi_j$,  
+where $\bmat{D}_j$ is the upper-right triangular Cholesky factorization of $\bs\Psi_j$, so that $\bmat{D}_j' \bmat{D}_j = \bs\Psi_j$, 
 $$
 \bmat{B}_j = \bmat{D}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j \bmat{D}_j',
 $$
-and $\halfinv{\bmat{B}}_j$ is the inverse of the symmetric square root of $\bmat{B}_j$. 
+and $\halfinv{\bmat{B}}_j$ is the inverse of the symmetric square root of $\bmat{B}_j$.
+
+<!-- H: Again, is it correct dimension-wise to not transpose the C_j at the end? -->
+
 If the weight matrices are inverse-variance, then the matrix $\bmat{B}_j$ has the simpler form
 $$
 \bmat{B}_j = \bmat{D}_j \left(\bs\Psi_j - \bmat{X}_j\bmat{M}\bmat{X}_j'\right)\bmat{D}_j'.
 $$
+
 For the special case of ordinary least squares, the adjustment matrices simplify even further to
 $$
 \bmat{A}_j = \halfinv{\left(\bmat{I}_j - \bmat{X}_j \bmat{M}\bmat{X}_j'\right)}
@@ -181,6 +196,9 @@ where $\bmat{A}_1,...,\bmat{A}_j$ are adjustment matrices that satisfy the crite
 $$
 \E\left(\bmat{A}_j\half{\bmat{W}}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j'\half{\bmat{W}}_j \bmat{A}_j'\right) = \bmat{A}_j \half{\bmat{W}}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j \half{\bmat{W}}_j \bmat{A}_j' = \half{\bmat{W}}_j \bs\Psi_j\half{\bmat{W}}_j.
 $$
+
+<!-- H: Again, should we transpose the C_j at the end? -->
+
 Following the same reasoning as with the CR2 estimator, adjustment matrices that satisfy these criteria lead to a variance estimator that is exactly unbiased if the working model is correctly specified. A symmetric solution is given by 
 $$
 \bmat{A}_j = \bmat{D}_j' \halfinv{\bmat{B}}_j \bmat{D}_j,
@@ -189,11 +207,16 @@ where $\bmat{D}_j$ is the upper-right triangular Cholesky factorization of $\bs\
 $$
 \bmat{B}_j = \bmat{D}_j \half{\bmat{W}}_j\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j \half{\bmat{W}}_j \bmat{D}_j'.
 $$
+
+<!-- H: Again, should we transpose the C_j at the end? -->
+
 If the weight matrices are inverse-variance, then the CR2f adjustment matrices have the simpler form
 $$
 \bmat{A}_j = \halfinv{\left(\bmat{I}_j - \half{\bmat{W}}_j\bmat{X}\bmat{M}\bmat{X}'\half{\bmat{W}}_j\right)}.
 $$
 For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices are equivalent.
+In a similar way to the CR2 estimator, an asymmetric solution is given by 
+@mccaffrey2001generalizations, using which is not recommended over the symmetric solution.
 
 ### CRJ and CR3
 

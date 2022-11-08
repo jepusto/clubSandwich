@@ -460,6 +460,7 @@ for some constant <span class="math inline">\(f\)</span> and some estimating mat
 </div>
 <div id="cr2" class="section level3">
 <h3>CR2</h3>
+<!-- Let's clarify the (known) working model. The theory behind CR2. Although in practice we choose to use the estimated working model ~ priors in Bayesian. -->
 <p><span class="citation">Bell and McCaffrey (2002)</span> and <span class="citation">McCaffrey, Bell, and Botts (2001)</span> introduced a class of more refined robust variance estimators, termed “bias-reduced linearization” estimators, that account for variation in cluster sizes and the distribution of predictors. These estimators require positing a working model for the error structure, which might or might not also be used to derive the weight matrices. Based on this working model, the estimators incorporate adjustments to the residuals used in the middle of the sandwich estimator, such that the whole estimator is exactly unbiased when the working model is correctly specified.</p>
 <p>The CR2 estimator uses <span class="math inline">\(f_2 = 1\)</span> and
 <span class="math display">\[
@@ -474,28 +475,33 @@ where <span class="math inline">\(\bs\Psi_j\)</span> denotes the working model f
 \E\left({\bmat{E}^{CR2}_j}&#39;\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; \bmat{E}_j^{CR2}\right) = \bmat{X}_j&#39;\bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j,
 \]</span>
 and so <span class="math inline">\(\E\left(\bmat{V}^{CR2}\right) = \Var\left(\bs{\hat\beta}\right)\)</span>.</p>
+<!-- H: Do we need to clarify the cluster-specific notations (_j vs. the summation) as compared to the $\Var\left(\bs{\hat\beta}\right)$ equation in line 79? -->
 <p>To derive expressions for <span class="math inline">\(\bmat{A}_j\)</span>, observe that the residuals from cluster <span class="math inline">\(j\)</span> may be written as <span class="math inline">\(\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bmat{Y}\)</span>, where <span class="math inline">\(\bmat{H} = \bmat{X}\bmat{M}\bmat{X}&#39;\bmat{W}\)</span> and <span class="math inline">\(\bmat{C}_j\)</span> is an <span class="math inline">\(n_j \times N\)</span> matrix that selects the rows of the full data that correspond to cluster <span class="math inline">\(j\)</span> (i.e., <span class="math inline">\(\bmat{X}_j = \bmat{C}_j \bmat{X}\)</span>). Because the residuals have mean zero, the expectation of the cross-product of residuals from cluster <span class="math inline">\(j\)</span> is
 <span class="math display">\[
 \E\left(\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39;\right) = \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j.
-\]</span>
-The adjustment matrices therefore need to satisfy the criteria
+\]</span></p>
+<!-- H: Is it correct dimension-wise to not transpose the C_j at the end? -->
+<p>The adjustment matrices therefore satisfy the criteria
 <span class="math display">\[
 \bmat{A}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j \bmat{A}_j&#39; = \bs\Psi_j
 \]</span>
-for <span class="math inline">\(j = 1,...,J\)</span>. There are multiple possible solutions to the above. <span class="citation">McCaffrey, Bell, and Botts (2001)</span> considered several possible solutions to the above. A symmetric solution is given by
+for <span class="math inline">\(j = 1,...,J\)</span>.</p>
+<!-- H: Same here. Is it correct dimension-wise to not transpose the C_j at the end? -->
+<p>There are multiple possible solutions to the above. <span class="citation">McCaffrey, Bell, and Botts (2001)</span> considered several possible solutions to the above, including a symmetric solution given by
 <span class="math display">\[
 \bmat{A}_j = \bmat{D}_j&#39; \halfinv{\bmat{B}}_j \bmat{D}_j,
 \]</span>
-where <span class="math inline">\(\bmat{D}_j\)</span> is the upper-right triangular Cholesky factorization of <span class="math inline">\(\bs\Psi_j\)</span>, so that <span class="math inline">\(\bmat{D}_j&#39; \bmat{D}_j = \bs\Psi_j\)</span>,<br />
+where <span class="math inline">\(\bmat{D}_j\)</span> is the upper-right triangular Cholesky factorization of <span class="math inline">\(\bs\Psi_j\)</span>, so that <span class="math inline">\(\bmat{D}_j&#39; \bmat{D}_j = \bs\Psi_j\)</span>,
 <span class="math display">\[
 \bmat{B}_j = \bmat{D}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j \bmat{D}_j&#39;,
 \]</span>
-and <span class="math inline">\(\halfinv{\bmat{B}}_j\)</span> is the inverse of the symmetric square root of <span class="math inline">\(\bmat{B}_j\)</span>.
-If the weight matrices are inverse-variance, then the matrix <span class="math inline">\(\bmat{B}_j\)</span> has the simpler form
+and <span class="math inline">\(\halfinv{\bmat{B}}_j\)</span> is the inverse of the symmetric square root of <span class="math inline">\(\bmat{B}_j\)</span>.</p>
+<!-- H: Again, is it correct dimension-wise to not transpose the C_j at the end? -->
+<p>If the weight matrices are inverse-variance, then the matrix <span class="math inline">\(\bmat{B}_j\)</span> has the simpler form
 <span class="math display">\[
 \bmat{B}_j = \bmat{D}_j \left(\bs\Psi_j - \bmat{X}_j\bmat{M}\bmat{X}_j&#39;\right)\bmat{D}_j&#39;.
-\]</span>
-For the special case of ordinary least squares, the adjustment matrices simplify even further to
+\]</span></p>
+<p>For the special case of ordinary least squares, the adjustment matrices simplify even further to
 <span class="math display">\[
 \bmat{A}_j = \halfinv{\left(\bmat{I}_j - \bmat{X}_j \bmat{M}\bmat{X}_j&#39;\right)}
 \]</span>
@@ -513,20 +519,24 @@ Unfortunately, their computational approach does not generalize to the CR2 adjus
 where <span class="math inline">\(\bmat{A}_1,...,\bmat{A}_j\)</span> are adjustment matrices that satisfy the criteria
 <span class="math display">\[
 \E\left(\bmat{A}_j\half{\bmat{W}}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39;\half{\bmat{W}}_j \bmat{A}_j&#39;\right) = \bmat{A}_j \half{\bmat{W}}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j \half{\bmat{W}}_j \bmat{A}_j&#39; = \half{\bmat{W}}_j \bs\Psi_j\half{\bmat{W}}_j.
-\]</span>
-Following the same reasoning as with the CR2 estimator, adjustment matrices that satisfy these criteria lead to a variance estimator that is exactly unbiased if the working model is correctly specified. A symmetric solution is given by
+\]</span></p>
+<!-- H: Again, should we transpose the C_j at the end? -->
+<p>Following the same reasoning as with the CR2 estimator, adjustment matrices that satisfy these criteria lead to a variance estimator that is exactly unbiased if the working model is correctly specified. A symmetric solution is given by
 <span class="math display">\[
 \bmat{A}_j = \bmat{D}_j&#39; \halfinv{\bmat{B}}_j \bmat{D}_j,
 \]</span>
 where <span class="math inline">\(\bmat{D}_j\)</span> is the upper-right triangular Cholesky factorization of <span class="math inline">\(\bs\Psi_j\)</span> and<br />
 <span class="math display">\[
 \bmat{B}_j = \bmat{D}_j \half{\bmat{W}}_j\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j \half{\bmat{W}}_j \bmat{D}_j&#39;.
-\]</span>
-If the weight matrices are inverse-variance, then the CR2f adjustment matrices have the simpler form
+\]</span></p>
+<!-- H: Again, should we transpose the C_j at the end? -->
+<p>If the weight matrices are inverse-variance, then the CR2f adjustment matrices have the simpler form
 <span class="math display">\[
 \bmat{A}_j = \halfinv{\left(\bmat{I}_j - \half{\bmat{W}}_j\bmat{X}\bmat{M}\bmat{X}&#39;\half{\bmat{W}}_j\right)}.
 \]</span>
-For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices are equivalent.</p>
+For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices are equivalent.
+In a similar way to the CR2 estimator, an asymmetric solution is given by
+<span class="citation">McCaffrey, Bell, and Botts (2001)</span>, using which is not recommended over the symmetric solution.</p>
 </div>
 <div id="crj-and-cr3" class="section level3">
 <h3>CRJ and CR3</h3>
