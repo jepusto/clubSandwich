@@ -23,6 +23,7 @@ $$
 \newcommand{\bs}{\boldsymbol}
 \newcommand{\half}[1]{#1^{\frac{1}{2}}}
 \newcommand{\halfinv}[1]{#1^{-\frac{1}{2}}}
+\newcommand{\sb}[1]{{\{#1\}}}
 $$
 
 Linear regression models, estimated by ordinary least squares weighted least squares, are a ubiquitous tool across a diverse range of fields. 
@@ -81,6 +82,7 @@ $$
 which depends on the unknown variance-covariances $\bs\Omega_1,...,\bs\Omega_J$. One strategy for estimating $\Var\left(\bs{\hat\beta}\right)$ is to substitute an estimated working model $\bs{\hat\Psi}_j$ for the unknown variance-covariance matrices $\bs\Omega_j$, giving a model-based variance estimator:
 $$
 \bmat{V}^{model} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bs{\hat\Psi}_j \bmat{W}_j \bmat{X}_j \right) \bmat{M}.
+(\#eq:V-model)
 $$
 If the working model is correctly specified and precisely estimated, then the model-based variance estimator will closely approximate the true sampling variance. If the analyst uses inverse-variance weights based on the same working model, then the model-based variance estimator has the simpler form $\bmat{V}^{model} = \bmat{M}$. However, if the working model is inaccurate or incorrectly specified in some way, then there is no guarantee that the model-based variance estimator will be valid. 
 
@@ -128,11 +130,11 @@ These corrections are all motivated by the observation that the sandwich estimat
 
 The CR2 estimator uses $f_2 = 1$ and
 $$
-\bmat{E}^{CR2}_j = \bmat{A}_j' \bmat{W}_j \bmat{X}_j,
+\bmat{E}^\sb{2}_j = {\bmat{A}^\sb{2}_j}' \bmat{W}_j \bmat{X}_j,
 $$
-for $j=1,...,J$, where $\bmat{A}_1,...,\bmat{A}_J$ are adjustment matrices that satisfy the criteria
+for $j=1,...,J$, where $\bmat{A}^\sb{2}_1,...,\bmat{A}^\sb{2}_J$ are adjustment matrices that satisfy the criteria
 $$
-\E\left(\bmat{A}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{A}_j'\right) = \bs\Psi_j.
+\E\left(\bmat{A}^\sb{2}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j' {\bmat{A}^\sb{2}_j}'\right) = \bs\Psi_j.
 $$
 where $\bs\Psi_j$ denotes the working model for cluster $j$ and the expectation is taken assuming that the working model is correct. Thus, if the working model is correctly specified,
 $$
@@ -225,7 +227,7 @@ Estimating the sampling variance of $\bs{\hat\beta}$ using a cluster-level jack-
 
 - CR3 uses $f_3 = 1$ and 
 $$
-\bmat{E}_j = \bmat{A}_j \bmat{W}_j \bmat{X}_j,
+\bmat{E}^{\{3\}}_{j} = \bmat{A}^{\{3\}}_j \bmat{W}_j \bmat{X}_j,
 (\#eq:CR3)
 $$
 where $\bmat{A}_j$ are adjustment matrices...

@@ -377,6 +377,7 @@ display: none;
 \newcommand{\bs}{\boldsymbol}
 \newcommand{\half}[1]{#1^{\frac{1}{2}}}
 \newcommand{\halfinv}[1]{#1^{-\frac{1}{2}}}
+\newcommand{\sb}[1]{{\{#1\}}}
 \]</span></p>
 <p>Linear regression models, estimated by ordinary least squares weighted least squares, are a ubiquitous tool across a diverse range of fields.
 Classically, inference in such models is based on the assumption that the model’s errors are independent and homoskedastic (or more generally, that the errors follow a known structure of a low-dimensional parameter).
@@ -426,8 +427,9 @@ In practice, the variance parameter <span class="math inline">\(\bs\theta\)</spa
 \Var\left(\bs{\hat\beta}\right) = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j \bs\Omega_j \bmat{W}_j \bmat{X}_j \right) \bmat{M},
 \]</span>
 which depends on the unknown variance-covariances <span class="math inline">\(\bs\Omega_1,...,\bs\Omega_J\)</span>. One strategy for estimating <span class="math inline">\(\Var\left(\bs{\hat\beta}\right)\)</span> is to substitute an estimated working model <span class="math inline">\(\bs{\hat\Psi}_j\)</span> for the unknown variance-covariance matrices <span class="math inline">\(\bs\Omega_j\)</span>, giving a model-based variance estimator:
-<span class="math display">\[
+<span class="math display" id="eq:V-model">\[
 \bmat{V}^{model} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j \bs{\hat\Psi}_j \bmat{W}_j \bmat{X}_j \right) \bmat{M}.
+\tag{1}
 \]</span>
 If the working model is correctly specified and precisely estimated, then the model-based variance estimator will closely approximate the true sampling variance. If the analyst uses inverse-variance weights based on the same working model, then the model-based variance estimator has the simpler form <span class="math inline">\(\bmat{V}^{model} = \bmat{M}\)</span>. However, if the working model is inaccurate or incorrectly specified in some way, then there is no guarantee that the model-based variance estimator will be valid.</p>
 <!-- 11/3: Cite White (1985), Liang & Zeger (1986) as source for CR0 -->
@@ -464,11 +466,11 @@ for some constant <span class="math inline">\(f\)</span> and some estimating mat
 <p><span class="citation">Bell and McCaffrey (2002)</span> and <span class="citation">McCaffrey, Bell, and Botts (2001)</span> introduced a class of more refined robust variance estimators, termed “bias-reduced linearization” estimators, that account for variation in cluster sizes and the distribution of predictors. These estimators require positing a working model for the error structure, which might or might not also be used to derive the weight matrices. Based on this working model, the estimators incorporate adjustments to the residuals used in the middle of the sandwich estimator, such that the whole estimator is exactly unbiased when the working model is correctly specified.</p>
 <p>The CR2 estimator uses <span class="math inline">\(f_2 = 1\)</span> and
 <span class="math display">\[
-\bmat{E}^{CR2}_j = \bmat{A}_j&#39; \bmat{W}_j \bmat{X}_j,
+\bmat{E}^\sb{2}_j = {\bmat{A}^\sb{2}_j}&#39; \bmat{W}_j \bmat{X}_j,
 \]</span>
-for <span class="math inline">\(j=1,...,J\)</span>, where <span class="math inline">\(\bmat{A}_1,...,\bmat{A}_J\)</span> are adjustment matrices that satisfy the criteria
+for <span class="math inline">\(j=1,...,J\)</span>, where <span class="math inline">\(\bmat{A}^\sb{2}_1,...,\bmat{A}^\sb{2}_J\)</span> are adjustment matrices that satisfy the criteria
 <span class="math display">\[
-\E\left(\bmat{A}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; \bmat{A}_j&#39;\right) = \bs\Psi_j.
+\E\left(\bmat{A}^\sb{2}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; {\bmat{A}^\sb{2}_j}&#39;\right) = \bs\Psi_j.
 \]</span>
 where <span class="math inline">\(\bs\Psi_j\)</span> denotes the working model for cluster <span class="math inline">\(j\)</span> and the expectation is taken assuming that the working model is correct. Thus, if the working model is correctly specified,
 <span class="math display">\[
@@ -545,8 +547,8 @@ Estimating the sampling variance of <span class="math inline">\(\bs{\hat\beta}\)
 <ul>
 <li>CR3 uses <span class="math inline">\(f_3 = 1\)</span> and
 <span class="math display" id="eq:CR3">\[
-\bmat{E}_j = \bmat{A}_j \bmat{W}_j \bmat{X}_j,
-\tag{1}
+\bmat{E}^{\{3\}}_{j} = \bmat{A}^{\{3\}}_j \bmat{W}_j \bmat{X}_j,
+\tag{2}
 \]</span>
 where <span class="math inline">\(\bmat{A}_j\)</span> are adjustment matrices…</li>
 </ul>
