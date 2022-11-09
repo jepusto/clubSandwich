@@ -207,8 +207,10 @@ $$
 $$
 where $\bmat{D}_j$ is the upper-right triangular Cholesky factorization of $\bs\Psi_j$ and   
 $$
-\bmat{B}_j = \bmat{D}_j \half{\bmat{W}}_j\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j \half{\bmat{W}}_j \bmat{D}_j'.
+\bmat{B}_j = \bmat{D}_j \bmat{W}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j \bmat{W}_j \bmat{D}_j'.
 $$
+In a similar way to the CR2 estimator, an asymmetric solution is given by 
+@mccaffrey2001generalizations, using which is not recommended over the symmetric solution.
 
 <!-- H: Again, should we transpose the C_j at the end? -->
 
@@ -217,20 +219,21 @@ $$
 \bmat{A}_j = \halfinv{\left(\bmat{I}_j - \half{\bmat{W}}_j\bmat{X}\bmat{M}\bmat{X}'\half{\bmat{W}}_j\right)}.
 $$
 For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices are equivalent.
-In a similar way to the CR2 estimator, an asymmetric solution is given by 
-@mccaffrey2001generalizations, using which is not recommended over the symmetric solution.
 
 ### CRJ and CR3
 
-The cluster-level jackknife technique is closely related to cluster-robust variance estimation. The cluster-level jack-knife 
-Estimating the sampling variance of $\bs{\hat\beta}$ using a cluster-level jack-knife is closely related to using
+The cluster-level jackknife technique is closely related to cluster-robust variance estimation. A cluster-level jack-knife sampling variance is given by
+$$
+\bmat{V}^{CRJ} = \frac{J - 1}{J} \sum_{j=1}^J \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right) \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right)',
+(\#eq:jackknife)
+$$
+where $\bs{\hat\beta}_{(j)}$ is the weighted least squares estimator calculated while excluding the observations from cluster $j$.[^Other-jackknife] Although not immediately apparent, $\bmat{V}^{CRJ}$ is equivalent to calculating the cluster-robust variance estimator as given in (Equation) using $f_J = \frac{J - 1}{J}$ and 
+$$
+\bmat{E}^\sb{J}_j = \left(\bmat{A}_j^\sb{3}\right)' \bmat{W}_j \bmat{X}_j,
+$$
+where $\bmat{A}_j^\sb{3} = \left(\bmat{I} - \bmat{X}_j \bmat{M} \bmat{X}_j' \bmat{W}_j\right)^{-1}$. Sometimes, the leading factor in \@ref(eq:jackknife) is omitted, which yields the CR3 estimator. This is equivalent to taking $f_3 = 1$ and $\bmat{E}_j^\sb{3} = \bmat{E}_j^\sb{J}$.
 
-- CR3 uses $f_3 = 1$ and 
-$$
-\bmat{E}^{\{3\}}_{j} = \bmat{A}^{\{3\}}_j \bmat{W}_j \bmat{X}_j,
-(\#eq:CR3)
-$$
-where $\bmat{A}_j$ are adjustment matrices...
+[^Other-jackknife]: Other versions of the cluster-level jackknife might center the the deviations on the arithmetic mean of $\bs{\hat\beta}_{(1)},...,\bs{\hat\beta}_{(J)}$.
 
 <!-- Jackknife - See Tipton (2015) for some arguments -->
 
