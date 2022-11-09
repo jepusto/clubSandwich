@@ -81,7 +81,7 @@ $$
 $$
 which depends on the unknown variance-covariances $\bs\Omega_1,...,\bs\Omega_J$. One strategy for estimating $\Var\left(\bs{\hat\beta}\right)$ is to substitute an estimated working model $\bs{\hat\Psi}_j$ for the unknown variance-covariance matrices $\bs\Omega_j$, giving a model-based variance estimator:
 $$
-\bmat{V}^{model} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bs{\hat\Psi}_j \bmat{W}_j \bmat{X}_j \right) \bmat{M}.
+\bmat{V}^M = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bs{\hat\Psi}_j \bmat{W}_j \bmat{X}_j \right) \bmat{M}.
 (\#eq:V-model)
 $$
 If the working model is correctly specified and precisely estimated, then the model-based variance estimator will closely approximate the true sampling variance. If the analyst uses inverse-variance weights based on the same working model, then the model-based variance estimator has the simpler form $\bmat{V}^{model} = \bmat{M}$. However, if the working model is inaccurate or incorrectly specified in some way, then there is no guarantee that the model-based variance estimator will be valid. 
@@ -161,11 +161,11 @@ for $j = 1,...,J$.
 
 There are multiple possible solutions to the above. @mccaffrey2001generalizations considered several possible solutions to the above, including a symmetric solution given by 
 $$
-\bmat{A}_j = \bmat{D}_j' \halfinv{\bmat{B}}_j \bmat{D}_j,
+\bmat{A}_j = {\bs\Psi^C_j}' \halfinv{\bmat{B}}_j \bs\Psi^C_j,
 $$
-where $\bmat{D}_j$ is the upper-right triangular Cholesky factorization of $\bs\Psi_j$, so that $\bmat{D}_j' \bmat{D}_j = \bs\Psi_j$, 
+where $\bs\Psi^C_j$ is the upper-right triangular Cholesky factorization of $\bs\Psi_j$, so that ${\bs\Psi^C_j}' \bs\Psi^C_j = \bs\Psi_j$, 
 $$
-\bmat{B}_j = \bmat{D}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j \bmat{D}_j',
+\bmat{B}_j = \bs\Psi^C_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j {\bs\Psi^C_j}',
 $$
 and $\halfinv{\bmat{B}}_j$ is the inverse of the symmetric square root of $\bmat{B}_j$.
 
@@ -173,7 +173,7 @@ and $\halfinv{\bmat{B}}_j$ is the inverse of the symmetric square root of $\bmat
 
 If the weight matrices are inverse-variance, then the matrix $\bmat{B}_j$ has the simpler form
 $$
-\bmat{B}_j = \bmat{D}_j \left(\bs\Psi_j - \bmat{X}_j\bmat{M}\bmat{X}_j'\right)\bmat{D}_j'.
+\bmat{B}_j = \bs\Psi^C_j \left(\bs\Psi_j - \bmat{X}_j\bmat{M}\bmat{X}_j'\right) {\bs\Psi^C_j}'.
 $$
 
 For the special case of ordinary least squares, the adjustment matrices simplify even further to
@@ -203,11 +203,11 @@ $$
 
 Following the same reasoning as with the CR2 estimator, adjustment matrices that satisfy these criteria lead to a variance estimator that is exactly unbiased if the working model is correctly specified. A symmetric solution is given by 
 $$
-\bmat{A}_j = \bmat{D}_j' \halfinv{\bmat{B}}_j \bmat{D}_j,
+\bmat{A}_j = \half{\bmat{W}}_j {\bs\Psi^C_j}' \halfinv{\bmat{B}}_j \bs\Psi^C_j \half{\bmat{W}}_j,
 $$
-where $\bmat{D}_j$ is the upper-right triangular Cholesky factorization of $\bs\Psi_j$ and   
+where $\bs\Psi^C_j$ is again the upper-right triangular Cholesky factorization of $\bs\Psi_j$ and   
 $$
-\bmat{B}_j = \bmat{D}_j \bmat{W}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j \bmat{W}_j \bmat{D}_j'.
+\bmat{B}_j = \bs\Psi^C_j \bmat{W}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j \bmat{W}_j {\bs\Psi^C_j}'.
 $$
 In a similar way to the CR2 estimator, an asymmetric solution is given by 
 @mccaffrey2001generalizations, using which is not recommended over the symmetric solution.
@@ -216,7 +216,7 @@ In a similar way to the CR2 estimator, an asymmetric solution is given by
 
 If the weight matrices are inverse-variance, then the CR2f adjustment matrices have the simpler form
 $$
-\bmat{A}_j = \halfinv{\left(\bmat{I}_j - \half{\bmat{W}}_j\bmat{X}\bmat{M}\bmat{X}'\half{\bmat{W}}_j\right)}.
+\bmat{A}_j = \halfinv{\left(\bmat{I}_j - \half{\bmat{W}}_j\bmat{X}_j \bmat{M} \bmat{X}_j' \half{\bmat{W}}_j\right)}.
 $$
 For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices are equivalent.
 
@@ -231,7 +231,13 @@ where $\bs{\hat\beta}_{(j)}$ is the weighted least squares estimator calculated 
 $$
 \bmat{E}^\sb{J}_j = \left(\bmat{A}_j^\sb{3}\right)' \bmat{W}_j \bmat{X}_j,
 $$
-where $\bmat{A}_j^\sb{3} = \left(\bmat{I} - \bmat{X}_j \bmat{M} \bmat{X}_j' \bmat{W}_j\right)^{-1}$. Sometimes, the leading factor in \@ref(eq:jackknife) is omitted, which yields the CR3 estimator. This is equivalent to taking $f_3 = 1$ and $\bmat{E}_j^\sb{3} = \bmat{E}_j^\sb{J}$.
+where 
+$$
+\bmat{A}_j^\sb{3} = \left(\bmat{I}_j - \bmat{X}_j \bmat{M} \bmat{X}_j' \bmat{W}_j\right)^{-1}. 
+$$
+Sometimes, the leading factor in \@ref(eq:jackknife) is omitted, which yields the CR3 estimator. This is equivalent to taking $f_3 = 1$ and $\bmat{E}_j^\sb{3} = \bmat{E}_j^\sb{J}$.
+
+@niccodemi2020refining described an efficient method of calculating the CRJ and CR3 for the special case of ordinary least squares with an independence working model...
 
 [^Other-jackknife]: Other versions of the cluster-level jackknife might center the the deviations on the arithmetic mean of $\bs{\hat\beta}_{(1)},...,\bs{\hat\beta}_{(J)}$.
 
@@ -239,12 +245,48 @@ where $\bmat{A}_j^\sb{3} = \left(\bmat{I} - \bmat{X}_j \bmat{M} \bmat{X}_j' \bma
 
 ### CR4 
 
-- CR4 uses $f_4 = 1$ and
-$$
-\bmat{E}_j = \bmat{W}_j \bmat{X}_j \bmat{D}_j,
-$$
-where $\bmat{D}_j$ are adjustment matrices...
+The CR2, CR2f, and CR3 corrections can be difficult to implement because they involve computing $n_j \times n_j$ correction matrices for each cluster. Some or all clusters include a large number of observations, then the matrices will be large and computing them may be quite time consuming. The computational methods described by @niccodemi2020refining and @mackinnon2022fast provide a way to reduce computation time for certain specifications and certain working models, but they are not entirely general. Here we describe a novel generalization of the CR2f adjustment, termed CR4, that can be applied to models estimated by weighted least squares, with an arbitrary working model and weights that are not necessarily inverse-variance. 
 
+Like the CR2 and CR2f corrections, CR4 is designed to provide a variance estimator that is exactly unbiased when the working model is correctly specified. The main innovation is to do so by correcting the full score contribution $\bmat{u}_j'\bmat{W}_j \bmat{X}_j$ rather than correcting the residuals, so that the adjustment matrices are of dimension $p \times p$ rather than $n_j \times n_j$. The CR4 variance estimator uses $f_4 = 1$ and estimating matrices given by
+$$
+\bmat{E}^\sb{4}_j = \bmat{W}_j \bmat{X}_j \bmat{A}^\sb{4}_j,
+$$
+where $\bmat{A}^\sb{4}_j$ are adjustment matrices chosen to satisfy the criterion
+$$
+\E\left({\bmat{E}^\sb{4}_j}' \bmat{u}_j \bmat{u}_j' \bmat{E}^\sb{4}_j \right) = \bmat{X}_j' \bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j
+(\#eq:CR4-criterion)
+$$
+for $j = 1,...,J$.
+
+To construct the CR4 adjustment matrices, we first define the matrices $\bmat{F}_j = \bmat{X}_j' \bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j$ and $\bmat{G}_j = \bmat{X}_j' \bmat{W}_j \bmat{X}_j$. With these terms, the model-based variance estimator defined in \@ref(eq:V-model) can be computed as $\bmat{V}^M = \bmat{M}\left(\sum_{j=1}^J \bmat{F}_j \right)\bmat{M}$. The CR4 adjustment matrices are then
+$$
+\bmat{A}^\sb{4}_j = {\bmat{G}_j^C}' \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C,
+$$
+where $\bmat{G}_j^C$ is the upper-right Cholesky factorization of $\bmat{G}_j$ and 
+$$
+\bmat{B}_j^\sb{4} = \bmat{G}_j^C \left(\bmat{F}_j - \bmat{G}_j \bmat{M}\bmat{F}_j - \bmat{F}_j \bmat{M}\bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j\right) {\bmat{G}_j^C}'.
+$$
+
+To see that these adjustment matrices satisfy the criterion given in \@ref(eq:CR4-criterion), observe that the expectation of the cross-product of adjusted scores can be written as
+$$
+\begin{aligned}
+\E\left(\bmat{A}_j^\sb{4}\bmat{X}_j' \bmat{W}_j \bmat{u}_j \bmat{u}_j' \bmat{W}_j \bmat{X}_j \bmat{A}_j^\sb{4}\right) &= \bmat{A}_j^\sb{4} \bmat{X}_j' \bmat{W}_j\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j'\bmat{W}_j \bmat{X}_j \bmat{A}_j^\sb{4} \\
+&= \bmat{A}_j^\sb{4} \left(\bmat{F}_j - \bmat{G}_j \bmat{F}_j - \bmat{F}_j \bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j \right) \bmat{A}_j^\sb{4} \\
+&= {\bmat{G}_j^C}' \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C \left(\bmat{F}_j - \bmat{G}_j \bmat{F}_j - \bmat{F}_j \bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j \right){\bmat{G}_j^C}' \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C \\
+&= {\bmat{G}_j^C}' \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{B}_j^\sb{4} \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C \\
+&= \bmat{G}_j.
+\end{aligned}
+$$
+It follows that using the CR4 adjustment matrices leads to an exactly unbiased variance estimator when the working model is correct, just like the CR2 and CR2f corrections. 
+
+If the model is estimated using inverse-variance weights so that $\bmat{W}_j = \bs\Psi_j^{-1}$, then the CR4 adjustment matrices simplify to
+$$
+\bmat{A}^\sb{4}_j = {\bmat{G}_j^C}' \halfinv{\left(\bmat{G}_j^C \left(\bmat{G}_j - \bmat{G}_j \bmat{M} \bmat{G}_j\right) {\bmat{G}_j^C}'\right)} \bmat{G}_j^C.
+$$
+<!-- Can this be simplified further? -->
+<!-- How is CR4 related to CR2f? Are they equivalent for inverse-variance weights?-->
+
+A further benefit of the CR4 adjustment matrices is that they can be tailored to a subset of the covariates that are of focal interest. Rather than correcting the bias in the full variance estimator, we could correct the bias for just one or more of the predictors, so that $\E\left(\bmat{k}' \bmat{V}^{CR} \bmat{k}\right) = \Var\left(\bmat{k}' \bs{\hat\beta}\right)$ for a $p \times k$ matrix of contrasts $\bmat{k}$ with $k \leq p$, even if unbiasedness does not hold for the full estimator $\bmat{V}^{CR}$.
 
 # Model-specific considerations
 

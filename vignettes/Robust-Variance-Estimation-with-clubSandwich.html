@@ -11,7 +11,7 @@
 
 <meta name="author" content="James E. Pustejovsky and Hanna Kim" />
 
-<meta name="date" content="2022-11-08" />
+<meta name="date" content="2022-11-09" />
 
 <title>Cluster-robust variance estimation with clubSandwich</title>
 
@@ -367,7 +367,7 @@ pre code {
 
 <h1 class="title toc-ignore">Cluster-robust variance estimation with clubSandwich</h1>
 <h4 class="author">James E. Pustejovsky and Hanna Kim</h4>
-<h4 class="date">2022-11-08</h4>
+<h4 class="date">2022-11-09</h4>
 
 </div>
 
@@ -434,7 +434,7 @@ In practice, the variance parameter <span class="math inline">\(\bs\theta\)</spa
 \]</span>
 which depends on the unknown variance-covariances <span class="math inline">\(\bs\Omega_1,...,\bs\Omega_J\)</span>. One strategy for estimating <span class="math inline">\(\Var\left(\bs{\hat\beta}\right)\)</span> is to substitute an estimated working model <span class="math inline">\(\bs{\hat\Psi}_j\)</span> for the unknown variance-covariance matrices <span class="math inline">\(\bs\Omega_j\)</span>, giving a model-based variance estimator:
 <span class="math display" id="eq:V-model">\[
-\bmat{V}^{model} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j \bs{\hat\Psi}_j \bmat{W}_j \bmat{X}_j \right) \bmat{M}.
+\bmat{V}^M = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j \bs{\hat\Psi}_j \bmat{W}_j \bmat{X}_j \right) \bmat{M}.
 \tag{1}
 \]</span>
 If the working model is correctly specified and precisely estimated, then the model-based variance estimator will closely approximate the true sampling variance. If the analyst uses inverse-variance weights based on the same working model, then the model-based variance estimator has the simpler form <span class="math inline">\(\bmat{V}^{model} = \bmat{M}\)</span>. However, if the working model is inaccurate or incorrectly specified in some way, then there is no guarantee that the model-based variance estimator will be valid.</p>
@@ -497,17 +497,17 @@ for <span class="math inline">\(j = 1,...,J\)</span>.</p>
 <!-- H: Same here. Is it correct dimension-wise to not transpose the C_j at the end? -->
 <p>There are multiple possible solutions to the above. <span class="citation">McCaffrey, Bell, and Botts (2001)</span> considered several possible solutions to the above, including a symmetric solution given by
 <span class="math display">\[
-\bmat{A}_j = \bmat{D}_j&#39; \halfinv{\bmat{B}}_j \bmat{D}_j,
+\bmat{A}_j = {\bs\Psi^C_j}&#39; \halfinv{\bmat{B}}_j \bs\Psi^C_j,
 \]</span>
-where <span class="math inline">\(\bmat{D}_j\)</span> is the upper-right triangular Cholesky factorization of <span class="math inline">\(\bs\Psi_j\)</span>, so that <span class="math inline">\(\bmat{D}_j&#39; \bmat{D}_j = \bs\Psi_j\)</span>,
+where <span class="math inline">\(\bs\Psi^C_j\)</span> is the upper-right triangular Cholesky factorization of <span class="math inline">\(\bs\Psi_j\)</span>, so that <span class="math inline">\({\bs\Psi^C_j}&#39; \bs\Psi^C_j = \bs\Psi_j\)</span>,
 <span class="math display">\[
-\bmat{B}_j = \bmat{D}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j \bmat{D}_j&#39;,
+\bmat{B}_j = \bs\Psi^C_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j {\bs\Psi^C_j}&#39;,
 \]</span>
 and <span class="math inline">\(\halfinv{\bmat{B}}_j\)</span> is the inverse of the symmetric square root of <span class="math inline">\(\bmat{B}_j\)</span>.</p>
 <!-- H: Again, is it correct dimension-wise to not transpose the C_j at the end? -->
 <p>If the weight matrices are inverse-variance, then the matrix <span class="math inline">\(\bmat{B}_j\)</span> has the simpler form
 <span class="math display">\[
-\bmat{B}_j = \bmat{D}_j \left(\bs\Psi_j - \bmat{X}_j\bmat{M}\bmat{X}_j&#39;\right)\bmat{D}_j&#39;.
+\bmat{B}_j = \bs\Psi^C_j \left(\bs\Psi_j - \bmat{X}_j\bmat{M}\bmat{X}_j&#39;\right) {\bs\Psi^C_j}&#39;.
 \]</span></p>
 <p>For the special case of ordinary least squares, the adjustment matrices simplify even further to
 <span class="math display">\[
@@ -531,18 +531,18 @@ where <span class="math inline">\(\bmat{A}_1,...,\bmat{A}_j\)</span> are adjustm
 <!-- H: Again, should we transpose the C_j at the end? -->
 <p>Following the same reasoning as with the CR2 estimator, adjustment matrices that satisfy these criteria lead to a variance estimator that is exactly unbiased if the working model is correctly specified. A symmetric solution is given by
 <span class="math display">\[
-\bmat{A}_j = \bmat{D}_j&#39; \halfinv{\bmat{B}}_j \bmat{D}_j,
+\bmat{A}_j = \half{\bmat{W}}_j {\bs\Psi^C_j}&#39; \halfinv{\bmat{B}}_j \bs\Psi^C_j \half{\bmat{W}}_j,
 \]</span>
-where <span class="math inline">\(\bmat{D}_j\)</span> is the upper-right triangular Cholesky factorization of <span class="math inline">\(\bs\Psi_j\)</span> and<br />
+where <span class="math inline">\(\bs\Psi^C_j\)</span> is again the upper-right triangular Cholesky factorization of <span class="math inline">\(\bs\Psi_j\)</span> and<br />
 <span class="math display">\[
-\bmat{B}_j = \bmat{D}_j \bmat{W}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j \bmat{W}_j \bmat{D}_j&#39;.
+\bmat{B}_j = \bs\Psi^C_j \bmat{W}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j \bmat{W}_j {\bs\Psi^C_j}&#39;.
 \]</span>
 In a similar way to the CR2 estimator, an asymmetric solution is given by
 <span class="citation">McCaffrey, Bell, and Botts (2001)</span>, using which is not recommended over the symmetric solution.</p>
 <!-- H: Again, should we transpose the C_j at the end? -->
 <p>If the weight matrices are inverse-variance, then the CR2f adjustment matrices have the simpler form
 <span class="math display">\[
-\bmat{A}_j = \halfinv{\left(\bmat{I}_j - \half{\bmat{W}}_j\bmat{X}\bmat{M}\bmat{X}&#39;\half{\bmat{W}}_j\right)}.
+\bmat{A}_j = \halfinv{\left(\bmat{I}_j - \half{\bmat{W}}_j\bmat{X}_j \bmat{M} \bmat{X}_j&#39; \half{\bmat{W}}_j\right)}.
 \]</span>
 For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices are equivalent.</p>
 </div>
@@ -557,18 +557,53 @@ where <span class="math inline">\(\bs{\hat\beta}_{(j)}\)</span> is the weighted 
 <span class="math display">\[
 \bmat{E}^\sb{J}_j = \left(\bmat{A}_j^\sb{3}\right)&#39; \bmat{W}_j \bmat{X}_j,
 \]</span>
-where <span class="math inline">\(\bmat{A}_j^\sb{3} = \left(\bmat{I} - \bmat{X}_j \bmat{M} \bmat{X}_j&#39; \bmat{W}_j\right)^{-1}\)</span>. Sometimes, the leading factor in <a href="#eq:jackknife">(2)</a> is omitted, which yields the CR3 estimator. This is equivalent to taking <span class="math inline">\(f_3 = 1\)</span> and <span class="math inline">\(\bmat{E}_j^\sb{3} = \bmat{E}_j^\sb{J}\)</span>.</p>
+where
+<span class="math display">\[
+\bmat{A}_j^\sb{3} = \left(\bmat{I}_j - \bmat{X}_j \bmat{M} \bmat{X}_j&#39; \bmat{W}_j\right)^{-1}.
+\]</span>
+Sometimes, the leading factor in <a href="#eq:jackknife">(2)</a> is omitted, which yields the CR3 estimator. This is equivalent to taking <span class="math inline">\(f_3 = 1\)</span> and <span class="math inline">\(\bmat{E}_j^\sb{3} = \bmat{E}_j^\sb{J}\)</span>.</p>
+<p><span class="citation">Niccodemi et al. (2020)</span> described an efficient method of calculating the CRJ and CR3 for the special case of ordinary least squares with an independence working model…</p>
 <!-- Jackknife - See Tipton (2015) for some arguments -->
 </div>
 <div id="cr4" class="section level3">
 <h3>CR4</h3>
-<ul>
-<li>CR4 uses <span class="math inline">\(f_4 = 1\)</span> and
+<p>The CR2, CR2f, and CR3 corrections can be difficult to implement because they involve computing <span class="math inline">\(n_j \times n_j\)</span> correction matrices for each cluster. Some or all clusters include a large number of observations, then the matrices will be large and computing them may be quite time consuming. The computational methods described by <span class="citation">Niccodemi et al. (2020)</span> and <span class="citation">MacKinnon et al. (2022)</span> provide a way to reduce computation time for certain specifications and certain working models, but they are not entirely general. Here we describe a novel generalization of the CR2f adjustment, termed CR4, that can be applied to models estimated by weighted least squares, with an arbitrary working model and weights that are not necessarily inverse-variance.</p>
+<p>Like the CR2 and CR2f corrections, CR4 is designed to provide a variance estimator that is exactly unbiased when the working model is correctly specified. The main innovation is to do so by correcting the full score contribution <span class="math inline">\(\bmat{u}_j&#39;\bmat{W}_j \bmat{X}_j\)</span> rather than correcting the residuals, so that the adjustment matrices are of dimension <span class="math inline">\(p \times p\)</span> rather than <span class="math inline">\(n_j \times n_j\)</span>. The CR4 variance estimator uses <span class="math inline">\(f_4 = 1\)</span> and estimating matrices given by
 <span class="math display">\[
-\bmat{E}_j = \bmat{W}_j \bmat{X}_j \bmat{D}_j,
+\bmat{E}^\sb{4}_j = \bmat{W}_j \bmat{X}_j \bmat{A}^\sb{4}_j,
 \]</span>
-where <span class="math inline">\(\bmat{D}_j\)</span> are adjustment matrices…</li>
-</ul>
+where <span class="math inline">\(\bmat{A}^\sb{4}_j\)</span> are adjustment matrices chosen to satisfy the criterion
+<span class="math display" id="eq:CR4-criterion">\[
+\E\left({\bmat{E}^\sb{4}_j}&#39; \bmat{u}_j \bmat{u}_j&#39; \bmat{E}^\sb{4}_j \right) = \bmat{X}_j&#39; \bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j
+\tag{3}
+\]</span>
+for <span class="math inline">\(j = 1,...,J\)</span>.</p>
+<p>To construct the CR4 adjustment matrices, we first define the matrices <span class="math inline">\(\bmat{F}_j = \bmat{X}_j&#39; \bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j\)</span> and <span class="math inline">\(\bmat{G}_j = \bmat{X}_j&#39; \bmat{W}_j \bmat{X}_j\)</span>. With these terms, the model-based variance estimator defined in <a href="#eq:V-model">(1)</a> can be computed as <span class="math inline">\(\bmat{V}^M = \bmat{M}\left(\sum_{j=1}^J \bmat{F}_j \right)\bmat{M}\)</span>. The CR4 adjustment matrices are then
+<span class="math display">\[
+\bmat{A}^\sb{4}_j = {\bmat{G}_j^C}&#39; \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C,
+\]</span>
+where <span class="math inline">\(\bmat{G}_j^C\)</span> is the upper-right Cholesky factorization of <span class="math inline">\(\bmat{G}_j\)</span> and
+<span class="math display">\[
+\bmat{B}_j^\sb{4} = \bmat{G}_j^C \left(\bmat{F}_j - \bmat{G}_j \bmat{M}\bmat{F}_j - \bmat{F}_j \bmat{M}\bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j\right) {\bmat{G}_j^C}&#39;.
+\]</span></p>
+<p>To see that these adjustment matrices satisfy the criterion given in <a href="#eq:CR4-criterion">(3)</a>, observe that the expectation of the cross-product of adjusted scores can be written as
+<span class="math display">\[
+\begin{aligned}
+\E\left(\bmat{A}_j^\sb{4}\bmat{X}_j&#39; \bmat{W}_j \bmat{u}_j \bmat{u}_j&#39; \bmat{W}_j \bmat{X}_j \bmat{A}_j^\sb{4}\right) &amp;= \bmat{A}_j^\sb{4} \bmat{X}_j&#39; \bmat{W}_j\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j&#39;\bmat{W}_j \bmat{X}_j \bmat{A}_j^\sb{4} \\
+&amp;= \bmat{A}_j^\sb{4} \left(\bmat{F}_j - \bmat{G}_j \bmat{F}_j - \bmat{F}_j \bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j \right) \bmat{A}_j^\sb{4} \\
+&amp;= {\bmat{G}_j^C}&#39; \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C \left(\bmat{F}_j - \bmat{G}_j \bmat{F}_j - \bmat{F}_j \bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j \right){\bmat{G}_j^C}&#39; \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C \\
+&amp;= {\bmat{G}_j^C}&#39; \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{B}_j^\sb{4} \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C \\
+&amp;= \bmat{G}_j.
+\end{aligned}
+\]</span>
+It follows that using the CR4 adjustment matrices leads to an exactly unbiased variance estimator when the working model is correct, just like the CR2 and CR2f corrections.</p>
+<p>If the model is estimated using inverse-variance weights so that <span class="math inline">\(\bmat{W}_j = \bs\Psi_j^{-1}\)</span>, then the CR4 adjustment matrices simplify to
+<span class="math display">\[
+\bmat{A}^\sb{4}_j = {\bmat{G}_j^C}&#39; \halfinv{\left(\bmat{G}_j^C \left(\bmat{G}_j - \bmat{G}_j \bmat{M} \bmat{G}_j\right) {\bmat{G}_j^C}&#39;\right)} \bmat{G}_j^C.
+\]</span>
+<!-- Can this be simplified further? -->
+<!-- How is CR4 related to CR2f? Are they equivalent for inverse-variance weights?--></p>
+<p>A further benefit of the CR4 adjustment matrices is that they can be tailored to a subset of the covariates that are of focal interest. Rather than correcting the bias in the full variance estimator, we could correct the bias for just one or more of the predictors, so that <span class="math inline">\(\E\left(\bmat{k}&#39; \bmat{V}^{CR} \bmat{k}\right) = \Var\left(\bmat{k}&#39; \bs{\hat\beta}\right)\)</span> for a <span class="math inline">\(p \times k\)</span> matrix of contrasts <span class="math inline">\(\bmat{k}\)</span> with <span class="math inline">\(k \leq p\)</span>, even if unbiasedness does not hold for the full estimator <span class="math inline">\(\bmat{V}^{CR}\)</span>.</p>
 </div>
 </div>
 </div>
@@ -642,6 +677,9 @@ where <span class="math inline">\(\bmat{D}_j\)</span> are adjustment matrices…
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-bell2002bias" class="csl-entry">
 Bell, Robert M, and Daniel F McCaffrey. 2002. <span>“Bias Reduction in Standard Errors for Linear Regression with Multi-Stage Samples.”</span> <em>Survey Methodology</em> 28 (2): 169–82.
+</div>
+<div id="ref-mackinnon2022fast" class="csl-entry">
+MacKinnon, James G, Morten Ørregaard Nielsen, Matthew D Webb, et al. 2022. <span>“Fast and Reliable Jackknife and Bootstrap Methods for Cluster-Robust Inference.”</span> 1485. Queen’s Economics Department Working Paper. Kingston, Ontario, Canada: Queen’s University.
 </div>
 <div id="ref-mccaffrey2001generalizations" class="csl-entry">
 McCaffrey, Daniel F, Robert M Bell, and Carsten H Botts. 2001. <span>“Generalizations of Biased Reduced Linearization.”</span> In <em>Proceedings of the Annual Meeting of the American Statistical Association</em>, 673. 1994.
