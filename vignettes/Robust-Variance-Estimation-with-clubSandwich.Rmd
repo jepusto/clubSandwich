@@ -39,11 +39,13 @@ $$
 y_{ij} &= \beta_0 + \beta_1 x_{1ij} + \beta_2 x_{2ij} + \cdots + \beta_{p-1} x_{p-1,ij} + e_{ij}, \\
  &= \mathbf{x}_{ij} \boldsymbol\beta + e_{ij}
 \end{aligned}
+(\#eq:reg-model)
 $$
 
 where $\mathbf{x}_{ij}$ is a $1 \times p$ row vector of predictors (possibly including an intercept term) and $e_{ij}$ is an error term, both for observation $i = 1,...,n_j$ in cluster $j = 1,...,J$. It will be convenient to write this model using vectors and matrices for each cluster, as
 $$
 \mathbf{y}_j = \mathbf{X}_j \boldsymbol\beta + \mathbf{e}_j,
+(\#eq:reg-matrix)
 $$
 where $\mathbf{y}_j = (y_{1j} \cdots y_{n_j j})'$ is the $n_j \times 1$ vector of outcomes for cluster $j$, $\mathbf{X}_j = (\mathbf{x}_{1j}' \cdots \mathbf{x}_{n_j j}')'$ is the $n_j \times p$ matrix of predictors for cluster $j$, and $\mathbf{e}_j$ is the $n_j \times 1$ vector of errors for cluster $j$, all for $j = 1,...,J$. 
 
@@ -54,6 +56,7 @@ A1:& \qquad \E(\bmat{e}_j | \bmat{X}_j) = \bmat{0} \\
 A2:& \qquad \E(\bmat{e}_j \bmat{e}_{k}' | \bmat{X}_j, \bmat{X}_{k}) = \bmat{0}, \qquad \text{when} \qquad j \neq {k} \\
 A3:& \qquad \E(\bmat{e}_j \bmat{e}_j' | \bmat{X}_j) = \Var(\bmat{e}_j) = \bs\Omega_j.
 \end{aligned}
+(\#eq:reg-assumptions)
 $$
 The $n_j \times n_j$ matrices $\bs\Omega_j$ capture the cluster-specific variance-covariance matrix of the errors.
 A common strategy for estimation and inference about the regression coefficients is to make further assumptions regarding the form of these matrices, such as by assuming that all errors are independent and homoskedastic (i.e., $\bs\Omega_j = \sigma^2 \bmat{I}_j$) or that they have a structure characterized by a low-dimensional parameter (as in a hierarchical linear model or random effects model). 
@@ -66,6 +69,7 @@ We will consider a general set of symmetric weight matrices $\bmat{W}_1,...,\bma
 The weighted least squares estimator for $\bs\beta$ is then defined as
 $$
 \bs{\hat\beta} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{y}_j\right), \quad \text{where} \quad \bmat{M} = \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{X}_j\right)^{-1}.
+(\#eq:WLS-beta-M)
 $$
 
 In some applications, the weight matrices used for WLS estimation are motivated by a working model for the structure of the error variance-covariances $\bs\Omega_j$. 
@@ -78,6 +82,7 @@ In practice, the variance parameter $\bs\theta$ is unknown and so the analyst wi
 Treating the weight matrices as fixed, the sampling variance of $\bs{\hat\beta}$ is 
 $$
 \Var\left(\bs{\hat\beta}\right) = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bs\Omega_j \bmat{W}_j \bmat{X}_j \right) \bmat{M},
+(\#eq:var-beta-hat)
 $$
 which depends on the unknown variance-covariances $\bs\Omega_1,...,\bs\Omega_J$. One strategy for estimating $\Var\left(\bs{\hat\beta}\right)$ is to substitute an estimated working model $\bs{\hat\Psi}_j$ for the unknown variance-covariance matrices $\bs\Omega_j$, giving a model-based variance estimator:
 $$
@@ -91,6 +96,7 @@ If the working model is correctly specified and precisely estimated, then the mo
 The original form of the robust variance estimator uses the residuals from each cluster to derive rough estimates of the unknown error variance matrices. This estimator substitutes the cross product of the residuals $\bmat{\hat{u}}_j\bmat{\hat{u}}_j'$ in place of $\bs\Omega$, leading to the variance estimator
 $$
 \bmat{V}^{CR0} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{W}_j\bmat{X}_j\right) \bmat{M}.
+(\#eq:V-CR0)
 $$
 The cross-product of the residuals from a given cluster is a very crude estimator for the error variance matrix from that cluster. However, we do not need to estimate each cluster-specific variance matrix accurately. Rather, we only need to approximate the _sum_ of the terms involving the error variance matrix, and even the crude CR0 estimator works for this purpose if the number of independent clusters is sufficiently large. 
 
@@ -104,19 +110,21 @@ A number of variations on the basic cluster-robust variance estimator have been 
 The variations implemented in the `clubSandwich` package all have the form
 $$
 \bmat{V}^{CR} = f \times \bmat{M} \left(\sum_{j=1}^J \bmat{E}_j' \bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{E}_j \right) \bmat{M}
+(\#eq:V-CR)
 $$
-for some constant $f$ and some estimating matrices $\bmat{E}_1,...,\bmat{E}_J$. With this representation, the CRO estimator corresponds to $f_0 = 1$ and $\bmat{E}^{CR0}_j = \bmat{W}_j \bmat{X}_j$.
+for some constant $f$ and some estimating matrices $\bmat{E}_1,...,\bmat{E}_J$. With this representation, the CRO estimator corresponds to $f_0 = 1$ and $\bmat{E}^\sb{0}_j = \bmat{W}_j \bmat{X}_j$.
 
 
 ### CR1
 
-The CR1, CR1S, and CR1p estimators are variants that use the following constants with $\bmat{E}^{CR1}_j = \bmat{W}_j \bmat{X}_j$.
+The CR1, CR1S, and CR1p estimators are variants that use the following constants with $\bmat{E}^\sb{1}_j = \bmat{W}_j \bmat{X}_j$.
 $$
 \begin{aligned}
 \text{CR1}: f_1 &= \frac{J}{J - 1}, \\
 \text{CR1S}: f_{1S} &= \frac{J (N - 1)}{(J - 1)(N - p)} , \\
 \text{CR1p}: f_{1p} &= \frac{J}{J - p}, 
 \end{aligned}
+(\#eq:CR1)
 $$
 
 These corrections are all motivated by the observation that the sandwich estimator corresponds to a sample variance-covariance matrix across terms for each cluster. Thus, inflating it by an amount depending on the number of clusters should tend to reduce the small-sample bias of CR0. However, the exact bias of CR0 depends on features of the data beyond simply the number of clusters and predictors, including the distribution of cluster sizes and the distribution of the predictors within and across clusters [@mccaffrey2001generalizations;@tipton2015small;@pustejovsky2018small]. Thus, the simple multiplicative corrections involved in the CR1 and related estimators are only very rough approximations.
@@ -131,54 +139,58 @@ These corrections are all motivated by the observation that the sandwich estimat
 The CR2 estimator uses $f_2 = 1$ and
 $$
 \bmat{E}^\sb{2}_j = {\bmat{A}^\sb{2}_j}' \bmat{W}_j \bmat{X}_j,
+(\#eq:CR2-Ej)
 $$
 for $j=1,...,J$, where $\bmat{A}^\sb{2}_1,...,\bmat{A}^\sb{2}_J$ are adjustment matrices that satisfy the criteria
 $$
 \E\left(\bmat{A}^\sb{2}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j' {\bmat{A}^\sb{2}_j}'\right) = \bs\Psi_j.
+(\#eq:CR2-criterion)
 $$
 where $\bs\Psi_j$ denotes the working model for cluster $j$ and the expectation is taken assuming that the working model is correct. Thus, if the working model is correctly specified,
 $$
-\E\left({\bmat{E}^{CR2}_j}'\bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{E}_j^{CR2}\right) = \bmat{X}_j'\bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j,
+\E\left({\bmat{E}^\sb{2}_j}'\bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{E}^\sb{2}_j\right) = \bmat{X}_j'\bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j,
+(\#eq:CR2-expct)
 $$
 and so $\E\left(\bmat{V}^{CR2}\right) = \Var\left(\bs{\hat\beta}\right)$.
 
 <!-- H: Do we need to clarify the cluster-specific notations (_j vs. the summation) as compared to the $\Var\left(\bs{\hat\beta}\right)$ equation in line 79? -->
 
-To derive expressions for $\bmat{A}_j$, observe that the residuals from cluster $j$ may be written as $\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bmat{Y}$, where $\bmat{H} = \bmat{X}\bmat{M}\bmat{X}'\bmat{W}$ and $\bmat{C}_j$ is an $n_j \times N$ matrix that selects the rows of the full data that correspond to cluster $j$ (i.e., $\bmat{X}_j = \bmat{C}_j \bmat{X}$). Because the residuals have mean zero, the expectation of the cross-product of residuals from cluster $j$ is
+To derive expressions for $\bmat{A}^\sb{2}_j$, observe that the residuals from cluster $j$ may be written as $\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bmat{Y}$, where $\bmat{H} = \bmat{X}\bmat{M}\bmat{X}'\bmat{W}$ and $\bmat{C}_j$ is an $n_j \times N$ matrix that selects the rows of the full data that correspond to cluster $j$ (i.e., $\bmat{X}_j = \bmat{C}_j \bmat{X}$). Because the residuals have mean zero, the expectation of the cross-product of residuals from cluster $j$ is
 $$
-\E\left(\bmat{\hat{u}}_j \bmat{\hat{u}}_j'\right) = \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j.
+\E\left(\bmat{\hat{u}}_j \bmat{\hat{u}}_j'\right) = \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j'.
+(\#eq:resid-expr)
 $$
-
-<!-- H: Is it correct dimension-wise to not transpose the C_j at the end? -->
-
 The adjustment matrices therefore satisfy the criteria
 $$
-\bmat{A}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j \bmat{A}_j' = \bs\Psi_j
+\bmat{A}^\sb{2}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j' {\bmat{A}^\sb{2}_j}' = \bs\Psi_j
+(\#eq:CR2-crit-sat)
 $$
 for $j = 1,...,J$. 
 
-<!-- H: Same here. Is it correct dimension-wise to not transpose the C_j at the end? -->
-
 There are multiple possible solutions to the above. @mccaffrey2001generalizations considered several possible solutions to the above, including a symmetric solution given by 
 $$
-\bmat{A}_j = {\bs\Psi^C_j}' \halfinv{\bmat{B}}_j \bs\Psi^C_j,
+\bmat{A}^\sb{2}_j = {\bs\Psi^C_j}' \halfinv{\left(\bmat{B}_j^\sb{2}\right)} \bs\Psi^C_j,
+(\#eq:CR2-symm)
 $$
+<!-- H: Check notation for the B_j matrix inside. -->
+
 where $\bs\Psi^C_j$ is the upper-right triangular Cholesky factorization of $\bs\Psi_j$, so that ${\bs\Psi^C_j}' \bs\Psi^C_j = \bs\Psi_j$, 
 $$
-\bmat{B}_j = \bs\Psi^C_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j {\bs\Psi^C_j}',
+\bmat{B}^\sb{2}_j = \bs\Psi^C_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j' {\bs\Psi^C_j}',
+(\#eq:CR2-symm-Bj)
 $$
-and $\halfinv{\bmat{B}}_j$ is the inverse of the symmetric square root of $\bmat{B}_j$.
+and $\halfinv{\left(\bmat{B}_j^\sb{2}\right)}$ is the inverse of the symmetric square root of $\bmat{B}^\sb{2}_j$.
 
-<!-- H: Again, is it correct dimension-wise to not transpose the C_j at the end? -->
-
-If the weight matrices are inverse-variance, then the matrix $\bmat{B}_j$ has the simpler form
+If the weight matrices are inverse-variance, then the matrix $\bmat{B}^\sb{2}_j$ has the simpler form
 $$
-\bmat{B}_j = \bs\Psi^C_j \left(\bs\Psi_j - \bmat{X}_j\bmat{M}\bmat{X}_j'\right) {\bs\Psi^C_j}'.
+\bmat{B}^\sb{2}_j = \bs\Psi^C_j \left(\bs\Psi_j - \bmat{X}_j\bmat{M}\bmat{X}_j'\right) {\bs\Psi^C_j}'.
+(\#eq:CR2-inv-Bj)
 $$
 
 For the special case of ordinary least squares, the adjustment matrices simplify even further to
 $$
-\bmat{A}_j = \halfinv{\left(\bmat{I}_j - \bmat{X}_j \bmat{M}\bmat{X}_j'\right)}
+\bmat{A}^\sb{2}_j = \halfinv{\left(\bmat{I}_j - \bmat{X}_j \bmat{M}\bmat{X}_j'\right)}
+(\#eq:CR2-OLS)
 $$
 if the working model is based on the assumption of independent, homoskedastic errors. 
 
@@ -192,31 +204,31 @@ Unfortunately, their computational approach does not generalize to the CR2 adjus
 
 @mccaffrey2001generalizations also considered another approach to correcting the bias of the residuals, using a different set of adjustment matrices that we term CR2f. The CR2f estimator uses $f_2 = 1$ and
 $$
-\bmat{E}^{CR2f}_j = \half{\bmat{W}}_j \bmat{A}_j \half{\bmat{W}}_j \bmat{X}_j,
+\bmat{E}^\sb{2f}_j = \half{\bmat{W}}_j \bmat{A}^\sb{2f}_j \half{\bmat{W}}_j \bmat{X}_j,
+(\#eq:CR2f-Ej)
 $$
-where $\bmat{A}_1,...,\bmat{A}_j$ are adjustment matrices that satisfy the criteria
+where $\bmat{A}^\sb{2f}_1,...,\bmat{A}^\sb{2f}_j$ are adjustment matrices that satisfy the criteria
 $$
-\E\left(\bmat{A}_j\half{\bmat{W}}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j'\half{\bmat{W}}_j \bmat{A}_j'\right) = \bmat{A}_j \half{\bmat{W}}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j \half{\bmat{W}}_j \bmat{A}_j' = \half{\bmat{W}}_j \bs\Psi_j\half{\bmat{W}}_j.
+\E\left(\bmat{A}^\sb{2f}_j\half{\bmat{W}}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j'\half{\bmat{W}}_j {\bmat{A}^\sb{2f}_j}'\right) = \bmat{A}^\sb{2f}_j \half{\bmat{W}}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j' \half{\bmat{W}}_j {\bmat{A}^\sb{2f}_j}' \\ = \half{\bmat{W}}_j \bs\Psi_j\half{\bmat{W}}_j.
+(\#eq:CR2f-criterion)
 $$
-
-<!-- H: Again, should we transpose the C_j at the end? -->
-
 Following the same reasoning as with the CR2 estimator, adjustment matrices that satisfy these criteria lead to a variance estimator that is exactly unbiased if the working model is correctly specified. A symmetric solution is given by 
 $$
-\bmat{A}_j = \half{\bmat{W}}_j {\bs\Psi^C_j}' \halfinv{\bmat{B}}_j \bs\Psi^C_j \half{\bmat{W}}_j,
+\bmat{A}^\sb{2f}_j = \half{\bmat{W}}_j {\bs\Psi^C_j}' \halfinv{\left(\bmat{B}_j^\sb{2f}\right)} \bs\Psi^C_j \half{\bmat{W}}_j,
+(\#eq:CR2f-symm)
 $$
 where $\bs\Psi^C_j$ is again the upper-right triangular Cholesky factorization of $\bs\Psi_j$ and   
 $$
-\bmat{B}_j = \bs\Psi^C_j \bmat{W}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j \bmat{W}_j {\bs\Psi^C_j}'.
+\bmat{B}^\sb{2f}_j = \bs\Psi^C_j \bmat{W}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j' \bmat{W}_j {\bs\Psi^C_j}'.
+(\#eq:CR2f-symm-Bj)
 $$
 In a similar way to the CR2 estimator, an asymmetric solution is given by 
 @mccaffrey2001generalizations, using which is not recommended over the symmetric solution.
 
-<!-- H: Again, should we transpose the C_j at the end? -->
-
 If the weight matrices are inverse-variance, then the CR2f adjustment matrices have the simpler form
 $$
-\bmat{A}_j = \halfinv{\left(\bmat{I}_j - \half{\bmat{W}}_j\bmat{X}_j \bmat{M} \bmat{X}_j' \half{\bmat{W}}_j\right)}.
+\bmat{A}^\sb{2f}_j = \halfinv{\left(\bmat{I}_j - \half{\bmat{W}}_j\bmat{X}_j \bmat{M} \bmat{X}_j' \half{\bmat{W}}_j\right)}.
+(\#eq:CR2f-inv)
 $$
 For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices are equivalent.
 
@@ -229,11 +241,13 @@ $$
 $$
 where $\bs{\hat\beta}_{(j)}$ is the weighted least squares estimator calculated while excluding the observations from cluster $j$.[^Other-jackknife] Although not immediately apparent, $\bmat{V}^{CRJ}$ is equivalent to calculating the cluster-robust variance estimator as given in (Equation) using $f_J = \frac{J - 1}{J}$ and 
 $$
-\bmat{E}^\sb{J}_j = \left(\bmat{A}_j^\sb{3}\right)' \bmat{W}_j \bmat{X}_j,
+\bmat{E}^\sb{J}_j = {\bmat{A}_j^\sb{3}}' \bmat{W}_j \bmat{X}_j,
+(\#eq:jackknife-Ej)
 $$
 where 
 $$
-\bmat{A}_j^\sb{3} = \left(\bmat{I}_j - \bmat{X}_j \bmat{M} \bmat{X}_j' \bmat{W}_j\right)^{-1}. 
+\bmat{A}_j^\sb{3} = \left(\bmat{I}_j - \bmat{X}_j \bmat{M} \bmat{X}_j' \bmat{W}_j\right)^{-1}.
+(\#eq:jackknife-Aj)
 $$
 Sometimes, the leading factor in \@ref(eq:jackknife) is omitted, which yields the CR3 estimator. This is equivalent to taking $f_3 = 1$ and $\bmat{E}_j^\sb{3} = \bmat{E}_j^\sb{J}$. 
 
@@ -252,6 +266,7 @@ The CR2, CR2f, and CR3 corrections can be difficult to implement because they in
 Like the CR2 and CR2f corrections, CR4 is designed to provide a variance estimator that is exactly unbiased when the working model is correctly specified. The main innovation is to do so by correcting the full score contribution $\bmat{u}_j'\bmat{W}_j \bmat{X}_j$ rather than correcting the residuals, so that the adjustment matrices are of dimension $p \times p$ rather than $n_j \times n_j$. The CR4 variance estimator uses $f_4 = 1$ and estimating matrices given by
 $$
 \bmat{E}^\sb{4}_j = \bmat{W}_j \bmat{X}_j \bmat{A}^\sb{4}_j,
+(\#eq:CR4-Ej)
 $$
 where $\bmat{A}^\sb{4}_j$ are adjustment matrices chosen to satisfy the criterion
 $$
@@ -263,10 +278,12 @@ for $j = 1,...,J$.
 To construct the CR4 adjustment matrices, we first define the matrices $\bmat{F}_j = \bmat{X}_j' \bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j$ and $\bmat{G}_j = \bmat{X}_j' \bmat{W}_j \bmat{X}_j$. With these terms, the model-based variance estimator defined in \@ref(eq:V-model) can be computed as $\bmat{V}^M = \bmat{M}\left(\sum_{j=1}^J \bmat{F}_j \right)\bmat{M}$. The CR4 adjustment matrices are then
 $$
 \bmat{A}^\sb{4}_j = {\bmat{G}_j^C}' \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C,
+(\#eq:CR4-Aj)
 $$
 where $\bmat{G}_j^C$ is the upper-right Cholesky factorization of $\bmat{G}_j$ and 
 $$
 \bmat{B}_j^\sb{4} = \bmat{G}_j^C \left(\bmat{F}_j - \bmat{G}_j \bmat{M}\bmat{F}_j - \bmat{F}_j \bmat{M}\bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j\right) {\bmat{G}_j^C}'.
+(\#eq:CR4-Bj)
 $$
 
 To see that these adjustment matrices satisfy the criterion given in \@ref(eq:CR4-criterion), observe that the expectation of the cross-product of adjusted scores can be written as
@@ -278,12 +295,14 @@ $$
 &= {\bmat{G}_j^C}' \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{B}_j^\sb{4} \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C \\
 &= \bmat{G}_j.
 \end{aligned}
+(\#eq:CR4-crit-sat)
 $$
 It follows that using the CR4 adjustment matrices leads to an exactly unbiased variance estimator when the working model is correct, just like the CR2 and CR2f corrections. 
 
 If the model is estimated using inverse-variance weights so that $\bmat{W}_j = \bs\Psi_j^{-1}$, then the CR4 adjustment matrices simplify to
 $$
 \bmat{A}^\sb{4}_j = {\bmat{G}_j^C}' \halfinv{\left(\bmat{G}_j^C \left(\bmat{G}_j - \bmat{G}_j \bmat{M} \bmat{G}_j\right) {\bmat{G}_j^C}'\right)} \bmat{G}_j^C.
+(\#eq:CR4-inv)
 $$
 <!-- Can this be simplified further? -->
 <!-- How is CR4 related to CR2f? Are they equivalent for inverse-variance weights?-->
