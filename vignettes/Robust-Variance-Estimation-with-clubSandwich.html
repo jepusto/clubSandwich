@@ -11,7 +11,7 @@
 
 <meta name="author" content="James E. Pustejovsky and Hanna Kim" />
 
-<meta name="date" content="2022-11-09" />
+<meta name="date" content="2022-11-10" />
 
 <title>Cluster-robust variance estimation with clubSandwich</title>
 
@@ -367,7 +367,7 @@ pre code {
 
 <h1 class="title toc-ignore">Cluster-robust variance estimation with clubSandwich</h1>
 <h4 class="author">James E. Pustejovsky and Hanna Kim</h4>
-<h4 class="date">2022-11-09</h4>
+<h4 class="date">2022-11-10</h4>
 
 </div>
 
@@ -546,8 +546,8 @@ In a similar way to the CR2 estimator, an asymmetric solution is given by
 \]</span>
 For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices are equivalent.</p>
 </div>
-<div id="crj-and-cr3" class="section level3">
-<h3>CRJ and CR3</h3>
+<div id="crj-cr3-cr3lambda" class="section level3">
+<h3>CRJ, CR3, CR3<span class="math inline">\(\lambda\)</span></h3>
 <p>The cluster-level jackknife technique is closely related to cluster-robust variance estimation. A cluster-level jack-knife sampling variance is given by
 <span class="math display" id="eq:jackknife">\[
 \bmat{V}^{CRJ} = \frac{J - 1}{J} \sum_{j=1}^J \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right) \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right)&#39;,
@@ -562,7 +562,8 @@ where
 \bmat{A}_j^\sb{3} = \left(\bmat{I}_j - \bmat{X}_j \bmat{M} \bmat{X}_j&#39; \bmat{W}_j\right)^{-1}.
 \]</span>
 Sometimes, the leading factor in <a href="#eq:jackknife">(2)</a> is omitted, which yields the CR3 estimator. This is equivalent to taking <span class="math inline">\(f_3 = 1\)</span> and <span class="math inline">\(\bmat{E}_j^\sb{3} = \bmat{E}_j^\sb{J}\)</span>.</p>
-<p><span class="citation">Niccodemi et al. (2020)</span> described an efficient method of calculating the CRJ and CR3 for the special case of ordinary least squares with an independence working model…</p>
+<p>For the special case of unweighted least squares with an independent, homoskedastic working model, <span class="citation">Niccodemi et al. (2020)</span> showed that the CR3 estimator has an upward bias and the CRJ estimator has an upward bias except when the predictors are identically distributed in each cluster, so that <span class="math inline">\(\bmat{X}_j&#39;\bmat{X}_j = \bmat{X}&#39;\bmat{X} / J\)</span>. To reduce this bias, they suggested using <span class="math inline">\(\bmat{E}_j^\sb{3}\)</span> with the leading constant <span class="math inline">\(f_{3\lambda} = \left(\sum_{j=1}^J \frac{n_j}{N - n_j}\right)^{-1}\)</span>. Compared to CRJ, this CR3<span class="math inline">\(\lambda\)</span> estimator better accounts for variation in cluster sizes. For the case of unweighted least squares with the independent and homoskedastic working model, it will be unbiased under the more general condition that <span class="math inline">\(\bmat{X}_j&#39;\bmat{X}_j = \frac{n_j}{N}\bmat{X}&#39;\bmat{X}\)</span>.</p>
+<p><span class="citation">Niccodemi et al. (2020)</span> also described an efficient method of calculating the <span class="math inline">\(\bmat{E}^\sb{3}_j\)</span> matrices for the special case of ordinary least squares with an independence working model…</p>
 <!-- Jackknife - See Tipton (2015) for some arguments -->
 </div>
 <div id="cr4" class="section level3">

@@ -220,7 +220,7 @@ $$
 $$
 For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices are equivalent.
 
-### CRJ and CR3
+### CRJ, CR3, CR3$\lambda$
 
 The cluster-level jackknife technique is closely related to cluster-robust variance estimation. A cluster-level jack-knife sampling variance is given by
 $$
@@ -235,9 +235,11 @@ where
 $$
 \bmat{A}_j^\sb{3} = \left(\bmat{I}_j - \bmat{X}_j \bmat{M} \bmat{X}_j' \bmat{W}_j\right)^{-1}. 
 $$
-Sometimes, the leading factor in \@ref(eq:jackknife) is omitted, which yields the CR3 estimator. This is equivalent to taking $f_3 = 1$ and $\bmat{E}_j^\sb{3} = \bmat{E}_j^\sb{J}$.
+Sometimes, the leading factor in \@ref(eq:jackknife) is omitted, which yields the CR3 estimator. This is equivalent to taking $f_3 = 1$ and $\bmat{E}_j^\sb{3} = \bmat{E}_j^\sb{J}$. 
 
-@niccodemi2020refining described an efficient method of calculating the CRJ and CR3 for the special case of ordinary least squares with an independence working model...
+For the special case of unweighted least squares with an independent, homoskedastic working model, @niccodemi2020refining showed that the CR3 estimator has an upward bias and the CRJ estimator has an upward bias except when the predictors are identically distributed in each cluster, so that $\bmat{X}_j'\bmat{X}_j = \bmat{X}'\bmat{X} / J$. To reduce this bias, they suggested using $\bmat{E}_j^\sb{3}$ with the leading constant $f_{3\lambda} = \left(\sum_{j=1}^J \frac{n_j}{N - n_j}\right)^{-1}$. Compared to CRJ, this CR3$\lambda$ estimator better accounts for variation in cluster sizes. For the case of unweighted least squares with the independent and homoskedastic working model, it will be unbiased under the more general condition that $\bmat{X}_j'\bmat{X}_j = \frac{n_j}{N}\bmat{X}'\bmat{X}$. 
+
+@niccodemi2020refining also described an efficient method of calculating the $\bmat{E}^\sb{3}_j$ matrices for the special case of ordinary least squares with an independence working model...
 
 [^Other-jackknife]: Other versions of the cluster-level jackknife might center the the deviations on the arithmetic mean of $\bs{\hat\beta}_{(1)},...,\bs{\hat\beta}_{(J)}$.
 
