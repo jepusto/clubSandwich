@@ -154,28 +154,29 @@ $$
 \bmat{E}^\sb{2}_j = {\bmat{A}^\sb{2}_j}' \bmat{W}_j \bmat{X}_j,
 (\#eq:CR2-Ej)
 $$
-for $j=1,...,J$, where $\bmat{A}^\sb{2}_1,...,\bmat{A}^\sb{2}_J$ are adjustment matrices that satisfy the criteria
+inside \@ref(eq:V-CR) for $j=1,...,J$, where $\bmat{A}^\sb{2}_1,...,\bmat{A}^\sb{2}_J$ are adjustment matrices that satisfy the criteria
 $$
-\E\left(\bmat{A}^\sb{2}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j' {\bmat{A}^\sb{2}_j}'\right) = \bs\Psi_j,
+\E\left(\bmat{A}^\sb{2}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j' {\bmat{A}^\sb{2}_j}'\right) = \bs\Psi_j.
 (\#eq:CR2-criterion)
 $$
-where $\bs\Psi_j$ denotes the working model for cluster $j$ and the expectation is taken assuming that the working model is correct. 
-Thus, if the working model is correctly specified, plugging in \@ref(eq:CR2-Ej) to \@ref(eq:V-CR) leads to
+$\bs\Psi_j$ denotes the working model for cluster $j$ and the expectation is taken assuming that the working model is correct. 
+Thus, if the working model is correctly specified, 
 $$
 \E\left({\bmat{E}^\sb{2}_j}'\bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{E}^\sb{2}_j\right) = \bmat{X}_j'\bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j,
 (\#eq:CR2-expct)
 $$
-and so $\E\left(\bmat{V}^{CR2}\right) = \Var\left(\bs{\hat\beta}\right)$. 
+and so $\E\left(\bmat{V}^{CR2}\right) = \Var\left(\bs{\hat\beta}\right)$ by \@ref(eq:var-beta-hat) and \@ref(eq:V-CR). 
 
-To derive expressions for $\bmat{A}^\sb{2}_j$, observe that the residuals from cluster $j$ may be written as $\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bmat{Y}$, where $\bmat{H} = \bmat{X}\bmat{M}\bmat{X}'\bmat{W}$ and $\bmat{C}_j$ is an $n_j \times N$ matrix that selects the rows of the full data that correspond to cluster $j$ (i.e., $\bmat{X}_j = \bmat{C}_j \bmat{X}$). Because the residuals have mean zero, the expectation of the cross-product of residuals from cluster $j$ is
+To derive expressions for $\bmat{A}^\sb{2}_j$, observe that the residuals from cluster $j$ may be written as $\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bmat{Y}$, where $\bmat{H} = \bmat{X}\bmat{M}\bmat{X}'\bmat{W}$ and $\bmat{C}_j$ is an $n_j \times N$ matrix that selects the rows of the full data that correspond to cluster $j$ (i.e., $\bmat{X}_j = \bmat{C}_j \bmat{X}$). 
+Because the residuals have mean zero, the expectation of the cross-product of residuals from cluster $j$ is
 $$
 \E\left(\bmat{\hat{u}}_j \bmat{\hat{u}}_j'\right) = \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j'.
-(\#eq:resid-expr)
+(\#eq:resid-expct)
 $$
-The adjustment matrices therefore satisfy the criteria
+The adjustment matrices therefore satisfy the following criteria that 
 $$
 \bmat{A}^\sb{2}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j' {\bmat{A}^\sb{2}_j}' = \bs\Psi_j
-(\#eq:CR2-crit-sat)
+(\#eq:CR2-criterion2)
 $$
 for $j = 1,...,J$. 
 
@@ -191,40 +192,45 @@ $$
 \bmat{B}^\sb{2}_j = \bs\Psi^C_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j' {\bs\Psi^C_j}',
 (\#eq:CR2-symm-Bj)
 $$
-and $\halfinv{\left(\bmat{B}_j^\sb{2}\right)}$ is the inverse of the symmetric square root of $\bmat{B}^\sb{2}_j$.
+and $\halfinv{\left(\bmat{B}_j^\sb{2}\right)}$ is the inverse of the symmetric square root of $\bmat{B}^\sb{2}_j$. 
 
 If the weight matrices are inverse-variance, then the matrix $\bmat{B}^\sb{2}_j$ has the simpler form
 $$
 \bmat{B}^\sb{2}_j = \bs\Psi^C_j \left(\bs\Psi_j - \bmat{X}_j\bmat{M}\bmat{X}_j'\right) {\bs\Psi^C_j}'.
 (\#eq:CR2-inv-Bj)
 $$
-
-For the special case of ordinary least squares, the adjustment matrices simplify even further to
+For the special case of ordinary least squares, the adjustment matrices simplify even further to 
 $$
-\bmat{A}^\sb{2}_j = \halfinv{\left(\bmat{I}_j - \bmat{X}_j \bmat{M}\bmat{X}_j'\right)}
+\bmat{A}^\sb{2}_j = \halfinv{\left(\bmat{I}_j - \bmat{X}_j \bmat{M}\bmat{X}_j'\right)},
 (\#eq:CR2-OLS)
 $$
 if the working model is based on the assumption of independent, homoskedastic errors. 
 
-@mccaffrey2001generalizations also considered an asymmetric solution to the criteria. However, they recommended the symmetric one because it minimizes the squared error between the OLS residuals and the true errors when they are independent and homoskedastic. Even when the errors were not independent, @mccaffrey2001generalizations found that the symmetric adjustment matrices yielded smaller bias than asymmetric ones.
+@mccaffrey2001generalizations also considered an asymmetric solution to the criteria. However, they recommended the symmetric one because it minimizes the squared error between the OLS residuals and the true errors when they are independent and homoskedastic. 
+Even when the errors were not independent, they found that the symmetric adjustment matrices yielded smaller bias than asymmetric ones. 
 
 @niccodemi2020refining described an efficient method of calculating the CR2 for the special case of ordinary least squares with an independence working model...
 Unfortunately, their computational approach does not generalize to the CR2 adjustment matrices for weighted least squares or working models other than $\Psi_j = \sigma^2 \bmat{I}_j$. 
 
+<!-- Further check the above paragraph. -->
 
 ### CR2f
 
-@mccaffrey2001generalizations also considered another approach to correcting the bias of the residuals, using a different set of adjustment matrices that we term CR2f. The CR2f estimator uses $f_2 = 1$ and
+@mccaffrey2001generalizations also considered another approach to correcting the bias of the residuals, using a different set of adjustment matrices that we term CR2f. 
+The CR2f estimator uses $f_{2f} = 1$ and
+
+<!-- H: Changed f_2 to f_{2f}... -->
 $$
-\bmat{E}^\sb{2f}_j = \half{\bmat{W}}_j \bmat{A}^\sb{2f}_j \half{\bmat{W}}_j \bmat{X}_j,
+\bmat{E}^\sb{2f}_j = \half{\bmat{W}}_j \bmat{A}^\sb{2f}_j \half{\bmat{W}}_j \bmat{X}_j
 (\#eq:CR2f-Ej)
 $$
-where $\bmat{A}^\sb{2f}_1,...,\bmat{A}^\sb{2f}_j$ are adjustment matrices that satisfy the criteria
+inside \@ref(eq:V-CR) for $j=1,...,J$, where $\bmat{A}^\sb{2f}_1,...,\bmat{A}^\sb{2f}_j$ are adjustment matrices that satisfy the criteria
 $$
 \E\left(\bmat{A}^\sb{2f}_j\half{\bmat{W}}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j'\half{\bmat{W}}_j {\bmat{A}^\sb{2f}_j}'\right) = \bmat{A}^\sb{2f}_j \half{\bmat{W}}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j' \half{\bmat{W}}_j {\bmat{A}^\sb{2f}_j}' \\ = \half{\bmat{W}}_j \bs\Psi_j\half{\bmat{W}}_j.
 (\#eq:CR2f-criterion)
 $$
-Following the same reasoning as with the CR2 estimator, adjustment matrices that satisfy these criteria lead to a variance estimator that is exactly unbiased if the working model is correctly specified. A symmetric solution is given by 
+Following the same reasoning as with the CR2 estimator, adjustment matrices that satisfy these criteria lead to a variance estimator that is exactly unbiased if the working model is correctly specified. 
+A symmetric solution is given by 
 $$
 \bmat{A}^\sb{2f}_j = \half{\bmat{W}}_j {\bs\Psi^C_j}' \halfinv{\left(\bmat{B}_j^\sb{2f}\right)} \bs\Psi^C_j \half{\bmat{W}}_j,
 (\#eq:CR2f-symm)
@@ -235,7 +241,7 @@ $$
 (\#eq:CR2f-symm-Bj)
 $$
 In a similar way to the CR2 estimator, an asymmetric solution is given by 
-@mccaffrey2001generalizations, using which is not recommended over the symmetric solution.
+@mccaffrey2001generalizations, using which is not recommended over the symmetric solution. 
 
 If the weight matrices are inverse-variance, then the CR2f adjustment matrices have the simpler form
 $$
