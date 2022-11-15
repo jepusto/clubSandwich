@@ -308,23 +308,17 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before {
-content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "\e259";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "";
-border: none;
-}
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "";
+content: "\e258";
 font-family: 'Glyphicons Halflings';
-display: inline-block;
-padding: 10px;
-border-right: 1px solid #ddd;
+border: none;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -395,22 +389,22 @@ These methods can be applied across a broad scope of models, including not only 
 <span class="math display" id="eq:reg-model">\[
 \begin{aligned}
 y_{ij} &amp;= \beta_0 + \beta_1 x_{1ij} + \beta_2 x_{2ij} + \cdots + \beta_{p-1} x_{p-1,ij} + e_{ij}, \\
-&amp;= \mathbf{x}_{ij} \boldsymbol\beta + e_{ij}
+&amp;= \mathbf{x}_{ij} \boldsymbol\beta + u_{ij}
 \end{aligned}
 \tag{1}
 \]</span>
-where <span class="math inline">\(\mathbf{x}_{ij}\)</span> is a <span class="math inline">\(1 \times p\)</span> row vector of predictors (possibly including an intercept term) and <span class="math inline">\(e_{ij}\)</span> is an error term, both for observation <span class="math inline">\(i = 1,...,n_j\)</span> in cluster <span class="math inline">\(j = 1,...,J\)</span>. It will be convenient to write <a href="#eq:reg-model">(1)</a> using vectors and matrices for each cluster, as
+where <span class="math inline">\(\mathbf{x}_{ij}\)</span> is a <span class="math inline">\(1 \times p\)</span> row vector of predictors (possibly including an intercept term) and <span class="math inline">\(u_{ij}\)</span> is an error term, both for observation <span class="math inline">\(i = 1,...,n_j\)</span> in cluster <span class="math inline">\(j = 1,...,J\)</span>. It will be convenient to write <a href="#eq:reg-model">(1)</a> using vectors and matrices for each cluster, as
 <span class="math display" id="eq:reg-matrix">\[
-\mathbf{y}_j = \mathbf{X}_j \boldsymbol\beta + \mathbf{e}_j,
+\mathbf{y}_j = \mathbf{X}_j \boldsymbol\beta + \bmat{u}_j,
 \tag{2}
 \]</span>
 where <span class="math inline">\(\mathbf{y}_j = (y_{1j} \cdots y_{n_j j})&#39;\)</span> is the <span class="math inline">\(n_j \times 1\)</span> vector of outcomes for cluster <span class="math inline">\(j\)</span>, <span class="math inline">\(\mathbf{X}_j = (\mathbf{x}_{1j}&#39; \cdots \mathbf{x}_{n_j j}&#39;)&#39;\)</span> is the <span class="math inline">\(n_j \times p\)</span> matrix of predictors for cluster <span class="math inline">\(j\)</span>, and <span class="math inline">\(\mathbf{e}_j\)</span> is the <span class="math inline">\(n_j \times 1\)</span> vector of errors for cluster <span class="math inline">\(j\)</span>, all for <span class="math inline">\(j = 1,...,J\)</span>.</p>
 <p>We will maintain the following assumptions regarding the errors in the regression:
 <span class="math display" id="eq:reg-assumptions">\[
 \begin{aligned}
-A1:&amp; \qquad \E(\bmat{e}_j | \bmat{X}_j) = \bmat{0} \\
-A2:&amp; \qquad \E(\bmat{e}_j \bmat{e}_{k}&#39; | \bmat{X}_j, \bmat{X}_{k}) = \bmat{0}, \qquad \text{when} \qquad j \neq {k} \\
-A3:&amp; \qquad \E(\bmat{e}_j \bmat{e}_j&#39; | \bmat{X}_j) = \Var(\bmat{e}_j) = \bs\Omega_j.
+A1:&amp; \qquad \E(\bmat{u}_j | \bmat{X}_j) = \bmat{0} \\
+A2:&amp; \qquad \E(\bmat{u}_j \bmat{u}_{k}&#39; | \bmat{X}_j, \bmat{X}_{k}) = \bmat{0}, \qquad \text{when} \qquad j \neq {k} \\
+A3:&amp; \qquad \E(\bmat{u}_j \bmat{u}_j&#39; | \bmat{X}_j) = \Var(\bmat{u}_j) = \bs\Omega_j.
 \end{aligned}
 \tag{3}
 \]</span>
@@ -449,7 +443,8 @@ If the working model is correctly specified and precisely estimated, then the mo
 If the analyst uses inverse-variance weights based on the same working model, then the model-based variance estimator has the simpler form <span class="math inline">\(\bmat{V}^{model} = \bmat{M}\)</span>.
 However, if the working model is inaccurate or incorrectly specified in some way, then there is no guarantee that the model-based variance estimator will be valid.</p>
 <p>The original form of the robust variance estimator uses the residuals from each cluster to derive rough estimates of the unknown error variance matrices.</p>
-<!-- H: Do we mean the linear regression residuals when we estimate (2)? The hat(u_j) notation appears here for the first time. If we instead refer to the same hat(u_j)'s as in the CR2 notation, should we bring up the definition C_j(I_N - H)? -->
+<!-- H: Do we mean the linear regression residuals when we estimate (2)? The hat(u_j) notation appears here for the first time. If we instead refer to the same hat(u_j)'s as in the CR2 notation, should we bring up the definition C_j(I_N - H)Y?  -->
+<!-- J: Define hat(u_j) here, but wait to explain the C_j representation.  -->
 <p>This estimator substitutes the cross product of the residuals <span class="math inline">\(\bmat{\hat{u}}_j\bmat{\hat{u}}_j&#39;\)</span> in place of <span class="math inline">\(\bs\Omega_j\)</span> in <a href="#eq:var-beta-hat">(5)</a>, leading to the variance estimator
 <span class="math display" id="eq:V-CR0">\[
 \bmat{V}^{CR0} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j \bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; \bmat{W}_j\bmat{X}_j\right) \bmat{M}.
@@ -460,6 +455,7 @@ However, we do not need to estimate each cluster-specific variance matrix accura
 Rather, we only need to approximate the <em>sum</em> of the terms involving the error variance matrix, and even the crude CR0 estimator works for this purpose if the number of independent clusters is sufficiently large.
 However, it is often the case that neither the number of clusters nor the observations per cluster is large enough, such that <a href="#eq:V-CR0">(7)</a> underestimates the sampling variance of <span class="math inline">\(\bs{\hat\beta}\)</span>. It should be noted that the number of clusters deemed as “few” is not clear-cut and depends on specific study conditions, requiring more clusters when the clusters are unbalanced. <span class="citation">(Cameron and Miller 2015)</span>.</p>
 <!-- H: I don't include the over-rejection (narrow CI) problem here. -->
+<!-- J: Please explain the over-rejection issue with CR0 here. Then refer to later sections for discussion of small-sample corrections for hypothesis tests. -->
 <div id="small-sample-corrections" class="section level2">
 <h2>Small-sample corrections</h2>
 <p>A number of variations on the basic cluster-robust variance estimator have been proposed, all of which aim to provide more accurate approximations when the number of clusters is limited.
@@ -492,7 +488,6 @@ Thus, the simple multiplicative corrections involved in the CR1 and related esti
 These estimators require positing a working model for the error structure, based on which the estimators incorporate adjustments to the residuals used in the middle of the sandwich estimator.
 The whole estimator is exactly unbiased when the working model is correctly specified.
 Although in principle a working model is required prior to the whole process, we rarely have a known working model for the error structure of regression coefficients. Therefore, in practice, we usually substitute residuals from estimated models, analogous to using frequentist model estimates as convenient priors for Bayesian estimation.</p>
-<!-- Added sentences to clarify the concept of the (known) working model behind CR2, even though in practice we choose to use the estimated working model ~ priors in Bayesian. -->
 <p>The CR2 estimator uses <span class="math inline">\(f_2 = 1\)</span> and
 <span class="math display" id="eq:CR2-Ej">\[
 \bmat{E}^\sb{2}_j = {\bmat{A}^\sb{2}_j}&#39; \bmat{W}_j \bmat{X}_j,
@@ -526,8 +521,7 @@ for <span class="math inline">\(j = 1,...,J\)</span>.</p>
 <span class="math display" id="eq:CR2-symm">\[
 \bmat{A}^\sb{2}_j = {\bs\Psi^C_j}&#39; \halfinv{\left(\bmat{B}_j^\sb{2}\right)} \bs\Psi^C_j,
 \tag{15}
-\]</span>
-<!-- H: Check notation for the B_j matrix inside. --></p>
+\]</span></p>
 <p>where <span class="math inline">\(\bs\Psi^C_j\)</span> is the upper-right triangular Cholesky factorization of <span class="math inline">\(\bs\Psi_j\)</span>, so that <span class="math inline">\({\bs\Psi^C_j}&#39; \bs\Psi^C_j = \bs\Psi_j\)</span>,
 <span class="math display" id="eq:CR2-symm-Bj">\[
 \bmat{B}^\sb{2}_j = \bs\Psi^C_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j&#39; {\bs\Psi^C_j}&#39;,
@@ -554,9 +548,8 @@ Unfortunately, their computational approach does not generalize to the CR2 adjus
 <div id="cr2f" class="section level3">
 <h3>CR2f</h3>
 <p><span class="citation">McCaffrey, Bell, and Botts (2001)</span> also considered another approach to correcting the bias of the residuals, using a different set of adjustment matrices that we term CR2f.
-The CR2f estimator uses <span class="math inline">\(f_{2f} = 1\)</span> and</p>
-<!-- H: Changed f_2 to f_{2f}... -->
-<p><span class="math display" id="eq:CR2f-Ej">\[
+The CR2f estimator uses <span class="math inline">\(f_{2f} = 1\)</span> and
+<span class="math display" id="eq:CR2f-Ej">\[
 \bmat{E}^\sb{2f}_j = \half{\bmat{W}}_j \bmat{A}^\sb{2f}_j \half{\bmat{W}}_j \bmat{X}_j
 \tag{19}
 \]</span>

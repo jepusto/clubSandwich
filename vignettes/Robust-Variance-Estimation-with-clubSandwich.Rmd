@@ -37,13 +37,13 @@ Let us consider the linear regression model
 $$
 \begin{aligned}
 y_{ij} &= \beta_0 + \beta_1 x_{1ij} + \beta_2 x_{2ij} + \cdots + \beta_{p-1} x_{p-1,ij} + e_{ij}, \\
- &= \mathbf{x}_{ij} \boldsymbol\beta + e_{ij}
+ &= \mathbf{x}_{ij} \boldsymbol\beta + u_{ij}
 \end{aligned}
 (\#eq:reg-model)
 $$
-where $\mathbf{x}_{ij}$ is a $1 \times p$ row vector of predictors (possibly including an intercept term) and $e_{ij}$ is an error term, both for observation $i = 1,...,n_j$ in cluster $j = 1,...,J$. It will be convenient to write \@ref(eq:reg-model) using vectors and matrices for each cluster, as
+where $\mathbf{x}_{ij}$ is a $1 \times p$ row vector of predictors (possibly including an intercept term) and $u_{ij}$ is an error term, both for observation $i = 1,...,n_j$ in cluster $j = 1,...,J$. It will be convenient to write \@ref(eq:reg-model) using vectors and matrices for each cluster, as
 $$
-\mathbf{y}_j = \mathbf{X}_j \boldsymbol\beta + \mathbf{e}_j,
+\mathbf{y}_j = \mathbf{X}_j \boldsymbol\beta + \bmat{u}_j,
 (\#eq:reg-matrix)
 $$
 where $\mathbf{y}_j = (y_{1j} \cdots y_{n_j j})'$ is the $n_j \times 1$ vector of outcomes for cluster $j$, $\mathbf{X}_j = (\mathbf{x}_{1j}' \cdots \mathbf{x}_{n_j j}')'$ is the $n_j \times p$ matrix of predictors for cluster $j$, and $\mathbf{e}_j$ is the $n_j \times 1$ vector of errors for cluster $j$, all for $j = 1,...,J$. 
@@ -51,9 +51,9 @@ where $\mathbf{y}_j = (y_{1j} \cdots y_{n_j j})'$ is the $n_j \times 1$ vector o
 We will maintain the following assumptions regarding the errors in the regression:
 $$
 \begin{aligned}
-A1:& \qquad \E(\bmat{e}_j | \bmat{X}_j) = \bmat{0} \\ 
-A2:& \qquad \E(\bmat{e}_j \bmat{e}_{k}' | \bmat{X}_j, \bmat{X}_{k}) = \bmat{0}, \qquad \text{when} \qquad j \neq {k} \\
-A3:& \qquad \E(\bmat{e}_j \bmat{e}_j' | \bmat{X}_j) = \Var(\bmat{e}_j) = \bs\Omega_j.
+A1:& \qquad \E(\bmat{u}_j | \bmat{X}_j) = \bmat{0} \\ 
+A2:& \qquad \E(\bmat{u}_j \bmat{u}_{k}' | \bmat{X}_j, \bmat{X}_{k}) = \bmat{0}, \qquad \text{when} \qquad j \neq {k} \\
+A3:& \qquad \E(\bmat{u}_j \bmat{u}_j' | \bmat{X}_j) = \Var(\bmat{u}_j) = \bs\Omega_j.
 \end{aligned}
 (\#eq:reg-assumptions)
 $$
@@ -96,7 +96,8 @@ However, if the working model is inaccurate or incorrectly specified in some way
 
 The original form of the robust variance estimator uses the residuals from each cluster to derive rough estimates of the unknown error variance matrices. 
 
-<!-- H: Do we mean the linear regression residuals when we estimate (2)? The hat(u_j) notation appears here for the first time. If we instead refer to the same hat(u_j)'s as in the CR2 notation, should we bring up the definition C_j(I_N - H)? -->
+<!-- H: Do we mean the linear regression residuals when we estimate (2)? The hat(u_j) notation appears here for the first time. If we instead refer to the same hat(u_j)'s as in the CR2 notation, should we bring up the definition C_j(I_N - H)Y?  -->
+<!-- J: Define hat(u_j) here, but wait to explain the C_j representation.  -->
 
 This estimator substitutes the cross product of the residuals $\bmat{\hat{u}}_j\bmat{\hat{u}}_j'$ in place of $\bs\Omega_j$ in \@ref(eq:var-beta-hat), leading to the variance estimator
 $$
@@ -109,6 +110,7 @@ Rather, we only need to approximate the _sum_ of the terms involving the error v
 However, it is often the case that neither the number of clusters nor the observations per cluster is large enough, such that \@ref(eq:V-CR0) underestimates the sampling variance of $\bs{\hat\beta}$. It should be noted that the number of clusters deemed as "few" is not clear-cut and depends on specific study conditions, requiring more clusters when the clusters are unbalanced. [@cameron2015practitioner]. 
 
 <!-- H: I don't include the over-rejection (narrow CI) problem here. -->
+<!-- J: Please explain the over-rejection issue with CR0 here. Then refer to later sections for discussion of small-sample corrections for hypothesis tests. -->
 
 
 ## Small-sample corrections
@@ -147,8 +149,6 @@ These estimators require positing a working model for the error structure, based
 The whole estimator is exactly unbiased when the working model is correctly specified. 
 Although in principle a working model is required prior to the whole process, we rarely have a known working model for the error structure of regression coefficients. Therefore, in practice, we usually substitute residuals from estimated models, analogous to using frequentist model estimates as convenient priors for Bayesian estimation. 
 
-<!-- Added sentences to clarify the concept of the (known) working model behind CR2, even though in practice we choose to use the estimated working model ~ priors in Bayesian. -->
-
 The CR2 estimator uses $f_2 = 1$ and
 $$
 \bmat{E}^\sb{2}_j = {\bmat{A}^\sb{2}_j}' \bmat{W}_j \bmat{X}_j,
@@ -185,7 +185,6 @@ $$
 \bmat{A}^\sb{2}_j = {\bs\Psi^C_j}' \halfinv{\left(\bmat{B}_j^\sb{2}\right)} \bs\Psi^C_j,
 (\#eq:CR2-symm)
 $$
-<!-- H: Check notation for the B_j matrix inside. -->
 
 where $\bs\Psi^C_j$ is the upper-right triangular Cholesky factorization of $\bs\Psi_j$, so that ${\bs\Psi^C_j}' \bs\Psi^C_j = \bs\Psi_j$, 
 $$
@@ -218,8 +217,6 @@ Unfortunately, their computational approach does not generalize to the CR2 adjus
 
 @mccaffrey2001generalizations also considered another approach to correcting the bias of the residuals, using a different set of adjustment matrices that we term CR2f. 
 The CR2f estimator uses $f_{2f} = 1$ and
-
-<!-- H: Changed f_2 to f_{2f}... -->
 $$
 \bmat{E}^\sb{2f}_j = \half{\bmat{W}}_j \bmat{A}^\sb{2f}_j \half{\bmat{W}}_j \bmat{X}_j
 (\#eq:CR2f-Ej)
