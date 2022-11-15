@@ -11,7 +11,7 @@
 
 <meta name="author" content="James E. Pustejovsky and Hanna Kim" />
 
-<meta name="date" content="2022-11-11" />
+<meta name="date" content="2022-11-14" />
 
 <title>Cluster-robust variance estimation with clubSandwich</title>
 
@@ -374,7 +374,7 @@ pre code {
 
 <h1 class="title toc-ignore">Cluster-robust variance estimation with clubSandwich</h1>
 <h4 class="author">James E. Pustejovsky and Hanna Kim</h4>
-<h4 class="date">2022-11-11</h4>
+<h4 class="date">2022-11-14</h4>
 
 </div>
 
@@ -405,8 +405,8 @@ y_{ij} &amp;= \beta_0 + \beta_1 x_{1ij} + \beta_2 x_{2ij} + \cdots + \beta_{p-1}
 &amp;= \mathbf{x}_{ij} \boldsymbol\beta + e_{ij}
 \end{aligned}
 \tag{1}
-\]</span></p>
-<p>where <span class="math inline">\(\mathbf{x}_{ij}\)</span> is a <span class="math inline">\(1 \times p\)</span> row vector of predictors (possibly including an intercept term) and <span class="math inline">\(e_{ij}\)</span> is an error term, both for observation <span class="math inline">\(i = 1,...,n_j\)</span> in cluster <span class="math inline">\(j = 1,...,J\)</span>. It will be convenient to write this model using vectors and matrices for each cluster, as
+\]</span>
+where <span class="math inline">\(\mathbf{x}_{ij}\)</span> is a <span class="math inline">\(1 \times p\)</span> row vector of predictors (possibly including an intercept term) and <span class="math inline">\(e_{ij}\)</span> is an error term, both for observation <span class="math inline">\(i = 1,...,n_j\)</span> in cluster <span class="math inline">\(j = 1,...,J\)</span>. It will be convenient to write <a href="#eq:reg-model">(1)</a> using vectors and matrices for each cluster, as
 <span class="math display" id="eq:reg-matrix">\[
 \mathbf{y}_j = \mathbf{X}_j \boldsymbol\beta + \mathbf{e}_j,
 \tag{2}
@@ -426,17 +426,19 @@ A common strategy for estimation and inference about the regression coefficients
 Robust variance estimation methods provide a method for characterizing uncertainty and conducting inference without relying on such additional assumptions.
 Rather, we will treat the variance-covariance matrices as following an unknown form.
 Thus, the errors within a cluster need not be homoskedastic or independent, but can instead be arbitrarily correlated within the same cluster.</p>
-<p>Researchers will often estimate the regression coefficient vector <span class="math inline">\(\bs\beta\)</span> using ordinary least squares (OLS) or, more generally, some form of weighted least squares (WLS). The weighted least squares estimator might involve non-unit weights for each observation or some form of weight matrices for each cluster, potentially including off-diagonal terms (as in a hierarchical linear model).
+<p>Researchers will often estimate the regression coefficient vector <span class="math inline">\(\bs\beta\)</span> using ordinary least squares (OLS) or, more generally, some form of weighted least squares (WLS).
+The weighted least squares estimator might involve non-unit weights for each observation or some form of weight matrices for each cluster, potentially including off-diagonal terms (as in a hierarchical linear model).
 We will consider a general set of symmetric weight matrices <span class="math inline">\(\bmat{W}_1,...,\bmat{W}_J\)</span>.
 The weighted least squares estimator for <span class="math inline">\(\bs\beta\)</span> is then defined as
-<span class="math display" id="eq:WLS-beta-M">\[
+<span class="math display" id="eq:WLS-M">\[
 \bs{\hat\beta} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j \bmat{y}_j\right), \quad \text{where} \quad \bmat{M} = \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j \bmat{X}_j\right)^{-1}.
 \tag{4}
-\]</span></p>
-<p>In some applications, the weight matrices used for WLS estimation are motivated by a working model for the structure of the error variance-covariances <span class="math inline">\(\bs\Omega_j\)</span>.
+\]</span>
+In some applications, the weight matrices used for WLS estimation are motivated by a working model for the structure of the error variance-covariances <span class="math inline">\(\bs\Omega_j\)</span>.
 In this approach, the analyst posits a structure <span class="math inline">\(\bs\Omega_j = \bs\Psi_j(\bs\theta)\)</span> for some low-dimensional, estimable parameter <span class="math inline">\(\bs\theta\)</span>.
 If the working model captures the true form of the error variances, then the weights that make the sampling variance of <span class="math inline">\(\bs{\hat\beta}\)</span> as small as possible (the most precise) are the inverse of the variance-covariance matrix of the errors, which depend on the parameter <span class="math inline">\(\bs\theta\)</span>.
-In practice, the variance parameter <span class="math inline">\(\bs\theta\)</span> is unknown and so the analyst will use the inverse of the <em>estimated</em> working model as the weights, with <span class="math inline">\(\bmat{W}_j = \bs{\hat\Psi}_j^{-1} = \bs\Psi_j^{-1}(\bs{\hat\theta})\)</span>. When the weight matrices are obtained following this strategy, we will refer to them as “inverse-variance” weights.</p>
+In practice, the variance parameter <span class="math inline">\(\bs\theta\)</span> is unknown and so the analyst will use the inverse of the <em>estimated</em> working model as the weights, with <span class="math inline">\(\bmat{W}_j = \bs{\hat\Psi}_j^{-1} = \bs\Psi_j^{-1}(\bs{\hat\theta})\)</span>.
+When the weight matrices are obtained following this strategy, we will refer to them as “inverse-variance” weights.</p>
 <div id="robust-variance-estimation" class="section level1">
 <h1>Robust Variance Estimation</h1>
 <p>Treating the weight matrices as fixed, the sampling variance of <span class="math inline">\(\bs{\hat\beta}\)</span> is
@@ -444,21 +446,27 @@ In practice, the variance parameter <span class="math inline">\(\bs\theta\)</spa
 \Var\left(\bs{\hat\beta}\right) = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j \bs\Omega_j \bmat{W}_j \bmat{X}_j \right) \bmat{M},
 \tag{5}
 \]</span>
-which depends on the unknown variance-covariances <span class="math inline">\(\bs\Omega_1,...,\bs\Omega_J\)</span>. One strategy for estimating <span class="math inline">\(\Var\left(\bs{\hat\beta}\right)\)</span> is to substitute an estimated working model <span class="math inline">\(\bs{\hat\Psi}_j\)</span> for the unknown variance-covariance matrices <span class="math inline">\(\bs\Omega_j\)</span>, giving a model-based variance estimator:
+which depends on the unknown variance-covariances <span class="math inline">\(\bs\Omega_1,...,\bs\Omega_J\)</span>.
+One strategy for estimating <a href="#eq:var-beta-hat">(5)</a> is to substitute an estimated working model <span class="math inline">\(\bs{\hat\Psi}_j\)</span> for the unknown variance-covariance matrices <span class="math inline">\(\bs\Omega_j\)</span>, giving a model-based variance estimator:
 <span class="math display" id="eq:V-model">\[
 \bmat{V}^M = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j \bs{\hat\Psi}_j \bmat{W}_j \bmat{X}_j \right) \bmat{M}.
 \tag{6}
 \]</span>
-If the working model is correctly specified and precisely estimated, then the model-based variance estimator will closely approximate the true sampling variance. If the analyst uses inverse-variance weights based on the same working model, then the model-based variance estimator has the simpler form <span class="math inline">\(\bmat{V}^{model} = \bmat{M}\)</span>. However, if the working model is inaccurate or incorrectly specified in some way, then there is no guarantee that the model-based variance estimator will be valid.</p>
-<!-- 11/3: Cite White (1985), Liang & Zeger (1986) as source for CR0 -->
-<p>The original form of the robust variance estimator uses the residuals from each cluster to derive rough estimates of the unknown error variance matrices. This estimator substitutes the cross product of the residuals <span class="math inline">\(\bmat{\hat{u}}_j\bmat{\hat{u}}_j&#39;\)</span> in place of <span class="math inline">\(\bs\Omega\)</span>, leading to the variance estimator
+If the working model is correctly specified and precisely estimated, then the model-based variance estimator will closely approximate the true sampling variance.
+If the analyst uses inverse-variance weights based on the same working model, then the model-based variance estimator has the simpler form <span class="math inline">\(\bmat{V}^{model} = \bmat{M}\)</span>.
+However, if the working model is inaccurate or incorrectly specified in some way, then there is no guarantee that the model-based variance estimator will be valid.</p>
+<p>The original form of the robust variance estimator uses the residuals from each cluster to derive rough estimates of the unknown error variance matrices.</p>
+<!-- H: Do we mean the linear regression residuals when we estimate (2)? The hat(u_j) notation appears here for the first time. If we instead refer to the same hat(u_j)'s as in the CR2 notation, should we bring up the definition C_j(I_N - H)? -->
+<p>This estimator substitutes the cross product of the residuals <span class="math inline">\(\bmat{\hat{u}}_j\bmat{\hat{u}}_j&#39;\)</span> in place of <span class="math inline">\(\bs\Omega_j\)</span> in <a href="#eq:var-beta-hat">(5)</a>, leading to the variance estimator
 <span class="math display" id="eq:V-CR0">\[
 \bmat{V}^{CR0} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j \bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; \bmat{W}_j\bmat{X}_j\right) \bmat{M}.
 \tag{7}
 \]</span>
-The cross-product of the residuals from a given cluster is a very crude estimator for the error variance matrix from that cluster. However, we do not need to estimate each cluster-specific variance matrix accurately. Rather, we only need to approximate the <em>sum</em> of the terms involving the error variance matrix, and even the crude CR0 estimator works for this purpose if the number of independent clusters is sufficiently large.</p>
-<!-- 9/21: We might add some brief sentences about the limitations of CR0 referring to Cameron & Miller (2015) or others. -->
-<!-- H: Briefly explain what problems could arise by using CR0 for cases with a small number of clusters. -->
+The cross-product of the residuals from a given cluster is a very crude estimator for the error variance matrix from that cluster.
+However, we do not need to estimate each cluster-specific variance matrix accurately.
+Rather, we only need to approximate the <em>sum</em> of the terms involving the error variance matrix, and even the crude CR0 estimator works for this purpose if the number of independent clusters is sufficiently large.
+However, it is often the case that neither the number of clusters nor the observations per cluster is large enough, such that <a href="#eq:V-CR0">(7)</a> underestimates the sampling variance of <span class="math inline">\(\bs{\hat\beta}\)</span>. It should be noted that the number of clusters deemed as “few” is not clear-cut and depends on specific study conditions, requiring more clusters when the clusters are unbalanced. <span class="citation">(Cameron and Miller 2015)</span>.</p>
+<!-- H: I don't include the over-rejection (narrow CI) problem here. -->
 <div id="small-sample-corrections" class="section level2">
 <h2>Small-sample corrections</h2>
 <p>A number of variations on the basic cluster-robust variance estimator have been proposed, all of which aim to provide more accurate approximations when the number of clusters is limited.
@@ -467,7 +475,8 @@ The variations implemented in the <code>clubSandwich</code> package all have the
 \bmat{V}^{CR} = f \times \bmat{M} \left(\sum_{j=1}^J \bmat{E}_j&#39; \bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; \bmat{E}_j \right) \bmat{M}
 \tag{8}
 \]</span>
-for some constant <span class="math inline">\(f\)</span> and some estimating matrices <span class="math inline">\(\bmat{E}_1,...,\bmat{E}_J\)</span>. With this representation, the CRO estimator corresponds to <span class="math inline">\(f_0 = 1\)</span> and <span class="math inline">\(\bmat{E}^\sb{0}_j = \bmat{W}_j \bmat{X}_j\)</span>.</p>
+for some constant <span class="math inline">\(f\)</span> and some estimating matrices <span class="math inline">\(\bmat{E}_1,...,\bmat{E}_J\)</span>.
+With this representation, the CRO estimator corresponds to <span class="math inline">\(f_0 = 1\)</span> and <span class="math inline">\(\bmat{E}^\sb{0}_j = \bmat{W}_j \bmat{X}_j\)</span>.</p>
 <div id="cr1" class="section level3">
 <h3>CR1</h3>
 <p>The CR1, CR1S, and CR1p estimators are variants that use the following constants with <span class="math inline">\(\bmat{E}^\sb{1}_j = \bmat{W}_j \bmat{X}_j\)</span>.
@@ -478,13 +487,19 @@ for some constant <span class="math inline">\(f\)</span> and some estimating mat
 \text{CR1p}: f_{1p} &amp;= \frac{J}{J - p},
 \end{aligned}
 \tag{9}
-\]</span></p>
-<p>These corrections are all motivated by the observation that the sandwich estimator corresponds to a sample variance-covariance matrix across terms for each cluster. Thus, inflating it by an amount depending on the number of clusters should tend to reduce the small-sample bias of CR0. However, the exact bias of CR0 depends on features of the data beyond simply the number of clusters and predictors, including the distribution of cluster sizes and the distribution of the predictors within and across clusters <span class="citation">(McCaffrey, Bell, and Botts 2001; Tipton and Pustejovsky 2015; Pustejovsky and Tipton 2018)</span>. Thus, the simple multiplicative corrections involved in the CR1 and related estimators are only very rough approximations.</p>
+\]</span>
+These corrections are all motivated by the observation that the sandwich estimator corresponds to a sample variance-covariance matrix across terms for each cluster.
+Thus, inflating it by an amount depending on the number of clusters should tend to reduce the small-sample bias of CR0.
+However, the exact bias of CR0 depends on features of the data beyond simply the number of clusters and predictors, including cluster sizes and the distribution of the predictors within and across clusters <span class="citation">(McCaffrey, Bell, and Botts 2001; Tipton and Pustejovsky 2015; Pustejovsky and Tipton 2018)</span>.
+Thus, the simple multiplicative corrections involved in the CR1 and related estimators are only very rough approximations, and do not provide perfect finite-cluster corrections <span class="citation">(Cameron and Miller 2015)</span>.</p>
 </div>
 <div id="cr2" class="section level3">
 <h3>CR2</h3>
-<!-- Let's clarify the (known) working model. The theory behind CR2. Although in practice we choose to use the estimated working model ~ priors in Bayesian. -->
-<p><span class="citation">Bell and McCaffrey (2002)</span> and <span class="citation">McCaffrey, Bell, and Botts (2001)</span> introduced a class of more refined robust variance estimators, termed “bias-reduced linearization” estimators, that account for variation in cluster sizes and the distribution of predictors. These estimators require positing a working model for the error structure, which might or might not also be used to derive the weight matrices. Based on this working model, the estimators incorporate adjustments to the residuals used in the middle of the sandwich estimator, such that the whole estimator is exactly unbiased when the working model is correctly specified.</p>
+<p><span class="citation">Bell and McCaffrey (2002)</span> and <span class="citation">McCaffrey, Bell, and Botts (2001)</span> introduced a class of more refined robust variance estimators, termed “bias-reduced linearization” estimators, that account for variation in cluster sizes and the distribution of predictors.
+These estimators require positing a working model for the error structure, based on which the estimators incorporate adjustments to the residuals used in the middle of the sandwich estimator.
+The whole estimator is exactly unbiased when the working model is correctly specified.
+Although in principle a working model is required prior to the whole process, we rarely have a known working model for the error structure of regression coefficients. Therefore, in practice, we usually substitute residuals from estimated models, analogous to using frequentist model estimates as convenient priors for Bayesian estimation.</p>
+<!-- Added sentences to clarify the concept of the (known) working model behind CR2, even though in practice we choose to use the estimated working model ~ priors in Bayesian. -->
 <p>The CR2 estimator uses <span class="math inline">\(f_2 = 1\)</span> and
 <span class="math display" id="eq:CR2-Ej">\[
 \bmat{E}^\sb{2}_j = {\bmat{A}^\sb{2}_j}&#39; \bmat{W}_j \bmat{X}_j,
@@ -492,16 +507,16 @@ for some constant <span class="math inline">\(f\)</span> and some estimating mat
 \]</span>
 for <span class="math inline">\(j=1,...,J\)</span>, where <span class="math inline">\(\bmat{A}^\sb{2}_1,...,\bmat{A}^\sb{2}_J\)</span> are adjustment matrices that satisfy the criteria
 <span class="math display" id="eq:CR2-criterion">\[
-\E\left(\bmat{A}^\sb{2}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; {\bmat{A}^\sb{2}_j}&#39;\right) = \bs\Psi_j.
+\E\left(\bmat{A}^\sb{2}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; {\bmat{A}^\sb{2}_j}&#39;\right) = \bs\Psi_j,
 \tag{11}
 \]</span>
-where <span class="math inline">\(\bs\Psi_j\)</span> denotes the working model for cluster <span class="math inline">\(j\)</span> and the expectation is taken assuming that the working model is correct. Thus, if the working model is correctly specified,
+where <span class="math inline">\(\bs\Psi_j\)</span> denotes the working model for cluster <span class="math inline">\(j\)</span> and the expectation is taken assuming that the working model is correct.
+Thus, if the working model is correctly specified, plugging in <a href="#eq:CR2-Ej">(10)</a> to <a href="#eq:V-CR">(8)</a> leads to
 <span class="math display" id="eq:CR2-expct">\[
 \E\left({\bmat{E}^\sb{2}_j}&#39;\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; \bmat{E}^\sb{2}_j\right) = \bmat{X}_j&#39;\bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j,
 \tag{12}
 \]</span>
 and so <span class="math inline">\(\E\left(\bmat{V}^{CR2}\right) = \Var\left(\bs{\hat\beta}\right)\)</span>.</p>
-<!-- H: Do we need to clarify the cluster-specific notations (_j vs. the summation) as compared to the $\Var\left(\bs{\hat\beta}\right)$ equation in line 79? -->
 <p>To derive expressions for <span class="math inline">\(\bmat{A}^\sb{2}_j\)</span>, observe that the residuals from cluster <span class="math inline">\(j\)</span> may be written as <span class="math inline">\(\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bmat{Y}\)</span>, where <span class="math inline">\(\bmat{H} = \bmat{X}\bmat{M}\bmat{X}&#39;\bmat{W}\)</span> and <span class="math inline">\(\bmat{C}_j\)</span> is an <span class="math inline">\(n_j \times N\)</span> matrix that selects the rows of the full data that correspond to cluster <span class="math inline">\(j\)</span> (i.e., <span class="math inline">\(\bmat{X}_j = \bmat{C}_j \bmat{X}\)</span>). Because the residuals have mean zero, the expectation of the cross-product of residuals from cluster <span class="math inline">\(j\)</span> is
 <span class="math display" id="eq:resid-expr">\[
 \E\left(\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39;\right) = \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j&#39;.
@@ -710,6 +725,9 @@ It follows that using the CR4 adjustment matrices leads to an exactly unbiased v
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-bell2002bias" class="csl-entry">
 Bell, Robert M, and Daniel F McCaffrey. 2002. <span>“Bias Reduction in Standard Errors for Linear Regression with Multi-Stage Samples.”</span> <em>Survey Methodology</em> 28 (2): 169–82.
+</div>
+<div id="ref-cameron2015practitioner" class="csl-entry">
+Cameron, A Colin, and Douglas L Miller. 2015. <span>“A Practitioner’s Guide to Cluster-Robust Inference.”</span> <em>Journal of Human Resources</em> 50 (2): 317–72.
 </div>
 <div id="ref-mackinnon2022fast" class="csl-entry">
 MacKinnon, James G, Morten Ørregaard Nielsen, Matthew D Webb, et al. 2022. <span>“Fast and Reliable Jackknife and Bootstrap Methods for Cluster-Robust Inference.”</span> 1485. Queen’s Economics Department Working Paper. Kingston, Ontario, Canada: Queen’s University.
