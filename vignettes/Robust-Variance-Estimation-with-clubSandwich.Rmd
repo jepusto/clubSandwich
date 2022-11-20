@@ -85,7 +85,7 @@ $$
 (\#eq:var-beta-hat)
 $$
 which depends on the unknown variance-covariances $\bs\Omega_1,...,\bs\Omega_J$. 
-One strategy for estimating \@ref(eq:var-beta-hat) is to substitute an estimated working model $\bs{\hat\Psi}_j$ for the unknown variance-covariance matrices $\bs\Omega_j$, giving a model-based variance estimator:
+One strategy for estimating \@ref(eq:var-beta-hat) is to substitute an _estimated_ working model $\bs{\hat\Psi}_j$ for the unknown variance-covariance matrices $\bs\Omega_j$, giving a model-based variance estimator:
 $$
 \bmat{V}^M = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bs{\hat\Psi}_j \bmat{W}_j \bmat{X}_j \right) \bmat{M}.
 (\#eq:V-model)
@@ -94,24 +94,29 @@ If the working model is correctly specified and precisely estimated, then the mo
 If the analyst uses inverse-variance weights based on the same working model, then the model-based variance estimator has the simpler form $\bmat{V}^{model} = \bmat{M}$. 
 However, if the working model is inaccurate or incorrectly specified in some way, then there is no guarantee that the model-based variance estimator will be valid. 
 
-The original form of the robust variance estimator uses the residuals from each cluster to derive rough estimates of the unknown error variance matrices. 
+The original form of the robust variance estimator uses the _estimated_ residuals 
+$$
+\bmat{\hat{u}}_j = \mathbf{y}_j - \mathbf{X}_j \bs{\hat\beta}
+(\#eq:reg-residuals)
+$$
+from each cluster to derive rough estimates of the unknown error variance matrices. 
 
-<!-- H: Do we mean the linear regression residuals when we estimate (2)? The hat(u_j) notation appears here for the first time. If we instead refer to the same hat(u_j)'s as in the CR2 notation, should we bring up the definition C_j(I_N - H)Y?  -->
 <!-- J: Define hat(u_j) here, but wait to explain the C_j representation.  -->
 
-This estimator substitutes the cross product of the residuals $\bmat{\hat{u}}_j\bmat{\hat{u}}_j'$ in place of $\bs\Omega_j$ in \@ref(eq:var-beta-hat), leading to the variance estimator
+Specifically, the CR0 estimator substitutes the cross product of the residuals $\bmat{\hat{u}}_j\bmat{\hat{u}}_j'$ in place of $\bs\Omega_j$ in \@ref(eq:var-beta-hat), leading to 
 $$
 \bmat{V}^{CR0} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{W}_j\bmat{X}_j\right) \bmat{M}.
 (\#eq:V-CR0)
 $$
-The cross-product of the residuals from a given cluster is a very crude estimator for the error variance matrix from that cluster. 
-However, we do not need to estimate each cluster-specific variance matrix accurately. 
+Even though the cross-product of the residuals from a given cluster is a very crude estimator for the error variance matrix from that cluster, it serves the purpose because we do not need to estimate each cluster-specific variance matrix accurately. 
 Rather, we only need to approximate the _sum_ of the terms involving the error variance matrix, and even the crude CR0 estimator works for this purpose if the number of independent clusters is sufficiently large. 
-However, it is often the case that neither the number of clusters nor the observations per cluster is large enough, such that \@ref(eq:V-CR0) underestimates the sampling variance of $\bs{\hat\beta}$. It should be noted that the number of clusters deemed as "few" is not clear-cut and depends on specific study conditions, requiring more clusters when the clusters are unbalanced. [@cameron2015practitioner]. 
 
-<!-- H: I don't include the over-rejection (narrow CI) problem here. -->
+However, it is often the case that neither the number of clusters nor the observations per cluster is large enough, such that \@ref(eq:V-CR0) underestimates the sampling variance of $\bs{\hat\beta}$ and leads to larger Type I error rates than nominal [@cameron2015practitioner]. 
+The over-rejection problem will be discussed further in detail in section []. 
+It should be noted that the number of clusters deemed as "few" is not clear-cut and depends on specific study conditions, requiring more clusters when the clusters are unbalanced [@cameron2015practitioner]. 
+
 <!-- J: Please explain the over-rejection issue with CR0 here. Then refer to later sections for discussion of small-sample corrections for hypothesis tests. -->
-
+<!-- H: How do we mention certain sections inside this document? -->
 
 ## Small-sample corrections
 
@@ -249,12 +254,13 @@ For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices ar
 
 ### CRJ, CR3, CR3$\lambda$
 
-The cluster-level jackknife technique is closely related to cluster-robust variance estimation. A cluster-level jack-knife sampling variance is given by
+The cluster-level jackknife technique is closely related to cluster-robust variance estimation. A cluster-level jackknife sampling variance is given by
 $$
 \bmat{V}^{CRJ} = \frac{J - 1}{J} \sum_{j=1}^J \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right) \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right)',
 (\#eq:jackknife)
 $$
-where $\bs{\hat\beta}_{(j)}$ is the weighted least squares estimator calculated while excluding the observations from cluster $j$.[^Other-jackknife] Although not immediately apparent, $\bmat{V}^{CRJ}$ is equivalent to calculating the cluster-robust variance estimator as given in (Equation) using $f_J = \frac{J - 1}{J}$ and 
+where $\bs{\hat\beta}_{(j)}$ is the weighted least squares estimator calculated while excluding the observations from cluster $j$.[^Other-jackknife] 
+Although not immediately apparent, $\bmat{V}^{CRJ}$ is equivalent to calculating the cluster-robust variance estimator as given in \@ref(eq:V-CR) using $f_J = \frac{J - 1}{J}$ and 
 $$
 \bmat{E}^\sb{J}_j = {\bmat{A}_j^\sb{3}}' \bmat{W}_j \bmat{X}_j,
 (\#eq:jackknife-Ej)
@@ -266,13 +272,23 @@ $$
 $$
 Sometimes, the leading factor in \@ref(eq:jackknife) is omitted, which yields the CR3 estimator. This is equivalent to taking $f_3 = 1$ and $\bmat{E}_j^\sb{3} = \bmat{E}_j^\sb{J}$. 
 
-For the special case of unweighted least squares with an independent, homoskedastic working model, @niccodemi2020refining showed that the CR3 estimator has an upward bias and the CRJ estimator has an upward bias except when the predictors are identically distributed in each cluster, so that $\bmat{X}_j'\bmat{X}_j = \bmat{X}'\bmat{X} / J$. To reduce this bias, they suggested using $\bmat{E}_j^\sb{3}$ with the leading constant $f_{3\lambda} = \left(\sum_{j=1}^J \frac{n_j}{N - n_j}\right)^{-1}$. Compared to CRJ, this CR3$\lambda$ estimator better accounts for variation in cluster sizes. For the case of unweighted least squares with the independent and homoskedastic working model, it will be unbiased under the more general condition that $\bmat{X}_j'\bmat{X}_j = \frac{n_j}{N}\bmat{X}'\bmat{X}$. 
+<!-- Notation suggestion: \bmat{A}_j^\sb{3} or \bmat{A}_j^\sb{J}? -->
+
+For the special case of unweighted least squares with an independent, homoskedastic working model, @niccodemi2020refining showed that the CR3 estimator has an upward bias and the CRJ estimator has an upward bias except when the predictors are identically distributed in each cluster, so that $\bmat{X}_j'\bmat{X}_j = \bmat{X}'\bmat{X} / J$. 
+To reduce this bias, they suggested using $\bmat{E}_j^\sb{3}$ with the leading constant $f_{3\lambda} = \left(\sum_{j=1}^J \frac{n_j}{N - n_j}\right)^{-1}$. 
+Compared to CRJ, this CR3$\lambda$ estimator better accounts for variation in cluster sizes. 
+For the case of unweighted least squares with the independent and homoskedastic working model, it will be unbiased under the more general condition that $\bmat{X}_j'\bmat{X}_j = \frac{n_j}{N}\bmat{X}'\bmat{X}$. 
 
 @niccodemi2020refining also described an efficient method of calculating the $\bmat{E}^\sb{3}_j$ matrices for the special case of ordinary least squares with an independence working model...
+
+<!-- Further check the above paragraph. -->
 
 [^Other-jackknife]: Other versions of the cluster-level jackknife might center the the deviations on the arithmetic mean of $\bs{\hat\beta}_{(1)},...,\bs{\hat\beta}_{(J)}$.
 
 <!-- Jackknife - See Tipton (2015) for some arguments -->
+"Bell and McCaffrey (2002) showed that when W = I, the [CR0] estimator tends to underestimate the true variances, whereas the [CRJ] estimator tends to overestimate these variances; it is not difficult to show that these results extend to the W != I case."
+Simulation studies comparing cluster-robust variance estimators (HTJ, JK, MBB) and degrees of freedom adjustments for meta-analysis scenarios <- How relevant? How much of the results should we introduce?
+
 
 ### CR4 
 
