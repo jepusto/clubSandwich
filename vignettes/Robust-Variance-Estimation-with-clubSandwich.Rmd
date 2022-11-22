@@ -36,7 +36,7 @@ These methods can be applied across a broad scope of models, including not only 
 Let us consider the linear regression model
 $$
 \begin{aligned}
-y_{ij} &= \beta_0 + \beta_1 x_{1ij} + \beta_2 x_{2ij} + \cdots + \beta_{p-1} x_{p-1,ij} + e_{ij}, \\
+y_{ij} &= \beta_0 + \beta_1 x_{1ij} + \beta_2 x_{2ij} + \cdots + \beta_{p-1} x_{p-1,ij} + u_{ij}, \\
  &= \mathbf{x}_{ij} \boldsymbol\beta + u_{ij}
 \end{aligned}
 (\#eq:reg-model)
@@ -46,7 +46,7 @@ $$
 \mathbf{y}_j = \mathbf{X}_j \boldsymbol\beta + \bmat{u}_j,
 (\#eq:reg-matrix)
 $$
-where $\mathbf{y}_j = (y_{1j} \cdots y_{n_j j})'$ is the $n_j \times 1$ vector of outcomes for cluster $j$, $\mathbf{X}_j = (\mathbf{x}_{1j}' \cdots \mathbf{x}_{n_j j}')'$ is the $n_j \times p$ matrix of predictors for cluster $j$, and $\mathbf{e}_j$ is the $n_j \times 1$ vector of errors for cluster $j$, all for $j = 1,...,J$. 
+where $\mathbf{y}_j = (y_{1j} \cdots y_{n_j j})'$ is the $n_j \times 1$ vector of outcomes for cluster $j$, $\mathbf{X}_j = (\mathbf{x}_{1j}' \cdots \mathbf{x}_{n_j j}')'$ is the $n_j \times p$ matrix of predictors for cluster $j$, and $\bmat{u}_j$ is the $n_j \times 1$ vector of errors for cluster $j$, all for $j = 1,...,J$. 
 
 We will maintain the following assumptions regarding the errors in the regression:
 $$
@@ -286,15 +286,23 @@ For the case of unweighted least squares with the independent and homoskedastic 
 [^Other-jackknife]: Other versions of the cluster-level jackknife might center the the deviations on the arithmetic mean of $\bs{\hat\beta}_{(1)},...,\bs{\hat\beta}_{(J)}$.
 
 <!-- Jackknife - See Tipton (2015) for some arguments -->
-"Bell and McCaffrey (2002) showed that when W = I, the [CR0] estimator tends to underestimate the true variances, whereas the [CRJ] estimator tends to overestimate these variances; it is not difficult to show that these results extend to the W != I case."
+"Bell and McCaffrey (2002) showed that when W = I, the [CR0] estimator tends to underestimate the true variances, whereas the [CRJ] estimator tends to overestimate these variances; it is not difficult to show that these results extend to the $W \neq I$ case."
 Simulation studies comparing cluster-robust variance estimators (HTJ, JK, MBB) and degrees of freedom adjustments for meta-analysis scenarios <- How relevant? How much of the results should we introduce?
 
 
-### CR4 
+### CR4
 
-The CR2, CR2f, and CR3 corrections can be difficult to implement because they involve computing $n_j \times n_j$ correction matrices for each cluster. Some or all clusters include a large number of observations, then the matrices will be large and computing them may be quite time consuming. The computational methods described by @niccodemi2020refining and @mackinnon2022fast provide a way to reduce computation time for certain specifications and certain working models, but they are not entirely general. Here we describe a novel generalization of the CR2f adjustment, termed CR4, that can be applied to models estimated by weighted least squares, with an arbitrary working model and weights that are not necessarily inverse-variance. 
+The CR2, CR2f, and CR3 corrections can be difficult to implement because they involve computing $n_j \times n_j$ correction matrices for each cluster. 
+Some or all clusters include a large number of observations, then the matrices will be large and computing them may be quite time consuming. 
+The computational methods described by @niccodemi2020refining and @mackinnon2022fast provide a way to reduce computation time for certain specifications and certain working models, but they are not entirely general. 
+Here we describe a novel generalization of the CR2f adjustment, termed CR4, that can be applied to models estimated by weighted least squares, with an arbitrary working model and weights that are not necessarily inverse-variance. 
 
-Like the CR2 and CR2f corrections, CR4 is designed to provide a variance estimator that is exactly unbiased when the working model is correctly specified. The main innovation is to do so by correcting the full score contribution $\bmat{u}_j'\bmat{W}_j \bmat{X}_j$ rather than correcting the residuals, so that the adjustment matrices are of dimension $p \times p$ rather than $n_j \times n_j$. The CR4 variance estimator uses $f_4 = 1$ and estimating matrices given by
+Like the CR2 and CR2f corrections, CR4 is designed to provide a variance estimator that is exactly unbiased when the working model is correctly specified. 
+The main innovation is to do so by correcting the full score contribution $\bmat{u}_j'\bmat{W}_j \bmat{X}_j$ rather than correcting the residuals, so that the adjustment matrices $\bmat{A}^\sb{4}_j$ are of dimension $p \times p$ rather than $n_j \times n_j$. 
+
+<!-- Q. Is CR4 correcting $\bmat{u}_j'\bmat{W}_j \bmat{X}_j$ instead of $\bmat{u}_j$ or $\bmat{u}_j'$? What is the full variance estimator as compared to (9)? -->
+
+The CR4 variance estimator uses $f_4 = 1$ and estimating matrices given by
 $$
 \bmat{E}^\sb{4}_j = \bmat{W}_j \bmat{X}_j \bmat{A}^\sb{4}_j,
 (\#eq:CR4-Ej)
@@ -306,7 +314,14 @@ $$
 $$
 for $j = 1,...,J$.
 
-To construct the CR4 adjustment matrices, we first define the matrices $\bmat{F}_j = \bmat{X}_j' \bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j$ and $\bmat{G}_j = \bmat{X}_j' \bmat{W}_j \bmat{X}_j$. With these terms, the model-based variance estimator defined in \@ref(eq:V-model) can be computed as $\bmat{V}^M = \bmat{M}\left(\sum_{j=1}^J \bmat{F}_j \right)\bmat{M}$. The CR4 adjustment matrices are then
+<!-- H: Just to make sure, $\bmat{u}_j$ and not $\bmat{\hat{u}}_j$? -->
+
+To construct the CR4 adjustment matrices, we first define the matrices $\bmat{F}_j = \bmat{X}_j' \bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j$ and $\bmat{G}_j = \bmat{X}_j' \bmat{W}_j \bmat{X}_j$. 
+With these terms, the model-based variance estimator defined in \@ref(eq:V-model) can be computed as $\bmat{V}^M = \bmat{M}\left(\sum_{j=1}^J \bmat{F}_j \right)\bmat{M}$. 
+
+<!-- H: How does the sum of $\bs{\hat\Psi}_j$ become equal to the sum of $\bs{\Psi}_j$ over j = 1, ..., J? -->
+
+The CR4 adjustment matrices are then
 $$
 \bmat{A}^\sb{4}_j = {\bmat{G}_j^C}' \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C,
 (\#eq:CR4-Aj)
@@ -316,8 +331,7 @@ $$
 \bmat{B}_j^\sb{4} = \bmat{G}_j^C \left(\bmat{F}_j - \bmat{G}_j \bmat{M}\bmat{F}_j - \bmat{F}_j \bmat{M}\bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j\right) {\bmat{G}_j^C}'.
 (\#eq:CR4-Bj)
 $$
-
-To see that these adjustment matrices satisfy the criterion given in \@ref(eq:CR4-criterion), observe that the expectation of the cross-product of adjusted scores can be written as
+To see that these adjustment matrices satisfy the criterion given in \@ref(eq:CR4-criterion), observe that the expectation of the cross-product of adjusted scores can be written as 
 $$
 \begin{aligned}
 \E\left(\bmat{A}_j^\sb{4}\bmat{X}_j' \bmat{W}_j \bmat{u}_j \bmat{u}_j' \bmat{W}_j \bmat{X}_j \bmat{A}_j^\sb{4}\right) &= \bmat{A}_j^\sb{4} \bmat{X}_j' \bmat{W}_j\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j'\bmat{W}_j \bmat{X}_j \bmat{A}_j^\sb{4} \\
@@ -330,6 +344,8 @@ $$
 $$
 It follows that using the CR4 adjustment matrices leads to an exactly unbiased variance estimator when the working model is correct, just like the CR2 and CR2f corrections. 
 
+<!-- Q. (29) becomes (32), which does not seem to be right, either my calcs are incorrect or I misunderstood something in text... -->
+
 If the model is estimated using inverse-variance weights so that $\bmat{W}_j = \bs\Psi_j^{-1}$, then the CR4 adjustment matrices simplify to
 $$
 \bmat{A}^\sb{4}_j = {\bmat{G}_j^C}' \halfinv{\left(\bmat{G}_j^C \left(\bmat{G}_j - \bmat{G}_j \bmat{M} \bmat{G}_j\right) {\bmat{G}_j^C}'\right)} \bmat{G}_j^C.
@@ -338,7 +354,11 @@ $$
 <!-- Can this be simplified further? -->
 <!-- How is CR4 related to CR2f? Are they equivalent for inverse-variance weights?-->
 
-A further benefit of the CR4 adjustment matrices is that they can be tailored to a subset of the covariates that are of focal interest. Rather than correcting the bias in the full variance estimator, we could correct the bias for just one or more of the predictors, so that $\E\left(\bmat{k}' \bmat{V}^{CR} \bmat{k}\right) = \Var\left(\bmat{k}' \bs{\hat\beta}\right)$ for a $p \times k$ matrix of contrasts $\bmat{k}$ with $k \leq p$, even if unbiasedness does not hold for the full estimator $\bmat{V}^{CR}$.
+A further benefit of the CR4 adjustment matrices is that they can be tailored to a subset of the covariates that are of focal interest. 
+Rather than correcting the bias in the full variance estimator, we could correct the bias for just one or more of the predictors, so that $\E\left(\bmat{k}' \bmat{V}^{CR} \bmat{k}\right) = \Var\left(\bmat{k}' \bs{\hat\beta}\right)$ for a $p \times k$ matrix of contrasts $\bmat{k}$ with $k \leq p$, even if unbiasedness does not hold for the full estimator $\bmat{V}^{CR}$.
+
+<!-- How is CR2 related to CR4 for OLS with $\psi = \sigma^2 I$? -->
+
 
 # Model-specific considerations
 
