@@ -4,7 +4,7 @@ author: "James E. Pustejovsky and Hanna Kim"
 date: "`r Sys.Date()`"
 output: 
   bookdown::html_document2:
-    number_sections: false
+    number_sections: true
 bibliography: bibliography.bib
 vignette: >
   %\VignetteIndexEntry{Cluster-robust variance estimation with clubSandwich}
@@ -101,8 +101,6 @@ $$
 $$
 from each cluster to derive rough estimates of the unknown error variance matrices. 
 
-<!-- J: Define hat(u_j) here, but wait to explain the C_j representation.  -->
-
 Specifically, the CR0 estimator substitutes the cross product of the residuals $\bmat{\hat{u}}_j\bmat{\hat{u}}_j'$ in place of $\bs\Omega_j$ in \@ref(eq:var-beta-hat), leading to 
 $$
 \bmat{V}^{CR0} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{W}_j\bmat{X}_j\right) \bmat{M}.
@@ -112,11 +110,8 @@ Even though the cross-product of the residuals from a given cluster is a very cr
 Rather, we only need to approximate the _sum_ of the terms involving the error variance matrix, and even the crude CR0 estimator works for this purpose if the number of independent clusters is sufficiently large. 
 
 However, it is often the case that neither the number of clusters nor the observations per cluster is large enough, such that \@ref(eq:V-CR0) underestimates the sampling variance of $\bs{\hat\beta}$ and leads to larger Type I error rates than nominal [@cameron2015practitioner]. 
-The over-rejection problem will be discussed further in detail in section []. 
+The over-rejection problem will be discussed further in detail in section \@ref(sec:t-test). 
 It should be noted that the number of clusters deemed as "few" is not clear-cut and depends on specific study conditions, requiring more clusters when the clusters are unbalanced [@cameron2015practitioner]. 
-
-<!-- J: Please explain the over-rejection issue with CR0 here. Then refer to later sections for discussion of small-sample corrections for hypothesis tests. -->
-<!-- H: How do we mention certain sections inside this document? -->
 
 ## Small-sample corrections
 
@@ -256,13 +251,13 @@ For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices ar
 
 The cluster-level jackknife technique is closely related to cluster-robust variance estimation. A cluster-level jackknife sampling variance is given by
 $$
-\bmat{V}^{CRJ} = \frac{J - 1}{J} \sum_{j=1}^J \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right) \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right)',
+\bmat{V}^{CR3J} = \frac{J - 1}{J} \sum_{j=1}^J \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right) \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right)',
 (\#eq:jackknife)
 $$
 where $\bs{\hat\beta}_{(j)}$ is the weighted least squares estimator calculated while excluding the observations from cluster $j$.[^Other-jackknife] 
-Although not immediately apparent, $\bmat{V}^{CRJ}$ is equivalent to calculating the cluster-robust variance estimator as given in \@ref(eq:V-CR) using $f_J = \frac{J - 1}{J}$ and 
+Although not immediately apparent, $\bmat{V}^{CRJ}$ is equivalent to calculating the cluster-robust variance estimator as given in \@ref(eq:V-CR) using $f_{3J} = \frac{J - 1}{J}$ and 
 $$
-\bmat{E}^\sb{J}_j = {\bmat{A}_j^\sb{3}}' \bmat{W}_j \bmat{X}_j,
+\bmat{E}^\sb{3}_j = {\bmat{A}_j^\sb{3}}' \bmat{W}_j \bmat{X}_j,
 (\#eq:jackknife-Ej)
 $$
 where 
@@ -270,14 +265,14 @@ $$
 \bmat{A}_j^\sb{3} = \left(\bmat{I}_j - \bmat{X}_j \bmat{M} \bmat{X}_j' \bmat{W}_j\right)^{-1}.
 (\#eq:jackknife-Aj)
 $$
-Sometimes, the leading factor in \@ref(eq:jackknife) is omitted, which yields the CR3 estimator. This is equivalent to taking $f_3 = 1$ and $\bmat{E}_j^\sb{3} = \bmat{E}_j^\sb{J}$. 
-
-<!-- Notation suggestion: \bmat{A}_j^\sb{3} or \bmat{A}_j^\sb{J}? -->
+Sometimes, the leading factor in \@ref(eq:jackknife) is omitted, which yields the CR3 estimator. This is equivalent to taking $f_3 = 1$. 
 
 For the special case of unweighted least squares with an independent, homoskedastic working model, @niccodemi2020refining showed that the CR3 estimator has an upward bias and the CRJ estimator has an upward bias except when the predictors are identically distributed in each cluster, so that $\bmat{X}_j'\bmat{X}_j = \bmat{X}'\bmat{X} / J$. 
 To reduce this bias, they suggested using $\bmat{E}_j^\sb{3}$ with the leading constant $f_{3\lambda} = \left(\sum_{j=1}^J \frac{n_j}{N - n_j}\right)^{-1}$. 
-Compared to CRJ, this CR3$\lambda$ estimator better accounts for variation in cluster sizes. 
+Compared to CR3J, this CR3$\lambda$ estimator better accounts for variation in cluster sizes. 
 For the case of unweighted least squares with the independent and homoskedastic working model, it will be unbiased under the more general condition that $\bmat{X}_j'\bmat{X}_j = \frac{n_j}{N}\bmat{X}'\bmat{X}$. 
+
+<!-- Should we add that CR3$\lambda$ is equivalent to CR3 when clusters are balanced? -->
 
 @niccodemi2020refining also described an efficient method of calculating the $\bmat{E}^\sb{3}_j$ matrices for the special case of ordinary least squares with an independence working model...
 
@@ -298,9 +293,7 @@ The computational methods described by @niccodemi2020refining and @mackinnon2022
 Here we describe a novel generalization of the CR2f adjustment, termed CR4, that can be applied to models estimated by weighted least squares, with an arbitrary working model and weights that are not necessarily inverse-variance. 
 
 Like the CR2 and CR2f corrections, CR4 is designed to provide a variance estimator that is exactly unbiased when the working model is correctly specified. 
-The main innovation is to do so by correcting the full score contribution $\bmat{u}_j'\bmat{W}_j \bmat{X}_j$ rather than correcting the residuals, so that the adjustment matrices $\bmat{A}^\sb{4}_j$ are of dimension $p \times p$ rather than $n_j \times n_j$. 
-
-<!-- Q. Is CR4 correcting $\bmat{u}_j'\bmat{W}_j \bmat{X}_j$ instead of $\bmat{u}_j$ or $\bmat{u}_j'$? What is the full variance estimator as compared to (9)? -->
+The main innovation is to do so by correcting the full score contribution $\bmat{X}_j' \bmat{W}_j \bmat{\hat{u}}_j$ rather than correcting the residuals, so that the adjustment matrices $\bmat{A}^\sb{4}_j$ are of dimension $p \times p$ rather than $n_j \times n_j$. 
 
 The CR4 variance estimator uses $f_4 = 1$ and estimating matrices given by
 $$
@@ -309,44 +302,38 @@ $$
 $$
 where $\bmat{A}^\sb{4}_j$ are adjustment matrices chosen to satisfy the criterion
 $$
-\E\left({\bmat{E}^\sb{4}_j}' \bmat{u}_j \bmat{u}_j' \bmat{E}^\sb{4}_j \right) = \bmat{X}_j' \bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j
+\E\left({\bmat{E}^\sb{4}_j}' \bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{E}^\sb{4}_j \right) = \bmat{X}_j' \bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j
 (\#eq:CR4-criterion)
 $$
-for $j = 1,...,J$.
-
-<!-- H: Just to make sure, $\bmat{u}_j$ and not $\bmat{\hat{u}}_j$? -->
+for $j = 1,...,J$. 
 
 To construct the CR4 adjustment matrices, we first define the matrices $\bmat{F}_j = \bmat{X}_j' \bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j$ and $\bmat{G}_j = \bmat{X}_j' \bmat{W}_j \bmat{X}_j$. 
-With these terms, the model-based variance estimator defined in \@ref(eq:V-model) can be computed as $\bmat{V}^M = \bmat{M}\left(\sum_{j=1}^J \bmat{F}_j \right)\bmat{M}$. 
-
-<!-- H: How does the sum of $\bs{\hat\Psi}_j$ become equal to the sum of $\bs{\Psi}_j$ over j = 1, ..., J? -->
+With these terms, the model-based variance estimator defined in \@ref(eq:V-model) can be computed as $\bmat{V}^M = \bmat{M}\left(\sum_{j=1}^J \bmat{F}_j \right)\bmat{M}$, but substituting the estimated working model $\bs{\hat\Psi}_j$ in place of the known working model $\bs\Psi_j$ in $\bmat{F}_1,...,\bmat{F}_J$. 
 
 The CR4 adjustment matrices are then
 $$
-\bmat{A}^\sb{4}_j = {\bmat{G}_j^C}' \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C,
+\bmat{A}^\sb{4}_j = {\bmat{F}_j^C}' \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{F}_j^C,
 (\#eq:CR4-Aj)
 $$
 where $\bmat{G}_j^C$ is the upper-right Cholesky factorization of $\bmat{G}_j$ and 
 $$
-\bmat{B}_j^\sb{4} = \bmat{G}_j^C \left(\bmat{F}_j - \bmat{G}_j \bmat{M}\bmat{F}_j - \bmat{F}_j \bmat{M}\bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j\right) {\bmat{G}_j^C}'.
+\bmat{B}_j^\sb{4} = \bmat{F}_j^C \left(\bmat{F}_j - \bmat{G}_j \bmat{M}\bmat{F}_j - \bmat{F}_j \bmat{M}\bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j\right) {\bmat{F}_j^C}'.
 (\#eq:CR4-Bj)
 $$
 To see that these adjustment matrices satisfy the criterion given in \@ref(eq:CR4-criterion), observe that the expectation of the cross-product of adjusted scores can be written as 
 $$
 \begin{aligned}
-\E\left(\bmat{A}_j^\sb{4}\bmat{X}_j' \bmat{W}_j \bmat{u}_j \bmat{u}_j' \bmat{W}_j \bmat{X}_j \bmat{A}_j^\sb{4}\right) &= \bmat{A}_j^\sb{4} \bmat{X}_j' \bmat{W}_j\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j'\bmat{W}_j \bmat{X}_j \bmat{A}_j^\sb{4} \\
-&= \bmat{A}_j^\sb{4} \left(\bmat{F}_j - \bmat{G}_j \bmat{F}_j - \bmat{F}_j \bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j \right) \bmat{A}_j^\sb{4} \\
-&= {\bmat{G}_j^C}' \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C \left(\bmat{F}_j - \bmat{G}_j \bmat{F}_j - \bmat{F}_j \bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j \right){\bmat{G}_j^C}' \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C \\
-&= {\bmat{G}_j^C}' \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{B}_j^\sb{4} \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C \\
-&= \bmat{G}_j.
+\E\left(\bmat{A}_j^\sb{4}\bmat{X}_j' \bmat{W}_j \bmat{\hat{u}}_j \bmat{\hat{u}}_j' \bmat{W}_j \bmat{X}_j \bmat{A}_j^\sb{4}\right) &= \bmat{A}_j^\sb{4} \bmat{X}_j' \bmat{W}_j\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}'\right)\bmat{C}_j'\bmat{W}_j \bmat{X}_j \bmat{A}_j^\sb{4} \\
+&= \bmat{A}_j^\sb{4} \left(\bmat{F}_j - \bmat{G}_j \bmat{M} \bmat{F}_j - \bmat{F}_j \bmat{M} \bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j \right) \bmat{A}_j^\sb{4} \\
+&= {\bmat{F}_j^C}' \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{F}_j^C \left(\bmat{F}_j - \bmat{G}_j \bmat{M} \bmat{F}_j - \bmat{F}_j \bmat{M} \bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j \right){\bmat{F}_j^C}' \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{F}_j^C \\
+&= {\bmat{F}_j^C}' \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{B}_j^\sb{4} \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{F}_j^C \\
+&= \bmat{F}_j.
 \end{aligned}
 (\#eq:CR4-crit-sat)
 $$
 It follows that using the CR4 adjustment matrices leads to an exactly unbiased variance estimator when the working model is correct, just like the CR2 and CR2f corrections. 
 
-<!-- Q. (29) becomes (32), which does not seem to be right, either my calcs are incorrect or I misunderstood something in text... -->
-
-If the model is estimated using inverse-variance weights so that $\bmat{W}_j = \bs\Psi_j^{-1}$, then the CR4 adjustment matrices simplify to
+If the model is estimated using inverse-variance weights so that $\bmat{W}_j = \bs\Psi_j^{-1}$, then $\bmat{F}_j = \bmat{G}_j$ and the CR4 adjustment matrices simplify to
 $$
 \bmat{A}^\sb{4}_j = {\bmat{G}_j^C}' \halfinv{\left(\bmat{G}_j^C \left(\bmat{G}_j - \bmat{G}_j \bmat{M} \bmat{G}_j\right) {\bmat{G}_j^C}'\right)} \bmat{G}_j^C.
 (\#eq:CR4-inv)
@@ -376,7 +363,7 @@ Rather than correcting the bias in the full variance estimator, we could correct
 
 ## `metafor::rma.uni()` and `metafor::rma.mv()`
 
-# Single-coefficient hypothesis tests and confidence intervals
+# Single-coefficient hypothesis tests and confidence intervals {#sec:t-test}
 
 <!-- (To use the Satterthwaite approximation (instead of the Wald-test assuming large samples), we need the mean and variance of $V$. These are generally unknown (because they depend on $\bs\Omega$), but we can approximate them by assuming that the working model is correct. - H: I think this is the key idea/motivation behind cluster-robust variance estimation. -->
 
