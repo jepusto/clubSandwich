@@ -11,7 +11,7 @@
 
 <meta name="author" content="James E. Pustejovsky and Hanna Kim" />
 
-<meta name="date" content="2022-11-15" />
+<meta name="date" content="2022-11-28" />
 
 <title>Cluster-robust variance estimation with clubSandwich</title>
 
@@ -361,7 +361,7 @@ display: none;
 
 <h1 class="title toc-ignore">Cluster-robust variance estimation with clubSandwich</h1>
 <h4 class="author">James E. Pustejovsky and Hanna Kim</h4>
-<h4 class="date">2022-11-15</h4>
+<h4 class="date">2022-11-28</h4>
 
 </div>
 
@@ -388,7 +388,7 @@ These methods can be applied across a broad scope of models, including not only 
 <p>Let us consider the linear regression model
 <span class="math display" id="eq:reg-model">\[
 \begin{aligned}
-y_{ij} &amp;= \beta_0 + \beta_1 x_{1ij} + \beta_2 x_{2ij} + \cdots + \beta_{p-1} x_{p-1,ij} + e_{ij}, \\
+y_{ij} &amp;= \beta_0 + \beta_1 x_{1ij} + \beta_2 x_{2ij} + \cdots + \beta_{p-1} x_{p-1,ij} + u_{ij}, \\
 &amp;= \mathbf{x}_{ij} \boldsymbol\beta + u_{ij}
 \end{aligned}
 \tag{1}
@@ -398,7 +398,7 @@ where <span class="math inline">\(\mathbf{x}_{ij}\)</span> is a <span class="mat
 \mathbf{y}_j = \mathbf{X}_j \boldsymbol\beta + \bmat{u}_j,
 \tag{2}
 \]</span>
-where <span class="math inline">\(\mathbf{y}_j = (y_{1j} \cdots y_{n_j j})&#39;\)</span> is the <span class="math inline">\(n_j \times 1\)</span> vector of outcomes for cluster <span class="math inline">\(j\)</span>, <span class="math inline">\(\mathbf{X}_j = (\mathbf{x}_{1j}&#39; \cdots \mathbf{x}_{n_j j}&#39;)&#39;\)</span> is the <span class="math inline">\(n_j \times p\)</span> matrix of predictors for cluster <span class="math inline">\(j\)</span>, and <span class="math inline">\(\mathbf{e}_j\)</span> is the <span class="math inline">\(n_j \times 1\)</span> vector of errors for cluster <span class="math inline">\(j\)</span>, all for <span class="math inline">\(j = 1,...,J\)</span>.</p>
+where <span class="math inline">\(\mathbf{y}_j = (y_{1j} \cdots y_{n_j j})&#39;\)</span> is the <span class="math inline">\(n_j \times 1\)</span> vector of outcomes for cluster <span class="math inline">\(j\)</span>, <span class="math inline">\(\mathbf{X}_j = (\mathbf{x}_{1j}&#39; \cdots \mathbf{x}_{n_j j}&#39;)&#39;\)</span> is the <span class="math inline">\(n_j \times p\)</span> matrix of predictors for cluster <span class="math inline">\(j\)</span>, and <span class="math inline">\(\bmat{u}_j\)</span> is the <span class="math inline">\(n_j \times 1\)</span> vector of errors for cluster <span class="math inline">\(j\)</span>, all for <span class="math inline">\(j = 1,...,J\)</span>.</p>
 <p>We will maintain the following assumptions regarding the errors in the regression:
 <span class="math display" id="eq:reg-assumptions">\[
 \begin{aligned}
@@ -408,9 +408,9 @@ A3:&amp; \qquad \E(\bmat{u}_j \bmat{u}_j&#39; | \bmat{X}_j) = \Var(\bmat{u}_j) =
 \end{aligned}
 \tag{3}
 \]</span>
-The <span class="math inline">\(n_j \times n_j\)</span> matrices <span class="math inline">\(\bs\Omega_j\)</span> capture the cluster-specific variance-covariance matrix of the errors.
+The <span class="math inline">\(n_j \times n_j\)</span> matrices <span class="math inline">\(\bs\Omega_j\)</span> are the cluster-specific variance-covariance matrices of the errors.
 A common strategy for estimation and inference about the regression coefficients is to make further assumptions regarding the form of these matrices, such as by assuming that all errors are independent and homoskedastic (i.e., <span class="math inline">\(\bs\Omega_j = \sigma^2 \bmat{I}_j\)</span>) or that they have a structure characterized by a low-dimensional parameter (as in a hierarchical linear model or random effects model).
-Robust variance estimation methods provide a method for characterizing uncertainty and conducting inference without relying on such additional assumptions.
+Robust variance estimation methods provide a method for assessing uncertainty and conducting inference without relying on such additional assumptions.
 Rather, we will treat the variance-covariance matrices as following an unknown form.
 Thus, the errors within a cluster need not be homoskedastic or independent, but can instead be arbitrarily correlated within the same cluster.</p>
 <p>Researchers will often estimate the regression coefficient vector <span class="math inline">\(\bs\beta\)</span> using ordinary least squares (OLS) or, more generally, some form of weighted least squares (WLS).
@@ -425,7 +425,7 @@ In some applications, the weight matrices used for WLS estimation are motivated 
 In this approach, the analyst posits a structure <span class="math inline">\(\bs\Omega_j = \bs\Psi_j(\bs\theta)\)</span> for some low-dimensional, estimable parameter <span class="math inline">\(\bs\theta\)</span>.
 If the working model captures the true form of the error variances, then the weights that make the sampling variance of <span class="math inline">\(\bs{\hat\beta}\)</span> as small as possible (the most precise) are the inverse of the variance-covariance matrix of the errors, which depend on the parameter <span class="math inline">\(\bs\theta\)</span>.
 In practice, the variance parameter <span class="math inline">\(\bs\theta\)</span> is unknown and so the analyst will use the inverse of the <em>estimated</em> working model as the weights, with <span class="math inline">\(\bmat{W}_j = \bs{\hat\Psi}_j^{-1} = \bs\Psi_j^{-1}(\bs{\hat\theta})\)</span>.
-When the weight matrices are obtained following this strategy, we will refer to them as “inverse-variance” weights.</p>
+When the weight matrices are derived following this strategy, we will refer to them as “inverse-variance” weights.</p>
 <div id="robust-variance-estimation" class="section level1">
 <h1>Robust Variance Estimation</h1>
 <p>Treating the weight matrices as fixed, the sampling variance of <span class="math inline">\(\bs{\hat\beta}\)</span> is
@@ -434,35 +434,37 @@ When the weight matrices are obtained following this strategy, we will refer to 
 \tag{5}
 \]</span>
 which depends on the unknown variance-covariances <span class="math inline">\(\bs\Omega_1,...,\bs\Omega_J\)</span>.
-One strategy for estimating <a href="#eq:var-beta-hat">(5)</a> is to substitute an estimated working model <span class="math inline">\(\bs{\hat\Psi}_j\)</span> for the unknown variance-covariance matrices <span class="math inline">\(\bs\Omega_j\)</span>, giving a model-based variance estimator:
+One strategy for estimating <a href="#eq:var-beta-hat">(5)</a> is to substitute an <em>estimated</em> working model <span class="math inline">\(\bs{\hat\Psi}_j\)</span> for the unknown variance-covariance matrices <span class="math inline">\(\bs\Omega_j\)</span>, giving a model-based variance estimator:
 <span class="math display" id="eq:V-model">\[
 \bmat{V}^M = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j \bs{\hat\Psi}_j \bmat{W}_j \bmat{X}_j \right) \bmat{M}.
 \tag{6}
 \]</span>
 If the working model is correctly specified and precisely estimated, then the model-based variance estimator will closely approximate the true sampling variance.
-If the analyst uses inverse-variance weights based on the same working model, then the model-based variance estimator has the simpler form <span class="math inline">\(\bmat{V}^{model} = \bmat{M}\)</span>.
+If the analyst uses inverse-variance weights based on the same working model, then the model-based variance estimator has the simpler form <span class="math inline">\(\bmat{V}^{M} = \bmat{M}\)</span>.
 However, if the working model is inaccurate or incorrectly specified in some way, then there is no guarantee that the model-based variance estimator will be valid.</p>
-<p>The original form of the robust variance estimator uses the residuals from each cluster to derive rough estimates of the unknown error variance matrices.</p>
-<!-- H: Do we mean the linear regression residuals when we estimate (2)? The hat(u_j) notation appears here for the first time. If we instead refer to the same hat(u_j)'s as in the CR2 notation, should we bring up the definition C_j(I_N - H)Y?  -->
-<!-- J: Define hat(u_j) here, but wait to explain the C_j representation.  -->
-<p>This estimator substitutes the cross product of the residuals <span class="math inline">\(\bmat{\hat{u}}_j\bmat{\hat{u}}_j&#39;\)</span> in place of <span class="math inline">\(\bs\Omega_j\)</span> in <a href="#eq:var-beta-hat">(5)</a>, leading to the variance estimator
-<span class="math display" id="eq:V-CR0">\[
-\bmat{V}^{CR0} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j \bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; \bmat{W}_j\bmat{X}_j\right) \bmat{M}.
+<p>The original form of the robust variance estimator uses the residuals
+<span class="math display" id="eq:reg-residuals">\[
+\bmat{\hat{u}}_j = \mathbf{y}_j - \mathbf{X}_j \bs{\hat\beta}
 \tag{7}
 \]</span>
-The cross-product of the residuals from a given cluster is a very crude estimator for the error variance matrix from that cluster.
-However, we do not need to estimate each cluster-specific variance matrix accurately.
-Rather, we only need to approximate the <em>sum</em> of the terms involving the error variance matrix, and even the crude CR0 estimator works for this purpose if the number of independent clusters is sufficiently large.
-However, it is often the case that neither the number of clusters nor the observations per cluster is large enough, such that <a href="#eq:V-CR0">(7)</a> underestimates the sampling variance of <span class="math inline">\(\bs{\hat\beta}\)</span>. It should be noted that the number of clusters deemed as “few” is not clear-cut and depends on specific study conditions, requiring more clusters when the clusters are unbalanced. <span class="citation">(Cameron and Miller 2015)</span>.</p>
-<!-- H: I don't include the over-rejection (narrow CI) problem here. -->
-<!-- J: Please explain the over-rejection issue with CR0 here. Then refer to later sections for discussion of small-sample corrections for hypothesis tests. -->
+from each cluster to derive rough estimates of the unknown error variance matrices.
+Specifically, the CR0 estimator substitutes the cross product of the residuals <span class="math inline">\(\bmat{\hat{u}}_j\bmat{\hat{u}}_j&#39;\)</span> in place of <span class="math inline">\(\bs\Omega_j\)</span> in <a href="#eq:var-beta-hat">(5)</a>, leading to
+<span class="math display" id="eq:V-CR0">\[
+\bmat{V}^{CR0} = \bmat{M} \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j \bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; \bmat{W}_j\bmat{X}_j\right) \bmat{M}.
+\tag{8}
+\]</span>
+Even though the cross-product of the residuals from a given cluster is a very crude estimator for the error variance matrix from that cluster, it serves the purpose because we do not need to estimate each cluster-specific variance matrix accurately.
+Rather, we only need to approximate the <em>sum</em> of the terms involving the error variance matrix, and even the crude CR0 estimator works for this purpose if the number of independent clusters is sufficiently large.</p>
+<p>However, it may happen that the number of clusters is not large enough to trust the asymptotic approximation, such that <a href="#eq:V-CR0">(8)</a> underestimates the sampling variance of <span class="math inline">\(\bs{\hat\beta}\)</span> and leads to larger than nominal Type I error rates <span class="citation">(Cameron and Miller 2015)</span>.
+The over-rejection problem will be discussed further in detail in section [].
+It should be noted that the number of clusters deemed as “few” is not clear-cut and depends on specific study conditions, requiring more clusters when the clusters are unbalanced <span class="citation">(Cameron and Miller 2015)</span>.</p>
 <div id="small-sample-corrections" class="section level2">
 <h2>Small-sample corrections</h2>
 <p>A number of variations on the basic cluster-robust variance estimator have been proposed, all of which aim to provide more accurate approximations when the number of clusters is limited.
 The variations implemented in the <code>clubSandwich</code> package all have the form
 <span class="math display" id="eq:V-CR">\[
 \bmat{V}^{CR} = f \times \bmat{M} \left(\sum_{j=1}^J \bmat{E}_j&#39; \bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; \bmat{E}_j \right) \bmat{M}
-\tag{8}
+\tag{9}
 \]</span>
 for some constant <span class="math inline">\(f\)</span> and some estimating matrices <span class="math inline">\(\bmat{E}_1,...,\bmat{E}_J\)</span>.
 With this representation, the CRO estimator corresponds to <span class="math inline">\(f_0 = 1\)</span> and <span class="math inline">\(\bmat{E}^\sb{0}_j = \bmat{W}_j \bmat{X}_j\)</span>.</p>
@@ -475,75 +477,74 @@ With this representation, the CRO estimator corresponds to <span class="math inl
 \text{CR1S}: f_{1S} &amp;= \frac{J (N - 1)}{(J - 1)(N - p)} , \\
 \text{CR1p}: f_{1p} &amp;= \frac{J}{J - p},
 \end{aligned}
-\tag{9}
+\tag{10}
 \]</span>
 These corrections are all motivated by the observation that the sandwich estimator corresponds to a sample variance-covariance matrix across terms for each cluster.
 Thus, inflating it by an amount depending on the number of clusters should tend to reduce the small-sample bias of CR0.
 However, the exact bias of CR0 depends on features of the data beyond simply the number of clusters and predictors, including cluster sizes and the distribution of the predictors within and across clusters <span class="citation">(McCaffrey, Bell, and Botts 2001; Tipton and Pustejovsky 2015; Pustejovsky and Tipton 2018)</span>.
-Thus, the simple multiplicative corrections involved in the CR1 and related estimators are only very rough approximations, and do not provide perfect finite-cluster corrections <span class="citation">(Cameron and Miller 2015)</span>.</p>
+Thus, the simple multiplicative corrections involved in the CR1 and related estimators are only very rough approximations, and do not provide adequate finite-cluster corrections except under very specific conditions <span class="citation">(Cameron and Miller 2015)</span>.</p>
 </div>
 <div id="cr2" class="section level3">
 <h3>CR2</h3>
 <p><span class="citation">Bell and McCaffrey (2002)</span> and <span class="citation">McCaffrey, Bell, and Botts (2001)</span> introduced a class of more refined robust variance estimators, termed “bias-reduced linearization” estimators, that account for variation in cluster sizes and the distribution of predictors.
 These estimators require positing a working model for the error structure, based on which the estimators incorporate adjustments to the residuals used in the middle of the sandwich estimator.
 The whole estimator is exactly unbiased when the working model is correctly specified.
-Although in principle a working model is required prior to the whole process, we rarely have a known working model for the error structure of regression coefficients. Therefore, in practice, we usually substitute residuals from estimated models, analogous to using frequentist model estimates as convenient priors for Bayesian estimation.</p>
+Although in principle a working model is required prior to the whole process, we rarely have a known working model for the error structure of regression coefficients. Therefore, in practice, we will use estimated working models, analogous to using frequentist model estimates as convenient priors for Bayesian estimation.</p>
 <p>The CR2 estimator uses <span class="math inline">\(f_2 = 1\)</span> and
 <span class="math display" id="eq:CR2-Ej">\[
 \bmat{E}^\sb{2}_j = {\bmat{A}^\sb{2}_j}&#39; \bmat{W}_j \bmat{X}_j,
-\tag{10}
-\]</span>
-inside <a href="#eq:V-CR">(8)</a> for <span class="math inline">\(j=1,...,J\)</span>, where <span class="math inline">\(\bmat{A}^\sb{2}_1,...,\bmat{A}^\sb{2}_J\)</span> are adjustment matrices that satisfy the criteria
-<span class="math display" id="eq:CR2-criterion">\[
-\E\left(\bmat{A}^\sb{2}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; {\bmat{A}^\sb{2}_j}&#39;\right) = \bs\Psi_j.
 \tag{11}
 \]</span>
-<span class="math inline">\(\bs\Psi_j\)</span> denotes the working model for cluster <span class="math inline">\(j\)</span> and the expectation is taken assuming that the working model is correct.
+inside <a href="#eq:V-CR">(9)</a> for <span class="math inline">\(j=1,...,J\)</span>, where <span class="math inline">\(\bmat{A}^\sb{2}_1,...,\bmat{A}^\sb{2}_J\)</span> are adjustment matrices that satisfy the criteria
+<span class="math display" id="eq:CR2-criterion">\[
+\E\left(\bmat{A}^\sb{2}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; {\bmat{A}^\sb{2}_j}&#39;\right) = \bs\Psi_j.
+\tag{12}
+\]</span>
+<span class="math inline">\(\bs\Psi_j\)</span> denotes the working model for cluster <span class="math inline">\(j\)</span> and the expectation is taken assuming that the working model is correct (i.e., correctly specified and ignoring any estimation error).
 Thus, if the working model is correctly specified,
 <span class="math display" id="eq:CR2-expct">\[
 \E\left({\bmat{E}^\sb{2}_j}&#39;\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39; \bmat{E}^\sb{2}_j\right) = \bmat{X}_j&#39;\bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j,
-\tag{12}
+\tag{13}
 \]</span>
-and so <span class="math inline">\(\E\left(\bmat{V}^{CR2}\right) = \Var\left(\bs{\hat\beta}\right)\)</span> by <a href="#eq:var-beta-hat">(5)</a> and <a href="#eq:V-CR">(8)</a>.</p>
+and so <span class="math inline">\(\E\left(\bmat{V}^{CR2}\right) = \Var\left(\bs{\hat\beta}\right)\)</span> by <a href="#eq:var-beta-hat">(5)</a> and <a href="#eq:V-CR">(9)</a>.</p>
 <p>To derive expressions for <span class="math inline">\(\bmat{A}^\sb{2}_j\)</span>, observe that the residuals from cluster <span class="math inline">\(j\)</span> may be written as <span class="math inline">\(\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bmat{Y}\)</span>, where <span class="math inline">\(\bmat{H} = \bmat{X}\bmat{M}\bmat{X}&#39;\bmat{W}\)</span> and <span class="math inline">\(\bmat{C}_j\)</span> is an <span class="math inline">\(n_j \times N\)</span> matrix that selects the rows of the full data that correspond to cluster <span class="math inline">\(j\)</span> (i.e., <span class="math inline">\(\bmat{X}_j = \bmat{C}_j \bmat{X}\)</span>).
 Because the residuals have mean zero, the expectation of the cross-product of residuals from cluster <span class="math inline">\(j\)</span> is
 <span class="math display" id="eq:resid-expct">\[
 \E\left(\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39;\right) = \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j&#39;.
-\tag{13}
+\tag{14}
 \]</span>
-The adjustment matrices therefore satisfy the following criteria that
+The adjustment matrices must therefore satisfy the criterion
 <span class="math display" id="eq:CR2-criterion2">\[
 \bmat{A}^\sb{2}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j&#39; {\bmat{A}^\sb{2}_j}&#39; = \bs\Psi_j
-\tag{14}
+\tag{15}
 \]</span>
 for <span class="math inline">\(j = 1,...,J\)</span>.</p>
 <p>There are multiple possible solutions to the above. <span class="citation">McCaffrey, Bell, and Botts (2001)</span> considered several possible solutions to the above, including a symmetric solution given by
 <span class="math display" id="eq:CR2-symm">\[
 \bmat{A}^\sb{2}_j = {\bs\Psi^C_j}&#39; \halfinv{\left(\bmat{B}_j^\sb{2}\right)} \bs\Psi^C_j,
-\tag{15}
+\tag{16}
 \]</span></p>
 <p>where <span class="math inline">\(\bs\Psi^C_j\)</span> is the upper-right triangular Cholesky factorization of <span class="math inline">\(\bs\Psi_j\)</span>, so that <span class="math inline">\({\bs\Psi^C_j}&#39; \bs\Psi^C_j = \bs\Psi_j\)</span>,
 <span class="math display" id="eq:CR2-symm-Bj">\[
 \bmat{B}^\sb{2}_j = \bs\Psi^C_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j&#39; {\bs\Psi^C_j}&#39;,
-\tag{16}
+\tag{17}
 \]</span>
 and <span class="math inline">\(\halfinv{\left(\bmat{B}_j^\sb{2}\right)}\)</span> is the inverse of the symmetric square root of <span class="math inline">\(\bmat{B}^\sb{2}_j\)</span>.</p>
 <p>If the weight matrices are inverse-variance, then the matrix <span class="math inline">\(\bmat{B}^\sb{2}_j\)</span> has the simpler form
 <span class="math display" id="eq:CR2-inv-Bj">\[
 \bmat{B}^\sb{2}_j = \bs\Psi^C_j \left(\bs\Psi_j - \bmat{X}_j\bmat{M}\bmat{X}_j&#39;\right) {\bs\Psi^C_j}&#39;.
-\tag{17}
+\tag{18}
 \]</span>
 For the special case of ordinary least squares, the adjustment matrices simplify even further to
 <span class="math display" id="eq:CR2-OLS">\[
 \bmat{A}^\sb{2}_j = \halfinv{\left(\bmat{I}_j - \bmat{X}_j \bmat{M}\bmat{X}_j&#39;\right)},
-\tag{18}
+\tag{19}
 \]</span>
 if the working model is based on the assumption of independent, homoskedastic errors.</p>
-<p><span class="citation">McCaffrey, Bell, and Botts (2001)</span> also considered an asymmetric solution to the criteria. However, they recommended the symmetric one because it minimizes the squared error between the OLS residuals and the true errors when they are independent and homoskedastic.
+<p><span class="citation">McCaffrey, Bell, and Botts (2001)</span> also considered an asymmetric solution to criterion <a href="#eq:CR2-criterion2">(15)</a>. However, they recommended the symmetric one because it minimizes the squared error between the OLS residuals and the true errors when they are independent and homoskedastic.
 Even when the errors were not independent, they found that the symmetric adjustment matrices yielded smaller bias than asymmetric ones.</p>
-<p><span class="citation">Niccodemi et al. (2020)</span> described an efficient method of calculating the CR2 for the special case of ordinary least squares with an independence working model…
-Unfortunately, their computational approach does not generalize to the CR2 adjustment matrices for weighted least squares or working models other than <span class="math inline">\(\Psi_j = \sigma^2 \bmat{I}_j\)</span>.</p>
-<!-- Further check the above paragraph. -->
+<p><span class="citation">Niccodemi et al. (2020)</span> described an efficient method of calculating the CR2 for the special case of ordinary least squares with an independence working model.
+Unfortunately, their computational approach does not generalize to the CR2 adjustment matrices for weighted least squares or working models other than <span class="math inline">\(\Psi_j = \sigma^2 \bmat{I}_j\)</span>. However, it is applicable to the CR2f adjustment, as we describe subsequently.</p>
 </div>
 <div id="cr2f" class="section level3">
 <h3>CR2f</h3>
@@ -551,80 +552,106 @@ Unfortunately, their computational approach does not generalize to the CR2 adjus
 The CR2f estimator uses <span class="math inline">\(f_{2f} = 1\)</span> and
 <span class="math display" id="eq:CR2f-Ej">\[
 \bmat{E}^\sb{2f}_j = \half{\bmat{W}}_j \bmat{A}^\sb{2f}_j \half{\bmat{W}}_j \bmat{X}_j
-\tag{19}
-\]</span>
-inside <a href="#eq:V-CR">(8)</a> for <span class="math inline">\(j=1,...,J\)</span>, where <span class="math inline">\(\bmat{A}^\sb{2f}_1,...,\bmat{A}^\sb{2f}_j\)</span> are adjustment matrices that satisfy the criteria
-<span class="math display" id="eq:CR2f-criterion">\[
-\E\left(\bmat{A}^\sb{2f}_j\half{\bmat{W}}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39;\half{\bmat{W}}_j {\bmat{A}^\sb{2f}_j}&#39;\right) = \bmat{A}^\sb{2f}_j \half{\bmat{W}}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j&#39; \half{\bmat{W}}_j {\bmat{A}^\sb{2f}_j}&#39; \\ = \half{\bmat{W}}_j \bs\Psi_j\half{\bmat{W}}_j.
 \tag{20}
 \]</span>
-Following the same reasoning as with the CR2 estimator, adjustment matrices that satisfy these criteria lead to a variance estimator that is exactly unbiased if the working model is correctly specified.
+inside <a href="#eq:V-CR">(9)</a> for <span class="math inline">\(j=1,...,J\)</span>, where <span class="math inline">\(\bmat{A}^\sb{2f}_1,...,\bmat{A}^\sb{2f}_j\)</span> are adjustment matrices that satisfy the criteria
+<span class="math display" id="eq:CR2f-criterion">\[
+\E\left(\bmat{A}^\sb{2f}_j\half{\bmat{W}}_j\bmat{\hat{u}}_j \bmat{\hat{u}}_j&#39;\half{\bmat{W}}_j {\bmat{A}^\sb{2f}_j}&#39;\right) = \bmat{A}^\sb{2f}_j \half{\bmat{W}}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j&#39; \half{\bmat{W}}_j {\bmat{A}^\sb{2f}_j}&#39; \\ = \half{\bmat{W}}_j \bs\Psi_j\half{\bmat{W}}_j
+\tag{21}
+\]</span>
+for <span class="math inline">\(j = 1,...,J\)</span>. Following the same reasoning as with the CR2 estimator, adjustment matrices that satisfy these criteria lead to a variance estimator that is exactly unbiased if the working model is correctly specified.
 A symmetric solution is given by
 <span class="math display" id="eq:CR2f-symm">\[
 \bmat{A}^\sb{2f}_j = \half{\bmat{W}}_j {\bs\Psi^C_j}&#39; \halfinv{\left(\bmat{B}_j^\sb{2f}\right)} \bs\Psi^C_j \half{\bmat{W}}_j,
-\tag{21}
+\tag{22}
 \]</span>
 where <span class="math inline">\(\bs\Psi^C_j\)</span> is again the upper-right triangular Cholesky factorization of <span class="math inline">\(\bs\Psi_j\)</span> and<br />
 <span class="math display" id="eq:CR2f-symm-Bj">\[
 \bmat{B}^\sb{2f}_j = \bs\Psi^C_j \bmat{W}_j \bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j&#39; \bmat{W}_j {\bs\Psi^C_j}&#39;.
-\tag{22}
+\tag{23}
 \]</span>
-In a similar way to the CR2 estimator, an asymmetric solution is given by
-<span class="citation">McCaffrey, Bell, and Botts (2001)</span>, using which is not recommended over the symmetric solution.</p>
+<span class="citation">McCaffrey, Bell, and Botts (2001)</span> also give an asymmetric solution, but it is not recommended over the symmetric solution for reasons similar to those regarding the CR2 adjustments.</p>
 <p>If the weight matrices are inverse-variance, then the CR2f adjustment matrices have the simpler form
 <span class="math display" id="eq:CR2f-inv">\[
 \bmat{A}^\sb{2f}_j = \halfinv{\left(\bmat{I}_j - \half{\bmat{W}}_j\bmat{X}_j \bmat{M} \bmat{X}_j&#39; \half{\bmat{W}}_j\right)}.
-\tag{23}
+\tag{24}
 \]</span>
 For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices are equivalent.</p>
+<p>The computational trick described by <span class="citation">Niccodemi et al. (2020)</span> for the CR2 adjustment under ordinary least squares with an independence working model can be extended to the CR2f adjustment matrices as long as the weight matrices are inverse variance. Assuming that <span class="math inline">\(\bmat{W}_j = \bs\Psi_j^{-1}\)</span>, then the CR2f estimating matrices are equal to
+<span class="math display" id="eq:ECR2f-quick">\[
+\bmat{E}^\sb{2f}_j = \bmat{W}_j \bmat{X}_j {\bmat{M}^{C}}&#39;\halfinv{\left(\bmat{I}_p - \bmat{M}^C \bmat{X}_j&#39;\bmat{W}_j \bmat{X}_j{\bmat{M}^C}&#39; \right)} {\bmat{M}^{-C}}&#39;.
+\tag{25}
+\]</span>
+The advantage of using this form is that it only requires taking the inverse root of a <span class="math inline">\(p \times p\)</span> matrix, whereas calculating the adjustment matrix <span class="math inline">\(\bmat{A}^\sb{2f}_j\)</span> requires taking the inverse root of an <span class="math inline">\(n_j \times n_j\)</span> matrix. In applications involving large clusters, with <span class="math inline">\(n_j &gt;&gt; p\)</span>, using <a href="#eq:ECR2f-quick">(25)</a> will be much more efficient in terms of memory and computational burden.</p>
 </div>
 <div id="crj-cr3-cr3lambda" class="section level3">
 <h3>CRJ, CR3, CR3<span class="math inline">\(\lambda\)</span></h3>
-<p>The cluster-level jackknife technique is closely related to cluster-robust variance estimation. A cluster-level jack-knife sampling variance is given by
+<p>The cluster-level jackknife technique is closely related to cluster-robust variance estimation. A cluster-level jackknife sampling variance is given by
 <span class="math display" id="eq:jackknife">\[
-\bmat{V}^{CRJ} = \frac{J - 1}{J} \sum_{j=1}^J \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right) \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right)&#39;,
-\tag{24}
+\bmat{V}^{CR3J} = \frac{J - 1}{J} \sum_{j=1}^J \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right) \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right)&#39;,
+\tag{26}
 \]</span>
-where <span class="math inline">\(\bs{\hat\beta}_{(j)}\)</span> is the weighted least squares estimator calculated while excluding the observations from cluster <span class="math inline">\(j\)</span>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> Although not immediately apparent, <span class="math inline">\(\bmat{V}^{CRJ}\)</span> is equivalent to calculating the cluster-robust variance estimator as given in (Equation) using <span class="math inline">\(f_J = \frac{J - 1}{J}\)</span> and
+where <span class="math inline">\(\bs{\hat\beta}_{(j)}\)</span> is the weighted least squares estimator calculated while excluding the observations from cluster <span class="math inline">\(j\)</span>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>
+Although not immediately apparent, <span class="math inline">\(\bmat{V}^{CR3J}\)</span> is equivalent to calculating the cluster-robust variance estimator as given in <a href="#eq:V-CR">(9)</a> using <span class="math inline">\(f_{3J} = \frac{J - 1}{J}\)</span> and
 <span class="math display" id="eq:jackknife-Ej">\[
-\bmat{E}^\sb{J}_j = {\bmat{A}_j^\sb{3}}&#39; \bmat{W}_j \bmat{X}_j,
-\tag{25}
+\bmat{E}^\sb{3J}_j = {\bmat{A}_j^\sb{3}}&#39; \bmat{W}_j \bmat{X}_j,
+\tag{27}
 \]</span>
 where
 <span class="math display" id="eq:jackknife-Aj">\[
 \bmat{A}_j^\sb{3} = \left(\bmat{I}_j - \bmat{X}_j \bmat{M} \bmat{X}_j&#39; \bmat{W}_j\right)^{-1}.
-\tag{26}
+\tag{28}
 \]</span>
-Sometimes, the leading factor in <a href="#eq:jackknife">(24)</a> is omitted, which yields the CR3 estimator. This is equivalent to taking <span class="math inline">\(f_3 = 1\)</span> and <span class="math inline">\(\bmat{E}_j^\sb{3} = \bmat{E}_j^\sb{J}\)</span>.</p>
-<p>For the special case of unweighted least squares with an independent, homoskedastic working model, <span class="citation">Niccodemi et al. (2020)</span> showed that the CR3 estimator has an upward bias and the CRJ estimator has an upward bias except when the predictors are identically distributed in each cluster, so that <span class="math inline">\(\bmat{X}_j&#39;\bmat{X}_j = \bmat{X}&#39;\bmat{X} / J\)</span>. To reduce this bias, they suggested using <span class="math inline">\(\bmat{E}_j^\sb{3}\)</span> with the leading constant <span class="math inline">\(f_{3\lambda} = \left(\sum_{j=1}^J \frac{n_j}{N - n_j}\right)^{-1}\)</span>. Compared to CRJ, this CR3<span class="math inline">\(\lambda\)</span> estimator better accounts for variation in cluster sizes. For the case of unweighted least squares with the independent and homoskedastic working model, it will be unbiased under the more general condition that <span class="math inline">\(\bmat{X}_j&#39;\bmat{X}_j = \frac{n_j}{N}\bmat{X}&#39;\bmat{X}\)</span>.</p>
-<p><span class="citation">Niccodemi et al. (2020)</span> also described an efficient method of calculating the <span class="math inline">\(\bmat{E}^\sb{3}_j\)</span> matrices for the special case of ordinary least squares with an independence working model…</p>
+Sometimes, the leading factor in <a href="#eq:jackknife">(26)</a> is omitted, which yields the CR3 estimator. This is equivalent to taking <span class="math inline">\(f_3 = 1\)</span> and <span class="math inline">\(\bmat{E}_j^\sb{3} = \bmat{E}_j^\sb{3J}\)</span>.</p>
+<p>For the special case of unweighted least squares with an independent, homoskedastic working model, <span class="citation">Niccodemi et al. (2020)</span> showed that the CR3 estimator has an upward bias and the CR3J estimator has an upward bias except when the predictors are identically distributed in each cluster, so that <span class="math inline">\(\bmat{X}_j&#39;\bmat{X}_j = \bmat{X}&#39;\bmat{X} / J\)</span>.
+To reduce this bias, they suggested using <span class="math inline">\(\bmat{E}_j^\sb{3}\)</span> with the leading constant <span class="math inline">\(f_{3\lambda} = \left(\sum_{j=1}^J \frac{n_j}{N - n_j}\right)^{-1}\)</span>.
+Compared to CR3J, this CR3<span class="math inline">\(\lambda\)</span> estimator better accounts for variation in cluster sizes.
+For the case of unweighted least squares with the independent and homoskedastic working model, it will be approximately unbiased under the more general condition that <span class="math inline">\(\bmat{X}_j&#39;\bmat{X}_j = \frac{n_j}{N}\bmat{X}&#39;\bmat{X}\)</span>.</p>
+<p><span class="citation">Niccodemi et al. (2020)</span> also described an efficient method of calculating the <span class="math inline">\(\bmat{E}^\sb{3}_j\)</span> matrices for the special case of ordinary least squares with an independence working model. Their method can be extended to weighted least squares estimation as well, such that <span class="math inline">\(\bmat{E}_j^\sb{3}\)</span> can be calculated as
+<span class="math display" id="eq:ECR3-quick">\[
+\bmat{E}_j^\sb{3} = \bmat{W}_j \bmat{X}_j \left(\bmat{X}&#39; \bmat{W} \bmat{X} - \bmat{X}_j&#39; \bmat{W}_j \bmat{X}_j \right)^{-1}.
+\tag{29}
+\]</span>
+This representation avoids the need to invert <span class="math inline">\(n_j \times n_j\)</span> matrices, instead requiring only the inverse of <span class="math inline">\(p \times p\)</span> matrices. When <span class="math inline">\(p\)</span> is limited but <span class="math inline">\(n_j\)</span> is large, this can result in substantial computational savings <span class="citation">(Niccodemi et al. 2020; see also MacKinnon et al. 2022)</span>.</p>
 <!-- Jackknife - See Tipton (2015) for some arguments -->
+<p>“Bell and McCaffrey (2002) showed that when W = I, the [CR0] estimator tends to underestimate the true variances, whereas the [CRJ] estimator tends to overestimate these variances; it is not difficult to show that these results extend to the <span class="math inline">\(W \neq I\)</span> case.”
+Simulation studies comparing cluster-robust variance estimators (HTJ, JK, MBB) and degrees of freedom adjustments for meta-analysis scenarios &lt;- How relevant? How much of the results should we introduce?</p>
 </div>
 <div id="cr4" class="section level3">
 <h3>CR4</h3>
-<p>The CR2, CR2f, and CR3 corrections can be difficult to implement because they involve computing <span class="math inline">\(n_j \times n_j\)</span> correction matrices for each cluster. Some or all clusters include a large number of observations, then the matrices will be large and computing them may be quite time consuming. The computational methods described by <span class="citation">Niccodemi et al. (2020)</span> and <span class="citation">MacKinnon et al. (2022)</span> provide a way to reduce computation time for certain specifications and certain working models, but they are not entirely general. Here we describe a novel generalization of the CR2f adjustment, termed CR4, that can be applied to models estimated by weighted least squares, with an arbitrary working model and weights that are not necessarily inverse-variance.</p>
-<p>Like the CR2 and CR2f corrections, CR4 is designed to provide a variance estimator that is exactly unbiased when the working model is correctly specified. The main innovation is to do so by correcting the full score contribution <span class="math inline">\(\bmat{u}_j&#39;\bmat{W}_j \bmat{X}_j\)</span> rather than correcting the residuals, so that the adjustment matrices are of dimension <span class="math inline">\(p \times p\)</span> rather than <span class="math inline">\(n_j \times n_j\)</span>. The CR4 variance estimator uses <span class="math inline">\(f_4 = 1\)</span> and estimating matrices given by
+<p>The CR2 correction can be difficult to implement because it involves computing <span class="math inline">\(n_j \times n_j\)</span> correction matrices for each cluster.
+Some or all clusters include a large number of observations, then the matrices will be large and computing them may be quite time consuming.
+The computational methods described by <span class="citation">Niccodemi et al. (2020)</span> and <span class="citation">MacKinnon et al. (2022)</span> provide a way to reduce computation time of the CR2 and CR2f corrections under certain working models, but they are not entirely general.
+Here we describe a novel generalization of the CR2f adjustment, termed CR4, that can be applied to models estimated by weighted least squares, with an arbitrary working model and weights that are not necessarily inverse-variance.</p>
+<p>Like the CR2 and CR2f corrections, CR4 is designed to provide a variance estimator that is exactly unbiased when the working model is correctly specified.
+The main innovation is to do so by correcting the full score contribution <span class="math inline">\(\bmat{u}_j&#39;\bmat{W}_j \bmat{X}_j\)</span> rather than correcting the residuals, so that the adjustment matrices <span class="math inline">\(\bmat{A}^\sb{4}_j\)</span> are of dimension <span class="math inline">\(p \times p\)</span> rather than <span class="math inline">\(n_j \times n_j\)</span>.</p>
+<!-- Q. Is CR4 correcting $\bmat{u}_j'\bmat{W}_j \bmat{X}_j$ instead of $\bmat{u}_j$ or $\bmat{u}_j'$? What is the full variance estimator as compared to (9)? -->
+<p>The CR4 variance estimator uses <span class="math inline">\(f_4 = 1\)</span> and estimating matrices given by
 <span class="math display" id="eq:CR4-Ej">\[
 \bmat{E}^\sb{4}_j = \bmat{W}_j \bmat{X}_j \bmat{A}^\sb{4}_j,
-\tag{27}
+\tag{30}
 \]</span>
 where <span class="math inline">\(\bmat{A}^\sb{4}_j\)</span> are adjustment matrices chosen to satisfy the criterion
 <span class="math display" id="eq:CR4-criterion">\[
 \E\left({\bmat{E}^\sb{4}_j}&#39; \bmat{u}_j \bmat{u}_j&#39; \bmat{E}^\sb{4}_j \right) = \bmat{X}_j&#39; \bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j
-\tag{28}
+\tag{31}
 \]</span>
 for <span class="math inline">\(j = 1,...,J\)</span>.</p>
-<p>To construct the CR4 adjustment matrices, we first define the matrices <span class="math inline">\(\bmat{F}_j = \bmat{X}_j&#39; \bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j\)</span> and <span class="math inline">\(\bmat{G}_j = \bmat{X}_j&#39; \bmat{W}_j \bmat{X}_j\)</span>. With these terms, the model-based variance estimator defined in <a href="#eq:V-model">(6)</a> can be computed as <span class="math inline">\(\bmat{V}^M = \bmat{M}\left(\sum_{j=1}^J \bmat{F}_j \right)\bmat{M}\)</span>. The CR4 adjustment matrices are then
+<!-- H: Just to make sure, $\bmat{u}_j$ and not $\bmat{\hat{u}}_j$? -->
+<p>To construct the CR4 adjustment matrices, we first define the matrices <span class="math inline">\(\bmat{F}_j = \bmat{X}_j&#39; \bmat{W}_j \bs\Psi_j \bmat{W}_j \bmat{X}_j\)</span> and <span class="math inline">\(\bmat{G}_j = \bmat{X}_j&#39; \bmat{W}_j \bmat{X}_j\)</span>.
+With these terms, the model-based variance estimator defined in <a href="#eq:V-model">(6)</a> can be computed as <span class="math inline">\(\bmat{V}^M = \bmat{M}\left(\sum_{j=1}^J \bmat{F}_j \right)\bmat{M}\)</span>.</p>
+<!-- H: How does the sum of $\bs{\hat\Psi}_j$ become equal to the sum of $\bs{\Psi}_j$ over j = 1, ..., J? -->
+<p>The CR4 adjustment matrices are then
 <span class="math display" id="eq:CR4-Aj">\[
 \bmat{A}^\sb{4}_j = {\bmat{G}_j^C}&#39; \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C,
-\tag{29}
+\tag{32}
 \]</span>
 where <span class="math inline">\(\bmat{G}_j^C\)</span> is the upper-right Cholesky factorization of <span class="math inline">\(\bmat{G}_j\)</span> and
 <span class="math display" id="eq:CR4-Bj">\[
 \bmat{B}_j^\sb{4} = \bmat{G}_j^C \left(\bmat{F}_j - \bmat{G}_j \bmat{M}\bmat{F}_j - \bmat{F}_j \bmat{M}\bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j\right) {\bmat{G}_j^C}&#39;.
-\tag{30}
-\]</span></p>
-<p>To see that these adjustment matrices satisfy the criterion given in <a href="#eq:CR4-criterion">(28)</a>, observe that the expectation of the cross-product of adjusted scores can be written as
+\tag{33}
+\]</span>
+To see that these adjustment matrices satisfy the criterion given in <a href="#eq:CR4-criterion">(31)</a>, observe that the expectation of the cross-product of adjusted scores can be written as
 <span class="math display" id="eq:CR4-crit-sat">\[
 \begin{aligned}
 \E\left(\bmat{A}_j^\sb{4}\bmat{X}_j&#39; \bmat{W}_j \bmat{u}_j \bmat{u}_j&#39; \bmat{W}_j \bmat{X}_j \bmat{A}_j^\sb{4}\right) &amp;= \bmat{A}_j^\sb{4} \bmat{X}_j&#39; \bmat{W}_j\bmat{C}_j\left(\bmat{I}_N - \bmat{H}\right) \bs\Psi \left(\bmat{I}_N - \bmat{H}&#39;\right)\bmat{C}_j&#39;\bmat{W}_j \bmat{X}_j \bmat{A}_j^\sb{4} \\
@@ -633,18 +660,27 @@ where <span class="math inline">\(\bmat{G}_j^C\)</span> is the upper-right Chole
 &amp;= {\bmat{G}_j^C}&#39; \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{B}_j^\sb{4} \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{G}_j^C \\
 &amp;= \bmat{G}_j.
 \end{aligned}
-\tag{31}
+\tag{34}
 \]</span>
 It follows that using the CR4 adjustment matrices leads to an exactly unbiased variance estimator when the working model is correct, just like the CR2 and CR2f corrections.</p>
+<!-- Q. (29) becomes (32), which does not seem to be right, either my calcs are incorrect or I misunderstood something in text... -->
 <p>If the model is estimated using inverse-variance weights so that <span class="math inline">\(\bmat{W}_j = \bs\Psi_j^{-1}\)</span>, then the CR4 adjustment matrices simplify to
 <span class="math display" id="eq:CR4-inv">\[
 \bmat{A}^\sb{4}_j = {\bmat{G}_j^C}&#39; \halfinv{\left(\bmat{G}_j^C \left(\bmat{G}_j - \bmat{G}_j \bmat{M} \bmat{G}_j\right) {\bmat{G}_j^C}&#39;\right)} \bmat{G}_j^C.
-\tag{32}
+\tag{35}
 \]</span>
 <!-- Can this be simplified further? -->
 <!-- How is CR4 related to CR2f? Are they equivalent for inverse-variance weights?--></p>
-<p>A further benefit of the CR4 adjustment matrices is that they can be tailored to a subset of the covariates that are of focal interest. Rather than correcting the bias in the full variance estimator, we could correct the bias for just one or more of the predictors, so that <span class="math inline">\(\E\left(\bmat{k}&#39; \bmat{V}^{CR} \bmat{k}\right) = \Var\left(\bmat{k}&#39; \bs{\hat\beta}\right)\)</span> for a <span class="math inline">\(p \times k\)</span> matrix of contrasts <span class="math inline">\(\bmat{k}\)</span> with <span class="math inline">\(k \leq p\)</span>, even if unbiasedness does not hold for the full estimator <span class="math inline">\(\bmat{V}^{CR}\)</span>.</p>
+<p>A further benefit of the CR4 adjustment matrices is that they can be tailored to a subset of the covariates that are of focal interest.
+Rather than correcting the bias in the full variance estimator, we could correct the bias for just one or more of the predictors, so that <span class="math inline">\(\E\left(\bmat{k}&#39; \bmat{V}^{CR} \bmat{k}\right) = \Var\left(\bmat{k}&#39; \bs{\hat\beta}\right)\)</span> for a <span class="math inline">\(p \times k\)</span> matrix of contrasts <span class="math inline">\(\bmat{k}\)</span> with <span class="math inline">\(k \leq p\)</span>, even if unbiasedness does not hold for the full estimator <span class="math inline">\(\bmat{V}^{CR}\)</span>.</p>
+<!-- How is CR2 related to CR4 for OLS with $\psi = \sigma^2 I$? -->
 </div>
+</div>
+<div id="fixed-effects-models" class="section level2">
+<h2>Fixed effects models</h2>
+</div>
+<div id="instrumental-variables-models" class="section level2">
+<h2>Instrumental variables models</h2>
 </div>
 </div>
 <div id="model-specific-considerations" class="section level1">
@@ -658,9 +694,6 @@ It follows that using the CR4 adjustment matrices leads to an exactly unbiased v
 <div id="nlmegls-nlmelme-and-lme4lmer" class="section level2">
 <h2><code>nlme::gls()</code>, <code>nlme::lme()</code>, and <code>lme4::lmer()</code></h2>
 </div>
-<div id="plmplm" class="section level2">
-<h2><code>plm::plm()</code></h2>
-</div>
 <div id="glm-and-geepackgeeglm" class="section level2">
 <h2><code>glm()</code> and <code>geepack::geeglm()</code></h2>
 </div>
@@ -669,6 +702,12 @@ It follows that using the CR4 adjustment matrices leads to an exactly unbiased v
 </div>
 <div id="metaforrma.uni-and-metaforrma.mv" class="section level2">
 <h2><code>metafor::rma.uni()</code> and <code>metafor::rma.mv()</code></h2>
+</div>
+<div id="plmplm" class="section level2">
+<h2><code>plm::plm()</code></h2>
+</div>
+<div id="ivregivreg" class="section level2">
+<h2><code>ivreg::ivreg()</code></h2>
 </div>
 </div>
 <div id="single-coefficient-hypothesis-tests-and-confidence-intervals" class="section level1">
