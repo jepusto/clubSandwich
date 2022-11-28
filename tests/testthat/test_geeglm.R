@@ -93,21 +93,41 @@ test_that("vcovCR works for clustering variables higher than id variable.", {
   
   # create higher level
   pair_id <- rep(1:nlevels(as.factor(simdat$idvar)), each = 3, length.out = nlevels(as.factor(simdat$idvar)))[as.factor(simdat$idvar)] # factor cluster
-  
-  re_order <- sample(nrow(simdat))
-  dat_scramble <- simdat[re_order,]
-  pair_scramble <- pair_id[re_order]
+  dat_higher <- cbind(simdat, pair_id)
+  dat_scramble <- dat_higher[sample(nrow(dat_higher)),]
   
   # cluster at higher level
-  expect_is(vcovCR(geeglm_ind, type = "CR2", cluster = pair_id), "vcovCR")
-  V <- vcovCR(geeglm_ind, type = "CR2", cluster = pair_id)
-  expect_is(V, "vcovCR")
   
-  expect_error(vcovCR(geeglm_ind, type = "CR2", cluster = pair_scramble)) # No error
+  expect_is(vcovCR(geeglm_AR1, type = "CR2", cluster = dat_higher$pair_id), "vcovCR")
+  expect_is(vcovCR(geeglm_AR1_wav, type = "CR2", cluster = dat_higher$pair_id), "vcovCR")
+  expect_is(vcovCR(geeglm_exch, type = "CR2", cluster = dat_higher$pair_id), "vcovCR")
+  expect_is(vcovCR(geeglm_ind, type = "CR2", cluster = dat_higher$pair_id), "vcovCR")
+  expect_is(vcovCR(geeglm_unstr, type = "CR2", cluster = dat_higher$pair_id), "vcovCR")
+  expect_is(vcovCR(geeglm_user, type = "CR2", cluster = dat_higher$pair_id), "vcovCR")
+  expect_is(vcovCR(geeglm_toep, type = "CR2", cluster = dat_higher$pair_id), "vcovCR")
+  expect_is(vcovCR(geeglm_fix, type = "CR2", cluster = dat_higher$pair_id), "vcovCR")
+  
+  V_AR1 <- vcovCR(geeglm_AR1, type = "CR2", cluster =  dat_higher$pair_id)
+  V_AR1_wav <- vcovCR(geeglm_AR1_wav, type = "CR2", cluster =  dat_higher$pair_id)
+  V_exch <- vcovCR(geeglm_exch, type = "CR2", cluster =  dat_higher$pair_id)
+  V_ind <- vcovCR(geeglm_ind, type = "CR2", cluster =  dat_higher$pair_id)
+  V_unstr <- vcovCR(geeglm_unstr, type = "CR2", cluster =  dat_higher$pair_id)
+  V_user <- vcovCR(geeglm_user, type = "CR2", cluster =  dat_higher$pair_id)
+  V_toep <- vcovCR(geeglm_toep, type = "CR2", cluster =  dat_higher$pair_id)
+  V_fix <- vcovCR(geeglm_fix, type = "CR2", cluster =  dat_higher$pair_id)
+  expect_is(V_AR1, "vcovCR")
+  expect_is(V_AR1_wav, "vcovCR")
+  expect_is(V_exch, "vcovCR")
+  expect_is(V_ind, "vcovCR")
+  expect_is(V_unstr, "vcovCR")
+  expect_is(V_user, "vcovCR")
+  expect_is(V_toep, "vcovCR")
+  expect_is(V_fix, "vcovCR")
   
   # check that result does not depend on sort-order
-  V_scramble <- vcovCR(update(geeglm_ind, data = dat_scramble), 
-                       type = "CR2", cluster = pair_scramble)
+  expect_error(vcovCR(geeglm_AR1, type = "CR2", cluster = dat_scramble$pair_id)) # Warning
+  V_scramble <- vcovCR(update(geeglm_AR1, data = dat_scramble), 
+                       type = "CR2", cluster = dat_scramble$pair_id)
   expect_equal(diag(V), diag(V_scramble), tol = 10^-6)
 })
 

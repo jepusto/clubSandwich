@@ -99,7 +99,7 @@ targetVariance.geeglm <- function(obj, cluster) {
   mu <- fitted.values(obj)
   var_fun <- obj$family$variance
   v <- as.numeric(var_fun(mu))
-  w <- weights(obj, type = "prior") # v_scale?
+  w <- weights(obj, type = "prior")
   a <- tapply(v / w, obj$id, sqrt)
   aa <- lapply(a, tcrossprod)
   
@@ -135,10 +135,11 @@ targetVariance.geeglm <- function(obj, cluster) {
   }
   
   v <- mapply("*", aa, r, SIMPLIFY = FALSE)
-  v # dispersion parameter in the target variance
-  
+  v <- nest_bdiag(v, crosswalk = data.frame(factor(obj$id), factor(cluster)))
+  v
 }
 
+#####################
 #-------------------------------------
 # Get weighting matrix
 #-------------------------------------
@@ -166,7 +167,7 @@ weightMatrix.geeglm <- function(obj, cluster) {
   } else if (obj$corstr %in% c("unstructured","userdefined", "fixed")) {
     
     # Invert the targetVariance for unstructured or user-defined working models
-    V_list <- targetVariance(obj, cluster)
+    V_list <- targetVariance(obj, obj$id)
     W_list <- lapply(V_list, function(v) chol2inv(chol(v)))
   
   } else {
@@ -176,7 +177,7 @@ weightMatrix.geeglm <- function(obj, cluster) {
     mu <- fitted.values(obj)
     var_fun <- obj$family$variance
     v <- as.numeric(var_fun(mu))
-    w <- weights(obj, type = "prior") # v_scale?
+    w <- weights(obj, type = "prior")
     
     if (obj$corstr %in% c("exchangeable","ar1")) {
       a <- tapply(w / v, obj$id, sqrt)
@@ -197,17 +198,19 @@ weightMatrix.geeglm <- function(obj, cluster) {
           r <- lapply(exponent, get_str, alpha = obj$geese$alpha)
           r_inv <- lapply(r, function(x) chol2inv(chol(x)))
         }
-      } else if (obj$corstr == "exchangeable") {
+      } else if (obj$corstr  == "exchangeable") {
         r_inv <- lapply(obj$geese$clusz, exch_inv, alpha = obj$geese$alpha)
       }
       
       W_list <- mapply("*", aa, r_inv, SIMPLIFY = FALSE)
       
     } else {
-      W_list <- matrix_list(w / v, cluster, dim = "both")
+      W_list <- matrix_list(w / v, obj$id, dim = "both")
     }
   }
   
+    W_list <- nest_bdiag(W_list, crosswalk = data.frame(factor(obj$id), factor(cluster)))
+
   return(W_list)
   
 }
