@@ -37,7 +37,10 @@
 #' @export
 
 vcovCR.geeglm <- function(obj, cluster, type, target = NULL, inverse_var = NULL, form = "sandwich", ...) {
-  if (missing(cluster)) stop("You must specify a clustering variable.")
+  if (missing(cluster)) {
+    cluster <- as.factor(obj$id)
+    names(cluster) <- NULL
+  } 
   if (is.null(inverse_var)) inverse_var <- is.null(target)
   vcov_CR(obj, cluster = cluster, type = type, 
           target = target, inverse_var = inverse_var, form = form)
@@ -96,11 +99,12 @@ other_cor <- function(alpha, n = (1 + sqrt(1 + 4 * 2 * length(alpha))) / 2) {
 
 targetVariance.geeglm <- function(obj, cluster) {
   
+  idvar <- as.factor(obj$id)
   mu <- fitted.values(obj)
   var_fun <- obj$family$variance
   v <- as.numeric(var_fun(mu))
   w <- weights(obj, type = "prior")
-  a <- tapply(v / w, obj$id, sqrt)
+  a <- tapply(v / w, idvar, sqrt)
   aa <- lapply(a, tcrossprod)
   
   if (obj$corstr %in% c("independence", "exchangeable", "ar1", "unstructured", "userdefined", "fixed") == F) {
@@ -121,21 +125,23 @@ targetVariance.geeglm <- function(obj, cluster) {
   } else if (obj$corstr == "unstructured") {
     r <- lapply(obj$geese$clusz, other_cor, alpha = as.numeric(obj$geese$alpha))
   } else if (obj$corstr == "userdefined") {
-    zcor <- eval(obj$call$zcor, envir = parent.frame())
+    # for (i in 1:5) cat("\n", ls(envir = parent.frame(n = i)))
+    # cat("\n", "Envir: ", find(as.character(obj$call$zcor)), find(as.character(obj$call$zcor), numeric = TRUE))
+    zcor <- eval(obj$call$zcor, enclos = parent.frame())
     alpha <- as.numeric(obj$geese$alpha)
     r_vec <- as.numeric(zcor %*% alpha)
-    id_cor <- table(obj$id)
+    id_cor <- table(idvar)
     id_cor <- rep(names(id_cor), id_cor * (id_cor - 1) / 2)
     r <- tapply(r_vec, id_cor, other_cor)
   } else if (obj$corstr == "fixed") {
     zcor <- eval(obj$call$zcor, envir = parent.frame())
-    id_cor <- table(obj$id)
+    id_cor <- table(idvar)
     id_cor <- rep(names(id_cor), id_cor * (id_cor - 1) / 2)
     r <- tapply(zcor, id_cor, other_cor)
   }
   
   v <- mapply("*", aa, r, SIMPLIFY = FALSE)
-  v <- nest_bdiag(v, crosswalk = data.frame(factor(obj$id), factor(cluster)))
+  v <- nest_bdiag(v, crosswalk = data.frame(idvar, as.factor(cluster)))
   v
 }
 
@@ -162,12 +168,15 @@ exch_inv <- function(n, alpha) {
 #' @export
 
 weightMatrix.geeglm <- function(obj, cluster) {
+  
+  idvar <- as.factor(obj$id)
+  
   if (obj$corstr %in% c("independence", "exchangeable", "ar1", "unstructured", "userdefined", "fixed") == F) {
     stop("Working correlation matrix must be a matrix with the following correlation structures: independence, exchangeable, ar1, unstructured, or userdefined")
   } else if (obj$corstr %in% c("unstructured","userdefined", "fixed")) {
     
     # Invert the targetVariance for unstructured or user-defined working models
-    V_list <- targetVariance(obj, obj$id)
+    V_list <- targetVariance(obj, idvar)
     W_list <- lapply(V_list, function(v) chol2inv(chol(v)))
   
   } else {
@@ -180,7 +189,7 @@ weightMatrix.geeglm <- function(obj, cluster) {
     w <- weights(obj, type = "prior")
     
     if (obj$corstr %in% c("exchangeable","ar1")) {
-      a <- tapply(w / v, obj$id, sqrt)
+      a <- tapply(w / v, idvar, sqrt)
       aa <- lapply(a, tcrossprod)
       
       if (obj$corstr == "ar1") {
@@ -205,11 +214,11 @@ weightMatrix.geeglm <- function(obj, cluster) {
       W_list <- mapply("*", aa, r_inv, SIMPLIFY = FALSE)
       
     } else {
-      W_list <- matrix_list(w / v, obj$id, dim = "both")
+      W_list <- matrix_list(w / v, idvar, dim = "both")
     }
   }
   
-    W_list <- nest_bdiag(W_list, crosswalk = data.frame(factor(obj$id), factor(cluster)))
+    W_list <- nest_bdiag(W_list, crosswalk = data.frame(idvar, as.factor(cluster)))
 
   return(W_list)
   

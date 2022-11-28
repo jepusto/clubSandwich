@@ -68,7 +68,7 @@ check_CR <- function(obj, vcov, ..., tol = .Machine$double.eps^0.5) {
 }
 
 
-check_sort_order <- function(obj, dat, cluster = NULL,
+check_sort_order <- function(obj, dat, cluster = NULL, arrange = NULL,
                              CR_types = paste0("CR",0:3),
                              tol = 10^-6, tol2 = tol, tol3 = tol, 
                              seed = NULL) {
@@ -77,8 +77,10 @@ check_sort_order <- function(obj, dat, cluster = NULL,
   
   re_order <- sample(nrow(dat))
   dat_scramble <- dat[re_order,]
+  if (!is.null(arrange)) dat_scramble <- dat_scramble[order(dat_scramble[[arrange]]),]
+  
   obj_scramble <- update(obj, data = dat_scramble)
-
+  
   constraints <- utils::combn(length(coef_CS(obj)), 2, simplify = FALSE)
   constraint_mats <- lapply(constraints, constrain_zero, coefs = coef_CS(obj))
   
