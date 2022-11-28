@@ -5,7 +5,7 @@
 #' Cluster-robust variance-covariance matrix for a geeglm object.
 #' 
 #' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
-#' of a set of regression coefficient estimates from an \code{\link{geeglm}} object.
+#' of a set of regression coefficient estimates from an \code{\link[geepack]{geeglm}} object.
 #' 
 #' @param cluster Expression or vector indicating which observations belong to
 #'   the same cluster. Required for \code{geeglm} objects.
@@ -24,7 +24,8 @@
 #' @examples 
 #' 
 #' if (requireNamespace("geepack", quietly = TRUE)) {
-#' 
+#'
+#'   library(geepack)
 #'   data(dietox, package = "geepack")
 #'   dietox$Cu <- as.factor(dietox$Cu)
 #'   mf <- formula(Weight ~ Cu * (Time + I(Time^2) + I(Time^3)))
