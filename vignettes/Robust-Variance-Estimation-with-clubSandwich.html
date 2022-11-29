@@ -308,23 +308,17 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before {
-content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "\e259";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "";
-border: none;
-}
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "";
+content: "\e258";
 font-family: 'Glyphicons Halflings';
-display: inline-block;
-padding: 10px;
-border-right: 1px solid #ddd;
+border: none;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -679,10 +673,10 @@ It follows that using the CR4 adjustment matrices leads to an exactly unbiased v
 \tag{1.31}
 \]</span>
 <!-- Can this be simplified further? -->
-<!-- How is CR4 related to CR2f? Are they equivalent for inverse-variance weights?--></p>
+<!-- How is CR4 related to CR2f? Are they equivalent for inverse-variance weights?-->
+<!-- How is CR2 related to CR4 for OLS with $\psi = \sigma^2 I$? --></p>
 <p>A further benefit of the CR4 adjustment matrices is that they can be tailored to a subset of the covariates that are of focal interest.
 Rather than correcting the bias in the full variance estimator, we could correct the bias for just one or more of the predictors, so that <span class="math inline">\(\E\left(\bmat{k}&#39; \bmat{V}^{CR} \bmat{k}\right) = \Var\left(\bmat{k}&#39; \bs{\hat\beta}\right)\)</span> for a <span class="math inline">\(p \times k\)</span> matrix of contrasts <span class="math inline">\(\bmat{k}\)</span> with <span class="math inline">\(k \leq p\)</span>, even if unbiasedness does not hold for the full estimator <span class="math inline">\(\bmat{V}^{CR}\)</span>.</p>
-<!-- How is CR2 related to CR4 for OLS with $\psi = \sigma^2 I$? -->
 </div>
 </div>
 <div id="fixed-effects-models" class="section level2" number="1.2">
@@ -712,35 +706,35 @@ Rather than correcting the bias in the full variance estimator, we could correct
 <div id="metaforrma.uni-and-metaforrma.mv" class="section level2" number="2.6">
 <h2><span class="header-section-number">2.6</span> <code>metafor::rma.uni()</code> and <code>metafor::rma.mv()</code></h2>
 </div>
+<div id="plmplm" class="section level2" number="2.7">
+<h2><span class="header-section-number">2.7</span> <code>plm::plm()</code></h2>
+</div>
+<div id="ivregivreg" class="section level2" number="2.8">
+<h2><span class="header-section-number">2.8</span> <code>ivreg::ivreg()</code></h2>
+</div>
 </div>
 <div id="sec:t-test" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> Single-coefficient hypothesis tests and confidence intervals</h1>
-<div id="plmplm" class="section level2" number="3.1">
-<h2><span class="header-section-number">3.1</span> <code>plm::plm()</code></h2>
-</div>
-<div id="ivregivreg" class="section level2" number="3.2">
-<h2><span class="header-section-number">3.2</span> <code>ivreg::ivreg()</code></h2>
 <!-- (To use the Satterthwaite approximation (instead of the Wald-test assuming large samples), we need the mean and variance of $V$. These are generally unknown (because they depend on $\bs\Omega$), but we can approximate them by assuming that the working model is correct. - H: I think this is the key idea/motivation behind cluster-robust variance estimation. -->
-</div>
-<div id="degrees-of-freedom-corrections" class="section level2" number="3.3">
-<h2><span class="header-section-number">3.3</span> Degrees of freedom corrections</h2>
+<div id="degrees-of-freedom-corrections" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Degrees of freedom corrections</h2>
 <ul>
 <li>z</li>
 <li>naive-t, naive-tp</li>
 <li>Satterthwaite correction</li>
 </ul>
 </div>
-<div id="saddlepoint-correction" class="section level2" number="3.4">
-<h2><span class="header-section-number">3.4</span> Saddlepoint correction</h2>
+<div id="saddlepoint-correction" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Saddlepoint correction</h2>
 </div>
-<div id="coef_test" class="section level2" number="3.5">
-<h2><span class="header-section-number">3.5</span> <code>coef_test()</code></h2>
+<div id="coef_test" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> <code>coef_test()</code></h2>
 </div>
-<div id="conf_int" class="section level2" number="3.6">
-<h2><span class="header-section-number">3.6</span> <code>conf_int()</code></h2>
+<div id="conf_int" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> <code>conf_int()</code></h2>
 </div>
-<div id="linear_contrast" class="section level2" number="3.7">
-<h2><span class="header-section-number">3.7</span> <code>linear_contrast()</code></h2>
+<div id="linear_contrast" class="section level2" number="3.5">
+<h2><span class="header-section-number">3.5</span> <code>linear_contrast()</code></h2>
 </div>
 </div>
 <div id="multiple-constraint-hypothesis-tests" class="section level1" number="4">

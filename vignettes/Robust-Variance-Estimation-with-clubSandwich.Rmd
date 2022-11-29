@@ -350,11 +350,10 @@ $$
 $$
 <!-- Can this be simplified further? -->
 <!-- How is CR4 related to CR2f? Are they equivalent for inverse-variance weights?-->
+<!-- How is CR2 related to CR4 for OLS with $\psi = \sigma^2 I$? -->
 
 A further benefit of the CR4 adjustment matrices is that they can be tailored to a subset of the covariates that are of focal interest. 
 Rather than correcting the bias in the full variance estimator, we could correct the bias for just one or more of the predictors, so that $\E\left(\bmat{k}' \bmat{V}^{CR} \bmat{k}\right) = \Var\left(\bmat{k}' \bs{\hat\beta}\right)$ for a $p \times k$ matrix of contrasts $\bmat{k}$ with $k \leq p$, even if unbiasedness does not hold for the full estimator $\bmat{V}^{CR}$. 
-
-<!-- How is CR2 related to CR4 for OLS with $\psi = \sigma^2 I$? -->
 
 ## Fixed effects models
 
@@ -375,12 +374,11 @@ Rather than correcting the bias in the full variance estimator, we could correct
 
 ## `metafor::rma.uni()` and `metafor::rma.mv()`
 
-
-# Single-coefficient hypothesis tests and confidence intervals {#sec:t-test}
-
 ## `plm::plm()`
 
 ## `ivreg::ivreg()`
+
+# Single-coefficient hypothesis tests and confidence intervals {#sec:t-test}
 
 <!-- (To use the Satterthwaite approximation (instead of the Wald-test assuming large samples), we need the mean and variance of $V$. These are generally unknown (because they depend on $\bs\Omega$), but we can approximate them by assuming that the working model is correct. - H: I think this is the key idea/motivation behind cluster-robust variance estimation. -->
 
