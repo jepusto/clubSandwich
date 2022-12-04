@@ -11,7 +11,7 @@
 
 <meta name="author" content="James E. Pustejovsky and Hanna Kim" />
 
-<meta name="date" content="2022-11-28" />
+<meta name="date" content="2022-12-03" />
 
 <title>Cluster-robust variance estimation with clubSandwich</title>
 
@@ -308,17 +308,23 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "\e259";
+.tabset-dropdown > .nav-tabs > li.active:before {
+content: "";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "\e258";
-font-family: 'Glyphicons Halflings';
+content: "";
 border: none;
+}
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "";
+font-family: 'Glyphicons Halflings';
+display: inline-block;
+padding: 10px;
+border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -361,7 +367,7 @@ display: none;
 
 <h1 class="title toc-ignore">Cluster-robust variance estimation with clubSandwich</h1>
 <h4 class="author">James E. Pustejovsky and Hanna Kim</h4>
-<h4 class="date">2022-11-28</h4>
+<h4 class="date">2022-12-03</h4>
 
 </div>
 
@@ -578,13 +584,20 @@ where <span class="math inline">\(\bs\Psi^C_j\)</span> is again the upper-right 
 \tag{1.20}
 \]</span>
 For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices are equivalent.</p>
-<p>The computational trick described by <span class="citation">Niccodemi et al. (2020)</span> for the CR2 adjustment under ordinary least squares with an independence working model can be extended to the CR2f adjustment matrices as long as the weight matrices are inverse variance.
-Assuming that <span class="math inline">\(\bmat{W}_j = \bs\Psi_j^{-1}\)</span>, then the CR2f estimating matrices are equal to
+<p>The computational trick described by <span class="citation">Niccodemi et al. (2020)</span> for the CR2 adjustment under ordinary least squares with an independence working model can be extended to the CR2f adjustment matrices as long as the weight matrices are inverse variance.</p>
+<!-- H: Why don't we explain the "trick" of Niccodemi et al. (2020)? The gist of it would be of course its equation (6), but let's not go there... Instead, let's explain part of the followings. -->
+<ol style="list-style-type: decimal">
+<li>We can set <span class="math inline">\(\bmat{X}^*_j = \bmat{W}^C_j \bmat{X}_j\)</span> (and <span class="math inline">\(\bmat{Y}^*_j = \bmat{W}^C_j \bmat{Y}_j\)</span>) following <span class="citation">Cameron and Miller (2015)</span> (and other references) when <span class="math inline">\(\bmat{W}_j = \bs\Psi_j^{-1}\)</span> for WLS cases using CR2f.</li>
+<li>Then, <span class="citation">Niccodemi et al. (2020)</span> shows that <a href="#eq:V-CR">(1.5)</a> can be presented as <span class="math inline">\(\bmat{V}^{CR} = (\bmat{X}^{*&#39;}_j \bmat{X}^*_j)^{-1} \sum_{j=1}^J \left(\bmat{\tilde{s}}_j \bmat{\tilde{s}}_j^{&#39;}\right) (\bmat{X}^{*&#39;}_j \bmat{X}^*_j)^{-1}\)</span> with <span class="math inline">\(\bs{f}_{2f} = 1\)</span>, where <span class="math inline">\(\bmat{\tilde{s}}_j = \bmat{X}^*_j \bmat{H}_j^{*-1/2} \bmat{\hat{u}}_j\)</span>, where <span class="math inline">\(\bmat{H}_j^{*} = (\bmat{I}_p - \bmat{R}^{*&#39;}_j \bmat{R}^*_j)\)</span> and <span class="math inline">\(\bmat{R}^*_j = \bmat{X}^*_j (\bmat{X}^{*&#39;} \bmat{X}^*)^{-1/2}\)</span>. &lt;- Any way to simplify/skip the <span class="math inline">\(\bmat{H}_j\)</span> and <span class="math inline">\(\bmat{R}^*_j\)</span>?</li>
+<li>If everything is plugged in and we keep with <span class="math inline">\(\bmat{M} = \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j \bmat{X}_j\right)^{-1}\)</span> (and <span class="math inline">\(\bmat{M}^C = \bmat{M}^{1/2}\)</span>), <a href="#eq:CR2f-Ej">(1.16)</a> can be simplified to (eq:ECR2f-quick).</li>
+</ol>
+<p>Assuming that <span class="math inline">\(\bmat{W}_j = \bs\Psi_j^{-1}\)</span>, then the CR2f estimating matrices are equal to
 <span class="math display" id="eq:ECR2f-quick">\[
 \bmat{E}^\sb{2f}_j = \bmat{W}_j \bmat{X}_j {\bmat{M}^{C}}&#39;\halfinv{\left(\bmat{I}_p - \bmat{M}^C \bmat{X}_j&#39;\bmat{W}_j \bmat{X}_j{\bmat{M}^C}&#39; \right)} {\bmat{M}^{-C}}&#39;.
 \tag{1.21}
-\]</span>
-The advantage of using this form is that it only requires taking the inverse root of a <span class="math inline">\(p \times p\)</span> matrix, whereas calculating the adjustment matrix <span class="math inline">\(\bmat{A}^\sb{2f}_j\)</span> requires taking the inverse root of an <span class="math inline">\(n_j \times n_j\)</span> matrix.
+\]</span></p>
+<!-- H: Does the first term on the right hand side start with $\bmat{W}_j$ instead of $\bmat{W}_j^C$? Also, see other questions in my note. -->
+<p>The advantage of using this form is that it only requires taking the inverse root of a <span class="math inline">\(p \times p\)</span> matrix, whereas calculating the adjustment matrix <span class="math inline">\(\bmat{A}^\sb{2f}_j\)</span> requires taking the inverse root of an <span class="math inline">\(n_j \times n_j\)</span> matrix.
 In applications involving large clusters with <span class="math inline">\(n_j &gt;&gt; p\)</span>, using <a href="#eq:ECR2f-quick">(1.21)</a> will be much more efficient in terms of memory and computational burden.</p>
 </div>
 <div id="cr3j-cr3-cr3lambda" class="section level3" number="1.1.4">
