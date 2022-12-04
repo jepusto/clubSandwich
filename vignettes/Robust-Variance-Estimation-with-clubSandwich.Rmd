@@ -247,7 +247,7 @@ The computational trick described by @niccodemi2020refining for the CR2 adjustme
 
 <!-- H: Why don't we explain the "trick" of Niccodemi et al. (2020)? The gist of it would be of course its equation (6), but let's not go there... Instead, let's explain part of the followings. -->
 
-1) We can set $\bmat{X}^*_j = \bmat{W}^C_j \bmat{X}_j$ (and $\bmat{Y}^*_j = \bmat{W}^C_j \bmat{Y}_j$) following @cameron2015practitioner (and other references) when $\bmat{W}_j = \bs\Psi_j^{-1}$ for WLS cases using CR2f.
+1) We can set $\bmat{X}^*_j = \bmat{W}^C_j \bmat{X}_j$ (and $\bmat{Y}^*_j = \bmat{W}^C_j \bmat{Y}_j$) following @mccaffrey2001generalizations ($\bmat{X} = \bmat{W}^{1/2} \bmat{X}$) when $\bmat{W}_j = \bs\Psi_j^{-1}$ for WLS cases using CR2f.
 2) Then, @niccodemi2020refining shows that \@ref(eq:V-CR) can be presented as $\bmat{V}^{CR} = (\bmat{X}^{*'}_j \bmat{X}^*_j)^{-1} \sum_{j=1}^J \left(\bmat{\tilde{s}}_j \bmat{\tilde{s}}_j^{'}\right) (\bmat{X}^{*'}_j \bmat{X}^*_j)^{-1}$ with $\bs{f}_{2f} = 1$, where $\bmat{\tilde{s}}_j = \bmat{X}^*_j \bmat{H}_j^{*-1/2} \bmat{\hat{u}}_j$, where $\bmat{H}_j^{*} = (\bmat{I}_p - \bmat{R}^{*'}_j \bmat{R}^*_j)$ and $\bmat{R}^*_j = \bmat{X}^*_j (\bmat{X}^{*'} \bmat{X}^*)^{-1/2}$. <- Any way to simplify/skip the $\bmat{H}_j$ and $\bmat{R}^*_j$?
 3) If everything is plugged in and we keep with $\bmat{M} = \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{X}_j\right)^{-1}$ (and $\bmat{M}^C = \bmat{M}^{1/2}$), \@ref(eq:CR2f-Ej) can be simplified to \ref(eq:ECR2f-quick).
 
@@ -286,11 +286,9 @@ This is equivalent to taking $f_3 = 1$ and $\bmat{E}_j^\sb{3} = \bmat{E}_j^\sb{3
 [^Other-jackknife]: Other versions of the cluster-level jackknife might center the the deviations on the arithmetic mean of $\bs{\hat\beta}_{(1)},...,\bs{\hat\beta}_{(J)}$.
 
 For the special case of unweighted least squares with an independent, homoskedastic working model, @niccodemi2020refining showed that the CR3 estimator has an upward bias and the CR3J estimator has an upward bias except when the predictors are identically distributed in each cluster, so that $\bmat{X}_j'\bmat{X}_j = \bmat{X}'\bmat{X} / J$. 
-To reduce this bias, they suggested using $\bmat{E}_j^\sb{3}$ with the leading constant $f_{3\lambda} = \left(\sum_{j=1}^J \frac{n_j}{N - n_j}\right)^{-1}$. 
+To reduce this bias, they suggested using $\bmat{E}_j^\sb{3}$ with the leading constant $f_{3\lambda} = \left(\sum_{j=1}^J \frac{n_j}{N - n_j}\right)^{-1}$, which becomes equivalent to CR3 when all clusters are balanced. 
 Compared to CR3J, this CR3$\lambda$ estimator better accounts for variation in cluster sizes. 
 For the case of unweighted least squares with the independent and homoskedastic working model, it will be approximately unbiased under the more general condition that $\bmat{X}_j'\bmat{X}_j = \frac{n_j}{N}\bmat{X}'\bmat{X}$. 
-
-<!-- Should we add that CR3$\lambda$ is equivalent to CR3 when clusters are balanced? -->
 
 @niccodemi2020refining also described an efficient method of calculating the $\bmat{E}^\sb{3}_j$ matrices for the special case of ordinary least squares with an independence working model. 
 Their method can be extended to weighted least squares estimation as well, such that $\bmat{E}_j^\sb{3}$ can be calculated as 
