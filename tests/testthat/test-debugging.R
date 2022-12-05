@@ -1,3 +1,6 @@
+
+# skip("Just for debugging purposes.")
+
 library(geepack)
 
 data(dietox)
@@ -16,18 +19,33 @@ suppressWarnings(
 )
 
 get_correlations <- function(obj) {
-  for (i in 1:10) cat("\n", "i:", i, "||", ls(envir = parent.frame(n = i)))
+  i <- 1L
+  while(!identical(parent.frame(i), .GlobalEnv)) {
+    cat("\n i:", i, "||", ls(envir = parent.frame(n = i)))
+    i <- i + 1L
+  }
+  cat("\n i:", i, "||", ls(envir = parent.frame(n = i)))
+  
   cat("\n", "Envir: ", find(as.character(obj$call$zcor)), find(as.character(obj$call$zcor), numeric = TRUE), "\n")
-  zcor <- eval(obj$call$zcor, enclos = parent.frame())
-
-  return(zcor)  
+  eval(obj$call$zcor, envir = parent.frame())
+  
 }
 
-test_that("targetVariance works for geeglm with corstr = 'fixed'.", {
+something <- function(obj) {
+  something <- get_correlations(obj)
+  dim(something)
+}
 
-  Vmat <- targetVariance(mod, cluster = dietox$Pig)
-  Wmat <- weightMatrix(mod, cluster = dietox$Pig)
-  corr_vec <- get_correlations(mod)
-  expect_length(corr_vec, length(zcor_fix))
-  
-})
+get_correlations(mod)
+something(mod)
+# v <- targetVariance(mod, cluster = dietox$Pig)
+# w <- weightMatrix(mod, cluster = dietox$Pig)
+
+# test_that("weightMatrix() works for geeglm with corstr = 'fixed'.", {
+# 
+#   corr_vec <- get_correlations(mod)
+#   Vmat <- targetVariance(mod, cluster = dietox$Pig)
+#   Wmat <- weightMatrix(mod, cluster = dietox$Pig)
+#   expect_length(corr_vec, length(zcor_fix))
+# 
+# })

@@ -76,10 +76,6 @@ geeglm_fix <- geeglm(yvar ~ tvar,
 
 test_that("bread works", {
   
-  zcor_user <- zcor_user
-  zcor_toep <- zcor_toep
-  zcor_fix <- zcor_fix
-  
   expect_true(check_bread(geeglm_AR1_wav, cluster = simdatPerm$idvar, y = simdatPerm$yvar, tol = 1e-5))
   expect_true(check_bread(geeglm_AR1, cluster = simdat$idvar, y = simdat$yvar, tol = 1e-5))
   expect_true(check_bread(geeglm_ind, cluster = simdat$idvar, y = simdat$yvar, tol = 1e-5))
