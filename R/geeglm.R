@@ -126,8 +126,8 @@ targetVariance.geeglm <- function(obj, cluster) {
   } else if (obj$corstr == "unstructured") {
     r <- lapply(obj$geese$clusz, other_cor, alpha = as.numeric(obj$geese$alpha))
   } else if (obj$corstr == "userdefined") {
-    # for (i in 1:5) cat("\n", ls(envir = parent.frame(n = i)))
-    # cat("\n", "Envir: ", find(as.character(obj$call$zcor)), find(as.character(obj$call$zcor), numeric = TRUE))
+    for (i in 1:10) cat("\n", "i:", i, "||", ls(envir = parent.frame(n = i)))
+    cat("\n", "Envir: ", find(as.character(obj$call$zcor)), find(as.character(obj$call$zcor), numeric = TRUE), "\n")
     zcor <- eval(obj$call$zcor, enclos = parent.frame())
     alpha <- as.numeric(obj$geese$alpha)
     r_vec <- as.numeric(zcor %*% alpha)
@@ -135,6 +135,8 @@ targetVariance.geeglm <- function(obj, cluster) {
     id_cor <- rep(names(id_cor), id_cor * (id_cor - 1) / 2)
     r <- tapply(r_vec, id_cor, other_cor)
   } else if (obj$corstr == "fixed") {
+    for (i in 1:10) cat("\n", "i:", i, "||", ls(envir = parent.frame(n = i)))
+    cat("\n", "Envir: ", find(as.character(obj$call$zcor)), find(as.character(obj$call$zcor), numeric = TRUE), "\n")
     zcor <- eval(obj$call$zcor, envir = parent.frame())
     id_cor <- table(idvar)
     id_cor <- rep(names(id_cor), id_cor * (id_cor - 1) / 2)
