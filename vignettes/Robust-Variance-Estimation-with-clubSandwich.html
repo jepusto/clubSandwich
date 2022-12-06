@@ -11,7 +11,7 @@
 
 <meta name="author" content="James E. Pustejovsky and Hanna Kim" />
 
-<meta name="date" content="2022-12-03" />
+<meta name="date" content="2022-12-05" />
 
 <title>Cluster-robust variance estimation with clubSandwich</title>
 
@@ -367,7 +367,7 @@ display: none;
 
 <h1 class="title toc-ignore">Cluster-robust variance estimation with clubSandwich</h1>
 <h4 class="author">James E. Pustejovsky and Hanna Kim</h4>
-<h4 class="date">2022-12-03</h4>
+<h4 class="date">2022-12-05</h4>
 
 </div>
 
@@ -634,7 +634,7 @@ This representation avoids the need to invert <span class="math inline">\(n_j \t
 When <span class="math inline">\(p\)</span> is limited but <span class="math inline">\(n_j\)</span> is large, this can result in substantial computational savings <span class="citation">(Niccodemi et al. 2020; see also MacKinnon et al. 2022)</span>.</p>
 <!-- Jackknife - See Tipton (2015) for some arguments -->
 <p>“Bell and McCaffrey (2002) showed that when W = I, the [CR0] estimator tends to underestimate the true variances, whereas the [CRJ] estimator tends to overestimate these variances; it is not difficult to show that these results extend to the <span class="math inline">\(W \neq I\)</span> case.”
-Simulation studies comparing cluster-robust variance estimators (HTJ, JK, MBB) and degrees of freedom adjustments for meta-analysis scenarios &lt;- How relevant? How much of the results should we introduce?</p>
+Simulation studies comparing cluster-robust variance estimators (HTJ, JK, MBB) and degrees of freedom adjustments for meta-analysis scenarios &lt;- How relevant? How much of the results should we introduce? &lt;- Describe only when the results cover WLS cases with <span class="math inline">\(W \neq I\)</span>.</p>
 </div>
 <div id="cr4" class="section level3" number="1.1.5">
 <h3><span class="header-section-number">1.1.5</span> CR4</h3>
@@ -662,7 +662,7 @@ With these terms, the model-based variance estimator defined in <a href="#eq:V-m
 \bmat{A}^\sb{4}_j = {\bmat{F}_j^C}&#39; \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{F}_j^C,
 \tag{1.28}
 \]</span>
-where <span class="math inline">\(\bmat{G}_j^C\)</span> is the upper-right Cholesky factorization of <span class="math inline">\(\bmat{G}_j\)</span> and
+where <span class="math inline">\(\bmat{F}_j^C\)</span> is the upper-right Cholesky factorization of <span class="math inline">\(\bmat{F}_j\)</span> and
 <span class="math display" id="eq:CR4-Bj">\[
 \bmat{B}_j^\sb{4} = \bmat{F}_j^C \left(\bmat{F}_j - \bmat{G}_j \bmat{M}\bmat{F}_j - \bmat{F}_j \bmat{M}\bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j\right) {\bmat{F}_j^C}&#39;.
 \tag{1.29}
@@ -684,11 +684,12 @@ It follows that using the CR4 adjustment matrices leads to an exactly unbiased v
 \bmat{A}^\sb{4}_j = {\bmat{G}_j^C}&#39; \halfinv{\left(\bmat{G}_j^C \left(\bmat{G}_j - \bmat{G}_j \bmat{M} \bmat{G}_j\right) {\bmat{G}_j^C}&#39;\right)} \bmat{G}_j^C.
 \tag{1.31}
 \]</span>
-<!-- Can this be simplified further? -->
-<!-- How is CR4 related to CR2f? Are they equivalent for inverse-variance weights?-->
-<!-- How is CR2 related to CR4 for OLS with $\psi = \sigma^2 I$? --></p>
+<!-- Can this be simplified further? H: I think this section is not at all too complicated currently. --></p>
+<!-- How is CR4 related to CR2f? Are they equivalent for inverse-variance weights? -->
+<!-- How is CR2 related to CR4 for OLS with $\psi = \sigma^2 I$? -->
 <p>A further benefit of the CR4 adjustment matrices is that they can be tailored to a subset of the covariates that are of focal interest.
 Rather than correcting the bias in the full variance estimator, we could correct the bias for just one or more of the predictors, so that <span class="math inline">\(\E\left(\bmat{k}&#39; \bmat{V}^{CR} \bmat{k}\right) = \Var\left(\bmat{k}&#39; \bs{\hat\beta}\right)\)</span> for a <span class="math inline">\(p \times k\)</span> matrix of contrasts <span class="math inline">\(\bmat{k}\)</span> with <span class="math inline">\(k \leq p\)</span>, even if unbiasedness does not hold for the full estimator <span class="math inline">\(\bmat{V}^{CR}\)</span>.</p>
+<!-- H: Can we explain the above more specifically? Would this be related to the fact that CR4 corrects the full score distribution instead of the residuals? -->
 </div>
 </div>
 <div id="fixed-effects-models" class="section level2" number="1.2">

@@ -301,7 +301,7 @@ When $p$ is limited but $n_j$ is large, this can result in substantial computati
 
 <!-- Jackknife - See Tipton (2015) for some arguments -->
 "Bell and McCaffrey (2002) showed that when W = I, the [CR0] estimator tends to underestimate the true variances, whereas the [CRJ] estimator tends to overestimate these variances; it is not difficult to show that these results extend to the $W \neq I$ case."
-Simulation studies comparing cluster-robust variance estimators (HTJ, JK, MBB) and degrees of freedom adjustments for meta-analysis scenarios <- How relevant? How much of the results should we introduce?
+Simulation studies comparing cluster-robust variance estimators (HTJ, JK, MBB) and degrees of freedom adjustments for meta-analysis scenarios <- How relevant? How much of the results should we introduce? <- Describe only when the results cover WLS cases with $W \neq I$.
 
 ### CR4
 
@@ -333,7 +333,7 @@ $$
 \bmat{A}^\sb{4}_j = {\bmat{F}_j^C}' \halfinv{\left(\bmat{B}_j^\sb{4}\right)} \bmat{F}_j^C,
 (\#eq:CR4-Aj)
 $$
-where $\bmat{G}_j^C$ is the upper-right Cholesky factorization of $\bmat{G}_j$ and 
+where $\bmat{F}_j^C$ is the upper-right Cholesky factorization of $\bmat{F}_j$ and 
 $$
 \bmat{B}_j^\sb{4} = \bmat{F}_j^C \left(\bmat{F}_j - \bmat{G}_j \bmat{M}\bmat{F}_j - \bmat{F}_j \bmat{M}\bmat{G}_j + \bmat{G}_j \bmat{V}^M \bmat{G}_j\right) {\bmat{F}_j^C}'.
 (\#eq:CR4-Bj)
@@ -356,12 +356,15 @@ $$
 \bmat{A}^\sb{4}_j = {\bmat{G}_j^C}' \halfinv{\left(\bmat{G}_j^C \left(\bmat{G}_j - \bmat{G}_j \bmat{M} \bmat{G}_j\right) {\bmat{G}_j^C}'\right)} \bmat{G}_j^C.
 (\#eq:CR4-inv)
 $$
-<!-- Can this be simplified further? -->
-<!-- How is CR4 related to CR2f? Are they equivalent for inverse-variance weights?-->
+<!-- Can this be simplified further? H: I think this section is not at all too complicated currently. -->
+
+<!-- How is CR4 related to CR2f? Are they equivalent for inverse-variance weights? -->
 <!-- How is CR2 related to CR4 for OLS with $\psi = \sigma^2 I$? -->
 
 A further benefit of the CR4 adjustment matrices is that they can be tailored to a subset of the covariates that are of focal interest. 
 Rather than correcting the bias in the full variance estimator, we could correct the bias for just one or more of the predictors, so that $\E\left(\bmat{k}' \bmat{V}^{CR} \bmat{k}\right) = \Var\left(\bmat{k}' \bs{\hat\beta}\right)$ for a $p \times k$ matrix of contrasts $\bmat{k}$ with $k \leq p$, even if unbiasedness does not hold for the full estimator $\bmat{V}^{CR}$. 
+
+<!-- H: Can we explain the above more specifically? Would this be related to the fact that CR4 corrects the full score distribution instead of the residuals? -->
 
 ## Fixed effects models
 
