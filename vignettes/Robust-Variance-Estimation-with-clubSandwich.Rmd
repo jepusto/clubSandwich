@@ -245,7 +245,7 @@ For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices ar
 
 The computational trick described by @niccodemi2020refining for the CR2 adjustment under ordinary least squares with an independence working model can be extended to the CR2f adjustment matrices as long as the weight matrices are inverse variance. 
 
-<!-- H: Why don't we explain the "trick" of Niccodemi et al. (2020)? The gist of it would be of course its equation (6), but let's not go there... Instead, let's explain part of the followings. -->
+<!-- H: Why don't we explain the "trick" of Niccodemi et al. (2020)? The gist of it would be of course its equation (6), but let's not go there... Instead, let's explain part of the followings. <- Add a footnote with just the X_j^* and equation (6), E_j. -->
 
 1) We can set $\bmat{X}^*_j = \bmat{W}^C_j \bmat{X}_j$ (and $\bmat{Y}^*_j = \bmat{W}^C_j \bmat{Y}_j$) following @mccaffrey2001generalizations ($\bmat{X} = \bmat{W}^{1/2} \bmat{X}$) when $\bmat{W}_j = \bs\Psi_j^{-1}$ for WLS cases using CR2f.
 2) Then, @niccodemi2020refining shows that \@ref(eq:V-CR) can be presented as $\bmat{V}^{CR} = (\bmat{X}^{*'}_j \bmat{X}^*_j)^{-1} \sum_{j=1}^J \left(\bmat{\tilde{s}}_j \bmat{\tilde{s}}_j^{'}\right) (\bmat{X}^{*'}_j \bmat{X}^*_j)^{-1}$ with $\bs{f}_{2f} = 1$, where $\bmat{\tilde{s}}_j = \bmat{X}^*_j \bmat{H}_j^{*-1/2} \bmat{\hat{u}}_j$, where $\bmat{H}_j^{*} = (\bmat{I}_p - \bmat{R}^{*'}_j \bmat{R}^*_j)$ and $\bmat{R}^*_j = \bmat{X}^*_j (\bmat{X}^{*'} \bmat{X}^*)^{-1/2}$. <- Any way to simplify/skip the $\bmat{H}_j$ and $\bmat{R}^*_j$?
@@ -256,9 +256,6 @@ $$
 \bmat{E}^\sb{2f}_j = \bmat{W}_j \bmat{X}_j {\bmat{M}^{C}}'\halfinv{\left(\bmat{I}_p - \bmat{M}^C \bmat{X}_j'\bmat{W}_j \bmat{X}_j{\bmat{M}^C}' \right)} {\bmat{M}^{-C}}'.
 (\#eq:ECR2f-quick)
 $$
-
-<!-- H: Does the first term on the right hand side start with $\bmat{W}_j$ instead of $\bmat{W}_j^C$? Also, see other questions in my note. -->
-
 The advantage of using this form is that it only requires taking the inverse root of a $p \times p$ matrix, whereas calculating the adjustment matrix $\bmat{A}^\sb{2f}_j$ requires taking the inverse root of an $n_j \times n_j$ matrix. 
 In applications involving large clusters with $n_j >> p$, using \@ref(eq:ECR2f-quick) will be much more efficient in terms of memory and computational burden. 
 
@@ -293,15 +290,15 @@ For the case of unweighted least squares with the independent and homoskedastic 
 @niccodemi2020refining also described an efficient method of calculating the $\bmat{E}^\sb{3}_j$ matrices for the special case of ordinary least squares with an independence working model. 
 Their method can be extended to weighted least squares estimation as well, such that $\bmat{E}_j^\sb{3}$ can be calculated as 
 $$
-\bmat{E}_j^\sb{3} = \bmat{W}_j \bmat{X}_j \left(\bmat{X}' \bmat{W} \bmat{X} - \bmat{X}_j' \bmat{W}_j \bmat{X}_j \right)^{-1}.
+\bmat{E}_j^\sb{3} = \bmat{W}_j \bmat{X}_j \left(\bmat{I}_p - \bmat{M} \bmat{X}_j' \bmat{W}_j \bmat{X}_j \right)^{-1}.
 (\#eq:ECR3-quick)
 $$
 This representation avoids the need to invert $n_j \times n_j$ matrices, instead requiring only the inverse of $p \times p$ matrices. 
 When $p$ is limited but $n_j$ is large, this can result in substantial computational savings [@niccodemi2020refining; see also @mackinnon2022fast]. 
 
 <!-- Jackknife - See Tipton (2015) for some arguments -->
-"Bell and McCaffrey (2002) showed that when W = I, the [CR0] estimator tends to underestimate the true variances, whereas the [CRJ] estimator tends to overestimate these variances; it is not difficult to show that these results extend to the $W \neq I$ case."
-Simulation studies comparing cluster-robust variance estimators (HTJ, JK, MBB) and degrees of freedom adjustments for meta-analysis scenarios <- How relevant? How much of the results should we introduce? <- Describe only when the results cover WLS cases with $W \neq I$.
+<!-- "Bell and McCaffrey (2002) showed that when W = I, the [CR0] estimator tends to underestimate the true variances, whereas the [CRJ] estimator tends to overestimate these variances; it is not difficult to show that these results extend to the $W \neq I$ case."
+Simulation studies comparing cluster-robust variance estimators (HTJ, JK, MBB) and degrees of freedom adjustments for meta-analysis scenarios <- How relevant? How much of the results should we introduce? <- Describe only when the results cover WLS cases with $W \neq I$. -->
 
 ### CR4
 
@@ -356,9 +353,8 @@ $$
 \bmat{A}^\sb{4}_j = {\bmat{G}_j^C}' \halfinv{\left(\bmat{G}_j^C \left(\bmat{G}_j - \bmat{G}_j \bmat{M} \bmat{G}_j\right) {\bmat{G}_j^C}'\right)} \bmat{G}_j^C.
 (\#eq:CR4-inv)
 $$
-<!-- Can this be simplified further? H: I think this section is not at all too complicated currently. -->
+<!-- Can this formula be simplified further? Apparently not. -->
 
-<!-- How is CR4 related to CR2f? Are they equivalent for inverse-variance weights? -->
 <!-- How is CR2 related to CR4 for OLS with $\psi = \sigma^2 I$? -->
 
 A further benefit of the CR4 adjustment matrices is that they can be tailored to a subset of the covariates that are of focal interest. 
@@ -374,6 +370,8 @@ Rather than correcting the bias in the full variance estimator, we could correct
 # Model-specific considerations
 
 ## `lm()`
+
+<!-- H: Consult the cran document and lm.R, S3-methods.R under the folder R. -->
 
 ## `mlm()`
 

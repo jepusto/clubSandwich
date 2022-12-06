@@ -11,7 +11,7 @@
 
 <meta name="author" content="James E. Pustejovsky and Hanna Kim" />
 
-<meta name="date" content="2022-12-05" />
+<meta name="date" content="2022-12-06" />
 
 <title>Cluster-robust variance estimation with clubSandwich</title>
 
@@ -367,7 +367,7 @@ display: none;
 
 <h1 class="title toc-ignore">Cluster-robust variance estimation with clubSandwich</h1>
 <h4 class="author">James E. Pustejovsky and Hanna Kim</h4>
-<h4 class="date">2022-12-05</h4>
+<h4 class="date">2022-12-06</h4>
 
 </div>
 
@@ -585,7 +585,7 @@ where <span class="math inline">\(\bs\Psi^C_j\)</span> is again the upper-right 
 \]</span>
 For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices are equivalent.</p>
 <p>The computational trick described by <span class="citation">Niccodemi et al. (2020)</span> for the CR2 adjustment under ordinary least squares with an independence working model can be extended to the CR2f adjustment matrices as long as the weight matrices are inverse variance.</p>
-<!-- H: Why don't we explain the "trick" of Niccodemi et al. (2020)? The gist of it would be of course its equation (6), but let's not go there... Instead, let's explain part of the followings. -->
+<!-- H: Why don't we explain the "trick" of Niccodemi et al. (2020)? The gist of it would be of course its equation (6), but let's not go there... Instead, let's explain part of the followings. <- Add a footnote with just the X_j^* and equation (6), E_j. -->
 <ol style="list-style-type: decimal">
 <li>We can set <span class="math inline">\(\bmat{X}^*_j = \bmat{W}^C_j \bmat{X}_j\)</span> (and <span class="math inline">\(\bmat{Y}^*_j = \bmat{W}^C_j \bmat{Y}_j\)</span>) following <span class="citation">McCaffrey, Bell, and Botts (2001)</span> (<span class="math inline">\(\bmat{X} = \bmat{W}^{1/2} \bmat{X}\)</span>) when <span class="math inline">\(\bmat{W}_j = \bs\Psi_j^{-1}\)</span> for WLS cases using CR2f.</li>
 <li>Then, <span class="citation">Niccodemi et al. (2020)</span> shows that <a href="#eq:V-CR">(1.5)</a> can be presented as <span class="math inline">\(\bmat{V}^{CR} = (\bmat{X}^{*&#39;}_j \bmat{X}^*_j)^{-1} \sum_{j=1}^J \left(\bmat{\tilde{s}}_j \bmat{\tilde{s}}_j^{&#39;}\right) (\bmat{X}^{*&#39;}_j \bmat{X}^*_j)^{-1}\)</span> with <span class="math inline">\(\bs{f}_{2f} = 1\)</span>, where <span class="math inline">\(\bmat{\tilde{s}}_j = \bmat{X}^*_j \bmat{H}_j^{*-1/2} \bmat{\hat{u}}_j\)</span>, where <span class="math inline">\(\bmat{H}_j^{*} = (\bmat{I}_p - \bmat{R}^{*&#39;}_j \bmat{R}^*_j)\)</span> and <span class="math inline">\(\bmat{R}^*_j = \bmat{X}^*_j (\bmat{X}^{*&#39;} \bmat{X}^*)^{-1/2}\)</span>. &lt;- Any way to simplify/skip the <span class="math inline">\(\bmat{H}_j\)</span> and <span class="math inline">\(\bmat{R}^*_j\)</span>?</li>
@@ -595,9 +595,8 @@ For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices ar
 <span class="math display" id="eq:ECR2f-quick">\[
 \bmat{E}^\sb{2f}_j = \bmat{W}_j \bmat{X}_j {\bmat{M}^{C}}&#39;\halfinv{\left(\bmat{I}_p - \bmat{M}^C \bmat{X}_j&#39;\bmat{W}_j \bmat{X}_j{\bmat{M}^C}&#39; \right)} {\bmat{M}^{-C}}&#39;.
 \tag{1.21}
-\]</span></p>
-<!-- H: Does the first term on the right hand side start with $\bmat{W}_j$ instead of $\bmat{W}_j^C$? Also, see other questions in my note. -->
-<p>The advantage of using this form is that it only requires taking the inverse root of a <span class="math inline">\(p \times p\)</span> matrix, whereas calculating the adjustment matrix <span class="math inline">\(\bmat{A}^\sb{2f}_j\)</span> requires taking the inverse root of an <span class="math inline">\(n_j \times n_j\)</span> matrix.
+\]</span>
+The advantage of using this form is that it only requires taking the inverse root of a <span class="math inline">\(p \times p\)</span> matrix, whereas calculating the adjustment matrix <span class="math inline">\(\bmat{A}^\sb{2f}_j\)</span> requires taking the inverse root of an <span class="math inline">\(n_j \times n_j\)</span> matrix.
 In applications involving large clusters with <span class="math inline">\(n_j &gt;&gt; p\)</span>, using <a href="#eq:ECR2f-quick">(1.21)</a> will be much more efficient in terms of memory and computational burden.</p>
 </div>
 <div id="cr3j-cr3-cr3lambda" class="section level3" number="1.1.4">
@@ -627,14 +626,14 @@ For the case of unweighted least squares with the independent and homoskedastic 
 <p><span class="citation">Niccodemi et al. (2020)</span> also described an efficient method of calculating the <span class="math inline">\(\bmat{E}^\sb{3}_j\)</span> matrices for the special case of ordinary least squares with an independence working model.
 Their method can be extended to weighted least squares estimation as well, such that <span class="math inline">\(\bmat{E}_j^\sb{3}\)</span> can be calculated as
 <span class="math display" id="eq:ECR3-quick">\[
-\bmat{E}_j^\sb{3} = \bmat{W}_j \bmat{X}_j \left(\bmat{X}&#39; \bmat{W} \bmat{X} - \bmat{X}_j&#39; \bmat{W}_j \bmat{X}_j \right)^{-1}.
+\bmat{E}_j^\sb{3} = \bmat{W}_j \bmat{X}_j \left(\bmat{I}_p - \bmat{M} \bmat{X}_j&#39; \bmat{W}_j \bmat{X}_j \right)^{-1}.
 \tag{1.25}
 \]</span>
 This representation avoids the need to invert <span class="math inline">\(n_j \times n_j\)</span> matrices, instead requiring only the inverse of <span class="math inline">\(p \times p\)</span> matrices.
 When <span class="math inline">\(p\)</span> is limited but <span class="math inline">\(n_j\)</span> is large, this can result in substantial computational savings <span class="citation">(Niccodemi et al. 2020; see also MacKinnon et al. 2022)</span>.</p>
 <!-- Jackknife - See Tipton (2015) for some arguments -->
-<p>“Bell and McCaffrey (2002) showed that when W = I, the [CR0] estimator tends to underestimate the true variances, whereas the [CRJ] estimator tends to overestimate these variances; it is not difficult to show that these results extend to the <span class="math inline">\(W \neq I\)</span> case.”
-Simulation studies comparing cluster-robust variance estimators (HTJ, JK, MBB) and degrees of freedom adjustments for meta-analysis scenarios &lt;- How relevant? How much of the results should we introduce? &lt;- Describe only when the results cover WLS cases with <span class="math inline">\(W \neq I\)</span>.</p>
+<!-- "Bell and McCaffrey (2002) showed that when W = I, the [CR0] estimator tends to underestimate the true variances, whereas the [CRJ] estimator tends to overestimate these variances; it is not difficult to show that these results extend to the $W \neq I$ case."
+Simulation studies comparing cluster-robust variance estimators (HTJ, JK, MBB) and degrees of freedom adjustments for meta-analysis scenarios <- How relevant? How much of the results should we introduce? <- Describe only when the results cover WLS cases with $W \neq I$. -->
 </div>
 <div id="cr4" class="section level3" number="1.1.5">
 <h3><span class="header-section-number">1.1.5</span> CR4</h3>
@@ -684,8 +683,7 @@ It follows that using the CR4 adjustment matrices leads to an exactly unbiased v
 \bmat{A}^\sb{4}_j = {\bmat{G}_j^C}&#39; \halfinv{\left(\bmat{G}_j^C \left(\bmat{G}_j - \bmat{G}_j \bmat{M} \bmat{G}_j\right) {\bmat{G}_j^C}&#39;\right)} \bmat{G}_j^C.
 \tag{1.31}
 \]</span>
-<!-- Can this be simplified further? H: I think this section is not at all too complicated currently. --></p>
-<!-- How is CR4 related to CR2f? Are they equivalent for inverse-variance weights? -->
+<!-- Can this formula be simplified further? Apparently not. --></p>
 <!-- How is CR2 related to CR4 for OLS with $\psi = \sigma^2 I$? -->
 <p>A further benefit of the CR4 adjustment matrices is that they can be tailored to a subset of the covariates that are of focal interest.
 Rather than correcting the bias in the full variance estimator, we could correct the bias for just one or more of the predictors, so that <span class="math inline">\(\E\left(\bmat{k}&#39; \bmat{V}^{CR} \bmat{k}\right) = \Var\left(\bmat{k}&#39; \bs{\hat\beta}\right)\)</span> for a <span class="math inline">\(p \times k\)</span> matrix of contrasts <span class="math inline">\(\bmat{k}\)</span> with <span class="math inline">\(k \leq p\)</span>, even if unbiasedness does not hold for the full estimator <span class="math inline">\(\bmat{V}^{CR}\)</span>.</p>
@@ -703,6 +701,7 @@ Rather than correcting the bias in the full variance estimator, we could correct
 <h1><span class="header-section-number">2</span> Model-specific considerations</h1>
 <div id="lm" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> <code>lm()</code></h2>
+<!-- H: Consult the cran document and lm.R, S3-methods.R under the folder R. -->
 </div>
 <div id="mlm" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> <code>mlm()</code></h2>
