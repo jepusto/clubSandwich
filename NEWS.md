@@ -1,3 +1,7 @@
+# clubSandwich 0.5.8.9999
+
+* Added support for `geepack::geeglm()` models. 
+
 # clubSandwich 0.5.8
 
 * Added support for `ivreg::ivreg` objects when estimated by ordinary least squares (support for objects estimated by 2SM and 2SMM is not yet implemented).

@@ -20,6 +20,7 @@ Methods are provided for a variety of fitted models, including:
 - `lm()`
 - `mlm()`
 - `glm()` 
+- `geeglm()` (from package `geepack`)
 - `ivreg()` (from package `ivreg`, when estimated using `method = "OLS"`)
 - `ivreg()` (from package `AER`)
 - `plm()` (from package `plm`), 
