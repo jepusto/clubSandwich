@@ -94,7 +94,6 @@ test_that("get_data works.", {
 CR_types <- paste0("CR",0:4)
 
 test_that("Order doesn't matter.", {
-  
   check_sort_order(lm_AR1_power, dat = Ovary, 
                    tol = 10^-4, tol2 = 10^-3, tol3 = 10^-3)
 
