@@ -3,36 +3,38 @@ set.seed(202201030)
 
 library(geepack)
 
-J <- 24
+J <- 20
 tp <- 5
 # Simulating a dataset
-timeorder <- rep(1:tp, J)
-tvar      <- timeorder + rnorm(length(timeorder))
 idvar <- rep(1:J, each=tp)
 idvar2 <- factor(sample(LETTERS)[idvar])
+timeorder <- rep(1:tp, J)
+tvar      <- timeorder + rnorm(length(timeorder))
+x1 <- rnorm(length(timeorder))
+x2 <- rnorm(J)[idvar]
 uuu   <- rep(rnorm(J), each=tp)
-yvar  <- 1 + 2 * tvar + uuu + rnorm(length(tvar))
-simdat <- data.frame(idvar, timeorder, tvar, yvar, idvar2)
+yvar  <- 1 + 0.4 * x1 + 0.2 * x2 + 2 * tvar + uuu + rnorm(length(tvar))
+simdat <- data.frame(idvar, timeorder, x1, x2, tvar, yvar, idvar2)
 
 simdatPerm <- simdat[sample(nrow(simdat)),]
 simdatPerm <- simdatPerm[order(simdatPerm$idvar),]
 wav <- simdatPerm$timeorder
 
 # AR1 + wave
-geeglm_AR1_wav <- geeglm(yvar ~ tvar, id = idvar, 
+geeglm_AR1_wav <- geeglm(yvar ~ tvar + x1, id = idvar, 
                       data = simdatPerm, 
                       corstr = "ar1", waves = timeorder)
 geeglm_AR1_wav
 
 # AR1
-geeglm_AR1 <- geeglm(yvar ~ tvar, id = idvar, data = simdat, corstr = "ar1")
+geeglm_AR1 <- geeglm(yvar ~ tvar, id = idvar, data = simdat, family = "gaussian", corstr = "ar1")
 
 # Independence
-geeglm_ind <- geeglm(yvar ~ tvar, id = idvar, data = simdat, corstr = "independence")
+geeglm_ind <- geeglm(yvar ~ tvar + x1 + x2, id = idvar, data = simdat, corstr = "independence")
 
 # Exchangeable
-geeglm_exch <- geeglm(yvar ~ tvar, id = idvar, data = simdat, corstr = "exchangeable")
-geeglm_exch2 <- geeglm(yvar ~ tvar, id = idvar2, data = simdat, corstr = "exchangeable")
+geeglm_exch <- geeglm(yvar ~ tvar + x2, id = idvar, data = simdat, corstr = "exchangeable")
+geeglm_exch2 <- geeglm(yvar ~ tvar + x2, id = idvar2, data = simdat, corstr = "exchangeable")
 
 # Unstructured
 geeglm_unstr <- geeglm(yvar ~ tvar, id = idvar, data = simdat, corstr = "unstructured")
@@ -44,7 +46,7 @@ zcor <- genZcor(clusz = table(simdat$idvar),
                 corstrv = 4)
 zcor_user <- zcor
 
-geeglm_user <- geeglm(yvar ~ tvar, 
+geeglm_user <- geeglm(yvar ~ tvar + x1, 
                       id = idvar, waves = timeorder, 
                       data = simdat, 
                       zcor = zcor_user, corstr = "userdefined")
@@ -56,7 +58,7 @@ zcor_toep[,2] <- apply(zcor[,c(2, 6, 9)], 1, sum)
 zcor_toep[,3] <- apply(zcor[,c(3, 7)], 1, sum)
 zcor_toep[,4] <- zcor[,4]
 
-geeglm_toep <- geeglm(yvar ~ tvar, 
+geeglm_toep <- geeglm(yvar ~ tvar + x1, 
                       id = idvar, waves = timeorder, 
                       data = simdat, 
                       zcor = zcor_toep, corstr = "userdefined")
@@ -69,7 +71,7 @@ cor_fix <- matrix(c(1    , 0.5  , 0.25,  0.125, 0.125,
                     0.125, 0.125, 0.125, 0.125, 1     ), nrow=5, ncol=5)
 zcor_fix <- fixed2Zcor(cor_fix, id=simdat$idvar, waves=simdat$timeorder)
 
-geeglm_fix <- geeglm(yvar ~ tvar, 
+geeglm_fix <- geeglm(yvar ~ tvar + x1 + x2, 
                       id = idvar, waves = timeorder, 
                       data = simdat, 
                       zcor = zcor_fix, corstr = "fixed")
@@ -246,17 +248,34 @@ test_that("vcovCR works for clustering variables higher than id variable.", {
   
 })
 
-test_that("vcovCR agrees with geeglm for CR0.", {
+check_geeglm <- function(obj) {
   
-  expect_equal(vcov(geeglm_AR1_wav), as.matrix(vcovCR(geeglm_AR1_wav, type = "CR0")))
-  expect_equal(vcov(geeglm_AR1), as.matrix(vcovCR(geeglm_AR1, type = "CR0")))
-  expect_equal(vcov(geeglm_ind), as.matrix(vcovCR(geeglm_ind, type = "CR0")))
-  expect_equal(vcov(geeglm_exch), as.matrix(vcovCR(geeglm_exch, type = "CR0")))
-  expect_equal(vcov(geeglm_exch2), as.matrix(vcovCR(geeglm_exch2, type = "CR0")))
-  expect_equal(vcov(geeglm_unstr), as.matrix(vcovCR(geeglm_unstr, type = "CR0")))
-  expect_equal(vcov(geeglm_unstr2), as.matrix(vcovCR(geeglm_unstr2, type = "CR0")))
-  expect_equal(vcov(geeglm_user), as.matrix(vcovCR(geeglm_user, type = "CR0")))
-  expect_equal(vcov(geeglm_toep), as.matrix(vcovCR(geeglm_toep, type = "CR0")))
-  expect_equal(vcov(geeglm_fix), as.matrix(vcovCR(geeglm_fix, type = "CR0")))
+  cr0_pack <- vcov(obj)
+  cr0_club <- as.matrix(vcovCR(obj, type = "CR0"))
   
+  expect_equal(cr0_pack, cr0_club)
+  
+  cr3_pack <- vcov(update(obj, std.err = "jack"))
+  cr3_club <- as.matrix(vcovCR(obj, type = "CR3"))
+  
+  J <- length(unique(obj$id))
+  p <- nrow(obj$geese$infls)
+  f <- (J - p) / J
+
+  expect_equal(cr3_pack, f * cr3_club)
+}
+
+test_that("vcovCR agrees with geeglm for CR0 and CR3.", {
+  
+  check_geeglm(geeglm_AR1_wav)
+  check_geeglm(geeglm_AR1)
+  check_geeglm(geeglm_ind)
+  check_geeglm(geeglm_exch)
+  check_geeglm(geeglm_exch2)
+  check_geeglm(geeglm_unstr)
+  check_geeglm(geeglm_unstr2)
+  check_geeglm(geeglm_user)
+  check_geeglm(geeglm_toep)
+  check_geeglm(geeglm_fix)
+
 })
