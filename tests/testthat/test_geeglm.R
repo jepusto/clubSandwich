@@ -244,16 +244,4 @@ test_that("vcovCR works for clustering variables higher than id variable.", {
                            type = "CR2", cluster = dat_higher$pair_id)
   expect_equal(V_unstr, V_unstr_scramble, tol = 10^-6, check.attributes = FALSE)
   
-  V_user_scramble <- vcovCR(update(geeglm_user, data = dat_higher), 
-                             type = "CR2", cluster = dat_higher$pair_id)
-  expect_equal(V_user, V_user_scramble, tol = 10^-6, check.attributes = FALSE)
-  
-  V_toep_scramble <- vcovCR(update(geeglm_toep, data = dat_higher), 
-                             type = "CR2", cluster = dat_higher$pair_id)
-  expect_equal(V_toep, V_toep_scramble, tol = 10^-6, check.attributes = FALSE)
-  
-  V_fix_scramble <- vcovCR(update(geeglm_fix, data = dat_higher), 
-                             type = "CR2", cluster = dat_higher$pair_id)
-  expect_equal(V_fix, V_fix_scramble, tol = 10^-6, check.attributes = FALSE)
-  
 })

@@ -125,36 +125,25 @@ targetVariance.geeglm <- function(obj, cluster) {
     }
   } else if (obj$corstr == "unstructured") {
     r <- lapply(obj$geese$clusz, other_cor, alpha = as.numeric(obj$geese$alpha))
-  } else if (obj$corstr == "userdefined") {
+  } else if (obj$corstr %in% c("userdefined","fixed")) {
     
-    i <- 1L
-    while(!identical(parent.frame(i), .GlobalEnv)) {
-      cat("\n i:", i, "||", ls(envir = parent.frame(n = i)))
-      i <- i + 1L
+    formula_env <- attr(obj$formula, ".Environment")
+    if (as.character(obj$call$zcor) %in% objects(formula_env)) {
+      zcor <- eval(obj$call$zcor, envir = formula_env)
+    } else {
+      zcor <- eval(obj$call$zcor, envir = parent.frame())
     }
-    cat("\n i:", i, "||", ls(envir = parent.frame(n = i)))
-    cat("\n", "Envir: ", find(as.character(obj$call$zcor)), find(as.character(obj$call$zcor), numeric = TRUE), "\n")
     
-    zcor <- eval(obj$call$zcor)
-    alpha <- as.numeric(obj$geese$alpha)
-    r_vec <- as.numeric(zcor %*% alpha)
     id_cor <- table(idvar)
     id_cor <- rep(names(id_cor), id_cor * (id_cor - 1) / 2)
-    r <- tapply(r_vec, id_cor, other_cor)
-  } else if (obj$corstr == "fixed") {
     
-    i <- 1L
-    while(!identical(parent.frame(i), .GlobalEnv)) {
-      cat("\n i:", i, "||", ls(envir = parent.frame(n = i)))
-      i <- i + 1L
-    }
-    cat("\n i:", i, "||", ls(envir = parent.frame(n = i)))
-    cat("\n", "Envir: ", find(as.character(obj$call$zcor)), find(as.character(obj$call$zcor), numeric = TRUE), "\n")
-    
-    zcor <- eval(obj$call$zcor)
-    id_cor <- table(idvar)
-    id_cor <- rep(names(id_cor), id_cor * (id_cor - 1) / 2)
-    r <- tapply(zcor, id_cor, other_cor)
+    if (obj$corstr == "userdefined") {
+      alpha <- as.numeric(obj$geese$alpha)
+      r_vec <- as.numeric(zcor %*% alpha)
+      r <- tapply(r_vec, id_cor, other_cor)
+    } else if (obj$corstr == "fixed") {
+      r <- tapply(zcor, id_cor, other_cor)
+    }   
   }
   
   v <- mapply("*", aa, r, SIMPLIFY = FALSE)
@@ -193,7 +182,7 @@ weightMatrix.geeglm <- function(obj, cluster) {
   } else if (obj$corstr %in% c("unstructured","userdefined", "fixed")) {
     
     # Invert the targetVariance for unstructured or user-defined working models
-    V_list <- targetVariance(obj, idvar)
+    V_list <- targetVariance.geeglm(obj, idvar)
     W_list <- lapply(V_list, function(v) chol2inv(chol(v)))
   
   } else {
