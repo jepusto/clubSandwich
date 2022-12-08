@@ -245,3 +245,18 @@ test_that("vcovCR works for clustering variables higher than id variable.", {
   expect_equal(V_unstr, V_unstr_scramble, tol = 10^-6, check.attributes = FALSE)
   
 })
+
+test_that("vcovCR agrees with geeglm for CR0.", {
+  
+  expect_equal(vcov(geeglm_AR1_wav), as.matrix(vcovCR(geeglm_AR1_wav, type = "CR0")))
+  expect_equal(vcov(geeglm_AR1), as.matrix(vcovCR(geeglm_AR1, type = "CR0")))
+  expect_equal(vcov(geeglm_ind), as.matrix(vcovCR(geeglm_ind, type = "CR0")))
+  expect_equal(vcov(geeglm_exch), as.matrix(vcovCR(geeglm_exch, type = "CR0")))
+  expect_equal(vcov(geeglm_exch2), as.matrix(vcovCR(geeglm_exch2, type = "CR0")))
+  expect_equal(vcov(geeglm_unstr), as.matrix(vcovCR(geeglm_unstr, type = "CR0")))
+  expect_equal(vcov(geeglm_unstr2), as.matrix(vcovCR(geeglm_unstr2, type = "CR0")))
+  expect_equal(vcov(geeglm_user), as.matrix(vcovCR(geeglm_user, type = "CR0")))
+  expect_equal(vcov(geeglm_toep), as.matrix(vcovCR(geeglm_toep, type = "CR0")))
+  expect_equal(vcov(geeglm_fix), as.matrix(vcovCR(geeglm_fix, type = "CR0")))
+  
+})
