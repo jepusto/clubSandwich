@@ -243,14 +243,7 @@ $$
 $$
 For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices are equivalent. 
 
-The computational trick described by @niccodemi2020refining for the CR2 adjustment under ordinary least squares with an independence working model can be extended to the CR2f adjustment matrices as long as the weight matrices are inverse variance. 
-
-<!-- H: Why don't we explain the "trick" of Niccodemi et al. (2020)? The gist of it would be of course its equation (6), but let's not go there... Instead, let's explain part of the followings. <- Add a footnote with just the X_j^* and equation (6), E_j. -->
-
-1) We can set $\bmat{X}^*_j = \bmat{W}^C_j \bmat{X}_j$ (and $\bmat{Y}^*_j = \bmat{W}^C_j \bmat{Y}_j$) following @mccaffrey2001generalizations ($\bmat{X} = \bmat{W}^{1/2} \bmat{X}$) when $\bmat{W}_j = \bs\Psi_j^{-1}$ for WLS cases using CR2f.
-2) Then, @niccodemi2020refining shows that \@ref(eq:V-CR) can be presented as $\bmat{V}^{CR} = (\bmat{X}^{*'}_j \bmat{X}^*_j)^{-1} \sum_{j=1}^J \left(\bmat{\tilde{s}}_j \bmat{\tilde{s}}_j^{'}\right) (\bmat{X}^{*'}_j \bmat{X}^*_j)^{-1}$ with $\bs{f}_{2f} = 1$, where $\bmat{\tilde{s}}_j = \bmat{X}^*_j \bmat{H}_j^{*-1/2} \bmat{\hat{u}}_j$, where $\bmat{H}_j^{*} = (\bmat{I}_p - \bmat{R}^{*'}_j \bmat{R}^*_j)$ and $\bmat{R}^*_j = \bmat{X}^*_j (\bmat{X}^{*'} \bmat{X}^*)^{-1/2}$. <- Any way to simplify/skip the $\bmat{H}_j$ and $\bmat{R}^*_j$?
-3) If everything is plugged in and we keep with $\bmat{M} = \left(\sum_{j=1}^J \bmat{X}_j'\bmat{W}_j \bmat{X}_j\right)^{-1}$ (and $\bmat{M}^C = \bmat{M}^{1/2}$), \@ref(eq:CR2f-Ej) can be simplified to \ref(eq:ECR2f-quick).
-
+The computational trick described by @niccodemi2020refining for the CR2 adjustment under ordinary least squares with an independence working model can be extended to the CR2f adjustment matrices as long as the weight matrices are inverse variance.[^niccodemi-trick] 
 Assuming that $\bmat{W}_j = \bs\Psi_j^{-1}$, then the CR2f estimating matrices are equal to 
 $$
 \bmat{E}^\sb{2f}_j = \bmat{W}_j \bmat{X}_j {\bmat{M}^{C}}'\halfinv{\left(\bmat{I}_p - \bmat{M}^C \bmat{X}_j'\bmat{W}_j \bmat{X}_j{\bmat{M}^C}' \right)} {\bmat{M}^{-C}}'.
@@ -258,6 +251,10 @@ $$
 $$
 The advantage of using this form is that it only requires taking the inverse root of a $p \times p$ matrix, whereas calculating the adjustment matrix $\bmat{A}^\sb{2f}_j$ requires taking the inverse root of an $n_j \times n_j$ matrix. 
 In applications involving large clusters with $n_j >> p$, using \@ref(eq:ECR2f-quick) will be much more efficient in terms of memory and computational burden. 
+
+[^niccodemi-trick]: The computational trick consists of applying the following theorem/lemma/proposition/corollary to $\bmat{\tilde{X}}_j = \bmat{W}^{1/2}_j \bmat{X}_j \bmat{M}^{C'}$ instead of $\bmat{X}_j$. For a thin $l \times s$ ($l \geq s$) matrix $\bmat{R}$ with full column rank and $\bmat{R}'\bmat{R} \leq \bmat{I}_s$,  $\bmat{R}'(\bmat{I}_l - \bmat{R} \bmat{R}')^a = (\bmat{I}_s - \bmat{R}' \bmat{R})^a \bmat{R}'$ for any $a$, such that the dimensions of inverse or square root matrices can be reduced from $l \times l$ to $s \times s$. 
+
+<!-- H: Confirm this footnote together. -->
 
 ### CR3J, CR3, CR3$\lambda$
 

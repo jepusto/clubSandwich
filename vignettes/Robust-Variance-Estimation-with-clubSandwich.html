@@ -11,7 +11,7 @@
 
 <meta name="author" content="James E. Pustejovsky and Hanna Kim" />
 
-<meta name="date" content="2022-12-06" />
+<meta name="date" content="2022-12-12" />
 
 <title>Cluster-robust variance estimation with clubSandwich</title>
 
@@ -367,7 +367,7 @@ display: none;
 
 <h1 class="title toc-ignore">Cluster-robust variance estimation with clubSandwich</h1>
 <h4 class="author">James E. Pustejovsky and Hanna Kim</h4>
-<h4 class="date">2022-12-06</h4>
+<h4 class="date">2022-12-12</h4>
 
 </div>
 
@@ -584,20 +584,15 @@ where <span class="math inline">\(\bs\Psi^C_j\)</span> is again the upper-right 
 \tag{1.20}
 \]</span>
 For ordinary (unweighted) least squares, the CR2 and CR2f adjustment matrices are equivalent.</p>
-<p>The computational trick described by <span class="citation">Niccodemi et al. (2020)</span> for the CR2 adjustment under ordinary least squares with an independence working model can be extended to the CR2f adjustment matrices as long as the weight matrices are inverse variance.</p>
-<!-- H: Why don't we explain the "trick" of Niccodemi et al. (2020)? The gist of it would be of course its equation (6), but let's not go there... Instead, let's explain part of the followings. <- Add a footnote with just the X_j^* and equation (6), E_j. -->
-<ol style="list-style-type: decimal">
-<li>We can set <span class="math inline">\(\bmat{X}^*_j = \bmat{W}^C_j \bmat{X}_j\)</span> (and <span class="math inline">\(\bmat{Y}^*_j = \bmat{W}^C_j \bmat{Y}_j\)</span>) following <span class="citation">McCaffrey, Bell, and Botts (2001)</span> (<span class="math inline">\(\bmat{X} = \bmat{W}^{1/2} \bmat{X}\)</span>) when <span class="math inline">\(\bmat{W}_j = \bs\Psi_j^{-1}\)</span> for WLS cases using CR2f.</li>
-<li>Then, <span class="citation">Niccodemi et al. (2020)</span> shows that <a href="#eq:V-CR">(1.5)</a> can be presented as <span class="math inline">\(\bmat{V}^{CR} = (\bmat{X}^{*&#39;}_j \bmat{X}^*_j)^{-1} \sum_{j=1}^J \left(\bmat{\tilde{s}}_j \bmat{\tilde{s}}_j^{&#39;}\right) (\bmat{X}^{*&#39;}_j \bmat{X}^*_j)^{-1}\)</span> with <span class="math inline">\(\bs{f}_{2f} = 1\)</span>, where <span class="math inline">\(\bmat{\tilde{s}}_j = \bmat{X}^*_j \bmat{H}_j^{*-1/2} \bmat{\hat{u}}_j\)</span>, where <span class="math inline">\(\bmat{H}_j^{*} = (\bmat{I}_p - \bmat{R}^{*&#39;}_j \bmat{R}^*_j)\)</span> and <span class="math inline">\(\bmat{R}^*_j = \bmat{X}^*_j (\bmat{X}^{*&#39;} \bmat{X}^*)^{-1/2}\)</span>. &lt;- Any way to simplify/skip the <span class="math inline">\(\bmat{H}_j\)</span> and <span class="math inline">\(\bmat{R}^*_j\)</span>?</li>
-<li>If everything is plugged in and we keep with <span class="math inline">\(\bmat{M} = \left(\sum_{j=1}^J \bmat{X}_j&#39;\bmat{W}_j \bmat{X}_j\right)^{-1}\)</span> (and <span class="math inline">\(\bmat{M}^C = \bmat{M}^{1/2}\)</span>), <a href="#eq:CR2f-Ej">(1.16)</a> can be simplified to (eq:ECR2f-quick).</li>
-</ol>
-<p>Assuming that <span class="math inline">\(\bmat{W}_j = \bs\Psi_j^{-1}\)</span>, then the CR2f estimating matrices are equal to
+<p>The computational trick described by <span class="citation">Niccodemi et al. (2020)</span> for the CR2 adjustment under ordinary least squares with an independence working model can be extended to the CR2f adjustment matrices as long as the weight matrices are inverse variance.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>
+Assuming that <span class="math inline">\(\bmat{W}_j = \bs\Psi_j^{-1}\)</span>, then the CR2f estimating matrices are equal to
 <span class="math display" id="eq:ECR2f-quick">\[
 \bmat{E}^\sb{2f}_j = \bmat{W}_j \bmat{X}_j {\bmat{M}^{C}}&#39;\halfinv{\left(\bmat{I}_p - \bmat{M}^C \bmat{X}_j&#39;\bmat{W}_j \bmat{X}_j{\bmat{M}^C}&#39; \right)} {\bmat{M}^{-C}}&#39;.
 \tag{1.21}
 \]</span>
 The advantage of using this form is that it only requires taking the inverse root of a <span class="math inline">\(p \times p\)</span> matrix, whereas calculating the adjustment matrix <span class="math inline">\(\bmat{A}^\sb{2f}_j\)</span> requires taking the inverse root of an <span class="math inline">\(n_j \times n_j\)</span> matrix.
 In applications involving large clusters with <span class="math inline">\(n_j &gt;&gt; p\)</span>, using <a href="#eq:ECR2f-quick">(1.21)</a> will be much more efficient in terms of memory and computational burden.</p>
+<!-- H: Confirm this footnote together. -->
 </div>
 <div id="cr3j-cr3-cr3lambda" class="section level3" number="1.1.4">
 <h3><span class="header-section-number">1.1.4</span> CR3J, CR3, CR3<span class="math inline">\(\lambda\)</span></h3>
@@ -606,7 +601,7 @@ In applications involving large clusters with <span class="math inline">\(n_j &g
 \bmat{V}^{CR3J} = \frac{J - 1}{J} \sum_{j=1}^J \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right) \left(\bs{\hat\beta}_{(j)} - \bs{\hat\beta}\right)&#39;,
 \tag{1.22}
 \]</span>
-where <span class="math inline">\(\bs{\hat\beta}_{(j)}\)</span> is the weighted least squares estimator calculated while excluding the observations from cluster <span class="math inline">\(j\)</span>.<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>
+where <span class="math inline">\(\bs{\hat\beta}_{(j)}\)</span> is the weighted least squares estimator calculated while excluding the observations from cluster <span class="math inline">\(j\)</span>.<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>
 Although not immediately apparent, <span class="math inline">\(\bmat{V}^{CR3J}\)</span> is equivalent to calculating the cluster-robust variance estimator as given in <a href="#eq:V-CR">(1.5)</a> using <span class="math inline">\(f_{3J} = \frac{J - 1}{J}\)</span> and
 <span class="math display" id="eq:jackknife-Ej">\[
 \bmat{E}^\sb{3}_j = {\bmat{A}_j^\sb{3}}&#39; \bmat{W}_j \bmat{X}_j,
@@ -795,7 +790,8 @@ Tipton, Elizabeth, and James E. Pustejovsky. 2015. <span>“Small-Sample Adjustm
 <div class="footnotes footnotes-end-of-document">
 <hr />
 <ol>
-<li id="fn1"><p>Other versions of the cluster-level jackknife might center the the deviations on the arithmetic mean of <span class="math inline">\(\bs{\hat\beta}_{(1)},...,\bs{\hat\beta}_{(J)}\)</span>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>The computational trick consists of applying the following theorem/lemma/proposition/corollary to <span class="math inline">\(\bmat{\tilde{X}}_j = \bmat{W}^{1/2}_j \bmat{X}_j \bmat{M}^{C&#39;}\)</span> instead of <span class="math inline">\(\bmat{X}_j\)</span>. For a thin <span class="math inline">\(l \times s\)</span> (<span class="math inline">\(l \geq s\)</span>) matrix <span class="math inline">\(\bmat{R}\)</span> with full column rank and <span class="math inline">\(\bmat{R}&#39;\bmat{R} \leq \bmat{I}_s\)</span>, <span class="math inline">\(\bmat{R}&#39;(\bmat{I}_l - \bmat{R} \bmat{R}&#39;)^a = (\bmat{I}_s - \bmat{R}&#39; \bmat{R})^a \bmat{R}&#39;\)</span> for any <span class="math inline">\(a\)</span>, such that the dimensions of inverse or square root matrices can be reduced from <span class="math inline">\(l \times l\)</span> to <span class="math inline">\(s \times s\)</span>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Other versions of the cluster-level jackknife might center the the deviations on the arithmetic mean of <span class="math inline">\(\bs{\hat\beta}_{(1)},...,\bs{\hat\beta}_{(J)}\)</span>.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
