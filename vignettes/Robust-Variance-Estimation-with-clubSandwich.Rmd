@@ -370,6 +370,49 @@ Rather than correcting the bias in the full variance estimator, we could correct
 
 <!-- H: Consult the cran document and lm.R, S3-methods.R under the folder R. -->
 
+- Call and show the example data set (tidyr maybe)
+
+data("ChickWeight", package = "datasets")  # call data set "Chickweight"
+
+- Explain the example model (no intercept, no main effects for Diet)
+
+lm_fit <- lm(weight ~ Time + Diet:Time, data = ChickWeight)
+
+<!-- lm_fit <- lm(weight ~ Time + Diet + Diet:Time, data = ChickWeight) -->
+<!-- lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight) -->
+
+- Print out the results and explain these are OLS standard errors, not yet cluster-robust.
+
+summary(lm_fit)
+
+- Use vcovCR() in its simplest form and explain the defaults.
+
+vcovCR(lm_fit, cluster = ChickWeight$Chick, type = "CR2")
+
+After fitting a linear model with lm() and storing it into an R object (lm_fit in the example), we can use vcovCR() from the clubSandwich package to estimate a cluster-robust variance-covariance matrix for all regression coefficient estimates in the lm object.
+To do so, we need to specify the object and cluster inside vcovCR(). (These are strictly required.)
+The object should be the fitted linear regression model, in this case lm_fit.
+The cluster should indicate information on which observations among the data set used to fit the regression model (i.e., "ChickWeight" in this example) belong to the same cluster. In this case, we take the variable vector Chick from the data frame ChickWeight.
+
+(The default for vcovCR() when applied to an lm object is the following, which tells ...
+
+vcovCR(
+  obj,
+  cluster,
+  type,
+  target = NULL,
+  inverse_var = NULL,
+  form = "sandwich",
+  ...
+))
+
+- Use vcovCR() with more specifications and explain.
+
+vcovCR(lm_fit, cluster = ChickWeight$Chick, type = "CR3")
+
+
+-- And then Wald_test()?
+
 ## `mlm()`
 
 ## `nlme::gls()`, `nlme::lme()`, and `lme4::lmer()`

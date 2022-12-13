@@ -11,7 +11,7 @@
 
 <meta name="author" content="James E. Pustejovsky and Hanna Kim" />
 
-<meta name="date" content="2022-12-12" />
+<meta name="date" content="2022-12-13" />
 
 <title>Cluster-robust variance estimation with clubSandwich</title>
 
@@ -367,7 +367,7 @@ display: none;
 
 <h1 class="title toc-ignore">Cluster-robust variance estimation with clubSandwich</h1>
 <h4 class="author">James E. Pustejovsky and Hanna Kim</h4>
-<h4 class="date">2022-12-12</h4>
+<h4 class="date">2022-12-13</h4>
 
 </div>
 
@@ -697,6 +697,43 @@ Rather than correcting the bias in the full variance estimator, we could correct
 <div id="lm" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> <code>lm()</code></h2>
 <!-- H: Consult the cran document and lm.R, S3-methods.R under the folder R. -->
+<ul>
+<li>Call and show the example data set (tidyr maybe)</li>
+</ul>
+<p>data(“ChickWeight”, package = “datasets”) # call data set “Chickweight”</p>
+<ul>
+<li>Explain the example model (no intercept, no main effects for Diet)</li>
+</ul>
+<p>lm_fit &lt;- lm(weight ~ Time + Diet:Time, data = ChickWeight)</p>
+<!-- lm_fit <- lm(weight ~ Time + Diet + Diet:Time, data = ChickWeight) -->
+<!-- lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight) -->
+<ul>
+<li>Print out the results and explain these are OLS standard errors, not yet cluster-robust.</li>
+</ul>
+<p>summary(lm_fit)</p>
+<ul>
+<li>Use vcovCR() in its simplest form and explain the defaults.</li>
+</ul>
+<p>vcovCR(lm_fit, cluster = ChickWeight$Chick, type = “CR2”)</p>
+<p>After fitting a linear model with lm() and storing it into an R object (lm_fit in the example), we can use vcovCR() from the clubSandwich package to estimate a cluster-robust variance-covariance matrix for all regression coefficient estimates in the lm object.
+To do so, we need to specify the object and cluster inside vcovCR(). (These are strictly required.)
+The object should be the fitted linear regression model, in this case lm_fit.
+The cluster should indicate information on which observations among the data set used to fit the regression model (i.e., “ChickWeight” in this example) belong to the same cluster. In this case, we take the variable vector Chick from the data frame ChickWeight.</p>
+<p>(The default for vcovCR() when applied to an lm object is the following, which tells …</p>
+<p>vcovCR(
+obj,
+cluster,
+type,
+target = NULL,
+inverse_var = NULL,
+form = “sandwich”,
+…
+))</p>
+<ul>
+<li>Use vcovCR() with more specifications and explain.</li>
+</ul>
+<p>vcovCR(lm_fit, cluster = ChickWeight$Chick, type = “CR3”)</p>
+<p>– And then Wald_test()?</p>
 </div>
 <div id="mlm" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> <code>mlm()</code></h2>
