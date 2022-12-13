@@ -308,23 +308,17 @@ overflow-y: auto;
 border: 1px solid #ddd;
 border-radius: 4px;
 }
-.tabset-dropdown > .nav-tabs > li.active:before {
-content: "";
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+content: "\e259";
 font-family: 'Glyphicons Halflings';
 display: inline-block;
 padding: 10px;
 border-right: 1px solid #ddd;
 }
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
-content: "";
-border: none;
-}
-.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
-content: "";
+content: "\e258";
 font-family: 'Glyphicons Halflings';
-display: inline-block;
-padding: 10px;
-border-right: 1px solid #ddd;
+border: none;
 }
 .tabset-dropdown > .nav-tabs > li.active {
 display: block;
@@ -592,7 +586,6 @@ Assuming that <span class="math inline">\(\bmat{W}_j = \bs\Psi_j^{-1}\)</span>, 
 \]</span>
 The advantage of using this form is that it only requires taking the inverse root of a <span class="math inline">\(p \times p\)</span> matrix, whereas calculating the adjustment matrix <span class="math inline">\(\bmat{A}^\sb{2f}_j\)</span> requires taking the inverse root of an <span class="math inline">\(n_j \times n_j\)</span> matrix.
 In applications involving large clusters with <span class="math inline">\(n_j &gt;&gt; p\)</span>, using <a href="#eq:ECR2f-quick">(1.21)</a> will be much more efficient in terms of memory and computational burden.</p>
-<!-- H: Confirm this footnote together. -->
 </div>
 <div id="cr3j-cr3-cr3lambda" class="section level3" number="1.1.4">
 <h3><span class="header-section-number">1.1.4</span> CR3J, CR3, CR3<span class="math inline">\(\lambda\)</span></h3>
@@ -678,8 +671,7 @@ It follows that using the CR4 adjustment matrices leads to an exactly unbiased v
 \bmat{A}^\sb{4}_j = {\bmat{G}_j^C}&#39; \halfinv{\left(\bmat{G}_j^C \left(\bmat{G}_j - \bmat{G}_j \bmat{M} \bmat{G}_j\right) {\bmat{G}_j^C}&#39;\right)} \bmat{G}_j^C.
 \tag{1.31}
 \]</span>
-<!-- Can this formula be simplified further? Apparently not. --></p>
-<!-- How is CR2 related to CR4 for OLS with $\psi = \sigma^2 I$? -->
+<!-- How is CR2 related to CR4 for OLS with $\psi = \sigma^2 I$? --></p>
 <p>A further benefit of the CR4 adjustment matrices is that they can be tailored to a subset of the covariates that are of focal interest.
 Rather than correcting the bias in the full variance estimator, we could correct the bias for just one or more of the predictors, so that <span class="math inline">\(\E\left(\bmat{k}&#39; \bmat{V}^{CR} \bmat{k}\right) = \Var\left(\bmat{k}&#39; \bs{\hat\beta}\right)\)</span> for a <span class="math inline">\(p \times k\)</span> matrix of contrasts <span class="math inline">\(\bmat{k}\)</span> with <span class="math inline">\(k \leq p\)</span>, even if unbiasedness does not hold for the full estimator <span class="math inline">\(\bmat{V}^{CR}\)</span>.</p>
 <!-- H: Can we explain the above more specifically? Would this be related to the fact that CR4 corrects the full score distribution instead of the residuals? -->
@@ -694,6 +686,7 @@ Rather than correcting the bias in the full variance estimator, we could correct
 </div>
 <div id="model-specific-considerations" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Model-specific considerations</h1>
+<pre class="r"><code>library(clubSandwich)</code></pre>
 <div id="lm" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span> <code>lm()</code></h2>
 <!-- H: Consult the cran document and lm.R, S3-methods.R under the folder R. -->
@@ -704,17 +697,46 @@ Rather than correcting the bias in the full variance estimator, we could correct
 <ul>
 <li>Explain the example model (no intercept, no main effects for Diet)</li>
 </ul>
-<p>lm_fit &lt;- lm(weight ~ Time + Diet:Time, data = ChickWeight)</p>
-<!-- lm_fit <- lm(weight ~ Time + Diet + Diet:Time, data = ChickWeight) -->
-<!-- lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight) -->
+<pre class="r"><code>lm_fit &lt;- lm(weight ~ Time + Diet:Time, data = ChickWeight)</code></pre>
 <ul>
 <li>Print out the results and explain these are OLS standard errors, not yet cluster-robust.</li>
 </ul>
-<p>summary(lm_fit)</p>
+<pre class="r"><code>summary(lm_fit)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = weight ~ Time + Diet:Time, data = ChickWeight)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -135.727  -15.696   -0.928   13.141  129.109 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  27.8588     2.6596  10.475  &lt; 2e-16 ***
+## Time          7.0492     0.2573  27.392  &lt; 2e-16 ***
+## Time:Diet2    1.6112     0.3044   5.294 1.71e-07 ***
+## Time:Diet3    3.7383     0.3044  12.282  &lt; 2e-16 ***
+## Time:Diet4    2.8614     0.3086   9.273  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 34.08 on 573 degrees of freedom
+## Multiple R-squared:  0.7717, Adjusted R-squared:  0.7701 
+## F-statistic: 484.1 on 4 and 573 DF,  p-value: &lt; 2.2e-16</code></pre>
 <ul>
 <li>Use vcovCR() in its simplest form and explain the defaults.</li>
 </ul>
-<p>vcovCR(lm_fit, cluster = ChickWeight$Chick, type = “CR2”)</p>
+<pre class="r"><code>lm_vcov &lt;- vcovCR(lm_fit, cluster = ChickWeight$Chick, type = &quot;CR2&quot;)
+sqrt(diag(lm_vcov))</code></pre>
+<pre><code>## (Intercept)        Time  Time:Diet2  Time:Diet3  Time:Diet4 
+##   1.9828727   0.6603580   1.1696522   1.0580941   0.7359747</code></pre>
+<pre class="r"><code>coef_test(lm_fit, vcov = lm_vcov)</code></pre>
+<pre><code>##        Coef. Estimate    SE t-stat d.f. (Satt) p-val (Satt) Sig.
+##  (Intercept)    27.86 1.983  14.05        48.7      &lt; 0.001  ***
+##         Time     7.05 0.660  10.67        31.4      &lt; 0.001  ***
+##   Time:Diet2     1.61 1.170   1.38        19.0      0.18434     
+##   Time:Diet3     3.74 1.058   3.53        19.0      0.00222   **
+##   Time:Diet4     2.86 0.736   3.89        18.4      0.00104   **</code></pre>
 <p>After fitting a linear model with lm() and storing it into an R object (lm_fit in the example), we can use vcovCR() from the clubSandwich package to estimate a cluster-robust variance-covariance matrix for all regression coefficient estimates in the lm object.
 To do so, we need to specify the object and cluster inside vcovCR(). (These are strictly required.)
 The object should be the fitted linear regression model, in this case lm_fit.
@@ -733,7 +755,6 @@ form = “sandwich”,
 <li>Use vcovCR() with more specifications and explain.</li>
 </ul>
 <p>vcovCR(lm_fit, cluster = ChickWeight$Chick, type = “CR3”)</p>
-<p>– And then Wald_test()?</p>
 </div>
 <div id="mlm" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> <code>mlm()</code></h2>
@@ -827,7 +848,7 @@ Tipton, Elizabeth, and James E. Pustejovsky. 2015. <span>“Small-Sample Adjustm
 <div class="footnotes footnotes-end-of-document">
 <hr />
 <ol>
-<li id="fn1"><p>The computational trick consists of applying the following theorem/lemma/proposition/corollary to <span class="math inline">\(\bmat{\tilde{X}}_j = \bmat{W}^{1/2}_j \bmat{X}_j \bmat{M}^{C&#39;}\)</span> instead of <span class="math inline">\(\bmat{X}_j\)</span>. For a thin <span class="math inline">\(l \times s\)</span> (<span class="math inline">\(l \geq s\)</span>) matrix <span class="math inline">\(\bmat{R}\)</span> with full column rank and <span class="math inline">\(\bmat{R}&#39;\bmat{R} \leq \bmat{I}_s\)</span>, <span class="math inline">\(\bmat{R}&#39;(\bmat{I}_l - \bmat{R} \bmat{R}&#39;)^a = (\bmat{I}_s - \bmat{R}&#39; \bmat{R})^a \bmat{R}&#39;\)</span> for any <span class="math inline">\(a\)</span>, such that the dimensions of inverse or square root matrices can be reduced from <span class="math inline">\(l \times l\)</span> to <span class="math inline">\(s \times s\)</span>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>The computational trick consists of applying the following lemma. For a thin <span class="math inline">\(l \times s\)</span> (<span class="math inline">\(l \geq s\)</span>) matrix <span class="math inline">\(\bmat{R}\)</span> with full column rank and <span class="math inline">\(\bmat{R}&#39;\bmat{R} \leq \bmat{I}_s\)</span>, <span class="math inline">\(\bmat{R}&#39;(\bmat{I}_l - \bmat{R} \bmat{R}&#39;)^a = (\bmat{I}_s - \bmat{R}&#39; \bmat{R})^a \bmat{R}&#39;\)</span> for any <span class="math inline">\(a\)</span>, such that the dimensions of inverse or square root matrices can be reduced from <span class="math inline">\(l \times l\)</span> to <span class="math inline">\(s \times s\)</span>. To apply this to the CR2f adjustment matrices, we take to <span class="math inline">\(\bmat{R} = \bmat{W}^{1/2}_j \bmat{X}_j \bmat{M}^{C&#39;}\)</span>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 <li id="fn2"><p>Other versions of the cluster-level jackknife might center the the deviations on the arithmetic mean of <span class="math inline">\(\bs{\hat\beta}_{(1)},...,\bs{\hat\beta}_{(J)}\)</span>.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>

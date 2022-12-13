@@ -252,9 +252,7 @@ $$
 The advantage of using this form is that it only requires taking the inverse root of a $p \times p$ matrix, whereas calculating the adjustment matrix $\bmat{A}^\sb{2f}_j$ requires taking the inverse root of an $n_j \times n_j$ matrix. 
 In applications involving large clusters with $n_j >> p$, using \@ref(eq:ECR2f-quick) will be much more efficient in terms of memory and computational burden. 
 
-[^niccodemi-trick]: The computational trick consists of applying the following theorem/lemma/proposition/corollary to $\bmat{\tilde{X}}_j = \bmat{W}^{1/2}_j \bmat{X}_j \bmat{M}^{C'}$ instead of $\bmat{X}_j$. For a thin $l \times s$ ($l \geq s$) matrix $\bmat{R}$ with full column rank and $\bmat{R}'\bmat{R} \leq \bmat{I}_s$,  $\bmat{R}'(\bmat{I}_l - \bmat{R} \bmat{R}')^a = (\bmat{I}_s - \bmat{R}' \bmat{R})^a \bmat{R}'$ for any $a$, such that the dimensions of inverse or square root matrices can be reduced from $l \times l$ to $s \times s$. 
-
-<!-- H: Confirm this footnote together. -->
+[^niccodemi-trick]: The computational trick consists of applying the following lemma. For a thin $l \times s$ ($l \geq s$) matrix $\bmat{R}$ with full column rank and $\bmat{R}'\bmat{R} \leq \bmat{I}_s$,  $\bmat{R}'(\bmat{I}_l - \bmat{R} \bmat{R}')^a = (\bmat{I}_s - \bmat{R}' \bmat{R})^a \bmat{R}'$ for any $a$, such that the dimensions of inverse or square root matrices can be reduced from $l \times l$ to $s \times s$. To apply this to the CR2f adjustment matrices, we take to $\bmat{R} = \bmat{W}^{1/2}_j \bmat{X}_j \bmat{M}^{C'}$. 
 
 ### CR3J, CR3, CR3$\lambda$
 
@@ -350,8 +348,6 @@ $$
 \bmat{A}^\sb{4}_j = {\bmat{G}_j^C}' \halfinv{\left(\bmat{G}_j^C \left(\bmat{G}_j - \bmat{G}_j \bmat{M} \bmat{G}_j\right) {\bmat{G}_j^C}'\right)} \bmat{G}_j^C.
 (\#eq:CR4-inv)
 $$
-<!-- Can this formula be simplified further? Apparently not. -->
-
 <!-- How is CR2 related to CR4 for OLS with $\psi = \sigma^2 I$? -->
 
 A further benefit of the CR4 adjustment matrices is that they can be tailored to a subset of the covariates that are of focal interest. 
@@ -366,6 +362,10 @@ Rather than correcting the bias in the full variance estimator, we could correct
 
 # Model-specific considerations
 
+```{r}
+library(clubSandwich)
+```
+
 ## `lm()`
 
 <!-- H: Consult the cran document and lm.R, S3-methods.R under the folder R. -->
@@ -375,19 +375,24 @@ Rather than correcting the bias in the full variance estimator, we could correct
 data("ChickWeight", package = "datasets")  # call data set "Chickweight"
 
 - Explain the example model (no intercept, no main effects for Diet)
-
+```{r}
 lm_fit <- lm(weight ~ Time + Diet:Time, data = ChickWeight)
-
-<!-- lm_fit <- lm(weight ~ Time + Diet + Diet:Time, data = ChickWeight) -->
-<!-- lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight) -->
+```
 
 - Print out the results and explain these are OLS standard errors, not yet cluster-robust.
 
+```{r}
 summary(lm_fit)
+```
 
 - Use vcovCR() in its simplest form and explain the defaults.
 
-vcovCR(lm_fit, cluster = ChickWeight$Chick, type = "CR2")
+```{r}
+lm_vcov <- vcovCR(lm_fit, cluster = ChickWeight$Chick, type = "CR2")
+sqrt(diag(lm_vcov))
+
+coef_test(lm_fit, vcov = lm_vcov)
+```
 
 After fitting a linear model with lm() and storing it into an R object (lm_fit in the example), we can use vcovCR() from the clubSandwich package to estimate a cluster-robust variance-covariance matrix for all regression coefficient estimates in the lm object.
 To do so, we need to specify the object and cluster inside vcovCR(). (These are strictly required.)
@@ -409,9 +414,6 @@ vcovCR(
 - Use vcovCR() with more specifications and explain.
 
 vcovCR(lm_fit, cluster = ChickWeight$Chick, type = "CR3")
-
-
--- And then Wald_test()?
 
 ## `mlm()`
 
