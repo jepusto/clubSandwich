@@ -93,6 +93,65 @@ and
 \end{equation}
 Theorem 2 claimed that if the weight matrices are inverse of the working model, such that $\bm{W}_i = \bs\Phi_i^{-1}$ for $i = 1,...,m$, then $\bm{\tilde{B}}_i^{+1/2} = \bm{B}_i^{+1/2}$ and hence $\bm{\tilde{A}}_i = \bm{A}_i$. The implication is that the cluster-specific fixed effects can be ignored when calculating the adjustment matrices. However, the claimed equivalence does not actually hold. The proof of Theorem 2 as given in the supplementary materials of @pustejovsky2018small relied on a Woodbury identity for generalized inverses that does not hold for $\bm{B}_i$ because necessary rank conditions are not satisfied.
 
+```{r}
+library(clubSandwich)
+ni <- c(2,4,6)
+m <- length(ni)
+ri <- lapply(ni, \(x) c(1L, rep(0L, x - 1L)))
+wi <- lapply(ri, \(r) length(r) * (r + (1 - r) / (length(r) - 1)))
+rddi_ols <- lapply(ri, \(r) r - mean(r))
+rddi_wt <- lapply(ri, \(r) r - 1 / 2)
+clust <- rep(LETTERS[1:m], ni)
+yi <- rnorm(sum(ni))
+yddi <- tapply(yi, clust, \(x) x - mean(x))
+dat <- data.frame(
+  y = yi, 
+  y_dd = unlist(yddi),
+  R = unlist(ri),
+  R_dd_ols = unlist(rddi_ols),
+  R_dd_wt = unlist(rddi_wt),
+  w = unlist(wi),
+  clust = clust
+)
+
+ols_fit <- lm(y ~ clust + R, data = dat)
+A_ols_full <- attr(vcovCR(ols_fit, type = "CR2", cluster = dat$clust),"adjustments")
+emat_ols_full <- mapply(\(r, a) a %*% r, r = rddi_ols, a = A_ols_full)
+
+ols_absorbed <- lm(y_dd ~ 0 + R_dd_ols, data = dat)
+A_ols_absorb <- attr(vcovCR(ols_absorbed, type = "CR2", cluster = dat$clust), "adjustments")
+emat_ols_absorb <- mapply(\(r, a) a %*% r, r = rddi_ols, a = A_ols_absorb)
+# si_ols_absorb <- mapply(\(x,e) sum(x * e), x = emat_ols_absorb, e = split(residuals(ols_absorbed), clust))
+# MR_ols <- 1 / sum(sapply(rddi_ols, \(r) sum(r^2)))
+# MR_ols * si_ols_absorb
+# vcovCR(ols_absorbed, type = "CR2", cluster = dat$clust, form = "estfun")
+# sum(si_ols_absorb^2) * MR_ols^2
+# vcovCR(ols_absorbed, type = "CR2", cluster = dat$clust)
+# vcovCR(ols_fit, type = "CR2", cluster = dat$clust)["R","R"]
+
+wls_fit <- lm(y ~ clust + R, weights = w, data = dat)
+A_wt_full <- attr(vcovCR(wls_fit, type = "CR2", cluster = dat$clust),"adjustments")
+emat_wt_full <- mapply(\(r, w, a) a %*% (w * r), r = rddi_wt, w = wi, a = A_wt_full)
+# si_wt_full <- mapply(\(x,e) sum(x * e), x = emat_wt_full, e = split(residuals(wls_fit), clust))
+# MR_wt <- 1 / sum(mapply(\(r,w) sum(w * r^2), r = rddi_wt, w = wi))
+# MR_wt * sum(si_wt_full^2) * MR_wt
+# vcovCR(wls_fit, type = "CR2", cluster = dat$clust)["R","R"]
+
+wls_absorbed <- lm(y_dd ~ 0 + R_dd_wt, weights = w, data = dat)
+A_wt_absorb <- attr(vcovCR(wls_absorbed, type = "CR2", cluster = dat$clust), "adjustments")
+emat_wt_absorb <- mapply(\(r, w, a) a %*% (w * r), r = rddi_wt, w = wi, a = A_wt_absorb)
+# si_wt_absorb <- mapply(\(x,e) sum(x * e), x = emat_wt_absorb, e = split(residuals(wls_absorbed), clust))
+# MR_wt * sum(si_wt_absorb^2) * MR_wt
+# vcovCR(wls_absorbed, type = "CR2", cluster = dat$clust)
+
+data.frame(
+  ols_full = unlist(emat_ols_full),
+  ols_absorb = unlist(emat_ols_absorb),
+  wt_full = unlist(emat_wt_full),
+  wt_absorb = unlist(emat_wt_absorb)
+)
+```
+
 # A revised Theorem 2
 
 The implication of the original Theorem 2 was that using the modified adjustment matrices $\tilde{\bm{A}}_i$ to calculate the CR2 estimator yields the same result as using the full adjustment matrices $\bm{A}_i$. Although this does not hold under the general conditions given above, a modified version of the theorem does hold for the more limited case of ordinary (unweighted) least squares regression with an "independence" working model. The precise conditions are given in the following theorem.  
