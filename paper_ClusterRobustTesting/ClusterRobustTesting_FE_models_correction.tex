@@ -166,10 +166,14 @@ Pustejovsky and Tipton (2018) considered how to implement cluster-robust
 variance estimators for fixed effects models estimated by weighted (or
 unweighted) least squares. Theorem 2 of the paper concerns a
 computational short cut for a certain cluster-robust variance estimator
-in models with cluster-specific fixed effects. The theorem is incorrect
-as stated. In this correction, we review the CR2 variance estimator,
-describe the assertion of the theorem as originally stated, and explain
-the error. We then provide a revised version of the theorem.
+in models with cluster-specific fixed effects. It claimed that this
+short cut works for models estimated by generalized least squares, as
+long as the weights are taken to be inverse of the working model.
+However, the theorem is incorrect. In this corrigendum, we review the
+CR2 variance estimator, describe the assertion of the theorem as
+originally stated, and explain the error. We then provide a revised
+version of the theorem, which holds only under more limited conditions,
+for models estimated by ordinary least squares.
 \end{abstract}
 
 \noindent%
@@ -225,8 +229,8 @@ Let \(N = \sum_{i=1}^m n_i\) be the total sample size. Let
 of predictors that vary across clusters and
 \(\mathbf{X}_i = \left[ \mathbf{R}_i \ \mathbf{S}_i \ \mathbf{T}_i \right]\)
 be the full set of predictors. Let \(\mathbf{R}\), \(\mathbf{S}\),
-\(\mathbf{T}\), \(\mathbf{U}\), and \(\mathbf{X}\) denote the stacked
-versions of the cluster-specific matrices (i.e.,
+\(\mathbf{T}\), \(\mathbf{U}\), \(\mathbf{X}\), and \(\mathbf{y}\)
+denote the stacked versions of the cluster-specific matrices (i.e.,
 \(\mathbf{R} = \left[\mathbf{R}_1' \ \mathbf{R}_2' \ \cdots \ \mathbf{R}_m'\right]'\),
 etc.). Let \(\mathbf{W} = \bigoplus_{i=1}^m \mathbf{W}_i\) and
 \(\boldsymbol\Phi = \bigoplus_{i=1}^m \boldsymbol\Phi_i\). For a generic
@@ -241,15 +245,17 @@ rows of cluster \(i\) from the full set of observations, such that
 \(\mathbf{\Phi}_i\).
 
 These operators provide a means to define absorbed versions of the
-predictors. Let
+predictors and the outcome. Let
 \(\mathbf{\ddot{S}} = \left(\mathbf{I} - \mathbf{H}_{\mathbf{T}}\right) \mathbf{S}\)
 be the covariates after absorbing the cluster-specific effects, let
 \(\mathbf{\ddot{U}} = \left(\mathbf{I} - \mathbf{H}_{\mathbf{T}}\right) \mathbf{U}\)
-be an absorbed version of the focal predictors and the covariates, and
-let
+be an absorbed version of the focal predictors and the covariates, let
 \(\mathbf{\ddot{R}} = \left(\mathbf{I} - \mathbf{H}_{\mathbf{\ddot{S}}}\right)\left(\mathbf{I} - \mathbf{H}_{\mathbf{T}}\right) \mathbf{R}\)
 be the focal predictors after absorbing the covariates and the
-cluster-specific fixed effects.
+cluster-specific fixed effects, and let
+\(\mathbf{e} = \left(\mathbf{I} - \mathbf{H}_{\mathbf{\ddot{R}}}\right)\left(\mathbf{I} - \mathbf{H}_{\mathbf{\ddot{S}}}\right)\left(\mathbf{I} - \mathbf{H}_{\mathbf{T}}\right) \mathbf{y}\)
+denote the vector of residuals, with
+\(\mathbf{e}_i = \mathbf{C}_i\mathbf{e}\).
 
 With this notation established, the CR2 variance estimator has the form
 \begin{equation}
@@ -309,6 +315,21 @@ hold. The proof of Theorem 2 as given in the supplementary materials of
 Pustejovsky and Tipton (2018) relied on a Woodbury identity for
 generalized inverses that does not hold for \(\mathbf{B}_i\) because
 necessary rank conditions are not satisfied.
+
+We describe a simple numerical example that contradicts the original
+statement of Theorem 2. Consider a block-randomized experiment with
+\(m = 3\) blocks, of sizes \(n_1 = 2\), \(n_2 = 4\), and \(n_3 = 6\). In
+each block, a single observation receives treatment and the remaining
+observations receive the control condition, so that
+\(\mathbf{R}_i = \left[1 \ 0 \cdots 0\right]'\), \(\mathbf{T}\) consists
+of indicators for each block, and there are no additional covariates.
+The model is then \[
+\mathbf{y}_i = \mathbf{R}_i \beta + \mu_i + \boldsymbol\epsilon_i
+\] Assume that treatment impacts are heterogeneous such that
+\(\text{Var}(\boldsymbol\epsilon_{1i}) = \sigma^2 + \tau^2\) and
+\(\text{Var}(\boldsymbol\epsilon_{ji}) = \sigma^2\) for \(j > 1\), where
+\(\tau^2\) is known. Consider estimating the model using weighted least
+squares with inverse-variance weights.
 
 \begin{Shaded}
 \begin{Highlighting}[]
