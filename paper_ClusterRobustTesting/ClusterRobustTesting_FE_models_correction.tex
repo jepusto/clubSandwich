@@ -23,47 +23,6 @@
 %% load any required packages here
 
 
-% Pandoc syntax highlighting
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{248,248,248}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\BuiltInTok}[1]{#1}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
-\newcommand{\ExtensionTok}[1]{#1}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ImportTok}[1]{#1}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\NormalTok}[1]{#1}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 
 % tightlist command for lists without linebreak
 \providecommand{\tightlist}{%
@@ -110,6 +69,7 @@
 \usepackage{multirow}
 \usepackage{float}    % for fig.pos='H'
 \usepackage{rotfloat} % for sidewaysfigure
+\hypersetup{hidelinks}
 \newcommand{\Prob}{\text{Pr}}
 \newcommand{\E}{\text{E}}
 \newcommand{\Cov}{\text{Cov}}
@@ -119,6 +79,20 @@
 \newcommand{\tr}{\text{tr}}
 \newcommand{\bm}{\mathbf}
 \newcommand{\bs}{\boldsymbol}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 
 \begin{document}
 
@@ -172,8 +146,8 @@ long as the weights are taken to be inverse of the working model.
 However, the theorem is incorrect. In this corrigendum, we review the
 CR2 variance estimator, describe the assertion of the theorem as
 originally stated, and explain the error. We then provide a revised
-version of the theorem, which holds only under more limited conditions,
-for models estimated by ordinary least squares.
+version of the theorem, which holds for the more limited set of models
+estimated by ordinary least squares.
 \end{abstract}
 
 \noindent%
@@ -317,107 +291,70 @@ generalized inverses that does not hold for \(\mathbf{B}_i\) because
 necessary rank conditions are not satisfied.
 
 We describe a simple numerical example that contradicts the original
-statement of Theorem 2. Consider a block-randomized experiment with
-\(m = 3\) blocks, of sizes \(n_1 = 2\), \(n_2 = 4\), and \(n_3 = 6\). In
-each block, a single observation receives treatment and the remaining
-observations receive the control condition, so that
-\(\mathbf{R}_i = \left[1 \ 0 \cdots 0\right]'\), \(\mathbf{T}\) consists
-of indicators for each block, and there are no additional covariates.
-The model is then \[
-\mathbf{y}_i = \mathbf{R}_i \beta + \mu_i + \boldsymbol\epsilon_i
-\] Assume that treatment impacts are heterogeneous such that
-\(\text{Var}(\boldsymbol\epsilon_{1i}) = \sigma^2 + \tau^2\) and
-\(\text{Var}(\boldsymbol\epsilon_{ji}) = \sigma^2\) for \(j > 1\), where
-\(\tau^2\) is known. Consider estimating the model using weighted least
-squares with inverse-variance weights.
+statement of Theorem 2. Consider a design with \(m = 3\) clusters, of
+sizes \(n_1 = 2\), \(n_2 = 3\), and \(n_3 = 5\) for which we have the
+model \[
+y_{it} = \beta_0 \times t + \mu_i + \epsilon_{it},
+\] where the errors are heteroskedastic with
+\(\text{Var}(\epsilon_{it}) = \alpha \times t\). We then have
+\(\mathbf{y}_i = \left[ y_{i1} \cdots y_{in_i}\right]'\),
+\(\mathbf{R}_i = \left[1 \ 2 \ \cdots \ n_i\right]'\),
+\(\mathbf{T} = \bigoplus_{i=1}^3 \mathbf{1}_i\), and
+\(\boldsymbol\Phi_i = \text{diag}(1,2,...,n_i)\).
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{library}\NormalTok{(clubSandwich)}
-\end{Highlighting}
-\end{Shaded}
+If the model is estimated using inverse variance weights, so that
+\(\mathbf{W}_i = \text{diag}\left(1, \frac{1}{2}, \cdots, \frac{1}{n_i}\right)\),
+then the CR2 adjustment matrices differ depending on whether they are
+calculated from the full model or from the model after absorbing the
+fixed effects. Table \ref{tab:example} reports the product of the
+adjustment matrices and the absorbed design matrix for the weighted
+least squares estimator. The column labelled Full uses the adjustment
+matrices based on the full design (i.e.,
+\(\mathbf{A}_i \mathbf{W}_i \mathbf{\ddot{R}}_i\), with \(\mathbf{A}_i\)
+calculated from Equation \ref{eq:A-matrix}) or based on the absorbed
+design (i.e., \(\mathbf{\tilde{A}}_i \mathbf{W}_i \mathbf{\ddot{R}}_i\),
+with \(\mathbf{A}_i\) calculated from Equation \ref{eq:A-modified}). The
+values differ, contradicting the original statement of Theorem 2. The
+final row of the table reports the value of \(V^{CR2}\) based on fitting
+the model using the outcomes reported in the second column of the table.
+The difference in adjustment matrices leads to differences in the value
+of the variance estimator.
 
-\begin{verbatim}
-## Registered S3 method overwritten by 'clubSandwich':
-##   method    from    
-##   bread.mlm sandwich
-\end{verbatim}
+\begin{table}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{ni }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{4}\NormalTok{,}\DecValTok{6}\NormalTok{)}
-\NormalTok{m }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(ni)}
-\NormalTok{ri }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(ni, \textbackslash{}(x) }\FunctionTok{c}\NormalTok{(1L, }\FunctionTok{rep}\NormalTok{(0L, x }\SpecialCharTok{{-}}\NormalTok{ 1L)))}
-\NormalTok{wi }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(ri, \textbackslash{}(r) }\FunctionTok{length}\NormalTok{(r) }\SpecialCharTok{*}\NormalTok{ (r }\SpecialCharTok{+}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ r) }\SpecialCharTok{/}\NormalTok{ (}\FunctionTok{length}\NormalTok{(r) }\SpecialCharTok{{-}} \DecValTok{1}\NormalTok{)))}
-\NormalTok{rddi\_ols }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(ri, \textbackslash{}(r) r }\SpecialCharTok{{-}} \FunctionTok{mean}\NormalTok{(r))}
-\NormalTok{rddi\_wt }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(ri, \textbackslash{}(r) r }\SpecialCharTok{{-}} \DecValTok{1} \SpecialCharTok{/} \DecValTok{2}\NormalTok{)}
-\NormalTok{clust }\OtherTok{\textless{}{-}} \FunctionTok{rep}\NormalTok{(LETTERS[}\DecValTok{1}\SpecialCharTok{:}\NormalTok{m], ni)}
-\NormalTok{yi }\OtherTok{\textless{}{-}} \FunctionTok{rnorm}\NormalTok{(}\FunctionTok{sum}\NormalTok{(ni))}
-\NormalTok{yddi }\OtherTok{\textless{}{-}} \FunctionTok{tapply}\NormalTok{(yi, clust, \textbackslash{}(x) x }\SpecialCharTok{{-}} \FunctionTok{mean}\NormalTok{(x))}
-\NormalTok{dat }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
-  \AttributeTok{y =}\NormalTok{ yi, }
-  \AttributeTok{y\_dd =} \FunctionTok{unlist}\NormalTok{(yddi),}
-  \AttributeTok{R =} \FunctionTok{unlist}\NormalTok{(ri),}
-  \AttributeTok{R\_dd\_ols =} \FunctionTok{unlist}\NormalTok{(rddi\_ols),}
-  \AttributeTok{R\_dd\_wt =} \FunctionTok{unlist}\NormalTok{(rddi\_wt),}
-  \AttributeTok{w =} \FunctionTok{unlist}\NormalTok{(wi),}
-  \AttributeTok{clust =}\NormalTok{ clust}
-\NormalTok{)}
+\caption{\label{tab:example}Adjustment matrices based on weighted or unweighted least squares}
+\centering
+\begin{tabular}[t]{lrrrr}
+\toprule
+\multicolumn{2}{c}{ } & \multicolumn{2}{c}{Weighted} & \multicolumn{1}{c}{Unweighted} \\
+\cmidrule(l{3pt}r{3pt}){3-4} \cmidrule(l{3pt}r{3pt}){5-5}
+Cluster & Y & Full & Absorbed & Full/Absorbed\\
+\midrule
+ & 1.6 & -0.110 & -0.342 & -0.510\\
 
-\NormalTok{ols\_fit }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ clust }\SpecialCharTok{+}\NormalTok{ R, }\AttributeTok{data =}\NormalTok{ dat)}
-\NormalTok{A\_ols\_full }\OtherTok{\textless{}{-}} \FunctionTok{attr}\NormalTok{(}\FunctionTok{vcovCR}\NormalTok{(ols\_fit, }\AttributeTok{type =} \StringTok{"CR2"}\NormalTok{, }\AttributeTok{cluster =}\NormalTok{ dat}\SpecialCharTok{$}\NormalTok{clust),}\StringTok{"adjustments"}\NormalTok{)}
-\NormalTok{emat\_ols\_full }\OtherTok{\textless{}{-}} \FunctionTok{mapply}\NormalTok{(\textbackslash{}(r, a) a }\SpecialCharTok{\%*\%}\NormalTok{ r, }\AttributeTok{r =}\NormalTok{ rddi\_ols, }\AttributeTok{a =}\NormalTok{ A\_ols\_full)}
+\multirow[t]{-2}{*}{\raggedright\arraybackslash A} & 4.1 & 0.441 & 0.345 & 0.510\\
 
-\NormalTok{ols\_absorbed }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y\_dd }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+}\NormalTok{ R\_dd\_ols, }\AttributeTok{data =}\NormalTok{ dat)}
-\NormalTok{A\_ols\_absorb }\OtherTok{\textless{}{-}} \FunctionTok{attr}\NormalTok{(}\FunctionTok{vcovCR}\NormalTok{(ols\_absorbed, }\AttributeTok{type =} \StringTok{"CR2"}\NormalTok{, }\AttributeTok{cluster =}\NormalTok{ dat}\SpecialCharTok{$}\NormalTok{clust), }\StringTok{"adjustments"}\NormalTok{)}
-\NormalTok{emat\_ols\_absorb }\OtherTok{\textless{}{-}} \FunctionTok{mapply}\NormalTok{(\textbackslash{}(r, a) a }\SpecialCharTok{\%*\%}\NormalTok{ r, }\AttributeTok{r =}\NormalTok{ rddi\_ols, }\AttributeTok{a =}\NormalTok{ A\_ols\_absorb)}
-\CommentTok{\# si\_ols\_absorb \textless{}{-} mapply(\textbackslash{}(x,e) sum(x * e), x = emat\_ols\_absorb, e = split(residuals(ols\_absorbed), clust))}
-\CommentTok{\# MR\_ols \textless{}{-} 1 / sum(sapply(rddi\_ols, \textbackslash{}(r) sum(r\^{}2)))}
-\CommentTok{\# MR\_ols * si\_ols\_absorb}
-\CommentTok{\# vcovCR(ols\_absorbed, type = "CR2", cluster = dat$clust, form = "estfun")}
-\CommentTok{\# sum(si\_ols\_absorb\^{}2) * MR\_ols\^{}2}
-\CommentTok{\# vcovCR(ols\_absorbed, type = "CR2", cluster = dat$clust)}
-\CommentTok{\# vcovCR(ols\_fit, type = "CR2", cluster = dat$clust)["R","R"]}
+ & 2.6 & -0.174 & -0.689 & -1.091\\
 
-\NormalTok{wls\_fit }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ clust }\SpecialCharTok{+}\NormalTok{ R, }\AttributeTok{weights =}\NormalTok{ w, }\AttributeTok{data =}\NormalTok{ dat)}
-\NormalTok{A\_wt\_full }\OtherTok{\textless{}{-}} \FunctionTok{attr}\NormalTok{(}\FunctionTok{vcovCR}\NormalTok{(wls\_fit, }\AttributeTok{type =} \StringTok{"CR2"}\NormalTok{, }\AttributeTok{cluster =}\NormalTok{ dat}\SpecialCharTok{$}\NormalTok{clust),}\StringTok{"adjustments"}\NormalTok{)}
-\NormalTok{emat\_wt\_full }\OtherTok{\textless{}{-}} \FunctionTok{mapply}\NormalTok{(\textbackslash{}(r, w, a) a }\SpecialCharTok{\%*\%}\NormalTok{ (w }\SpecialCharTok{*}\NormalTok{ r), }\AttributeTok{r =}\NormalTok{ rddi\_wt, }\AttributeTok{w =}\NormalTok{ wi, }\AttributeTok{a =}\NormalTok{ A\_wt\_full)}
-\CommentTok{\# si\_wt\_full \textless{}{-} mapply(\textbackslash{}(x,e) sum(x * e), x = emat\_wt\_full, e = split(residuals(wls\_fit), clust))}
-\CommentTok{\# MR\_wt \textless{}{-} 1 / sum(mapply(\textbackslash{}(r,w) sum(w * r\^{}2), r = rddi\_wt, w = wi))}
-\CommentTok{\# MR\_wt * sum(si\_wt\_full\^{}2) * MR\_wt}
-\CommentTok{\# vcovCR(wls\_fit, type = "CR2", cluster = dat$clust)["R","R"]}
+ & 1.0 & 0.409 & 0.203 & 0.000\\
 
-\NormalTok{wls\_absorbed }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y\_dd }\SpecialCharTok{\textasciitilde{}} \DecValTok{0} \SpecialCharTok{+}\NormalTok{ R\_dd\_wt, }\AttributeTok{weights =}\NormalTok{ w, }\AttributeTok{data =}\NormalTok{ dat)}
-\NormalTok{A\_wt\_absorb }\OtherTok{\textless{}{-}} \FunctionTok{attr}\NormalTok{(}\FunctionTok{vcovCR}\NormalTok{(wls\_absorbed, }\AttributeTok{type =} \StringTok{"CR2"}\NormalTok{, }\AttributeTok{cluster =}\NormalTok{ dat}\SpecialCharTok{$}\NormalTok{clust), }\StringTok{"adjustments"}\NormalTok{)}
-\NormalTok{emat\_wt\_absorb }\OtherTok{\textless{}{-}} \FunctionTok{mapply}\NormalTok{(\textbackslash{}(r, w, a) a }\SpecialCharTok{\%*\%}\NormalTok{ (w }\SpecialCharTok{*}\NormalTok{ r), }\AttributeTok{r =}\NormalTok{ rddi\_wt, }\AttributeTok{w =}\NormalTok{ wi, }\AttributeTok{a =}\NormalTok{ A\_wt\_absorb)}
-\CommentTok{\# si\_wt\_absorb \textless{}{-} mapply(\textbackslash{}(x,e) sum(x * e), x = emat\_wt\_absorb, e = split(residuals(wls\_absorbed), clust))}
-\CommentTok{\# MR\_wt * sum(si\_wt\_absorb\^{}2) * MR\_wt}
-\CommentTok{\# vcovCR(wls\_absorbed, type = "CR2", cluster = dat$clust)}
+\multirow[t]{-3}{*}{\raggedright\arraybackslash B} & 7.6 & 0.647 & 0.518 & 1.091\\
 
-\FunctionTok{data.frame}\NormalTok{(}
-  \AttributeTok{ols\_full =} \FunctionTok{unlist}\NormalTok{(emat\_ols\_full),}
-  \AttributeTok{ols\_absorb =} \FunctionTok{unlist}\NormalTok{(emat\_ols\_absorb),}
-  \AttributeTok{wt\_full =} \FunctionTok{unlist}\NormalTok{(emat\_wt\_full),}
-  \AttributeTok{wt\_absorb =} \FunctionTok{unlist}\NormalTok{(emat\_wt\_absorb)}
-\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+ & 6.7 & -0.353 & -1.954 & -4.472\\
 
-\begin{verbatim}
-##      ols_full ols_absorb   wt_full  wt_absorb
-## 1   0.5735393  0.5735393  1.043413  1.0434125
-## 2  -0.5735393 -0.5735393 -1.043413 -1.0434125
-## 3   0.9375000  0.9375000  1.026980  2.3898897
-## 4  -0.3125000 -0.3125000 -1.026980 -0.7734339
-## 5  -0.3125000 -0.3125000 -1.026980 -0.7734339
-## 6  -0.3125000 -0.3125000 -1.026980 -0.7734339
-## 7   1.0758287  1.0758287  1.150447  4.5774116
-## 8  -0.2151657 -0.2151657 -1.150447 -1.0015292
-## 9  -0.2151657 -0.2151657 -1.150447 -1.0015292
-## 10 -0.2151657 -0.2151657 -1.150447 -1.0015292
-## 11 -0.2151657 -0.2151657 -1.150447 -1.0015292
-## 12 -0.2151657 -0.2151657 -1.150447 -1.0015292
-\end{verbatim}
+ & 5.0 & 0.483 & -0.176 & -2.236\\
+
+ & 3.1 & 0.926 & 0.532 & 0.000\\
+
+ & 3.7 & 1.193 & 0.925 & 2.236\\
+
+\multirow[t]{-5}{*}{\raggedright\arraybackslash C} & 5.8 & 1.372 & 1.178 & 4.472\\
+\midrule
+
+$V^{CR2}$ &  & 0.828 & 1.019 & 1.173\\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \hypertarget{a-revised-theorem-2}{%
 \section{A revised Theorem 2}\label{a-revised-theorem-2}}

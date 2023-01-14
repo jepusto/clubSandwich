@@ -16,7 +16,7 @@ output:
     citation_package: default
     number_sections: false
 abstract: |
-  @pustejovsky2018small considered how to implement cluster-robust variance estimators for fixed effects models estimated by weighted (or unweighted) least squares. Theorem 2 of the paper concerns a computational short cut for a certain cluster-robust variance estimator in models with cluster-specific fixed effects. It claimed that this short cut works for models estimated by generalized least squares, as long as the weights are taken to be inverse of the working model. However, the theorem is incorrect. In this corrigendum, we  review the CR2 variance estimator, describe the assertion of the theorem as originally stated, and explain the error. We then provide a revised version of the theorem, which holds only under more limited conditions, for models estimated by ordinary least squares.
+  @pustejovsky2018small considered how to implement cluster-robust variance estimators for fixed effects models estimated by weighted (or unweighted) least squares. Theorem 2 of the paper concerns a computational short cut for a certain cluster-robust variance estimator in models with cluster-specific fixed effects. It claimed that this short cut works for models estimated by generalized least squares, as long as the weights are taken to be inverse of the working model. However, the theorem is incorrect. In this corrigendum, we  review the CR2 variance estimator, describe the assertion of the theorem as originally stated, and explain the error. We then provide a revised version of the theorem, which holds for the more limited set of models estimated by ordinary least squares.
 
 header-includes:
 - \usepackage{amsthm}
@@ -29,6 +29,7 @@ header-includes:
 - \usepackage{multirow}
 - \usepackage{float}    % for fig.pos='H'
 - \usepackage{rotfloat} % for sidewaysfigure
+- \hypersetup{hidelinks}
 - \newcommand{\Prob}{\text{Pr}}
 - \newcommand{\E}{\text{E}}
 - \newcommand{\Cov}{\text{Cov}}
@@ -93,14 +94,17 @@ and
 \end{equation}
 Theorem 2 claimed that if the weight matrices are inverse of the working model, such that $\bm{W}_i = \bs\Phi_i^{-1}$ for $i = 1,...,m$, then $\bm{\tilde{B}}_i^{+1/2} = \bm{B}_i^{+1/2}$ and hence $\bm{\tilde{A}}_i = \bm{A}_i$. The implication is that the cluster-specific fixed effects can be ignored when calculating the adjustment matrices. However, the claimed equivalence does not actually hold. The proof of Theorem 2 as given in the supplementary materials of @pustejovsky2018small relied on a Woodbury identity for generalized inverses that does not hold for $\bm{B}_i$ because necessary rank conditions are not satisfied.
 
-We describe a simple numerical example that contradicts the original statement of Theorem 2. Consider a block-randomized experiment with $m = 3$ blocks, of sizes $n_1 = 2$, $n_2 = 4$, and $n_3 = 6$. In each block, a single observation receives treatment and the remaining observations receive the control condition, so that $\bm{R}_i = \left[1 \ 0 \cdots 0\right]'$, $\bm{T}$ consists of indicators for each block, and there are no additional covariates. The model is then
+We describe a simple numerical example that contradicts the original statement of Theorem 2. Consider a design with $m = 3$ clusters, of sizes $n_1 = 2$, $n_2 = 3$, and $n_3 = 5$ for which we have the model
 $$
-\bm{y}_i = \bm{R}_i \beta + \mu_i + \bs\epsilon_i
+y_{it} = \beta_0 \times t + \mu_i + \epsilon_{it},
 $$
-Assume that treatment impacts are heterogeneous such that $\Var(\bs\epsilon_{1i}) = \sigma^2 + \tau^2$ and $\Var(\bs\epsilon_{ji}) = \sigma^2$ for $j > 1$, where $\tau^2$ is known. Consider estimating the model using weighted least squares with inverse-variance weights. 
+where the errors are heteroskedastic with $\Var(\epsilon_{it}) = \alpha \times t$. We then have $\bm{y}_i = \left[ y_{i1} \cdots y_{in_i}\right]'$, $\bm{R}_i = \left[1 \ 2 \ \cdots \ n_i\right]'$, $\bm{T} = \bigoplus_{i=1}^3 \bm{1}_i$, and $\bs\Phi_i = \text{diag}(1,2,...,n_i)$. 
 
-```{r}
+If the model is estimated using inverse variance weights, so that $\bm{W}_i = \text{diag}\left(1, \frac{1}{2}, \cdots, \frac{1}{n_i}\right)$, then the CR2 adjustment matrices differ depending on whether they are calculated from the full model or from the model after absorbing the fixed effects. Table \ref{tab:example} reports the product of the adjustment matrices and the absorbed design matrix for the weighted least squares estimator. The column labelled Full uses the adjustment matrices based on the full design (i.e., $\bm{A}_i \bm{W}_i \bm{\ddot{R}}_i$, with $\bm{A}_i$ calculated from Equation \ref{eq:A-matrix}) or based on the absorbed design (i.e., $\bm{\tilde{A}}_i \bm{W}_i \bm{\ddot{R}}_i$, with $\bm{A}_i$ calculated from Equation \ref{eq:A-modified}). The values differ, contradicting the original statement of Theorem 2. The final row of the table reports the value of $V^{CR2}$ based on fitting the model using the outcomes reported in the second column of the table. The difference in adjustment matrices leads to differences in the value of the variance estimator.
+
+```{r example, echo = FALSE, message = FALSE, warning = FALSE}
 set.seed(20230114)
+library(kableExtra)
 library(clubSandwich)
 ni <- c(2,3,5)
 m <- length(ni)
@@ -158,7 +162,7 @@ RWA <-
 
 V_comp <- 
   data.frame(
-    cluster = "V^CR",
+    cluster = "$V^{CR2}$",
     y = NA,
     wt_full = V_wt_full["R","R"],
     wt_absorb = V_wt_absorb[1,1],
@@ -166,7 +170,19 @@ V_comp <-
     ols_absorb = V_ols_absorb[1,1]
   )
 
-subset(rbind(RWA, V_comp), select = -ols_absorb)
+options(knitr.kable.NA = '')
+subset(rbind(RWA, V_comp), select = -ols_absorb) |>
+  kable(
+    caption = "Adjustment matrices based on weighted or unweighted least squares",
+    col.names = c("Cluster", "Y", "Full", "Absorbed", "Full/Absorbed"),
+    digits = 3, 
+    booktabs = TRUE,
+    escape = FALSE
+  ) |>
+  kable_styling(full_width = FALSE) |>
+  collapse_rows(columns = 1:2, latex_hline = "none", valign = "top") |>
+  add_header_above(c(" " = 2, "Weighted" = 2, "Unweighted" = 1)) |>
+  row_spec(10, hline_after = TRUE)
 ```
 
 # A revised Theorem 2
