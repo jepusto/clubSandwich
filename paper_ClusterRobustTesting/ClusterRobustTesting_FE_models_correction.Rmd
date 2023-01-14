@@ -100,19 +100,25 @@ $$
 Assume that treatment impacts are heterogeneous such that $\Var(\bs\epsilon_{1i}) = \sigma^2 + \tau^2$ and $\Var(\bs\epsilon_{ji}) = \sigma^2$ for $j > 1$, where $\tau^2$ is known. Consider estimating the model using weighted least squares with inverse-variance weights. 
 
 ```{r}
+set.seed(20230114)
 library(clubSandwich)
-ni <- c(2,4,6)
+ni <- c(2,3,5)
 m <- length(ni)
-ri <- lapply(ni, \(x) c(1L, rep(0L, x - 1L)))
-wi <- lapply(ri, \(r) length(r) * (r + (1 - r) / (length(r) - 1)))
+ri <- lapply(ni, \(x) 1:x)
+wi <- lapply(ni, \(x) 1 / (1:x))
 rddi_ols <- lapply(ri, \(r) r - mean(r))
-rddi_wt <- lapply(ri, \(r) r - 1 / 2)
-clust <- rep(LETTERS[1:m], ni)
-yi <- rnorm(sum(ni))
-yddi <- tapply(yi, clust, \(x) x - mean(x))
+rddi_wt <- mapply(\(r, w) r - weighted.mean(r,w = w), r = ri, w = wi)
+
+clust <- factor(rep(LETTERS[1:m], ni))
+mu <- 0.2 * unlist(ri) + ni[clust]
+yi <- round(rnorm(sum(ni), mean = mu, sd = sqrt(unlist(ri))), 1)
+yddi_ols <- tapply(yi, clust, \(x) x - mean(x))
+yddi_wt <- mapply(\(y,w) y - weighted.mean(y, w = w), y = split(yi, clust), w = wi)
+
 dat <- data.frame(
   y = yi, 
-  y_dd = unlist(yddi),
+  y_dd_ols = unlist(yddi_ols),
+  y_dd_wt = unlist(yddi_wt),
   R = unlist(ri),
   R_dd_ols = unlist(rddi_ols),
   R_dd_wt = unlist(rddi_wt),
@@ -121,41 +127,46 @@ dat <- data.frame(
 )
 
 ols_fit <- lm(y ~ clust + R, data = dat)
-A_ols_full <- attr(vcovCR(ols_fit, type = "CR2", cluster = dat$clust),"adjustments")
+V_ols_full <- vcovCR(ols_fit, type = "CR2", cluster = dat$clust)
+A_ols_full <- attr(V_ols_full,"adjustments")
 emat_ols_full <- mapply(\(r, a) a %*% r, r = rddi_ols, a = A_ols_full)
 
-ols_absorbed <- lm(y_dd ~ 0 + R_dd_ols, data = dat)
-A_ols_absorb <- attr(vcovCR(ols_absorbed, type = "CR2", cluster = dat$clust), "adjustments")
+ols_absorb <- lm(y_dd_ols ~ 0 + R_dd_ols, data = dat)
+V_ols_absorb <- vcovCR(ols_absorb, type = "CR2", cluster = dat$clust)
+A_ols_absorb <- attr(V_ols_absorb, "adjustments")
 emat_ols_absorb <- mapply(\(r, a) a %*% r, r = rddi_ols, a = A_ols_absorb)
-# si_ols_absorb <- mapply(\(x,e) sum(x * e), x = emat_ols_absorb, e = split(residuals(ols_absorbed), clust))
-# MR_ols <- 1 / sum(sapply(rddi_ols, \(r) sum(r^2)))
-# MR_ols * si_ols_absorb
-# vcovCR(ols_absorbed, type = "CR2", cluster = dat$clust, form = "estfun")
-# sum(si_ols_absorb^2) * MR_ols^2
-# vcovCR(ols_absorbed, type = "CR2", cluster = dat$clust)
-# vcovCR(ols_fit, type = "CR2", cluster = dat$clust)["R","R"]
 
 wls_fit <- lm(y ~ clust + R, weights = w, data = dat)
-A_wt_full <- attr(vcovCR(wls_fit, type = "CR2", cluster = dat$clust),"adjustments")
+V_wt_full <- vcovCR(wls_fit, type = "CR2", cluster = dat$clust, inverse_var = TRUE)
+A_wt_full <- attr(V_wt_full, "adjustments")
 emat_wt_full <- mapply(\(r, w, a) a %*% (w * r), r = rddi_wt, w = wi, a = A_wt_full)
-# si_wt_full <- mapply(\(x,e) sum(x * e), x = emat_wt_full, e = split(residuals(wls_fit), clust))
-# MR_wt <- 1 / sum(mapply(\(r,w) sum(w * r^2), r = rddi_wt, w = wi))
-# MR_wt * sum(si_wt_full^2) * MR_wt
-# vcovCR(wls_fit, type = "CR2", cluster = dat$clust)["R","R"]
 
-wls_absorbed <- lm(y_dd ~ 0 + R_dd_wt, weights = w, data = dat)
-A_wt_absorb <- attr(vcovCR(wls_absorbed, type = "CR2", cluster = dat$clust), "adjustments")
+wls_absorbed <- lm(y_dd_wt ~ 0 + R_dd_wt, weights = w, data = dat)
+V_wt_absorb <- vcovCR(wls_absorbed, type = "CR2", cluster = dat$clust, inverse_var = TRUE)
+A_wt_absorb <- attr(V_wt_absorb, "adjustments")
 emat_wt_absorb <- mapply(\(r, w, a) a %*% (w * r), r = rddi_wt, w = wi, a = A_wt_absorb)
-# si_wt_absorb <- mapply(\(x,e) sum(x * e), x = emat_wt_absorb, e = split(residuals(wls_absorbed), clust))
-# MR_wt * sum(si_wt_absorb^2) * MR_wt
-# vcovCR(wls_absorbed, type = "CR2", cluster = dat$clust)
 
-data.frame(
-  ols_full = unlist(emat_ols_full),
-  ols_absorb = unlist(emat_ols_absorb),
-  wt_full = unlist(emat_wt_full),
-  wt_absorb = unlist(emat_wt_absorb)
-)
+RWA <- 
+  data.frame(
+    cluster = clust,
+    y = yi,
+    wt_full = unlist(emat_wt_full),
+    wt_absorb = unlist(emat_wt_absorb),
+    ols_full = unlist(emat_ols_full),
+    ols_absorb = unlist(emat_ols_absorb)
+  )
+
+V_comp <- 
+  data.frame(
+    cluster = "V^CR",
+    y = NA,
+    wt_full = V_wt_full["R","R"],
+    wt_absorb = V_wt_absorb[1,1],
+    ols_full = V_ols_full["R","R"],
+    ols_absorb = V_ols_absorb[1,1]
+  )
+
+subset(rbind(RWA, V_comp), select = -ols_absorb)
 ```
 
 # A revised Theorem 2
