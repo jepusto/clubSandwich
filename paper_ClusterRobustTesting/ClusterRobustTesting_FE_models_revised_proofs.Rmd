@@ -61,7 +61,7 @@ where the last equality follows from the fact that $\bm{\ddot{U}}_i'\bm{T}_i = \
 \tilde{\bm{B}}_i = \left(\bm{I}_i - \bm{\ddot{U}}_i \bm{M_{\ddot{U}}}\bm{\ddot{U}}_i'\right).
 \end{equation}
 
-We now show that $\tilde{\bm{A}}_i \bm{T}_i = \bm{T}_i$. Denote the rank of $\bm{\ddot{U}}_i$ as $u_i \leq \min \left\{n_i, r + s \right\}$ and take the thin QR decomposition of $\bm{\ddot{U}}_i$ as $\bm{\ddot{U}}_i = \bm{Q}_i \bm{R}_i$, where $\bm{Q}_i$ is an $n_i \times u_i$ semi-orthonormal matrix and $\bm{R}_i$ is a $u_i \times r + s$ matrix of rank $u_i$, with $\bm{Q}_i'\bm{Q}_i = \bm{I}$. Note that $\bm{Q}_i'\bm{T}_i = \bm{0}$. From the observation that $\tilde{\bm{B}}_i$ can be written as 
+It is apparent that $\tilde{\bm{B}}_i \bm{T}_i = \bm{T}_i$. We now show that $\tilde{\bm{A}}_i \bm{T}_i = \bm{T}_i$ as well. Denote the rank of $\bm{\ddot{U}}_i$ as $u_i \leq \min \left\{n_i, r + s \right\}$ and take the thin QR decomposition of $\bm{\ddot{U}}_i$ as $\bm{\ddot{U}}_i = \bm{Q}_i \bm{R}_i$, where $\bm{Q}_i$ is an $n_i \times u_i$ semi-orthonormal matrix and $\bm{R}_i$ is a $u_i \times r + s$ matrix of rank $u_i$, with $\bm{Q}_i'\bm{Q}_i = \bm{I}$. Note that $\bm{Q}_i'\bm{T}_i = \bm{0}$. From the observation that $\tilde{\bm{B}}_i$ can be written as 
 $$
 \tilde{\bm{B}}_i = \bm{I}_i - \bm{Q}_i \bm{Q}_i' + \bm{Q}_i \left(\bm{I} - \bm{R}_i \bm{M}_{\bm{\ddot{U}}} \bm{R}_i'\right)\bm{Q}_i',
 $$
@@ -71,16 +71,18 @@ it can be seen that
 \end{equation}
 It follows that $\tilde{\bm{A}}_i \bm{T}_i = \bm{T}_i$.
 
-Setting
+Define the matrices
 \begin{equation}
 \bm{A}_i = \tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i',
 \end{equation}
-observe that
-\begin{align*}
-\bm{B}_i \bm{A}_i \bm{B}_i \bm{A}_i &= \left(\tilde{\bm{B}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right) \left(\tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right)\left(\tilde{\bm{B}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right) \left(\tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right) \\
-&= \left(\tilde{\bm{B}}_i\tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right)\left(\tilde{\bm{B}}_i\tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right) \\
-&= \left(\tilde{\bm{B}}_i\tilde{\bm{A}}_i\tilde{\bm{B}}_i\tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right) \\
-&= \left(\tilde{\bm{B}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right) \\
-&= \bm{B}_i.
-\end{align*}
-It follows that $\bm{A}_i$ is the symmetric square root of the Moore-Penrose inverse of $\bm{B}_i$, i.e., $\bm{A}_i = \bm{B}_i^{+1/2}$. Because $\bm{T}_i ' \bm{\ddot{R}}_i= \bm{0}$, it can be seen that $\bm{A}_i \bm{\ddot{R}}_i = \left(\tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right)\bm{\ddot{R}}_i = \tilde{\bm{A}}_i \bm{\ddot{R}}_i$. Finally, equality of $\bm{\tilde{V}}^{CR}$ and $\bm{V}^{CR}$  follows by direct evaluation of Equation (\ref{eq:V_small}).
+for $i = 1,...,m$. We claim that $\bm{A}_i = \bm{B}_i^{+1/2}$. This can be seen by observing that $\bm{A}_i \bm{A}_i$ is equal to $\bm{B}_i^+$, the Moore-Penrose inverse of $\bm{B}_i$. Note that
+\begin{equation}
+\bm{A}_i \bm{A}_i = \tilde{\bm{A}}_i \tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i' =  = \tilde{\bm{B}}_i^+ - \bm{T}_i \bm{M_T}\bm{T}_i'.
+\end{equation}
+It can then readily be verified that
+i) $\bm{B}_i \bm{A}_i \bm{A}_i \bm{B}_i = \bm{B}_i$,
+ii) $\bm{A}_i \bm{A}_i \bm{B}_i \bm{A}_i \bm{A}_i = \bm{A}_i \bm{A}_i$, and
+iii) $\bm{A}_i \bm{A}_i \bm{B}_i = \bm{B}_i \bm{A}_i \bm{A}_i$.
+Thus, $\bm{A}_i\bm{A}_i$ satisfies the definition of the Moore-Penrose inverse of $\bm{B}_i$ [@rao1971generalized].
+
+Because $\bm{T}_i ' \bm{\ddot{R}}_i= \bm{0}$, it can be seen that $\bm{A}_i \bm{\ddot{R}}_i = \left(\tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right)\bm{\ddot{R}}_i = \tilde{\bm{A}}_i \bm{\ddot{R}}_i$. Finally, equality of $\bm{\tilde{V}}^{CR}$ and $\bm{V}^{CR}$  follows by direct evaluation of Equation (\ref{eq:V_small}).
