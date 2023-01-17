@@ -196,9 +196,9 @@ diagonal matrices consisting of sampling weights or identity matrices
 Pustejovsky and Tipton (2018) provided a generalization of the
 bias-reduced linearization estimator introduced by McCaffrey, Bell, and
 Botts (2001) and Bell and McCaffrey (2002) that can be applied to Model
-\ref{eq:regression}, referred to as the CR2 variance estimator. We
-follow the same notation as Pustejovsky and Tipton (2018) to define CR2.
-Let \(N = \sum_{i=1}^m n_i\) be the total sample size. Let
+\ref{eq:regression} We follow the same notation as Pustejovsky and
+Tipton (2018) to define this variance estimator, referred to as CR2. Let
+\(N = \sum_{i=1}^m n_i\) be the total sample size. Let
 \(\mathbf{U}_i = \left[ \mathbf{R}_i \ \mathbf{S}_i \right]\) be the set
 of predictors that vary across clusters and
 \(\mathbf{X}_i = \left[ \mathbf{R}_i \ \mathbf{S}_i \ \mathbf{T}_i \right]\)
@@ -229,17 +229,17 @@ be the focal predictors after absorbing the covariates and the
 cluster-specific fixed effects, and let
 \(\mathbf{e} = \left(\mathbf{I} - \mathbf{H}_{\mathbf{\ddot{R}}}\right)\left(\mathbf{I} - \mathbf{H}_{\mathbf{\ddot{S}}}\right)\left(\mathbf{I} - \mathbf{H}_{\mathbf{T}}\right) \mathbf{y}\)
 denote the vector of residuals, with
-\(\mathbf{e}_i = \mathbf{C}_i\mathbf{e}\).
+\(\mathbf{e}_i = \mathbf{C}_i\mathbf{e}\) denoting the vector of
+residuals from cluster \(i\).
 
 With this notation established, the CR2 variance estimator has the form
 \begin{equation}
 \mathbf{V}^{CR2} = \mathbf{M}_{\mathbf{\ddot{R}}} \left(\sum_{i=1}^m \mathbf{\ddot{R}}_i' \mathbf{W}_i \mathbf{A}_i \mathbf{e}_i \mathbf{e}_i' \mathbf{A}_i \mathbf{W}_i \mathbf{\ddot{R}}_i \right) \mathbf{M}_{\mathbf{\ddot{R}}},
 \end{equation} where
 \(\mathbf{\ddot{R}}_i = \mathbf{C}_i \mathbf{\ddot{R}}\) is the
-cluster-specific matrix of absorbed focal predictors, \(\mathbf{e}_i\)
-is the vector of weighted least squares residuals from cluster \(i\),
-and \(\mathbf{A}_1,...,\mathbf{A}_m\) are a set of adjustment matrices
-that correct the bias of the residual cross-products.
+cluster-specific matrix of absorbed focal predictors and
+\(\mathbf{A}_1,...,\mathbf{A}_m\) are a set of adjustment matrices that
+correct the bias of the residual cross-products.
 
 The adjustment matrices are calculated as follows. Define the matrices
 \begin{equation}
@@ -390,12 +390,12 @@ The values based on the full design matrix
 \(\left(\mathbf{A}_i \mathbf{\ddot{R}}_i\right)\) are numerically
 identical to the values based on the absorbed design matrix
 \(\left(\mathbf{\tilde{A}}_i \mathbf{\ddot{R}}_i\right)\). In the
-columns labeled Unweighted (Het.), the same quantities are computed
-using the heteroskedastic working model described in the previous
-section. The values based on the full design matrix differ from the
-values based on the absorbed design matrix, leading to differences in
-the cluster-robust variance estimator reported in the final row of the
-table.
+columns labeled Unweighted (Het.), the same quantities are computed for
+the ordinary least squares estimator, but with the heteroskedastic
+working model described in the previous section. The values based on the
+full design matrix differ from the values based on the absorbed design
+matrix, leading to differences in the cluster-robust variance estimator
+reported in the final row of the table.
 
 \hypertarget{remarks}{%
 \subsection{Remarks}\label{remarks}}
@@ -404,19 +404,25 @@ The revised version of Theorem 2 holds for the class of linear models
 estimated using ordinary least squares, with the cluster-robust variance
 estimator constructed based on a homoskedastic working model.
 Considering the ubiquity of ordinary least squares in applied data
-analysis, this is clearly an important class of models---perhaps even
-the most important for application. However, other important classes
-fall outside the scope of Theorem 2. For instance, an analyst might
-prefer to estimate a linear model using weighted least squares based on
-a posited heteroskedastic variance structure, paired with
-heteroskedasticity- or cluster-robust variance estimators to buttress
-against misspecification of that variance structure (Romano and Wolf
-2017). In other applications, an analyst might use generalized
-estimating equation with a compound symmetric or auto-regressive working
-model for the errors (Wang and Carey 2003). In still other applications,
-analysts might need to estimate a linear model using survey weights or
-inverse propensity weights, while maintaining a homoskedastic working
-model. For such applications, efficient computation of small-sample
+analysis, this is clearly an important class of estimators---perhaps
+even the most important for application. Indeed, recent methodological
+work on small-sample adjustments to cluster-robust variance estimators
+has focused almost exclusively on ordinary least squares (e.g.,
+Ibragimov and Müller 2016; Imbens and Kolesár 2016; MacKinnon and Webb
+2016).
+
+Other important classes of estimators fall outside the scope of Theorem
+2. For instance, an analyst might prefer to estimate a linear model
+using weighted least squares based on a posited heteroskedastic variance
+structure, paired with heteroskedasticity- or cluster-robust variance
+estimators to buttress against misspecification of that variance
+structure (Romano and Wolf 2017). In other applications, an analyst
+might use generalized estimating equation with a compound symmetric or
+auto-regressive working model for the errors (Liang and Zeger 1986; Wang
+and Carey 2003). In still other applications, analysts might need to
+estimate a linear model using survey weights or inverse propensity
+weights, while maintaining a homoskedastic working model. For such
+applications, efficient computation of CR2 or other small-sample
 adjusted cluster-robust variance estimators remains a topic for further
 research.
 
@@ -483,6 +489,26 @@ can be seen that
 Bell, Robert M, and Daniel F McCaffrey. 2002. {``{Bias reduction in
 standard errors for linear regression with multi-stage samples}.''}
 \emph{Survey Methodology} 28 (2): 169--81.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Ibragimov2016inference}{}}%
+Ibragimov, Rustam, and Ulrich K Müller. 2016. {``{Inference with few
+heterogeneous clusters}.''} \emph{Review of Economics and Statistics} 98
+(1): 83--96. \url{https://doi.org/10.1162/REST_a_00545}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Imbens2015robust}{}}%
+Imbens, Guido W, and Michal Kolesár. 2016. {``Robust Standard Errors in
+Small Samples: Some Practical Advice.''} \emph{Review of Economics and
+Statistics} 98 (4): 701--12. \url{https://doi.org/10.1162/REST_a_00552}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Liang1986longitudinal}{}}%
+Liang, Kung-Yee, and Scott L Zeger. 1986. {``{Longitudinal data analysis
+using generalized linear models}.''} \emph{Biometrika} 73 (1): 13--22.
+
+\leavevmode\vadjust pre{\hypertarget{ref-MacKinnon2016wild}{}}%
+MacKinnon, James G, and Matthew D Webb. 2016. {``{Wild bootstrap
+inference for wildly different cluster sizes}.''} \emph{Journal of
+Applied Econometrics} forthcoming.
+\url{https://doi.org/10.1002/jae.2508}.
 
 \leavevmode\vadjust pre{\hypertarget{ref-McCaffrey2001generalizations}{}}%
 McCaffrey, Daniel F, Robert M Bell, and Carsten H Botts. 2001.
