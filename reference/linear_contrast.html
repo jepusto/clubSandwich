@@ -192,19 +192,19 @@ value is <code>FALSE</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster, contrasts = constrain_pairwise(":education", </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> +     reg_ex = TRUE), test = "Satterthwaite")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                  Coef. Estimate    SE d.f. Lower 95% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  typeprof:education - typebc:education   0.0186 0.312 4.20       -0.830</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    typewc:education - typebc:education   0.1068 0.197 3.34       -0.485</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  typewc:education - typeprof:education   0.0882 0.177 2.95       -0.481</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  typeprof:education - typebc:education   0.0186 0.368 2.63        -1.25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    typewc:education - typebc:education   0.1068 0.532 1.77        -2.50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  typewc:education - typeprof:education   0.0882 0.479 1.73        -2.32</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Upper 95% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         0.868</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         0.699</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         0.658</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          1.29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          2.71</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          2.49</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster, contrasts = constrain_pairwise(":income", </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> +     reg_ex = TRUE, with_zero = TRUE), test = "Satterthwaite")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                            Coef. Estimate    SE d.f. Lower 95% CI Upper 95% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  typeprof:income -0.36914 0.251 2.99       -1.171        0.433</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    typewc:income -0.36031 0.164 2.02       -1.060        0.339</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  typewc:income - typeprof:income  0.00883 0.206 2.23       -0.794        0.812</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  typeprof:income -0.36914 0.289 3.78       -1.191        0.453</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    typewc:income -0.36031 0.193 2.89       -0.987        0.266</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  typewc:income - typeprof:income  0.00883 0.425 2.52       -1.502        1.519</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
