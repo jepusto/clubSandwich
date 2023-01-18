@@ -260,9 +260,8 @@ is defined based on a working model, it remains close to unbiased and
 outperforms alternative sandwich estimators even when the working model
 is not correctly specified.
 
-\hypertarget{the-original-statement-of-theorem-2}{%
-\section{The original statement of Theorem
-2}\label{the-original-statement-of-theorem-2}}
+\hypertarget{original}{%
+\section{The original statement of Theorem 2}\label{original}}
 
 The adjustment matrices given in (\ref{eq:A-matrix}) can be expensive to
 compute directly because the \(\mathbf{B}_i\) matrices involve computing
@@ -356,8 +355,8 @@ $V^{CR2}$ &  & 0.828 & 1.019 & 1.173 & 1.248 & 1.050\\
 \end{tabular}
 \end{table}
 
-\hypertarget{a-revised-theorem-2}{%
-\section{A revised Theorem 2}\label{a-revised-theorem-2}}
+\hypertarget{revised}{%
+\section{A revised Theorem 2}\label{revised}}
 
 The implication of the original Theorem 2 was that using the modified
 adjustment matrices \(\tilde{\mathbf{A}}_i\) to calculate the CR2
@@ -478,6 +477,22 @@ Moore-Penrose inverse of \(\mathbf{B}_i\) (Rao and Mitra 1971).
 Finally, because \(\mathbf{T}_i ' \mathbf{\ddot{R}}_i= \mathbf{0}\), it
 can be seen that
 \(\mathbf{A}_i \mathbf{\ddot{R}}_i = \left(\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right)\mathbf{\ddot{R}}_i = \tilde{\mathbf{A}}_i \mathbf{\ddot{R}}_i\).
+
+\hypertarget{acknowledgements}{%
+\section*{Acknowledgements}\label{acknowledgements}}
+\addcontentsline{toc}{section}{Acknowledgements}
+
+We are grateful to Michael Pfaffenmayr for drawing our attention to the
+error in the earlier version of Theorem 2.
+
+The authors report there are no competing interests to declare.
+
+\hypertarget{supplementary-materials}{%
+\section*{Supplementary materials}\label{supplementary-materials}}
+\addcontentsline{toc}{section}{Supplementary materials}
+
+The supplementary materials include R code for reproducing the numerical
+example described in Sections \ref{original} and \ref{revised}.
 
 \hypertarget{references}{%
 \section*{References}\label{references}}

@@ -80,7 +80,7 @@ for $i = 1,...,m$. The adjustment matrices are then calculated as
 where $\bm{B}_i^{+1/2}$ is the symmetric square root of the Moore-Penrose inverse of $\bm{B}_i$. 
 Theorem 1 of @pustejovsky2018small shows that, if the working model $\bs\Phi$ is correctly specified and some conditions on the rank of $\bm{U}$ are satisfied, then the CR2 estimator is exactly unbiased for the sampling variance of the weighted least squares estimator of $\bs\beta$. Moreover, although the CR2 estimator is defined based on a working model, it remains close to unbiased and outperforms alternative sandwich estimators even when the working model is not correctly specified.
 
-# The original statement of Theorem 2
+# The original statement of Theorem 2 {#original}
 
 The adjustment matrices given in (\ref{eq:A-matrix}) can be expensive to compute directly because the $\bm{B}_i$ matrices involve computing a "residualized" version of the $N \times N$ matrix $\bs\Phi$ involving the full set of predictors $\bm{X}$---including the cluster-specific fixed effects $\bm{T}_1,...,\bm{T}_m$. Theorem 2 considered whether one can take a computational short cut by omitting the cluster-specific fixed effects from the calculation of the $\bm{B}_i$ matrices. Specifically, define the modified matrices
 \begin{equation}
@@ -102,94 +102,15 @@ where the errors are heteroskedastic with $\Var(\epsilon_{it}) = \alpha \times t
 
 If the model is estimated using inverse variance weights, so that $\bm{W}_i = \text{diag}\left(1, \frac{1}{2}, \cdots, \frac{1}{n_i}\right)$, then the CR2 adjustment matrices differ depending on whether they are calculated from the full model or from the model after absorbing the fixed effects. Table \ref{tab:example} reports the product of the adjustment matrices and the absorbed design matrix for the weighted least squares estimator. The column labelled Full uses the adjustment matrices based on the full design (i.e., $\bm{A}_i \bm{W}_i \bm{\ddot{R}}_i$, with $\bm{A}_i$ calculated from Equation \ref{eq:A-matrix}) or based on the absorbed design (i.e., $\bm{\tilde{A}}_i \bm{W}_i \bm{\ddot{R}}_i$, with $\bm{\tilde{A}}_i$ calculated from Equation \ref{eq:A-modified}). The values differ, contradicting the original statement of Theorem 2. The final row of the table reports the value of $V^{CR2}$ based on fitting the model using the outcomes reported in the second column of the table. The difference in adjustment matrices leads to differences in the value of the variance estimator.
 
+```{r example-source, echo = FALSE, results = "hide", message = FALSE, warning = FALSE}
+source("R/Numerical counter-example to Theorem 2.R", local = knitr::knit_global())
+```
+
 ```{r example, echo = FALSE, message = FALSE, warning = FALSE}
-set.seed(20230114)
 library(kableExtra)
-library(clubSandwich)
-ni <- c(2,3,5)
-m <- length(ni)
-ri <- lapply(ni, \(x) 1:x)
-wi <- lapply(ni, \(x) 1 / (1:x))
-rddi_ols <- lapply(ri, \(r) r - mean(r))
-rddi_wt <- mapply(\(r, w) r - weighted.mean(r,w = w), r = ri, w = wi)
-
-clust <- factor(rep(LETTERS[1:m], ni))
-mu <- 0.2 * unlist(ri) + ni[clust]
-yi <- round(rnorm(sum(ni), mean = mu, sd = sqrt(unlist(ri))), 1)
-yddi_ols <- tapply(yi, clust, \(x) x - mean(x))
-yddi_wt <- mapply(\(y,w) y - weighted.mean(y, w = w), y = split(yi, clust), w = wi)
-
-dat <- data.frame(
-  y = yi, 
-  y_dd_ols = unlist(yddi_ols),
-  y_dd_wt = unlist(yddi_wt),
-  R = unlist(ri),
-  R_dd_ols = unlist(rddi_ols),
-  R_dd_wt = unlist(rddi_wt),
-  w = unlist(wi),
-  clust = clust
-)
-
-# Ordinary least squares, ID working model
-
-ols_fit <- lm(y ~ clust + R, data = dat)
-V_ols_full <- vcovCR(ols_fit, type = "CR2", cluster = dat$clust)
-A_ols_full <- attr(V_ols_full,"adjustments")
-emat_ols_full <- mapply(\(r, a) a %*% r, r = rddi_ols, a = A_ols_full)
-
-ols_absorb <- lm(y_dd_ols ~ 0 + R_dd_ols, data = dat)
-V_ols_absorb <- vcovCR(ols_absorb, type = "CR2", cluster = dat$clust)
-A_ols_absorb <- attr(V_ols_absorb, "adjustments")
-emat_ols_absorb <- mapply(\(r, a) a %*% r, r = rddi_ols, a = A_ols_absorb)
-
-# Ordinary least squares, heteroskedastic working model
-
-V_ols_full_het <- vcovCR(ols_fit, type = "CR2", cluster = dat$clust, target = dat$R)
-A_ols_full_het <- attr(V_ols_full_het,"adjustments")
-emat_ols_full_het <- mapply(\(r, a) a %*% r, r = rddi_ols, a = A_ols_full_het)
-
-V_ols_absorb_het <- vcovCR(ols_absorb, type = "CR2", cluster = dat$clust, target = dat$R)
-A_ols_absorb_het <- attr(V_ols_absorb_het, "adjustments")
-emat_ols_absorb_het <- mapply(\(r, a) a %*% r, r = rddi_ols, a = A_ols_absorb_het)
-
-# Weighted least squares, heteroskedastic working model
-
-wls_fit <- lm(y ~ clust + R, weights = w, data = dat)
-V_wt_full <- vcovCR(wls_fit, type = "CR2", cluster = dat$clust, inverse_var = TRUE)
-A_wt_full <- attr(V_wt_full, "adjustments")
-emat_wt_full <- mapply(\(r, w, a) a %*% (w * r), r = rddi_wt, w = wi, a = A_wt_full)
-
-wls_absorbed <- lm(y_dd_wt ~ 0 + R_dd_wt, weights = w, data = dat)
-V_wt_absorb <- vcovCR(wls_absorbed, type = "CR2", cluster = dat$clust, inverse_var = TRUE)
-A_wt_absorb <- attr(V_wt_absorb, "adjustments")
-emat_wt_absorb <- mapply(\(r, w, a) a %*% (w * r), r = rddi_wt, w = wi, a = A_wt_absorb)
-
-RWA <- 
-  data.frame(
-    cluster = clust,
-    y = yi,
-    wt_full = unlist(emat_wt_full),
-    wt_absorb = unlist(emat_wt_absorb),
-    ols_full = unlist(emat_ols_full),
-    ols_absorb = unlist(emat_ols_absorb),
-    ols_full_het = unlist(emat_ols_full_het),
-    ols_absorb_het = unlist(emat_ols_absorb_het)
-  )
-
-V_comp <- 
-  data.frame(
-    cluster = "$V^{CR2}$",
-    y = NA,
-    wt_full = V_wt_full["R","R"],
-    wt_absorb = V_wt_absorb[1,1],
-    ols_full = V_ols_full["R","R"],
-    ols_absorb = V_ols_absorb[1,1],
-    ols_full_het = V_ols_full_het["R","R"],
-    ols_absorb_het = V_ols_absorb_het[1,1]
-  )
 
 options(knitr.kable.NA = '')
-subset(rbind(RWA, V_comp), select = -ols_absorb) |>
+subset(all_res, select = -ols_absorb) |>
   kable(
     caption = "Adjustment matrices based on weighted or unweighted least squares, calculated with or without absorbing fixed effects",
     col.names = c("Cluster", "Y", "Full", "Absorbed", "Full/Absorbed", "Full", "Absorbed"),
@@ -203,7 +124,7 @@ subset(rbind(RWA, V_comp), select = -ols_absorb) |>
   row_spec(10, hline_after = TRUE)
 ```
 
-# A revised Theorem 2
+# A revised Theorem 2 {#revised}
 
 The implication of the original Theorem 2 was that using the modified adjustment matrices $\tilde{\bm{A}}_i$ to calculate the CR2 estimator yields the same result as using the full adjustment matrices $\bm{A}_i$. Although this does not hold under the general conditions given above, a modified version of the theorem does hold for the more limited case of ordinary (unweighted) least squares regression with a homoskedastic working model. The precise conditions are given in the following theorem, with proof given in Section \ref{proof}.
 
@@ -263,5 +184,15 @@ iii) $\bm{A}_i \bm{A}_i \bm{B}_i = \bm{B}_i \bm{A}_i \bm{A}_i$.
 Thus, $\bm{A}_i\bm{A}_i$ satisfies the definition of the Moore-Penrose inverse of $\bm{B}_i$ [@rao1971generalized].
 
 Finally, because $\bm{T}_i ' \bm{\ddot{R}}_i= \bm{0}$, it can be seen that $\bm{A}_i \bm{\ddot{R}}_i = \left(\tilde{\bm{A}}_i - \bm{T}_i \bm{M_T}\bm{T}_i'\right)\bm{\ddot{R}}_i = \tilde{\bm{A}}_i \bm{\ddot{R}}_i$.
+
+# Acknowledgements {-}
+
+We are grateful to Michael Pfaffenmayr for drawing our attention to the error in the earlier version of Theorem 2.
+
+The authors report there are no competing interests to declare. 
+
+# Supplementary materials {-}
+
+The supplementary materials include R code for reproducing the numerical example described in Sections \ref{original} and \ref{revised}.
 
 # References {-}
