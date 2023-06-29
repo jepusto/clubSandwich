@@ -1,7 +1,7 @@
 context("rma.uni location-scale models")
 
 skip_if_not_installed("metadat")
-skip_if_not_installed("metafor")
+skip_if_not_installed("metafor", minimum_version = "3.4-0")
 
 library(metadat)
 suppressMessages(library(metafor, quietly=TRUE))
