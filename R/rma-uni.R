@@ -66,7 +66,9 @@ vcovCR.rma.uni <- function(obj, cluster, type, target, inverse_var, form = "sand
           target = target, inverse_var = inverse_var, form = form)
 }
 
+#-----------------------------------------------
 # residuals_CS()
+#-----------------------------------------------
 
 #' @export
 
@@ -82,9 +84,44 @@ residuals_CS.rma <- function(obj) {
   return(res)
 }
 
-# coef()
-# vcov()
-# model_matrix()
+#-----------------------------------------------
+# coefficients for location-scale model
+#-----------------------------------------------
+# coef_CS.default() used for rma.uni
+
+
+#' @export
+#' 
+
+coef_CS.rma.ls <- function(obj) {
+  metafor::coef.rma(obj)$beta
+}
+
+#-----------------------------------------------
+# coefficients for location-scale model
+#-----------------------------------------------
+# coef_CS.default() used for rma.uni
+
+
+#' @export
+#' 
+coef_CS.rma.ls <- function(obj) {
+  metafor::coef.rma(obj)$beta
+}
+
+
+#-----------------------------------------------
+# Model matrix for location-scale model
+#-----------------------------------------------
+# model_matrix.default() used for rma.uni
+
+
+#' @export
+#' 
+model_matrix.rma.ls <- function(obj) {
+  metafor::model.matrix.rma(obj)$location
+}
+
 
 # na.action
 

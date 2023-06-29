@@ -48,6 +48,6 @@ Suggests:
     rmarkdown,
     covr,
     ivreg
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Encoding: UTF-8
 Language: en-US
