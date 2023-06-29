@@ -69,6 +69,7 @@
 \usepackage{multirow}
 \usepackage{float}    % for fig.pos='H'
 \usepackage{rotfloat} % for sidewaysfigure
+\hypersetup{hidelinks}
 \newcommand{\Prob}{\text{Pr}}
 \newcommand{\E}{\text{E}}
 \newcommand{\Cov}{\text{Cov}}
@@ -78,6 +79,20 @@
 \newcommand{\tr}{\text{tr}}
 \newcommand{\bm}{\mathbf}
 \newcommand{\bs}{\boldsymbol}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 
 \begin{document}
 
@@ -125,10 +140,14 @@ Pustejovsky and Tipton (2018) considered how to implement cluster-robust
 variance estimators for fixed effects models estimated by weighted (or
 unweighted) least squares. Theorem 2 of the paper concerns a
 computational short cut for a certain cluster-robust variance estimator
-in models with cluster-specific fixed effects. The theorem is incorrect
-as stated. In this correction, we review the CR2 variance estimator,
-describe the assertion of the theorem as originally stated, and explain
-the error. We then provide a revised version of the theorem.
+in models with cluster-specific fixed effects. It claimed that this
+short cut works for models estimated by generalized least squares, as
+long as the weights are taken to be inverse of the working model.
+However, the theorem is incorrect. In this corrigendum, we review the
+CR2 variance estimator, describe the assertion of the theorem as
+originally stated, and demonstrate the error with a counter-example. We
+then provide a revised version of the theorem, which holds for the more
+limited set of models estimated by ordinary least squares.
 \end{abstract}
 
 \noindent%
@@ -156,11 +175,11 @@ effects satisfy \(\mathbf{T}_h \mathbf{T}_i' = \mathbf{0}\) for
 focal predictors \(\boldsymbol\beta\).
 
 Pustejovsky and Tipton (2018) considered estimation of Model
-\ref{eq:regression} by weighted least squares (WLS). Let
+\ref{eq:regression} by generalized or weighted least squares (WLS). Let
 \(\mathbf{W}_1,...,\mathbf{W}_m\) be a set of symmetric weight matrices
-used for WLS estimation. The CR2 variance estimator involves specifying
-a working model for the structure of the errors. Consider a working
-model
+used for WLS estimation, which may include off-diagonal elements. The
+CR2 variance estimator involves specifying a working model for the
+structure of the errors. Consider a working model
 \(\text{Var}\left(\boldsymbol\epsilon_i | \mathbf{R}_i, \mathbf{S}_i, \mathbf{T}_i\right) = \sigma^2 \boldsymbol\Phi_i\)
 where \(\boldsymbol\Phi_i\) is a symmetric \(n_i \times n_i\) matrix
 that may be a function of a low-dimensional, estimable parameter. In
@@ -177,15 +196,15 @@ diagonal matrices consisting of sampling weights or identity matrices
 Pustejovsky and Tipton (2018) provided a generalization of the
 bias-reduced linearization estimator introduced by McCaffrey, Bell, and
 Botts (2001) and Bell and McCaffrey (2002) that can be applied to Model
-\ref{eq:regression}, referred to as the CR2 variance estimator. We
-follow the same notation as Pustejovsky and Tipton (2018) to define CR2.
-Let \(N = \sum_{i=1}^m n_i\) be the total sample size. Let
+\ref{eq:regression} We follow the same notation as Pustejovsky and
+Tipton (2018) to define this variance estimator, referred to as CR2. Let
+\(N = \sum_{i=1}^m n_i\) be the total sample size. Let
 \(\mathbf{U}_i = \left[ \mathbf{R}_i \ \mathbf{S}_i \right]\) be the set
 of predictors that vary across clusters and
 \(\mathbf{X}_i = \left[ \mathbf{R}_i \ \mathbf{S}_i \ \mathbf{T}_i \right]\)
 be the full set of predictors. Let \(\mathbf{R}\), \(\mathbf{S}\),
-\(\mathbf{T}\), \(\mathbf{U}\), and \(\mathbf{X}\) denote the stacked
-versions of the cluster-specific matrices (i.e.,
+\(\mathbf{T}\), \(\mathbf{U}\), \(\mathbf{X}\), and \(\mathbf{y}\)
+denote the stacked versions of the cluster-specific matrices (i.e.,
 \(\mathbf{R} = \left[\mathbf{R}_1' \ \mathbf{R}_2' \ \cdots \ \mathbf{R}_m'\right]'\),
 etc.). Let \(\mathbf{W} = \bigoplus_{i=1}^m \mathbf{W}_i\) and
 \(\boldsymbol\Phi = \bigoplus_{i=1}^m \boldsymbol\Phi_i\). For a generic
@@ -200,25 +219,27 @@ rows of cluster \(i\) from the full set of observations, such that
 \(\mathbf{\Phi}_i\).
 
 These operators provide a means to define absorbed versions of the
-predictors. Let
+predictors and the outcome. Let
 \(\mathbf{\ddot{S}} = \left(\mathbf{I} - \mathbf{H}_{\mathbf{T}}\right) \mathbf{S}\)
 be the covariates after absorbing the cluster-specific effects, let
 \(\mathbf{\ddot{U}} = \left(\mathbf{I} - \mathbf{H}_{\mathbf{T}}\right) \mathbf{U}\)
-be an absorbed version of the focal predictors and the covariates, and
-let
+be an absorbed version of the focal predictors and the covariates, let
 \(\mathbf{\ddot{R}} = \left(\mathbf{I} - \mathbf{H}_{\mathbf{\ddot{S}}}\right)\left(\mathbf{I} - \mathbf{H}_{\mathbf{T}}\right) \mathbf{R}\)
 be the focal predictors after absorbing the covariates and the
-cluster-specific fixed effects.
+cluster-specific fixed effects, and let
+\(\mathbf{e} = \left(\mathbf{I} - \mathbf{H}_{\mathbf{\ddot{R}}}\right)\left(\mathbf{I} - \mathbf{H}_{\mathbf{\ddot{S}}}\right)\left(\mathbf{I} - \mathbf{H}_{\mathbf{T}}\right) \mathbf{y}\)
+denote the vector of residuals, with
+\(\mathbf{e}_i = \mathbf{C}_i\mathbf{e}\) denoting the vector of
+residuals from cluster \(i\).
 
 With this notation established, the CR2 variance estimator has the form
 \begin{equation}
 \mathbf{V}^{CR2} = \mathbf{M}_{\mathbf{\ddot{R}}} \left(\sum_{i=1}^m \mathbf{\ddot{R}}_i' \mathbf{W}_i \mathbf{A}_i \mathbf{e}_i \mathbf{e}_i' \mathbf{A}_i \mathbf{W}_i \mathbf{\ddot{R}}_i \right) \mathbf{M}_{\mathbf{\ddot{R}}},
 \end{equation} where
 \(\mathbf{\ddot{R}}_i = \mathbf{C}_i \mathbf{\ddot{R}}\) is the
-cluster-specific matrix of absorbed focal predictors, \(\mathbf{e}_i\)
-is the vector of weighted least squares residuals from cluster \(i\),
-and \(\mathbf{A}_1,...,\mathbf{A}_m\) are a set of adjustment matrices
-that correct the bias of the residual cross-products.
+cluster-specific matrix of absorbed focal predictors and
+\(\mathbf{A}_1,...,\mathbf{A}_m\) are a set of adjustment matrices that
+correct the bias of the residual cross-products.
 
 The adjustment matrices are calculated as follows. Define the matrices
 \begin{equation}
@@ -239,9 +260,8 @@ is defined based on a working model, it remains close to unbiased and
 outperforms alternative sandwich estimators even when the working model
 is not correctly specified.
 
-\hypertarget{the-original-statement-of-theorem-2}{%
-\section{The original statement of Theorem
-2}\label{the-original-statement-of-theorem-2}}
+\hypertarget{original}{%
+\section{The original statement of Theorem 2}\label{original}}
 
 The adjustment matrices given in (\ref{eq:A-matrix}) can be expensive to
 compute directly because the \(\mathbf{B}_i\) matrices involve computing
@@ -263,14 +283,80 @@ of the working model, such that
 \(\mathbf{\tilde{B}}_i^{+1/2} = \mathbf{B}_i^{+1/2}\) and hence
 \(\mathbf{\tilde{A}}_i = \mathbf{A}_i\). The implication is that the
 cluster-specific fixed effects can be ignored when calculating the
-adjustment matrices. However, the claimed equivalence does not actually
-hold. The proof of Theorem 2 as given in the supplementary materials of
-Pustejovsky and Tipton (2018) relied on a Woodbury identity for
+adjustment matrices. However, the claimed equivalence does not hold in
+general. The proof of Theorem 2 as given in the supplementary materials
+of Pustejovsky and Tipton (2018) relied on a Woodbury identity for
 generalized inverses that does not hold for \(\mathbf{B}_i\) because
 necessary rank conditions are not satisfied.
 
-\hypertarget{a-revised-theorem-2}{%
-\section{A revised Theorem 2}\label{a-revised-theorem-2}}
+We describe a simple numerical example that contradicts the original
+statement of Theorem 2. Consider a design with \(m = 3\) clusters, of
+sizes \(n_1 = 2\), \(n_2 = 3\), and \(n_3 = 5\) for which we have the
+model \[
+y_{it} = \beta_0 \times t + \mu_i + \epsilon_{it},
+\] where the errors are heteroskedastic with
+\(\text{Var}(\epsilon_{it}) = \alpha \times t\). We then have
+\(\mathbf{y}_i = \left[ y_{i1} \cdots y_{in_i}\right]'\),
+\(\mathbf{R}_i = \left[1 \ 2 \ \cdots \ n_i\right]'\),
+\(\mathbf{T} = \bigoplus_{i=1}^3 \mathbf{1}_i\), and
+\(\boldsymbol\Phi_i = \text{diag}(1,2,...,n_i)\).
+
+If the model is estimated using inverse variance weights, so that
+\(\mathbf{W}_i = \text{diag}\left(1, \frac{1}{2}, \cdots, \frac{1}{n_i}\right)\),
+then the CR2 adjustment matrices differ depending on whether they are
+calculated from the full model or from the model after absorbing the
+fixed effects. Table \ref{tab:example} reports the product of the
+adjustment matrices and the absorbed design matrix for the weighted
+least squares estimator. The column labelled Full uses the adjustment
+matrices based on the full design (i.e.,
+\(\mathbf{A}_i \mathbf{W}_i \mathbf{\ddot{R}}_i\), with \(\mathbf{A}_i\)
+calculated from Equation \ref{eq:A-matrix}) or based on the absorbed
+design (i.e., \(\mathbf{\tilde{A}}_i \mathbf{W}_i \mathbf{\ddot{R}}_i\),
+with \(\mathbf{\tilde{A}}_i\) calculated from Equation
+\ref{eq:A-modified}). The values differ, contradicting the original
+statement of Theorem 2. The final row of the table reports the value of
+\(V^{CR2}\) based on fitting the model using the outcomes reported in
+the second column of the table. The difference in adjustment matrices
+leads to differences in the value of the variance estimator.
+
+\begin{table}
+
+\caption{\label{tab:example}Adjustment matrices based on weighted or unweighted least squares, calculated with or without absorbing fixed effects}
+\centering
+\begin{tabular}[t]{lrrrrrr}
+\toprule
+\multicolumn{2}{c}{ } & \multicolumn{2}{c}{Weighted} & \multicolumn{1}{c}{Unweighted (Hom.)} & \multicolumn{2}{c}{Unweighted (Het.)} \\
+\cmidrule(l{3pt}r{3pt}){3-4} \cmidrule(l{3pt}r{3pt}){5-5} \cmidrule(l{3pt}r{3pt}){6-7}
+Cluster & Y & Full & Absorbed & Full/Absorbed & Full & Absorbed\\
+\midrule
+ & 1.6 & -0.110 & -0.342 & -0.510 & -0.334 & -0.497\\
+
+\multirow[t]{-2}{*}{\raggedright\arraybackslash A} & 4.1 & 0.441 & 0.345 & 0.510 & 0.669 & 0.504\\
+
+ & 2.6 & -0.174 & -0.689 & -1.091 & -0.658 & -0.997\\
+
+ & 1.0 & 0.409 & 0.203 & 0.000 & 0.358 & 0.000\\
+
+\multirow[t]{-3}{*}{\raggedright\arraybackslash B} & 7.6 & 0.647 & 0.518 & 1.091 & 1.437 & 1.072\\
+
+ & 6.7 & -0.353 & -1.954 & -4.472 & -2.786 & -4.089\\
+
+ & 5.0 & 0.483 & -0.176 & -2.236 & -0.770 & -2.342\\
+
+ & 3.1 & 0.926 & 0.532 & 0.000 & 1.757 & 0.000\\
+
+ & 3.7 & 1.193 & 0.925 & 2.236 & 4.487 & 2.564\\
+
+\multirow[t]{-5}{*}{\raggedright\arraybackslash C} & 5.8 & 1.372 & 1.178 & 4.472 & 7.318 & 5.236\\
+\midrule
+
+$V^{CR2}$ &  & 0.828 & 1.019 & 1.173 & 1.248 & 1.050\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\hypertarget{revised}{%
+\section{A revised Theorem 2}\label{revised}}
 
 The implication of the original Theorem 2 was that using the modified
 adjustment matrices \(\tilde{\mathbf{A}}_i\) to calculate the CR2
@@ -278,8 +364,8 @@ estimator yields the same result as using the full adjustment matrices
 \(\mathbf{A}_i\). Although this does not hold under the general
 conditions given above, a modified version of the theorem does hold for
 the more limited case of ordinary (unweighted) least squares regression
-with an ``independence'' working model. The precise conditions are given
-in the following theorem.
+with a homoskedastic working model. The precise conditions are given in
+the following theorem, with proof given in Section \ref{proof}.
 
 \begin{thm}
 \label{thm:absorb}
@@ -287,12 +373,57 @@ Let $\mathbf{L}_i = \left(\mathbf{\ddot{U}}'\mathbf{\ddot{U}} - \mathbf{\ddot{U}
 \end{thm}
 
 The implication of the revised theorem is that, for ordinary least
-squares regression with an ``independence'' working model, calculating
-the CR2 with the modified adjustment matrices \(\tilde{\mathbf{A}}_i\)
-leads to the same result as using the full adjustment matrices
-\(\mathbf{A}_i\). The equality does not hold for weighted or generalized
-least squares, nor for ordinary least squares with working models other
-than \(\boldsymbol\Phi_i = \mathbf{I}_i\).
+squares regression with a homoskedastic working model, calculating the
+CR2 with the modified adjustment matrices \(\tilde{\mathbf{A}}_i\) leads
+to the same result as using the full adjustment matrices
+\(\mathbf{A}_i\). The equality between the full and absorbed adjustment
+matrices does not hold for weighted or generalized least squares, nor
+for ordinary least squares with working models other than
+\(\boldsymbol\Phi_i = \mathbf{I}_i\).
+
+Continuing the example described in the previous section, Table
+\ref{tab:example} reports the product of the adjustment matrices and the
+absorbed design matrix for the ordinary least squares estimator with a
+homoskedastic working model in the column labelled Unweighted (Hom.).
+The values based on the full design matrix
+\(\left(\mathbf{A}_i \mathbf{\ddot{R}}_i\right)\) are numerically
+identical to the values based on the absorbed design matrix
+\(\left(\mathbf{\tilde{A}}_i \mathbf{\ddot{R}}_i\right)\). In the
+columns labeled Unweighted (Het.), the same quantities are computed for
+the ordinary least squares estimator, but with the heteroskedastic
+working model described in the previous section. The values based on the
+full design matrix differ from the values based on the absorbed design
+matrix, leading to differences in the cluster-robust variance estimator
+reported in the final row of the table.
+
+\hypertarget{remarks}{%
+\subsection{Remarks}\label{remarks}}
+
+The revised version of Theorem 2 holds for the class of linear models
+estimated using ordinary least squares, with the cluster-robust variance
+estimator constructed based on a homoskedastic working model.
+Considering the ubiquity of ordinary least squares in applied data
+analysis, this is clearly an important class of estimators---perhaps
+even the most important for application. Indeed, recent methodological
+work on small-sample adjustments to cluster-robust variance estimators
+has focused almost exclusively on ordinary least squares (e.g.,
+Ibragimov and Müller 2016; Imbens and Kolesár 2016; MacKinnon and Webb
+2016).
+
+Other important classes of estimators fall outside the scope of Theorem
+2. For instance, an analyst might prefer to estimate a linear model
+using weighted least squares based on a posited heteroskedastic variance
+structure, paired with heteroskedasticity- or cluster-robust variance
+estimators to buttress against misspecification of that variance
+structure (Romano and Wolf 2017). In other applications, an analyst
+might use generalized estimating equation with a compound symmetric or
+auto-regressive working model for the errors (Liang and Zeger 1986; Wang
+and Carey 2003). In still other applications, analysts might need to
+estimate a linear model using survey weights or inverse propensity
+weights, while maintaining a homoskedastic working model. For such
+applications, efficient computation of CR2 or other small-sample
+adjusted cluster-robust variance estimators remains a topic for further
+research.
 
 \hypertarget{proof}{%
 \subsection{Proof}\label{proof}}
@@ -309,8 +440,10 @@ it follows that \begin{align}
 \tilde{\mathbf{B}}_i = \left(\mathbf{I}_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\right).
 \end{equation}
 
-We now show that \(\tilde{\mathbf{A}}_i \mathbf{T}_i = \mathbf{T}_i\).
-Denote the rank of \(\mathbf{\ddot{U}}_i\) as
+It is apparent that
+\(\tilde{\mathbf{B}}_i \mathbf{T}_i = \mathbf{T}_i\). We now show that
+\(\tilde{\mathbf{A}}_i \mathbf{T}_i = \mathbf{T}_i\) as well. Denote the
+rank of \(\mathbf{\ddot{U}}_i\) as
 \(u_i \leq \min \left\{n_i, r + s \right\}\) and take the thin QR
 decomposition of \(\mathbf{\ddot{U}}_i\) as
 \(\mathbf{\ddot{U}}_i = \mathbf{Q}_i \mathbf{R}_i\), where
@@ -325,19 +458,41 @@ decomposition of \(\mathbf{\ddot{U}}_i\) as
 \end{equation} It follows that
 \(\tilde{\mathbf{A}}_i \mathbf{T}_i = \mathbf{T}_i\).
 
-Setting \begin{equation}
+Define the matrices \begin{equation}
 \mathbf{A}_i = \tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i',
-\end{equation} observe that \begin{align*}
-\mathbf{B}_i \mathbf{A}_i \mathbf{B}_i \mathbf{A}_i &= \left(\tilde{\mathbf{B}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \left(\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right)\left(\tilde{\mathbf{B}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \left(\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \\
-&= \left(\tilde{\mathbf{B}}_i\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right)\left(\tilde{\mathbf{B}}_i\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \\
-&= \left(\tilde{\mathbf{B}}_i\tilde{\mathbf{A}}_i\tilde{\mathbf{B}}_i\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \\
-&= \left(\tilde{\mathbf{B}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \\
-&= \mathbf{B}_i.
-\end{align*} It follows that \(\mathbf{A}_i\) is the symmetric square
-root of the Moore-Penrose inverse of \(\mathbf{B}_i\), i.e.,
-\(\mathbf{A}_i = \mathbf{B}_i^{+1/2}\). Finally, because
-\(\mathbf{T}_i ' \mathbf{\ddot{R}}_i= \mathbf{0}\), it can be seen that
+\end{equation} for \(i = 1,...,m\). We claim that
+\(\mathbf{A}_i = \mathbf{B}_i^{+1/2}\). This can be seen by observing
+that \(\mathbf{A}_i \mathbf{A}_i\) is equal to \(\mathbf{B}_i^+\), the
+Moore-Penrose inverse of \(\mathbf{B}_i\). Note that \begin{equation}
+\mathbf{A}_i \mathbf{A}_i = \tilde{\mathbf{A}}_i \tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i' =  = \tilde{\mathbf{B}}_i^+ - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'.
+\end{equation} It can then readily be verified that i)
+\(\mathbf{B}_i \mathbf{A}_i \mathbf{A}_i \mathbf{B}_i = \mathbf{B}_i\),
+ii)
+\(\mathbf{A}_i \mathbf{A}_i \mathbf{B}_i \mathbf{A}_i \mathbf{A}_i = \mathbf{A}_i \mathbf{A}_i\),
+and iii)
+\(\mathbf{A}_i \mathbf{A}_i \mathbf{B}_i = \mathbf{B}_i \mathbf{A}_i \mathbf{A}_i\).
+Thus, \(\mathbf{A}_i\mathbf{A}_i\) satisfies the definition of the
+Moore-Penrose inverse of \(\mathbf{B}_i\) (Rao and Mitra 1971).
+
+Finally, because \(\mathbf{T}_i ' \mathbf{\ddot{R}}_i= \mathbf{0}\), it
+can be seen that
 \(\mathbf{A}_i \mathbf{\ddot{R}}_i = \left(\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right)\mathbf{\ddot{R}}_i = \tilde{\mathbf{A}}_i \mathbf{\ddot{R}}_i\).
+
+\hypertarget{acknowledgements}{%
+\section*{Acknowledgements}\label{acknowledgements}}
+\addcontentsline{toc}{section}{Acknowledgements}
+
+We are grateful to Michael Pfaffenmayr for drawing our attention to the
+error in the earlier version of Theorem 2.
+
+The authors report there are no competing interests to declare.
+
+\hypertarget{supplementary-materials}{%
+\section*{Supplementary materials}\label{supplementary-materials}}
+\addcontentsline{toc}{section}{Supplementary materials}
+
+The supplementary materials include R code for reproducing the numerical
+example described in Sections \ref{original} and \ref{revised}.
 
 \hypertarget{references}{%
 \section*{References}\label{references}}
@@ -349,6 +504,26 @@ root of the Moore-Penrose inverse of \(\mathbf{B}_i\), i.e.,
 Bell, Robert M, and Daniel F McCaffrey. 2002. {``{Bias reduction in
 standard errors for linear regression with multi-stage samples}.''}
 \emph{Survey Methodology} 28 (2): 169--81.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Ibragimov2016inference}{}}%
+Ibragimov, Rustam, and Ulrich K Müller. 2016. {``{Inference with few
+heterogeneous clusters}.''} \emph{Review of Economics and Statistics} 98
+(1): 83--96. \url{https://doi.org/10.1162/REST_a_00545}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Imbens2015robust}{}}%
+Imbens, Guido W, and Michal Kolesár. 2016. {``Robust Standard Errors in
+Small Samples: Some Practical Advice.''} \emph{Review of Economics and
+Statistics} 98 (4): 701--12. \url{https://doi.org/10.1162/REST_a_00552}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-Liang1986longitudinal}{}}%
+Liang, Kung-Yee, and Scott L Zeger. 1986. {``{Longitudinal data analysis
+using generalized linear models}.''} \emph{Biometrika} 73 (1): 13--22.
+
+\leavevmode\vadjust pre{\hypertarget{ref-MacKinnon2016wild}{}}%
+MacKinnon, James G, and Matthew D Webb. 2016. {``{Wild bootstrap
+inference for wildly different cluster sizes}.''} \emph{Journal of
+Applied Econometrics} forthcoming.
+\url{https://doi.org/10.1002/jae.2508}.
 
 \leavevmode\vadjust pre{\hypertarget{ref-McCaffrey2001generalizations}{}}%
 McCaffrey, Daniel F, Robert M Bell, and Carsten H Botts. 2001.
@@ -362,6 +537,22 @@ Methods for Cluster-Robust Variance Estimation and Hypothesis Testing in
 Fixed Effects Models.''} \emph{Journal of Business \& Economic
 Statistics} 36 (4): 672--83.
 \url{https://doi.org/10.1080/07350015.2016.1247004}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-rao1971generalized}{}}%
+Rao, C. Radhakrishna, and Sujit Kumar Mitra. 1971. \emph{{Generalized
+Inverse of Matrices and its Applications}}. New York, NY: John Wiley \&
+Sons.
+
+\leavevmode\vadjust pre{\hypertarget{ref-romano2017resurrecting}{}}%
+Romano, Joseph P., and Michael Wolf. 2017. {``Resurrecting Weighted
+Least Squares.''} \emph{Journal of Econometrics} 197 (1): 1--19.
+\url{https://doi.org/10.1016/j.jeconom.2016.10.003}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-wang2003working}{}}%
+Wang, Y.-G., and Vincent J Carey. 2003. {``Working Correlation Structure
+Misspecification, Estimation and Covariate Design: Implications for
+Generalised Estimating Equations Performance.''} \emph{Biometrika} 90
+(1): 29--41. \url{https://doi.org/10.1093/biomet/90.1.29}.
 
 \end{CSLReferences}
 

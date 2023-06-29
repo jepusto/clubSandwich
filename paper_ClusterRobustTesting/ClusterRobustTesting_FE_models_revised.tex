@@ -1640,6 +1640,11 @@ using the sandwich variance estimator in generalized estimating
 equations.}''} \emph{Statistics in Medicine} 21 (10): 1429--41.
 \url{https://doi.org/10.1002/sim.1142}.
 
+\leavevmode\vadjust pre{\hypertarget{ref-rao1971generalized}{}}%
+Rao, C. Radhakrishna, and Sujit Kumar Mitra. 1971. \emph{{Generalized
+Inverse of Matrices and its Applications}}. New York, NY: John Wiley \&
+Sons.
+
 \leavevmode\vadjust pre{\hypertarget{ref-Satterthwaite1946approximate}{}}%
 Satterthwaite, Franklin E. 1946. {``{An approximate distribution of
 estimates of variance components}.''} \emph{Biometrics Bulletin} 2 (6):
@@ -1781,8 +1786,10 @@ Similarly, we can write \begin{equation}
 \tilde{\mathbf{B}}_i = \left(\mathbf{I}_i - \mathbf{\ddot{U}}_i \mathbf{M_{\ddot{U}}}\mathbf{\ddot{U}}_i'\right).
 \end{equation}
 
-We now show that \(\tilde{\mathbf{A}}_i \mathbf{T}_i = \mathbf{T}_i\).
-Denote the rank of \(\mathbf{\ddot{U}}_i\) as
+It is apparent that
+\(\tilde{\mathbf{B}}_i \mathbf{T}_i = \mathbf{T}_i\). We now show that
+\(\tilde{\mathbf{A}}_i \mathbf{T}_i = \mathbf{T}_i\) as well. Denote the
+rank of \(\mathbf{\ddot{U}}_i\) as
 \(u_i \leq \min \left\{n_i, r + s \right\}\) and take the thin QR
 decomposition of \(\mathbf{\ddot{U}}_i\) as
 \(\mathbf{\ddot{U}}_i = \mathbf{Q}_i \mathbf{R}_i\), where
@@ -1797,18 +1804,24 @@ decomposition of \(\mathbf{\ddot{U}}_i\) as
 \end{equation} It follows that
 \(\tilde{\mathbf{A}}_i \mathbf{T}_i = \mathbf{T}_i\).
 
-Setting \begin{equation}
+Define the matrices \begin{equation}
 \mathbf{A}_i = \tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i',
-\end{equation} observe that \begin{align*}
-\mathbf{B}_i \mathbf{A}_i \mathbf{B}_i \mathbf{A}_i &= \left(\tilde{\mathbf{B}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \left(\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right)\left(\tilde{\mathbf{B}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \left(\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \\
-&= \left(\tilde{\mathbf{B}}_i\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right)\left(\tilde{\mathbf{B}}_i\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \\
-&= \left(\tilde{\mathbf{B}}_i\tilde{\mathbf{A}}_i\tilde{\mathbf{B}}_i\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \\
-&= \left(\tilde{\mathbf{B}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right) \\
-&= \mathbf{B}_i.
-\end{align*} It follows that \(\mathbf{A}_i\) is the symmetric square
-root of the Moore-Penrose inverse of \(\mathbf{B}_i\), i.e.,
-\(\mathbf{A}_i = \mathbf{B}_i^{+1/2}\). Because
-\(\mathbf{T}_i ' \mathbf{\ddot{R}}_i= \mathbf{0}\), it can be seen that
+\end{equation} for \(i = 1,...,m\). We claim that
+\(\mathbf{A}_i = \mathbf{B}_i^{+1/2}\). This can be seen by observing
+that \(\mathbf{A}_i \mathbf{A}_i\) is equal to \(\mathbf{B}_i^+\), the
+Moore-Penrose inverse of \(\mathbf{B}_i\). Note that \begin{equation}
+\mathbf{A}_i \mathbf{A}_i = \tilde{\mathbf{A}}_i \tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i' =  = \tilde{\mathbf{B}}_i^+ - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'.
+\end{equation} It can then readily be verified that i)
+\(\mathbf{B}_i \mathbf{A}_i \mathbf{A}_i \mathbf{B}_i = \mathbf{B}_i\),
+ii)
+\(\mathbf{A}_i \mathbf{A}_i \mathbf{B}_i \mathbf{A}_i \mathbf{A}_i = \mathbf{A}_i \mathbf{A}_i\),
+and iii)
+\(\mathbf{A}_i \mathbf{A}_i \mathbf{B}_i = \mathbf{B}_i \mathbf{A}_i \mathbf{A}_i\).
+Thus, \(\mathbf{A}_i\mathbf{A}_i\) satisfies the definition of the
+Moore-Penrose inverse of \(\mathbf{B}_i\) (Rao and Mitra 1971).
+
+Because \(\mathbf{T}_i ' \mathbf{\ddot{R}}_i= \mathbf{0}\), it can be
+seen that
 \(\mathbf{A}_i \mathbf{\ddot{R}}_i = \left(\tilde{\mathbf{A}}_i - \mathbf{T}_i \mathbf{M_T}\mathbf{T}_i'\right)\mathbf{\ddot{R}}_i = \tilde{\mathbf{A}}_i \mathbf{\ddot{R}}_i\).
 Finally, equality of \(\mathbf{\tilde{V}}^{CR}\) and \(\mathbf{V}^{CR}\)
 follows by direct evaluation of Equation (\ref{eq:V_small}).
