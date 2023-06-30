@@ -16,7 +16,7 @@ Several different small-sample corrections are available."><!-- mathjax --><scri
     
     <a class="navbar-brand me-2" href="../index.html">clubSandwich</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.8.9999</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.9</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -170,42 +170,42 @@ needed if <code>vcov</code> is a character string.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Wald_test(Duncan_fit, constraints = constrain_equal(1:3), vcov = "CR2", </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> +     cluster = Duncan$cluster)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  test Fstat df_num df_denom p_val sig</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ  3.13      2     2.39 0.215    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ   8.3      2     1.29 0.183    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Wald_test(Duncan_fit, constraints = constrain_equal(":education", reg_ex = TRUE), </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> +     vcov = "CR2", cluster = Duncan$cluster)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  test  Fstat df_num df_denom p_val sig</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ 0.0515      2     2.99 0.951    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  test Fstat df_num df_denom p_val sig</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ 0.128      2     1.88 0.887    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Wald_test(Duncan_fit, constraints = constrain_pairwise(":education", reg_ex = TRUE), </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> +     vcov = "CR2", cluster = Duncan$cluster)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`typeprof:education - typebc:education`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  test   Fstat df_num df_denom p_val sig</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ 0.00387      1     3.79 0.954    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ 0.00506      1     2.86 0.948    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`typewc:education - typebc:education`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  test Fstat df_num df_denom p_val sig</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ 0.136      1     3.18 0.735    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ  0.39      1     3.02 0.576    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`typewc:education - typeprof:education`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  test  Fstat df_num df_denom p_val sig</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ 0.0608      1     3.89 0.818    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ 0.0981      1     1.89 0.785    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Wald_test(Duncan_fit, constraints = constrain_zero(":income", reg_ex = TRUE), </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> +     vcov = "CR2", cluster = Duncan$cluster)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  test Fstat df_num df_denom p_val sig</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ  2.23      2     2.43 0.282    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ 0.722      2     1.86 0.586    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Wald_test(Duncan_fit, constraints = constrain_pairwise(":income", reg_ex = TRUE, </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> +     with_zero = TRUE), vcov = "CR2", cluster = Duncan$cluster)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`typeprof:income`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  test Fstat df_num df_denom p_val sig</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ 0.905      1     4.41 0.391    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ  1.11      1     3.95 0.352    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`typewc:income`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  test Fstat df_num df_denom p_val sig</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ  6.29      1      2.2 0.117    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ  2.02      1      1.9 0.297    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`typewc:income - typeprof:income`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  test    Fstat df_num df_denom p_val sig</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ 0.000587      1     2.99 0.982    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ 0.000742      1     1.97 0.981    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

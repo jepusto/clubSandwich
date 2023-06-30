@@ -20,7 +20,7 @@ based on a Satterthwaite approximation."><!-- mathjax --><script src="https://cd
     
     <a class="navbar-brand me-2" href="../index.html">clubSandwich</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.8.9999</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.9</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -192,19 +192,19 @@ value is <code>FALSE</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster, contrasts = constrain_pairwise(":education", </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> +     reg_ex = TRUE), test = "Satterthwaite")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                  Coef. Estimate    SE d.f. Lower 95% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  typeprof:education - typebc:education   0.0186 0.311 3.89       -0.855</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    typewc:education - typebc:education   0.1068 0.207 4.39       -0.449</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  typewc:education - typeprof:education   0.0882 0.395 2.86       -1.205</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  typeprof:education - typebc:education   0.0186 0.282 4.08       -0.757</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    typewc:education - typebc:education   0.1068 0.173 3.67       -0.392</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  typewc:education - typeprof:education   0.0882 0.406 3.11       -1.178</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Upper 95% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         0.892</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         0.663</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         1.382</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         0.795</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         0.605</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         1.354</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster, contrasts = constrain_pairwise(":income", </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> +     reg_ex = TRUE, with_zero = TRUE), test = "Satterthwaite")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                            Coef. Estimate    SE d.f. Lower 95% CI Upper 95% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  typeprof:income -0.36914 0.333 3.91       -1.304        0.565</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    typewc:income -0.36031 0.181 3.13       -0.923        0.202</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  typewc:income - typeprof:income  0.00883 0.462 2.76       -1.535        1.553</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  typeprof:income -0.36914 0.350 3.73       -1.370        0.632</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    typewc:income -0.36031 0.183 2.67       -0.985        0.264</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  typewc:income - typeprof:income  0.00883 0.361 3.19       -1.104        1.122</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
