@@ -315,3 +315,85 @@ test_that("Wald_test works for intercept-only models.", {
   expect_equal(F_test$p_val[1:3], t_test$p_Satt)
   
 })
+
+test_that("Wald_test fails gracefully when between-cluster variance of coefficients isn't identified.", {
+
+  skip_if_not_installed("metafor")
+  
+  suppressPackageStartupMessages(library(metafor))
+  
+  dat <- dat.bcg
+  dat <- escalc(measure="RR", ai=tpos, bi=tneg, ci=cpos, di=cneg, data=dat, subset=-5)
+  res <- rma(yi, vi, data=dat, mods = ~ 0 + alloc)
+  
+  Vmat <- vcovCR(res, cluster=dat$trial, type="CR2")
+  expect_equal(Vmat[1,1], 0)
+  
+  t_tests <- coef_test(res, cluster=dat$trial, vcov="CR2")
+  expect_true(is.na(t_tests$df_Satt[1]))
+  expect_true(is.na(t_tests$p_Satt[1]))
+  
+  CI <- conf_int(res, cluster=dat$trial, vcov="CR2")
+  expect_true(is.na(CI$CI_L[1]))
+  expect_true(is.na(CI$CI_U[1]))
+  
+  Wald1 <- Wald_test(
+    res, 
+    cluster=dat$trial, 
+    vcov="CR2", 
+    constraints=constrain_equal(1:3),
+    test = "All"
+  )
+  
+  expect_s3_class(Wald1, "Wald_test_clubSandwich")
+  
+  expect_error(
+    Wald_test(
+      res, 
+      cluster=dat$trial, 
+      vcov="CR2", 
+      constraints=constrain_zero(1:3)
+    ), 
+    regexp = "not positive definite"
+  )
+  
+  Wald2 <- Wald_test(
+    res, 
+    cluster=dat$trial, 
+    vcov="CR2", 
+    constraints = list(A = constrain_equal(1:3), B = constrain_zero(1:3)),
+    test = "All"
+  )
+  
+  expect_s3_class(Wald2$A, "Wald_test_clubSandwich") 
+  expect_s3_class(Wald2$B, "Wald_test_clubSandwich") 
+  expect_identical(Wald1, Wald2$A)  
+  expect_true(all(is.na(Wald2$B$Fstat)))
+  expect_true(all(is.na(Wald2$B$p_val)))
+  
+  Wald3 <- Wald_test(
+    res, 
+    cluster=dat$trial, 
+    vcov="CR2", 
+    constraints = list(A = constrain_equal(1:3), B = constrain_zero(1:3)),
+    tidy = TRUE
+  )
+  
+  expect_s3_class(Wald3, "Wald_test_clubSandwich") 
+  expect_equivalent(Wald1[Wald1$test=="HTZ",], Wald3[1,-1])  
+  expect_true(is.na(Wald3[2,"Fstat"]))
+  expect_true(is.na(Wald3[2,"p_val"]))
+  
+  Wald4 <- Wald_test(
+    res, 
+    cluster=dat$trial, 
+    vcov="CR2", 
+    constraints=constrain_pairwise(1:3, with_zero = TRUE),
+    tidy = TRUE
+  )
+  
+  expect_s3_class(Wald4, "Wald_test_clubSandwich")
+  expect_true(is.na(Wald4[1,"Fstat"]))
+  expect_true(is.na(Wald4[1,"p_val"]))
+  
+})

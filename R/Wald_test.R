@@ -340,7 +340,7 @@ Wald_test <- function(obj, constraints, vcov, test = "HTZ", tidy = FALSE, ...) {
       stop(paste0("Constraints must be a q X ", p," matrix, a list of such matrices, or a call to a constrain_*() function."))
     }
     
-    results <- lapply(constraints, Wald_testing, beta = beta, vcov = vcov, test = test, p = p, GH = GH)
+    results <- lapply(constraints, Wald_testing, beta = beta, vcov = vcov, test = test, p = p, GH = GH, stop_on_NPD = FALSE)
     
     if (tidy) {
       results <- mapply(
@@ -371,7 +371,7 @@ array_multiply <- function(mat, arr) {
   array(new_mat, dim = c(nrow(mat), dim(arr)[2], dim(arr)[3]))
 }
 
-Wald_testing <- function(C_mat, beta, vcov, test, p, GH) {
+Wald_testing <- function(C_mat, beta, vcov, test, p, GH, stop_on_NPD = TRUE) {
   
   q <- nrow(C_mat)
   dims <- dim(GH$H)
@@ -392,100 +392,121 @@ Wald_testing <- function(C_mat, beta, vcov, test, p, GH) {
   }
   
   # Wald statistic
-  Q <- as.numeric(t(C_mat %*% beta) %*% chol2inv(chol(C_mat %*% vcov %*% t(C_mat))) %*% C_mat %*% beta)
+  inverse_vcov <- tryCatch(
+    chol2inv(chol(C_mat %*% vcov %*% t(C_mat))),
+    error = function(e) e
+  )
   
-  result <- data.frame()
-  
-  # chi-square
-  if ("chi-sq" %in% test) {
-    p_val <- pchisq(Q, df = q, lower.tail = FALSE)
-    result <- rbind(result, 
-                    data.frame(test = "chi-sq", Fstat = Q / q, 
-                               delta = 1, df_num = q, df_denom = Inf, p_val = p_val))
-  }
-  
-  # Naive F
-  if ("Naive-F" %in% test) {
-    p_val <- pf(Q / q, df1 = q, df2 = J - 1, lower.tail = FALSE)
-    result <- rbind(result, 
-                    data.frame(test = "Naive-F", Fstat = Q / q, 
-                               delta = 1, df_num = q, df_denom = J - 1, p_val = p_val))
-  }
-  
-  # Naive F with J - p degrees of freedom
-  if ("Naive-Fp" %in% test) {
-    p_val <- pf(Q / q, df1 = q, df2 = J - p, lower.tail = FALSE)
-    result <- rbind(result, 
-                    data.frame(test = "Naive-Fp", Fstat = Q / q, 
-                               delta = 1, df_num = q, df_denom = J - p, p_val = p_val))
-  }
-  
-  # Hotelling's T-squared
-  if ("HTA" %in% test | "HTB" %in% test) {
-    Cov_arr <- covariance_array(P_array, Omega_nsqrt, q = q)
-    
-    Var_index <- seq(1,q^4, 1 + q^2)
-    Var_mat <- matrix(Cov_arr[Var_index], q, q)
-    
-    
-    if ("HTA" %in% test) {
-      nu_A <- 2 * sum(Var_mat) / sum(Cov_arr^2)
-      result <- rbind(result, data.frame(test = "HTA", Hotelling_Tsq(Q, q, nu = nu_A)))
-    } 
-    
-    if ("HTB" %in% test) {
-      lower_mat <- lower.tri(Var_mat, diag = TRUE)
-      lower_arr <- array(FALSE, dim = dim(Cov_arr))
-      for (s in 1:q) for (t in 1:s) for (u in 1:s) for (v in 1:(ifelse(u==s,t,u))) lower_arr[s,t,u,v] <- TRUE
-      
-      nu_B <- 2 * sum(Var_mat[lower_mat]) / sum(Cov_arr[lower_arr]^2)
-      result <- rbind(result, data.frame(test = "HTB", Hotelling_Tsq(Q, q, nu = nu_B)))
-    } 
-  } else if ("HTZ" %in% test) {
-    Var_mat <- total_variance_mat(P_array, Omega_nsqrt, q = q)
-  }
-  
-  if ("HTZ" %in% test) {
-    nu_Z <- q * (q + 1) / sum(Var_mat)
-    result <- rbind(result, data.frame(test = "HTZ", Hotelling_Tsq(Q, q, nu = nu_Z)))
-  }
-  
-  # Eigen-decompositions
-  
-  if ("EDF" %in% test | "EDT" %in% test) {
-    spec <- eigen(Omega_nsqrt %*% C_mat %*% vcov %*% t(C_mat) %*% t(Omega_nsqrt))
-    df_eig <- 1 / apply(t(spec$vectors) %*% Omega_nsqrt, 1, 
-                        function(x) sum(apply(P_array, 3:4, 
-                                              function(P) (t(x) %*% P %*% x)^2)))
-    
-    if ("EDF" %in% test) {
-      df4 <- pmax(df_eig, 4.1)
-      EQ <- sum(df4 / (df4 - 2))
-      VQ <- 2 * sum(df4^2 * (df4 - 1)  / ((df4 - 2)^2 * (df4 - 4))) 
-      delta <- ifelse(q * VQ > 2 * EQ^2, (EQ^2 * (q - 2) + 2 * q * VQ) / (EQ * (VQ + EQ^2)), q / EQ)
-      df <- ifelse(q * VQ > 2 * EQ^2, 4 + 2 * EQ^2 * (q + 2) / (q * VQ - 2 * EQ^2), Inf)
-      Fstat <- delta * Q / q
-      p_val <- pf(Fstat, df1 = q, df2 = df, lower.tail = FALSE)
-      result <- rbind(result, 
-                      data.frame(test = "EDF", Fstat = Fstat, 
-                                 delta = delta, df_num = q, df_denom = df, p_val = p_val))
+  if (inherits(inverse_vcov, "error")) {
+    if (stop_on_NPD) {
+      stop("Variance-covariance matrix of the contrast is not positive definite. The test cannot be computed.")
+    } else {
+      result <- data.frame(
+        test = test, 
+        Fstat = NA_real_, 
+        delta = NA_real_, 
+        df_num = q, 
+        df_denom = NA_real_, 
+        p_val = NA_real_
+      )
     }
+  } else {
+    C_beta <- C_mat %*% beta
+    Q <- as.numeric(t(C_beta) %*% inverse_vcov %*% C_beta)
     
-    if ("EDT" %in% test) {
-      t_j <- t(spec$vectors) %*% Omega_nsqrt %*% C_mat %*% beta / sqrt(spec$values)
-      a_j <- df_eig - 1 / 2
-      b_j <- 48 * a_j^2
-      c_j <- sqrt(a_j * log(1 + t_j^2 / df_eig))
-      z_j <- c_j + (c_j^3 + 3 * c_j) / b_j - 
-        (4 * c_j^7 + 33 * c_j^5 + 240 * c_j^3 + 855 * c_j) / 
-        (10 * b_j^2 + 8 * b_j * c_j^4 + 1000 * b_j)
-      Fstat <- mean(z_j^2)
-      p_val <- pf(Fstat, df1 = q, df2 = Inf, lower.tail = FALSE)
+    result <- data.frame()
+    
+    # chi-square
+    if ("chi-sq" %in% test) {
+      p_val <- pchisq(Q, df = q, lower.tail = FALSE)
       result <- rbind(result, 
-                      data.frame(test = "EDT", Fstat = Fstat, 
+                      data.frame(test = "chi-sq", Fstat = Q / q, 
                                  delta = 1, df_num = q, df_denom = Inf, p_val = p_val))
     }
-  }
+    
+    # Naive F
+    if ("Naive-F" %in% test) {
+      p_val <- pf(Q / q, df1 = q, df2 = J - 1, lower.tail = FALSE)
+      result <- rbind(result, 
+                      data.frame(test = "Naive-F", Fstat = Q / q, 
+                                 delta = 1, df_num = q, df_denom = J - 1, p_val = p_val))
+    }
+    
+    # Naive F with J - p degrees of freedom
+    if ("Naive-Fp" %in% test) {
+      p_val <- pf(Q / q, df1 = q, df2 = J - p, lower.tail = FALSE)
+      result <- rbind(result, 
+                      data.frame(test = "Naive-Fp", Fstat = Q / q, 
+                                 delta = 1, df_num = q, df_denom = J - p, p_val = p_val))
+    }
+    
+    # Hotelling's T-squared
+    if ("HTA" %in% test | "HTB" %in% test) {
+      Cov_arr <- covariance_array(P_array, Omega_nsqrt, q = q)
+      
+      Var_index <- seq(1,q^4, 1 + q^2)
+      Var_mat <- matrix(Cov_arr[Var_index], q, q)
+      
+      
+      if ("HTA" %in% test) {
+        nu_A <- 2 * sum(Var_mat) / sum(Cov_arr^2)
+        result <- rbind(result, data.frame(test = "HTA", Hotelling_Tsq(Q, q, nu = nu_A)))
+      } 
+      
+      if ("HTB" %in% test) {
+        lower_mat <- lower.tri(Var_mat, diag = TRUE)
+        lower_arr <- array(FALSE, dim = dim(Cov_arr))
+        for (s in 1:q) for (t in 1:s) for (u in 1:s) for (v in 1:(ifelse(u==s,t,u))) lower_arr[s,t,u,v] <- TRUE
+        
+        nu_B <- 2 * sum(Var_mat[lower_mat]) / sum(Cov_arr[lower_arr]^2)
+        result <- rbind(result, data.frame(test = "HTB", Hotelling_Tsq(Q, q, nu = nu_B)))
+      } 
+    } else if ("HTZ" %in% test) {
+      Var_mat <- total_variance_mat(P_array, Omega_nsqrt, q = q)
+    }
+    
+    if ("HTZ" %in% test) {
+      nu_Z <- q * (q + 1) / sum(Var_mat)
+      result <- rbind(result, data.frame(test = "HTZ", Hotelling_Tsq(Q, q, nu = nu_Z)))
+    }
+    
+    # Eigen-decompositions
+    
+    if ("EDF" %in% test | "EDT" %in% test) {
+      spec <- eigen(Omega_nsqrt %*% C_mat %*% vcov %*% t(C_mat) %*% t(Omega_nsqrt))
+      df_eig <- 1 / apply(t(spec$vectors) %*% Omega_nsqrt, 1, 
+                          function(x) sum(apply(P_array, 3:4, 
+                                                function(P) (t(x) %*% P %*% x)^2)))
+      
+      if ("EDF" %in% test) {
+        df4 <- pmax(df_eig, 4.1)
+        EQ <- sum(df4 / (df4 - 2))
+        VQ <- 2 * sum(df4^2 * (df4 - 1)  / ((df4 - 2)^2 * (df4 - 4))) 
+        delta <- ifelse(q * VQ > 2 * EQ^2, (EQ^2 * (q - 2) + 2 * q * VQ) / (EQ * (VQ + EQ^2)), q / EQ)
+        df <- ifelse(q * VQ > 2 * EQ^2, 4 + 2 * EQ^2 * (q + 2) / (q * VQ - 2 * EQ^2), Inf)
+        Fstat <- delta * Q / q
+        p_val <- pf(Fstat, df1 = q, df2 = df, lower.tail = FALSE)
+        result <- rbind(result, 
+                        data.frame(test = "EDF", Fstat = Fstat, 
+                                   delta = delta, df_num = q, df_denom = df, p_val = p_val))
+      }
+      
+      if ("EDT" %in% test) {
+        t_j <- t(spec$vectors) %*% Omega_nsqrt %*% C_mat %*% beta / sqrt(spec$values)
+        a_j <- df_eig - 1 / 2
+        b_j <- 48 * a_j^2
+        c_j <- sqrt(a_j * log(1 + t_j^2 / df_eig))
+        z_j <- c_j + (c_j^3 + 3 * c_j) / b_j - 
+          (4 * c_j^7 + 33 * c_j^5 + 240 * c_j^3 + 855 * c_j) / 
+          (10 * b_j^2 + 8 * b_j * c_j^4 + 1000 * b_j)
+        Fstat <- mean(z_j^2)
+        p_val <- pf(Fstat, df1 = q, df2 = Inf, lower.tail = FALSE)
+        result <- rbind(result, 
+                        data.frame(test = "EDT", Fstat = Fstat, 
+                                   delta = 1, df_num = q, df_denom = Inf, p_val = p_val))
+      }
+    }
+  } 
   
   class(result) <- c("Wald_test_clubSandwich", class(result))
   attr(result, "type") <- attr(vcov, "type")
