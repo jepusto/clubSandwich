@@ -1,7 +1,7 @@
-# clubSandwich 0.5.8.9999
+# clubSandwich 0.5.9
 
 * Added support for `geepack::geeglm()` models. 
-* Added support for `metafor::rma.ls()` models (location-scale models).
+* Added support for `rma.ls` models (location-scale models estimated using `metafor::rma.uni(scale = )`).
 
 # clubSandwich 0.5.8
 

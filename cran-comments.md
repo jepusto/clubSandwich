@@ -1,16 +1,16 @@
 ## Resubmission
 
-This is a re-submission. This version is a maintenance release that updates the package unit tests for compatibility with an upcoming release of the plm package (version 2.6-2 and higher). 
+This is a re-submission. This version adds support for geepack::geeglm() models and rma.ls models estimated using metafor::rma.uni().
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
 ## Test environments
 
-* local Windows 11 Pro, R 4.1.2
+* local Windows 11 Pro, R 4.2.2
 * ubuntu 20.04.3 LTS (on Github), R devel, release, oldrelease
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release
-* win-builder (devel, release, oldrelease)
+* win-builder (devel)
 * mac-builder (release)
 * r-hub:
   * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
@@ -36,6 +36,10 @@ There were 2 NOTES:
   All of the identified words are spelled correctly. 
 
 * Found the following (possibly) invalid URLs:
+  URL: https://economics.mit.edu/faculty/angrist/data1/data/angrist
+    From: man/AchievementAwardsRCT.Rd
+    Status: 404
+    Message: Not Found
   URL: https://doi.org/10.1037/1082-989X.1.3.227
     From: man/SATcoaching.Rd
     Status: 400

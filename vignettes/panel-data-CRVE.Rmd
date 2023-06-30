@@ -204,7 +204,7 @@ Arellano, M. (1993). On the testing of correlated effects with panel data. Journ
 
 Bell, R. M., & McCaffrey, D. F. (2002). Bias reduction in standard errors for linear regression with multi-stage samples. _Survey Methodology, 28_(2), 169-181.
 
-Cameron, A. C., & Miller, D. L. (2015). A practitioner’s guide to cluster-robust inference. URL: http://cameron.econ.ucdavis.edu/research/Cameron_Miller_JHR_2015_February.pdf
+Cameron, A. C., & Miller, D. L. (2015). A practitioner’s guide to cluster-robust inference. URL: https://cameron.econ.ucdavis.edu/research/Cameron_Miller_JHR_2015_February.pdf
 
 Carpenter, C., & Dobkin, C. (2011). The minimum legal drinking age and public health. _Journal of Economic Perspectives, 25_(2), 133-156. doi: [10.1257/jep.25.2.133](https://doi.org/10.1257/jep.25.2.133)
 
