@@ -3,6 +3,7 @@
 * Added support for `geepack::geeglm()` models. 
 * Added support for `rma.ls` models (location-scale models estimated using `metafor::rma.uni(scale = )`).
 * Improved error handling of `Wald_test()` when vcov of contrasts is not positive definite.
+* Improved internal `get_data` function for `gls` and `lme` objects to allow use of expressions in addition to object names.
 
 # clubSandwich 0.5.8
 
