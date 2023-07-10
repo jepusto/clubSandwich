@@ -54,16 +54,22 @@ vcovCR.gls <- function(obj, cluster, type, target, inverse_var, form = "sandwich
 #-------------------------------------
 
 get_data <- function (object) {
+  
   if ("data" %in% names(object)) {
     data <- object$data
   } else {
-    dat_name <- object$call$data
+    dat_call <- object$call$data
     envir_names <- sys.frames()
-    ind <- sapply(envir_names, function(e) exists(as.character(dat_name), envir = e))
-    e <- envir_names[[min(which(ind))]]
-    data <- eval(dat_name, envir = e)
+    data <- simpleError("start")
+    i <- 1L
+    while (inherits(data, "simpleError") & i <= length(envir_names)) {
+      data <- tryCatch(eval(dat_call, envir = envir_names[[i]]), error = function(e) e)
+      i <- i + 1L
+    }
   }
-  if (is.null(data)) return(data)
+  
+  if (inherits(data, "simpleError")) return(NULL)
+  
   naAct <- object[["na.action"]]
   if (!is.null(naAct)) {
     data <- if (inherits(naAct, "omit")) {
@@ -73,11 +79,13 @@ get_data <- function (object) {
       data
     } else eval(object$call$na.action)(data)
   }
+  
   subset <- object$call$subset
   if (!is.null(subset)) {
     subset <- eval(asOneSidedFormula(subset)[[2]], data)
     data <- data[subset, ]
   }
+  
   data
 }
 
