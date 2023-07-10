@@ -1,4 +1,3 @@
-context("linear contrasts")
 set.seed(20210110)
 
 skip_if_not_installed("carData")
@@ -168,4 +167,13 @@ test_that("linear_contrast() has informative error messages.", {
                     test = "saddlepoint")
   )
   
+})
+
+test_that("linear_contrast() works with scalar (length-1) contrasts.", {
+  lm_int <- lm(math1 ~ 1, data = STAR)
+  x0 <- linear_contrast(lm_int, vcov = "CR0", cluster = STAR$schoolidk, contrasts = 1)
+  expect_s3_class(x0, "conf_int_clubSandwich")
+  
+  x2 <- linear_contrast(lm_int, vcov = "CR2", cluster = STAR$schoolidk, contrasts = 1)
+  expect_s3_class(x2, "conf_int_clubSandwich")
 })

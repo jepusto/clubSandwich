@@ -224,10 +224,13 @@ linear_contrast <- function(obj, vcov, contrasts, level = .95, test = "Satterthw
     
     # Combine into one matrix
     contrasts <- do.call(rbind, args = contrast_list)
-  }
-  
-  if (is.null(rownames(contrasts))) {
-    rownames(contrasts) <- paste("Contrast", 1:nrow(contrasts))
+  } else if (is.matrix(contrasts)) {
+    if (is.null(rownames(contrasts))) {
+      rownames(contrasts) <- paste("Contrast", 1:NROW(contrasts))
+    }
+  } else if (is.vector(contrasts)) {
+    contrasts <- matrix(contrasts, nrow = 1L)
+    rownames(contrasts) <- "Contrast"
   }
     
   all_tests <- c("z","naive-t","naive-tp","Satterthwaite")

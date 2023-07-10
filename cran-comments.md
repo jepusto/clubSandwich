@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a re-submission. This version adds support for geepack::geeglm() models and rma.ls models estimated using metafor::rma.uni().
+This is a re-submission. This version adds support for geepack::geeglm() models and rma.ls models estimated using metafor::rma.uni(). It also includes several miscellaneous bug fixes.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
