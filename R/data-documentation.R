@@ -26,7 +26,7 @@
 #'   \item{half}{Lower or upper half within distribution of lagscore, calculated by cohort and sex}
 #'   }
 #'   
-#' @source \href{https://economics.mit.edu/faculty/angrist/data1/data/angrist}{Angrist Data Archive}
+#' @source \href{https://economics.mit.edu/people/faculty/josh-angrist/angrist-data-archive}{Angrist Data Archive}
 #'   
 #' @references Angrist, J. D., & Lavy, V. (2009). The effects of high stakes 
 #'   high school achievement awards : Evidence from a randomized trial.

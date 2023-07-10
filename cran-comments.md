@@ -10,7 +10,7 @@ Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey 
 * ubuntu 20.04.3 LTS (on Github), R devel, release, oldrelease
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release
-* win-builder (devel)
+* win-builder (devel, release, oldrelease)
 * mac-builder (release)
 * r-hub:
   * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
@@ -30,45 +30,44 @@ There were 2 NOTES:
   Pustejovsky (11:26)
   Satterthwaite (15:22)
   Tipton (11:42)
-  lme (19:44)
+  linearization (8:40)
+  lme (20:40)
   mlm (17:77)
 
   All of the identified words are spelled correctly. 
 
 * Found the following (possibly) invalid URLs:
-  URL: https://economics.mit.edu/faculty/angrist/data1/data/angrist
-    From: man/AchievementAwardsRCT.Rd
-    Status: 404
-    Message: Not Found
-  URL: https://doi.org/10.1037/1082-989X.1.3.227
-    From: man/SATcoaching.Rd
-    Status: 400
-    Message: Bad Request
-  URL: https://doi.org/10.1037/met0000011
-    From: inst/doc/meta-analysis-with-CRVE.html
-    Status: 400
-    Message: Bad Request
-  URL: https://doi.org/10.3102/1076998615606099
-    From: man/dropoutPrevention.Rd
-          inst/doc/Wald-tests-in-clubSandwich.html
-          inst/doc/meta-analysis-with-CRVE.html
-    Status: 503
-    Message: Service Unavailable
-  URL: https://economics.mit.edu/faculty/angrist/data1/data/angrist
-    From: man/AchievementAwardsRCT.Rd
+  URL: https://CRAN.R-project.org/package=AER
+    From: man/vcovCR.ivreg.Rd
     Status: Error
-    Message: SSL certificate problem: unable to get local issuer certificate
-  URL: https://doi.org/10.4073/csr.2011.8
-    From: man/dropoutPrevention.Rd
+    Message: Failed to connect to CRAN.R-project.org port 443 after 21043 ms: Timed out
+  URL: https://CRAN.R-project.org/package=ivreg
+    From: man/vcovCR.ivreg.Rd
+    Status: Error
+    Message: Failed to connect to CRAN.R-project.org port 443 after 21043 ms: Timed out
+  URL: https://doi.org/10.1080/07350015.2016.1247004
+    From: inst/doc/Wald-tests-in-clubSandwich.html
+    Status: 403
+    Message: Forbidden
+  URL: https://doi.org/10.1257/jep.25.2.133
+    From: inst/doc/panel-data-CRVE.html
+    Status: 403
+    Message: Forbidden
+  URL: https://doi.org/10.3102/1076998615606099
+    From: inst/doc/Wald-tests-in-clubSandwich.html
           inst/doc/meta-analysis-with-CRVE.html
-    Status: 503
-    Message: Service Unavailable
+    Status: 403
+    Message: Forbidden
+  URL: https://doi.org/10.4073/csr.2011.8
+    From: inst/doc/meta-analysis-with-CRVE.html
+    Status: 403
+    Message: Forbidden
     
   The flagged URLs are correct.
 
 ## revdepcheck results
 
-We checked 11 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+We checked 14 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
 
  * We saw 0 new problems
  * We failed to check 0 packages

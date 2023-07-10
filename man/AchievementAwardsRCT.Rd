@@ -29,7 +29,7 @@ A data frame with 16526 rows and 21 variables: \describe{
   }
 }
 \source{
-\href{https://economics.mit.edu/faculty/angrist/data1/data/angrist}{Angrist Data Archive}
+\href{https://economics.mit.edu/people/faculty/josh-angrist/angrist-data-archive}{Angrist Data Archive}
 }
 \usage{
 AchievementAwardsRCT
