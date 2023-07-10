@@ -57,6 +57,7 @@
 <ul><li>Added support for <code><a href="https://rdrr.io/pkg/geepack/man/geeglm.html" class="external-link">geepack::geeglm()</a></code> models.</li>
 <li>Added support for <code>rma.ls</code> models (location-scale models estimated using <code>metafor::rma.uni(scale = )</code>).</li>
 <li>Improved error handling of <code><a href="../reference/Wald_test.html">Wald_test()</a></code> when vcov of contrasts is not positive definite.</li>
+<li>Fixed a bug in <code><a href="../reference/linear_contrast.html">linear_contrast()</a></code> to handle specified contrasts that are scalars.</li>
 <li>Improved internal <code>get_data</code> function for <code>gls</code> and <code>lme</code> objects to allow use of expressions in addition to object names.</li>
 </ul></div>
     <div class="section level2">
