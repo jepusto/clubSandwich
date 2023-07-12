@@ -170,10 +170,51 @@ test_that("linear_contrast() has informative error messages.", {
 })
 
 test_that("linear_contrast() works with scalar (length-1) contrasts.", {
+  
   lm_int <- lm(math1 ~ 1, data = STAR)
   x0 <- linear_contrast(lm_int, vcov = "CR0", cluster = STAR$schoolidk, contrasts = 1)
   expect_s3_class(x0, "conf_int_clubSandwich")
   
   x2 <- linear_contrast(lm_int, vcov = "CR2", cluster = STAR$schoolidk, contrasts = 1)
   expect_s3_class(x2, "conf_int_clubSandwich")
+  
+  y0 <- linear_contrast(lm_int, vcov = "CR0", cluster = STAR$schoolidk, contrasts = matrix(1))
+  y0$Coef <- row.names(y0) <- "Contrast"
+  expect_equal(x0, y0)
+  
+  y2 <- linear_contrast(lm_int, vcov = "CR2", cluster = STAR$schoolidk, contrasts = 1)
+  y2$Coef <- row.names(y2) <- "Contrast"
+  expect_equal(x2, y2)
+
+  STAR$wt <- 1L
+  wls_int <- lm(math1 ~ 1, weights = wt, data = STAR)
+  z0 <- linear_contrast(wls_int, vcov = "CR0", cluster = STAR$schoolidk, contrasts = 1)
+  expect_s3_class(z0, "conf_int_clubSandwich")
+  
+  z2 <- linear_contrast(wls_int, vcov = "CR2", cluster = STAR$schoolidk, contrasts = 1)
+  expect_s3_class(z2, "conf_int_clubSandwich")
+  
+})
+
+test_that("linear_contrast() works with scalar (length-1) contrasts in metafor.", {
+  
+  skip_if_not_installed("metafor")
+  suppressPackageStartupMessages(library(metafor))
+  
+  dat <- dat.bangertdrowns2004
+  res_uni <- rma(yi, vi, weights = 1, data=dat)
+  
+  x0 <- linear_contrast(res_uni, vcov = "CR0", cluster = dat$id, contrasts = 1)
+  expect_s3_class(x0, "conf_int_clubSandwich")
+  y0 <- linear_contrast(res_uni, vcov = "CR0", cluster = dat$id, contrasts = matrix(1))
+  y0$Coef <- row.names(y0) <- "Contrast"
+  expect_equal(x0, y0)
+  
+  x2 <- linear_contrast(res_uni, vcov = "CR2", cluster = dat$id, contrasts = 1)
+  expect_s3_class(x2, "conf_int_clubSandwich")
+  y2 <- linear_contrast(res_uni, vcov = "CR2", cluster = dat$id, contrasts = 1)
+  y2$Coef <- row.names(y2) <- "Contrast"
+  expect_equal(x2, y2)
+  
+  
 })

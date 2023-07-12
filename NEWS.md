@@ -1,3 +1,7 @@
+# clubSandwich 0.5.9.9999
+
+* Fixed another bug in `linear_contrast()` to handle specified contrasts that are scalars when variance-covariance matrix is computed with a working model that is not inverse-variance.
+
 # clubSandwich 0.5.9
 
 * Added support for `geepack::geeglm()` models. 

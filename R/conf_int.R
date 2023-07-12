@@ -246,6 +246,7 @@ linear_contrast <- function(obj, vcov, contrasts, level = .95, test = "Satterthw
   
   # Satterthwaite degrees of freedom
   if (test=="Satterthwaite") {
+    q <- nrow(contrasts)
     GH <- get_GH(obj, vcov)
     GH$G <- lapply(GH$G, function(s) contrasts %*% s)
     dims <- dim(GH$H)
@@ -253,7 +254,7 @@ linear_contrast <- function(obj, vcov, contrasts, level = .95, test = "Satterthw
       GH$H <- array_multiply(contrasts, GH$H)
     } else {
       H <- array(NA, dim = c(3, q, dims[3:4]))
-      for (i in 1:dims[1]) H[i,,,] <- array_multiply(contrasts, GH$H[i,,,])
+      for (i in 1:dims[1]) H[i,,,] <- array_multiply(contrasts, GH$H[i,,,,drop=FALSE])
       GH$H <- H
     }
     P_array <- get_P_array(GH = GH)
