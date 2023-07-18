@@ -1,6 +1,7 @@
 # clubSandwich 0.5.9.9999
 
 * Fixed another bug in `linear_contrast()` to handle specified contrasts that are scalars when variance-covariance matrix is computed with a working model that is not inverse-variance.
+* Fixed formatting of package version numbers in unit tests to conform to changes in `packageVersion()` in R-devel.
 
 # clubSandwich 0.5.9
 
