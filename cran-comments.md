@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a re-submission. This version fixes the formatting of package version numbers in unit tests to conform to changes in `packageVersion()` in R-devel.
+This is a re-submission in response to a notice from Kurt Hornik  on 2023-07-18. This version fixes the formatting of package version numbers in unit tests to conform to changes in `packageVersion()` in R-devel.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
@@ -11,7 +11,6 @@ Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey 
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release
 * win-builder (devel, release, oldrelease)
-* mac-builder (release)
 * r-hub:
   * Windows Server 2008 R2 SP1, R-devel, 32/64 bit
   * Ubuntu Linux 16.04 LTS, R-release, GCC
@@ -37,14 +36,6 @@ There were 2 NOTES:
   All of the identified words are spelled correctly. 
 
 * Found the following (possibly) invalid URLs:
-  URL: https://CRAN.R-project.org/package=AER
-    From: man/vcovCR.ivreg.Rd
-    Status: Error
-    Message: Failed to connect to CRAN.R-project.org port 443 after 21043 ms: Timed out
-  URL: https://CRAN.R-project.org/package=ivreg
-    From: man/vcovCR.ivreg.Rd
-    Status: Error
-    Message: Failed to connect to CRAN.R-project.org port 443 after 21043 ms: Timed out
   URL: https://doi.org/10.1080/07350015.2016.1247004
     From: inst/doc/Wald-tests-in-clubSandwich.html
     Status: 403
@@ -65,6 +56,14 @@ There were 2 NOTES:
     
   The flagged URLs are correct.
 
+Found the following (possibly) invalid DOIs:
+  DOI: 10.1080/07350015.2016.1247004
+    From: DESCRIPTION
+    Status: Forbidden
+    Message: 403
+    
+  The flagged DOI is correct.
+  
 ## revdepcheck results
 
 We checked 14 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
