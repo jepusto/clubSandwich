@@ -12,7 +12,7 @@ of a set of regression coefficient estimates from an lm object."><!-- mathjax --
     
     <a class="navbar-brand me-2" href="../index.html">clubSandwich</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.10</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.10.9999</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -167,8 +167,8 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; vcovCR(lm_individual, cluster = Produc$state, type = "CR2")[individual_index, </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> +     individual_index]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               log(pcap)       log(pc)      log(emp)         unemp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log(pcap)  3.900840e-03 -7.382313e-04 -0.0024837779 -7.825846e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> log(pc)   -7.382313e-04  4.177767e-03 -0.0040101610 -9.960967e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(pcap)  3.900840e-03 -7.382312e-04 -0.0024837779 -7.825846e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> log(pc)   -7.382312e-04  4.177767e-03 -0.0040101610 -9.960967e-05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> log(emp)  -2.483778e-03 -4.010161e-03  0.0073152051  1.736024e-04</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> unemp     -7.825846e-05 -9.960967e-05  0.0001736024  6.745842e-06</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; plm_FE &lt;- plm::plm(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, </span>
