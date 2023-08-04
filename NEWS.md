@@ -1,3 +1,5 @@
+# clubSandwich 0.5.10.9999
+
 # clubSandwich 0.5.10
 
 * Fixed another bug in `linear_contrast()` to handle specified contrasts that are scalars when variance-covariance matrix is computed with a working model that is not inverse-variance.
