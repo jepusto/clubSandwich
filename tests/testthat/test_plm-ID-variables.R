@@ -78,8 +78,7 @@ test_that("plm works for Yuki Takahashi's reprex.",{
   
   fe_fit <- plm(formula = Y ~ Trt, data = Data, 
                 model = "within", index = "id", 
-                effect = "individual", 
-                singular.ok = FALSE)
+                effect = "individual")
   
   
   implicit <- vcovCR(fe_fit, type = "CR2")
