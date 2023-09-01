@@ -2,7 +2,7 @@
 % Please edit documentation in R/rma-mv.R
 \name{vcovCR.rma.mv}
 \alias{vcovCR.rma.mv}
-\title{Cluster-robust variance-covariance matrix for a robu object.}
+\title{Cluster-robust variance-covariance matrix for a rma.mv object.}
 \usage{
 \method{vcovCR}{rma.mv}(obj, cluster, type, target, inverse_var, form = "sandwich", ...)
 }

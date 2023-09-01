@@ -346,7 +346,7 @@ pattern_covariance_matrix <- function(vi, cluster, pattern_level, r_pattern, r,
 # vcovCR with defaults
 #-------------------------------------
 
-#' Cluster-robust variance-covariance matrix for a robu object.
+#' Cluster-robust variance-covariance matrix for a rma.mv object.
 #' 
 #' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
 #' of a set of regression coefficient estimates from a 
