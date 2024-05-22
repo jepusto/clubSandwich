@@ -58,6 +58,14 @@ If \code{cluster} is appropriately sorted, then a list of matrices,
   \code{return_list} argument.
 }
 \description{
+`r lifecycle::badge("superseded")`
+
+  This function is superseded by the \code{\link[metafor]{vcalc}} provided by
+  the \code{metafor} package. Compared to \code{pattern_covariance_matrix},
+  \code{\link[metafor]{vcalc}} provides many further features, includes a
+  \code{data} argument, and uses syntax that is consistent with other
+  functions in \code{metafor}.
+
 \code{pattern_covariance_matrix} calculates a
   block-diagonal covariance matrix, given the marginal variances, the block
   structure, and an assumed correlation structure defined by a patterned

@@ -58,19 +58,26 @@ If \code{cluster} is appropriately sorted, then a list of matrices,
   \code{return_list} argument.
 }
 \description{
-\code{impute_covariance_matrix} calculates a
-  block-diagonal covariance matrix, given the marginal variances, the block
-  structure, and an assumed correlation structure. Can be used to create
-  compound-symmetric structures, AR(1) auto-correlated structures, or
-  combinations thereof.
+`r lifecycle::badge("superseded")`
+
+  This function is superseded by the \code{\link[metafor]{vcalc}} provided by
+  the \code{metafor} package. Compared to \code{impute_covariance_matrix},
+  \code{\link[metafor]{vcalc}} provides many further features, includes a
+  \code{data} argument, and uses syntax that is consistent with other
+  functions in \code{metafor}.
+
+  \code{impute_covariance_matrix} calculates a block-diagonal covariance
+  matrix, given the marginal variances, the block structure, and an assumed
+  correlation structure. Can be used to create compound-symmetric structures,
+  AR(1) auto-correlated structures, or combinations thereof.
 }
 \details{
 A block-diagonal variance-covariance matrix (possibly represented as
   a list of matrices) with a specified structure. The structure depends on
   whether the \code{r} argument, \code{ar1} argument, or both arguments are
-  specified. Let \eqn{v_{ij}}{v-ij} denote the specified variance for
-  effect \eqn{i}{i} in cluster \eqn{j}{j} and \eqn{C_{hij}}{C-hij} be
-  the covariance between effects \eqn{h}{h} and \eqn{i}{i} in cluster
+  specified. Let \eqn{v_{ij}}{v-ij} denote the specified variance for effect
+  \eqn{i}{i} in cluster \eqn{j}{j} and \eqn{C_{hij}}{C-hij} be the covariance
+  between effects \eqn{h}{h} and \eqn{i}{i} in cluster
   \eqn{j}{j}. \itemize{ \item{If only \code{r} is specified,}{ each block
   of the variance-covariance matrix will have a constant (compound symmetric)
   correlation, so that \deqn{C_{hij} = r_j \sqrt{v_{hj} v_{ij},}}{C-hij =

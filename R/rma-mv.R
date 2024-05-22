@@ -26,11 +26,18 @@ check_PD <- function(vcov_list) {
 
 #' Impute a block-diagonal covariance matrix
 #'
-#' @description \code{impute_covariance_matrix} calculates a
-#'   block-diagonal covariance matrix, given the marginal variances, the block
-#'   structure, and an assumed correlation structure. Can be used to create
-#'   compound-symmetric structures, AR(1) auto-correlated structures, or
-#'   combinations thereof.
+#' @description `r lifecycle::badge("superseded")`
+#'
+#'   This function is superseded by the \code{\link[metafor]{vcalc}} provided by
+#'   the \code{metafor} package. Compared to \code{impute_covariance_matrix},
+#'   \code{\link[metafor]{vcalc}} provides many further features, includes a
+#'   \code{data} argument, and uses syntax that is consistent with other
+#'   functions in \code{metafor}.
+#'
+#'   \code{impute_covariance_matrix} calculates a block-diagonal covariance
+#'   matrix, given the marginal variances, the block structure, and an assumed
+#'   correlation structure. Can be used to create compound-symmetric structures,
+#'   AR(1) auto-correlated structures, or combinations thereof.
 #'
 #' @param vi Vector of variances
 #' @param cluster Vector indicating which effects belong to the same cluster.
@@ -68,9 +75,9 @@ check_PD <- function(vcov_list) {
 #' @details A block-diagonal variance-covariance matrix (possibly represented as
 #'   a list of matrices) with a specified structure. The structure depends on
 #'   whether the \code{r} argument, \code{ar1} argument, or both arguments are
-#'   specified. Let \eqn{v_{ij}}{v-ij} denote the specified variance for
-#'   effect \eqn{i}{i} in cluster \eqn{j}{j} and \eqn{C_{hij}}{C-hij} be
-#'   the covariance between effects \eqn{h}{h} and \eqn{i}{i} in cluster
+#'   specified. Let \eqn{v_{ij}}{v-ij} denote the specified variance for effect
+#'   \eqn{i}{i} in cluster \eqn{j}{j} and \eqn{C_{hij}}{C-hij} be the covariance
+#'   between effects \eqn{h}{h} and \eqn{i}{i} in cluster
 #'   \eqn{j}{j}. \itemize{ \item{If only \code{r} is specified,}{ each block
 #'   of the variance-covariance matrix will have a constant (compound symmetric)
 #'   correlation, so that \deqn{C_{hij} = r_j \sqrt{v_{hj} v_{ij},}}{C-hij =
@@ -105,9 +112,9 @@ check_PD <- function(vcov_list) {
 #' @export
 #'
 #' @examples
-#' 
+#'
 #' if (requireNamespace("metafor", quietly = TRUE)) {
-#' 
+#'
 #' library(metafor)
 #'
 #' # Constant correlation
@@ -115,7 +122,7 @@ check_PD <- function(vcov_list) {
 #' V_list <- impute_covariance_matrix(vi = SATcoaching$V, cluster = SATcoaching$study, r = 0.66)
 #' MVFE <- rma.mv(d ~ 0 + test, V = V_list, data = SATcoaching)
 #' conf_int(MVFE, vcov = "CR2", cluster = SATcoaching$study)
-#' 
+#'
 #' }
 #' 
 
@@ -125,6 +132,8 @@ impute_covariance_matrix <- function(vi, cluster, r, ti, ar1,
                                      subgroup = NULL, 
                                      return_list = identical(as.factor(cluster), sort(as.factor(cluster))),
                                      check_PD = TRUE) {
+  
+  lifecycle::deprecate_soft("0.5.11", "impute_covariance_matrix()", "metaffor::vcalc()")
   
   cluster <- droplevels(as.factor(cluster))
   
@@ -187,6 +196,14 @@ impute_covariance_matrix <- function(vi, cluster, r, ti, ar1,
 
 
 #' Impute a patterned block-diagonal covariance matrix
+#'
+#' @description `r lifecycle::badge("superseded")`
+#'
+#'   This function is superseded by the \code{\link[metafor]{vcalc}} provided by
+#'   the \code{metafor} package. Compared to \code{pattern_covariance_matrix},
+#'   \code{\link[metafor]{vcalc}} provides many further features, includes a
+#'   \code{data} argument, and uses syntax that is consistent with other
+#'   functions in \code{metafor}.
 #'
 #' @description \code{pattern_covariance_matrix} calculates a
 #'   block-diagonal covariance matrix, given the marginal variances, the block
@@ -282,6 +299,8 @@ pattern_covariance_matrix <- function(vi, cluster, pattern_level, r_pattern, r,
                                      smooth_vi = FALSE, subgroup = NULL, 
                                      return_list = identical(as.factor(cluster), sort(as.factor(cluster))),
                                      check_PD = TRUE) {
+  
+  lifecycle::deprecate_soft("0.5.11", "impute_covariance_matrix()", "metaffor::vcalc()")
   
   if (missing(pattern_level)) stop("You must specify a vector for pattern_level.")
   if (any(is.na(pattern_level[!is.na(vi)]))) stop("The pattern_level vector cannot have missing values.")

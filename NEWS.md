@@ -1,6 +1,7 @@
 # clubSandwich 0.5.10.9999
 
 * Corrected a unit test related to the plm package, for compatibility with upcoming release of plm.
+* Deprecated `impute_covariance_matrix()` and `pattern_covariance_matrix()`, because they have been superseded by `metafor::vcalc()`.
 
 # clubSandwich 0.5.10
 
