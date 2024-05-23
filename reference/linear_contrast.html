@@ -3,9 +3,7 @@
 for linear contrasts of regression coefficients from a fitted model, using a
 sandwich estimator for the standard errors and (optionally) a small sample
 correction for the critical values. The default small-sample correction is
-based on a Satterthwaite approximation."><title>Calculate confidence intervals and p-values for linear contrasts of
-regression coefficients in a fitted model — linear_contrast • clubSandwich</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Calculate confidence intervals and p-values for linear contrasts of
-regression coefficients in a fitted model — linear_contrast"><meta property="og:description" content="linear_contrast reports confidence intervals and (optionally) p-values
+based on a Satterthwaite approximation."><title>Calculate confidence intervals and p-values for linear contrasts of regression coefficients in a fitted model — linear_contrast • clubSandwich</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Calculate confidence intervals and p-values for linear contrasts of regression coefficients in a fitted model — linear_contrast"><meta property="og:description" content="linear_contrast reports confidence intervals and (optionally) p-values
 for linear contrasts of regression coefficients from a fitted model, using a
 sandwich estimator for the standard errors and (optionally) a small sample
 correction for the critical values. The default small-sample correction is
@@ -16,7 +14,7 @@ based on a Satterthwaite approximation."><!-- mathjax --><script src="https://cd
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">clubSandwich</a>
 
@@ -34,9 +32,9 @@ based on a Satterthwaite approximation."><!-- mathjax --><script src="https://cd
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/Wald-tests-in-clubSandwich.html">Wald tests of multiple-constraint null hypotheses</a>
     <a class="dropdown-item" href="../articles/meta-analysis-with-CRVE.html">Meta-analysis with cluster-robust variance estimation</a>
     <a class="dropdown-item" href="../articles/panel-data-CRVE.html">Cluster-robust standard errors and hypothesis tests in panel data models</a>
+    <a class="dropdown-item" href="../articles/Wald-tests-in-clubSandwich.html">Wald tests of multiple-constraint null hypotheses</a>
   </div>
 </li>
 <li class="nav-item">
@@ -58,8 +56,7 @@ based on a Satterthwaite approximation."><!-- mathjax --><script src="https://cd
 </nav><div class="container template-reference-topic">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Calculate confidence intervals and p-values for linear contrasts of
-regression coefficients in a fitted model</h1>
+      <img src="" class="logo" alt=""><h1>Calculate confidence intervals and p-values for linear contrasts of regression coefficients in a fitted model</h1>
       <small class="dont-index">Source: <a href="https://github.com/jepusto/clubSandwich/blob/HEAD/R/conf_int.R" class="external-link"><code>R/conf_int.R</code></a></small>
       <div class="d-none name"><code>linear_contrast.Rd</code></div>
     </div>
@@ -185,26 +182,32 @@ value is <code>FALSE</code>.</p></dd>
 <span class="r-in"><span>                  test <span class="op">=</span> <span class="st">"Satterthwaite"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>                  </span></span>
 <span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; data(Duncan, package = "carData")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Duncan$cluster &lt;- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Duncan_fit &lt;- lm(prestige ~ 0 + type + income + type:income + type:education, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +     data = Duncan)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster, contrasts = constrain_pairwise(":education", </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +     reg_ex = TRUE), test = "Satterthwaite")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;   data(Duncan, package = "carData")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;   Duncan$cluster &lt;- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;   Duncan_fit &lt;- lm(prestige ~ 0 + type + income + type:income + type:education, data=Duncan)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;   # Note that type:income terms are interactions because main effect of income is included</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;   # but type:education terms are separate slopes for each unique level of type</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;   # Pairwise comparisons of type-by-education slopes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;   linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +                   contrasts = constrain_pairwise(":education", reg_ex = TRUE),</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +                   test = "Satterthwaite")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                                  Coef. Estimate    SE d.f. Lower 95% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  typeprof:education - typebc:education   0.0186 0.375 3.27       -1.121</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    typewc:education - typebc:education   0.1068 0.215 3.46       -0.529</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  typewc:education - typeprof:education   0.0882 0.208 3.20       -0.552</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  typeprof:education - typebc:education   0.0186 0.390 4.42       -1.025</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    typewc:education - typebc:education   0.1068 0.319 3.44       -0.838</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  typewc:education - typeprof:education   0.0882 0.365 2.15       -1.382</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Upper 95% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         1.158</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         0.742</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         0.729</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster, contrasts = constrain_pairwise(":income", </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> +     reg_ex = TRUE, with_zero = TRUE), test = "Satterthwaite")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          1.06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          1.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>          1.56</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;   # Pairwise comparisons of type-by-income interactions</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;   linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +                   contrasts = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +                   test = "Satterthwaite")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                            Coef. Estimate    SE d.f. Lower 95% CI Upper 95% CI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  typeprof:income -0.36914 0.313 3.13       -1.341        0.603</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    typewc:income -0.36031 0.191 2.53       -1.036        0.316</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  typewc:income - typeprof:income  0.00883 0.261 2.77       -0.863        0.881</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  typeprof:income -0.36914 0.367 3.56        -1.44        0.703</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    typewc:income -0.36031 0.296 2.23        -1.52        0.797</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  typewc:income - typeprof:income  0.00883 0.363 2.64        -1.24        1.257</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -213,11 +216,11 @@ value is <code>FALSE</code>.</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by James Pustejovsky.</p>
+  <p>Developed by James Pustejovsky.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
     </footer></div>
