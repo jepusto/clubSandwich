@@ -1,6 +1,8 @@
 context("geeglm objects")
 set.seed(202201030)
 
+skip_if_not_installed("geepack")
+
 library(geepack)
 
 J <- 20
