@@ -21,7 +21,7 @@ A data frame with 5508 rows and 12 variables: \describe{
   }
 }
 \source{
-\href{http://masteringmetrics.com/wp-content/uploads/2015/01/deaths.dta}{Mastering
+\href{https://masteringmetrics.com/wp-content/uploads/2015/01/deaths.dta}{Mastering
   'Metrics data archive}
 }
 \usage{
