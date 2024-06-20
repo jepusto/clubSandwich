@@ -173,32 +173,30 @@ definite.</p></dd>
   specified. Let \(v_{ij}\) denote the specified variance for effect
   \(i\) in cluster \(j\) and \(C_{hij}\) be the covariance
   between effects \(h\) and \(i\) in cluster
-  \(j\).</p><ul><li><p>If only <code>r</code> is specified, each block
-  of the variance-covariance matrix will have a constant (compound symmetric)
-  correlation, so that $$C_{hij} = r_j \sqrt{v_{hj} v_{ij},}$$ where \(r_j\) is the specified correlation
+  \(j\).</p><ul><li><p>If only <code>r</code> is specified, each block of the variance-covariance 
+  matrix will have a constant (compound symmetric) correlation, so that 
+  $$C_{hij} = r_j \sqrt{v_{hj} v_{ij},}$$ 
+  where \(r_j\) is the specified correlation
   for cluster \(j\). If only a single value is given in <code>r</code>, then
   it will be used for every cluster.</p></li>
-<li><p>If only <code>ar1</code> is
-  specified, each block of the variance-covariance matrix will have an
-  AR(1) auto-correlation structure, so that $$C_{hij} = \phi_j^{|t_{hj}
-  - t_{ij}|} \sqrt{v_{hj} v_{ij},}$$ where \(\phi_j\) is the specified auto-correlation
+<li><p>If only <code>ar1</code> is specified, each block of the variance-covariance matrix will have an
+  AR(1) auto-correlation structure, so that 
+  $$C_{hij} = \phi_j^{|t_{hj}- t_{ij}|} \sqrt{v_{hj} v_{ij},}$$ 
+  where \(\phi_j\) is the specified auto-correlation
   for cluster \(j\) and \(t_{hj}\) and \(t_{ij}\)
   are specified time-points corresponding to effects \(h\) and
   \(i\) in cluster \(j\). If only a single value is given in
   <code>ar1</code>, then it will be used for every cluster.</p></li>
-<li><p>If both <code>r</code>
-  and <code>ar1</code> are specified, each block of the variance-covariance
-  matrix will have combination of compound symmetric and an AR(1)
-  auto-correlation structures, so that $$C_{hij} = \left[r_j + (1 -
-  r_j)\phi_j^{|t_{hj} - t_{ij}|}\right] \sqrt{v_{hj} v_{ij},}$$ where
-  \(r_j\) is the specified constant correlation for cluster
+<li><p>If both <code>r</code> and <code>ar1</code> are specified, each block of the variance-covariance matrix will have combination of compound symmetric and an AR(1)
+  auto-correlation structures, so that 
+  $$C_{hij} = \left[r_j + (1 - r_j)\phi_j^{|t_{hj} - t_{ij}|}\right] \sqrt{v_{hj} v_{ij},}$$ 
+  where \(r_j\) is the specified constant correlation for cluster
   \(j\), \(\phi_j\) is the specified auto-correlation for
   cluster \(j\) and \(t_{hj}\) and \(t_{ij}\) are
   specified time-points corresponding to effects \(h\) and
   \(i\) in cluster \(j\). If only single values are given in
   <code>r</code> or <code>ar1</code>, they will be used for every cluster.</p></li>
-</ul><p>If
-  <code>smooth_vi = TRUE</code>, then all of the variances within cluster
+</ul><p>If <code>smooth_vi = TRUE</code>, then all of the variances within cluster
   \(j\) will be set equal to the average variance of cluster
   \(j\), i.e., $$v'_{ij} = \frac{1}{n_j} \sum_{i=1}^{n_j}
   v_{ij}$$ for
