@@ -5,66 +5,50 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="clubSandwich">
 <title>Cluster-robust standard errors and hypothesis tests in panel data models • clubSandwich</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Cluster-robust standard errors and hypothesis tests in panel data models">
-<meta property="og:description" content="clubSandwich">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Cluster-robust standard errors and hypothesis tests in panel data models">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">clubSandwich</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.11.9999</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/meta-analysis-with-CRVE.html">Meta-analysis with cluster-robust variance estimation</a>
-    <a class="dropdown-item" href="../articles/panel-data-CRVE.html">Cluster-robust standard errors and hypothesis tests in panel data models</a>
-    <a class="dropdown-item" href="../articles/Wald-tests-in-clubSandwich.html">Wald tests of multiple-constraint null hypotheses</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/meta-analysis-with-CRVE.html">Meta-analysis with cluster-robust variance estimation</a></li>
+    <li><a class="dropdown-item" href="../articles/panel-data-CRVE.html">Cluster-robust standard errors and hypothesis tests in panel data models</a></li>
+    <li><a class="dropdown-item" href="../articles/Wald-tests-in-clubSandwich.html">Wald tests of multiple-constraint null hypotheses</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/jepusto/clubSandwich/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/jepusto/clubSandwich/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -73,13 +57,14 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Cluster-robust standard errors and hypothesis tests in panel data models</h1>
+
+      <h1>Cluster-robust standard errors and hypothesis tests in panel data models</h1>
                         <h4 data-toc-skip class="author">James E.
 Pustejovsky</h4>
             
-            <h4 data-toc-skip class="date">2024-06-20</h4>
+            <h4 data-toc-skip class="date">2024-08-16</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/jepusto/clubSandwich/blob/HEAD/vignettes/panel-data-CRVE.Rmd" class="external-link"><code>vignettes/panel-data-CRVE.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/jepusto/clubSandwich/blob/main/vignettes/panel-data-CRVE.Rmd" class="external-link"><code>vignettes/panel-data-CRVE.Rmd</code></a></small>
       <div class="d-none name"><code>panel-data-CRVE.Rmd</code></div>
     </div>
 
@@ -143,21 +128,34 @@ variability in the timing of changes across states. Angrist and Pischke
 (following Carpenter and Dobkin) use a difference-in-differences
 strategy to estimate the effects of lowering the minimum legal drinking
 age from 21 to 18. Their specification is</p>
-<p><span class="math display">\[y_{it} = \alpha_i + \beta_t + \gamma
-b_{it} + \delta d_{it} + \epsilon_{it},\]</span></p>
-<p>for <span class="math inline">\(i\)</span> = 1,…,51 and <span class="math inline">\(t\)</span> = 1970,…,1983. In this model, <span class="math inline">\(\alpha_i\)</span> is a state-specific fixed
-effect, <span class="math inline">\(\beta_t\)</span> is a year-specific
-fixed effect, <span class="math inline">\(b_{it}\)</span> is the current
-rate of beer taxation in state <span class="math inline">\(i\)</span> in
-year <span class="math inline">\(t\)</span>, <span class="math inline">\(d_{it}\)</span> is the proportion of 18-20
-year-olds in state <span class="math inline">\(i\)</span> in year <span class="math inline">\(t\)</span> who are legally allowed to drink, and
-<span class="math inline">\(\delta\)</span> captures the effect of
-shifting the minimum legal drinking age from 21 to 18. Following Angrist
-and Pischke’s analysis, we estimate this model both by (unweighted) OLS
-and by weighted least squares with weights corresponding to population
-size in a given state and year. We also demonstrate random effects
-estimation and implement a cluster-robust Hausman specification
-test.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>α</mi><mi>i</mi></msub><mo>+</mo><msub><mi>β</mi><mi>t</mi></msub><mo>+</mo><mi>γ</mi><msub><mi>b</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>+</mo><mi>δ</mi><msub><mi>d</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>+</mo><msub><mi>ϵ</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">y_{it} = \alpha_i + \beta_t + \gamma b_{it} + \delta d_{it} + \epsilon_{it},</annotation></semantics></math></p>
+<p>for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+= 1,…,51 and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+= 1970,…,1983. In this model,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\alpha_i</annotation></semantics></math>
+is a state-specific fixed effect,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>β</mi><mi>t</mi></msub><annotation encoding="application/x-tex">\beta_t</annotation></semantics></math>
+is a year-specific fixed effect,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>b</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">b_{it}</annotation></semantics></math>
+is the current rate of beer taxation in state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+in year
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>d</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">d_{it}</annotation></semantics></math>
+is the proportion of 18-20 year-olds in state
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+in year
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>t</mi><annotation encoding="application/x-tex">t</annotation></semantics></math>
+who are legally allowed to drink, and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>δ</mi><annotation encoding="application/x-tex">\delta</annotation></semantics></math>
+captures the effect of shifting the minimum legal drinking age from 21
+to 18. Following Angrist and Pischke’s analysis, we estimate this model
+both by (unweighted) OLS and by weighted least squares with weights
+corresponding to population size in a given state and year. We also
+demonstrate random effects estimation and implement a cluster-robust
+Hausman specification test.</p>
 </div>
 <div class="section level2">
 <h2 id="unweighted-ols">Unweighted OLS<a class="anchor" aria-label="anchor" href="#unweighted-ols"></a>
@@ -178,10 +176,10 @@ the model by OLS:</p>
 <p>The <code>coef_test</code> function from <code>clubSandwich</code>
 can then be used to test the hypothesis that changing the minimum legal
 drinking age has no effect on motor vehicle deaths in this cohort (i.e.,
-<span class="math inline">\(H_0: \delta = 0\)</span>). The usual way to
-test this is to cluster the standard errors by state, calculate the
-robust Wald statistic, and compare that to a standard normal reference
-distribution. The code and results are as follows:</p>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mn>0</mn></msub><mo>:</mo><mi>δ</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">H_0: \delta = 0</annotation></semantics></math>).
+The usual way to test this is to cluster the standard errors by state,
+calculate the robust Wald statistic, and compare that to a standard
+normal reference distribution. The code and results are as follows:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">lm_unweighted</span>, vcov <span class="op">=</span> <span class="st">"CR1"</span>, </span>
 <span>          cluster <span class="op">=</span> <span class="va">MV_deaths</span><span class="op">$</span><span class="va">state</span>, test <span class="op">=</span> <span class="st">"naive-t"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>,<span class="op">]</span></span></code></pre></div>
@@ -288,10 +286,13 @@ small-sample territory.</p>
 <div class="section level2">
 <h2 id="random-effects-estimation">Random effects estimation<a class="anchor" aria-label="anchor" href="#random-effects-estimation"></a>
 </h2>
-<p>If the unobserved effects <span class="math inline">\(\alpha_1,...,\alpha_{51}\)</span> are uncorrelated
-with the regressors, then a more efficient way to estimate <span class="math inline">\(\gamma,\delta\)</span> is by weighted least
-squares, with weights based on a random effects model. We still treat
-the year effects as fixed.</p>
+<p>If the unobserved effects
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mn>1</mn></msub><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mo>,</mo><msub><mi>α</mi><mn>51</mn></msub></mrow><annotation encoding="application/x-tex">\alpha_1,...,\alpha_{51}</annotation></semantics></math>
+are uncorrelated with the regressors, then a more efficient way to
+estimate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>γ</mi><mo>,</mo><mi>δ</mi></mrow><annotation encoding="application/x-tex">\gamma,\delta</annotation></semantics></math>
+is by weighted least squares, with weights based on a random effects
+model. We still treat the year effects as fixed.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">plm_random</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/plm/man/plm.html" class="external-link">plm</a></span><span class="op">(</span><span class="va">mrate</span> <span class="op">~</span> <span class="fl">0</span> <span class="op">+</span> <span class="va">legal</span> <span class="op">+</span> <span class="va">beertaxa</span> <span class="op">+</span> <span class="va">year</span>, data <span class="op">=</span> <span class="va">MV_deaths</span>, </span>
 <span>                  effect <span class="op">=</span> <span class="st">"individual"</span>, index <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"state"</span>,<span class="st">"year"</span><span class="op">)</span>,</span>
@@ -319,23 +320,25 @@ Hausman-type test for endogeneity of unobserved effects (Arellano,
 1993). As noted above, random effects estimation is more efficient than
 fixed effects estimation, but requires the assumption that the
 unobserved effects are uncorrelated with the regressors. However, if the
-unobserved effects covary with <span class="math inline">\(\mathbf{b}_i,
-\mathbf{d}_i\)</span>, then the random-effects estimator will be
-biased.</p>
+unobserved effects covary with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐛</mi><mi>i</mi></msub><mo>,</mo><msub><mi>𝐝</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\mathbf{b}_i, \mathbf{d}_i</annotation></semantics></math>,
+then the random-effects estimator will be biased.</p>
 <p>We can test for whether endogeneity is a problem by including
-group-centered covariates as additional regressors. Let <span class="math inline">\(\tilde{d}_{it} = d_{it} - \frac{1}{T}\sum_t
-d_{it}\)</span>, with <span class="math inline">\(\tilde{b}_{it}\)</span> defined analogously. Now
-estimate the regression</p>
-<p><span class="math display">\[y_{it} = \beta_t + \gamma_1 b_{it} +
-\gamma_2 \tilde{b}_{it} + \delta_1 d_{it} + \delta_2 \tilde{d}_{it} +
-\epsilon_{it},\]</span></p>
-<p>which does not include state fixed effects. The parameters <span class="math inline">\(\gamma_2,\delta_2\)</span> represent the
-differences between the within-groups and between-groups estimands of
-<span class="math inline">\(\gamma_1, \delta_1\)</span>. If these are
-both zero, then the random effects estimator is unbiased. Thus, the
-joint test for <span class="math inline">\(H_0: \gamma_2 = \delta_2 =
-0\)</span> amounts to a test for exogeneity of the unobserved
-effects.</p>
+group-centered covariates as additional regressors. Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>d</mi><mo accent="true">̃</mo></mover><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>d</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>−</mo><mfrac><mn>1</mn><mi>T</mi></mfrac><msub><mo>∑</mo><mi>t</mi></msub><msub><mi>d</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\tilde{d}_{it} = d_{it} - \frac{1}{T}\sum_t d_{it}</annotation></semantics></math>,
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mover><mi>b</mi><mo accent="true">̃</mo></mover><mrow><mi>i</mi><mi>t</mi></mrow></msub><annotation encoding="application/x-tex">\tilde{b}_{it}</annotation></semantics></math>
+defined analogously. Now estimate the regression</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>=</mo><msub><mi>β</mi><mi>t</mi></msub><mo>+</mo><msub><mi>γ</mi><mn>1</mn></msub><msub><mi>b</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>+</mo><msub><mi>γ</mi><mn>2</mn></msub><msub><mover><mi>b</mi><mo accent="true">̃</mo></mover><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>+</mo><msub><mi>δ</mi><mn>1</mn></msub><msub><mi>d</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>+</mo><msub><mi>δ</mi><mn>2</mn></msub><msub><mover><mi>d</mi><mo accent="true">̃</mo></mover><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>+</mo><msub><mi>ϵ</mi><mrow><mi>i</mi><mi>t</mi></mrow></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">y_{it} = \beta_t + \gamma_1 b_{it} + \gamma_2 \tilde{b}_{it} + \delta_1 d_{it} + \delta_2 \tilde{d}_{it} + \epsilon_{it},</annotation></semantics></math></p>
+<p>which does not include state fixed effects. The parameters
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>γ</mi><mn>2</mn></msub><mo>,</mo><msub><mi>δ</mi><mn>2</mn></msub></mrow><annotation encoding="application/x-tex">\gamma_2,\delta_2</annotation></semantics></math>
+represent the differences between the within-groups and between-groups
+estimands of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>γ</mi><mn>1</mn></msub><mo>,</mo><msub><mi>δ</mi><mn>1</mn></msub></mrow><annotation encoding="application/x-tex">\gamma_1, \delta_1</annotation></semantics></math>.
+If these are both zero, then the random effects estimator is unbiased.
+Thus, the joint test for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>H</mi><mn>0</mn></msub><mo>:</mo><msub><mi>γ</mi><mn>2</mn></msub><mo>=</mo><msub><mi>δ</mi><mn>2</mn></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">H_0: \gamma_2 = \delta_2 = 0</annotation></semantics></math>
+amounts to a test for exogeneity of the unobserved effects.</p>
 <p>For efficiency, we estimate this specification using weighted least
 squares (although OLS would be valid too):</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
@@ -357,9 +360,13 @@ squares (although OLS would be valid too):</p>
 <p>To conduct a joint test on the centered covariates, we can use the
 <code>Wald_test</code> function. The usual way to test this hypothesis
 would be to use the <code>CR1</code> variance estimator to calculate the
-robust Wald statistic, then use a <span class="math inline">\(\chi^2_2\)</span> reference distribution (or
-equivalently, compare a re-scaled Wald statistic to an <span class="math inline">\(F(2,\infty)\)</span> distribution). The
-<code>Wald_test</code> function reports the latter version:</p>
+robust Wald statistic, then use a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>χ</mi><mn>2</mn><mn>2</mn></msubsup><annotation encoding="application/x-tex">\chi^2_2</annotation></semantics></math>
+reference distribution (or equivalently, compare a re-scaled Wald
+statistic to an
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mo>,</mo><mi>∞</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">F(2,\infty)</annotation></semantics></math>
+distribution). The <code>Wald_test</code> function reports the latter
+version:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/Wald_test.html">Wald_test</a></span><span class="op">(</span><span class="va">plm_Hausman</span>, </span>
 <span>          constraints <span class="op">=</span> <span class="fu"><a href="../reference/constraint_matrices.html">constrain_zero</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"legal_cent"</span>,<span class="st">"beer_cent"</span><span class="op">)</span><span class="op">)</span>, </span>
@@ -377,7 +384,9 @@ then we get:</p>
 <pre><code><span><span class="co">##  test Fstat df_num df_denom p_val sig</span></span>
 <span><span class="co">##   HTZ  2.56      2     11.7  0.12</span></span></code></pre>
 <p>The low degrees of freedom of the test indicate that we’re definitely
-in small-sample territory and should not trust the asymptotic <span class="math inline">\(\chi^2\)</span> approximation.</p>
+in small-sample territory and should not trust the asymptotic
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>χ</mi><mn>2</mn></msup><annotation encoding="application/x-tex">\chi^2</annotation></semantics></math>
+approximation.</p>
 </div>
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
@@ -407,7 +416,7 @@ effects models. arXiv: <a href="https://arxiv.org/abs/1601.01981" class="externa
 robust and clustered covariance matrices using effective degrees of
 freedom corrections.</p>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
@@ -418,15 +427,15 @@ freedom corrections.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

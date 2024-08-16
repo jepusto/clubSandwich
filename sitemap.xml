@@ -1,105 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/404.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/articles/Wald-tests-in-clubSandwich.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/articles/meta-analysis-with-CRVE.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/articles/panel-data-CRVE.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/authors.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/index.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/news/index.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/AchievementAwardsRCT.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/MortalityRates.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/SATcoaching.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/Wald_test.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/coef_test.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/conf_int.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/constraint_matrices.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/dropoutPrevention.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/findCluster.rma.mv.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/impute_covariance_matrix.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/linear_contrast.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/pattern_covariance_matrix.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.geeglm.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.glm.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.gls.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.ivreg.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.lm.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.lme.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.lmerMod.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.mlm.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.plm.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.rma.mv.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.rma.uni.html</loc>
-  </url>
-  <url>
-    <loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.robu.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>http://jepusto.github.io/clubSandwich/404.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/articles/Wald-tests-in-clubSandwich.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/articles/index.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/articles/meta-analysis-with-CRVE.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/articles/panel-data-CRVE.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/authors.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/index.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/news/index.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/AchievementAwardsRCT.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/MortalityRates.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/SATcoaching.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/Wald_test.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/coef_test.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/conf_int.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/constraint_matrices.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/dropoutPrevention.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/findCluster.rma.mv.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/impute_covariance_matrix.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/index.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/linear_contrast.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/pattern_covariance_matrix.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.geeglm.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.glm.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.gls.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.ivreg.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.lm.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.lme.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.lmerMod.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.mlm.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.plm.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.rma.mv.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.rma.uni.html</loc></url>
+<url><loc>http://jepusto.github.io/clubSandwich/reference/vcovCR.robu.html</loc></url>
 </urlset>
+
