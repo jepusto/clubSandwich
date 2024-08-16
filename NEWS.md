@@ -1,5 +1,7 @@
 # clubSandwich 0.5.11.9999
 
+* Corrected typo in deprecation messages for `impute_covariance_matrix()` and `pattern_covariance_matrix()`.
+
 # clubSandwich 0.5.11
 
 * Corrected a unit test related to the plm package, for compatibility with upcoming release of plm.

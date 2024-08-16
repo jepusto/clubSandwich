@@ -134,7 +134,7 @@ impute_covariance_matrix <- function(vi, cluster, r, ti, ar1,
                                      return_list = identical(as.factor(cluster), sort(as.factor(cluster))),
                                      check_PD = TRUE) {
   
-  lifecycle::deprecate_soft("0.5.11", "impute_covariance_matrix()", "metaffor::vcalc()")
+  lifecycle::deprecate_soft("0.5.11", "impute_covariance_matrix()", "metafor::vcalc()")
   
   cluster <- droplevels(as.factor(cluster))
   
@@ -301,7 +301,7 @@ pattern_covariance_matrix <- function(vi, cluster, pattern_level, r_pattern, r,
                                      return_list = identical(as.factor(cluster), sort(as.factor(cluster))),
                                      check_PD = TRUE) {
   
-  lifecycle::deprecate_soft("0.5.11", "impute_covariance_matrix()", "metaffor::vcalc()")
+  lifecycle::deprecate_soft("0.5.11", "impute_covariance_matrix()", "metafor::vcalc()")
   
   if (missing(pattern_level)) stop("You must specify a vector for pattern_level.")
   if (any(is.na(pattern_level[!is.na(vi)]))) stop("The pattern_level vector cannot have missing values.")
