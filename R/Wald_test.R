@@ -310,7 +310,15 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #' @export
 
 
-Wald_test <- function(obj, constraints, vcov, test = "HTZ", tidy = FALSE, ...) {
+Wald_test <- function(
+    obj, 
+    constraints, 
+    vcov, 
+    test = "HTZ", 
+    tidy = FALSE, 
+    adjustment_method = "none",
+    ...
+) {
   
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!inherits(vcov, "clubSandwich")) stop("Variance-covariance matrix must be a clubSandwich.")
@@ -361,7 +369,9 @@ Wald_test <- function(obj, constraints, vcov, test = "HTZ", tidy = FALSE, ...) {
     results <- Wald_testing(C_mat = constraints, beta = beta, vcov = vcov, test = test, p = p, GH = GH) 
   }
   
-  results
+  # implement p-value adjustment
+  
+  return(results)
 
 }
 
