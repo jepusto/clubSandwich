@@ -74,7 +74,7 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
                z = Inf,
                `naive-t` = nlevels(attr(vcov, "cluster")) - 1,
                `naive-tp` = nlevels(attr(vcov, "cluster")) - p,
-               `Satterthwaite` = Satterthwaite(tstat = beta / SE, P_array = P_array)$df
+               `Satterthwaite` = Satterthwaite_df(P_array = P_array)
   )
 
   crit <- qt(1 - (1 - level) / 2, df = df)
@@ -264,7 +264,7 @@ linear_contrast <- function(obj, vcov, contrasts, level = .95, test = "Satterthw
                z = Inf,
                `naive-t` = nlevels(attr(vcov, "cluster")) - 1,
                `naive-tp` = nlevels(attr(vcov, "cluster")) - p,
-               `Satterthwaite` = Satterthwaite(tstat = est / SE, P_array = P_array)$df
+               `Satterthwaite` = Satterthwaite_df(P_array = P_array)
   )
   
   crit <- qt(1 - (1 - level) / 2, df = df)

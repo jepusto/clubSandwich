@@ -94,7 +94,7 @@ test_that("printing works", {
   expect_true(all(t_tests$df_t >= round(t_tests$df_Satt,1)))
   
   expect_identical(names(x),
-                   c("Coef.","Estimate","SE","t-stat",
+                   c("Coef.","Estimate","SE","Null value","t-stat",
                      "d.f. (z)", "p-val (z)", "Sig.",
                      "d.f. (naive-t)", "p-val (naive-t)","Sig.",
                      "d.f. (naive-tp)", "p-val (naive-tp)","Sig.",
@@ -139,4 +139,34 @@ test_that("null_constants error messages appear as appropriate.", {
   expect_error(
     coef_test(lm_fit, vcov = vcr, null_constants = "none")
   )
+})
+
+
+test_that("alternative hypothesis options give coherent results.", {
+  dat <- balanced_dat(m = 15, n = 8)
+  lm_fit <- lm(y ~ X_btw + X_wth, data = dat)
+  vcr <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR0")
+  p_two <- coef_test(lm_fit, vcov = vcr, alternative = "two-sided", test = "All")
+  p_cols <- grepl("p_",names(p_two))
+  p_two <- as.matrix(p_two[p_cols])
+  p_gt <- as.matrix(coef_test(lm_fit, vcov = vcr, alternative = "greater", test = "All")[p_cols])
+  p_ls <- as.matrix(coef_test(lm_fit, vcov = vcr, alternative = "less", test = "All")[p_cols])
+  expect_equal(p_two, 1 - abs(1 - 2 * p_gt))
+  expect_equal(p_two, 1 - abs(1 - 2 * p_ls))
+  
+  null_consts <- median(coef(lm_fit))
+  p_two <- as.matrix(coef_test(lm_fit, vcov = vcr, alternative = "two-sided", null_constants = null_consts, test = "All")[p_cols])
+  p_gt <- as.matrix(coef_test(lm_fit, vcov = vcr, alternative = "greater", null_constants = null_consts, test = "All")[p_cols])
+  p_ls <- as.matrix(coef_test(lm_fit, vcov = vcr, alternative = "less", null_constants = null_consts, test = "All")[p_cols])
+  expect_equal(p_two, 1 - abs(1 - 2 * p_gt))
+  expect_equal(p_two, 1 - abs(1 - 2 * p_ls))
+  
+  p_two <- as.matrix(coef_test(lm_fit, vcov = vcr, alternative = "two-sided", null_constants = coef(lm_fit), test = "All")[p_cols])
+  p_gt <- as.matrix(coef_test(lm_fit, vcov = vcr, alternative = "greater", null_constants = coef(lm_fit), test = "All")[p_cols])
+  p_ls <- as.matrix(coef_test(lm_fit, vcov = vcr, alternative = "less", null_constants = coef(lm_fit), test = "All")[p_cols])
+  p_ones <- matrix(1, nrow = nrow(p_two), ncol = ncol(p_two), dimnames = dimnames(p_two))
+  p_halfs <- matrix(0.5, nrow = nrow(p_gt), ncol = ncol(p_gt), dimnames = dimnames(p_gt))
+  expect_equal(p_two, p_ones)
+  expect_equal(p_gt, p_halfs)
+  expect_equal(p_ls, p_halfs)
 })
