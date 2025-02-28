@@ -254,7 +254,8 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #'   must have length equal to the number of rows in the constraint. For lists
 #'   of null values, each entry must have length equal to the number of rows in
 #'   the corresponding entry of \code{constraints}. Default is \code{0}, in
-#'   which case the null values are taken to be zero (for every entry, if \code{constraints} is a list).
+#'   which case the null values are taken to be zero (for every entry, if
+#'   \code{constraints} is a list).
 #' @param test Character vector specifying which small-sample correction(s) to
 #'   calculate. The following corrections are available: \code{"chi-sq"},
 #'   \code{"Naive-F"}, \code{"Naive-Fp"}, \code{"HTA"}, \code{"HTB"},
@@ -267,7 +268,10 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #'
 #' @details Constraints can be specified directly as q X p matrices or
 #'   indirectly through \code{\link{constrain_equal}},
-#'   \code{\link{constrain_zero}}, or \code{\link{constrain_pairwise}}
+#'   \code{\link{constrain_zero}}, or \code{\link{constrain_pairwise}}. By
+#'   default, each constraint will be tested against the null hypothesis that it
+#'   equal to a zero vector. Non-zero values for null-hypotheses can be
+#'   specified using the \code{null_constant} argument.
 #'
 #' @return A list of test results.
 #'

@@ -9,6 +9,7 @@ coef_test(
   vcov,
   test = "Satterthwaite",
   coefs = "All",
+  null_constants = 0,
   p_values = TRUE,
   ...
 )
@@ -33,6 +34,11 @@ where \code{p} is the number of regression coefficients in \code{obj}.
 \item{coefs}{Character, integer, or logical vector specifying which
 coefficients should be tested. The default value \code{"All"} will test all
 estimated coefficients.}
+
+\item{null_constants}{vector of null values for each
+coefficient to test. Must have length equal to the number of coefficients
+specified in \code{coefs}. Default is \code{0}, in
+which case the null values are taken to be zero.}
 
 \item{p_values}{Logical indicating whether to report p-values. The default
 value is \code{TRUE}.}
