@@ -8,8 +8,8 @@
 <title>Meta-analysis with cluster-robust variance estimation • clubSandwich</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Meta-analysis with cluster-robust variance estimation">
 </head>
 <body>
@@ -62,7 +62,7 @@
                         <h4 data-toc-skip class="author">James E.
 Pustejovsky</h4>
             
-            <h4 data-toc-skip class="date">2024-08-16</h4>
+            <h4 data-toc-skip class="date">2025-02-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jepusto/clubSandwich/blob/main/vignettes/meta-analysis-with-CRVE.Rmd" class="external-link"><code>vignettes/meta-analysis-with-CRVE.Rmd</code></a></small>
       <div class="d-none name"><code>meta-analysis-with-CRVE.Rmd</code></div>
@@ -247,29 +247,30 @@ and confidence intervals. The <code>coef_test</code> function from
 robust t-tests for each of the coefficients:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/coef_test.html">coef_test</a></span><span class="op">(</span><span class="va">m3_metafor</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##                  Coef.  Estimate       SE  t-stat d.f. (Satt) p-val (Satt) Sig.</span></span>
-<span><span class="co">##                intrcpt  0.529569 0.724851  0.7306       20.08      0.47347     </span></span>
-<span><span class="co">##  study_designunmatched -0.049434 0.204152 -0.2421       58.42      0.80952     </span></span>
-<span><span class="co">##        study_designRCT  0.065272 0.149146  0.4376       53.17      0.66342     </span></span>
-<span><span class="co">##              attrition -0.136575 0.306429 -0.4457       10.52      0.66485     </span></span>
-<span><span class="co">##      group_equivalence  0.407108 0.210917  1.9302       23.10      0.06595    .</span></span>
-<span><span class="co">##            adjustedyes -0.358124 0.136132 -2.6307       43.20      0.01176    *</span></span>
-<span><span class="co">##        outcomeenrolled -0.283124 0.237199 -1.1936        7.08      0.27108     </span></span>
-<span><span class="co">##      outcomegraduation -0.091295 0.091465 -0.9981        9.95      0.34188     </span></span>
-<span><span class="co">##  outcomegraduation/ged  0.698328 0.364882  1.9138        8.02      0.09188    .</span></span>
-<span><span class="co">##           evalindirect -0.752994 0.447670 -1.6820        6.56      0.13929     </span></span>
-<span><span class="co">##           evalplanning -0.769968 0.403898 -1.9063        6.10      0.10446     </span></span>
-<span><span class="co">##           evaldelivery -1.001648 0.355989 -2.8137        4.89      0.03834    *</span></span>
-<span><span class="co">##               male_pct  0.102055 0.148410  0.6877        9.68      0.50782     </span></span>
-<span><span class="co">##              white_pct  0.122255 0.141470  0.8642       16.88      0.39961     </span></span>
-<span><span class="co">##            average_age  0.006084 0.033387  0.1822       15.79      0.85772     </span></span>
-<span><span class="co">##        implementmedium  0.473789 0.148660  3.1871       22.44      0.00419   **</span></span>
-<span><span class="co">##          implementhigh  0.631842 0.138073  4.5761       28.68      &lt; 0.001  ***</span></span>
-<span><span class="co">##      program_sitemixed  0.328941 0.196848  1.6710       27.47      0.10607     </span></span>
-<span><span class="co">##  program_siteclassroom  0.291952 0.146014  1.9995       42.70      0.05195    .</span></span>
-<span><span class="co">##     program_siteschool  0.161640 0.171700  0.9414       29.27      0.35420     </span></span>
-<span><span class="co">##               duration  0.001270 0.000978  1.2988       31.96      0.20332     </span></span>
-<span><span class="co">##            service_hrs -0.000309 0.004828 -0.0641       49.63      0.94915</span></span></code></pre>
+<pre><code><span><span class="co">## Alternative hypothesis: two-sided </span></span>
+<span><span class="co">##                  Coef.  Estimate       SE Null value  t-stat d.f. (Satt) p-val (Satt) Sig.</span></span>
+<span><span class="co">##                intrcpt  0.529569 0.724851          0  0.7306       20.08      0.47347     </span></span>
+<span><span class="co">##  study_designunmatched -0.049434 0.204152          0 -0.2421       58.42      0.80952     </span></span>
+<span><span class="co">##        study_designRCT  0.065272 0.149146          0  0.4376       53.17      0.66342     </span></span>
+<span><span class="co">##              attrition -0.136575 0.306429          0 -0.4457       10.52      0.66485     </span></span>
+<span><span class="co">##      group_equivalence  0.407108 0.210917          0  1.9302       23.10      0.06595    .</span></span>
+<span><span class="co">##            adjustedyes -0.358124 0.136132          0 -2.6307       43.20      0.01176    *</span></span>
+<span><span class="co">##        outcomeenrolled -0.283124 0.237199          0 -1.1936        7.08      0.27108     </span></span>
+<span><span class="co">##      outcomegraduation -0.091295 0.091465          0 -0.9981        9.95      0.34188     </span></span>
+<span><span class="co">##  outcomegraduation/ged  0.698328 0.364882          0  1.9138        8.02      0.09188    .</span></span>
+<span><span class="co">##           evalindirect -0.752994 0.447670          0 -1.6820        6.56      0.13929     </span></span>
+<span><span class="co">##           evalplanning -0.769968 0.403898          0 -1.9063        6.10      0.10446     </span></span>
+<span><span class="co">##           evaldelivery -1.001648 0.355989          0 -2.8137        4.89      0.03834    *</span></span>
+<span><span class="co">##               male_pct  0.102055 0.148410          0  0.6877        9.68      0.50782     </span></span>
+<span><span class="co">##              white_pct  0.122255 0.141470          0  0.8642       16.88      0.39961     </span></span>
+<span><span class="co">##            average_age  0.006084 0.033387          0  0.1822       15.79      0.85772     </span></span>
+<span><span class="co">##        implementmedium  0.473789 0.148660          0  3.1871       22.44      0.00419   **</span></span>
+<span><span class="co">##          implementhigh  0.631842 0.138073          0  4.5761       28.68      &lt; 0.001  ***</span></span>
+<span><span class="co">##      program_sitemixed  0.328941 0.196848          0  1.6710       27.47      0.10607     </span></span>
+<span><span class="co">##  program_siteclassroom  0.291952 0.146014          0  1.9995       42.70      0.05195    .</span></span>
+<span><span class="co">##     program_siteschool  0.161640 0.171700          0  0.9414       29.27      0.35420     </span></span>
+<span><span class="co">##               duration  0.001270 0.000978          0  1.2988       31.96      0.20332     </span></span>
+<span><span class="co">##            service_hrs -0.000309 0.004828          0 -0.0641       49.63      0.94915</span></span></code></pre>
 <p>Note that <code>coef_test</code> assumed that it should cluster based
 on <code>studyID</code>, which is the outer-most random effect in the
 metafor model. This can be specified explicitly by including the option
@@ -315,7 +316,7 @@ youth: A systematic review. <em>Campbell Systematic Reviews, 7</em>(1),
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
