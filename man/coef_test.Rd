@@ -8,7 +8,9 @@ coef_test(
   obj,
   vcov,
   test = "Satterthwaite",
+  alternative = c("two-sided", "greater", "less"),
   coefs = "All",
+  null_constants = 0,
   p_values = TRUE,
   ...
 )
@@ -30,9 +32,17 @@ where \code{p} is the number of regression coefficients in \code{obj}.
 \code{"saddlepoint"} returns a saddlepoint correction. Default is
 \code{"Satterthwaite"}.}
 
+\item{alternative}{Character string specifying the alternative hypothesis,
+with options "two-sided" (the default), "greater" or "less".}
+
 \item{coefs}{Character, integer, or logical vector specifying which
 coefficients should be tested. The default value \code{"All"} will test all
 estimated coefficients.}
+
+\item{null_constants}{vector of null values for each coefficient to test.
+Must have length equal to the number of coefficients specified in
+\code{coefs}. Default is \code{0}, in which case the null values are taken
+to be zero.}
 
 \item{p_values}{Logical indicating whether to report p-values. The default
 value is \code{TRUE}.}
@@ -42,15 +52,18 @@ needed if \code{vcov} is a character string.}
 }
 \value{
 A data frame containing estimated regression coefficients, standard
-  errors, and test results. For the Satterthwaite approximation, degrees of
-  freedom and a p-value are reported. For the saddlepoint approximation, the
-  saddlepoint and a p-value are reported.
+  errors, specified values of null hypotheses, and test results. For the
+  Satterthwaite approximation, degrees of freedom and a p-value are reported.
+  For the saddlepoint approximation, the saddlepoint and a p-value are
+  reported.
 }
 \description{
-\code{coef_test} reports t-tests for each coefficient estimate in a fitted
-linear regression model, using a sandwich estimator for the standard errors
-and a small sample correction for the p-value. The small-sample correction is
-based on a Satterthwaite approximation or a saddlepoint approximation.
+\code{coef_test} reports one- or two-sided t-tests for each coefficient
+estimate in a fitted linear regression model, using a sandwich estimator for
+the standard errors and (optionally) a small sample correction for the
+p-value. Available small-sample corrections include Satterthwaite
+approximation or a saddlepoint approximation. Coefficients can be tested
+against non-zero null values by specifying \code{null_constants}.
 }
 \examples{
 
@@ -61,6 +74,9 @@ coef_test(lm_fit, vcov = "CR2", cluster = ChickWeight$Chick, coefs = diet_index)
 
 V_CR2 <- vcovCR(lm_fit, cluster = ChickWeight$Chick, type = "CR2")
 coef_test(lm_fit, vcov = V_CR2, coefs = diet_index)
+
+# non-inferiority test whether time-by-diet interaction effects are 2 or greater
+coef_test(lm_fit, vcov = V_CR2, coefs = diet_index, null_constants = 2, alternative = "greater")
 
 }
 \seealso{

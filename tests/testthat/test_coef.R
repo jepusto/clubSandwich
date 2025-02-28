@@ -24,7 +24,9 @@ test_that("vcov arguments work", {
   VCR <- lapply(CRs, function(t) vcovCR(lm_fit, cluster = dat$cluster, type = t))
   test_A <- lapply(VCR, function(v) coef_test(lm_fit, vcov = v, test = "All", p_values = FALSE))
   test_B <- lapply(CRs, function(t) coef_test(lm_fit, vcov = t, cluster = dat$cluster, test = "All", p_values = FALSE))
+  test_C <- lapply(CRs, function(t) coef_test(lm_fit, vcov = t, null_constant = 0, cluster = dat$cluster, test = "All", p_values = FALSE))
   compare_ttests(test_A, test_B)
+  compare_ttests(test_A, test_C)
 })
 
 test_that("get_which_coef() works", {
@@ -52,7 +54,7 @@ test_that("get_which_coef() works", {
   expect_identical(which_char, which_int)
 })
 
-test_that("coefs argument works", {
+test_that("coefs argument works.", {
   dat <- balanced_dat(m = 15, n = 8)
   lm_fit <- lm(y ~ X_btw + X_wth, data = dat)
   which_grid <- expand.grid(rep(list(c(FALSE,TRUE)), length(coef(lm_fit))))
@@ -61,6 +63,24 @@ test_that("coefs argument works", {
   tests_A <- apply(which_grid[-1,], 1, function(x) tests_all[x,])
   tests_B <- apply(which_grid[-1,], 1, function(x) coef_test(lm_fit, vcov = "CR0", cluster = dat$cluster, test = "All", coefs = x, p_values = FALSE))
   expect_equal(tests_A, tests_B, check.attributes = FALSE)
+})
+
+test_that("coefs argument works with null_constants.", {
+  dat <- balanced_dat(m = 15, n = 8)
+  lm_fit <- lm(y ~ X_btw + X_wth, data = dat)
+  which_grid <- expand.grid(rep(list(c(FALSE,TRUE)), length(coef(lm_fit))))
+
+  tests_all <- coef_test(lm_fit, vcov = "CR0", null_constants = 0.1, cluster = dat$cluster, test = "All", coefs = "All", p_values = FALSE)
+  tests_A <- apply(which_grid[-1,], 1, function(x) tests_all[x,])
+  tests_B <- apply(which_grid[-1,], 1, function(x) coef_test(lm_fit, vcov = "CR0", cluster = dat$cluster, test = "All", coefs = x, null_constants = 0.1, p_values = FALSE))
+  expect_equal(tests_A, tests_B, check.attributes = FALSE)
+
+  null_consts <- rnorm(4)
+  tests_all <- coef_test(lm_fit, vcov = "CR0", null_constants = null_consts, cluster = dat$cluster, test = "All", coefs = "All", p_values = FALSE)
+  tests_A <- apply(which_grid[-1,], 1, function(x) tests_all[x,])
+  tests_B <- apply(which_grid[-1,], 1, function(x) coef_test(lm_fit, vcov = "CR0", cluster = dat$cluster, test = "All", coefs = x, null_constants = null_consts[x], p_values = FALSE))
+  expect_equal(tests_A, tests_B, check.attributes = FALSE)
+  
 })
 
 test_that("printing works", {
@@ -74,7 +94,7 @@ test_that("printing works", {
   expect_true(all(t_tests$df_t >= round(t_tests$df_Satt,1)))
   
   expect_identical(names(x),
-                   c("Coef.","Estimate","SE","t-stat",
+                   c("Coef.","Estimate","SE","Null value","t-stat",
                      "d.f. (z)", "p-val (z)", "Sig.",
                      "d.f. (naive-t)", "p-val (naive-t)","Sig.",
                      "d.f. (naive-tp)", "p-val (naive-tp)","Sig.",
@@ -104,4 +124,49 @@ test_that("Satterthwaite df work for special cases", {
   lm_fit <- lm(y ~ 0 + cluster + X_wth, data = dat)
   t_tests <- coef_test(lm_fit, vcov = "CR2", cluster = dat$cluster, test = "Satterthwaite")
   expect_equal(t_tests$df[m + 1], m - 1) 
+})
+
+test_that("null_constants error messages appear as appropriate.", {
+  dat <- balanced_dat(m = 15, n = 8)
+  lm_fit <- lm(y ~ X_btw + X_wth, data = dat)
+  vcr <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR0")
+  expect_error(
+    coef_test(lm_fit, vcov = vcr, null_constants = 1:3)
+  )
+  expect_error(
+    coef_test(lm_fit, vcov = vcr, coefs = 1:2, null_constants = rep(0,3))
+  )
+  expect_error(
+    coef_test(lm_fit, vcov = vcr, null_constants = "none")
+  )
+})
+
+
+test_that("alternative hypothesis options give coherent results.", {
+  dat <- balanced_dat(m = 15, n = 8)
+  lm_fit <- lm(y ~ X_btw + X_wth, data = dat)
+  vcr <- vcovCR(lm_fit, cluster = dat$cluster, type = "CR0")
+  p_two <- coef_test(lm_fit, vcov = vcr, alternative = "two-sided", test = "All")
+  p_cols <- grepl("p_",names(p_two))
+  p_two <- as.matrix(p_two[p_cols])
+  p_gt <- as.matrix(coef_test(lm_fit, vcov = vcr, alternative = "greater", test = "All")[p_cols])
+  p_ls <- as.matrix(coef_test(lm_fit, vcov = vcr, alternative = "less", test = "All")[p_cols])
+  expect_equal(p_two, 1 - abs(1 - 2 * p_gt))
+  expect_equal(p_two, 1 - abs(1 - 2 * p_ls))
+  
+  null_consts <- median(coef(lm_fit))
+  p_two <- as.matrix(coef_test(lm_fit, vcov = vcr, alternative = "two-sided", null_constants = null_consts, test = "All")[p_cols])
+  p_gt <- as.matrix(coef_test(lm_fit, vcov = vcr, alternative = "greater", null_constants = null_consts, test = "All")[p_cols])
+  p_ls <- as.matrix(coef_test(lm_fit, vcov = vcr, alternative = "less", null_constants = null_consts, test = "All")[p_cols])
+  expect_equal(p_two, 1 - abs(1 - 2 * p_gt))
+  expect_equal(p_two, 1 - abs(1 - 2 * p_ls))
+  
+  p_two <- as.matrix(coef_test(lm_fit, vcov = vcr, alternative = "two-sided", null_constants = coef(lm_fit), test = "All")[p_cols])
+  p_gt <- as.matrix(coef_test(lm_fit, vcov = vcr, alternative = "greater", null_constants = coef(lm_fit), test = "All")[p_cols])
+  p_ls <- as.matrix(coef_test(lm_fit, vcov = vcr, alternative = "less", null_constants = coef(lm_fit), test = "All")[p_cols])
+  p_ones <- matrix(1, nrow = nrow(p_two), ncol = ncol(p_two), dimnames = dimnames(p_two))
+  p_halfs <- matrix(0.5, nrow = nrow(p_gt), ncol = ncol(p_gt), dimnames = dimnames(p_gt))
+  expect_equal(p_two, p_ones)
+  expect_equal(p_gt, p_halfs)
+  expect_equal(p_ls, p_halfs)
 })
