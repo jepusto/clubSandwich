@@ -244,18 +244,24 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #' Several different small-sample corrections are available.
 #'
 #' @param obj Fitted model for which to calculate Wald tests.
-#' @param constraints List of one or more constraints to test. See details and
-#'   examples.
+#' @param constraints constraint or list of multiple constraints to test. See
+#'   details and examples.
 #' @param vcov Variance covariance matrix estimated using \code{vcovCR} or a
 #'   character string specifying which small-sample adjustment should be used to
 #'   calculate the variance-covariance.
+#' @param null_constants vector of null values or list of such vectors for each
+#'   set of constraints to test. For a single \code{constraint}, the null values
+#'   must have length equal to the number of rows in the constraint. For lists
+#'   of null values, each entry must have length equal to the number of rows in
+#'   the corresponding entry of \code{constraints}. Default is \code{0}, in
+#'   which case the null values are taken to be zero (for every entry, if \code{constraints} is a list).
 #' @param test Character vector specifying which small-sample correction(s) to
 #'   calculate. The following corrections are available: \code{"chi-sq"},
-#'   \code{"Naive-F"}, \code{"Naive-Fp"}, \code{"HTA"}, \code{"HTB"}, \code{"HTZ"}, \code{"EDF"},
-#'   \code{"EDT"}. Default is \code{"HTZ"}.
+#'   \code{"Naive-F"}, \code{"Naive-Fp"}, \code{"HTA"}, \code{"HTB"},
+#'   \code{"HTZ"}, \code{"EDF"}, \code{"EDT"}. Default is \code{"HTZ"}.
 #' @param tidy Logical value controlling whether to tidy the test results. If
-#'   \code{constraints} is a list with multiple constraints, the result will
-#'   be coerced into a data frame when \code{tidy = TRUE}.
+#'   \code{constraints} is a list with multiple constraints, the result will be
+#'   coerced into a data frame when \code{tidy = TRUE}.
 #' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only
 #'   needed if \code{vcov} is a character string.
 #'
@@ -272,7 +278,7 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #'
 #'
 #' if (requireNamespace("carData", quietly = TRUE)) withAutoprint({
-#' 
+#'
 #' data(Duncan, package = "carData")
 #' Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
 #'
@@ -304,13 +310,13 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #' Wald_test(Duncan_fit,
 #'           constraints = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
 #'           vcov = "CR2", cluster = Duncan$cluster)
-#'           
+#'
 #' })
 #'
 #' @export
 
 
-Wald_test <- function(obj, constraints, vcov, test = "HTZ", tidy = FALSE, ...) {
+Wald_test <- function(obj, constraints, vcov, null_constants = 0, test = "HTZ", tidy = FALSE, ...) {
   
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!inherits(vcov, "clubSandwich")) stop("Variance-covariance matrix must be a clubSandwich.")
@@ -340,7 +346,32 @@ Wald_test <- function(obj, constraints, vcov, test = "HTZ", tidy = FALSE, ...) {
       stop(paste0("Constraints must be a q X ", p," matrix, a list of such matrices, or a call to a constrain_*() function."))
     }
     
-    results <- lapply(constraints, Wald_testing, beta = beta, vcov = vcov, test = test, p = p, GH = GH, stop_on_NPD = FALSE)
+    q_constraints <- sapply(constraints, nrow)
+    if (is.list(null_constants)) {
+      q_null <- lengths(null_constants)
+    } else if (is.numeric(null_constants)) {
+      if (length(null_constants) > 1L) {
+        null_constants <- rep(list(null_constants), length(constraints))
+        q_null <- rep(length(null_constants), length(constraints))
+      } else {
+        null_constants <- lapply(q_constraints, \(x) rep(null_constants, x))
+        q_null <- q_constraints
+      }
+    } else {
+      stop("Each null_constant must be a numeric vector with length equal to the number of rows in the corresponding constraint matrix.")
+    }
+    
+    mismatches <- q_constraints != q_null
+    if (any(mismatches)) {
+      which_mis <- which(mismatches)
+      mismatch_msg <- c(
+        "Each null_constant must be a numeric vector with length equal to the number of rows in the corresponding constraint matrix.",
+        paste0("Constraint ", which_mis, " has ", q_constraints[mismatches], " rows; null constant ", which_mis, " is length ", q_null[mismatches],".")
+      )
+      stop(paste(mismatch_msg, collapse = " "))
+    }
+    
+    results <- mapply(constraints, null_constants, Wald_testing, beta = beta, vcov = vcov, test = test, p = p, GH = GH, stop_on_NPD = FALSE)
     
     if (tidy) {
       results <- mapply(
@@ -357,8 +388,23 @@ Wald_test <- function(obj, constraints, vcov, test = "HTZ", tidy = FALSE, ...) {
     if (!inherits(constraints, "matrix") | ncol(constraints) != p) {
       stop(paste0("Constraints must be a q X ", p," matrix, a list of such matrices, or a call to a constrain_*() function."))
     }
+  
+    if (is.numeric(null_constants)) {
+      if (length(null_constants) == 1L) {
+        null_constants <- rep(null_constants, nrow(constraints))
+      } else {
+        if (length(null_constants) != nrow(constraints)) {
+          stop("null_constant must be a numeric vector with length equal to the number of rows in the constraint matrix.")
+        }
+      }
+    } else {
+      stop("null_constant must be a numeric vector with length equal to the number of rows in the corresponding constraint matrix.")
+    }
     
-    results <- Wald_testing(C_mat = constraints, beta = beta, vcov = vcov, test = test, p = p, GH = GH) 
+    results <- Wald_testing(
+      C_mat = constraints, null_constants = null_constants, 
+      beta = beta, vcov = vcov, test = test, p = p, GH = GH
+    ) 
   }
   
   results
@@ -371,7 +417,7 @@ array_multiply <- function(mat, arr) {
   array(new_mat, dim = c(nrow(mat), dim(arr)[2], dim(arr)[3]))
 }
 
-Wald_testing <- function(C_mat, beta, vcov, test, p, GH, stop_on_NPD = TRUE) {
+Wald_testing <- function(C_mat, null_constants, beta, vcov, test, p, GH, stop_on_NPD = TRUE) {
   
   q <- nrow(C_mat)
   dims <- dim(GH$H)
@@ -411,7 +457,7 @@ Wald_testing <- function(C_mat, beta, vcov, test, p, GH, stop_on_NPD = TRUE) {
       )
     }
   } else {
-    C_beta <- C_mat %*% beta
+    C_beta <- (C_mat %*% beta - matrix(null_constants, ncol = 1L))
     Q <- as.numeric(t(C_beta) %*% inverse_vcov %*% C_beta)
     
     result <- data.frame()
