@@ -1,5 +1,6 @@
 # clubSandwich 0.5.11.9999
 
+* Added options to Wald_test() and coef_test() to specify non-zero values for null hypotheses.
 * Corrected typo in deprecation messages for `impute_covariance_matrix()` and `pattern_covariance_matrix()`.
 
 # clubSandwich 0.5.11

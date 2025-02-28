@@ -3,13 +3,13 @@
 # Satterthwaite approximation
 #---------------------------------------------
 
-Satterthwaite <- function(beta, SE, P_array) {
+Satterthwaite <- function(tstat, P_array) {
   
   V_coef <- 2 * apply(P_array, 3, function(x) sum(x^2))
   E_coef <- apply(P_array, 3, function(x) sum(diag(x)))
   
   df <- 2 * E_coef^2 / V_coef
-  p_val <- 2 * pt(abs(beta / SE), df = df, lower.tail = FALSE)
+  p_val <- 2 * pt(abs(tstat), df = df, lower.tail = FALSE)
   data.frame(df = df, p_Satt = p_val)
 }
 
@@ -101,6 +101,10 @@ get_which_coef <- function(beta, coefs) {
 #' @param coefs Character, integer, or logical vector specifying which
 #'   coefficients should be tested. The default value \code{"All"} will test all
 #'   estimated coefficients.
+#' @param null_constants vector of null values for each
+#'   coefficient to test. Must have length equal to the number of coefficients
+#'   specified in \code{coefs}. Default is \code{0}, in
+#'   which case the null values are taken to be zero.
 #' @param p_values Logical indicating whether to report p-values. The default
 #'   value is \code{TRUE}.
 #' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only
@@ -125,7 +129,7 @@ get_which_coef <- function(beta, coefs) {
 #'
 #' @export
 
-coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values = TRUE, ...) {
+coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", null_constants = 0, p_values = TRUE, ...) {
   
   beta_full <- coef_CS(obj)
   beta_NA <- is.na(beta_full)
@@ -134,6 +138,13 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values
   which_beta <- get_which_coef(beta_full, coefs)
   
   beta <- beta_full[which_beta & !beta_NA]
+  
+  if (length(null_constants) == 1L) {
+    null_constants <- rep(null_constants, length.out = length(beta))
+  }
+  if (!is.numeric(null_constants) || length(null_constants) != length(beta)) {
+    stop("null_constants must be a numeric vector with length equal to the number of coefficients to be tested.")
+  } 
   
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!inherits(vcov, "clubSandwich")) stop("Variance-covariance matrix must be a clubSandwich.")
@@ -151,7 +162,7 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values
 
   result <- data.frame(Coef = names(beta), beta = as.numeric(beta))
   result$SE <- SE
-  result$tstat <- beta / SE
+  result$tstat <- (beta - null_constants) / SE
   row.names(result) <- result$Coef
 
   if ("z" %in% test) {
@@ -169,7 +180,7 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values
     result$p_tp <-  2 * pt(abs(result$tstat), df = J - p, lower.tail = FALSE)
   }
   if ("Satterthwaite" %in% test) {
-    Satt <- Satterthwaite(beta = beta, SE = SE, P_array = P_array)
+    Satt <- Satterthwaite(tstat = result$tstat, P_array = P_array)
     result$df_Satt <- Satt$df
     result$p_Satt <- Satt$p_Satt
   }

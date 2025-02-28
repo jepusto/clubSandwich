@@ -249,7 +249,7 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #' @param vcov Variance covariance matrix estimated using \code{vcovCR} or a
 #'   character string specifying which small-sample adjustment should be used to
 #'   calculate the variance-covariance.
-#' @param null_constants vector of null values or list of such vectors for each
+#' @param null_constant vector of null values or list of such vectors for each
 #'   set of constraints to test. For a single \code{constraint}, the null values
 #'   must have length equal to the number of rows in the constraint. For lists
 #'   of null values, each entry must have length equal to the number of rows in
@@ -316,7 +316,7 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #' @export
 
 
-Wald_test <- function(obj, constraints, vcov, null_constants = 0, test = "HTZ", tidy = FALSE, ...) {
+Wald_test <- function(obj, constraints, vcov, null_constant = 0, test = "HTZ", tidy = FALSE, ...) {
   
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!inherits(vcov, "clubSandwich")) stop("Variance-covariance matrix must be a clubSandwich.")
@@ -347,31 +347,40 @@ Wald_test <- function(obj, constraints, vcov, null_constants = 0, test = "HTZ", 
     }
     
     q_constraints <- sapply(constraints, nrow)
-    if (is.list(null_constants)) {
-      q_null <- lengths(null_constants)
-    } else if (is.numeric(null_constants)) {
-      if (length(null_constants) > 1L) {
-        null_constants <- rep(list(null_constants), length(constraints))
-        q_null <- rep(length(null_constants), length(constraints))
+    
+    null_consts_error_txt <- "Each null_constant must be a numeric vector with length equal to the number of rows in the corresponding constraint matrix."
+    
+    if (is.list(null_constant)) {
+      if (length(null_constant) != length(constraints)) stop("null_constant must be a single vector or a list with the same number of entries as the constraint list.")
+      check_numeric <- sapply(null_constant, is.numeric)
+      if (!all(check_numeric)) stop(null_consts_error_txt)
+    } else if (is.numeric(null_constant)) {
+      if (length(null_constant) > 1L) {
+        null_constant <- rep(list(null_constant), length(constraints))
       } else {
-        null_constants <- lapply(q_constraints, \(x) rep(null_constants, x))
-        q_null <- q_constraints
+        null_constant <- lapply(q_constraints, \(x) rep(null_constant, x))
       }
     } else {
-      stop("Each null_constant must be a numeric vector with length equal to the number of rows in the corresponding constraint matrix.")
+      stop(null_consts_error_txt)
     }
     
+    q_null <- lengths(null_constant)
     mismatches <- q_constraints != q_null
     if (any(mismatches)) {
       which_mis <- which(mismatches)
       mismatch_msg <- c(
-        "Each null_constant must be a numeric vector with length equal to the number of rows in the corresponding constraint matrix.",
+        null_consts_error_txt,
         paste0("Constraint ", which_mis, " has ", q_constraints[mismatches], " rows; null constant ", which_mis, " is length ", q_null[mismatches],".")
       )
       stop(paste(mismatch_msg, collapse = " "))
     }
     
-    results <- mapply(constraints, null_constants, Wald_testing, beta = beta, vcov = vcov, test = test, p = p, GH = GH, stop_on_NPD = FALSE)
+    results <- mapply(
+      Wald_testing, 
+      C_mat = constraints, null_constant = null_constant, 
+      MoreArgs = list(beta = beta, vcov = vcov, test = test, p = p, GH = GH, stop_on_NPD = FALSE),
+      SIMPLIFY = FALSE
+    )
     
     if (tidy) {
       results <- mapply(
@@ -389,20 +398,22 @@ Wald_test <- function(obj, constraints, vcov, null_constants = 0, test = "HTZ", 
       stop(paste0("Constraints must be a q X ", p," matrix, a list of such matrices, or a call to a constrain_*() function."))
     }
   
-    if (is.numeric(null_constants)) {
-      if (length(null_constants) == 1L) {
-        null_constants <- rep(null_constants, nrow(constraints))
+    null_consts_error_txt <- "null_constant must be a numeric vector with length equal to the number of rows in the constraint matrix."
+    
+    if (is.numeric(null_constant)) {
+      if (length(null_constant) == 1L) {
+        null_constant <- rep(null_constant, nrow(constraints))
       } else {
-        if (length(null_constants) != nrow(constraints)) {
-          stop("null_constant must be a numeric vector with length equal to the number of rows in the constraint matrix.")
+        if (length(null_constant) != nrow(constraints)) {
+          stop(null_consts_error_txt)
         }
       }
     } else {
-      stop("null_constant must be a numeric vector with length equal to the number of rows in the corresponding constraint matrix.")
+      stop(null_consts_error_txt)
     }
     
     results <- Wald_testing(
-      C_mat = constraints, null_constants = null_constants, 
+      C_mat = constraints, null_constant = null_constant, 
       beta = beta, vcov = vcov, test = test, p = p, GH = GH
     ) 
   }
@@ -417,7 +428,7 @@ array_multiply <- function(mat, arr) {
   array(new_mat, dim = c(nrow(mat), dim(arr)[2], dim(arr)[3]))
 }
 
-Wald_testing <- function(C_mat, null_constants, beta, vcov, test, p, GH, stop_on_NPD = TRUE) {
+Wald_testing <- function(C_mat, null_constant, beta, vcov, test, p, GH, stop_on_NPD = TRUE) {
   
   q <- nrow(C_mat)
   dims <- dim(GH$H)
@@ -457,7 +468,7 @@ Wald_testing <- function(C_mat, null_constants, beta, vcov, test, p, GH, stop_on
       )
     }
   } else {
-    C_beta <- (C_mat %*% beta - matrix(null_constants, ncol = 1L))
+    C_beta <- (C_mat %*% beta - matrix(null_constant, ncol = 1L))
     Q <- as.numeric(t(C_beta) %*% inverse_vcov %*% C_beta)
     
     result <- data.frame()
