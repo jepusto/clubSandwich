@@ -4,7 +4,15 @@
 \alias{Wald_test}
 \title{Test parameter constraints in a fitted linear regression model}
 \usage{
-Wald_test(obj, constraints, vcov, test = "HTZ", tidy = FALSE, ...)
+Wald_test(
+  obj,
+  constraints,
+  vcov,
+  test = "HTZ",
+  tidy = FALSE,
+  adjustment_method = "none",
+  ...
+)
 }
 \arguments{
 \item{obj}{Fitted model for which to calculate Wald tests.}
@@ -24,6 +32,10 @@ calculate. The following corrections are available: \code{"chi-sq"},
 \item{tidy}{Logical value controlling whether to tidy the test results. If
 \code{constraints} is a list with multiple constraints, the result will
 be coerced into a data frame when \code{tidy = TRUE}.}
+
+\item{adjustment_method}{Correction method, a \code{\link{character}} string from 
+\code{p.adjust.methods}, which is passed to \code{\link{p.adjust}} to correct 
+p-values in the case of multiple comparisons.}
 
 \item{...}{Further arguments passed to \code{\link{vcovCR}}, which are only
 needed if \code{vcov} is a character string.}

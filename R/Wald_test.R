@@ -256,6 +256,9 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #' @param tidy Logical value controlling whether to tidy the test results. If
 #'   \code{constraints} is a list with multiple constraints, the result will
 #'   be coerced into a data frame when \code{tidy = TRUE}.
+#' @param adjustment_method Correction method, a \code{\link{character}} string from 
+#'   \code{p.adjust.methods}, which is passed to \code{\link{p.adjust}} to correct 
+#'   p-values in the case of multiple comparisons.
 #' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only
 #'   needed if \code{vcov} is a character string.
 #'
