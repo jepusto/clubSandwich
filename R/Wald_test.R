@@ -370,6 +370,16 @@ Wald_test <- function(
   }
   
   # implement p-value adjustment
+  if (adjustment_method %in% p.adjust.methods &
+      adjustment_method != "none" &
+      length(results) > 1) {
+
+    p_values <- sapply(results, function(x) x$p_val)
+    
+    adjusted <- p.adjust(p = p_values, method = adjustment_method)
+    
+    results <- Map(function(lis, adjusted) {lis$p_val <- adjusted; lis}, results, adjusted)
+  }
   
   return(results)
 
