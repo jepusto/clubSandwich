@@ -373,15 +373,28 @@ Wald_test <- function(
   }
   
   # implement p-value adjustment
-  if (adjustment_method %in% p.adjust.methods &
-      adjustment_method != "none" &
-      length(results) > 1) {
+  if (adjustment_method %in% p.adjust.methods & # check appropriate adjustment method selection
+      adjustment_method != "none" & # skip if method == "none"
+      length(results) > 1) { # skip if no multiple comparisons
 
-    p_values <- sapply(results, function(x) x$p_val)
+    p_values <- sapply(results, function(x) x$p_val) # extract p_values
     
-    adjusted <- p.adjust(p = p_values, method = adjustment_method)
+    # adjust p_values separately for each test
+    for(i in 1:nrow(p_values)) {
+      p_values[i,] <- p.adjust(p_values[i,], adjustment_method)
+    }
     
-    results <- Map(function(lis, adjusted) {lis$p_val <- adjusted; lis}, results, adjusted)
+    # for each element in results
+    for(c in seq_along(results)) {
+      app <- c() # initialize empty vector to apply
+      # extract appropriate p_values for respective element in results
+      for(r in 1:nrow(pvals)) {
+        app <- c(app, p_values[r, c])
+      }
+      # update current element in results
+      results[[c]]$p_val <- app
+    }
+    
   }
   
   return(results)
