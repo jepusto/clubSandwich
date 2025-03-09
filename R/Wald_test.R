@@ -258,7 +258,7 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #'   be coerced into a data frame when \code{tidy = TRUE}.
 #' @param adjustment_method Correction method, a \code{\link{character}} string from 
 #'   \code{p.adjust.methods}, which is passed to \code{\link{p.adjust}} to correct 
-#'   p-values in the case of multiple comparisons.
+#'   p-values in the case of multiple comparisons. Defaults to \code{"none"}.
 #' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only
 #'   needed if \code{vcov} is a character string.
 #'
@@ -377,7 +377,7 @@ Wald_test <- function(
       adjustment_method != "none" & # skip if method == "none"
       length(results) > 1) { # skip if no multiple comparisons
 
-    p_values <- sapply(results, function(x) x$p_val) # extract p_values
+    p_values <- sapply(results, function(x) x$p_val) # extract p-values
     
     # adjust p_values separately for each test
     for(i in 1:nrow(p_values)) {
@@ -388,7 +388,7 @@ Wald_test <- function(
     for(c in seq_along(results)) {
       app <- c() # initialize empty vector to apply
       # extract appropriate p_values for respective element in results
-      for(r in 1:nrow(pvals)) {
+      for(r in 1:nrow(p_values)) {
         app <- c(app, p_values[r, c])
       }
       # update current element in results
