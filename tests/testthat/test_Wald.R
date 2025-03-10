@@ -418,8 +418,17 @@ test_that("Wald_test fails gracefully when between-cluster variance of coefficie
     adjustment_method = "none"
   )
   
+  # Would like to have a more general version of s3 checking to make code more generalized
+  # lapply(Wald5, "Wald_test_clubSandwich", expect_s3_class)
   # expect_s3_class(Wald5, "Wald_test_clubSandwich")
+  # sapply(Wald6, "Wald_test_clubSandwich", expect_s3_class)
   # expect_s3_class(Wald6, "Wald_test_clubSandwich")
+  expect_s3_class(Wald5$`typewc:education - typeprof:education`, "Wald_test_clubSandwich")
+  expect_s3_class(Wald5$`typewc:education - typebc:education`, "Wald_test_clubSandwich")
+  expect_s3_class(Wald5$`typeprof:education - typebc:education`, "Wald_test_clubSandwich")
+  expect_s3_class(Wald6$`typewc:education - typeprof:education`, "Wald_test_clubSandwich")
+  expect_s3_class(Wald6$`typewc:education - typebc:education`, "Wald_test_clubSandwich")
+  expect_s3_class(Wald6$`typeprof:education - typebc:education`, "Wald_test_clubSandwich")
   expect_equal(Wald5, Wald6) # check that explicitly stating default does not affect functionality
   
   # change Wald6 to have hochberg adjustment

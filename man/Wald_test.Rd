@@ -35,7 +35,7 @@ be coerced into a data frame when \code{tidy = TRUE}.}
 
 \item{adjustment_method}{Correction method, a \code{\link{character}} string from 
 \code{p.adjust.methods}, which is passed to \code{\link{p.adjust}} to correct 
-p-values in the case of multiple comparisons.}
+p-values in the case of multiple comparisons. Defaults to \code{"none"}.}
 
 \item{...}{Further arguments passed to \code{\link{vcovCR}}, which are only
 needed if \code{vcov} is a character string.}
@@ -90,6 +90,14 @@ Wald_test(Duncan_fit,
 Wald_test(Duncan_fit,
           constraints = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
           vcov = "CR2", cluster = Duncan$cluster)
+          
+# Pairwise comparisons of type-by-education slopes, with two tests and multiple comparisons p-value adjustment
+Wald_test(Duncan_fit,
+          constraints = constrain_pairwise(":education", reg_ex = TRUE),
+          vcov = "CR2",
+          cluster = Duncan$cluster,
+          test = c("HTZ","chi-sq"),
+          adjustment_method = "holm")
           
 })
 

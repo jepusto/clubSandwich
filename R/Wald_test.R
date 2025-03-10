@@ -308,6 +308,14 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #'           constraints = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
 #'           vcov = "CR2", cluster = Duncan$cluster)
 #'           
+#' # Pairwise comparisons of type-by-education slopes, with two tests and multiple comparisons p-value adjustment
+#' Wald_test(Duncan_fit,
+#'           constraints = constrain_pairwise(":education", reg_ex = TRUE),
+#'           vcov = "CR2",
+#'           cluster = Duncan$cluster,
+#'           test = c("HTZ","chi-sq"),
+#'           adjustment_method = "holm")
+#'           
 #' })
 #'
 #' @export
@@ -373,9 +381,14 @@ Wald_test <- function(
   }
   
   # implement p-value adjustment
-  if (adjustment_method %in% p.adjust.methods & # check appropriate adjustment method selection
-      adjustment_method != "none" & # skip if method == "none"
-      length(results) > 1) { # skip if no multiple comparisons
+  
+  if (! adjustment_method %in% p.adjust.methods) {
+    # following two lines written by copilot, slightly edited by me
+    warning("The specified adjustment method is not available or does not exist. No p-value adjustment will be performed.")
+    adjustment_method <- "none"
+  }
+  else if (adjustment_method != "none" & # skip if adjustment_method == "none"
+           length(results) > 1) { # skip if no multiple comparisons
 
     p_values <- sapply(results, function(x) x$p_val) # extract p-values
     
