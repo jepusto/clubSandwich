@@ -251,14 +251,16 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #'   calculate the variance-covariance.
 #' @param test Character vector specifying which small-sample correction(s) to
 #'   calculate. The following corrections are available: \code{"chi-sq"},
-#'   \code{"Naive-F"}, \code{"Naive-Fp"}, \code{"HTA"}, \code{"HTB"}, \code{"HTZ"}, \code{"EDF"},
-#'   \code{"EDT"}. Default is \code{"HTZ"}.
+#'   \code{"Naive-F"}, \code{"Naive-Fp"}, \code{"HTA"}, \code{"HTB"},
+#'   \code{"HTZ"}, \code{"EDF"}, \code{"EDT"}. Default is \code{"HTZ"}.
 #' @param tidy Logical value controlling whether to tidy the test results. If
-#'   \code{constraints} is a list with multiple constraints, the result will
-#'   be coerced into a data frame when \code{tidy = TRUE}.
-#' @param adjustment_method Correction method, a \code{\link{character}} string from 
-#'   \code{p.adjust.methods}, which is passed to \code{\link{p.adjust}} to correct 
-#'   p-values in the case of multiple comparisons. Defaults to \code{"none"}.
+#'   \code{constraints} is a list with multiple constraints, the result will be
+#'   coerced into a data frame when \code{tidy = TRUE}.
+#' @param adjustment_method A character string indicating a multiple comparisons
+#'   correction to apply to p-values in instances where multiple tests are run.
+#'   Possible options are from \code{\link[stats]{p.adjust.methods}}, which is
+#'   passed to \code{\link[stats]{p.adjust}} to correct p-values for multiple
+#'   comparisons. Defaults to \code{"none"}.
 #' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only
 #'   needed if \code{vcov} is a character string.
 #'
@@ -275,7 +277,7 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #'
 #'
 #' if (requireNamespace("carData", quietly = TRUE)) withAutoprint({
-#' 
+#'
 #' data(Duncan, package = "carData")
 #' Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
 #'
@@ -307,7 +309,7 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #' Wald_test(Duncan_fit,
 #'           constraints = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
 #'           vcov = "CR2", cluster = Duncan$cluster)
-#'           
+#'
 #' # Pairwise comparisons of type-by-education slopes, with two tests and multiple comparisons p-value adjustment
 #' Wald_test(Duncan_fit,
 #'           constraints = constrain_pairwise(":education", reg_ex = TRUE),
@@ -315,7 +317,7 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #'           cluster = Duncan$cluster,
 #'           test = c("HTZ","chi-sq"),
 #'           adjustment_method = "holm")
-#'           
+#'
 #' })
 #'
 #' @export
