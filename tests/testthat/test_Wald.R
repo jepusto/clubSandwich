@@ -6,11 +6,6 @@ skip_if_not_installed("carData")
 
 data(Duncan, package = "carData")
 Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
-
-### Added by Sam for multiple-comparisons
-Duncan_fit <- lm(prestige ~ 0 + type + income + type:income + type:education, data=Duncan)
-###
-
 Duncan_int <- lm(prestige ~ type * (income + education), data=Duncan)
 coefs_int <- coef(Duncan_int)
 coef_names_int <- names(coefs_int)
@@ -401,63 +396,68 @@ test_that("Wald_test fails gracefully when between-cluster variance of coefficie
   expect_true(is.na(Wald4[1,"Fstat"]))
   expect_true(is.na(Wald4[1,"p_val"]))
   
-  Wald5 <- Wald_test(
-    Duncan_fit,
-    constraints = constrain_pairwise(":education", reg_ex = TRUE),
-    vcov = "CR2",
-    cluster = Duncan$cluster,
-    test = c("HTZ","chi-sq")
-  )
+})
+
+test_that("Wald_test words with multiple comparisons adjustment", {
   
-  Wald6 <- Wald_test(
-    Duncan_fit,
-    constraints = constrain_pairwise(":education", reg_ex = TRUE),
-    vcov = "CR2",
-    cluster = Duncan$cluster,
-    test = c("HTZ","chi-sq"),
-    adjustment_method = "none"
-  )
+  Duncan_fit <- lm(prestige ~ 0 + type + income + type:income + type:education, data=Duncan)
   
-  # Would like to have a more general version of s3 checking to make code more generalized
-  # lapply(Wald5, "Wald_test_clubSandwich", expect_s3_class)
-  # expect_s3_class(Wald5, "Wald_test_clubSandwich")
-  # sapply(Wald6, "Wald_test_clubSandwich", expect_s3_class)
-  # expect_s3_class(Wald6, "Wald_test_clubSandwich")
-  expect_s3_class(Wald5$`typewc:education - typeprof:education`, "Wald_test_clubSandwich")
-  expect_s3_class(Wald5$`typewc:education - typebc:education`, "Wald_test_clubSandwich")
-  expect_s3_class(Wald5$`typeprof:education - typebc:education`, "Wald_test_clubSandwich")
-  expect_s3_class(Wald6$`typewc:education - typeprof:education`, "Wald_test_clubSandwich")
-  expect_s3_class(Wald6$`typewc:education - typebc:education`, "Wald_test_clubSandwich")
-  expect_s3_class(Wald6$`typeprof:education - typebc:education`, "Wald_test_clubSandwich")
-  expect_equal(Wald5, Wald6) # check that explicitly stating default does not affect functionality
-  
-  # change Wald6 to have hochberg adjustment
-  Wald6 <- Wald_test(
-    Duncan_fit,
-    constraints = constrain_pairwise(":education", reg_ex = TRUE),
-    vcov = "CR2",
-    cluster = Duncan$cluster,
-    test = c("HTZ","chi-sq"),
-    adjustment_method = "hochberg"
-  )
-  
-  Wald5_p_values <- sapply(Wald5, function(x) x$p_val) # extract p-values of Wald5
-  Wald6_p_values <- sapply(Wald6, function(x) x$p_val) # extract p-values of Wald6
-  
-  expect_error(expect_equal(Wald5_p_values, Wald6_p_values),
-               "`Wald5_p_values` not equal to `Wald6_p_values`")
-  
-  # get adjusted_p_values for Wald5, formatted the same as extracted p-values from Wald6
-  Wald5_adjusted_p <- Wald5_p_values
-  for(i in 1:nrow(Wald5_p_values)) {
-    adj <- p.adjust(Wald5_p_values[i,], method = "hochberg")
-    j <- 1
-    for(k in seq(i, length(Wald5_p_values), nrow(Wald5_p_values))) {
-      Wald5_adjusted_p[k] = adj[j]
-      j <- j + 1
-    }
+Wald5 <- Wald_test(
+  Duncan_fit,
+  constraints = constrain_pairwise(":education", reg_ex = TRUE),
+  vcov = "CR2",
+  cluster = Duncan$cluster,
+  test = c("HTZ","chi-sq")
+)
+
+Wald6 <- Wald_test(
+  Duncan_fit,
+  constraints = constrain_pairwise(":education", reg_ex = TRUE),
+  vcov = "CR2",
+  cluster = Duncan$cluster,
+  test = c("HTZ","chi-sq"),
+  adjustment_method = "none"
+)
+
+# Would like to have a more general version of s3 checking to make code more generalized
+# lapply(Wald5, "Wald_test_clubSandwich", expect_s3_class)
+# expect_s3_class(Wald5, "Wald_test_clubSandwich")
+# sapply(Wald6, "Wald_test_clubSandwich", expect_s3_class)
+# expect_s3_class(Wald6, "Wald_test_clubSandwich")
+expect_s3_class(Wald5$`typewc:education - typeprof:education`, "Wald_test_clubSandwich")
+expect_s3_class(Wald5$`typewc:education - typebc:education`, "Wald_test_clubSandwich")
+expect_s3_class(Wald5$`typeprof:education - typebc:education`, "Wald_test_clubSandwich")
+expect_s3_class(Wald6$`typewc:education - typeprof:education`, "Wald_test_clubSandwich")
+expect_s3_class(Wald6$`typewc:education - typebc:education`, "Wald_test_clubSandwich")
+expect_s3_class(Wald6$`typeprof:education - typebc:education`, "Wald_test_clubSandwich")
+expect_equal(Wald5, Wald6) # check that explicitly stating default does not affect functionality
+
+# change Wald6 to have hochberg adjustment
+Wald6 <- Wald_test(
+  Duncan_fit,
+  constraints = constrain_pairwise(":education", reg_ex = TRUE),
+  vcov = "CR2",
+  cluster = Duncan$cluster,
+  test = c("HTZ","chi-sq"),
+  adjustment_method = "hochberg"
+)
+
+Wald5_p_values <- sapply(Wald5, function(x) x$p_val) # extract p-values of Wald5
+Wald6_p_values <- sapply(Wald6, function(x) x$p_val) # extract p-values of Wald6
+
+expect_error(expect_equal(Wald5_p_values, Wald6_p_values),
+             "`Wald5_p_values` not equal to `Wald6_p_values`")
+
+# get adjusted_p_values for Wald5, formatted the same as extracted p-values from Wald6
+Wald5_adjusted_p <- Wald5_p_values
+for(i in 1:nrow(Wald5_p_values)) {
+  adj <- p.adjust(Wald5_p_values[i,], method = "hochberg")
+  j <- 1
+  for(k in seq(i, length(Wald5_p_values), nrow(Wald5_p_values))) {
+    Wald5_adjusted_p[k] = adj[j]
+    j <- j + 1
   }
-  
-  expect_equal(Wald5_adjusted_p, Wald6_p_values)
-  
+}
+
+expect_equal(Wald5_adjusted_p, Wald6_p_values)
 })
