@@ -387,8 +387,10 @@ Wald_test <- function(
     warning("The specified adjustment method is not available or does not exist. No p-value adjustment will be performed.")
     adjustment_method <- "none"
   }
-  else if (adjustment_method != "none" & # skip if adjustment_method == "none"
-           length(results) > 1) { # skip if no multiple comparisons
+  else if (adjustment_method != "none" & length(result) == 1) {
+    warning("Only one p-value is available. No p-value adjustment will be performed.") # warning by copilot
+  }
+  else if (adjustment_method != "none") { # skip if adjustment_method == "none"
 
     p_values <- sapply(results, function(x) x$p_val) # extract p-values
     
