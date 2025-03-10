@@ -167,38 +167,20 @@ test_that("clubSandwich works with missing vcov matrix", {
   
   expect_warning(corr_drop <- rma.mv(effectsize ~ males + college + binge, 
                                      random = ~ 1 | studyid, 
-                                     V = V_missing, data = dat_miss))
+                                     V = V_missing, data = dat_miss,
+                                     sparse = TRUE))
   
   corr_complete <- rma.mv(effectsize ~ males + college + binge,
                           random = ~ 1 | studyid, 
                           subset = !is.na(var),
-                          data = dat_miss, V = V_missing)
+                          data = dat_miss, V = V_missing,
+                          sparse = TRUE)
   
   expect_error(vcovCR(corr_complete, type = "CR0", cluster = dat_miss$studyid))
   
   CR_drop <- lapply(CR_types, function(x) vcovCR(corr_drop, cluster = dat_miss$studyid, type = x))
   CR_complete <- lapply(CR_types, function(x) vcovCR(corr_complete, type = x))
   expect_equal(CR_drop, CR_complete, tolerance = 1e-5)
-  
-  
-  # V_complete <- impute_covariance_matrix(corrdat$var, cluster = corrdat$studyid, r = 0.8)
-  # W_missing <- lapply(V_complete, function(x) chol2inv(chol(x)))
-  # 
-  # corr_drop <- rma.mv(effectsize ~ males + college + binge, 
-  #                     random = ~ 1 | studyid, 
-  #                     V = V_complete, W = bldiag(W_missing), 
-  #                     data = dat_miss)
-  # 
-  # corr_complete <- rma.mv(effectsize ~ males + college + binge,
-  #                         random = ~ 1 | studyid, 
-  #                         V = V_complete, W = bldiag(W_missing),
-  #                         data = dat_miss, subset = !is.na(var))
-  # 
-  # expect_error(vcovCR(corr_complete, type = "CR0", cluster = dat_miss$studyid))
-  # 
-  # CR_drop <- lapply(CR_types, function(x) vcovCR(corr_drop, type = x))
-  # CR_complete <- lapply(CR_types, function(x) vcovCR(corr_complete, type = x))
-  # expect_equal(CR_drop, CR_complete)
   
 })
 
@@ -235,7 +217,8 @@ test_that("clubSandwich works with complicated random effects specifications.", 
   m1 <- rma.mv(
     R ~ 0 + IAT.Focus + Crit.Cat, V = V,
     data = oswald2013,
-    random = list(~ 1 | Study, ~ 1 | SSID, ~ 1 | ESID)
+    random = list(~ 1 | Study, ~ 1 | SSID, ~ 1 | ESID),
+    sparse = TRUE
   )
   
   m2 <- update(m1, 
@@ -267,7 +250,8 @@ test_that("clubSandwich works with complicated random effects specifications.", 
     R ~ 0 + IAT.Focus + Crit.ID, V = V,
     data = oswald2013,
     random = list(~ 1  + Crit.ID | Study),
-    struct = c("GEN")
+    struct = c("GEN"),
+    sparse = TRUE
   )
   
   m12 <- update(m11, random = list(~ 1  + Crit.ID | Study, ~ 1 | SSID))
@@ -307,7 +291,8 @@ test_that("clubSandwich works for random slopes model.", {
   dat$vi <- dat$vi*100^2
   res <- rma.mv(yi, vi, mods = ~ bmicent, 
                 random = ~ bmicent | study, struct="GEN", 
-                data=dat)
+                data=dat,
+                sparse = TRUE)
   
   cl <- findCluster.rma.mv(res)
   
@@ -326,17 +311,23 @@ test_that("clubSandwich works for correlated hierarchical effects model.", {
                                     smooth_vi = TRUE)
   
   CHE_es <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
-                   V = V_mat, random = ~ 1 | esid)
+                   V = V_mat, random = ~ 1 | esid,
+                   sparse = TRUE)
   CHE_study <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
-                      V = V_mat, random = ~ 1 | studyid)
+                      V = V_mat, random = ~ 1 | studyid,
+                      sparse = TRUE)
   CHE_studyes <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
-                        V = V_mat, random = ~ 1 | studyid / esid)
+                        V = V_mat, random = ~ 1 | studyid / esid,
+                        sparse = TRUE)
   CHE_esstudy <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
-                        V = V_mat, random = ~ 1 | esid/ studyid)
+                        V = V_mat, random = ~ 1 | esid/ studyid,
+                        sparse = TRUE)
   CHE_study_es <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
-                         V = V_mat, random = list(~ 1 | studyid,  ~ 1 | esid))
+                         V = V_mat, random = list(~ 1 | studyid,  ~ 1 | esid),
+                         sparse = TRUE)
   CHE_es_study <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
-                         V = V_mat, random = list(~ 1 | esid, ~ 1 | studyid))
+                         V = V_mat, random = list(~ 1 | esid, ~ 1 | studyid),
+                         sparse = TRUE)
   
   mods <- list(es = CHE_es, study = CHE_study, 
                studyes = CHE_studyes, esstudy = CHE_esstudy,
@@ -409,7 +400,8 @@ test_that("clubSandwich works when random effects variable has missing levels.",
   
   mlma_fac <- rma.mv(yi ~ year, V = vi, 
                      random = ~ 1 | district_fac / study,
-                     sparse = TRUE, data = dat)
+                     data = dat,
+                     sparse = TRUE)
   
   implicit_fac <- coef_test(mlma_fac, vcov = "CR2")
   explicit_fac <- coef_test(mlma_fac, vcov = "CR2", cluster = dat$district_fac)
@@ -417,7 +409,8 @@ test_that("clubSandwich works when random effects variable has missing levels.",
 
   mlma_plus <- rma.mv(yi ~ year, V = vi, 
                      random = ~ 1 | district_fac_plus / study,
-                     sparse = TRUE, data = dat)
+                     data = dat,
+                     sparse = TRUE)
   
   implicit_plus <- coef_test(mlma_plus, vcov = "CR2")
   explicit_plus <- coef_test(mlma_plus, vcov = "CR2", cluster = dat$district_fac_plus)
@@ -427,7 +420,8 @@ test_that("clubSandwich works when random effects variable has missing levels.",
   
   mlma_num <- rma.mv(yi ~ year, V = vi, 
                      random = ~ 1 | district / study,
-                     sparse = TRUE, data = dat)
+                     data = dat,
+                     sparse = TRUE)
   
   implicit_num <- coef_test(mlma_num, vcov = "CR2")
   explicit_num <- coef_test(mlma_num, vcov = "CR2", cluster = dat$district)
