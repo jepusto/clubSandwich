@@ -97,3 +97,71 @@ test_that("conf_int has informative error messages.", {
     conf_int(gls_fit, vcov = "CR0", test = "saddlepoint")
   )
 })
+
+test_that("conf_int multiple comparisons p-value adjustment works correctly", {
+  # taken from example usage
+  data("ChickWeight", package = "datasets")
+  lm_fit <- lm(weight ~ Diet  * Time, data = ChickWeight)
+  diet_index <- grepl("Diet.:Time", names(coef(lm_fit)))
+  
+  conf1 <- conf_int(lm_fit,
+                    vcov = "CR2",
+                    cluster = ChickWeight$Chick,
+                    test = "naive-t",
+                    coefs = diet_index,
+                    p_values = TRUE)
+  
+  conf2 <- conf_int(lm_fit,
+                    vcov = "CR2",
+                    cluster = ChickWeight$Chick,
+                    test = "naive-t",
+                    coefs = diet_index,
+                    p_values = TRUE,
+                    adjustment_method = "none")
+  
+  expect_equal(conf1, conf2) # check explicitly stating adjustment_method default doesn't change anything
+  # test using adjustment without p_values = TRUE
+  
+  expect_warning(conf1 <- conf_int(lm_fit,
+                          vcov = "CR2",
+                          cluster = ChickWeight$Chick,
+                          test = "naive-t",
+                          coefs = diet_index,
+                          p_values = FALSE,
+                          adjustment_method = "hochberg"),
+                 "p_values = FALSE")
+  
+  # check that the above code performs default behavior
+  conf2 <- conf_int(lm_fit,
+                    vcov = "CR2",
+                    cluster = ChickWeight$Chick,
+                    test = "naive-t",
+                    coefs = diet_index,
+                    p_values = FALSE)
+  expect_equal(conf1, conf2)
+  
+  # conf2 now shows p_values with no adjustment
+  conf2 <- conf_int(lm_fit,
+                    vcov = "CR2",
+                    cluster = ChickWeight$Chick,
+                    test = "naive-t",
+                    coefs = diet_index,
+                    p_values = TRUE)
+  
+  # test using nonexistent adjustment type
+  expect_warning(conf1 <- conf_int(lm_fit,
+                         vcov = "CR2",
+                         cluster = ChickWeight$Chick,
+                         test = "naive-t",
+                         coefs = diet_index,
+                         p_values = TRUE,
+                         adjustment_method = "nonexistent"),
+                 "The specified adjustment method")
+  
+  # check that the above defaults to no adjustment
+  expect_equal(conf1, conf2)
+  
+  # test using p-adjustment when results have a length of 1
+  # to be completed!!!
+  #
+})

@@ -12,7 +12,8 @@ conf_int(
   test = "Satterthwaite",
   coefs = "All",
   ...,
-  p_values = FALSE
+  p_values = FALSE,
+  adjustment_method = "none"
 )
 }
 \arguments{
@@ -44,6 +45,11 @@ needed if \code{vcov} is a character string.}
 
 \item{p_values}{Logical indicating whether to report p-values. The default
 value is \code{FALSE}.}
+
+\item{adjustment_method}{Correction method, a \code{\link{character}} string
+from \code{p.adjust.methods}, which is passed to \code{\link{p.adjust}} to
+correct p-values in the case of multiple comparisons. Defaults to
+\code{"none"}. Any value given will be ignored if \code{p_values = FALSE}.}
 }
 \value{
 A data frame containing estimated regression coefficients, standard
@@ -61,6 +67,8 @@ data("ChickWeight", package = "datasets")
 lm_fit <- lm(weight ~ Diet  * Time, data = ChickWeight)
 diet_index <- grepl("Diet.:Time", names(coef(lm_fit)))
 conf_int(lm_fit, vcov = "CR2", cluster = ChickWeight$Chick, coefs = diet_index)
+
+conf_int(lm_fit, vcov = "CR2", cluster = ChickWeight$Chick, coefs = diet_index, p_values = TRUE, adjustment_method = "none")
 
 V_CR2 <- vcovCR(lm_fit, cluster = ChickWeight$Chick, type = "CR2")
 conf_int(lm_fit, vcov = V_CR2, level = .99, coefs = diet_index)
