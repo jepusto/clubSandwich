@@ -15,7 +15,11 @@ dat$v_study <- unsplit(tapply(dat$vi, dat$study, mean), dat$study)
 
 dat_scramble <- dat[sample.int(nrow(dat)),]
 
-
+test_that("impute_covariance_matrix() is deprecated.", {
+  expect_warning(
+    impute_covariance_matrix(vi = dat$vi, cluster = dat$study, r = 0.6)
+  )
+})
 test_that("impute_covariance_matrix error messages and missing argument handling are correct.", {
 
   expect_error(impute_covariance_matrix(vi = dat$vi, cluster = dat$study))  

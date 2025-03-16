@@ -3,21 +3,23 @@
 # Satterthwaite approximation
 #---------------------------------------------
 
-Satterthwaite <- function(beta, SE, P_array) {
+Satterthwaite_df <- function(P_array) {
   
   V_coef <- 2 * apply(P_array, 3, function(x) sum(x^2))
   E_coef <- apply(P_array, 3, function(x) sum(diag(x)))
-  
-  df <- 2 * E_coef^2 / V_coef
-  p_val <- 2 * pt(abs(beta / SE), df = df, lower.tail = FALSE)
-  data.frame(df = df, p_Satt = p_val)
+
+  2 * E_coef^2 / V_coef
 }
 
 #---------------------------------------------
 # Saddlepoint approximation
 #---------------------------------------------
 
-saddlepoint_pval <- function(t, Q) {
+saddlepoint_pval <- function(t, Q, eps = 1e-10) {
+  if (abs(t) < eps) {
+    return(c(s = NA, p_val = 1))
+  }
+  
   eig <- pmax(0, eigen(Q, symmetric = TRUE, only.values=TRUE)$values)
   g <- c(1, -t^2 * eig / sum(eig))
   s_eq <- function(s) sum(g / (1 - 2 * g * s))
@@ -74,16 +76,27 @@ get_which_coef <- function(beta, coefs) {
 }
 
 
+calc_pval <- function(tstat, df, alternative) {
+  switch(
+    alternative, 
+    `two-sided` = 2 * pt(abs(tstat), df = df, lower.tail = FALSE),
+    `greater` = pt(tstat, df = df, lower.tail = FALSE),
+    `less` = pt(tstat, df = df, lower.tail = TRUE)
+  )
+}
+
 #---------------------------------------------
 # coeftest for all model coefficients
 #---------------------------------------------
 
 #' Test all or selected regression coefficients in a fitted model
 #'
-#' \code{coef_test} reports t-tests for each coefficient estimate in a fitted
-#' linear regression model, using a sandwich estimator for the standard errors
-#' and a small sample correction for the p-value. The small-sample correction is
-#' based on a Satterthwaite approximation or a saddlepoint approximation.
+#' \code{coef_test} reports one- or two-sided t-tests for each coefficient
+#' estimate in a fitted linear regression model, using a sandwich estimator for
+#' the standard errors and (optionally) a small sample correction for the
+#' p-value. Available small-sample corrections include Satterthwaite
+#' approximation or a saddlepoint approximation. Coefficients can be tested
+#' against non-zero null values by specifying \code{null_constants}.
 #'
 #' @param obj Fitted model for which to calculate t-tests.
 #' @param vcov Variance covariance matrix estimated using \code{vcovCR} or a
@@ -98,23 +111,30 @@ get_which_coef <- function(beta, coefs) {
 #'   \code{"Satterthwaite"} returns a Satterthwaite correction.
 #'   \code{"saddlepoint"} returns a saddlepoint correction. Default is
 #'   \code{"Satterthwaite"}.
+#' @param alternative Character string specifying the alternative hypothesis,
+#'   with options "two-sided" (the default), "greater" or "less".
 #' @param coefs Character, integer, or logical vector specifying which
 #'   coefficients should be tested. The default value \code{"All"} will test all
 #'   estimated coefficients.
+#' @param null_constants vector of null values for each coefficient to test.
+#'   Must have length equal to the number of coefficients specified in
+#'   \code{coefs}. Default is \code{0}, in which case the null values are taken
+#'   to be zero.
 #' @param p_values Logical indicating whether to report p-values. The default
 #'   value is \code{TRUE}.
 #' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only
 #'   needed if \code{vcov} is a character string.
 #'
 #' @return A data frame containing estimated regression coefficients, standard
-#'   errors, and test results. For the Satterthwaite approximation, degrees of
-#'   freedom and a p-value are reported. For the saddlepoint approximation, the
-#'   saddlepoint and a p-value are reported.
+#'   errors, specified values of null hypotheses, and test results. For the
+#'   Satterthwaite approximation, degrees of freedom and a p-value are reported.
+#'   For the saddlepoint approximation, the saddlepoint and a p-value are
+#'   reported.
 #'
 #' @seealso \code{\link{vcovCR}}
 #'
 #' @examples
-#' 
+#'
 #' data("ChickWeight", package = "datasets")
 #' lm_fit <- lm(weight ~ Diet  * Time, data = ChickWeight)
 #' diet_index <- grepl("Diet.:Time", names(coef(lm_fit)))
@@ -123,10 +143,23 @@ get_which_coef <- function(beta, coefs) {
 #' V_CR2 <- vcovCR(lm_fit, cluster = ChickWeight$Chick, type = "CR2")
 #' coef_test(lm_fit, vcov = V_CR2, coefs = diet_index)
 #'
+#' # non-inferiority test whether time-by-diet interaction effects are 2 or greater
+#' coef_test(lm_fit, vcov = V_CR2, coefs = diet_index, null_constants = 2, alternative = "greater")
+#'
 #' @export
 
-coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values = TRUE, ...) {
+coef_test <- function(
+  obj, 
+  vcov, 
+  test = "Satterthwaite", 
+  alternative = c("two-sided", "greater", "less"), 
+  coefs = "All", 
+  null_constants = 0, 
+  p_values = TRUE, 
+  ...
+) {
   
+  alternative <- match.arg(alternative)
   beta_full <- coef_CS(obj)
   beta_NA <- is.na(beta_full)
   p <- sum(!beta_NA)
@@ -134,6 +167,13 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values
   which_beta <- get_which_coef(beta_full, coefs)
   
   beta <- beta_full[which_beta & !beta_NA]
+  
+  if (length(null_constants) == 1L) {
+    null_constants <- rep(null_constants, length.out = length(beta))
+  }
+  if (!is.numeric(null_constants) || length(null_constants) != length(beta)) {
+    stop("null_constants must be a numeric vector with length equal to the number of coefficients to be tested.")
+  } 
   
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!inherits(vcov, "clubSandwich")) stop("Variance-covariance matrix must be a clubSandwich.")
@@ -151,36 +191,42 @@ coef_test <- function(obj, vcov, test = "Satterthwaite", coefs = "All", p_values
 
   result <- data.frame(Coef = names(beta), beta = as.numeric(beta))
   result$SE <- SE
-  result$tstat <- beta / SE
+  result$null_value <- null_constants
+  result$tstat <- (beta - null_constants) / SE
   row.names(result) <- result$Coef
 
   if ("z" %in% test) {
     result$df_z <- Inf
-    result$p_z <-  2 * pnorm(abs(result$tstat), lower.tail = FALSE)
+    result$p_z <-  calc_pval(result$tstat, df = Inf, alternative = alternative)
   }
   if ("naive-t" %in% test) {
     J <- nlevels(attr(vcov, "cluster"))
     result$df_t <- J - 1
-    result$p_t <-  2 * pt(abs(result$tstat), df = J - 1, lower.tail = FALSE)
+    result$p_t <-  calc_pval(result$tstat, df = J - 1, alternative = alternative)
   }
   if ("naive-tp" %in% test) {
     J <- nlevels(attr(vcov, "cluster"))
     result$df_tp <- J - p
-    result$p_tp <-  2 * pt(abs(result$tstat), df = J - p, lower.tail = FALSE)
+    result$p_tp <-  calc_pval(result$tstat, df = J - p, alternative = alternative)
   }
   if ("Satterthwaite" %in% test) {
-    Satt <- Satterthwaite(beta = beta, SE = SE, P_array = P_array)
-    result$df_Satt <- Satt$df
-    result$p_Satt <- Satt$p_Satt
+    result$df_Satt <- Satterthwaite_df(P_array = P_array)
+    result$p_Satt <- calc_pval(result$tstat, df = result$df_Satt, alternative = alternative)
   }
   if ("saddlepoint" %in% test) {
-    saddle <- saddlepoint(t_stats = beta / SE, P_array = P_array)
+    saddle <- saddlepoint(t_stats = result$tstat, P_array = P_array)
     result$saddlepoint <- saddle$saddlepoint
-    result$p_saddle <-saddle$p_saddle
+    result$p_saddle <- switch(
+      alternative,
+      `two-sided` = saddle$p_saddle,
+      `greater` = ifelse(result$tstat > 0, saddle$p_saddle / 2, 1 - saddle$p_saddle / 2),
+      `less` = ifelse(result$tstat > 0, 1 - saddle$p_saddle / 2, saddle$p_saddle / 2)
+    )
   }
   
   class(result) <- c("coef_test_clubSandwich", class(result))
   attr(result, "type") <- attr(vcov, "type")
+  attr(result, "alternative") <- alternative
 
   if (p_values) {
     result
@@ -205,6 +251,7 @@ print.coef_test_clubSandwich <- function(x, digits = 3, ...) {
     `SE` = x$SE
   )
   
+  res$`Null value` <- x$null_value
   res$`t-stat` <- x$tstat
 
   
@@ -243,6 +290,7 @@ print.coef_test_clubSandwich <- function(x, digits = 3, ...) {
     res <- cbind(res, "s.p." = x$saddlepoint, "p-val (Saddle)" = p_saddle, "Sig." = Sig_saddle)    
   } 
 
+  cat("Alternative hypothesis:", attr(x, "alternative"), "\n")
   print(format(res, digits = 3), row.names = FALSE)
   
 }

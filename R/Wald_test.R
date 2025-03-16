@@ -244,27 +244,39 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #' Several different small-sample corrections are available.
 #'
 #' @param obj Fitted model for which to calculate Wald tests.
-#' @param constraints List of one or more constraints to test. See details and
-#'   examples.
+#' @param constraints constraint or list of multiple constraints to test. See
+#'   details and examples.
 #' @param vcov Variance covariance matrix estimated using \code{vcovCR} or a
 #'   character string specifying which small-sample adjustment should be used to
 #'   calculate the variance-covariance.
+#' @param null_constant vector of null values or list of such vectors for each
+#'   set of constraints to test. For a single \code{constraint}, the null values
+#'   must have length equal to the number of rows in the constraint. For lists
+#'   of null values, each entry must have length equal to the number of rows in
+#'   the corresponding entry of \code{constraints}. Default is \code{0}, in
+#'   which case the null values are taken to be zero (for every entry, if
+#'   \code{constraints} is a list).
 #' @param test Character vector specifying which small-sample correction(s) to
 #'   calculate. The following corrections are available: \code{"chi-sq"},
-#'   \code{"Naive-F"}, \code{"Naive-Fp"}, \code{"HTA"}, \code{"HTB"}, \code{"HTZ"}, \code{"EDF"},
-#'   \code{"EDT"}. Default is \code{"HTZ"}.
+#'   \code{"Naive-F"}, \code{"Naive-Fp"}, \code{"HTA"}, \code{"HTB"},
+#'   \code{"HTZ"}, \code{"EDF"}, \code{"EDT"}. Default is \code{"HTZ"}.
 #' @param tidy Logical value controlling whether to tidy the test results. If
-#'   \code{constraints} is a list with multiple constraints, the result will
-#'   be coerced into a data frame when \code{tidy = TRUE}.
-#' @param adjustment_method Correction method, a \code{\link{character}} string from 
-#'   \code{p.adjust.methods}, which is passed to \code{\link{p.adjust}} to correct 
-#'   p-values in the case of multiple comparisons. Defaults to \code{"none"}.
+#'   \code{constraints} is a list with multiple constraints, the result will be
+#'   coerced into a data frame when \code{tidy = TRUE}.
+#' @param adjustment_method A character string indicating a multiple comparisons
+#'   correction to apply to p-values in instances where multiple tests are run.
+#'   Possible options are from \code{\link[stats]{p.adjust.methods}}, which is
+#'   passed to \code{\link[stats]{p.adjust}} to correct p-values for multiple
+#'   comparisons. Defaults to \code{"none"}.
 #' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only
 #'   needed if \code{vcov} is a character string.
 #'
 #' @details Constraints can be specified directly as q X p matrices or
 #'   indirectly through \code{\link{constrain_equal}},
-#'   \code{\link{constrain_zero}}, or \code{\link{constrain_pairwise}}
+#'   \code{\link{constrain_zero}}, or \code{\link{constrain_pairwise}}. By
+#'   default, each constraint will be tested against the null hypothesis that it
+#'   equal to a zero vector. Non-zero values for null-hypotheses can be
+#'   specified using the \code{null_constant} argument.
 #'
 #' @return A list of test results.
 #'
@@ -275,7 +287,7 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #'
 #'
 #' if (requireNamespace("carData", quietly = TRUE)) withAutoprint({
-#' 
+#'
 #' data(Duncan, package = "carData")
 #' Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
 #'
@@ -307,7 +319,7 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #' Wald_test(Duncan_fit,
 #'           constraints = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
 #'           vcov = "CR2", cluster = Duncan$cluster)
-#'           
+#'
 #' # Pairwise comparisons of type-by-education slopes, with two tests and multiple comparisons p-value adjustment
 #' Wald_test(Duncan_fit,
 #'           constraints = constrain_pairwise(":education", reg_ex = TRUE),
@@ -315,7 +327,7 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #'           cluster = Duncan$cluster,
 #'           test = c("HTZ","chi-sq"),
 #'           adjustment_method = "holm")
-#'           
+#'
 #' })
 #'
 #' @export
@@ -359,7 +371,41 @@ Wald_test <- function(
       stop(paste0("Constraints must be a q X ", p," matrix, a list of such matrices, or a call to a constrain_*() function."))
     }
     
-    results <- lapply(constraints, Wald_testing, beta = beta, vcov = vcov, test = test, p = p, GH = GH, stop_on_NPD = FALSE)
+    q_constraints <- sapply(constraints, nrow)
+    
+    null_consts_error_txt <- "Each null_constant must be a numeric vector with length equal to the number of rows in the corresponding constraint matrix."
+    
+    if (is.list(null_constant)) {
+      if (length(null_constant) != length(constraints)) stop("null_constant must be a single vector or a list with the same number of entries as the constraint list.")
+      check_numeric <- sapply(null_constant, is.numeric)
+      if (!all(check_numeric)) stop(null_consts_error_txt)
+    } else if (is.numeric(null_constant)) {
+      if (length(null_constant) > 1L) {
+        null_constant <- rep(list(null_constant), length(constraints))
+      } else {
+        null_constant <- lapply(q_constraints, \(x) rep(null_constant, x))
+      }
+    } else {
+      stop(null_consts_error_txt)
+    }
+    
+    q_null <- lengths(null_constant)
+    mismatches <- q_constraints != q_null
+    if (any(mismatches)) {
+      which_mis <- which(mismatches)
+      mismatch_msg <- c(
+        null_consts_error_txt,
+        paste0("Constraint ", which_mis, " has ", q_constraints[mismatches], " rows; null constant ", which_mis, " is length ", q_null[mismatches],".")
+      )
+      stop(paste(mismatch_msg, collapse = " "))
+    }
+    
+    results <- mapply(
+      Wald_testing, 
+      C_mat = constraints, null_constant = null_constant, 
+      MoreArgs = list(beta = beta, vcov = vcov, test = test, p = p, GH = GH, stop_on_NPD = FALSE),
+      SIMPLIFY = FALSE
+    )
     
     if (tidy) {
       results <- mapply(
@@ -376,8 +422,25 @@ Wald_test <- function(
     if (!inherits(constraints, "matrix") | ncol(constraints) != p) {
       stop(paste0("Constraints must be a q X ", p," matrix, a list of such matrices, or a call to a constrain_*() function."))
     }
+  
+    null_consts_error_txt <- "null_constant must be a numeric vector with length equal to the number of rows in the constraint matrix."
     
-    results <- Wald_testing(C_mat = constraints, beta = beta, vcov = vcov, test = test, p = p, GH = GH) 
+    if (is.numeric(null_constant)) {
+      if (length(null_constant) == 1L) {
+        null_constant <- rep(null_constant, nrow(constraints))
+      } else {
+        if (length(null_constant) != nrow(constraints)) {
+          stop(null_consts_error_txt)
+        }
+      }
+    } else {
+      stop(null_consts_error_txt)
+    }
+    
+    results <- Wald_testing(
+      C_mat = constraints, null_constant = null_constant, 
+      beta = beta, vcov = vcov, test = test, p = p, GH = GH
+    ) 
   }
   
   # implement p-value adjustment
@@ -422,7 +485,7 @@ array_multiply <- function(mat, arr) {
   array(new_mat, dim = c(nrow(mat), dim(arr)[2], dim(arr)[3]))
 }
 
-Wald_testing <- function(C_mat, beta, vcov, test, p, GH, stop_on_NPD = TRUE) {
+Wald_testing <- function(C_mat, null_constant, beta, vcov, test, p, GH, stop_on_NPD = TRUE) {
   
   q <- nrow(C_mat)
   dims <- dim(GH$H)
@@ -462,7 +525,7 @@ Wald_testing <- function(C_mat, beta, vcov, test, p, GH, stop_on_NPD = TRUE) {
       )
     }
   } else {
-    C_beta <- C_mat %*% beta
+    C_beta <- (C_mat %*% beta - matrix(null_constant, ncol = 1L))
     Q <- as.numeric(t(C_beta) %*% inverse_vcov %*% C_beta)
     
     result <- data.frame()

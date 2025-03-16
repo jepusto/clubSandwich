@@ -46,7 +46,19 @@ test_that("constrain_equal expressions are equivalent", {
                       vcov = Duncan_sep_CR2, type = "All")
   Wald_B <- Wald_test(Duncan_sep, constraints = constraint_func,
                       vcov = Duncan_sep_CR2, type = "All")
-  expect_identical(Wald_A, Wald_B)    
+  expect_identical(Wald_A, Wald_B)
+  
+  Wald_C <- Wald_test(Duncan_sep, constraints = constraint_list,
+                      vcov = Duncan_sep_CR2, 
+                      null_constant = c(0,0),
+                      type = "All")
+  Wald_D <- Wald_test(Duncan_sep, constraints = constraint_func,
+                      vcov = Duncan_sep_CR2, 
+                      null_constant = rep(list(c(0,0)),3L),
+                      type = "All")
+  expect_identical(Wald_A, Wald_C)
+  expect_identical(Wald_A, Wald_D)    
+  
 })
 
 test_that("constrain_pairwise expressions are equivalent", {
@@ -79,6 +91,18 @@ test_that("constrain_pairwise expressions are equivalent", {
   Wald_B <- Wald_test(Duncan_sep, constraints = constraint_func,
                       vcov = Duncan_sep_CR2, type = "All")
   expect_identical(Wald_A, Wald_B)
+  
+  Wald_C <- Wald_test(Duncan_sep, constraints = constraint_list,
+                      vcov = Duncan_sep_CR2, 
+                      null_constant = 0,
+                      type = "All")
+  Wald_D <- Wald_test(Duncan_sep, constraints = constraint_func,
+                      vcov = Duncan_sep_CR2, 
+                      null_constant = rep(list(0),9L),
+                      type = "All")
+  expect_identical(Wald_A, Wald_C)
+  expect_identical(Wald_A, Wald_D)    
+  
 })
 
 test_that("constrain_zero expressions are equivalent", {
@@ -112,6 +136,18 @@ test_that("constrain_zero expressions are equivalent", {
   Wald_B <- Wald_test(Duncan_int, constraints = constraint_func,
                       vcov = Duncan_int_CR2, type = "All")
   expect_equal(Wald_A, Wald_B)
+  
+  
+  Wald_C <- Wald_test(Duncan_int, constraints = constraint_list,
+                      vcov = Duncan_int_CR2, 
+                      null_constant = c(0,0),
+                      type = "All")
+  Wald_D <- Wald_test(Duncan_int, constraints = constraint_func,
+                      vcov = Duncan_int_CR2, 
+                      null_constant = rep(list(c(0,0)),3L),
+                      type = "All")
+  expect_identical(Wald_A, Wald_C)
+  expect_identical(Wald_A, Wald_D)   
 })
 
 test_that("constraint expressions are equivalent across specifications", {
@@ -193,6 +229,43 @@ test_that("Wald test is equivalent to Satterthwaite for q = 1.", {
   
   F_tests_int <- Wald_test(Duncan_int, vcov = Duncan_int_CR2, 
                            constraints = constrain_zero(constraints_int),
+                           tidy = TRUE)
+  
+  expect_equal(t_tests_int$tstat^2, F_tests_int$Fstat, tol = 10^-5)
+  expect_equal(rep(1, 9), F_tests_int$df_num, tol = 10^-5)
+  expect_equal(t_tests_int$df, F_tests_int$df_denom, tol = 10^-5)
+  expect_equal(t_tests_int$p_Satt, F_tests_int$p_val, tol = 10^-5)
+  
+})
+
+test_that("Wald test is equivalent to Satterthwaite for q = 1 and non-zero null.", {
+  
+  skip_on_cran()
+  
+  t_tests_sep <- coef_test(Duncan_sep, vcov = Duncan_sep_CR2, null_constant = 2)
+  
+  constraints_sep <- as.list(1:9)
+  names(constraints_sep) <- coef_names_sep
+  
+  F_tests_sep <- Wald_test(Duncan_sep, vcov = Duncan_sep_CR2, 
+                           constraints = constrain_zero(constraints_sep),
+                           null_constant = 2,
+                           tidy = TRUE)
+  
+  expect_equal(t_tests_sep$tstat^2, F_tests_sep$Fstat, tol = 10^-5)
+  expect_equal(rep(1, 9), F_tests_sep$df_num, tol = 10^-5)
+  expect_equal(t_tests_sep$df, F_tests_sep$df_denom, tol = 10^-5)
+  expect_equal(t_tests_sep$p_Satt, F_tests_sep$p_val, tol = 10^-5)
+  
+  null_const <- rnorm(Duncan_int$rank)
+  t_tests_int <- coef_test(Duncan_int, vcov = Duncan_int_CR2, null_constant = null_const)
+  
+  constraints_int <- as.list(1:9)
+  names(constraints_int) <- coef_names_int
+  
+  F_tests_int <- Wald_test(Duncan_int, vcov = Duncan_int_CR2, 
+                           constraints = constrain_zero(constraints_int),
+                           null_constant = as.list(null_const),
                            tidy = TRUE)
   
   expect_equal(t_tests_int$tstat^2, F_tests_int$Fstat, tol = 10^-5)
@@ -289,6 +362,45 @@ test_that("Wald_test has informative error messages.", {
   expect_equal(A, subset(B, test == "HTA"), check.attributes = FALSE)
 })
 
+test_that("Wald_test has informative error messages when null_constant are specified.", {
+  expect_error(
+    Wald_test(lm_urbanicity, 
+              constraints = constrain_zero("schoolk.+:stark", reg_ex = TRUE),
+              null_constant = "none",
+              vcov = V_urbanicity, 
+              test = "chi-sq"
+    )
+  )
+  
+  expect_error(
+    Wald_test(lm_urbanicity, 
+              constraints = constrain_zero("schoolk.+:stark", reg_ex = TRUE),
+              null_constant = 1:5,
+              vcov = V_urbanicity, 
+              test = "chi-sq"
+    )
+  )
+  
+  expect_error(
+    Wald_test(lm_urbanicity, 
+              constraints = constrain_pairwise("schoolk.+:stark", reg_ex = TRUE, with_zero = TRUE),
+              null_constant = c(0,0),
+              vcov = V_urbanicity, 
+              test = "chi-sq"
+    )
+  )
+  
+  expect_error(
+    Wald_test(lm_urbanicity, 
+              constraints = constrain_pairwise("schoolk.+:stark", reg_ex = TRUE, with_zero = TRUE),
+              null_constant = as.list(rnorm(5)),
+              vcov = V_urbanicity, 
+              test = "chi-sq",
+              tidy = TRUE
+    )
+  )
+})
+
 
 test_that("Wald_test works for intercept-only models.", {
   
@@ -302,13 +414,23 @@ test_that("Wald_test works for intercept-only models.", {
   expect_equal(F_test$df_denom, rep(t_test$df, 3L))
   expect_equal(F_test$p_val, rep(t_test$p_Satt, 3L))
   
+  F_test <- Wald_test(lm_int, constraints = constrain_zero(1), 
+                      null_constant = 500,
+                      vcov = vcov_int, test = c("HTZ","HTA","HTB"))
+  t_test <- coef_test(lm_int, vcov = vcov_int, null_constant = 500)
+  
+  expect_equal(F_test$Fstat, rep(t_test$tstat^2, 3L))
+  expect_equal(F_test$df_denom, rep(t_test$df, 3L))
+  expect_equal(F_test$p_val, rep(t_test$p_Satt, 3L))
+  
   lm_sep <- lm(math1 ~ 0 + schoolk, data = STAR)
   vcov_sep <- vcovCR(lm_sep, cluster = STAR$schoolidk, type = "CR2")
   F_test <- Wald_test(lm_sep, 
                       constraints = constrain_pairwise(1:3, with_zero = TRUE), 
+                      null_constant = 1000,
                       vcov = vcov_sep, test = "HTZ", tidy = TRUE)
   
-  t_test <- coef_test(lm_sep, vcov = vcov_sep)
+  t_test <- coef_test(lm_sep, vcov = vcov_sep, null_constant = 1000)
   
   expect_equal(F_test$Fstat[1:3], t_test$tstat^2)
   expect_equal(F_test$df_denom[1:3], t_test$df)
@@ -401,63 +523,85 @@ test_that("Wald_test fails gracefully when between-cluster variance of coefficie
 test_that("Wald_test words with multiple comparisons adjustment", {
   
   Duncan_fit <- lm(prestige ~ 0 + type + income + type:income + type:education, data=Duncan)
+    
+  Wald5 <- Wald_test(
+    Duncan_fit,
+    constraints = constrain_pairwise(":education", reg_ex = TRUE),
+    vcov = "CR2",
+    cluster = Duncan$cluster,
+    test = c("HTZ","chi-sq")
+  )
   
-Wald5 <- Wald_test(
-  Duncan_fit,
-  constraints = constrain_pairwise(":education", reg_ex = TRUE),
-  vcov = "CR2",
-  cluster = Duncan$cluster,
-  test = c("HTZ","chi-sq")
-)
+  Wald6 <- Wald_test(
+    Duncan_fit,
+    constraints = constrain_pairwise(":education", reg_ex = TRUE),
+    vcov = "CR2",
+    cluster = Duncan$cluster,
+    test = c("HTZ","chi-sq"),
+    adjustment_method = "none"
+  )
 
-Wald6 <- Wald_test(
-  Duncan_fit,
-  constraints = constrain_pairwise(":education", reg_ex = TRUE),
-  vcov = "CR2",
-  cluster = Duncan$cluster,
-  test = c("HTZ","chi-sq"),
-  adjustment_method = "none"
-)
+  # check that explicitly stating default does not affect functionality
+  lapply(Wald5, expect_s3_class, class = "Wald_test_clubSandwich")
+  lapply(Wald6, expect_s3_class, class = "Wald_test_clubSandwich")
+  expect_equal(Wald5, Wald6) 
 
-# Would like to have a more general version of s3 checking to make code more generalized
-# lapply(Wald5, "Wald_test_clubSandwich", expect_s3_class)
-# expect_s3_class(Wald5, "Wald_test_clubSandwich")
-# sapply(Wald6, "Wald_test_clubSandwich", expect_s3_class)
-# expect_s3_class(Wald6, "Wald_test_clubSandwich")
-expect_s3_class(Wald5$`typewc:education - typeprof:education`, "Wald_test_clubSandwich")
-expect_s3_class(Wald5$`typewc:education - typebc:education`, "Wald_test_clubSandwich")
-expect_s3_class(Wald5$`typeprof:education - typebc:education`, "Wald_test_clubSandwich")
-expect_s3_class(Wald6$`typewc:education - typeprof:education`, "Wald_test_clubSandwich")
-expect_s3_class(Wald6$`typewc:education - typebc:education`, "Wald_test_clubSandwich")
-expect_s3_class(Wald6$`typeprof:education - typebc:education`, "Wald_test_clubSandwich")
-expect_equal(Wald5, Wald6) # check that explicitly stating default does not affect functionality
+  # change Wald6 to have hochberg adjustment
+  Wald6 <- Wald_test(
+    Duncan_fit,
+    constraints = constrain_pairwise(":education", reg_ex = TRUE),
+    vcov = "CR2",
+    cluster = Duncan$cluster,
+    test = c("HTZ","chi-sq"),
+    adjustment_method = "hochberg"
+  )
 
-# change Wald6 to have hochberg adjustment
-Wald6 <- Wald_test(
-  Duncan_fit,
-  constraints = constrain_pairwise(":education", reg_ex = TRUE),
-  vcov = "CR2",
-  cluster = Duncan$cluster,
-  test = c("HTZ","chi-sq"),
-  adjustment_method = "hochberg"
-)
-
-Wald5_p_values <- sapply(Wald5, function(x) x$p_val) # extract p-values of Wald5
-Wald6_p_values <- sapply(Wald6, function(x) x$p_val) # extract p-values of Wald6
-
-expect_error(expect_equal(Wald5_p_values, Wald6_p_values),
-             "`Wald5_p_values` not equal to `Wald6_p_values`")
-
-# get adjusted_p_values for Wald5, formatted the same as extracted p-values from Wald6
-Wald5_adjusted_p <- Wald5_p_values
-for(i in 1:nrow(Wald5_p_values)) {
-  adj <- p.adjust(Wald5_p_values[i,], method = "hochberg")
-  j <- 1
-  for(k in seq(i, length(Wald5_p_values), nrow(Wald5_p_values))) {
-    Wald5_adjusted_p[k] = adj[j]
-    j <- j + 1
-  }
-}
-
-expect_equal(Wald5_adjusted_p, Wald6_p_values)
+  Wald5_p_values <- sapply(Wald5, function(x) x$p_val) # extract p-values of Wald5
+  Wald6_p_values <- sapply(Wald6, function(x) x$p_val) # extract p-values of Wald6
+  
+  expect_false(all(Wald5_p_values == Wald6_p_values))
+  
+  # get adjusted_p_values for Wald5, formatted the same as extracted p-values from Wald6
+  Wald5_adjusted_p <- apply(Wald5_p_values, 1, p.adjust, method = "hochberg", simplify = FALSE)
+  Wald5_adjusted_p <- do.call(rbind, Wald5_adjusted_p)
+  expect_equal(Wald5_adjusted_p, Wald6_p_values)
+  
+  # Now using tidy = TRUE
+  Wald7 <- Wald_test(
+    Duncan_fit,
+    constraints = constrain_pairwise(":education", reg_ex = TRUE),
+    vcov = "CR2",
+    cluster = Duncan$cluster,
+    test = c("HTA","EDF","EDT"),
+    tidy = TRUE
+  )
+  
+  Wald8 <- Wald_test(
+    Duncan_fit,
+    constraints = constrain_pairwise(":education", reg_ex = TRUE),
+    vcov = "CR2",
+    cluster = Duncan$cluster,
+    test = c("HTA","EDF","EDT"),
+    adjustment_method = "none",
+    tidy = TRUE
+  )
+  
+  expect_equal(Wald7,Wald8)
+  
+  Wald9 <- Wald_test(
+    Duncan_fit,
+    constraints = constrain_pairwise(":education", reg_ex = TRUE),
+    vcov = "CR2",
+    cluster = Duncan$cluster,
+    test = c("HTA","EDF","EDT"),
+    adjustment_method = "holm",
+    tidy = TRUE
+  )
+  
+  Wald8_p_adjusted <- tapply(Wald8$p_val, Wald8$test, p.adjust, method = "holm", simplify = FALSE)
+  Wald8_adjusted <- Wald8
+  Wald8_adjusted$p_val <- unsplit(Wald8_p_adjusted, Wald8$test)
+  
+  expect_equal(Wald8_adjusted, Wald9)
+  
 })
