@@ -129,6 +129,10 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
 #'   closed-form solution.
 #' @param p_values Logical indicating whether to report p-values. The default
 #'   value is \code{FALSE}.
+#' @param adjustment_method Correction method, a \code{\link{character}} string
+#'   from \code{p.adjust.methods}, which is passed to \code{\link{p.adjust}} to
+#'   correct p-values in the case of multiple comparisons. Defaults to
+#'   \code{"none"}. Any value given will be ignored if \code{p_values = FALSE}.
 #' @inheritParams coef_test
 #' 
 #' @details Constraints can be specified directly as q X p matrices or
@@ -164,6 +168,11 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
 #'                   contrasts = constrain_pairwise(":education", reg_ex = TRUE),
 #'                   test = "Satterthwaite")
 #'  
+#'   # Repeat the above, but with p-values displayed and multiple comparisons adjustment applied.
+#'   linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
+#'                   contrasts = constrain_pairwise(":education", reg_ex = TRUE),
+#'                   test = "Satterthwaite", p_values = TRUE, adjustment_method = "hochberg")
+#'  
 #'   # Pairwise comparisons of type-by-income interactions
 #'   linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
 #'                   contrasts = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
@@ -173,7 +182,7 @@ conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "Al
 #'
 #' @export
 
-linear_contrast <- function(obj, vcov, contrasts, level = .95, test = "Satterthwaite", ..., p_values = FALSE) {
+linear_contrast <- function(obj, vcov, contrasts, level = .95, test = "Satterthwaite", ..., p_values = FALSE, adjustment_method = "none") {
   
   if (level <= 0 | level >= 1) stop("Confidence level must be between 0 and 1.")
   
@@ -287,6 +296,22 @@ linear_contrast <- function(obj, vcov, contrasts, level = .95, test = "Satterthw
   class(result) <- c("conf_int_clubSandwich", class(result))
   attr(result, "type") <- attr(vcov, "type")
   attr(result, "level") <- level
+  
+  # p-value adjustment
+  if (!p_values & adjustment_method != "none") {
+    warning("p_values = FALSE, so p-value adjustment is not applied.") # warning by copilot
+  }
+  else if (p_values & !adjustment_method %in% p.adjust.methods) {
+    warning("The specified adjustment method is not available or does not exist. No p-value adjustment will be performed.")
+    adjustment_method <- "none"
+  }
+  else if (p_values & adjustment_method != "none" & length(result) == 1) {
+    warning("Only one p-value is available. No p-value adjustment will be performed.") # warning by copilot
+  }
+  else if (p_values & adjustment_method != "none") {
+    result$p_val <- p.adjust(result$p_val, method = adjustment_method)
+  }
+  
   result
 }
 
