@@ -8,9 +8,9 @@ Wald_test(
   obj,
   constraints,
   vcov,
-  null_constant = 0,
   test = "HTZ",
   tidy = FALSE,
+  adjustment_method = "none",
   ...
 )
 }
@@ -24,14 +24,6 @@ details and examples.}
 character string specifying which small-sample adjustment should be used to
 calculate the variance-covariance.}
 
-\item{null_constant}{vector of null values or list of such vectors for each
-set of constraints to test. For a single \code{constraint}, the null values
-must have length equal to the number of rows in the constraint. For lists
-of null values, each entry must have length equal to the number of rows in
-the corresponding entry of \code{constraints}. Default is \code{0}, in
-which case the null values are taken to be zero (for every entry, if
-\code{constraints} is a list).}
-
 \item{test}{Character vector specifying which small-sample correction(s) to
 calculate. The following corrections are available: \code{"chi-sq"},
 \code{"Naive-F"}, \code{"Naive-Fp"}, \code{"HTA"}, \code{"HTB"},
@@ -41,8 +33,22 @@ calculate. The following corrections are available: \code{"chi-sq"},
 \code{constraints} is a list with multiple constraints, the result will be
 coerced into a data frame when \code{tidy = TRUE}.}
 
+\item{adjustment_method}{A character string indicating a multiple comparisons
+correction to apply to p-values in instances where multiple tests are run.
+Possible options are from \code{\link[stats]{p.adjust.methods}}, which is
+passed to \code{\link[stats]{p.adjust}} to correct p-values for multiple
+comparisons. Defaults to \code{"none"}.}
+
 \item{...}{Further arguments passed to \code{\link{vcovCR}}, which are only
 needed if \code{vcov} is a character string.}
+
+\item{null_constant}{vector of null values or list of such vectors for each
+set of constraints to test. For a single \code{constraint}, the null values
+must have length equal to the number of rows in the constraint. For lists
+of null values, each entry must have length equal to the number of rows in
+the corresponding entry of \code{constraints}. Default is \code{0}, in
+which case the null values are taken to be zero (for every entry, if
+\code{constraints} is a list).}
 }
 \value{
 A list of test results.
@@ -97,6 +103,14 @@ Wald_test(Duncan_fit,
 Wald_test(Duncan_fit,
           constraints = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
           vcov = "CR2", cluster = Duncan$cluster)
+
+# Pairwise comparisons of type-by-education slopes, with two tests and multiple comparisons p-value adjustment
+Wald_test(Duncan_fit,
+          constraints = constrain_pairwise(":education", reg_ex = TRUE),
+          vcov = "CR2",
+          cluster = Duncan$cluster,
+          test = c("HTZ","chi-sq"),
+          adjustment_method = "holm")
 
 })
 

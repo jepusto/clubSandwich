@@ -263,6 +263,11 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #' @param tidy Logical value controlling whether to tidy the test results. If
 #'   \code{constraints} is a list with multiple constraints, the result will be
 #'   coerced into a data frame when \code{tidy = TRUE}.
+#' @param adjustment_method A character string indicating a multiple comparisons
+#'   correction to apply to p-values in instances where multiple tests are run.
+#'   Possible options are from \code{\link[stats]{p.adjust.methods}}, which is
+#'   passed to \code{\link[stats]{p.adjust}} to correct p-values for multiple
+#'   comparisons. Defaults to \code{"none"}.
 #' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only
 #'   needed if \code{vcov} is a character string.
 #'
@@ -315,12 +320,29 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #'           constraints = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
 #'           vcov = "CR2", cluster = Duncan$cluster)
 #'
+#' # Pairwise comparisons of type-by-education slopes, with two tests and multiple comparisons p-value adjustment
+#' Wald_test(Duncan_fit,
+#'           constraints = constrain_pairwise(":education", reg_ex = TRUE),
+#'           vcov = "CR2",
+#'           cluster = Duncan$cluster,
+#'           test = c("HTZ","chi-sq"),
+#'           adjustment_method = "holm")
+#'
 #' })
 #'
 #' @export
 
 
-Wald_test <- function(obj, constraints, vcov, null_constant = 0, test = "HTZ", tidy = FALSE, ...) {
+Wald_test <- function(
+    obj, 
+    constraints, 
+    vcov, 
+    null_constant = 0,
+    test = "HTZ", 
+    tidy = FALSE, 
+    adjustment_method = "none",
+    ...
+) {
   
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!inherits(vcov, "clubSandwich")) stop("Variance-covariance matrix must be a clubSandwich.")
@@ -422,7 +444,39 @@ Wald_test <- function(obj, constraints, vcov, null_constant = 0, test = "HTZ", t
     ) 
   }
   
-  results
+  # implement p-value adjustment
+  
+  if (! adjustment_method %in% p.adjust.methods) {
+    # following two lines written by copilot, slightly edited by me
+    warning("The specified adjustment method is not available or does not exist. No p-value adjustment will be performed.")
+    adjustment_method <- "none"
+  }
+  else if (adjustment_method != "none" & length(results) == 1) {
+    warning("Only one p-value is available. No p-value adjustment will be performed.") # warning by copilot
+  }
+  else if (adjustment_method != "none") { # skip if adjustment_method == "none"
+
+    p_values <- sapply(results, function(x) x$p_val) # extract p-values
+    
+    # adjust p_values separately for each test
+    for(i in 1:nrow(p_values)) {
+      p_values[i,] <- p.adjust(p_values[i,], adjustment_method)
+    }
+    
+    # for each element in results
+    for(c in seq_along(results)) {
+      app <- c() # initialize empty vector to apply
+      # extract appropriate p_values for respective element in results
+      for(r in 1:nrow(p_values)) {
+        app <- c(app, p_values[r, c])
+      }
+      # update current element in results
+      results[[c]]$p_val <- app
+    }
+    
+  }
+  
+  return(results)
 
 }
 
