@@ -133,7 +133,7 @@ test_that("linear_contrast multiple comparisons p-value adjustment works correct
                          p_values = FALSE)
   expect_equal(lc1, lc2)
 
-  # conf2 now shows p_values with no adjustment
+  # lc2 will now show p_values with no adjustment
   lc2 <- linear_contrast(lm_fit,
                          vcov = "CR2",
                          cluster = ChickWeight$Chick,
