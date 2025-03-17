@@ -337,6 +337,7 @@ Wald_test <- function(
     obj, 
     constraints, 
     vcov, 
+    null_constant = 0,
     test = "HTZ", 
     tidy = FALSE, 
     adjustment_method = "none",
