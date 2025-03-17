@@ -152,6 +152,11 @@ test_that("linear_contrast multiple comparisons p-value adjustment works correct
   expect_equal(lc1, lc2)
   
   # test using p-adjustment when results have a length of 1
-  # TBD, haven't figured out how to get something with only one row
-  
+  linear_contrast(lm_fit,
+                  vcov = "CR2",
+                  cluster = ChickWeight$Chick, 
+                  contrasts = matrix(c(-1,1,rep(0,6)), nrow = 1),
+                  p_values = TRUE,
+                  adjustment_method = "BF")
+
 })
