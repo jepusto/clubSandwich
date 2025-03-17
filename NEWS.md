@@ -2,6 +2,7 @@
 
 * Added option to coef_test() to specify one- or two-sided alternative hypotheses.
 * Added options to Wald_test() and coef_test() to specify non-zero values for null hypotheses.
+* Fixed a bug in methods for `geepack::geeglm()` models that occurred for models with nonlinear link functions.
 * Corrected typo in deprecation messages for `impute_covariance_matrix()` and `pattern_covariance_matrix()`.
 
 # clubSandwich 0.5.11

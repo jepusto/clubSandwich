@@ -60,7 +60,7 @@ model_matrix.geeglm <- function(obj) {
   X <- model.matrix(obj)
   eta <- obj$linear.predictors
   dmu_deta <- obj$family$mu.eta
-  d <- dmu_deta(eta)
+  d <- as.vector(dmu_deta(eta))
   d * X
 }
 
@@ -258,3 +258,4 @@ v_scale.geeglm <- function(obj) {
   } 
   as.vector(sum(summary(obj)$df[1:2])) * dispersion
 }
+

@@ -250,22 +250,29 @@ test_that("vcovCR works for clustering variables higher than id variable.", {
   
 })
 
-check_geeglm <- function(obj) {
-  
-  cr0_pack <- vcov(obj)
-  cr0_club <- as.matrix(vcovCR(obj, type = "CR0"))
-  
-  expect_equal(cr0_pack, cr0_club)
-  
-  cr3_pack <- vcov(update(obj, std.err = "jack"))
-  cr3_club <- as.matrix(vcovCR(obj, type = "CR3"))
-  
-  J <- length(unique(obj$id))
-  p <- nrow(obj$geese$infls)
-  f <- (J - p) / J
 
-  expect_equal(cr3_pack, f * cr3_club)
+check_geeglm <- function(obj, type = c("CR0","CR3")) {
+  
+  if (obj$std.err == "san.se") {
+    const <- 1
+    cr_club <- as.matrix(vcovCR(obj, type = "CR0"))
+  } else if (obj$std.err == "jack") {
+    J <- length(unique(obj$id))
+    p <- nrow(obj$geese$infls)
+    const <- (J - p) / J
+    
+    cr_club <- as.matrix(vcovCR(obj, type = "CR3"))
+  }
+  
+  cr_pack <- stats::vcov(obj)
+  
+  expect_equal(cr_pack, const * cr_club)
+  
 }
+
+geeglm_user_jack <- update(geeglm_user, std.err = "jack")
+geeglm_toep_jack <- update(geeglm_toep, std.err = "jack")
+geeglm_fix_jack <- update(geeglm_fix, std.err = "jack")
 
 test_that("vcovCR agrees with geeglm for CR0 and CR3.", {
   
@@ -279,5 +286,68 @@ test_that("vcovCR agrees with geeglm for CR0 and CR3.", {
   check_geeglm(geeglm_user)
   check_geeglm(geeglm_toep)
   check_geeglm(geeglm_fix)
+  
+  check_geeglm(update(geeglm_AR1_wav, std.err = "jack"))
+  check_geeglm(update(geeglm_AR1, std.err = "jack"))
+  check_geeglm(update(geeglm_ind, std.err = "jack"))
+  check_geeglm(update(geeglm_exch, std.err = "jack"))
+  check_geeglm(update(geeglm_exch2, std.err = "jack"))
+  check_geeglm(update(geeglm_unstr, std.err = "jack"))
+  check_geeglm(update(geeglm_unstr2, std.err = "jack"))
+  
+  check_geeglm(geeglm_user_jack)
+  check_geeglm(geeglm_toep_jack)
+  check_geeglm(geeglm_fix_jack)
+
+})
+
+test_that("vcovCR agrees with geeglm for examples from geepack documentation.", {
+
+  # Poisson with unstructured correlation
+  
+  data(seizure, package = "geepack")
+  seiz.l <- reshape(seizure,
+                    varying=list(c("base","y1", "y2", "y3", "y4")),
+                    v.names="y", times=0:4, direction="long")
+  seiz.l <- seiz.l[order(seiz.l$id, seiz.l$time),]
+  seiz.l$t <- ifelse(seiz.l$time == 0, 8, 2)
+  seiz.l$x <- ifelse(seiz.l$time == 0, 0, 1)
+  m_pois_un <- geeglm(y ~ offset(log(t)) + x + trt + x:trt, id = id,
+                      data=seiz.l, corstr="exch", family=poisson, std.err = "jack")
+  m_pois_un3 <- update(m_pois_un)
+  check_geeglm(m_pois_un)
+  check_geeglm(m_pois_un3)
+  
+  # Poisson with no correlation
+  m_pois_id <- geeglm(y ~ offset(log(t)) + x + trt + x:trt, id = id,
+                       data = seiz.l, family = poisson,
+                       corstr = "independence", std.err = "jack")
+  check_geeglm(m_pois_id)
+  
+
+  # Binomial with exchangeable correlation
+  data(ohio, package = "geepack")
+  m_bin_ex <- geeglm(resp ~ age + smoke + age:smoke, id=id, data=ohio,
+                     family=binomial, corstr="exch", scale.fix=TRUE, std.err = "jack")
+  check_geeglm(m_bin_ex)
+  
+  # Binomial with AR(1) correlation
+  m_bin_ar <- geeglm(resp ~ age + smoke + age:smoke, id=id, data=ohio,
+                     family=binomial, corstr="ar1", scale.fix=TRUE, std.err = "jack")
+  check_geeglm(m_bin_ar)
+  
+  # Binomial with unstructured correlation
+  data(respiratory, package = "geepack")
+  respiratory$center <- factor(respiratory$center)
+  respiratory$id_center <- factor(paste(respiratory$center, respiratory$id, sep = "-"))
+  
+  m_bin_un <- geeglm(outcome ~ center + treat + age + baseline,
+                     data = respiratory,
+                     id = id_center, 
+                     family = binomial(),
+                     corstr = "unstructured", std.err = "jack")
+  
+  check_geeglm(m_bin_un)
+  
 
 })
