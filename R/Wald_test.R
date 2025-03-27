@@ -455,26 +455,46 @@ Wald_test <- function(
     warning("Only one p-value is available. No p-value adjustment will be performed.") # warning by copilot
   }
   else if (adjustment_method != "none") { # skip if adjustment_method == "none"
-
-    p_values <- sapply(results, function(x) x$p_val) # extract p-values
-    
-    # adjust p_values separately for each test
-    for(i in 1:nrow(p_values)) {
-      p_values[i,] <- p.adjust(p_values[i,], adjustment_method)
+    if(tidy) {
+      # results$p_val <- unsplit(tapply(Wald8$p_val, Wald8$test, p.adjust, method = "holm", simplify = FALSE), test) # doesn't reliably work
+      results$p_val <- with(results, ave(p_val, test, FUN = function(p) p.adjust(p, method = adjustment_method))) # mostly written by GPT
     }
-    
-    # for each element in results
-    for(c in seq_along(results)) {
-      app <- c() # initialize empty vector to apply
-      # extract appropriate p_values for respective element in results
-      for(r in 1:nrow(p_values)) {
-        app <- c(app, p_values[r, c])
+    else {
+      # # extract p-values
+      # p_values <- sapply(results, function(x) x$p_val)
+      # # adjust p_values separately for each test
+      # p_values <- t(apply(p_values, MARGIN = 1, p.adjust, adjustment_method, simplify = TRUE))
+      # # Map adjusted p_values to results
+      # results <- Map(function(res, p) { res$p_val <- p; res }, results, p_values) # written by GPT
+      # # Remove duplicate results
+      # results <- results[1:(length(results)/2)]
+      
+      # Extract p-values
+      p_values <- sapply(results, function(x) x$p_val)
+      
+      p_values <- apply(p_values, MARGIN = 1, p.adjust, adjustment_method, simplify = TRUE)
+      
+      for(i in seq_along(results)) {
+        results[[i]]$p_val <- p_values[1,]
       }
-      # update current element in results
-      results[[c]]$p_val <- app
+      
+      # for (t in test) {
+        # Extract the p-values where the test matches 't' in each sublist
+        # p_vals <- sapply(results, function(res) res$p_val[ res$test == t ])
+
+        # Adjust the p-values using the specified method
+        # p_vals_adj <- p.adjust(p_vals, method = adjustment_method)
+        
+        # Map(function(res, p) {res$p_val <- p; res}, results, p_values)
+        
+        # Assign the adjusted p-values back into each sublist
+        # for (j in seq_along(results)) {
+          # results[[j]]$p_val[ results[[j]]$test == t ] <- p_vals_adj[j]
+        # }
+      # }
+      
     }
-    
-  }
+  }  
   
   return(results)
 
