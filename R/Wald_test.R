@@ -456,43 +456,20 @@ Wald_test <- function(
   }
   else if (adjustment_method != "none") { # skip if adjustment_method == "none"
     if(tidy) {
-      # results$p_val <- unsplit(tapply(Wald8$p_val, Wald8$test, p.adjust, method = "holm", simplify = FALSE), test) # doesn't reliably work
-      results$p_val <- with(results, ave(p_val, test, FUN = function(p) p.adjust(p, method = adjustment_method))) # mostly written by GPT
+      # Mostly written by ChatGPT
+      # Use with() to apply ave() to results$p_val, ave() factors by each test
+      # to perform adjustment correctly
+      results$p_val <- with(results, ave(p_val, test, FUN = function(p) p.adjust(p, method = adjustment_method)))
     }
     else {
-      # # extract p-values
-      # p_values <- sapply(results, function(x) x$p_val)
-      # # adjust p_values separately for each test
-      # p_values <- t(apply(p_values, MARGIN = 1, p.adjust, adjustment_method, simplify = TRUE))
-      # # Map adjusted p_values to results
-      # results <- Map(function(res, p) { res$p_val <- p; res }, results, p_values) # written by GPT
-      # # Remove duplicate results
-      # results <- results[1:(length(results)/2)]
-      
       # Extract p-values
       p_values <- sapply(results, function(x) x$p_val)
-      
+      # Perform p-value adjustment
       p_values <- apply(p_values, MARGIN = 1, p.adjust, adjustment_method, simplify = TRUE)
-      
+      # Apply adjusted p-values to results
       for(i in seq_along(results)) {
         results[[i]]$p_val <- p_values[1,]
       }
-      
-      # for (t in test) {
-        # Extract the p-values where the test matches 't' in each sublist
-        # p_vals <- sapply(results, function(res) res$p_val[ res$test == t ])
-
-        # Adjust the p-values using the specified method
-        # p_vals_adj <- p.adjust(p_vals, method = adjustment_method)
-        
-        # Map(function(res, p) {res$p_val <- p; res}, results, p_values)
-        
-        # Assign the adjusted p-values back into each sublist
-        # for (j in seq_along(results)) {
-          # results[[j]]$p_val[ results[[j]]$test == t ] <- p_vals_adj[j]
-        # }
-      # }
-      
     }
   }  
   
