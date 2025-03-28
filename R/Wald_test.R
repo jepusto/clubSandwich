@@ -444,14 +444,9 @@ Wald_test <- function(
     ) 
   }
   
-  # implement p-value adjustment
-  
-  if (! adjustment_method %in% p.adjust.methods) {
-    # following two lines written by copilot, slightly edited by me
-    warning("The specified adjustment method is not available or does not exist. No p-value adjustment will be performed.")
-    adjustment_method <- "none"
-  }
-  else if (adjustment_method != "none" & length(results) == 1) {
+  # p-value adjustment
+  adjustment_method <- match.arg(adjustment_method, p.adjust.methods, several.ok = FALSE)
+  if (adjustment_method != "none" & length(results) == 1) {
     warning("Only one p-value is available. No p-value adjustment will be performed.") # warning by copilot
   }
   else if (adjustment_method != "none") { # skip if adjustment_method == "none"
@@ -471,7 +466,7 @@ Wald_test <- function(
         results[[i]]$p_val <- p_values[1,]
       }
     }
-  }  
+  }
   
   return(results)
 

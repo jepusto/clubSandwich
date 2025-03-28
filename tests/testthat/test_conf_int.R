@@ -141,15 +141,17 @@ test_that("linear_contrast multiple comparisons p-value adjustment works correct
                          p_values = TRUE)
   
   # test using nonexistent adjustment type
-  expect_warning(lc1 <- linear_contrast(lm_fit,
+  # changed to expect error from match.arg
+  expect_error(lc1 <- linear_contrast(lm_fit,
                                         vcov = "CR2",
                                         cluster = ChickWeight$Chick, 
                                         contrasts = constrain_pairwise("Diet.:Time", reg_ex = TRUE),
                                         p_values = TRUE,
                                         adjustment_method = "nonexistent"),
-                 "The specified adjustment method")
+                 "\'arg\' should be one of")
+  # commented this out because of match.arg being used
   # check that the above defaults to no adjustment
-  expect_equal(lc1, lc2)
+  #expect_equal(lc1, lc2)
   
   # test using p-adjustment when results have a length of 1
   expect_warning(
@@ -158,7 +160,7 @@ test_that("linear_contrast multiple comparisons p-value adjustment works correct
                            cluster = ChickWeight$Chick, 
                            contrasts = matrix(c(-1,1,rep(0,6)), nrow = 1),
                            p_values = TRUE,
-                           adjustment_method = "BF")
+                           adjustment_method = "BY") # changed from BF
   )
 
   lc2 <- linear_contrast(lm_fit,

@@ -297,14 +297,11 @@ linear_contrast <- function(obj, vcov, contrasts, level = .95, test = "Satterthw
   attr(result, "level") <- level
   
   # p-value adjustment
+  adjustment_method <- match.arg(adjustment_method, p.adjust.methods, several.ok = FALSE)
   if (!p_values & adjustment_method != "none") {
     warning("p_values = FALSE, so p-value adjustment is not applied.") # warning by copilot
   }
-  else if (p_values & !adjustment_method %in% p.adjust.methods) {
-    warning("The specified adjustment method is not available or does not exist. No p-value adjustment will be performed.")
-    adjustment_method <- "none"
-  }
-  else if (p_values & adjustment_method != "none" & length(result) == 1) {
+  else if (p_values & adjustment_method != "none" & nrow(result) == 1) {
     warning("Only one p-value is available. No p-value adjustment will be performed.") # warning by copilot
   }
   else if (p_values & adjustment_method != "none") {
