@@ -12,7 +12,8 @@ conf_int(
   test = "Satterthwaite",
   coefs = "All",
   ...,
-  p_values = FALSE
+  p_values = FALSE,
+  adjustment_method = "none"
 )
 }
 \arguments{
@@ -43,7 +44,7 @@ estimated coefficients.}
 needed if \code{vcov} is a character string.}
 
 \item{p_values}{Logical indicating whether to report p-values. The default
-value is \code{FALSE}.}
+value is \code{TRUE}.}
 }
 \value{
 A data frame containing estimated regression coefficients, standard
