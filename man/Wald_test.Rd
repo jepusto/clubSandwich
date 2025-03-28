@@ -8,6 +8,7 @@ Wald_test(
   obj,
   constraints,
   vcov,
+  null_constant = 0,
   test = "HTZ",
   tidy = FALSE,
   adjustment_method = "none",
@@ -23,6 +24,14 @@ details and examples.}
 \item{vcov}{Variance covariance matrix estimated using \code{vcovCR} or a
 character string specifying which small-sample adjustment should be used to
 calculate the variance-covariance.}
+
+\item{null_constant}{vector of null values or list of such vectors for each
+set of constraints to test. For a single \code{constraint}, the null values
+must have length equal to the number of rows in the constraint. For lists
+of null values, each entry must have length equal to the number of rows in
+the corresponding entry of \code{constraints}. Default is \code{0}, in
+which case the null values are taken to be zero (for every entry, if
+\code{constraints} is a list).}
 
 \item{test}{Character vector specifying which small-sample correction(s) to
 calculate. The following corrections are available: \code{"chi-sq"},
@@ -41,14 +50,6 @@ comparisons. Defaults to \code{"none"}.}
 
 \item{...}{Further arguments passed to \code{\link{vcovCR}}, which are only
 needed if \code{vcov} is a character string.}
-
-\item{null_constant}{vector of null values or list of such vectors for each
-set of constraints to test. For a single \code{constraint}, the null values
-must have length equal to the number of rows in the constraint. For lists
-of null values, each entry must have length equal to the number of rows in
-the corresponding entry of \code{constraints}. Default is \code{0}, in
-which case the null values are taken to be zero (for every entry, if
-\code{constraints} is a list).}
 }
 \value{
 A list of test results.
