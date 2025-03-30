@@ -287,26 +287,27 @@ linear_contrast <- function(obj, vcov, contrasts, level = .95, test = "Satterthw
   )
   row.names(result) <- result$Coef
   
+  # p-value adjustment method
+  adjustment_method <- match.arg(adjustment_method, p.adjust.methods, several.ok = FALSE)
+  
   if (p_values) {
     t_stat <- result$Est / result$SE
     result$p_val <- 2 * pt(abs(t_stat), df = result$df, lower.tail = FALSE)
+    
+    # p-value adjustment
+    if (adjustment_method != "none" & nrow(result) == 1) {
+      warning("Only one p-value is available. No p-value adjustment will be performed.") # warning by copilot
+    } else if (adjustment_method != "none") {
+      result$p_val <- p.adjust(result$p_val, method = adjustment_method)
+    }
+    
+  } else if (adjustment_method != "none") {
+    warning("p_values = FALSE, so p-value adjustment is not applied.") # warning by copilot
   }
   
   class(result) <- c("conf_int_clubSandwich", class(result))
   attr(result, "type") <- attr(vcov, "type")
   attr(result, "level") <- level
-  
-  # p-value adjustment
-  adjustment_method <- match.arg(adjustment_method, p.adjust.methods, several.ok = FALSE)
-  if (!p_values & adjustment_method != "none") {
-    warning("p_values = FALSE, so p-value adjustment is not applied.") # warning by copilot
-  }
-  else if (p_values & adjustment_method != "none" & nrow(result) == 1) {
-    warning("Only one p-value is available. No p-value adjustment will be performed.") # warning by copilot
-  }
-  else if (p_values & adjustment_method != "none") {
-    result$p_val <- p.adjust(result$p_val, method = adjustment_method)
-  }
   
   result
 }

@@ -446,25 +446,28 @@ Wald_test <- function(
   }
   
   # p-value adjustment
+  
   adjustment_method <- match.arg(adjustment_method, p.adjust.methods, several.ok = FALSE)
+  
   if (adjustment_method != "none" & length(results) == 1) {
-    warning("Only one p-value is available. No p-value adjustment will be performed.") # warning by copilot
-  }
-  else if (adjustment_method != "none") { # skip if adjustment_method == "none"
-    if(tidy) {
-      # Mostly written by ChatGPT
-      # Use with() to apply ave() to results$p_val, ave() factors by each test
-      # to perform adjustment correctly
+    warning("Only one p-value is available. No p-value adjustment will be performed.")
+  } else if (adjustment_method != "none") { # skip if adjustment_method == "none"
+    if (tidy) {
       results$p_val <- with(results, ave(p_val, test, FUN = function(p) p.adjust(p, method = adjustment_method)))
-    }
-    else {
+    } else {
+      
       # Extract p-values
-      p_values <- sapply(results, function(x) x$p_val)
+      p_values <- 
+        lapply(results, function(x) x$p_val) |>
+        unlist() |>
+        matrix(ncol = length(results))
+      
       # Perform p-value adjustment
       p_values <- apply(p_values, MARGIN = 1, p.adjust, adjustment_method, simplify = TRUE)
+      
       # Apply adjusted p-values to results
-      for(i in seq_along(results)) {
-        results[[i]]$p_val <- p_values[1,]
+      for (i in seq_along(results)) {
+        results[[i]]$p_val <- p_values[i,]
       }
     }
   }
