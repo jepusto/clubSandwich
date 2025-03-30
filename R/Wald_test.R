@@ -418,6 +418,32 @@ Wald_test <- function(
       class(results) <- c("Wald_test_clubSandwich",class(results))
     }
     
+    # p-value adjustment
+    
+    adjustment_method <- match.arg(adjustment_method, p.adjust.methods, several.ok = FALSE)
+    
+    if (adjustment_method != "none" & length(results) == 1) {
+      warning("Only one p-value is available. No p-value adjustment will be performed.")
+    } else if (adjustment_method != "none") { # skip if adjustment_method == "none"
+      if (tidy) {
+        results$p_val <- with(results, ave(p_val, test, FUN = function(p) p.adjust(p, method = adjustment_method)))
+      } else {
+        # Extract p-values
+        p_values <- 
+          lapply(results, function(x) x$p_val) |>
+          unlist() |>
+          matrix(ncol = length(results))
+        
+        # Perform p-value adjustment
+        p_values <- apply(p_values, MARGIN = 1, p.adjust, adjustment_method, simplify = TRUE)
+        
+        # Apply adjusted p-values to results
+        for (i in seq_along(results)) {
+          results[[i]]$p_val <- p_values[i,]
+        }
+      }
+    }
+    
   } else {
     
     
@@ -443,33 +469,6 @@ Wald_test <- function(
       C_mat = constraints, null_constant = null_constant, 
       beta = beta, vcov = vcov, test = test, p = p, GH = GH
     ) 
-  }
-  
-  # p-value adjustment
-  
-  adjustment_method <- match.arg(adjustment_method, p.adjust.methods, several.ok = FALSE)
-  
-  if (adjustment_method != "none" & length(results) == 1) {
-    warning("Only one p-value is available. No p-value adjustment will be performed.")
-  } else if (adjustment_method != "none") { # skip if adjustment_method == "none"
-    if (tidy) {
-      results$p_val <- with(results, ave(p_val, test, FUN = function(p) p.adjust(p, method = adjustment_method)))
-    } else {
-      
-      # Extract p-values
-      p_values <- 
-        lapply(results, function(x) x$p_val) |>
-        unlist() |>
-        matrix(ncol = length(results))
-      
-      # Perform p-value adjustment
-      p_values <- apply(p_values, MARGIN = 1, p.adjust, adjustment_method, simplify = TRUE)
-      
-      # Apply adjusted p-values to results
-      for (i in seq_along(results)) {
-        results[[i]]$p_val <- p_values[i,]
-      }
-    }
   }
   
   return(results)
