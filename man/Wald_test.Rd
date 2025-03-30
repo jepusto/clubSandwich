@@ -105,7 +105,8 @@ Wald_test(Duncan_fit,
           constraints = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
           vcov = "CR2", cluster = Duncan$cluster)
 
-# Pairwise comparisons of type-by-education slopes, with two tests and multiple comparisons p-value adjustment
+# Pairwise comparisons of type-by-education slopes, with two tests and 
+# multiple comparisons p-value adjustment
 Wald_test(Duncan_fit,
           constraints = constrain_pairwise(":education", reg_ex = TRUE),
           vcov = "CR2",

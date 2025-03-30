@@ -43,7 +43,7 @@
 #'
 #' @export
 
-conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "All", ..., p_values = FALSE, adjustment_method = "none") {
+conf_int <- function(obj, vcov, level = .95, test = "Satterthwaite", coefs = "All", ..., p_values = FALSE) {
   
   if (level <= 0 | level >= 1) stop("Confidence level must be between 0 and 1.")
   

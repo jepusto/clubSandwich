@@ -12,8 +12,7 @@ conf_int(
   test = "Satterthwaite",
   coefs = "All",
   ...,
-  p_values = FALSE,
-  adjustment_method = "none"
+  p_values = FALSE
 )
 }
 \arguments{
