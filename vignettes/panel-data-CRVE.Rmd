@@ -196,9 +196,9 @@ The low degrees of freedom of the test indicate that we're definitely in small-s
 
 ## References
 
-Angrist, J. D., & Pischke, J. S. (2009). _Mostly harmless econometrics: An empiricist’s companion_. Princeton, NJ: Princeton University Press.
+Angrist, J. D., & Pischke, J. S. (2009). _Mostly Harmless Econometrics: An Empiricist’s Companion_. Princeton, NJ: Princeton University Press.
 
-Angrist, J. D., & Pischke, J. S. (2014). _Mastering'metrics: the path from cause to effect_. Princeton, NJ: Princeton University Press.
+Angrist, J. D., & Pischke, J. S. (2014). _Mastering 'Metrics: The Path from Cause to Effect_. Princeton, NJ: Princeton University Press.
 
 Arellano, M. (1993). On the testing of correlated effects with panel data. Journal of Econometrics, 59(1-2), 87-97. doi: [10.1016/0304-4076(93)90040-C](https://doi.org/10.1016/0304-4076(93)90040-C) 
 
