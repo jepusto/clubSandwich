@@ -385,7 +385,7 @@ Wald_test <- function(
       if (length(null_constant) > 1L) {
         null_constant <- rep(list(null_constant), length(constraints))
       } else {
-        null_constant <- lapply(q_constraints, \(x) rep(null_constant, x))
+        null_constant <- lapply(q_constraints, function(x) rep(null_constant, x))
       }
     } else {
       stop(null_consts_error_txt)
