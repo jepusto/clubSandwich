@@ -4,7 +4,8 @@ Title: Cluster-Robust (Sandwich) Variance Estimators with Small-Sample
 Version: 0.6.0
 Authors@R: c(
   person(c("James","E."), "Pustejovsky", email = "jepusto@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-0591-9465")),
-  person("Samuel", "Pekofsky", email = "sampekofsky@gmail.com", role = "ctb")
+  person("Samuel", "Pekofsky", email = "sampekofsky@gmail.com", role = "ctb"),
+  person("Jingru", "Zhang", email = "jzhang2637@wisc.edu", role = "ctb")
   )
 Description: Provides several cluster-robust variance estimators (i.e.,
     sandwich estimators) for ordinary and weighted least squares linear regression
