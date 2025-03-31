@@ -15,11 +15,18 @@ Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey 
 
 ## R CMD check results
 
-There were no ERRORs, WARNINGs, or NOTEs. 
+There were no ERRORs or WARNINGs. There was one NOTE:
+
+New maintainer:
+  James E. Pustejovsky <jepusto@gmail.com>
+Old maintainer(s):
+  James Pustejovsky <jepusto@gmail.com>
+  
+    This is correct. I would like to add my middle initial to the listing of my name.
 
 ## recheck results
 
-We checked 15 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+We checked 18 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
 
  * We saw 0 new problems
  * We failed to check 0 packages
