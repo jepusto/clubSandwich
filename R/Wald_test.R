@@ -429,10 +429,8 @@ Wald_test <- function(
         results$p_val <- with(results, ave(p_val, test, FUN = function(p) p.adjust(p, method = adjustment_method)))
       } else {
         # Extract p-values
-        p_values <- 
-          lapply(results, function(x) x$p_val) |>
-          unlist() |>
-          matrix(ncol = length(results))
+        p_values <- lapply(results, function(x) x$p_val)
+        p_values <- matrix(unlist(p_values), ncol = length(results))
         
         # Perform p-value adjustment
         p_values <- apply(p_values, MARGIN = 1, p.adjust, adjustment_method, simplify = TRUE)

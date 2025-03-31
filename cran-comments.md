@@ -1,12 +1,12 @@
 ## Resubmission
 
-This is a re-submission. This version is a maintenance release. The main change is to deprecate two helper functions that have been made obsolete by updates to other packages. We have also corrected formatting issues in the .Rd files that were noted in CRAN checks of the previous release.
+This release provides enhanced options for hypothesis testing within the existing functions Wald_test(), coef_test(), and linear_contrast().
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
 ## Test environments
 
-* local Windows 11 Pro, R 4.3.3
+* local Windows 11 Pro, R 4.4.3
 * ubuntu 20.04.3 LTS (on Github), R devel, release, oldrelease
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release

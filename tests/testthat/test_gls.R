@@ -89,15 +89,15 @@ test_that("get_data works.", {
   scramble_dat <- get_data(gls_scramble)
   expect_equal(egg_scramble, scramble_dat)
   
-  cars_30 <- rownames(mtcars |> subset(mpg < 30))
-  m1 <- gls(mpg ~ hp, data = mtcars |> subset(mpg < 30))
+  cars_30 <- rownames(subset(mtcars , mpg < 30))
+  m1 <- gls(mpg ~ hp, data = subset(mtcars , mpg < 30))
   vcr1 <- vcovCR(m1, cluster = cars_30, type = "CR0")
   
-  dat30 <- mtcars |> subset(mpg < 30)
+  dat30 <- subset(mtcars , mpg < 30)
   m2 <- gls(mpg ~ hp, data = dat30)
   vcr2 <- vcovCR(m2, cluster = cars_30, type = "CR0")
   
-  m3 <- gls(mpg ~ hp, data = mtcars |> subset(mpg < 30))
+  m3 <- gls(mpg ~ hp, data = subset(mtcars , mpg < 30))
   m3$data <- dat30
   vcr3 <- vcovCR(m3, cluster = cars_30, type = "CR0")
   
