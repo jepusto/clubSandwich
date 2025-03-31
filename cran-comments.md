@@ -24,6 +24,7 @@ Old maintainer(s):
   
     This is correct. I would like to add my middle initial to the listing of my name.
 
+
 ## recheck results
 
 We checked 18 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
