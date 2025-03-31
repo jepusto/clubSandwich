@@ -12,7 +12,8 @@ linear_contrast(
   level = 0.95,
   test = "Satterthwaite",
   ...,
-  p_values = FALSE
+  p_values = FALSE,
+  adjustment_method = "none"
 )
 }
 \arguments{
@@ -43,6 +44,11 @@ needed if \code{vcov} is a character string.}
 
 \item{p_values}{Logical indicating whether to report p-values. The default
 value is \code{FALSE}.}
+
+\item{adjustment_method}{Correction method, a \code{\link{character}} string
+from \code{p.adjust.methods}, which is passed to \code{\link{p.adjust}} to
+correct p-values in the case of multiple comparisons. Defaults to
+\code{"none"}. Any value given will be ignored if \code{p_values = FALSE}.}
 }
 \value{
 A data frame containing estimated contrasts, standard
@@ -83,6 +89,11 @@ if (requireNamespace("carData", quietly = TRUE)) withAutoprint({
   linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
                   contrasts = constrain_pairwise(":education", reg_ex = TRUE),
                   test = "Satterthwaite")
+ 
+  # Repeat the above, but with p-values displayed and multiple comparisons adjustment applied.
+  linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,
+                  contrasts = constrain_pairwise(":education", reg_ex = TRUE),
+                  test = "Satterthwaite", p_values = TRUE, adjustment_method = "hochberg")
  
   # Pairwise comparisons of type-by-income interactions
   linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster,

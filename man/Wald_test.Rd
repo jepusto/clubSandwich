@@ -11,6 +11,7 @@ Wald_test(
   null_constant = 0,
   test = "HTZ",
   tidy = FALSE,
+  adjustment_method = "none",
   ...
 )
 }
@@ -40,6 +41,12 @@ calculate. The following corrections are available: \code{"chi-sq"},
 \item{tidy}{Logical value controlling whether to tidy the test results. If
 \code{constraints} is a list with multiple constraints, the result will be
 coerced into a data frame when \code{tidy = TRUE}.}
+
+\item{adjustment_method}{A character string indicating a multiple comparisons
+correction to apply to p-values in instances where multiple tests are run.
+Possible options are from \code{\link[stats]{p.adjust.methods}}, which is
+passed to \code{\link[stats]{p.adjust}} to correct p-values for multiple
+comparisons. Defaults to \code{"none"}.}
 
 \item{...}{Further arguments passed to \code{\link{vcovCR}}, which are only
 needed if \code{vcov} is a character string.}
@@ -97,6 +104,15 @@ Wald_test(Duncan_fit,
 Wald_test(Duncan_fit,
           constraints = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
           vcov = "CR2", cluster = Duncan$cluster)
+
+# Pairwise comparisons of type-by-education slopes, with two tests and 
+# multiple comparisons p-value adjustment
+Wald_test(Duncan_fit,
+          constraints = constrain_pairwise(":education", reg_ex = TRUE),
+          vcov = "CR2",
+          cluster = Duncan$cluster,
+          test = c("HTZ","chi-sq"),
+          adjustment_method = "holm")
 
 })
 

@@ -263,6 +263,11 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #' @param tidy Logical value controlling whether to tidy the test results. If
 #'   \code{constraints} is a list with multiple constraints, the result will be
 #'   coerced into a data frame when \code{tidy = TRUE}.
+#' @param adjustment_method A character string indicating a multiple comparisons
+#'   correction to apply to p-values in instances where multiple tests are run.
+#'   Possible options are from \code{\link[stats]{p.adjust.methods}}, which is
+#'   passed to \code{\link[stats]{p.adjust}} to correct p-values for multiple
+#'   comparisons. Defaults to \code{"none"}.
 #' @param ... Further arguments passed to \code{\link{vcovCR}}, which are only
 #'   needed if \code{vcov} is a character string.
 #'
@@ -315,12 +320,30 @@ constrain_pairwise <- function(constraints, coefs, reg_ex = FALSE, with_zero = F
 #'           constraints = constrain_pairwise(":income", reg_ex = TRUE, with_zero = TRUE),
 #'           vcov = "CR2", cluster = Duncan$cluster)
 #'
+#' # Pairwise comparisons of type-by-education slopes, with two tests and 
+#' # multiple comparisons p-value adjustment
+#' Wald_test(Duncan_fit,
+#'           constraints = constrain_pairwise(":education", reg_ex = TRUE),
+#'           vcov = "CR2",
+#'           cluster = Duncan$cluster,
+#'           test = c("HTZ","chi-sq"),
+#'           adjustment_method = "holm")
+#'
 #' })
 #'
 #' @export
 
 
-Wald_test <- function(obj, constraints, vcov, null_constant = 0, test = "HTZ", tidy = FALSE, ...) {
+Wald_test <- function(
+    obj, 
+    constraints, 
+    vcov, 
+    null_constant = 0,
+    test = "HTZ", 
+    tidy = FALSE, 
+    adjustment_method = "none",
+    ...
+) {
   
   if (is.character(vcov)) vcov <- vcovCR(obj, type = vcov, ...)
   if (!inherits(vcov, "clubSandwich")) stop("Variance-covariance matrix must be a clubSandwich.")
@@ -395,6 +418,32 @@ Wald_test <- function(obj, constraints, vcov, null_constant = 0, test = "HTZ", t
       class(results) <- c("Wald_test_clubSandwich",class(results))
     }
     
+    # p-value adjustment
+    
+    adjustment_method <- match.arg(adjustment_method, p.adjust.methods, several.ok = FALSE)
+    
+    if (adjustment_method != "none" & length(results) == 1) {
+      warning("Only one p-value is available. No p-value adjustment will be performed.")
+    } else if (adjustment_method != "none") { # skip if adjustment_method == "none"
+      if (tidy) {
+        results$p_val <- with(results, ave(p_val, test, FUN = function(p) p.adjust(p, method = adjustment_method)))
+      } else {
+        # Extract p-values
+        p_values <- 
+          lapply(results, function(x) x$p_val) |>
+          unlist() |>
+          matrix(ncol = length(results))
+        
+        # Perform p-value adjustment
+        p_values <- apply(p_values, MARGIN = 1, p.adjust, adjustment_method, simplify = TRUE)
+        
+        # Apply adjusted p-values to results
+        for (i in seq_along(results)) {
+          results[[i]]$p_val <- p_values[i,]
+        }
+      }
+    }
+    
   } else {
     
     
@@ -422,7 +471,7 @@ Wald_test <- function(obj, constraints, vcov, null_constant = 0, test = "HTZ", t
     ) 
   }
   
-  results
+  return(results)
 
 }
 

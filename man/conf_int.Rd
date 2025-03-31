@@ -43,7 +43,7 @@ estimated coefficients.}
 needed if \code{vcov} is a character string.}
 
 \item{p_values}{Logical indicating whether to report p-values. The default
-value is \code{FALSE}.}
+value is \code{TRUE}.}
 }
 \value{
 A data frame containing estimated regression coefficients, standard
