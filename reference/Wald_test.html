@@ -61,6 +61,7 @@ Several different small-sample corrections are available.</p>
 <span>  null_constant <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  test <span class="op">=</span> <span class="st">"HTZ"</span>,</span>
 <span>  tidy <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  adjustment_method <span class="op">=</span> <span class="st">"none"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -105,6 +106,14 @@ calculate. The following corrections are available: <code>"chi-sq"</code>,
 <dd><p>Logical value controlling whether to tidy the test results. If
 <code>constraints</code> is a list with multiple constraints, the result will be
 coerced into a data frame when <code>tidy = TRUE</code>.</p></dd>
+
+
+<dt id="arg-adjustment-method">adjustment_method<a class="anchor" aria-label="anchor" href="#arg-adjustment-method"></a></dt>
+<dd><p>A character string indicating a multiple comparisons
+correction to apply to p-values in instances where multiple tests are run.
+Possible options are from <code><a href="https://rdrr.io/r/stats/p.adjust.html" class="external-link">p.adjust.methods</a></code>, which is
+passed to <code><a href="https://rdrr.io/r/stats/p.adjust.html" class="external-link">p.adjust</a></code> to correct p-values for multiple
+comparisons. Defaults to <code>"none"</code>.</p></dd>
 
 
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
@@ -169,6 +178,15 @@ needed if <code>vcov</code> is a character string.</p></dd>
 <span class="r-in"><span>          constraints <span class="op">=</span> <span class="fu"><a href="constraint_matrices.html">constrain_pairwise</a></span><span class="op">(</span><span class="st">":income"</span>, reg_ex <span class="op">=</span> <span class="cn">TRUE</span>, with_zero <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>          vcov <span class="op">=</span> <span class="st">"CR2"</span>, cluster <span class="op">=</span> <span class="va">Duncan</span><span class="op">$</span><span class="va">cluster</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Pairwise comparisons of type-by-education slopes, with two tests and </span></span></span>
+<span class="r-in"><span><span class="co"># multiple comparisons p-value adjustment</span></span></span>
+<span class="r-in"><span><span class="fu">Wald_test</span><span class="op">(</span><span class="va">Duncan_fit</span>,</span></span>
+<span class="r-in"><span>          constraints <span class="op">=</span> <span class="fu"><a href="constraint_matrices.html">constrain_pairwise</a></span><span class="op">(</span><span class="st">":education"</span>, reg_ex <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>          vcov <span class="op">=</span> <span class="st">"CR2"</span>,</span></span>
+<span class="r-in"><span>          cluster <span class="op">=</span> <span class="va">Duncan</span><span class="op">$</span><span class="va">cluster</span>,</span></span>
+<span class="r-in"><span>          test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"HTZ"</span>,<span class="st">"chi-sq"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>          adjustment_method <span class="op">=</span> <span class="st">"holm"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; data(Duncan, package = "carData")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Duncan$cluster &lt;- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)</span>
@@ -213,6 +231,23 @@ needed if <code>vcov</code> is a character string.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $`typewc:income - typeprof:income`</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  test    Fstat df_num df_denom p_val sig</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   HTZ 0.000588      1     2.41 0.983    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; Wald_test(Duncan_fit, constraints = constrain_pairwise(":education", reg_ex = TRUE), </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     vcov = "CR2", cluster = Duncan$cluster, test = c("HTZ", "chi-sq"), adjustment_method = "holm")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`typeprof:education - typebc:education`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    test   Fstat df_num df_denom p_val sig</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  chi-sq 0.00289      1      Inf     1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     HTZ 0.00289      1      4.3     1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`typewc:education - typebc:education`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    test Fstat df_num df_denom p_val sig</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  chi-sq 0.136      1      Inf     1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     HTZ 0.136      1      4.2     1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $`typewc:education - typeprof:education`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    test  Fstat df_num df_denom p_val sig</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  chi-sq 0.0918      1      Inf     1    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     HTZ 0.0918      1     2.63     1    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
