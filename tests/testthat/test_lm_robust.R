@@ -5,7 +5,7 @@ skip_if_not_installed("estimatr")
 
 library(estimatr)
 
-data(mtcars)
+# data(mtcars)
 
 data("ChickWeight", package = "datasets")
 lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
@@ -16,7 +16,7 @@ lm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
 # needs model_matrix to work???
 test_that("vcovCR works", {
   vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, "CR2")
-  vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, "CR2") # doesn't work
+  vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, "CR2", ChickWeight) # doesn't work
   
   expect_equal(vcov_lm, vcov_lmr) # doesn't work
 })
@@ -28,6 +28,15 @@ test_that("model_matrix() works", {
   mm_rob <- model_matrix(lm_rob) # works as of recently
   
   expect_equal(mm_fit, mm_rob) # works as of recently
+})
+
+# =============== residuals() ===============
+
+test_that("residuals() works", {
+  res_fit <- residuals(lm_fit)
+  res_rob <- residuals(lm_rob, data = ChickWeight)
+  
+  expect_equal(res_fit, res_rob) # doesn't work
 })
 
 # =============== residuals_CS() ===============
