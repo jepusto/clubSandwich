@@ -56,3 +56,27 @@ residuals.lm_robust <- function(obj, ...) {
   # data[[col]] - obj$fitted.values
   model.frame(obj)[[obj$outcome]] - obj$fitted.values # from github discussion
 }
+
+
+#' @export
+bread.lm_robust <- function(obj, ...) {
+  
+  N <- nobs(obj)
+  
+  X <- model_matrix(obj)
+  
+  w <- model.frame(obj)$weight
+  
+  XtWX <- crossprod(X, w * X)
+  
+  # p <- obj$rank
+  # p1 <- 1L:p
+  # R <- chol2inv(obj$qr[p1, p1, drop = FALSE])
+  # return(N * R)
+  
+  return(N * solve(XtWX))
+}
+
+
+
+

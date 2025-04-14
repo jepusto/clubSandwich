@@ -11,11 +11,20 @@ data("ChickWeight", package = "datasets")
 lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
 lm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
 
+# =============== sandwich::bread ===============
+
+test_that("sandwhich::bread works", {
+  bread_lm <- bread(lm_fit)
+  bread_rob <- bread(lm_rob)
+  
+  expect_equal(bread_lm, bread_rob) # 16/64 mismatches
+})
+
 # =============== vcovCR ===============
 
 test_that("vcovCR works", {
   vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, "CR2")
-  vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, "CR2") # workS
+  vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, "CR2") # works
   
   # expect_equal(vcov_lm, vcov_lmr) # should these even be equal? They are not.
   # check that vcov_lm and vcov_lmr have an identical structure, but not necessarily equal
