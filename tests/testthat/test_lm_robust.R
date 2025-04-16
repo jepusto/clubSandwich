@@ -9,11 +9,18 @@ library(estimatr)
 
 data("ChickWeight", package = "datasets")
 ChickWeight$wt <- 1 + rpois(nrow(ChickWeight), 3)
+ChickWeight$Chick <- factor(ChickWeight$Chick, ordered = FALSE)
 
 lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
-lm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
+lm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
+                    clusters = Chick)
+                    # clusters = factor(ChickWeight$Chick, ordered = FALSE))
+
 wlm_fit <- lm(weight ~ 0 + Diet + Time:Diet, weights = wt, data = ChickWeight)
-wlm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, data = ChickWeight)
+wlm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
+                     data = ChickWeight, 
+                     clusters = Chick)
+                     # clusters = factor(ChickWeight$Chick, ordered = FALSE))
 
 # add other lm_robust options as test cases
 
@@ -244,103 +251,55 @@ test_that("v_scale() works", {
 # =============== vcovCR ===============
 
 # add helper function + apply or revert to for loop
-# test for cluster pulling from lm_robust
 
 test_that("vcovCR works", {
   
+  types <- c("CR0", "CR1", "CR1p", "CR1S", "CR2", "CR3")
+  
   # unweighted tests
   
-  vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, "CR0")
-  vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, "CR0")
-  # class(lm_rob$vcov) <- c("vcovCR","clubSandwich") # is this appropriate?
-  
-  expect_equal(vcov_lm, vcov_lmr)
-  expect_equal(lm_rob$vcov, vcov_lmr)
-  
-  vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, "CR1")
-  vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, "CR1")
+  for(type in types) {
+    vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, type)
+    vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, type)
 
-  expect_equal(vcov_lm, vcov_lmr)
-  expect_equal(lm_rob$vcov, vcov_lmr)
-  
-  vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, "CR1p")
-  vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, "CR1p")
-  
-  expect_equal(vcov_lm, vcov_lmr)
-  expect_equal(lm_rob$vcov, vcov_lmr)
-  
-  vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, "CR1S")
-  vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, "CR1S")
-  
-  expect_equal(vcov_lm, vcov_lmr)
-  expect_equal(lm_rob$vcov, vcov_lmr)
-  
-  vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, "CR2")
-  vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, "CR2")
-  
-  expect_equal(vcov_lm, vcov_lmr)
-  expect_equal(lm_rob$vcov, vcov_lmr)
-  
-  vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, "CR3")
-  vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, "CR3")
-  
-  expect_equal(vcov_lm, vcov_lmr)
-  expect_equal(lm_rob$vcov, vcov_lmr)
-  
-  # types <- c("CR0", "CR1", "CR1p", "CR1S", "CR2", "CR3")
-  # 
-  # for(type in types) {
-  #   vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, type)
-  #   vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, type)
-  #   
-  #   expect_equal(vcov_lm, vcov_lmr)
-  #   expect_equal(lm_rob$vcov, vcov_lmr)
-  # }
+    expect_equal(vcov_lm, vcov_lmr)
+    if(type == "CR2") {
+      class(lm_rob$vcov) <- c("vcovCR", "clubSandwich") # coerce to same class
+      expect_equal(lm_rob$vcov, vcov_lm)
+      expect_equal(lm_rob$vcov, vcov_lmr)
+    }
+  }
   
   # weighted tests
 
-  vcov_wlm <- vcovCR(wlm_fit, ChickWeight$Chick, "CR0")
-  vcov_wlmr <- vcovCR(wlm_rob, ChickWeight$Chick, "CR0")
+  for(type in types) {
+    vcov_wlm <- vcovCR(wlm_fit, ChickWeight$Chick, type)
+    vcov_wlmr <- vcovCR(wlm_rob, ChickWeight$Chick, type)
 
-  expect_equal(vcov_wlm, vcov_wlmr)
-  expect_equal(wlm_rob$vcov, vcov_wlmr)
+    expect_equal(vcov_wlm, vcov_wlmr)
+    if(type == "CR2") {
+      class(wlm_rob$vcov) <- c("vcovCR", "clubSandwich") # coerce to same class
+      expect_equal(wlm_rob$vcov, vcov_wlm)
+      expect_equal(wlm_rob$vcov, vcov_wlmr)
+    }
+  }
+  
+})
 
-  vcov_wlm <- vcovCR(wlm_fit, ChickWeight$Chick, "CR1")
-  vcov_wlmr <- vcovCR(wlm_rob, ChickWeight$Chick, "CR1")
+test_that("vovCR properly pulls cluster specified for lm_robust", {
   
-  expect_equal(vcov_wlm, vcov_wlmr)
-  expect_equal(wlm_rob$vcov, vcov_wlmr)
+  # unweighted tests
   
-  vcov_wlm <- vcovCR(wlm_fit, ChickWeight$Chick, "CR1p")
-  vcov_wlmr <- vcovCR(wlm_rob, ChickWeight$Chick, "CR1p")
+  uw_clust <- vcovCR(lm_rob, ChickWeight$Chick, "CR2")
+  uw_no_clust <- vcovCR(lm_rob, type = "CR2")
   
-  expect_equal(vcov_wlm, vcov_wlmr)
-  expect_equal(wlm_rob$vcov, vcov_wlmr)
+  expect_equal(uw_clust, uw_no_clust)
   
-  vcov_wlm <- vcovCR(wlm_fit, ChickWeight$Chick, "CR1S")
-  vcov_wlmr <- vcovCR(wlm_rob, ChickWeight$Chick, "CR1S")
+  # weighted tests
   
-  expect_equal(vcov_wlm, vcov_wlmr)
-  expect_equal(wlm_rob$vcov, vcov_wlmr)
+  w_clust <- vcovCR(wlm_rob, ChickWeight$Chick, "CR2")
+  w_no_clust <- vcovCR(wlm_rob, type = "CR2")
   
-  vcov_wlm <- vcovCR(wlm_fit, ChickWeight$Chick, "CR2")
-  vcov_wlmr <- vcovCR(wlm_rob, ChickWeight$Chick, "CR2")
-  
-  expect_equal(vcov_wlm, vcov_wlmr)
-  expect_equal(wlm_rob$vcov, vcov_wlmr)
-  
-  vcov_wlm <- vcovCR(wlm_fit, ChickWeight$Chick, "CR3")
-  vcov_wlmr <- vcovCR(wlm_rob, ChickWeight$Chick, "CR3")
-  
-  expect_equal(vcov_wlm, vcov_wlmr)
-  expect_equal(wlm_rob$vcov, vcov_wlmr)
-  
-  # for(type in types) {
-  #   vcov_wlm <- vcovCR(wlm_fit, ChickWeight$Chick, type)
-  #   vcov_wlmr <- vcovCR(wlm_rob, ChickWeight$Chick, type)
-  #   
-  #   expect_equal(vcov_wlm, vcov_wlmr)
-  #   expect_equal(wlm_rob$vcov, vcov_wlmr)
-  # }
+  expect_equal(w_clust, w_no_clust)
   
 })
