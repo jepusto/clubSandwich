@@ -15,9 +15,7 @@ lm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
 wlm_fit <- lm(weight ~ 0 + Diet + Time:Diet, weights = wt, data = ChickWeight)
 wlm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, data = ChickWeight)
 
-# add these as test cases ^
-# add different types as test cases, eg "CR0", "CR1S" = "stata"
-# add other options as test cases
+# add other lm_robust options as test cases
 
 # =============== sandwich::bread ===============
 
@@ -30,12 +28,60 @@ test_that("sandwhich::bread works", {
   
   expect_equal(bread_lm, bread_rob)
   
+  # weighted tests
+  
   bread_wlm <- bread(wlm_fit)
   bread_wrob <- bread(wlm_rob)
   
   expect_equal(bread_wlm, bread_wrob)
+  
 })
 
+# =============== model.frame() ===============
+
+test_that("model.frame() works", {
+  
+  # NOTE: These tests are identical from those for model_matrix(), except, they
+  # use model.frame()
+  
+  # unweighted tests
+  
+  mm_fit <- model.frame(lm_fit) 
+  mm_rob <- model.frame(lm_rob)
+  
+  expect_equal(mm_fit, mm_rob)
+  
+  # weighted tests
+  
+  mm_wlm <- model.frame(wlm_fit)
+  mm_wrob <- model.frame(wlm_rob)
+  
+  expect_equal(mm_wlm, mm_wrob)
+  
+})
+
+# =============== model.matrix() ===============
+
+test_that("model.matrix() works", {
+  
+  # NOTE: These tests are identical from those for model_matrix(), except, they
+  # use model.matrix()
+  
+  # unweighted tests
+  
+  mm_fit <- model.matrix(lm_fit) 
+  mm_rob <- model.matrix(lm_rob)
+  
+  expect_equal(mm_fit, mm_rob)
+  
+  # weighted tests
+  
+  mm_wlm <- model.matrix(wlm_fit)
+  mm_wrob <- model.matrix(wlm_rob)
+  
+  expect_equal(mm_wlm, mm_wrob)
+  
+})
 
 # =============== model_matrix() ===============
 
@@ -50,7 +96,7 @@ test_that("model_matrix() works", {
   
   # weighted tests
   
-  mm_wlm <- model_matrix(wlm_fit) 
+  mm_wlm <- model_matrix(wlm_fit)
   mm_wrob <- model_matrix(wlm_rob)
   
   expect_equal(mm_wlm, mm_wrob)
@@ -136,7 +182,6 @@ test_that("nobs() works", {
   
 })
 
-
 # =============== targetVariance() ===============
 
 test_that("targetVariance() works", {
@@ -196,8 +241,10 @@ test_that("v_scale() works", {
   
 })
 
-
 # =============== vcovCR ===============
+
+# add helper function + apply or revert to for loop
+# test for cluster pulling from lm_robust
 
 test_that("vcovCR works", {
   
@@ -205,6 +252,7 @@ test_that("vcovCR works", {
   
   vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, "CR0")
   vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, "CR0")
+  # class(lm_rob$vcov) <- c("vcovCR","clubSandwich") # is this appropriate?
   
   expect_equal(vcov_lm, vcov_lmr)
   expect_equal(lm_rob$vcov, vcov_lmr)
@@ -287,7 +335,6 @@ test_that("vcovCR works", {
   expect_equal(vcov_wlm, vcov_wlmr)
   expect_equal(wlm_rob$vcov, vcov_wlmr)
   
-    
   # for(type in types) {
   #   vcov_wlm <- vcovCR(wlm_fit, ChickWeight$Chick, type)
   #   vcov_wlmr <- vcovCR(wlm_rob, ChickWeight$Chick, type)
