@@ -288,6 +288,9 @@ test_that("vcovCR works", {
 
 test_that("vovCR properly pulls cluster specified for lm_robust", {
   
+  # reset ChickWeight
+  data("ChickWeight")
+  
   # unweighted tests
   
   uw_clust <- vcovCR(lm_rob, ChickWeight$Chick, "CR2")
@@ -297,6 +300,28 @@ test_that("vovCR properly pulls cluster specified for lm_robust", {
   expect_equal(uw_clust, uw_no_clust)
   expect_equal(uw_no_clust, uw_lm)
   
+  # create an lm_robust that draws in data differently
+  lm_rob_fact <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
+                           clusters = factor(ChickWeight$Chick, ordered = FALSE))
+  # perform vcovCR
+  uw_fact_cr <- vcovCR(lm_rob_fact, type = "CR2")
+  
+  # check they are the same
+  expect_equal(uw_clust, uw_fact_cr)
+  
+  # put cluster data in a variable
+  fact <- factor(ChickWeight$Chick, ordered = FALSE)
+  
+  # pass variable to lm_robust
+  lm_rob_var <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
+                           clusters = fact)
+  
+  # perform vcovCR
+  uw_fact_var <- vcovCR(lm_rob_var, type = "CR2")
+  
+  # check they are the same
+  expect_equal(uw_clust, uw_fact_var)
+  
   # weighted tests
   
   w_clust <- vcovCR(wlm_rob, ChickWeight$Chick, "CR2")
@@ -305,5 +330,24 @@ test_that("vovCR properly pulls cluster specified for lm_robust", {
   
   expect_equal(w_clust, w_no_clust)
   expect_equal(w_no_clust, w_lm)
+  
+  # create an lm_robust that draws in data differently
+  lm_rob_fact_w <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
+                             data = ChickWeight, 
+                             clusters = factor(ChickWeight$Chick, ordered = FALSE))
+  # perform vcovCR
+  w_fact_cr <- vcovCR(lm_rob_fact_w, type = "CR2")
+  
+  expect_equal(uw_clust, w_fact_cr)
+  
+  # pass variable to lm_robust
+  lm_rob_var_w <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt,
+                            data = ChickWeight, clusters = fact)
+  
+  # perform vcovCR
+  w_fact_var <- vcovCR(lm_rob_var_w, type = "CR2")
+  
+  # check they are the same
+  expect_equal(w_clust, w_fact_var)
   
 })
