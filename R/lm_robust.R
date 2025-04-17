@@ -65,10 +65,10 @@ get_cluster <- function(obj) {
   # 2. Use the formula/environment of the fit as our evaluation backbone
   fit_env <- environment(obj$terms)
   
-  # 3. If the user passed a data= argument, pull that data in…
+  # 3. If the user passed a data= argument, pull that data in...
   if (!is.null(obj$call$data)) {
     data_val <- eval(obj$call$data, envir = fit_env)
-    # …and evaluate the clusters expression inside that data
+    # ...and evaluate the clusters expression inside that data
     cluster <- eval(cluster_expr, envir = data_val, enclos = fit_env)
   } else {
     # otherwise just eval it in the fit’s environment

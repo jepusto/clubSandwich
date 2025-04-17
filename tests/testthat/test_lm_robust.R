@@ -1,5 +1,4 @@
 context("lm_robust objects")
-set.seed(20190513)
 
 skip_if_not_installed("estimatr")
 
@@ -7,6 +6,7 @@ library(estimatr)
 
 # data(mtcars)
 
+set.seed(20190513)
 data("ChickWeight", package = "datasets")
 ChickWeight$wt <- 1 + rpois(nrow(ChickWeight), 3)
 ChickWeight$Chick <- factor(ChickWeight$Chick, ordered = FALSE)
@@ -252,29 +252,29 @@ test_that("vcovCR works", {
   
   # unweighted tests
   
-  for(type in types) {
-    vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, type)
-    vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, type)
+  for (type in types) {
+    vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, type = type)
+    vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, type = type)
 
     expect_equal(vcov_lm, vcov_lmr)
-    if(type == "CR2") {
-      class(lm_rob$vcov) <- c("vcovCR", "clubSandwich") # coerce to same class
-      expect_equal(lm_rob$vcov, vcov_lm)
-      expect_equal(lm_rob$vcov, vcov_lmr)
+    
+    if (type == "CR2") {
+      expect_equal(lm_rob$vcov, as.matrix(vcov_lm))
+      expect_equal(lm_rob$vcov, as.matrix(vcov_lmr))
     }
   }
   
   # weighted tests
 
-  for(type in types) {
-    vcov_wlm <- vcovCR(wlm_fit, ChickWeight$Chick, type)
-    vcov_wlmr <- vcovCR(wlm_rob, ChickWeight$Chick, type)
+  for (type in types) {
+    vcov_wlm <- vcovCR(wlm_fit, ChickWeight$Chick, type = type)
+    vcov_wlmr <- vcovCR(wlm_rob, ChickWeight$Chick, type = type)
 
     expect_equal(vcov_wlm, vcov_wlmr)
-    if(type == "CR2") {
-      class(wlm_rob$vcov) <- c("vcovCR", "clubSandwich") # coerce to same class
-      expect_equal(wlm_rob$vcov, vcov_wlm)
-      expect_equal(wlm_rob$vcov, vcov_wlmr)
+    
+    if (type == "CR2") {
+      expect_equal(wlm_rob$vcov, as.matrix(vcov_wlm))
+      expect_equal(wlm_rob$vcov, as.matrix(vcov_wlmr))
     }
   }
   
@@ -301,7 +301,7 @@ test_that("vovCR properly pulls cluster specified for lm_robust", {
   uw_fact_cr <- vcovCR(lm_rob_fact, type = "CR2")
   
   # check they are the same
-  expect_equal(uw_clust, uw_fact_cr)
+  expect_equivalent(uw_clust, uw_fact_cr)
   
   # put cluster data in a variable
   fact <- factor(ChickWeight$Chick, ordered = FALSE)
@@ -314,7 +314,7 @@ test_that("vovCR properly pulls cluster specified for lm_robust", {
   uw_fact_var <- vcovCR(lm_rob_var, type = "CR2")
   
   # check they are the same
-  expect_equal(uw_clust, uw_fact_var)
+  expect_equivalent(uw_clust, uw_fact_var)
   
   # weighted tests
   
