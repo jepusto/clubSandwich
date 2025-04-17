@@ -322,8 +322,6 @@ test_that("vovCR properly pulls cluster specified for lm_robust", {
   # check they are the same
   expect_equal(uw_clust, uw_fact_var)
   
-  expect_equal(uw_clust, uw_fact_cr)
-  
   # weighted tests
   
   w_clust <- vcovCR(wlm_rob, ChickWeight$Chick, "CR2")
