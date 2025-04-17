@@ -14,15 +14,11 @@ ChickWeight$Chick <- factor(ChickWeight$Chick, ordered = FALSE)
 lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
 lm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
                     clusters = Chick)
-                    # clusters = factor(ChickWeight$Chick, ordered = FALSE))
 
 wlm_fit <- lm(weight ~ 0 + Diet + Time:Diet, weights = wt, data = ChickWeight)
 wlm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
                      data = ChickWeight, 
                      clusters = Chick)
-                     # clusters = factor(ChickWeight$Chick, ordered = FALSE))
-
-# add other lm_robust options as test cases
 
 # =============== sandwich::bread ===============
 
@@ -249,8 +245,6 @@ test_that("v_scale() works", {
 })
 
 # =============== vcovCR ===============
-
-# add helper function + apply or revert to for loop
 
 test_that("vcovCR works", {
   
