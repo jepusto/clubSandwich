@@ -48,8 +48,8 @@
 #' @export
 vcovCR.lm_robust <- function(obj, cluster, type, target = NULL, inverse_var = NULL, form = "sandwich", ...) {
   if (missing(cluster)) {
-    if (obj$clustered) cluster <- get_cluster(obj) # pull clustering var from obj
-    else stop("You must specify a clustering variable or your object must have one.")
+    cluster <- get_cluster(obj)
+    if(is.null(cluster)) stop("You must specify a clustering variable or your object must have one.")
   }
   if (is.null(inverse_var)) inverse_var <- is.null(weights(obj)) & is.null(target)
   vcov_CR(obj, cluster = cluster, type = type, 
@@ -59,24 +59,27 @@ vcovCR.lm_robust <- function(obj, cluster, type, target = NULL, inverse_var = NU
 
 #' Helper function written by GPT, edited by Sam
 get_cluster <- function(obj) {
-  # 1. Grab the unevaluated clusters argument
-  cluster_expr <- obj$call$clusters
-  
-  # 2. Use the formula/environment of the fit as our evaluation backbone
-  fit_env <- environment(obj$terms)
-  
-  # 3. If the user passed a data= argument, pull that data in...
-  if (!is.null(obj$call$data)) {
-    data_val <- eval(obj$call$data, envir = fit_env)
-    # ...and evaluate the clusters expression inside that data
-    cluster <- eval(cluster_expr, envir = data_val, enclos = fit_env)
-  } else {
-    # otherwise just eval it in the fit’s environment
-    cluster <- eval(cluster_expr, envir = fit_env)
+  cluster <- NULL
+  # moved from vcovCR.lm_robust
+  if (obj$clustered) {
+    # 1. Grab the unevaluated clusters argument
+    cluster_expr <- obj$call$clusters
+    
+    # 2. Use the formula/environment of the fit as our evaluation backbone
+    fit_env <- environment(obj$terms)
+    
+    # 3. If the user passed a data= argument, pull that data in...
+    if (!is.null(obj$call$data)) {
+      data_val <- eval(obj$call$data, envir = fit_env)
+      # ...and evaluate the clusters expression inside that data
+      cluster <- eval(cluster_expr, envir = data_val, enclos = fit_env)
+    } else {
+      # otherwise just eval it in the fit’s environment
+      cluster <- eval(cluster_expr, envir = fit_env)
+    }
   }
-  
   # 4. Done
-  cluster
+  return(cluster)
 }
 
 
