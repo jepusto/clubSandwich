@@ -15,11 +15,16 @@ ChickWeight$Chick <- factor(ChickWeight$Chick, ordered = FALSE)
 lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
 lm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
                     clusters = Chick)
+lm_rob_fe <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
+                    clusters = Chick, fixed_effects = ~Chick)
 
 wlm_fit <- lm(weight ~ 0 + Diet + Time:Diet, weights = wt, data = ChickWeight)
 wlm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
-                     data = ChickWeight, 
-                     clusters = Chick)
+                     data = ChickWeight, clusters = Chick)
+# wlm_rob_fe <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
+                     # data = ChickWeight, clusters = Chick, 
+                     # fixed_effects = ~Chick)
+
 
 # =============== sandwich::bread ===============
 
@@ -29,15 +34,19 @@ test_that("sandwhich::bread works", {
   
   bread_lm <- bread(lm_fit)
   bread_rob <- bread(lm_rob)
+  bread_rob_fe <- bread(lm_rob_fe)
   
   expect_equal(bread_lm, bread_rob)
+  expect_equal(bread_lm, bread_rob_fe)
   
   # weighted tests
   
   bread_wlm <- bread(wlm_fit)
   bread_wrob <- bread(wlm_rob)
+  # bread_wrob_fe <- bread(wlm_rob_fe)
   
   expect_equal(bread_wlm, bread_wrob)
+  # expect_equal(bread_wlm, bread_wrob_fe)
   
 })
 
@@ -52,15 +61,19 @@ test_that("model.frame() works", {
   
   mm_fit <- model.frame(lm_fit) 
   mm_rob <- model.frame(lm_rob)
+  mm_rob_fe <- model.frame(lm_rob_fe)
   
   expect_equal(mm_fit, mm_rob)
+  expect_equal(mm_fit, mm_rob_fe)
   
   # weighted tests
   
   mm_wlm <- model.frame(wlm_fit)
   mm_wrob <- model.frame(wlm_rob)
+  # mm_wrob_fe <- model.frame(wlm_rob_fe)
   
   expect_equal(mm_wlm, mm_wrob)
+  # expect_equal(mm_wlm, mm_wrob_fe)
   
 })
 
@@ -75,15 +88,19 @@ test_that("model.matrix() works", {
   
   mm_fit <- model.matrix(lm_fit) 
   mm_rob <- model.matrix(lm_rob)
+  mm_rob_fe <- model.matrix(lm_rob_fe)
   
   expect_equal(mm_fit, mm_rob)
+  expect_equal(mm_fit, mm_rob_fe)
   
   # weighted tests
   
   mm_wlm <- model.matrix(wlm_fit)
   mm_wrob <- model.matrix(wlm_rob)
+  # mm_wrob_fe <- model.matrix(wlm_rob_fe)
   
   expect_equal(mm_wlm, mm_wrob)
+  # expect_equal(mm_wlm, mm_wrob_fe)
   
 })
 
@@ -95,15 +112,19 @@ test_that("model_matrix() works", {
   
   mm_fit <- model_matrix(lm_fit) 
   mm_rob <- model_matrix(lm_rob)
+  mm_rob_fe <- model_matrix(lm_rob_fe)
   
   expect_equal(mm_fit, mm_rob)
+  expect_equal(mm_fit, mm_rob_fe)
   
   # weighted tests
   
   mm_wlm <- model_matrix(wlm_fit)
   mm_wrob <- model_matrix(wlm_rob)
+  # mm_wrob_fe <- model_matrix(wlm_rob_fe)
   
   expect_equal(mm_wlm, mm_wrob)
+  # expect_equal(mm_wlm, mm_wrob_fe)
   
 })
 
@@ -115,15 +136,19 @@ test_that("residuals() works", {
   
   res_fit <- residuals(lm_fit)
   res_rob <- residuals(lm_rob)
+  res_rob_fe <- residuals(lm_rob_fe)
   
   expect_equal(res_fit, res_rob)
+  expect_equal(res_fit, res_rob_fe)
   
   # weighted tests
   
   res_wlm <- residuals(wlm_fit)
   res_wrob <- residuals(wlm_rob)
+  # res_wrob_fe <- residuals(wlm_rob_fe)
   
   expect_equal(res_wlm, res_wrob)
+  # expect_equal(res_wlm, res_wrob_fe)
   
 })
 
@@ -135,15 +160,19 @@ test_that("residuals_CS() works", {
   
   rcs_fit <- residuals_CS(lm_fit)
   rcs_rob <- residuals_CS(lm_rob)
+  rcs_rob_fe <- residuals_CS(lm_rob_fe)
   
   expect_equal(rcs_fit, rcs_rob)
+  expect_equal(rcs_fit, rcs_rob_fe)
   
   # weighted tests
   
   rcs_wlm <- residuals_CS(wlm_fit)
   rcs_wrob <- residuals_CS(wlm_rob)
+  # rcs_wrob_fe <- residuals_CS(wlm_rob_fe)
   
   expect_equal(rcs_wlm, rcs_wrob)
+  # expect_equal(rcs_wlm, rcs_wrob_fe)
 })
 
 # =============== coef() ===============
@@ -154,15 +183,19 @@ test_that("coef() works", {
   
   coef_fit <- coef(lm_fit)
   coef_rob <- coef(lm_rob)
+  coef_rob_fe <- coef(lm_rob_fe)
   
   expect_equal(coef_fit, coef_rob)
+  expect_equal(coef_fit, coef_rob_fe)
 
   # weighted tests
   
   coef_wlm <- coef(wlm_fit)
   coef_wrob <- coef(wlm_rob)
+  # coef_wrob_Fe <- coef(wlm_rob_fe)
   
   expect_equal(coef_wlm, coef_wrob)
+  # expect_equal(coef_wlm, coef_wrob_fe)
   
 })
 
@@ -174,15 +207,19 @@ test_that("nobs() works", {
   
   nobs_fit <- nobs(lm_fit)
   nobs_rob <- nobs(lm_rob)
+  nobs_rob_fe <- nobs(lm_rob_fe)
   
   expect_equal(nobs_fit, nobs_rob)
+  expect_equal(nobs_fit, nobs_rob_fe)
   
   # weighted tests
   
   nobs_wlm <- nobs(wlm_fit)
   nobs_wrob <- nobs(wlm_rob)
+  # nobs_wrob_fe <- nobs(wlm_rob_fe)
   
   expect_equal(nobs_wlm, nobs_wrob)
+  # expect_equal(nobs_wlm, nobs_wrob_fe)
   
 })
 
@@ -194,15 +231,20 @@ test_that("targetVariance() works", {
   
   tV_fit <- targetVariance(lm_fit, ChickWeight$Chick)
   tV_rob <- targetVariance(lm_rob, ChickWeight$Chick)
+  tV_rob_fe <- targetVariance(lm_rob_fe, ChickWeight$Chick)
   
   expect_equal(tV_fit, tV_rob)
+  expect_equal(tV_fit, tV_rob_fe)
   
   # weighted tests
   
   tV_wlm <- targetVariance(wlm_fit, ChickWeight$Chick)
   tV_wrob <- targetVariance(wlm_rob, ChickWeight$Chick)
+  # tV_wrob_fe <- targetVariance(wlm_rob_fe, ChickWeight$Chick)
   
   expect_equal(tV_wlm, tV_wrob)
+  # expect_equal(tV_wlm, tV_wrob_fe)
+  
 })
 
 # =============== weightMatrix() ===============
@@ -213,15 +255,19 @@ test_that("weightMatrix() works", {
   
   wM_fit <- weightMatrix(lm_fit, ChickWeight$Chick)
   wM_rob <- weightMatrix(lm_rob, ChickWeight$Chick)
+  wM_rob_fe <- weightMatrix(lm_rob_fe, ChickWeight$Chick)
   
   expect_equal(wM_fit, wM_rob)
+  expect_equal(wM_fit, wM_rob_fe)
   
   # weighted tests
   
   wM_wlm <- weightMatrix(wlm_fit, ChickWeight$Chick)
   wM_wrob <- weightMatrix(wlm_rob, ChickWeight$Chick)
+  # wM_wrob_fe <- weightMatrix(wlm_rob_fe, ChickWeight$Chick)
   
   expect_equal(wM_wlm, wM_wrob)
+  # expect_equal(wM_wlm, wM_wrob_fe)
   
 })
 
@@ -233,15 +279,19 @@ test_that("v_scale() works", {
   
   vs_fit <- v_scale(lm_fit)
   vs_rob <- v_scale(lm_rob)
+  vs_rob_fe <- v_scale(lm_rob_fe)
   
   expect_equal(vs_fit, vs_rob)
+  expect_equal(vs_fit, vs_rob_fe)
   
   # weighted tests
   
   vs_wlm <- v_scale(wlm_fit)
   vs_wrob <- v_scale(wlm_rob)
+  # vs_wrob_fe <- v_scale(wlm_rob_fe)
   
   expect_equal(vs_wlm, vs_wrob)
+  # expect_equal(vs_wlm, vs_wrob_fe)
   
 })
 
@@ -256,12 +306,15 @@ test_that("vcovCR works", {
   for (type in types) {
     vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, type = type)
     vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, type = type)
-
+    vcov_lmr_fe <- vcovCR(lm_rob_fe, ChickWeight$Chick, type = type)
+    
     expect_equal(vcov_lm, vcov_lmr)
+    expect_equal(vcov_lm, vcov_lmr_fe)
     
     if (type == "CR2") {
       expect_equal(lm_rob$vcov, as.matrix(vcov_lm))
       expect_equal(lm_rob$vcov, as.matrix(vcov_lmr))
+      expect_equal(lm_rob$vcov, as.matrix(vcov_lmr_fe))
     }
   }
   
@@ -270,12 +323,15 @@ test_that("vcovCR works", {
   for (type in types) {
     vcov_wlm <- vcovCR(wlm_fit, ChickWeight$Chick, type = type)
     vcov_wlmr <- vcovCR(wlm_rob, ChickWeight$Chick, type = type)
-
+    # vcov_wlmr_fe <- vcovCR(wlm_rob_fe, ChickWeight$Chick, type = type)
+    
     expect_equal(vcov_wlm, vcov_wlmr)
+    # expect_equal(vcov_wlm, vcov_wlmr_fe)
     
     if (type == "CR2") {
       expect_equal(wlm_rob$vcov, as.matrix(vcov_wlm))
       expect_equal(wlm_rob$vcov, as.matrix(vcov_wlmr))
+      # expect_equal(wlm_rob$vcov, as.matrix(vcov_wlmr_fe))
     }
   }
   
