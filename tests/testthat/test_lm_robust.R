@@ -15,7 +15,9 @@ ChickWeight$Chick <- factor(ChickWeight$Chick, ordered = FALSE)
 lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
 lm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
                     clusters = Chick)
-lm_rob_fe <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
+
+lm_fit_fe <- lm(weight ~ 0 + Chick + Time:Diet, data = ChickWeight)
+lm_rob_fe <- lm_robust(weight ~ 0 + Time:Diet, data = ChickWeight, 
                     clusters = Chick, fixed_effects = ~Chick)
 
 wlm_fit <- lm(weight ~ 0 + Diet + Time:Diet, weights = wt, data = ChickWeight)
@@ -59,21 +61,21 @@ test_that("model.frame() works", {
   
   # unweighted tests
   
-  mm_fit <- model.frame(lm_fit) 
-  mm_rob <- model.frame(lm_rob)
-  mm_rob_fe <- model.frame(lm_rob_fe)
+  mf_fit <- model.frame(lm_fit) 
+  mf_rob <- model.frame(lm_rob)
+  mf_rob_fe <- model.frame(lm_rob_fe)
   
-  expect_equal(mm_fit, mm_rob)
-  expect_equal(mm_fit, mm_rob_fe)
+  expect_equal(mf_fit, mf_rob)
+  expect_equal(mf_fit, mf_rob_fe)
   
   # weighted tests
   
-  mm_wlm <- model.frame(wlm_fit)
-  mm_wrob <- model.frame(wlm_rob)
-  # mm_wrob_fe <- model.frame(wlm_rob_fe)
+  mf_wlm <- model.frame(wlm_fit)
+  mf_wrob <- model.frame(wlm_rob)
+  # mf_wrob_fe <- model.frame(wlm_rob_fe)
   
-  expect_equal(mm_wlm, mm_wrob)
-  # expect_equal(mm_wlm, mm_wrob_fe)
+  expect_equal(mf_wlm, mf_wrob)
+  # expect_equal(mf_wlm, mf_wrob_fe)
   
 })
 
@@ -136,10 +138,12 @@ test_that("residuals() works", {
   
   res_fit <- residuals(lm_fit)
   res_rob <- residuals(lm_rob)
-  res_rob_fe <- residuals(lm_rob_fe)
   
   expect_equal(res_fit, res_rob)
-  expect_equal(res_fit, res_rob_fe)
+  
+  res_fe <- residuals(lm_fit_fe)
+  res_rob_fe <- residuals(lm_rob_fe)
+  expect_equal(res_fe, res_rob_fe)
   
   # weighted tests
   
