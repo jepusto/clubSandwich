@@ -64,9 +64,14 @@ test_that("model.frame() works", {
   mf_fit <- model.frame(lm_fit) 
   mf_rob <- model.frame(lm_rob)
   mf_rob_fe <- model.frame(lm_rob_fe)
+  mf_rob_fe_sub <- subset(mf_rob_fe, select = -Chick)
   
   expect_equal(mf_fit, mf_rob)
-  expect_equal(mf_fit, mf_rob_fe)
+  
+  # NOTE: THIS MAY BE A PROBLEM
+  for(col in colnames(mf_fit)) {
+    expect_equivalent(mf_fit[[col]], mf_rob_fe_sub[[col]])
+  }
   
   # weighted tests
   

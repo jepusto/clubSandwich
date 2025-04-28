@@ -104,19 +104,78 @@ model.matrix.lm_robust <- function (object, ...)
 }
 
 
-# written by GPT, slightly edited by Sam
 #' @export
+
+# model.frame.lm_robust <- function(formula, ...) 
+# {
+#   dots <- list(...)
+#   nargs <- dots[match(c("data", "na.action", "subset"), names(dots), 0)]
+#   
+#   if (length(nargs) || is.null(formula$model)) {
+#     fcall <- formula$call
+#     m <- match(c("formula", "data", "subset", "weights", 
+#                  "na.action", "offset"), names(fcall), 0L)
+#     fcall <- fcall[c(1L, m)]
+#     
+#     if(formula$fes) {
+#       data <- eval(formula$call$data)
+#       fe <- formula$call$fixed_effects[[2]]
+#       fes <- data[[fe]]
+#     }
+#     
+#     fcall$drop.unused.levels <- TRUE
+#     fcall[[1L]] <- quote(stats::model.frame)
+#     fcall$xlev <- formula$xlevels
+#     fcall[names(nargs)] <- nargs
+#     env <- environment(formula$terms) %||% parent.frame()
+#     
+#     ret <- eval(fcall, env)
+#     
+#     if(formula$fes) ret[[as.character(fe)]] <- fes
+#     return(ret)
+#   }
+#   else {
+#     return(formula$model)
+#   }
+# }
+# model.frame.lm_robust <- function (formula, ...) 
+# {
+#   dots <- list(...)
+#   nargs <- dots[match(c("data", "na.action", "subset"), names(dots), 
+#                       0)]
+#   if (length(nargs) || is.null(formula$model)) {
+#     fcall <- formula$call
+#     m <- match(c("formula", "data", "subset", "weights", 
+#                  "na.action", "offset"), names(fcall), 0L)
+#     fcall <- fcall[c(1L, m)]
+#     fcall$drop.unused.levels <- TRUE
+#     fcall[[1L]] <- quote(stats::model.frame)
+#     fcall$xlev <- formula$xlevels
+#     fcall$formula <- terms(formula)
+#     fcall[names(nargs)] <- nargs
+#     env <- environment(formula$terms) %||% parent.frame()
+#     eval(fcall, env)
+#   }
+#   else formula$model
+# }
+
+
 model.frame.lm_robust <- function (obj, ...) {
-  # If a model frame is already stored, use it.
-  if (!is.null(obj$mf)) {
-    return(obj$mf)
-  }
-  # Otherwise, temporarily treat as an lm and extract the model frame.
+  # Temporarily treat as an lm and extract the model frame.
   original_class <- class(obj)
   class(obj) <- "lm"
   mf <- model.frame(obj, ...)
   # Optionally restore the class.
   class(obj) <- original_class
+
+  # check for fixed_effects
+  if(obj$fes) {
+    data <- eval(obj$call$data)
+    fe <- obj$call$fixed_effects[[2]]
+    fes <- data[[fe]]
+    mf[[as.character(fe)]] <- fes
+  }
+
   mf
 }
 
@@ -141,6 +200,11 @@ bread.lm_robust <- function(obj, ...) {
   }
   else {
     XtWX <- crossprod(X)
+  }
+  
+  # if FEs, take subset of matrix not including FEs before solving and returning
+  if(obj$fes) {
+    
   }
   
   return(N * solve(XtWX))
