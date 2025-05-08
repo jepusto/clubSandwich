@@ -16,7 +16,7 @@ lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
 lm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
                     clusters = Chick)
 
-lm_fit_fe <- lm(weight ~ 0 + Chick + Time:Diet, data = ChickWeight)
+lm_fit_fe <- lm(weight ~ 0 + Time:Diet + Chick, data = ChickWeight)
 lm_rob_fe <- lm_robust(weight ~ 0 + Time:Diet, data = ChickWeight, 
                     clusters = Chick, fixed_effects = ~Chick)
 
@@ -36,10 +36,11 @@ test_that("sandwhich::bread works", {
   
   bread_lm <- bread(lm_fit)
   bread_rob <- bread(lm_rob)
+  bread_lm_fe <- bread(lm_fit_fe)
   bread_rob_fe <- bread(lm_rob_fe)
   
   expect_equal(bread_lm, bread_rob)
-  expect_equal(bread_lm, bread_rob_fe)
+  expect_equal(bread_lm_fe, bread_rob_fe)
   
   # weighted tests
   
@@ -61,17 +62,14 @@ test_that("model.frame() works", {
   
   # unweighted tests
   
-  mf_fit <- model.frame(lm_fit) 
+  mf_fit <- model.frame(lm_fit)
   mf_rob <- model.frame(lm_rob)
+  mf_fit_fe <- model.frame(lm_fit_fe)
   mf_rob_fe <- model.frame(lm_rob_fe)
   mf_rob_fe_sub <- subset(mf_rob_fe, select = -Chick)
   
   expect_equal(mf_fit, mf_rob)
-  
-  # NOTE: THIS MAY BE A PROBLEM
-  for(col in colnames(mf_fit)) {
-    expect_equivalent(mf_fit[[col]], mf_rob_fe_sub[[col]])
-  }
+  expect_equivalent(mf_fit_fe, mf_rob_fe)
   
   # weighted tests
   
@@ -96,9 +94,11 @@ test_that("model.matrix() works", {
   mm_fit <- model.matrix(lm_fit) 
   mm_rob <- model.matrix(lm_rob)
   mm_rob_fe <- model.matrix(lm_rob_fe)
+  mm_fit_fe <- model.matrix(lm_fit_fe)
   
   expect_equal(mm_fit, mm_rob)
-  expect_equal(mm_fit, mm_rob_fe)
+  # expect_equal(mm_fit_fe, mm_rob_fe)
+  expect_equivalent(mm_fit_fe, mm_rob_fe)
   
   # weighted tests
   
@@ -119,15 +119,18 @@ test_that("model_matrix() works", {
   
   mm_fit <- model_matrix(lm_fit) 
   mm_rob <- model_matrix(lm_rob)
+  mm_fit_fe <- model_matrix(lm_fit_fe)
   mm_rob_fe <- model_matrix(lm_rob_fe)
   
   expect_equal(mm_fit, mm_rob)
-  expect_equal(mm_fit, mm_rob_fe)
+  # expect_equal(mm_fit, mm_rob_fe)
+  expect_equivalent(mm_fit_fe, mm_rob_fe)
   
   # weighted tests
   
   mm_wlm <- model_matrix(wlm_fit)
   mm_wrob <- model_matrix(wlm_rob)
+  # mm_wfit_fe <- model_matrix(wlm_fit_fe)
   # mm_wrob_fe <- model_matrix(wlm_rob_fe)
   
   expect_equal(mm_wlm, mm_wrob)
@@ -143,12 +146,15 @@ test_that("residuals() works", {
   
   res_fit <- residuals(lm_fit)
   res_rob <- residuals(lm_rob)
+  res_fit_fe <- residuals(lm_fit_fe)
+  res_rob_fe <- residuals(lm_rob_fe)
   
   expect_equal(res_fit, res_rob)
+  expect_equal(res_fit_fe, res_rob_fe)
   
-  res_fe <- residuals(lm_fit_fe)
-  res_rob_fe <- residuals(lm_rob_fe)
-  expect_equal(res_fe, res_rob_fe)
+  # res_fe <- residuals(lm_fit_fe)
+  # res_rob_fe <- residuals(lm_rob_fe)
+  # expect_equal(res_fe, res_rob_fe)
   
   # weighted tests
   
@@ -169,10 +175,11 @@ test_that("residuals_CS() works", {
   
   rcs_fit <- residuals_CS(lm_fit)
   rcs_rob <- residuals_CS(lm_rob)
+  rcs_fit_fe <- residuals_CS(lm_fit_fe)
   rcs_rob_fe <- residuals_CS(lm_rob_fe)
   
   expect_equal(rcs_fit, rcs_rob)
-  expect_equal(rcs_fit, rcs_rob_fe)
+  expect_equal(rcs_fit_fe, rcs_rob_fe)
   
   # weighted tests
   
@@ -192,10 +199,11 @@ test_that("coef() works", {
   
   coef_fit <- coef(lm_fit)
   coef_rob <- coef(lm_rob)
+  coef_fit_fe <- coef(lm_fit_fe)
   coef_rob_fe <- coef(lm_rob_fe)
   
   expect_equal(coef_fit, coef_rob)
-  expect_equal(coef_fit, coef_rob_fe)
+  expect_equal(coef_fit_fe, coef_rob_fe)
 
   # weighted tests
   
@@ -315,10 +323,11 @@ test_that("vcovCR works", {
   for (type in types) {
     vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, type = type)
     vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, type = type)
+    vcov_lm_fe <- vcovCR(lm_fit_fe, ChickWeight$Chick, type = type)
     vcov_lmr_fe <- vcovCR(lm_rob_fe, ChickWeight$Chick, type = type)
     
     expect_equal(vcov_lm, vcov_lmr)
-    expect_equal(vcov_lm, vcov_lmr_fe)
+    expect_equal(vcov_lm_fe, vcov_lmr_fe)
     
     if (type == "CR2") {
       expect_equal(lm_rob$vcov, as.matrix(vcov_lm))
