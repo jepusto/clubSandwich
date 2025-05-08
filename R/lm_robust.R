@@ -87,20 +87,42 @@ get_cluster <- function(obj) {
 #' @export
 model.matrix.lm_robust <- function (object, ...) 
 {
-  if (n_match <- match("x", names(object), 0L)) 
-    object[[n_match]]
-  else {
-    data <- model.frame(object, xlev = object$xlevels, ...)
-    if (exists(".GenericCallEnv", inherits = FALSE)) 
-      NextMethod("model.matrix", data = data, contrasts.arg = object$contrasts)
-    else {
-      dots <- list(...)
-      dots$data <- dots$contrasts.arg <- NULL
-      do.call("model.matrix.default", c(list(object = object, 
-        data = data, contrasts.arg = object$contrasts), 
-        dots))
-    }
+  frm <- as.formula(object$call$formula)
+  if(object$fes) {
+    fe_exp <- object$call$fixed_effects[[2]]
+    update_frm <- substitute(. ~ fe_exp + ., list(fe_exp = fe_exp))
+    frm <- update(frm, update_frm)
   }
+  model.matrix(frm, model.frame(object))
+  
+  # if (n_match <- match("x", names(object), 0L)) 
+  #   object[[n_match]]
+  # else {
+  #   data <- model.frame(object, xlev = object$xlevels, ...)
+  #   # if(object$fes) data <- data[1:length(data)-1]
+  #   if (exists(".GenericCallEnv", inherits = FALSE)) {
+  #     mf <- match.call(expand.dots = FALSE)
+  #     m <- match(c("formula", "data", "subset", "weights", "na.action", 
+  #                  "offset"), names(mf), 0L)
+  #     mf <- mf[c(1L, m)]
+  #     mf$drop.unused.levels <- TRUE
+  #     mf[[1L]] <- quote(stats::model.frame)
+  #     mf <- eval(mf, parent.frame())
+  #     mt <- attr(mf, "terms")
+  #     if (is.empty.model(mt)) x <- NULL
+  #     else x <- model.matrix(mt, mf, contrasts)
+  #     contrasts <- attr(x, "contrasts")
+  #     
+  #     NextMethod("model.matrix", data = data, contrasts.arg = contrasts)
+  #   }
+  #   else {
+  #     dots <- list(...)
+  #     dots$data <- dots$contrasts.arg <- NULL
+  #     do.call("model.matrix.default", c(list(object = object, 
+  #       data = data, contrasts.arg = object$contrasts), 
+  #       dots))
+  #   }
+  # }
 }
 
 
