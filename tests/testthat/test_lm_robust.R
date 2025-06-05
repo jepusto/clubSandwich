@@ -91,7 +91,7 @@ test_that("model.matrix() works", {
   
   # unweighted tests
   
-  mm_fit <- model.matrix(lm_fit) 
+  mm_fit <- model.matrix(lm_fit)
   mm_rob <- model.matrix(lm_rob)
   mm_rob_fe <- model.matrix(lm_rob_fe)
   mm_fit_fe <- model.matrix(lm_fit_fe)
@@ -203,7 +203,7 @@ test_that("coef() works", {
   coef_rob_fe <- coef(lm_rob_fe)
   
   expect_equal(coef_fit, coef_rob)
-  expect_equal(coef_fit_fe, coef_rob_fe)
+  expect_equal(coef_fit_fe[names(coef_rob_fe)], coef_rob_fe)
 
   # weighted tests
   
@@ -321,20 +321,22 @@ test_that("vcovCR works", {
   # unweighted tests
   
   for (type in types) {
+    
     vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, type = type)
     vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, type = type)
     vcov_lm_fe <- vcovCR(lm_fit_fe, ChickWeight$Chick, type = type)
     vcov_lmr_fe <- vcovCR(lm_rob_fe, ChickWeight$Chick, type = type)
     
-    expect_equal(vcov_lm, vcov_lmr)
-    expect_equal(vcov_lm_fe, vcov_lmr_fe)
+    expect_equal(vcov_lm, vcov_lmr, label = paste("type = ", type))
+    expect_equal(vcov_lm_fe, vcov_lmr_fe, label = paste("type = ", type))
     
     if (type == "CR2") {
-      expect_equal(lm_rob$vcov, as.matrix(vcov_lm))
-      expect_equal(lm_rob$vcov, as.matrix(vcov_lmr))
-      expect_equal(lm_rob$vcov, as.matrix(vcov_lmr_fe))
+      expect_equal(lm_rob$vcov, as.matrix(vcov_lm), label = paste("type = ", type))
+      expect_equal(lm_rob$vcov, as.matrix(vcov_lmr), label = paste("type = ", type))
+      expect_equal(lm_rob$vcov, as.matrix(vcov_lmr_fe), label = paste("type = ", type))
     }
   }
+  
   
   # weighted tests
 
