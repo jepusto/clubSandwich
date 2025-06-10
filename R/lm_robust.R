@@ -94,92 +94,7 @@ model.matrix.lm_robust <- function (object, ...)
     frm <- update(frm, update_frm)
   }
   model.matrix(frm, model.frame(object))
-  
-  # if (n_match <- match("x", names(object), 0L)) 
-  #   object[[n_match]]
-  # else {
-  #   data <- model.frame(object, xlev = object$xlevels, ...)
-  #   # if(object$fes) data <- data[1:length(data)-1]
-  #   if (exists(".GenericCallEnv", inherits = FALSE)) {
-  #     mf <- match.call(expand.dots = FALSE)
-  #     m <- match(c("formula", "data", "subset", "weights", "na.action", 
-  #                  "offset"), names(mf), 0L)
-  #     mf <- mf[c(1L, m)]
-  #     mf$drop.unused.levels <- TRUE
-  #     mf[[1L]] <- quote(stats::model.frame)
-  #     mf <- eval(mf, parent.frame())
-  #     mt <- attr(mf, "terms")
-  #     if (is.empty.model(mt)) x <- NULL
-  #     else x <- model.matrix(mt, mf, contrasts)
-  #     contrasts <- attr(x, "contrasts")
-  #     
-  #     NextMethod("model.matrix", data = data, contrasts.arg = contrasts)
-  #   }
-  #   else {
-  #     dots <- list(...)
-  #     dots$data <- dots$contrasts.arg <- NULL
-  #     do.call("model.matrix.default", c(list(object = object, 
-  #       data = data, contrasts.arg = object$contrasts), 
-  #       dots))
-  #   }
-  # }
 }
-
-
-#' @export
-
-# model.frame.lm_robust <- function(formula, ...) 
-# {
-#   dots <- list(...)
-#   nargs <- dots[match(c("data", "na.action", "subset"), names(dots), 0)]
-#   
-#   if (length(nargs) || is.null(formula$model)) {
-#     fcall <- formula$call
-#     m <- match(c("formula", "data", "subset", "weights", 
-#                  "na.action", "offset"), names(fcall), 0L)
-#     fcall <- fcall[c(1L, m)]
-#     
-#     if(formula$fes) {
-#       data <- eval(formula$call$data)
-#       fe <- formula$call$fixed_effects[[2]]
-#       fes <- data[[fe]]
-#     }
-#     
-#     fcall$drop.unused.levels <- TRUE
-#     fcall[[1L]] <- quote(stats::model.frame)
-#     fcall$xlev <- formula$xlevels
-#     fcall[names(nargs)] <- nargs
-#     env <- environment(formula$terms) %||% parent.frame()
-#     
-#     ret <- eval(fcall, env)
-#     
-#     if(formula$fes) ret[[as.character(fe)]] <- fes
-#     return(ret)
-#   }
-#   else {
-#     return(formula$model)
-#   }
-# }
-# model.frame.lm_robust <- function (formula, ...) 
-# {
-#   dots <- list(...)
-#   nargs <- dots[match(c("data", "na.action", "subset"), names(dots), 
-#                       0)]
-#   if (length(nargs) || is.null(formula$model)) {
-#     fcall <- formula$call
-#     m <- match(c("formula", "data", "subset", "weights", 
-#                  "na.action", "offset"), names(fcall), 0L)
-#     fcall <- fcall[c(1L, m)]
-#     fcall$drop.unused.levels <- TRUE
-#     fcall[[1L]] <- quote(stats::model.frame)
-#     fcall$xlev <- formula$xlevels
-#     fcall$formula <- terms(formula)
-#     fcall[names(nargs)] <- nargs
-#     env <- environment(formula$terms) %||% parent.frame()
-#     eval(fcall, env)
-#   }
-#   else formula$model
-# }
 
 
 model.frame.lm_robust <- function (obj, ...) {
@@ -200,6 +115,8 @@ model.frame.lm_robust <- function (obj, ...) {
 
   mf
 }
+
+
 
 #' @export
 residuals.lm_robust <- function(obj, ...) {
