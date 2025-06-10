@@ -320,6 +320,8 @@ test_that("vcovCR works", {
   
   # unweighted tests
   
+  focal_coefs <- names(coef(lm_rob_fe))
+  
   for (type in types) {
     
     vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, type = type)
@@ -328,30 +330,41 @@ test_that("vcovCR works", {
     vcov_lmr_fe <- vcovCR(lm_rob_fe, ChickWeight$Chick, type = type)
     
     expect_equal(vcov_lm, vcov_lmr, label = paste("type = ", type))
-    expect_equal(vcov_lm_fe, vcov_lmr_fe, label = paste("type = ", type))
+    expect_equal(vcov_lm_fe[focal_coefs,focal_coefs], as.matrix(vcov_lmr_fe), label = paste("type = ", type))
     
-    if (type == "CR2") {
-      expect_equal(lm_rob$vcov, as.matrix(vcov_lm), label = paste("type = ", type))
-      expect_equal(lm_rob$vcov, as.matrix(vcov_lmr), label = paste("type = ", type))
-      expect_equal(lm_rob$vcov, as.matrix(vcov_lmr_fe), label = paste("type = ", type))
-    }
-  }
-  
-  
-  # weighted tests
-
-  for (type in types) {
+    # weighted tests
+    
     vcov_wlm <- vcovCR(wlm_fit, ChickWeight$Chick, type = type)
     vcov_wlmr <- vcovCR(wlm_rob, ChickWeight$Chick, type = type)
-    # vcov_wlmr_fe <- vcovCR(wlm_rob_fe, ChickWeight$Chick, type = type)
     
     expect_equal(vcov_wlm, vcov_wlmr)
-    # expect_equal(vcov_wlm, vcov_wlmr_fe)
     
-    if (type == "CR2") {
-      expect_equal(wlm_rob$vcov, as.matrix(vcov_wlm))
-      expect_equal(wlm_rob$vcov, as.matrix(vcov_wlmr))
-      # expect_equal(wlm_rob$vcov, as.matrix(vcov_wlmr_fe))
+    
+    if (type %in% c("CR0","CR2","CR1S")) {
+      
+      se_type <- if (type == "CR1S") "stata" else type
+      
+      lm_rob_type <- lm_robust(
+        weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
+        clusters = Chick, 
+        se_type = se_type
+      )
+      expect_equal(as.matrix(vcov_lmr), vcov(lm_rob_type), label = paste("type = ", type))
+      
+      lm_rob_fe_type <- lm_robust(
+        weight ~ 0 + Time:Diet, data = ChickWeight, 
+        clusters = Chick, fixed_effects = ~Chick,
+        se_type = se_type
+      )
+      expect_equal(as.matrix(vcov_lmr_fe), vcov(lm_rob_fe_type), label = paste("type = ", type))
+      
+      wlm_rob_type <- lm_robust(
+        weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
+        clusters = Chick, weights = wt,
+        se_type = se_type
+      )
+      expect_equal(as.matrix(vcov_wlmr), vcov(wlm_rob_type), label = paste("type = ", type))
+      
     }
   }
   
