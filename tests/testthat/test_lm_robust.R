@@ -40,7 +40,11 @@ test_that("sandwhich::bread works", {
   bread_rob_fe <- bread(lm_rob_fe)
   
   expect_equal(bread_lm, bread_rob)
-  expect_equal(bread_lm_fe, bread_rob_fe)
+  
+  # added based on vcovCR tests
+  focal_coefs <- names(coef(lm_rob_fe))
+  expect_equal(bread_lm_fe[focal_coefs,focal_coefs], as.matrix(bread_rob_fe))
+  # expect_equal(bread_lm_fe, bread_rob_fe)
   
   # weighted tests
   
@@ -93,7 +97,7 @@ test_that("model.matrix() works", {
   
   mm_fit <- model.matrix(lm_fit)
   mm_rob <- model.matrix(lm_rob)
-  mm_rob_fe <- model.matrix(lm_rob_fe)
+  mm_rob_fe <- augmented_model_matrix(lm_rob_fe) # changed from model.matrix()
   mm_fit_fe <- model.matrix(lm_fit_fe)
   
   expect_equal(mm_fit, mm_rob)
@@ -120,7 +124,7 @@ test_that("model_matrix() works", {
   mm_fit <- model_matrix(lm_fit) 
   mm_rob <- model_matrix(lm_rob)
   mm_fit_fe <- model_matrix(lm_fit_fe)
-  mm_rob_fe <- model_matrix(lm_rob_fe)
+  mm_rob_fe <- augmented_model_matrix(lm_rob_fe) # changed from model_matrix()
   
   expect_equal(mm_fit, mm_rob)
   # expect_equal(mm_fit, mm_rob_fe)
@@ -326,11 +330,18 @@ test_that("vcovCR works", {
     
     vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, type = type)
     vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, type = type)
-    vcov_lm_fe <- vcovCR(lm_fit_fe, ChickWeight$Chick, type = type)
-    vcov_lmr_fe <- vcovCR(lm_rob_fe, ChickWeight$Chick, type = type)
     
     expect_equal(vcov_lm, vcov_lmr, label = paste("type = ", type))
-    expect_equal(vcov_lm_fe[focal_coefs,focal_coefs], as.matrix(vcov_lmr_fe), label = paste("type = ", type))
+    
+    # omitted based on 6/9 email: "CR1p", "CR3"
+    if (type %in% c("CR0", "CR1", "CR1S", "CR2")) {
+      
+      vcov_lm_fe <- vcovCR(lm_fit_fe, ChickWeight$Chick, type = type)
+      vcov_lmr_fe <- vcovCR(lm_rob_fe, ChickWeight$Chick, type = type)
+      
+      expect_equal(vcov_lm_fe[focal_coefs,focal_coefs], as.matrix(vcov_lmr_fe), label = paste("type = ", type))
+      
+    }
     
     # weighted tests
     
