@@ -83,30 +83,11 @@ get_cluster <- function(obj) {
 }
 
 
-# removed for step 2
-#' Same as model.matrix.lm
-#' ***removed export tag
-# model.matrix.lm_robust <- function (object, ...) 
-# {
-#   frm <- as.formula(object$call$formula)
-#   if(object$fes) {
-#     fe_exp <- object$call$fixed_effects[[2]]
-#     update_frm <- substitute(. ~ fe_exp + ., list(fe_exp = fe_exp))
-#     frm <- update(frm, update_frm)
-#   }
-#   model.matrix(frm, model.frame(object))
-# }
-
-
-# step 1
 #' @export
 augmented_model_matrix.lm_robust <- function(obj, cluster, inverse_var, ignore_FE) {
-  # 1A
-  # should this use match.arg()?
-  # if(missing(fixed_effects)) return(NULL)
+  
   if(!obj$fes) return(NULL)
   
-  # 1B
   frm <- as.formula(obj$call$formula)
   
   fe_exp <- obj$call$fixed_effects[[2]]
@@ -117,31 +98,21 @@ augmented_model_matrix.lm_robust <- function(obj, cluster, inverse_var, ignore_F
 }
 
 
-# step 3
 #' @export
 model_matrix.lm_robust <- function(obj) {
-  # if no fes
+  
   if(!obj$fes) return(model.matrix(obj))
   
-  # 1
   frm <- as.formula(obj$call$formula)
-  # expr <- obj$call$formula[[3]]
-  # updated <- substitute(. ~ expr + ., list(expr = expr))
-  # frm <- update(frm, updated)
   X_mat <- model.matrix(frm, model.frame(obj))
   
-  # 2
   fe_frm <- as.formula(paste("~ 0 +", obj$call$fixed_effects[[2]]))
   F_mat <- model.matrix(fe_frm, model.frame(obj))
   
-  # 3
   model <- stats::lm.fit(F_mat, X_mat)
   
-  # 4
-  residuals <- model$residuals
+  model$residuals
   
-  # 5
-  return(residuals)
 }
 
 
@@ -169,10 +140,9 @@ model.frame.lm_robust <- function (obj, ...) {
 
 #' @export
 residuals.lm_robust <- function(obj, ...) {
-  # data <- eval(obj$call$data, envir = parent.frame())
-  # col <- obj$outcome
-  # data[[col]] - obj$fitted.values
+  
   model.frame(obj)[[obj$outcome]] - obj$fitted.values # from github discussion
+  
 }
 
 
