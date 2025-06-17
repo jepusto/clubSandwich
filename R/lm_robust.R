@@ -160,12 +160,7 @@ bread.lm_robust <- function(obj, ...) {
     XtWX <- crossprod(X)
   }
   
-  # if FEs, take subset of matrix not including FEs before solving and returning
-  if(obj$fes) {
-    
-  }
-  
-  return(N * solve(XtWX))
+  N * solve(XtWX)
 }
 
 
