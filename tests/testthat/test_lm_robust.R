@@ -331,7 +331,8 @@ test_that("vcovCR works", {
     vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, type = type)
     vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, type = type)
     
-    expect_equal(vcov_lm, vcov_lmr, label = paste("type = ", type))
+    expect_equal(vcov_lm, vcov_lmr, 
+                 label = paste0("When type = ", type, ", ", "vcov_lm"))
     
     # omitted based on 6/9 email: "CR1p", "CR3"
     if (type %in% c("CR0", "CR1", "CR1S", "CR2")) {
@@ -339,7 +340,8 @@ test_that("vcovCR works", {
       vcov_lm_fe <- vcovCR(lm_fit_fe, ChickWeight$Chick, type = type)
       vcov_lmr_fe <- vcovCR(lm_rob_fe, ChickWeight$Chick, type = type)
       
-      expect_equal(vcov_lm_fe[focal_coefs,focal_coefs], as.matrix(vcov_lmr_fe), label = paste("type = ", type))
+      expect_equal(vcov_lm_fe[focal_coefs,focal_coefs], as.matrix(vcov_lmr_fe), 
+                   label = paste0("When type = ", type, ", ", "vcov_lm_fe[focal_coefs,focal_coefs]"))
       
     }
     
@@ -360,21 +362,24 @@ test_that("vcovCR works", {
         clusters = Chick, 
         se_type = se_type
       )
-      expect_equal(as.matrix(vcov_lmr), vcov(lm_rob_type), label = paste("type = ", type))
+      expect_equal(as.matrix(vcov_lmr), vcov(lm_rob_type), 
+                   label = paste0("When type = ", type, ", ", "as.matrix(vcov_lmr)"))
       
       lm_rob_fe_type <- lm_robust(
         weight ~ 0 + Time:Diet, data = ChickWeight, 
         clusters = Chick, fixed_effects = ~Chick,
         se_type = se_type
       )
-      expect_equal(as.matrix(vcov_lmr_fe), vcov(lm_rob_fe_type), label = paste("type = ", type))
+      expect_equal(as.matrix(vcov_lmr_fe), vcov(lm_rob_fe_type), 
+                   label = paste0("When type = ", type, ", ", "as.matrix(vcov_lmr_fe)"))
       
       wlm_rob_type <- lm_robust(
         weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
         clusters = Chick, weights = wt,
         se_type = se_type
       )
-      expect_equal(as.matrix(vcov_wlmr), vcov(wlm_rob_type), label = paste("type = ", type))
+      expect_equal(as.matrix(vcov_wlmr), vcov(wlm_rob_type), 
+                   label = paste0("When type = ", type, ", ", "as.matrix(vcov_wlmr)"))
       
     }
   }
