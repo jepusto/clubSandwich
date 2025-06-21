@@ -4,7 +4,6 @@ skip_if_not_installed("estimatr")
 
 library(estimatr)
 
-# data(mtcars)
 
 set.seed(20190513)
 data("ChickWeight", package = "datasets")
@@ -335,7 +334,8 @@ test_that("vcovCR works", {
                  label = paste0("When type = ", type, ", ", "vcov_lm"))
     
     # omitted based on 6/9 email: "CR1p", "CR3"
-    if (type %in% c("CR0", "CR1", "CR1S", "CR2")) {
+    # omitted based on 6/17 meeting: "CR1S"
+    if (type %in% c("CR0", "CR1", "CR2")) {
       
       vcov_lm_fe <- vcovCR(lm_fit_fe, ChickWeight$Chick, type = type)
       vcov_lmr_fe <- vcovCR(lm_rob_fe, ChickWeight$Chick, type = type)
@@ -353,9 +353,7 @@ test_that("vcovCR works", {
     expect_equal(vcov_wlm, vcov_wlmr)
     
     
-    if (type %in% c("CR0","CR2","CR1S")) {
-      
-      se_type <- if (type == "CR1S") "stata" else type
+    if (type %in% c("CR0","CR2")) {
       
       lm_rob_type <- lm_robust(
         weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
@@ -450,5 +448,65 @@ test_that("vovCR properly pulls cluster specified for lm_robust", {
   
   # check they are the same
   expect_equal(w_clust, w_fact_var)
+  
+})
+
+
+# =============== Higher level Tests ===============
+
+
+data("Seatbelts", package = "datasets")
+
+# Convert Seatbelts time series to data frame
+seatbelts_df <- as.data.frame(Seatbelts)
+
+# Extract the time index and convert to Date
+time_index <- time(Seatbelts)
+year <- floor(time_index)
+month <- cycle(Seatbelts)
+
+# Add the time columns
+seatbelts_df$year <- year
+seatbelts_df$month <- month
+
+
+test_that("test Wald_test() with lm_robust", {
+  
+  fit <- lm(DriversKilled ~ kms + PetrolPrice + law + year, data = seatbelts_df)
+  
+  Wald_fit <- Wald_test(
+    fit,
+    constraints = constrain_zero("year", reg_ex = TRUE),
+    vcov = "CR2",
+    cluster = seatbelts_df$month
+  )
+  
+  rob <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = seatbelts_df)
+  
+  Wald_rob <- Wald_test(
+    rob,
+    constraints = constrain_zero("year", reg_ex = TRUE),
+    vcov = "CR2",
+    cluster = seatbelts_df$month
+  )
+  
+  expect_equal(Wald_fit, Wald_rob)
+  
+})
+
+
+test_that("test conf_int() with lm_robust", {
+  
+  
+})
+
+
+test_that("test coef_test() with lm_robust", {
+  
+  
+})
+
+test_that("tests based on test.lm", {
+  
   
 })
