@@ -530,20 +530,20 @@ test_that("clubSandwich works with dropped observations", {
   belts_miss <- belts
   miss_indicator <- sample.int(nrow(belts), size = round(nrow(belts) / 10))
   belts_miss$law[miss_indicator] <- NA
-  belts_miss$month[miss_indicator] <- NA
+  belts_miss$kms[miss_indicator] <- NA
   
-  rob_dropped <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = belts_miss)
+  rob_dropped <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = belts_miss, cluster = month)
   belts_complete <- subset(belts_miss, !is.na(law))
-  rob_complete <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = belts_complete)
+  rob_complete <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = belts_complete, cluster = month)
   
   CR_types <- paste0("CR",0:4)
   
-  CR_drop <- lapply(CR_types, function(x) vcovCR(rob_dropped, cluster = belts_miss$month, type = x))
-  CR_complete <- lapply(CR_types, function(x) vcovCR(rob_complete, cluster = belts_complete$cluster, type = x))
+  CR_drop <- lapply(CR_types, function(x) vcovCR(rob_dropped, type = x))
+  CR_complete <- lapply(CR_types, function(x) vcovCR(rob_complete, type = x))
   expect_equal(CR_drop, CR_complete)
   
-  test_drop <- lapply(CR_types, function(x) coef_test(rob_dropped, vcov = x, cluster = belts_miss$cluster, test = "All", p_values = FALSE))
-  test_complete <- lapply(CR_types, function(x) coef_test(rob_complete, vcov = x, cluster = belts_complete$cluster, test = "All", p_values = FALSE))
+  test_drop <- lapply(CR_types, function(x) coef_test(rob_dropped, vcov = x, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(rob_complete, vcov = x, test = "All", p_values = FALSE))
   expect_equal(test_drop, test_complete)
 })
 
