@@ -458,7 +458,7 @@ test_that("vovCR properly pulls cluster specified for lm_robust", {
 data("Seatbelts", package = "datasets")
 
 # Convert Seatbelts time series to data frame
-seatbelts_df <- as.data.frame(Seatbelts)
+belts <- as.data.frame(Seatbelts)
 
 # Extract the time index and convert to Date
 time_index <- time(Seatbelts)
@@ -466,28 +466,28 @@ year <- floor(time_index)
 month <- cycle(Seatbelts)
 
 # Add the time columns
-seatbelts_df$year <- year
-seatbelts_df$month <- month
+belts$year <- year
+belts$month <- month
 
 # Create identical lm and lm_robust models
-fit <- lm(DriversKilled ~ kms + PetrolPrice + law + year, data = seatbelts_df)
-rob <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = seatbelts_df)
+belts_fit <- lm(DriversKilled ~ kms + PetrolPrice + law + year, data = belts)
+belts_rob <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = belts)
 
 
 test_that("test Wald_test() with lm_robust", {
   
   Wald_FIT <- Wald_test(
-    fit,
+    belts_fit,
     constraints = constrain_zero("year", reg_ex = TRUE),
     vcov = "CR2",
-    cluster = seatbelts_df$month
+    cluster = belts$month
   )
   
   Wald_ROB <- Wald_test(
-    rob,
+    belts_rob,
     constraints = constrain_zero("year", reg_ex = TRUE),
     vcov = "CR2",
-    cluster = seatbelts_df$month
+    cluster = belts$month
   )
   
   expect_equal(Wald_FIT, Wald_ROB)
@@ -497,8 +497,8 @@ test_that("test Wald_test() with lm_robust", {
 
 test_that("test conf_int() with lm_robust", {
   
-  conf_FIT <- conf_int(fit, vcov = "CR2", cluster = seatbelts_df$month)
-  conf_ROB <- conf_int(rob, vcov = "CR2", cluster = seatbelts_df$month)
+  conf_FIT <- conf_int(belts_fit, vcov = "CR2", cluster = belts$month)
+  conf_ROB <- conf_int(belts_rob, vcov = "CR2", cluster = belts$month)
   
   expect_equal(conf_FIT, conf_ROB)
   
@@ -507,15 +507,55 @@ test_that("test conf_int() with lm_robust", {
 
 test_that("test coef_test() with lm_robust", {
   
-  coef_FIT <- coef_test(fit, vcov = "CR2", cluster = seatbelts_df$month)
-  coef_ROB <- coef_test(rob, vcov = "CR2", cluster = seatbelts_df$month)
+  coef_FIT <- coef_test(belts_fit, vcov = "CR2", cluster = belts$month)
+  coef_ROB <- coef_test(belts_rob, vcov = "CR2", cluster = belts$month)
   
   expect_equal(coef_FIT, coef_ROB)
   
 })
 
-test_that("tests based on test.lm", {
+
+# =============== Tests Based on test_lm.R ===============
+
+
+test_that("Order doesn't matter.",{
   
+  check_sort_order(belts_rob, belts, "month")
   
+})
+
+
+test_that("clubSandwich works with dropped observations", {
+  belts_miss <- belts
+  miss_indicator <- sample.int(nrow(belts), size = round(nrow(belts) / 10))
+  belts_miss$law[miss_indicator] <- NA
+  belts_miss$month[miss_indicator] <- NA
   
+  rob_dropped <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = belts_miss)
+  belts_complete <- subset(belts_miss, !is.na(law))
+  rob_complete <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = belts_complete)
+  
+  CR_types <- paste0("CR",0:4)
+  
+  CR_drop <- lapply(CR_types, function(x) vcovCR(rob_dropped, cluster = belts_miss$month, type = x))
+  CR_complete <- lapply(CR_types, function(x) vcovCR(rob_complete, cluster = belts_complete$cluster, type = x))
+  expect_equal(CR_drop, CR_complete)
+  
+  test_drop <- lapply(CR_types, function(x) coef_test(rob_dropped, vcov = x, cluster = belts_miss$cluster, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(rob_complete, vcov = x, cluster = belts_complete$cluster, test = "All", p_values = FALSE))
+  expect_equal(test_drop, test_complete)
+})
+
+
+test_that("clubSandwich requires no missing values on the clustering variable", {
+  belts_miss <- belts
+  miss_indicator <- sample.int(nrow(belts), size = round(nrow(belts) / 10))
+  belts_miss$month[miss_indicator] <- NA
+  
+  rob_dropped <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = belts_miss)
+  
+  expect_error(vcovCR(rob_dropped, cluster = belts_miss$cluster, type = "CR0"), 
+               "Clustering variable cannot have missing values.")
+  expect_error(coef_test(rob_dropped, vcov = "CR0", cluster = belts_miss$cluster, test = "All"),
+               "Clustering variable cannot have missing values.")
 })
