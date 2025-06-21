@@ -358,7 +358,7 @@ test_that("vcovCR works", {
       lm_rob_type <- lm_robust(
         weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
         clusters = Chick, 
-        se_type = se_type
+        se_type = type
       )
       expect_equal(as.matrix(vcov_lmr), vcov(lm_rob_type), 
                    label = paste0("When type = ", type, ", ", "as.matrix(vcov_lmr)"))
@@ -366,7 +366,7 @@ test_that("vcovCR works", {
       lm_rob_fe_type <- lm_robust(
         weight ~ 0 + Time:Diet, data = ChickWeight, 
         clusters = Chick, fixed_effects = ~Chick,
-        se_type = se_type
+        se_type = type
       )
       expect_equal(as.matrix(vcov_lmr_fe), vcov(lm_rob_fe_type), 
                    label = paste0("When type = ", type, ", ", "as.matrix(vcov_lmr_fe)"))
@@ -374,7 +374,7 @@ test_that("vcovCR works", {
       wlm_rob_type <- lm_robust(
         weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
         clusters = Chick, weights = wt,
-        se_type = se_type
+        se_type = type
       )
       expect_equal(as.matrix(vcov_wlmr), vcov(wlm_rob_type), 
                    label = paste0("When type = ", type, ", ", "as.matrix(vcov_wlmr)"))
@@ -469,44 +469,53 @@ month <- cycle(Seatbelts)
 seatbelts_df$year <- year
 seatbelts_df$month <- month
 
+# Create identical lm and lm_robust models
+fit <- lm(DriversKilled ~ kms + PetrolPrice + law + year, data = seatbelts_df)
+rob <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = seatbelts_df)
+
 
 test_that("test Wald_test() with lm_robust", {
   
-  fit <- lm(DriversKilled ~ kms + PetrolPrice + law + year, data = seatbelts_df)
-  
-  Wald_fit <- Wald_test(
+  Wald_FIT <- Wald_test(
     fit,
     constraints = constrain_zero("year", reg_ex = TRUE),
     vcov = "CR2",
     cluster = seatbelts_df$month
   )
   
-  rob <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = seatbelts_df)
-  
-  Wald_rob <- Wald_test(
+  Wald_ROB <- Wald_test(
     rob,
     constraints = constrain_zero("year", reg_ex = TRUE),
     vcov = "CR2",
     cluster = seatbelts_df$month
   )
   
-  expect_equal(Wald_fit, Wald_rob)
+  expect_equal(Wald_FIT, Wald_ROB)
   
 })
 
 
 test_that("test conf_int() with lm_robust", {
   
+  conf_FIT <- conf_int(fit, vcov = "CR2", cluster = seatbelts_df$month)
+  conf_ROB <- conf_int(rob, vcov = "CR2", cluster = seatbelts_df$month)
+  
+  expect_equal(conf_FIT, conf_ROB)
   
 })
 
 
 test_that("test coef_test() with lm_robust", {
   
+  coef_FIT <- coef_test(fit, vcov = "CR2", cluster = seatbelts_df$month)
+  coef_ROB <- coef_test(rob, vcov = "CR2", cluster = seatbelts_df$month)
+  
+  expect_equal(coef_FIT, coef_ROB)
   
 })
 
 test_that("tests based on test.lm", {
+  
   
   
 })
