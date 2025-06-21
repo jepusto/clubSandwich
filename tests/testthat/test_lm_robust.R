@@ -466,7 +466,8 @@ year <- floor(time_index)
 month <- cycle(Seatbelts)
 
 # Add the time columns
-belts$year <- year
+belts$kms <- belts$kms - mean(belts$kms)
+belts$year <- year - mean(year)
 belts$month <- month
 
 # Create identical lm and lm_robust models
