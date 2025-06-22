@@ -157,5 +157,9 @@ bread.lm_robust <- function(obj, ...) {
 }
 
 
-
+#' @export
+na.action.lm_robust <- function(obj, ...)  {
+  
+  na.action(model.frame(obj))
+}
 

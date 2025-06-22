@@ -451,6 +451,41 @@ test_that("vovCR properly pulls cluster specified for lm_robust", {
   
 })
 
+# =============== na.action.lm_robust() ===============
+
+test_that("na.action.lm_robust() works correctly", {
+  
+  compare_na_actions <- function(i) {
+    
+    # generate random data
+    n <- 100
+    df <- data.frame(
+      y = rnorm(n),
+      x1 = rnorm(n),
+      x2 = rnorm(n)
+    )
+    
+    # add random NA values to y and x2
+    miss_rows <- sample.int(n, size = n/10)
+    df$y[miss_rows] <- NA
+    df$x2[miss_rows] <- NA
+    
+    # fit models
+    linear <- lm(y ~ x1 + x2 + x1:x2, data = df)
+    robust <- lm_robust(y ~ x1 + x2 + x1:x2, data = df)
+    
+    # get na.action() of models
+    na_lm <- na.action(linear)
+    na_rob <- na.action(robust)
+    
+    # compare
+    expect_equal(na_lm, na_rob)
+  }
+  
+  # compare 10 times with different random data
+  lapply(1:10, compare_na_actions)
+  
+})
 
 # =============== Higher level Tests ===============
 
