@@ -590,8 +590,8 @@ test_that("clubSandwich requires no missing values on the clustering variable", 
   
   rob_dropped <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = belts_miss)
   
-  expect_error(vcovCR(rob_dropped, cluster = belts_miss$cluster, type = "CR0"), 
+  expect_error(vcovCR(rob_dropped, cluster = belts_miss$month, type = "CR0"), 
                "Clustering variable cannot have missing values.")
-  expect_error(coef_test(rob_dropped, vcov = "CR0", cluster = belts_miss$cluster, test = "All"),
+  expect_error(coef_test(rob_dropped, vcov = "CR0", cluster = belts_miss$month, test = "All"),
                "Clustering variable cannot have missing values.")
 })
