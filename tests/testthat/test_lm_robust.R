@@ -14,17 +14,22 @@ ChickWeight$Chick <- factor(ChickWeight$Chick, ordered = FALSE)
 lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
 lm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
                     clusters = Chick)
+lm_rob_chole <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
+                          clusters = Chick, try_cholesky = TRUE)
 
 lm_fit_fe <- lm(weight ~ 0 + Time:Diet + Chick, data = ChickWeight)
 lm_rob_fe <- lm_robust(weight ~ 0 + Time:Diet, data = ChickWeight, 
                     clusters = Chick, fixed_effects = ~Chick)
+lm_rob_fe_chole <- lm_robust(weight ~ 0 + Time:Diet, data = ChickWeight, 
+                       clusters = Chick, fixed_effects = ~Chick,
+                       try_cholesky = TRUE)
 
 wlm_fit <- lm(weight ~ 0 + Diet + Time:Diet, weights = wt, data = ChickWeight)
 wlm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
                      data = ChickWeight, clusters = Chick)
-# wlm_rob_fe <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
-                     # data = ChickWeight, clusters = Chick, 
-                     # fixed_effects = ~Chick)
+wlm_rob_chole <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
+                     data = ChickWeight, clusters = Chick,
+                     try_cholesky = TRUE)
 
 
 # =============== sandwich::bread ===============
@@ -67,21 +72,26 @@ test_that("model.frame() works", {
   
   mf_fit <- model.frame(lm_fit)
   mf_rob <- model.frame(lm_rob)
-  mf_fit_fe <- model.frame(lm_fit_fe)
-  mf_rob_fe <- model.frame(lm_rob_fe)
-  mf_rob_fe_sub <- subset(mf_rob_fe, select = -Chick)
+  mf_rob_chole <- model.frame(lm_rob_chole)
   
   expect_equal(mf_fit, mf_rob)
+  expect_equal(mf_fit, mf_rob_chole)
+  
+  mf_fit_fe <- model.frame(lm_fit_fe)
+  mf_rob_fe <- model.frame(lm_rob_fe)
+  mf_rob_fe_chole <- model.frame(lm_rob_fe_chole)
+  
   expect_equivalent(mf_fit_fe, mf_rob_fe)
+  expect_equivalent(mf_fit_fe, mf_rob_fe_chole)
   
   # weighted tests
   
   mf_wlm <- model.frame(wlm_fit)
   mf_wrob <- model.frame(wlm_rob)
-  # mf_wrob_fe <- model.frame(wlm_rob_fe)
+  mf_wrob_chole <- model.frame(wlm_rob_chole)
   
   expect_equal(mf_wlm, mf_wrob)
-  # expect_equal(mf_wlm, mf_wrob_fe)
+  expect_equal(mf_wlm, mf_wrob_chole)
   
 })
 
@@ -96,21 +106,26 @@ test_that("model.matrix() works", {
   
   mm_fit <- model.matrix(lm_fit)
   mm_rob <- model.matrix(lm_rob)
-  mm_rob_fe <- augmented_model_matrix(lm_rob_fe) # changed from model.matrix()
-  mm_fit_fe <- model.matrix(lm_fit_fe)
+  mm_rob_chole <- model.matrix(lm_rob_chole)
   
   expect_equal(mm_fit, mm_rob)
-  # expect_equal(mm_fit_fe, mm_rob_fe)
+  expect_equal(mm_fit, mm_rob_chole)
+  
+  mm_fit_fe <- model.matrix(lm_fit_fe)
+  mm_rob_fe <- augmented_model_matrix(lm_rob_fe)
+  mm_rob_fe_chole <- augmented_model_matrix(lm_rob_fe_chole)
+  
   expect_equivalent(mm_fit_fe, mm_rob_fe)
+  expect_equivalent(mm_fit_fe, mm_rob_fe_chole)
   
   # weighted tests
   
   mm_wlm <- model.matrix(wlm_fit)
   mm_wrob <- model.matrix(wlm_rob)
-  # mm_wrob_fe <- model.matrix(wlm_rob_fe)
+  mm_wrob_chole <- model.matrix(wlm_rob_chole)
   
   expect_equal(mm_wlm, mm_wrob)
-  # expect_equal(mm_wlm, mm_wrob_fe)
+  expect_equal(mm_wlm, mm_wrob_chole)
   
 })
 
@@ -122,22 +137,24 @@ test_that("model_matrix() works", {
   
   mm_fit <- model_matrix(lm_fit) 
   mm_rob <- model_matrix(lm_rob)
-  mm_fit_fe <- model_matrix(lm_fit_fe)
-  mm_rob_fe <- augmented_model_matrix(lm_rob_fe) # changed from model_matrix()
+  mm_rob_chole <- model_matrix(lm_rob_chole)
   
   expect_equal(mm_fit, mm_rob)
-  # expect_equal(mm_fit, mm_rob_fe)
+  expect_equal(mm_fit, mm_rob_chole)
+  
+  mm_fit_fe <- model_matrix(lm_fit_fe)
+  mm_rob_fe <- augmented_model_matrix(lm_rob_fe)
+  mm_rob_fe_chole <- augmented_model_matrix(lm_rob_fe_chole)
+  
   expect_equivalent(mm_fit_fe, mm_rob_fe)
+  expect_equivalent(mm_fit_fe, mm_rob_fe_chole)
   
   # weighted tests
   
   mm_wlm <- model_matrix(wlm_fit)
   mm_wrob <- model_matrix(wlm_rob)
-  # mm_wfit_fe <- model_matrix(wlm_fit_fe)
-  # mm_wrob_fe <- model_matrix(wlm_rob_fe)
   
   expect_equal(mm_wlm, mm_wrob)
-  # expect_equal(mm_wlm, mm_wrob_fe)
   
 })
 
@@ -149,24 +166,26 @@ test_that("residuals() works", {
   
   res_fit <- residuals(lm_fit)
   res_rob <- residuals(lm_rob)
-  res_fit_fe <- residuals(lm_fit_fe)
-  res_rob_fe <- residuals(lm_rob_fe)
+  res_rob_chole <- residuals(lm_rob_chole)
   
   expect_equal(res_fit, res_rob)
-  expect_equal(res_fit_fe, res_rob_fe)
+  expect_equal(res_fit, res_rob_chole)
   
-  # res_fe <- residuals(lm_fit_fe)
-  # res_rob_fe <- residuals(lm_rob_fe)
-  # expect_equal(res_fe, res_rob_fe)
+  res_fit_fe <- residuals(lm_fit_fe)
+  res_rob_fe <- residuals(lm_rob_fe)
+  res_rob_fe_chole <- residuals(lm_rob_fe_chole)
+  
+  expect_equal(res_fit_fe, res_rob_fe)
+  expect_equal(res_fit_fe, res_rob_fe_chole)
   
   # weighted tests
   
   res_wlm <- residuals(wlm_fit)
   res_wrob <- residuals(wlm_rob)
-  # res_wrob_fe <- residuals(wlm_rob_fe)
+  res_wrob_chole <- residuals(wlm_rob_chole)
   
   expect_equal(res_wlm, res_wrob)
-  # expect_equal(res_wlm, res_wrob_fe)
+  expect_equal(res_wlm, res_wrob_chole)
   
 })
 
@@ -178,20 +197,26 @@ test_that("residuals_CS() works", {
   
   rcs_fit <- residuals_CS(lm_fit)
   rcs_rob <- residuals_CS(lm_rob)
-  rcs_fit_fe <- residuals_CS(lm_fit_fe)
-  rcs_rob_fe <- residuals_CS(lm_rob_fe)
+  rcs_rob_chole <- residuals_CS(lm_rob_chole)
   
   expect_equal(rcs_fit, rcs_rob)
+  expect_equal(rcs_fit, rcs_rob_chole)
+  
+  rcs_fit_fe <- residuals_CS(lm_fit_fe)
+  rcs_rob_fe <- residuals_CS(lm_rob_fe)
+  rcs_rob_fe_chole <- residuals_CS(lm_rob_fe_chole)
+  
   expect_equal(rcs_fit_fe, rcs_rob_fe)
+  expect_equal(rcs_fit_fe, rcs_rob_fe_chole)
   
   # weighted tests
   
   rcs_wlm <- residuals_CS(wlm_fit)
   rcs_wrob <- residuals_CS(wlm_rob)
-  # rcs_wrob_fe <- residuals_CS(wlm_rob_fe)
+  rcs_wrob_chole <- residuals_CS(wlm_rob_chole)
   
   expect_equal(rcs_wlm, rcs_wrob)
-  # expect_equal(rcs_wlm, rcs_wrob_fe)
+  expect_equal(rcs_wlm, rcs_wrob_chole)
 })
 
 # =============== coef() ===============
@@ -202,20 +227,26 @@ test_that("coef() works", {
   
   coef_fit <- coef(lm_fit)
   coef_rob <- coef(lm_rob)
-  coef_fit_fe <- coef(lm_fit_fe)
-  coef_rob_fe <- coef(lm_rob_fe)
+  coef_rob_chole <- coef(lm_rob_chole)
   
   expect_equal(coef_fit, coef_rob)
+  expect_equal(coef_fit, coef_rob_chole)
+  
+  coef_fit_fe <- coef(lm_fit_fe)
+  coef_rob_fe <- coef(lm_rob_fe)
+  coef_rob_fe_chole <- coef(lm_rob_fe_chole)
+  
   expect_equal(coef_fit_fe[names(coef_rob_fe)], coef_rob_fe)
-
+  expect_equal(coef_fit_fe[names(coef_rob_fe)], coef_rob_fe_chole)
+  
   # weighted tests
   
   coef_wlm <- coef(wlm_fit)
   coef_wrob <- coef(wlm_rob)
-  # coef_wrob_Fe <- coef(wlm_rob_fe)
+  coef_wrob_chole <- coef(wlm_rob_chole)
   
   expect_equal(coef_wlm, coef_wrob)
-  # expect_equal(coef_wlm, coef_wrob_fe)
+  expect_equal(coef_wlm, coef_wrob_chole)
   
 })
 
@@ -227,19 +258,25 @@ test_that("nobs() works", {
   
   nobs_fit <- nobs(lm_fit)
   nobs_rob <- nobs(lm_rob)
-  nobs_rob_fe <- nobs(lm_rob_fe)
+  nobs_rob_chole <- nobs(lm_rob_chole)
   
   expect_equal(nobs_fit, nobs_rob)
+  expect_equal(nobs_fit, nobs_rob_chole)
+  
+  nobs_rob_fe <- nobs(lm_rob_fe)
+  nobs_rob_fe_chole <- nobs(lm_rob_fe_chole)
+  
   expect_equal(nobs_fit, nobs_rob_fe)
+  expect_equal(nobs_fit, nobs_rob_fe_chole)
   
   # weighted tests
   
   nobs_wlm <- nobs(wlm_fit)
   nobs_wrob <- nobs(wlm_rob)
-  # nobs_wrob_fe <- nobs(wlm_rob_fe)
+  nobs_wrob_chole <- nobs(wlm_rob_chole)
   
   expect_equal(nobs_wlm, nobs_wrob)
-  # expect_equal(nobs_wlm, nobs_wrob_fe)
+  expect_equal(nobs_wlm, nobs_wrob_chole)
   
 })
 
@@ -251,19 +288,25 @@ test_that("targetVariance() works", {
   
   tV_fit <- targetVariance(lm_fit, ChickWeight$Chick)
   tV_rob <- targetVariance(lm_rob, ChickWeight$Chick)
-  tV_rob_fe <- targetVariance(lm_rob_fe, ChickWeight$Chick)
+  tV_rob_chole <- targetVariance(lm_rob_chole, ChickWeight$Chick)
   
   expect_equal(tV_fit, tV_rob)
+  expect_equal(tV_fit, tV_rob_chole)
+  
+  tV_rob_fe <- targetVariance(lm_rob_fe, ChickWeight$Chick)
+  tV_rob_fe_chole <- targetVariance(lm_rob_fe_chole, ChickWeight$Chick)
+  
   expect_equal(tV_fit, tV_rob_fe)
+  expect_equal(tV_fit, tV_rob_fe_chole)
   
   # weighted tests
   
   tV_wlm <- targetVariance(wlm_fit, ChickWeight$Chick)
   tV_wrob <- targetVariance(wlm_rob, ChickWeight$Chick)
-  # tV_wrob_fe <- targetVariance(wlm_rob_fe, ChickWeight$Chick)
+  tV_wrob_chole <- targetVariance(wlm_rob_chole, ChickWeight$Chick)
   
   expect_equal(tV_wlm, tV_wrob)
-  # expect_equal(tV_wlm, tV_wrob_fe)
+  expect_equal(tV_wlm, tV_wrob_chole)
   
 })
 
@@ -275,19 +318,25 @@ test_that("weightMatrix() works", {
   
   wM_fit <- weightMatrix(lm_fit, ChickWeight$Chick)
   wM_rob <- weightMatrix(lm_rob, ChickWeight$Chick)
-  wM_rob_fe <- weightMatrix(lm_rob_fe, ChickWeight$Chick)
+  wM_rob_chole <- weightMatrix(lm_rob_chole, ChickWeight$Chick)
   
   expect_equal(wM_fit, wM_rob)
+  expect_equal(wM_fit, wM_rob_chole)
+  
+  wM_rob_fe <- weightMatrix(lm_rob_fe, ChickWeight$Chick)
+  wM_rob_fe_chole <- weightMatrix(lm_rob_fe_chole, ChickWeight$Chick)
+  
   expect_equal(wM_fit, wM_rob_fe)
+  expect_equal(wM_fit, wM_rob_fe_chole)
   
   # weighted tests
   
   wM_wlm <- weightMatrix(wlm_fit, ChickWeight$Chick)
   wM_wrob <- weightMatrix(wlm_rob, ChickWeight$Chick)
-  # wM_wrob_fe <- weightMatrix(wlm_rob_fe, ChickWeight$Chick)
+  wM_wrob_chole <- weightMatrix(wlm_rob_chole, ChickWeight$Chick)
   
   expect_equal(wM_wlm, wM_wrob)
-  # expect_equal(wM_wlm, wM_wrob_fe)
+  expect_equal(wM_wlm, wM_wrob_chole)
   
 })
 
@@ -299,19 +348,23 @@ test_that("v_scale() works", {
   
   vs_fit <- v_scale(lm_fit)
   vs_rob <- v_scale(lm_rob)
+  vs_rob_chole <- v_scale(lm_rob_chole)
   vs_rob_fe <- v_scale(lm_rob_fe)
+  vs_rob_fe_chole <- v_scale(lm_rob_fe_chole)
   
   expect_equal(vs_fit, vs_rob)
+  expect_equal(vs_fit, vs_rob_chole)
   expect_equal(vs_fit, vs_rob_fe)
+  expect_equal(vs_fit, vs_rob_fe_chole)
   
   # weighted tests
   
   vs_wlm <- v_scale(wlm_fit)
   vs_wrob <- v_scale(wlm_rob)
-  # vs_wrob_fe <- v_scale(wlm_rob_fe)
+  vs_wrob_chole <- v_scale(wlm_rob_chole)
   
   expect_equal(vs_wlm, vs_wrob)
-  # expect_equal(vs_wlm, vs_wrob_fe)
+  expect_equal(vs_wlm, vs_wrob_chole)
   
 })
 
@@ -329,18 +382,22 @@ test_that("vcovCR works", {
     
     vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, type = type)
     vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, type = type)
+    vcov_lmr_chole <- vcovCR(lm_rob_chole, ChickWeight$Chick, type = type)
     
     expect_equal(vcov_lm, vcov_lmr, 
                  label = paste0("When type = ", type, ", ", "vcov_lm"))
+    expect_equal(vcov_lm, vcov_lmr_chole, 
+                 label = paste0("When type = ", type, ", ", "vcov_lm"))
     
-    # omitted based on 6/9 email: "CR1p", "CR3"
-    # omitted based on 6/17 meeting: "CR1S"
     if (type %in% c("CR0", "CR1", "CR2")) {
       
       vcov_lm_fe <- vcovCR(lm_fit_fe, ChickWeight$Chick, type = type)
       vcov_lmr_fe <- vcovCR(lm_rob_fe, ChickWeight$Chick, type = type)
+      vcov_lmr_fe_chole <- vcovCR(lm_rob_fe_chole, ChickWeight$Chick, type = type)
       
       expect_equal(vcov_lm_fe[focal_coefs,focal_coefs], as.matrix(vcov_lmr_fe), 
+                   label = paste0("When type = ", type, ", ", "vcov_lm_fe[focal_coefs,focal_coefs]"))
+      expect_equal(vcov_lm_fe[focal_coefs,focal_coefs], as.matrix(vcov_lmr_fe_chole), 
                    label = paste0("When type = ", type, ", ", "vcov_lm_fe[focal_coefs,focal_coefs]"))
       
     }
@@ -349,8 +406,10 @@ test_that("vcovCR works", {
     
     vcov_wlm <- vcovCR(wlm_fit, ChickWeight$Chick, type = type)
     vcov_wlmr <- vcovCR(wlm_rob, ChickWeight$Chick, type = type)
+    vcov_wlmr_chole <- vcovCR(wlm_rob_chole, ChickWeight$Chick, type = type)
     
     expect_equal(vcov_wlm, vcov_wlmr)
+    expect_equal(vcov_wlm, vcov_wlmr_chole)
     
     
     if (type %in% c("CR0","CR2")) {
@@ -360,7 +419,16 @@ test_that("vcovCR works", {
         clusters = Chick, 
         se_type = type
       )
+      lm_rob_type_chole <- lm_robust(
+        weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
+        clusters = Chick, 
+        se_type = type,
+        try_cholesky = TRUE
+      )
+      
       expect_equal(as.matrix(vcov_lmr), vcov(lm_rob_type), 
+                   label = paste0("When type = ", type, ", ", "as.matrix(vcov_lmr)"))
+      expect_equal(as.matrix(vcov_lmr), vcov(lm_rob_type_chole), 
                    label = paste0("When type = ", type, ", ", "as.matrix(vcov_lmr)"))
       
       lm_rob_fe_type <- lm_robust(
@@ -368,7 +436,16 @@ test_that("vcovCR works", {
         clusters = Chick, fixed_effects = ~Chick,
         se_type = type
       )
+      lm_rob_fe_type_chole <- lm_robust(
+        weight ~ 0 + Time:Diet, data = ChickWeight, 
+        clusters = Chick, fixed_effects = ~Chick,
+        se_type = type,
+        try_cholesky = TRUE
+      )
+      
       expect_equal(as.matrix(vcov_lmr_fe), vcov(lm_rob_fe_type), 
+                   label = paste0("When type = ", type, ", ", "as.matrix(vcov_lmr_fe)"))
+      expect_equal(as.matrix(vcov_lmr_fe), vcov(lm_rob_fe_type_chole), 
                    label = paste0("When type = ", type, ", ", "as.matrix(vcov_lmr_fe)"))
       
       wlm_rob_type <- lm_robust(
@@ -376,7 +453,16 @@ test_that("vcovCR works", {
         clusters = Chick, weights = wt,
         se_type = type
       )
+      wlm_rob_type_chole <- lm_robust(
+        weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
+        clusters = Chick, weights = wt,
+        se_type = type,
+        try_cholesky = TRUE
+      )
+      
       expect_equal(as.matrix(vcov_wlmr), vcov(wlm_rob_type), 
+                   label = paste0("When type = ", type, ", ", "as.matrix(vcov_wlmr)"))
+      expect_equal(as.matrix(vcov_wlmr), vcov(wlm_rob_type_chole), 
                    label = paste0("When type = ", type, ", ", "as.matrix(vcov_wlmr)"))
       
     }
@@ -385,9 +471,6 @@ test_that("vcovCR works", {
 })
 
 test_that("vovCR properly pulls cluster specified for lm_robust", {
-  
-  # reset ChickWeight
-  # data("ChickWeight")
   
   # unweighted tests
   
