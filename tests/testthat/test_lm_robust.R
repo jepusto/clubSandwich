@@ -31,10 +31,9 @@ wlm_rob_chole <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt,
                      data = ChickWeight, clusters = Chick,
                      try_cholesky = TRUE)
 
+# Note: weighted FE models are not supported by estimatr::lm_robust() so excluded from tests.
 
-# =============== sandwich::bread ===============
-
-test_that("sandwhich::bread works", {
+test_that("sandwich::bread works", {
   
   # unweighted tests
   
@@ -44,24 +43,17 @@ test_that("sandwhich::bread works", {
   bread_rob_fe <- bread(lm_rob_fe)
   
   expect_equal(bread_lm, bread_rob)
-  
-  # added based on vcovCR tests
   focal_coefs <- names(coef(lm_rob_fe))
   expect_equal(bread_lm_fe[focal_coefs,focal_coefs], as.matrix(bread_rob_fe))
-  # expect_equal(bread_lm_fe, bread_rob_fe)
   
   # weighted tests
   
   bread_wlm <- bread(wlm_fit)
   bread_wrob <- bread(wlm_rob)
-  # bread_wrob_fe <- bread(wlm_rob_fe)
-  
   expect_equal(bread_wlm, bread_wrob)
-  # expect_equal(bread_wlm, bread_wrob_fe)
+  
   
 })
-
-# =============== model.frame() ===============
 
 test_that("model.frame() works", {
   
@@ -95,42 +87,6 @@ test_that("model.frame() works", {
 
 })
 
-# =============== model.matrix() ===============
-
-test_that("model.matrix() works", {
-  
-  # NOTE: These tests are identical from those for model_matrix(), except, they
-  # use model.matrix()
-  
-  # unweighted tests
-  
-  mm_fit <- model.matrix(lm_fit)
-  mm_rob <- model.matrix(lm_rob)
-  mm_rob_chole <- model.matrix(lm_rob_chole)
-  
-  expect_equal(mm_fit, mm_rob)
-  expect_equal(mm_fit, mm_rob_chole)
-  
-  mm_fit_fe <- model.matrix(lm_fit_fe)
-  mm_rob_fe <- augmented_model_matrix(lm_rob_fe)
-  mm_rob_fe_chole <- augmented_model_matrix(lm_rob_fe_chole)
-  
-  expect_equivalent(mm_fit_fe, mm_rob_fe)
-  expect_equivalent(mm_fit_fe, mm_rob_fe_chole)
-  
-  # weighted tests
-  
-  mm_wlm <- model.matrix(wlm_fit)
-  mm_wrob <- model.matrix(wlm_rob)
-  mm_wrob_chole <- model.matrix(wlm_rob_chole)
-  
-  expect_equal(mm_wlm, mm_wrob)
-  expect_equal(mm_wlm, mm_wrob_chole)
-  
-})
-
-# =============== model_matrix() ===============
-
 test_that("model_matrix() works", {
   
   # unweighted tests
@@ -158,38 +114,6 @@ test_that("model_matrix() works", {
   
 })
 
-# =============== residuals() ===============
-
-test_that("residuals() works", {
-  
-  # unweighted tests
-  
-  res_fit <- residuals(lm_fit)
-  res_rob <- residuals(lm_rob)
-  res_rob_chole <- residuals(lm_rob_chole)
-  
-  expect_equal(res_fit, res_rob)
-  expect_equal(res_fit, res_rob_chole)
-  
-  res_fit_fe <- residuals(lm_fit_fe)
-  res_rob_fe <- residuals(lm_rob_fe)
-  res_rob_fe_chole <- residuals(lm_rob_fe_chole)
-  
-  expect_equal(res_fit_fe, res_rob_fe)
-  expect_equal(res_fit_fe, res_rob_fe_chole)
-  
-  # weighted tests
-  
-  res_wlm <- residuals(wlm_fit)
-  res_wrob <- residuals(wlm_rob)
-  res_wrob_chole <- residuals(wlm_rob_chole)
-  
-  expect_equal(res_wlm, res_wrob)
-  expect_equal(res_wlm, res_wrob_chole)
-  
-})
-
-# =============== residuals_CS() ===============
 
 test_that("residuals_CS() works", {
   
@@ -219,7 +143,6 @@ test_that("residuals_CS() works", {
   expect_equal(rcs_wlm, rcs_wrob_chole)
 })
 
-# =============== coef() ===============
 
 test_that("coef() works", {
   
@@ -250,7 +173,6 @@ test_that("coef() works", {
   
 })
 
-# =============== nobs() ===============
 
 test_that("nobs() works", {
   
@@ -280,7 +202,6 @@ test_that("nobs() works", {
   
 })
 
-# =============== targetVariance() ===============
 
 test_that("targetVariance() works", {
   
@@ -310,7 +231,6 @@ test_that("targetVariance() works", {
   
 })
 
-# =============== weightMatrix() ===============
 
 test_that("weightMatrix() works", {
   
@@ -340,7 +260,6 @@ test_that("weightMatrix() works", {
   
 })
 
-# =============== v_scale() ===============
 
 test_that("v_scale() works", {
   
@@ -368,7 +287,6 @@ test_that("v_scale() works", {
   
 })
 
-# =============== vcovCR ===============
 
 test_that("vcovCR works", {
   
@@ -470,6 +388,7 @@ test_that("vcovCR works", {
   
 })
 
+
 test_that("vovCR properly pulls cluster specified for lm_robust", {
   
   # unweighted tests
@@ -534,7 +453,6 @@ test_that("vovCR properly pulls cluster specified for lm_robust", {
   
 })
 
-# =============== na.action.lm_robust() ===============
 
 test_that("na.action.lm_robust() works correctly", {
   
@@ -593,7 +511,7 @@ belts_fit <- lm(DriversKilled ~ kms + PetrolPrice + law + year, data = belts)
 belts_rob <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = belts)
 
 
-test_that("test Wald_test() with lm_robust", {
+test_that("Wald_test() works with lm_robust", {
   
   Wald_FIT <- Wald_test(
     belts_fit,
@@ -614,7 +532,7 @@ test_that("test Wald_test() with lm_robust", {
 })
 
 
-test_that("test conf_int() with lm_robust", {
+test_that("conf_int() works with lm_robust", {
   
   conf_FIT <- conf_int(belts_fit, vcov = "CR2", cluster = belts$month)
   conf_ROB <- conf_int(belts_rob, vcov = "CR2", cluster = belts$month)
@@ -624,7 +542,7 @@ test_that("test conf_int() with lm_robust", {
 })
 
 
-test_that("test coef_test() with lm_robust", {
+test_that("coef_test() works with lm_robust", {
   
   coef_FIT <- coef_test(belts_fit, vcov = "CR2", cluster = belts$month)
   coef_ROB <- coef_test(belts_rob, vcov = "CR2", cluster = belts$month)
