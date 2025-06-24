@@ -2,11 +2,11 @@
 # vcovCR with defaults
 #-------------------------------------
 
-#' Cluster-robust variance-covariance matrix for an estimatr::lm_robust object.
+#' Cluster-robust variance-covariance matrix for an \code{estimatr::lm_robust} object.
 #' 
 #' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
 #' of a set of regression coefficient estimates from an 
-#' \code{\link{estimatr::lm_robust}} object.
+#' \code{\link[estimatr]{lm_robust}} object.
 #' 
 #' @param cluster Expression or vector indicating which observations belong to
 #'   the same cluster. Required for \code{estimatr::lm_robust} objects.
@@ -23,8 +23,6 @@
 #' @seealso \code{\link{vcovCR}}
 #' 
 #' @examples 
-#' 
-#' NOTE: These are (currently) the same as the examples from vcovCR.lm
 #' 
 #' data("ChickWeight", package = "datasets")
 #' lm_fit <- lm(weight ~ Time + Diet:Time, data = ChickWeight)
@@ -58,6 +56,14 @@ vcovCR.lm_robust <- function(obj, cluster, type, target = NULL, inverse_var = NU
 
 
 #' Helper function written by GPT, edited by Sam
+#' 
+#' Pulls clustering variable from lm_robust objects, if they have one.
+#'
+#' @param obj an lm_robust object
+#'
+#' @return The data within the clustering variable
+#' @keywords internal
+#' @noRd
 get_cluster <- function(obj) {
   
   if (!obj$clustered) return(NULL)
@@ -110,18 +116,18 @@ model_matrix.lm_robust <- function(obj) {
 
 
 #' @export
-model.frame.lm_robust <- function (obj, ...) {
+model.frame.lm_robust <- function (formula, ...) {
   # Temporarily treat as an lm and extract the model frame.
-  original_class <- class(obj)
-  class(obj) <- "lm"
-  mf <- model.frame(obj, ...)
+  original_class <- class(formula)
+  class(formula) <- "lm"
+  mf <- model.frame(formula, ...)
   # Optionally restore the class.
-  class(obj) <- original_class
+  class(formula) <- original_class
 
   # check for fixed_effects
-  if(obj$fes) {
-    data <- eval(obj$call$data)
-    fe <- obj$call$fixed_effects[[2]]
+  if(formula$fes) {
+    data <- eval(formula$call$data)
+    fe <- formula$call$fixed_effects[[2]]
     fes <- data[[fe]]
     mf[[as.character(fe)]] <- fes
   }
@@ -132,25 +138,25 @@ model.frame.lm_robust <- function (obj, ...) {
 
 
 #' @export
-residuals.lm_robust <- function(obj, ...) {
+residuals.lm_robust <- function(object, ...) {
   
-  model.frame(obj)[[obj$outcome]] - obj$fitted.values # from github discussion
+  model.frame(object)[[object$outcome]] - object$fitted.values
   
 }
 
 
 #' @export
-bread.lm_robust <- function(obj, ...) {
+bread.lm_robust <- function(x, ...) {
   
-  N <- nobs(obj)
+  N <- nobs(x)
   
-  X <- model_matrix(obj)
+  X_mat <- model_matrix(x)
   
   if(obj$weighted) {
-    XtWX <- crossprod(X, obj$weights * X)
+    XtWX <- crossprod(X_mat, x$weights * X_mat)
   }
   else {
-    XtWX <- crossprod(X)
+    XtWX <- crossprod(X_mat)
   }
   
   N * solve(XtWX)
@@ -158,8 +164,8 @@ bread.lm_robust <- function(obj, ...) {
 
 
 #' @export
-na.action.lm_robust <- function(obj, ...)  {
+na.action.lm_robust <- function(object, ...)  {
   
-  na.action(model.frame(obj))
+  na.action(model.frame(object))
 }
 
