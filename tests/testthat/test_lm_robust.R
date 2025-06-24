@@ -2,7 +2,7 @@ context("lm_robust objects")
 
 skip_if_not_installed("estimatr")
 
-library(estimatr)
+suppressMessages(library(estimatr, quietly=TRUE))
 
 
 set.seed(20190513)
@@ -92,7 +92,7 @@ test_that("model.frame() works", {
   
   expect_equal(mf_wlm, mf_wrob)
   expect_equal(mf_wlm, mf_wrob_chole)
-  
+
 })
 
 # =============== model.matrix() ===============

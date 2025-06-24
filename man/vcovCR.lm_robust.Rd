@@ -2,7 +2,7 @@
 % Please edit documentation in R/lm_robust.R
 \name{vcovCR.lm_robust}
 \alias{vcovCR.lm_robust}
-\title{Cluster-robust variance-covariance matrix for an estimatr::lm_robust object.}
+\title{Cluster-robust variance-covariance matrix for an \code{estimatr::lm_robust} object.}
 \usage{
 \method{vcovCR}{lm_robust}(
   obj,
@@ -53,11 +53,9 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
 \description{
 \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
 of a set of regression coefficient estimates from an 
-\code{\link{estimatr::lm_robust}} object.
+\code{\link[estimatr]{lm_robust}} object.
 }
 \examples{
-
-NOTE: These are (currently) the same as the examples from vcovCR.lm
 
 data("ChickWeight", package = "datasets")
 lm_fit <- lm(weight ~ Time + Diet:Time, data = ChickWeight)
