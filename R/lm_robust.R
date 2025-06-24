@@ -44,19 +44,21 @@
 #' })
 #' 
 #' @export
+
 vcovCR.lm_robust <- function(obj, cluster, type, target = NULL, inverse_var = NULL, form = "sandwich", ...) {
+  
   if (missing(cluster)) {
-    cluster <- get_cluster(obj)
-    if(is.null(cluster)) stop("You must specify a clustering variable or your object must have one.")
+    cluster <- findCluster.lm_robust(obj)
+    if (is.null(cluster)) stop("You must specify a clustering variable or `obj` must include a clustering variable.")
   }
+  
   if (is.null(inverse_var)) inverse_var <- is.null(weights(obj)) & is.null(target)
+  
   vcov_CR(obj, cluster = cluster, type = type, 
           target = target, inverse_var = inverse_var, form = form)
 }
 
 
-#' Helper function written by GPT, edited by Sam
-#' 
 #' Pulls clustering variable from lm_robust objects, if they have one.
 #'
 #' @param obj an lm_robust object
@@ -64,7 +66,8 @@ vcovCR.lm_robust <- function(obj, cluster, type, target = NULL, inverse_var = NU
 #' @return The data within the clustering variable
 #' @keywords internal
 #' @noRd
-get_cluster <- function(obj) {
+
+findCluster.lm_robust <- function(obj) {
   
   if (!obj$clustered) return(NULL)
   
@@ -83,29 +86,32 @@ get_cluster <- function(obj) {
 
 
 #' @export
+
 augmented_model_matrix.lm_robust <- function(obj, cluster, inverse_var, ignore_FE) {
   
   if(!obj$fes) return(NULL)
   
   frm <- as.formula(obj$call$formula)
   
-  fe_exp <- obj$call$fixed_effects[[2]]
-  update_frm <- substitute(. ~ fe_exp + ., list(fe_exp = fe_exp))
-  frm <- update(frm, update_frm)
+  fe_expr <- obj$call$fixed_effects[[2]]
+  update_formula <- substitute(. ~ fe_expr + ., list(fe_expr = fe_expr))
+  frm <- update(frm, update_formula)
   
   model.matrix(frm, model.frame(obj))
 }
 
 
 #' @export
+
 model_matrix.lm_robust <- function(obj) {
   
-  if(!obj$fes) return(model.matrix(obj))
+  if (!obj$fes) return(model.matrix(obj))
   
   frm <- as.formula(obj$call$formula)
   X_mat <- model.matrix(frm, model.frame(obj))
   
   fe_frm <- as.formula(paste("~ 0 +", obj$call$fixed_effects[[2]]))
+  
   F_mat <- model.matrix(fe_frm, model.frame(obj))
   
   model <- stats::lm.fit(F_mat, X_mat)
@@ -116,21 +122,24 @@ model_matrix.lm_robust <- function(obj) {
 
 
 #' @export
+
 model.frame.lm_robust <- function (formula, ...) {
-  # Temporarily treat as an lm and extract the model frame.
-  original_class <- class(formula)
-  class(formula) <- "lm"
-  mf <- model.frame(formula, ...)
-  # Optionally restore the class.
-  class(formula) <- original_class
+  
+  # Extract relevant arguments
+  cl <- formula$call
+  m <- match(c("formula","data","weights","subset","clusters"), names(cl), 0L)
+  mf <- cl[c(1L, m)]
+  mf[[1L]] <- quote(stats::model.frame)
 
   # check for fixed_effects
-  if(formula$fes) {
-    data <- eval(formula$call$data)
-    fe <- formula$call$fixed_effects[[2]]
-    fes <- data[[fe]]
-    mf[[as.character(fe)]] <- fes
+  if (formula$fes) {
+    fe_expr <- formula$call$fixed_effects[[2]]
+    update_formula <- substitute(. ~ fe_expr + ., list(fe_exp = fe_expr))
+    mf$formula <- update(eval(mf$formula), update_formula)
   }
+
+  # Construct the model.frame
+  mf <- eval(mf, parent.frame())
 
   mf
 }
@@ -138,6 +147,7 @@ model.frame.lm_robust <- function (formula, ...) {
 
 
 #' @export
+
 residuals.lm_robust <- function(object, ...) {
   
   model.frame(object)[[object$outcome]] - object$fitted.values
@@ -146,16 +156,16 @@ residuals.lm_robust <- function(object, ...) {
 
 
 #' @export
+
 bread.lm_robust <- function(x, ...) {
   
   N <- nobs(x)
   
   X_mat <- model_matrix(x)
   
-  if(x$weighted) {
+  if (x$weighted) {
     XtWX <- crossprod(X_mat, x$weights * X_mat)
-  }
-  else {
+  } else {
     XtWX <- crossprod(X_mat)
   }
   
@@ -164,6 +174,7 @@ bread.lm_robust <- function(x, ...) {
 
 
 #' @export
+
 na.action.lm_robust <- function(object, ...)  {
   
   na.action(model.frame(object))
