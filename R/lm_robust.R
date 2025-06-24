@@ -152,7 +152,7 @@ bread.lm_robust <- function(x, ...) {
   
   X_mat <- model_matrix(x)
   
-  if(obj$weighted) {
+  if(x$weighted) {
     XtWX <- crossprod(X_mat, x$weights * X_mat)
   }
   else {
