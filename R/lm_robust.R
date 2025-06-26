@@ -120,27 +120,49 @@ model_matrix.lm_robust <- function(obj) {
   
 }
 
+compare_model_frames <- function(data1, data2, ...) {
+  cl <- match.call()
+  
+  cl1 <- cl
+  cl1$data2 <- NULL
+  names(cl1)[2] <- "data"
+  cl1[[1]] <- quote(estimatr::lm_robust)
+  m1 <- eval(cl1, parent.frame())
+  mf1 <- model.frame(m1)
+
+  cl2 <- cl
+  cl2$data1 <- NULL
+  names(cl2)[2] <- "data"
+  cl2[[1]] <- quote(estimatr::lm_robust)
+  m2 <- eval(cl2, parent.frame())
+  mf2 <- model.frame(m2)
+  
+  testthat::expect_equivalent(mf1, mf2)
+}
 
 #' @export
 
 model.frame.lm_robust <- function (formula, ...) {
   
-  # Extract relevant arguments
+  # Extract relevant arguments from call
   cl <- formula$call
-  m <- match(c("formula","data","weights","subset","clusters"), names(cl), 0L)
-  mf <- cl[c(1L, m)]
-  mf[[1L]] <- quote(stats::model.frame)
-
-  # check for fixed_effects
-  if (formula$fes) {
-    fe_expr <- formula$call$fixed_effects[[2]]
-    update_formula <- substitute(. ~ fe_expr + ., list(fe_exp = fe_expr))
-    mf$formula <- update(eval(mf$formula), update_formula)
-  }
-
+  mf_args <- match(c("formula","data","weights","subset","clusters"), names(cl), 0L)
+  
   # Construct the model.frame
-  mf <- eval(mf, parent.frame())
-
+  mf_cl <- cl[c(1L, mf_args)]
+  mf_cl[[1L]] <- quote(stats::model.frame)
+  mf <- eval(mf_cl, parent.frame())
+  
+  if (formula$fes) {
+    # Construct a model.frame for fixed effects
+    fe_args <- match(c("fixed_effects","data","subset"), names(cl), 0L)
+    fe_cl <- cl[c(1L, fe_args)]
+    names(fe_cl)[[2]] <- "formula"
+    fe_cl[[1L]] <- quote(stats::model.frame)
+    mf_fe <- eval(fe_cl, parent.frame())
+  }
+  
+  
   mf
 }
 

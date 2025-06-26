@@ -52,6 +52,77 @@ test_that("sandwich::bread works", {
   bread_wrob <- bread(wlm_rob)
   expect_equal(bread_wlm, bread_wrob)
   
+  # tests with missing values
+  dat_miss <- ChickWeight
+  i <- 1:nrow(ChickWeight)
+  miss1 <- sample(i, 7L)
+  miss2 <- sample(i, 9L)
+  dat_miss$Diet_miss <- dat_miss$Diet
+  dat_miss$Diet_miss[miss1] <- NA
+  dat_miss$wt_miss <- ifelse(i %in% miss1, NA, dat_miss$wt)
+  dat_miss$Chick_miss1 <- dat_miss$Chick
+  dat_miss$Chick_miss1[miss1] <- NA
+  dat_miss$Chick_miss2 <- dat_miss$Chick
+  dat_miss$Chick_miss2[miss2] <- NA
+  
+  dat_complete1 <- dat_miss[setdiff(i, miss1),]
+  dat_complete2 <- dat_miss[setdiff(i, miss2),]
+  dat_complete <- dat_miss[setdiff(i, c(miss1, miss2)),]
+  
+  # X missing
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete1, 
+    formula = weight ~ 0 + Time:Diet_miss, 
+    fixed_effects = ~ Chick + Diet,
+    clusters = Chick,
+    se_type = "CR0"
+  )
+  
+  # FE missing
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete1, 
+    formula = weight ~ 0 + Time:Diet, 
+    fixed_effects = ~ Chick + Diet_miss,
+    clusters = Chick,
+    se_type = "CR0"
+  )
+  
+  # FE missing
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete2, 
+    formula = weight ~ 0 + Time:Diet, 
+    fixed_effects = ~ Chick_miss2 + Diet,
+    clusters = Chick,
+    se_type = "CR0"
+  )
+  
+  # clusters missing
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete1, 
+    formula = weight ~ 0 + Time:Diet, 
+    fixed_effects = ~ Chick,
+    clusters = Chick_miss1,
+    se_type = "CR0"
+  )
+
+  # weights missing  
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete1, 
+    formula = weight ~ 0 + Time:Diet, 
+    weights = wt_miss,
+    fixed_effects = ~ Chick,
+    clusters = Chick,
+    se_type = "CR0"
+  )
+  
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete, 
+    formula = weight ~ 0 + Time:Diet_miss, 
+    fixed_effects = ~ Chick,
+    clusters = Chick_miss2,
+    se_type = "CR0"
+  )
+  
   
 })
 
