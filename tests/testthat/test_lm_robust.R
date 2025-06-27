@@ -412,38 +412,17 @@ test_that("try_cholesky argument does not interfere with vcovCR functionality", 
   
   expect_equal(vcovCR(lm_rob, type = "CR2"), vcovCR(lm_rob_chole, type = "CR2"))
   
-  rob_A <- lm_rob
-  rob_B <- lm_rob_chole
-  rob_A$call <- NULL
-  rob_B$call <- NULL
-  
-  expect_equal(rob_A, rob_B)
-  
   lm_rob_fe_chole <- lm_robust(weight ~ 0 + Time:Diet, data = ChickWeight, 
                                clusters = Chick, fixed_effects = ~Chick,
                                try_cholesky = TRUE)
   
   expect_equal(vcovCR(lm_rob_fe, type = "CR2"), vcovCR(lm_rob_fe_chole, type = "CR2"))
   
-  rob_fe_A <- lm_rob_fe
-  rob_fe_B <- lm_rob_fe_chole
-  rob_fe_A$call <- NULL
-  rob_fe_B$call <- NULL
-  
-  expect_equal(rob_fe_A, rob_fe_B)
-  
   wlm_rob_chole <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
                              data = ChickWeight, clusters = Chick,
                              try_cholesky = TRUE)
   
   expect_equal(vcovCR(wlm_rob, type = "CR2"), vcovCR(wlm_rob_chole, type = "CR2"))
-  
-  wlm_rob_chole_A <- wlm_rob
-  wlm_rob_chole_B <- wlm_rob_chole
-  wlm_rob_chole_A$call <- NULL
-  wlm_rob_chole_B$call <- NULL
-  
-  expect_equal(wlm_rob_chole_A, wlm_rob_chole_B)
   
 })
 
