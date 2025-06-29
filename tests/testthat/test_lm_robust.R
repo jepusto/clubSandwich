@@ -31,7 +31,237 @@ wlm_rob_chole <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt,
                      data = ChickWeight, clusters = Chick,
                      try_cholesky = TRUE)
 
-# Note: weighted FE models are not supported by estimatr::lm_robust() so excluded from tests.
+
+
+# set up tests with missing values
+
+dat_miss <- ChickWeight
+i <- 1:nrow(ChickWeight)
+miss1 <- 3:8
+miss2 <- sample(i, 9L)
+dat_miss$Diet_miss <- dat_miss$Diet
+dat_miss$Diet_miss[miss1] <- NA
+dat_miss$wt_miss <- ifelse(i %in% miss1, NA, dat_miss$wt)
+dat_miss$Chick_miss1 <- dat_miss$Chick
+dat_miss$Chick_miss1[miss1] <- NA
+dat_miss$Chick_miss2 <- dat_miss$Chick
+dat_miss$Chick_miss2[miss2] <- NA
+
+dat_complete1 <- dat_miss[setdiff(i, miss1),]
+dat_complete2 <- dat_miss[setdiff(i, miss2),]
+dat_complete <- dat_miss[setdiff(i, c(miss1, miss2)),]
+
+test_that("model.frame() works", {
+  
+  # unweighted tests
+  
+  mf_fit <- model.frame(lm_fit)
+  mf_rob <- model.frame(lm_rob)
+  mf_rob$`(clusters)` <- NULL
+  mf_rob_chole <- model.frame(lm_rob_chole)
+  mf_rob_chole$`(clusters)` <- NULL
+  
+  expect_equal(mf_fit, mf_rob)
+  expect_equal(mf_fit, mf_rob_chole)
+  
+  mf_fit_fe <- model.frame(lm_fit_fe)
+  mf_rob_fe <- model.frame(lm_rob_fe)
+  mf_rob_fe$`(clusters)` <- NULL
+  mf_rob_fe_chole <- model.frame(lm_rob_fe_chole)
+  mf_rob_fe_chole$`(clusters)` <- NULL
+  
+  expect_equivalent(mf_fit_fe, mf_rob_fe)
+  expect_equivalent(mf_fit_fe, mf_rob_fe_chole)
+  
+  # weighted tests
+  
+  mf_wlm <- model.frame(wlm_fit)
+  mf_wrob <- model.frame(wlm_rob)
+  mf_wrob$`(clusters)` <- NULL
+  mf_wrob_chole <- model.frame(wlm_rob_chole)
+  mf_wrob_chole$`(clusters)` <- NULL
+  
+  expect_equal(mf_wlm, mf_wrob)
+  expect_equal(mf_wlm, mf_wrob_chole)
+
+  # X missing
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete1, 
+    formula = weight ~ 0 + Time:Diet_miss, 
+    fixed_effects = ~ Chick + Diet,
+    clusters = Chick,
+    se_type = "CR0"
+  )
+  
+  # clusters missing
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete1, 
+    formula = weight ~ 0 + Time:Diet, 
+    fixed_effects = ~ Chick,
+    clusters = Chick_miss1,
+    se_type = "CR0"
+  )
+  
+  # weights missing  
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete1, 
+    formula = weight ~ 0 + Time:Diet, 
+    weights = wt_miss,
+    fixed_effects = ~ Chick,
+    clusters = Chick,
+    se_type = "CR0"
+  )
+  
+  # FE missing
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete1, 
+    formula = weight ~ 0 + Time:Diet, 
+    fixed_effects = ~ Chick + Diet_miss,
+    clusters = Chick,
+    se_type = "CR0"
+  )
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete2, 
+    formula = weight ~ 0 + Time:Diet, 
+    fixed_effects = ~ Chick_miss2 + Diet,
+    clusters = Chick,
+    se_type = "CR0"
+  )
+  
+  # X and FE missing
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete1, 
+    formula = weight ~ 0 + Time:Diet_miss, 
+    fixed_effects = ~ Chick_miss1,
+    clusters = Chick,
+    se_type = "CR0"
+  )
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete, 
+    formula = weight ~ 0 + Time:Diet_miss, 
+    fixed_effects = ~ Chick_miss2,
+    clusters = Chick,
+    se_type = "CR0"
+  )
+  
+  # clusters and FE missing
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete1, 
+    formula = weight ~ 0 + Time:Diet, 
+    fixed_effects = ~ Chick_miss1,
+    clusters = Chick_miss1,
+    se_type = "CR0"
+  )
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete, 
+    formula = weight ~ 0 + Time:Diet, 
+    fixed_effects = ~ Chick_miss1,
+    clusters = Chick_miss2,
+    se_type = "CR0"
+  )
+  
+  # weights and FE missing  
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete1, 
+    formula = weight ~ 0 + Time:Diet, 
+    weights = wt_miss,
+    fixed_effects = ~ Chick_miss1,
+    clusters = Chick,
+    se_type = "CR0"
+  )
+  compare_model_frames(
+    data1 = dat_miss, data2 = dat_complete, 
+    formula = weight ~ 0 + Time:Diet, 
+    weights = wt_miss,
+    fixed_effects = ~ Chick_miss2,
+    clusters = Chick,
+    se_type = "CR0"
+  )
+})
+
+test_that("model_matrix() works", {
+  
+  # unweighted tests
+  
+  mm_fit <- model_matrix(lm_fit) 
+  mm_rob <- model_matrix(lm_rob)
+  mm_rob_chole <- model_matrix(lm_rob_chole)
+  
+  expect_equivalent(mm_fit, mm_rob)
+  expect_equivalent(mm_fit, mm_rob_chole)
+  
+  mm_fit_fe <- model_matrix(lm_fit_fe)
+  mm_rob_fe <- augmented_model_matrix(lm_rob_fe)
+  mm_rob_fe_chole <- augmented_model_matrix(lm_rob_fe_chole)
+  
+  expect_equivalent(mm_fit_fe, mm_rob_fe)
+  expect_equivalent(mm_fit_fe, mm_rob_fe_chole)
+  
+  # weighted tests
+  
+  mm_wlm <- model_matrix(wlm_fit)
+  mm_wrob <- model_matrix(wlm_rob)
+  
+  expect_equivalent(mm_wlm, mm_wrob)
+  
+})
+
+test_that("targetVariance() works", {
+  
+  # unweighted tests
+  
+  tV_fit <- targetVariance(lm_fit, ChickWeight$Chick)
+  tV_rob <- targetVariance(lm_rob, ChickWeight$Chick)
+  tV_rob_chole <- targetVariance(lm_rob_chole, ChickWeight$Chick)
+  
+  expect_equal(tV_fit, tV_rob)
+  expect_equal(tV_fit, tV_rob_chole)
+  
+  tV_rob_fe <- targetVariance(lm_rob_fe, ChickWeight$Chick)
+  tV_rob_fe_chole <- targetVariance(lm_rob_fe_chole, ChickWeight$Chick)
+  
+  expect_equal(tV_fit, tV_rob_fe)
+  expect_equal(tV_fit, tV_rob_fe_chole)
+  
+  # weighted tests
+  
+  tV_wlm <- targetVariance(wlm_fit, ChickWeight$Chick)
+  tV_wrob <- targetVariance(wlm_rob, ChickWeight$Chick)
+  tV_wrob_chole <- targetVariance(wlm_rob_chole, ChickWeight$Chick)
+  
+  expect_equal(tV_wlm, tV_wrob)
+  expect_equal(tV_wlm, tV_wrob_chole)
+  
+})
+
+
+test_that("weightMatrix() works", {
+  
+  # unweighted tests
+  
+  wM_fit <- weightMatrix(lm_fit, ChickWeight$Chick)
+  wM_rob <- weightMatrix(lm_rob, ChickWeight$Chick)
+  wM_rob_chole <- weightMatrix(lm_rob_chole, ChickWeight$Chick)
+  
+  expect_equal(wM_fit, wM_rob)
+  expect_equal(wM_fit, wM_rob_chole)
+  
+  wM_rob_fe <- weightMatrix(lm_rob_fe, ChickWeight$Chick)
+  wM_rob_fe_chole <- weightMatrix(lm_rob_fe_chole, ChickWeight$Chick)
+  
+  expect_equal(wM_fit, wM_rob_fe)
+  expect_equal(wM_fit, wM_rob_fe_chole)
+  
+  # weighted tests
+  
+  wM_wlm <- weightMatrix(wlm_fit, ChickWeight$Chick)
+  wM_wrob <- weightMatrix(wlm_rob, ChickWeight$Chick)
+  wM_wrob_chole <- weightMatrix(wlm_rob_chole, ChickWeight$Chick)
+  
+  expect_equal(wM_wlm, wM_wrob)
+  expect_equal(wM_wlm, wM_wrob_chole)
+  
+})
 
 test_that("sandwich::bread works", {
   
@@ -51,137 +281,6 @@ test_that("sandwich::bread works", {
   bread_wlm <- bread(wlm_fit)
   bread_wrob <- bread(wlm_rob)
   expect_equal(bread_wlm, bread_wrob)
-  
-  # tests with missing values
-  dat_miss <- ChickWeight
-  i <- 1:nrow(ChickWeight)
-  miss1 <- sample(i, 7L)
-  miss2 <- sample(i, 9L)
-  dat_miss$Diet_miss <- dat_miss$Diet
-  dat_miss$Diet_miss[miss1] <- NA
-  dat_miss$wt_miss <- ifelse(i %in% miss1, NA, dat_miss$wt)
-  dat_miss$Chick_miss1 <- dat_miss$Chick
-  dat_miss$Chick_miss1[miss1] <- NA
-  dat_miss$Chick_miss2 <- dat_miss$Chick
-  dat_miss$Chick_miss2[miss2] <- NA
-  
-  dat_complete1 <- dat_miss[setdiff(i, miss1),]
-  dat_complete2 <- dat_miss[setdiff(i, miss2),]
-  dat_complete <- dat_miss[setdiff(i, c(miss1, miss2)),]
-  
-  # X missing
-  compare_model_frames(
-    data1 = dat_miss, data2 = dat_complete1, 
-    formula = weight ~ 0 + Time:Diet_miss, 
-    fixed_effects = ~ Chick + Diet,
-    clusters = Chick,
-    se_type = "CR0"
-  )
-  
-  # FE missing
-  compare_model_frames(
-    data1 = dat_miss, data2 = dat_complete1, 
-    formula = weight ~ 0 + Time:Diet, 
-    fixed_effects = ~ Chick + Diet_miss,
-    clusters = Chick,
-    se_type = "CR0"
-  )
-  
-  # FE missing
-  compare_model_frames(
-    data1 = dat_miss, data2 = dat_complete2, 
-    formula = weight ~ 0 + Time:Diet, 
-    fixed_effects = ~ Chick_miss2 + Diet,
-    clusters = Chick,
-    se_type = "CR0"
-  )
-  
-  # clusters missing
-  compare_model_frames(
-    data1 = dat_miss, data2 = dat_complete1, 
-    formula = weight ~ 0 + Time:Diet, 
-    fixed_effects = ~ Chick,
-    clusters = Chick_miss1,
-    se_type = "CR0"
-  )
-
-  # weights missing  
-  compare_model_frames(
-    data1 = dat_miss, data2 = dat_complete1, 
-    formula = weight ~ 0 + Time:Diet, 
-    weights = wt_miss,
-    fixed_effects = ~ Chick,
-    clusters = Chick,
-    se_type = "CR0"
-  )
-  
-  compare_model_frames(
-    data1 = dat_miss, data2 = dat_complete, 
-    formula = weight ~ 0 + Time:Diet_miss, 
-    fixed_effects = ~ Chick,
-    clusters = Chick_miss2,
-    se_type = "CR0"
-  )
-  
-  
-})
-
-test_that("model.frame() works", {
-  
-  # NOTE: These tests are identical from those for model_matrix(), except, they
-  # use model.frame()
-  
-  # unweighted tests
-  
-  mf_fit <- model.frame(lm_fit)
-  mf_rob <- model.frame(lm_rob)
-  mf_rob_chole <- model.frame(lm_rob_chole)
-  
-  expect_equal(mf_fit, mf_rob)
-  expect_equal(mf_fit, mf_rob_chole)
-  
-  mf_fit_fe <- model.frame(lm_fit_fe)
-  mf_rob_fe <- model.frame(lm_rob_fe)
-  mf_rob_fe_chole <- model.frame(lm_rob_fe_chole)
-  
-  expect_equivalent(mf_fit_fe, mf_rob_fe)
-  expect_equivalent(mf_fit_fe, mf_rob_fe_chole)
-  
-  # weighted tests
-  
-  mf_wlm <- model.frame(wlm_fit)
-  mf_wrob <- model.frame(wlm_rob)
-  mf_wrob_chole <- model.frame(wlm_rob_chole)
-  
-  expect_equal(mf_wlm, mf_wrob)
-  expect_equal(mf_wlm, mf_wrob_chole)
-
-})
-
-test_that("model_matrix() works", {
-  
-  # unweighted tests
-  
-  mm_fit <- model_matrix(lm_fit) 
-  mm_rob <- model_matrix(lm_rob)
-  mm_rob_chole <- model_matrix(lm_rob_chole)
-  
-  expect_equal(mm_fit, mm_rob)
-  expect_equal(mm_fit, mm_rob_chole)
-  
-  mm_fit_fe <- model_matrix(lm_fit_fe)
-  mm_rob_fe <- augmented_model_matrix(lm_rob_fe)
-  mm_rob_fe_chole <- augmented_model_matrix(lm_rob_fe_chole)
-  
-  expect_equivalent(mm_fit_fe, mm_rob_fe)
-  expect_equivalent(mm_fit_fe, mm_rob_fe_chole)
-  
-  # weighted tests
-  
-  mm_wlm <- model_matrix(wlm_fit)
-  mm_wrob <- model_matrix(wlm_rob)
-  
-  expect_equal(mm_wlm, mm_wrob)
   
 })
 
@@ -270,64 +369,6 @@ test_that("nobs() works", {
   
   expect_equal(nobs_wlm, nobs_wrob)
   expect_equal(nobs_wlm, nobs_wrob_chole)
-  
-})
-
-
-test_that("targetVariance() works", {
-  
-  # unweighted tests
-  
-  tV_fit <- targetVariance(lm_fit, ChickWeight$Chick)
-  tV_rob <- targetVariance(lm_rob, ChickWeight$Chick)
-  tV_rob_chole <- targetVariance(lm_rob_chole, ChickWeight$Chick)
-  
-  expect_equal(tV_fit, tV_rob)
-  expect_equal(tV_fit, tV_rob_chole)
-  
-  tV_rob_fe <- targetVariance(lm_rob_fe, ChickWeight$Chick)
-  tV_rob_fe_chole <- targetVariance(lm_rob_fe_chole, ChickWeight$Chick)
-  
-  expect_equal(tV_fit, tV_rob_fe)
-  expect_equal(tV_fit, tV_rob_fe_chole)
-  
-  # weighted tests
-  
-  tV_wlm <- targetVariance(wlm_fit, ChickWeight$Chick)
-  tV_wrob <- targetVariance(wlm_rob, ChickWeight$Chick)
-  tV_wrob_chole <- targetVariance(wlm_rob_chole, ChickWeight$Chick)
-  
-  expect_equal(tV_wlm, tV_wrob)
-  expect_equal(tV_wlm, tV_wrob_chole)
-  
-})
-
-
-test_that("weightMatrix() works", {
-  
-  # unweighted tests
-  
-  wM_fit <- weightMatrix(lm_fit, ChickWeight$Chick)
-  wM_rob <- weightMatrix(lm_rob, ChickWeight$Chick)
-  wM_rob_chole <- weightMatrix(lm_rob_chole, ChickWeight$Chick)
-  
-  expect_equal(wM_fit, wM_rob)
-  expect_equal(wM_fit, wM_rob_chole)
-  
-  wM_rob_fe <- weightMatrix(lm_rob_fe, ChickWeight$Chick)
-  wM_rob_fe_chole <- weightMatrix(lm_rob_fe_chole, ChickWeight$Chick)
-  
-  expect_equal(wM_fit, wM_rob_fe)
-  expect_equal(wM_fit, wM_rob_fe_chole)
-  
-  # weighted tests
-  
-  wM_wlm <- weightMatrix(wlm_fit, ChickWeight$Chick)
-  wM_wrob <- weightMatrix(wlm_rob, ChickWeight$Chick)
-  wM_wrob_chole <- weightMatrix(wlm_rob_chole, ChickWeight$Chick)
-  
-  expect_equal(wM_wlm, wM_wrob)
-  expect_equal(wM_wlm, wM_wrob_chole)
   
 })
 

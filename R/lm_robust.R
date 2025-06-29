@@ -127,14 +127,14 @@ compare_model_frames <- function(data1, data2, ...) {
   cl1$data2 <- NULL
   names(cl1)[2] <- "data"
   cl1[[1]] <- quote(estimatr::lm_robust)
-  m1 <- eval(cl1, parent.frame())
+  m1 <- suppressWarnings(eval(cl1, parent.frame()))
   mf1 <- model.frame(m1)
 
   cl2 <- cl
   cl2$data1 <- NULL
   names(cl2)[2] <- "data"
   cl2[[1]] <- quote(estimatr::lm_robust)
-  m2 <- eval(cl2, parent.frame())
+  m2 <- suppressWarnings(eval(cl2, parent.frame()))
   mf2 <- model.frame(m2)
   
   testthat::expect_equivalent(mf1, mf2)
@@ -152,18 +152,37 @@ model.frame.lm_robust <- function (formula, ...) {
   mf_cl <- cl[c(1L, mf_args)]
   mf_cl[[1L]] <- quote(stats::model.frame)
   mf <- eval(mf_cl, parent.frame())
+  if (!formula$fes) return(mf)
   
-  if (formula$fes) {
-    # Construct a model.frame for fixed effects
-    fe_args <- match(c("fixed_effects","data","subset"), names(cl), 0L)
-    fe_cl <- cl[c(1L, fe_args)]
-    names(fe_cl)[[2]] <- "formula"
-    fe_cl[[1L]] <- quote(stats::model.frame)
-    mf_fe <- eval(fe_cl, parent.frame())
+  # Construct a model.frame for fixed effects
+  fe_args <- match(c("fixed_effects","data","subset"), names(cl), 0L)
+  fe_cl <- cl[c(1L, fe_args)]
+  names(fe_cl)[[2]] <- "formula"
+  fe_cl[[1L]] <- quote(stats::model.frame)
+  mf_fe <- eval(fe_cl, parent.frame())
+  
+  # compare omitted rows across model and fixed effects
+  mf_omit <- na.action(mf)
+  fe_omit <- na.action(mf_fe)
+  
+  # combine model.frames for model and for fixed effects  
+  if (identical(mf_omit, fe_omit)) {
+    mf_combined <- cbind(mf, mf_fe)
+    mf_combined_omit <- mf_omit
+  } else {
+    mf_combined <- cbind(
+      mf[!(rownames(mf) %in% fe_omit),,drop=FALSE],
+      mf_fe[!(rownames(mf_fe) %in% mf_omit),,drop=FALSE]
+    )
+    mf_combined_omit <- sort(c(mf_omit, fe_omit))
+    i_unique <- !duplicated(mf_combined_omit)
+    mf_combined_omit <- mf_combined_omit[i_unique]
+    class(mf_combined_omit) <- "omit"
   }
+  attr(mf_combined, "terms") <- attr(mf, "terms")
+  attr(mf_combined, "na.action") <- mf_combined_omit
   
-  
-  mf
+  return(mf_combined)
 }
 
 
