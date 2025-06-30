@@ -54,6 +54,8 @@
 
 vcovCR.lm_robust <- function(obj, cluster, type, target = NULL, inverse_var = NULL, form = "sandwich", ...) {
   
+  obj$model.frame <- model.frame(obj)
+  
   if (missing(cluster)) {
     cluster <- findCluster.lm_robust(obj)
     if (is.null(cluster)) stop("You must specify a clustering variable or `obj` must include a clustering variable.")
@@ -78,17 +80,10 @@ findCluster.lm_robust <- function(obj) {
   
   if (!obj$clustered) return(NULL)
   
-  cluster_expr <- obj$call$clusters
-  fit_env <- environment(obj$terms)
+  mf <- obj$model.frame
+  if (is.null(mf)) mf <- model.frame(obj)
   
-  if (!is.null(obj$call$data)) {
-    data_val <- eval(obj$call$data, envir = fit_env)
-    cluster <- eval(cluster_expr, envir = data_val, enclos = fit_env)
-  } else {
-    cluster <- eval(cluster_expr, envir = fit_env)
-  }
-  
-  return(cluster)
+  mf[["(clusters)"]]
 }
 
 
@@ -98,13 +93,16 @@ augmented_model_matrix.lm_robust <- function(obj, cluster, inverse_var, ignore_F
   
   if(!obj$fes) return(NULL)
   
-  frm <- as.formula(obj$call$formula)
+  frm <- as.formula(obj$call$formula) # core predictor formula
   
   fe_expr <- obj$call$fixed_effects[[2]]
   update_formula <- substitute(. ~ fe_expr + ., list(fe_expr = fe_expr))
   frm <- update(frm, update_formula)
   
-  model.matrix(frm, model.frame(obj))
+  mf <- obj$model.frame
+  if (is.null(mf)) mf <- model.frame(obj)
+  
+  model.matrix(frm, data = mf)
 }
 
 
@@ -114,12 +112,15 @@ model_matrix.lm_robust <- function(obj) {
   
   if (!obj$fes) return(model.matrix(obj))
   
+  mf <- obj$model.frame
+  if (is.null(mf)) mf <- model.frame(obj)
+  
   frm <- as.formula(obj$call$formula)
-  X_mat <- model.matrix(frm, model.frame(obj))
+  X_mat <- model.matrix(frm, data = mf)
   
   fe_frm <- as.formula(paste("~ 0 +", obj$call$fixed_effects[[2]]))
   
-  F_mat <- model.matrix(fe_frm, model.frame(obj))
+  F_mat <- model.matrix(fe_frm, data = mf)
   
   model <- stats::lm.fit(F_mat, X_mat)
   
@@ -151,14 +152,17 @@ compare_model_frames <- function(data1, data2, ...) {
 
 model.frame.lm_robust <- function (formula, ...) {
   
+  # environment where initial call was evaluated
+  fit_env <- environment(formula$terms) 
+  
   # Extract relevant arguments from call
   cl <- formula$call
   mf_args <- match(c("formula","data","weights","subset","clusters"), names(cl), 0L)
   
-  # Construct the model.frame
+  # Construct the model.frame for outcome and core predictors
   mf_cl <- cl[c(1L, mf_args)]
   mf_cl[[1L]] <- quote(stats::model.frame)
-  mf <- eval(mf_cl, parent.frame())
+  mf <- eval(mf_cl, envir = fit_env)
   if (!formula$fes) return(mf)
   
   # Construct a model.frame for fixed effects
@@ -166,7 +170,7 @@ model.frame.lm_robust <- function (formula, ...) {
   fe_cl <- cl[c(1L, fe_args)]
   names(fe_cl)[[2]] <- "formula"
   fe_cl[[1L]] <- quote(stats::model.frame)
-  mf_fe <- eval(fe_cl, parent.frame())
+  mf_fe <- eval(fe_cl, envir = fit_env)
   
   # compare omitted rows across model and fixed effects
   mf_omit <- na.action(mf)
@@ -198,7 +202,10 @@ model.frame.lm_robust <- function (formula, ...) {
 
 residuals.lm_robust <- function(object, ...) {
   
-  model.frame(object)[[object$outcome]] - object$fitted.values
+  mf <- object$model.frame
+  if (is.null(mf)) mf <- model.frame(object)
+  
+  mf[[object$outcome]] - object$fitted.values
   
 }
 
@@ -225,7 +232,9 @@ bread.lm_robust <- function(x, ...) {
 
 na.action.lm_robust <- function(object, ...)  {
   
-  na.action(model.frame(object))
+  mf <- object$model.frame
+  if (is.null(mf)) mf <- model.frame(object)
   
+  na.action(mf)
 }
 

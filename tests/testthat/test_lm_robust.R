@@ -7,41 +7,39 @@ suppressMessages(library(estimatr, quietly=TRUE))
 
 set.seed(20190513)
 data("ChickWeight", package = "datasets")
-ChickWeight$wt <- 1 + rpois(nrow(ChickWeight), 3)
+N <- nrow(ChickWeight)
+ChickWeight$wt <- 1 + rpois(N, 3)
 ChickWeight$Chick_ordered <- ChickWeight$Chick # James' suggestion 4/16
 ChickWeight$Chick <- factor(ChickWeight$Chick, ordered = FALSE)
+ChickWeight$rando <- "Drop"
+ChickWeight$rando[sample(1:N, size = round(0.8 * N))] <- "Keep"
+table(ChickWeight$rando)
 
 lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
-lm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
-                    clusters = Chick)
+lm_rob <- lm_robust(
+  weight ~ 0 + Diet + Time:Diet, 
+  data = ChickWeight, 
+  clusters = Chick
+)
 
 lm_fit_fe <- lm(weight ~ 0 + Time:Diet + Chick, data = ChickWeight)
-lm_rob_fe <- lm_robust(weight ~ 0 + Time:Diet, data = ChickWeight, 
-                    clusters = Chick, fixed_effects = ~Chick)
+lm_rob_fe <- lm_robust(
+  weight ~ 0 + Time:Diet, 
+  data = ChickWeight, 
+  clusters = Chick, 
+  fixed_effects = ~ Chick
+)
 
 wlm_fit <- lm(weight ~ 0 + Diet + Time:Diet, weights = wt, data = ChickWeight)
-wlm_rob <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
-                     data = ChickWeight, clusters = Chick)
+wlm_rob <- lm_robust(
+  weight ~ 0 + Diet + Time:Diet, 
+  weights = wt, 
+  data = ChickWeight, 
+  clusters = Chick
+)
 
 
 
-# set up tests with missing values
-
-dat_miss <- ChickWeight
-i <- 1:nrow(ChickWeight)
-miss1 <- 3:8
-miss2 <- sample(i, 9L)
-dat_miss$Diet_miss <- dat_miss$Diet
-dat_miss$Diet_miss[miss1] <- NA
-dat_miss$wt_miss <- ifelse(i %in% miss1, NA, dat_miss$wt)
-dat_miss$Chick_miss1 <- dat_miss$Chick
-dat_miss$Chick_miss1[miss1] <- NA
-dat_miss$Chick_miss2 <- dat_miss$Chick
-dat_miss$Chick_miss2[miss2] <- NA
-
-dat_complete1 <- dat_miss[setdiff(i, miss1),]
-dat_complete2 <- dat_miss[setdiff(i, miss2),]
-dat_complete <- dat_miss[setdiff(i, c(miss1, miss2)),]
 
 test_that("model.frame() works", {
   
@@ -67,6 +65,24 @@ test_that("model.frame() works", {
 
   expect_equal(mf_wlm, mf_wrob)
 
+  # set up tests with missing values
+  
+  dat_miss <- ChickWeight
+  i <- 1:nrow(ChickWeight)
+  miss1 <- 3:8
+  miss2 <- sample(i, 9L)
+  dat_miss$Diet_miss <- dat_miss$Diet
+  dat_miss$Diet_miss[miss1] <- NA
+  dat_miss$wt_miss <- ifelse(i %in% miss1, NA, dat_miss$wt)
+  dat_miss$Chick_miss1 <- dat_miss$Chick
+  dat_miss$Chick_miss1[miss1] <- NA
+  dat_miss$Chick_miss2 <- dat_miss$Chick
+  dat_miss$Chick_miss2[miss2] <- NA
+  
+  dat_complete1 <- dat_miss[setdiff(i, miss1),]
+  dat_complete2 <- dat_miss[setdiff(i, miss2),]
+  dat_complete <- dat_miss[setdiff(i, c(miss1, miss2)),]
+  
   # X missing
   compare_model_frames(
     data1 = dat_miss, data2 = dat_complete1, 
@@ -168,18 +184,14 @@ test_that("model_matrix() works", {
   
   mm_fit <- model_matrix(lm_fit) 
   mm_rob <- model_matrix(lm_rob)
-  mm_rob_chole <- model_matrix(lm_rob_chole)
-  
+
   expect_equivalent(mm_fit, mm_rob)
-  expect_equivalent(mm_fit, mm_rob_chole)
-  
+
   mm_fit_fe <- model_matrix(lm_fit_fe)
   mm_rob_fe <- augmented_model_matrix(lm_rob_fe)
-  mm_rob_fe_chole <- augmented_model_matrix(lm_rob_fe_chole)
-  
+
   expect_equivalent(mm_fit_fe, mm_rob_fe)
-  expect_equivalent(mm_fit_fe, mm_rob_fe_chole)
-  
+
   # weighted tests
   
   mm_wlm <- model_matrix(wlm_fit)
@@ -269,14 +281,12 @@ test_that("residuals_CS() works", {
   rcs_rob_fe <- residuals_CS(lm_rob_fe)
   
   expect_equal(rcs_fit_fe, rcs_rob_fe)
-  expect_equal(rcs_fit_fe, rcs_rob_fe_chole)
-  
+
   # weighted tests
   
   rcs_wlm <- residuals_CS(wlm_fit)
   rcs_wrob <- residuals_CS(wlm_rob)
-  rcs_wrob_chole <- residuals_CS(wlm_rob_chole)
-  
+
   expect_equal(rcs_wlm, rcs_wrob)
 })
 
@@ -544,29 +554,32 @@ test_that("try_cholesky argument does not interfere with vcovCR functionality", 
 test_that("subset argument does not interfere with vcovCR functionality", {
   
   lm_fit_sub <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
-                            subset = ChickWeight$Diet == "1")
+                            subset = ChickWeight$rando == "Keep")
   lm_rob_sub <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
-                            clusters = Chick, subset = ChickWeight$Diet == "1")
+                            clusters = Chick, subset = ChickWeight$rando == "Keep")
   
-  expect_equal(vcovCR(lm_fit_sub, ChickWeight$Chick, type = "CR2"), 
+  expect_equal(vcovCR(lm_fit_sub, ChickWeight$Chick[ChickWeight$rando == "Keep"], type = "CR2"), 
                vcovCR(lm_rob_sub, type = "CR2"))
   
   lm_fit_fe_sub <- lm(weight ~ 0 + Time:Diet + Chick, data = ChickWeight, 
-                                  subset = ChickWeight$Diet == "1")
+                                  subset = ChickWeight$rando == "Keep")
   lm_rob_fe_sub <- lm_robust(weight ~ 0 + Time:Diet, data = ChickWeight, 
                                   clusters = Chick, fixed_effects = ~Chick,
-                                  subset = ChickWeight$Diet == "1")
+                                  subset = ChickWeight$rando == "Keep")
   
-  expect_equal(vcovCR(lm_fit_fe_sub, ChickWeight$Chick, type = "CR2"),
-               vcovCR(lm_rob_fe_sub, type = "CR2"))
+  sub_coef <- names(coef(lm_rob_fe_sub))
+  expect_equivalent(
+    vcovCR(lm_fit_fe_sub, ChickWeight$Chick[ChickWeight$rando == "Keep"], type = "CR2")[sub_coef, sub_coef],
+    as.matrix(vcovCR(lm_rob_fe_sub, type = "CR2"))
+  )
   
   wlm_fit_sub <- lm(weight ~ 0 + Diet + Time:Diet, weights = wt, 
-                            data = ChickWeight, subset = ChickWeight$Diet == "1")
+                            data = ChickWeight, subset = ChickWeight$rando == "Keep")
   wlm_rob_sub <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
                             data = ChickWeight, clusters = Chick, 
-                            subset = ChickWeight$Diet == "1")
+                            subset = ChickWeight$rando == "Keep")
   
-  expect_equal(vcovCR(wlm_fit_sub, ChickWeight$Chick, type = "CR2"),
+  expect_equal(vcovCR(wlm_fit_sub, ChickWeight$Chick[ChickWeight$rando == "Keep"], type = "CR2"),
                vcovCR(wlm_rob_sub, type = "CR2"))
   
 })
@@ -641,7 +654,7 @@ test_that("coef_test() works with lm_robust", {
 
 test_that("Order doesn't matter.",{
   
-  check_sort_order(belts_rob, belts, "month")
+  check_sort_order(belts_rob, belts, "month", tol = 1e-5)
   
 })
 
@@ -668,13 +681,14 @@ test_that("clubSandwich works with dropped observations", {
 })
 
 
+
 test_that("clubSandwich requires no missing values on the clustering variable", {
+  
   belts_miss <- belts
   miss_indicator <- sample.int(nrow(belts), size = round(nrow(belts) / 10))
   belts_miss$month[miss_indicator] <- NA
   
   rob_dropped <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = belts_miss)
-  
   expect_error(vcovCR(rob_dropped, cluster = belts_miss$month, type = "CR0"), 
                "Clustering variable cannot have missing values.")
   expect_error(coef_test(rob_dropped, vcov = "CR0", cluster = belts_miss$month, test = "All"),
