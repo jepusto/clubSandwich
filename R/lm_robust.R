@@ -25,26 +25,40 @@
 #' @examples 
 #' 
 #' data("ChickWeight", package = "datasets")
+#' ChickWeight$Chick <- factor(ChickWeight$Chick, ordered = FALSE)
 #' 
 #' if (requireNamespace("estimatr", quietly = TRUE)) withAutoprint({
+#'   library(estimatr)
 #' 
-#'   lm_fit <- lm_robust(weight ~ Time + Diet:Time, data = ChickWeight)
+#'   lm_fit <- lm_robust(
+#'     weight ~ Time + Diet:Time, 
+#'     data = ChickWeight
+#'    )
 #'   vcovCR(lm_fit, cluster = ChickWeight$Chick, type = "CR2")
 #'   
-#'   lm_fit_clust <- lm_robust(weight ~ Time + Diet:Time, data = ChickWeight,
-#'                             clusters = ChickWeight$Chick)
-#'   vcovCR(lm_fit, type = "CR2")
+#'   lm_fit_clust <- lm_robust(
+#'     weight ~ Time + Diet:Time, data = ChickWeight,
+#'     clusters = Chick
+#'    )
+#'   vcovCR(lm_fit_clust, type = "CR2")
 #'   
-#'   lm_fit_fe <- lm_robust(weight ~ 0 + Time:Diet, data = ChickWeight, 
-#'   clusters = Chick, fixed_effects = ~Chick)
+#'   lm_fit_fe <- lm_robust(
+#'     weight ~ Time:Diet, data = ChickWeight, 
+#'     clusters = Chick, 
+#'     fixed_effects = ~ Chick
+#'    )
 #'   vcovCR(lm_fit_fe, type = "CR2")
 #' 
 #'   if (requireNamespace("plm", quietly = TRUE)) withAutoprint({
 #' 
 #'     data("Produc", package = "plm")
-#'     lm_individual <- lm_robust(log(gsp) ~ 0 + state + log(pcap) + log(pc) + log(emp) + unemp, data = Produc)
-#'     individual_index <- !grepl("state", names(coef(lm_individual)))
-#'     vcovCR(lm_individual, cluster = Produc$state, type = "CR2")[individual_index,individual_index]
+#'     lm_individual <- lm_robust(
+#'       log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+#'       data = Produc,
+#'       fixed_effects = ~ state,
+#'       cluster = state
+#'      )
+#'     vcovCR(lm_individual, type = "CR2")
 #'   
 #'   })
 #'   
@@ -80,10 +94,7 @@ findCluster.lm_robust <- function(obj) {
   
   if (!obj$clustered) return(NULL)
   
-  mf <- obj$model.frame
-  if (is.null(mf)) mf <- model.frame(obj)
-  
-  mf[["(clusters)"]]
+  model.frame(obj)[["(clusters)"]]
 }
 
 
@@ -93,16 +104,11 @@ augmented_model_matrix.lm_robust <- function(obj, cluster, inverse_var, ignore_F
   
   if(!obj$fes) return(NULL)
   
-  frm <- as.formula(obj$call$formula) # core predictor formula
+  fe_formula <- as.formula(obj$call$fixed_effects)
+  fe_formula <- update(fe_formula, ~ . - 1)
+  mf <- model.frame(obj)
+  model.matrix(fe_formula, data = mf)
   
-  fe_expr <- obj$call$fixed_effects[[2]]
-  update_formula <- substitute(. ~ fe_expr + ., list(fe_expr = fe_expr))
-  frm <- update(frm, update_formula)
-  
-  mf <- obj$model.frame
-  if (is.null(mf)) mf <- model.frame(obj)
-  
-  model.matrix(frm, data = mf)
 }
 
 
@@ -112,15 +118,18 @@ model_matrix.lm_robust <- function(obj) {
   
   if (!obj$fes) return(model.matrix(obj))
   
-  mf <- obj$model.frame
-  if (is.null(mf)) mf <- model.frame(obj)
+  mf <- model.frame(obj)
   
   frm <- as.formula(obj$call$formula)
   X_mat <- model.matrix(frm, data = mf)
+  intercept_col <- colnames(X_mat) == "(Intercept)"
+  if (any(intercept_col)) {
+    X_mat <- X_mat[,!intercept_col,drop=FALSE]
+  }
   
-  fe_frm <- as.formula(paste("~ 0 +", obj$call$fixed_effects[[2]]))
-  
-  F_mat <- model.matrix(fe_frm, data = mf)
+  fe_formula <- as.formula(obj$call$fixed_effects)
+  fe_formula <- update(fe_formula, ~ . - 1)
+  F_mat <- model.matrix(fe_formula, data = mf)
   
   model <- stats::lm.fit(F_mat, X_mat)
   
@@ -128,29 +137,14 @@ model_matrix.lm_robust <- function(obj) {
   
 }
 
-compare_model_frames <- function(data1, data2, ...) {
-  cl <- match.call()
-  
-  cl1 <- cl
-  cl1$data2 <- NULL
-  names(cl1)[2] <- "data"
-  cl1[[1]] <- quote(estimatr::lm_robust)
-  m1 <- suppressWarnings(eval(cl1, parent.frame()))
-  mf1 <- model.frame(m1)
-
-  cl2 <- cl
-  cl2$data1 <- NULL
-  names(cl2)[2] <- "data"
-  cl2[[1]] <- quote(estimatr::lm_robust)
-  m2 <- suppressWarnings(eval(cl2, parent.frame()))
-  mf2 <- model.frame(m2)
-  
-  testthat::expect_equivalent(mf1, mf2)
-}
 
 #' @export
 
 model.frame.lm_robust <- function (formula, ...) {
+  
+  # check if model.frame is already stored in the object
+  mf <- formula$model.frame
+  if (!is.null(mf)) return(mf)
   
   # environment where initial call was evaluated
   fit_env <- environment(formula$terms) 
@@ -202,8 +196,7 @@ model.frame.lm_robust <- function (formula, ...) {
 
 residuals.lm_robust <- function(object, ...) {
   
-  mf <- object$model.frame
-  if (is.null(mf)) mf <- model.frame(object)
+  mf <- model.frame(object)
   
   mf[[object$outcome]] - object$fitted.values
   
@@ -231,10 +224,6 @@ bread.lm_robust <- function(x, ...) {
 #' @export
 
 na.action.lm_robust <- function(object, ...)  {
-  
-  mf <- object$model.frame
-  if (is.null(mf)) mf <- model.frame(object)
-  
-  na.action(mf)
+  na.action(model.frame(object))
 }
 

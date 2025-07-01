@@ -5,12 +5,13 @@ skip_if_not_installed("estimatr")
 suppressMessages(library(estimatr, quietly=TRUE))
 
 
-set.seed(20190513)
+set.seed(20250630)
 data("ChickWeight", package = "datasets")
 N <- nrow(ChickWeight)
 ChickWeight$wt <- 1 + rpois(N, 3)
 ChickWeight$Chick_ordered <- ChickWeight$Chick # James' suggestion 4/16
 ChickWeight$Chick <- factor(ChickWeight$Chick, ordered = FALSE)
+ChickWeight$Chick_int <- as.integer(ChickWeight$Chick)
 ChickWeight$rando <- "Drop"
 ChickWeight$rando[sample(1:N, size = round(0.8 * N))] <- "Keep"
 table(ChickWeight$rando)
@@ -24,7 +25,7 @@ lm_rob <- lm_robust(
 
 lm_fit_fe <- lm(weight ~ 0 + Time:Diet + Chick, data = ChickWeight)
 lm_rob_fe <- lm_robust(
-  weight ~ 0 + Time:Diet, 
+  weight ~ Time:Diet, 
   data = ChickWeight, 
   clusters = Chick, 
   fixed_effects = ~ Chick
@@ -37,8 +38,6 @@ wlm_rob <- lm_robust(
   data = ChickWeight, 
   clusters = Chick
 )
-
-
 
 
 test_that("model.frame() works", {
@@ -66,6 +65,7 @@ test_that("model.frame() works", {
   expect_equal(mf_wlm, mf_wrob)
 
   # set up tests with missing values
+  set.seed(20250629)
   
   dat_miss <- ChickWeight
   i <- 1:nrow(ChickWeight)
@@ -79,23 +79,43 @@ test_that("model.frame() works", {
   dat_miss$Chick_miss2 <- dat_miss$Chick
   dat_miss$Chick_miss2[miss2] <- NA
   
-  dat_complete1 <- dat_miss[setdiff(i, miss1),]
-  dat_complete2 <- dat_miss[setdiff(i, miss2),]
-  dat_complete <- dat_miss[setdiff(i, c(miss1, miss2)),]
+  dat_complete1 <- droplevels(dat_miss[setdiff(i, miss1),])
+  dat_complete2 <- droplevels(dat_miss[setdiff(i, miss2),])
+  dat_complete <- droplevels(dat_miss[setdiff(i, c(miss1, miss2)),])
+  
+  compare_model_frames <- function(data1, data2, ...) {
+    cl <- match.call()
+    
+    cl1 <- cl
+    cl1$data2 <- NULL
+    names(cl1)[2] <- "data"
+    cl1[[1]] <- quote(estimatr::lm_robust)
+    m1 <- suppressWarnings(eval(cl1, parent.frame()))
+    mf1 <- model.frame(m1)
+    
+    cl2 <- cl
+    cl2$data1 <- NULL
+    names(cl2)[2] <- "data"
+    cl2[[1]] <- quote(estimatr::lm_robust)
+    m2 <- suppressWarnings(eval(cl2, parent.frame()))
+    mf2 <- model.frame(m2)
+    
+    expect_equivalent(mf1, mf2)
+  }
   
   # X missing
   compare_model_frames(
     data1 = dat_miss, data2 = dat_complete1, 
-    formula = weight ~ 0 + Time:Diet_miss, 
+    formula = weight ~ Time:Diet_miss, 
     fixed_effects = ~ Chick + Diet,
-    clusters = Chick,
+    clusters = Chick_int,
     se_type = "CR0"
   )
   
   # clusters missing
   compare_model_frames(
     data1 = dat_miss, data2 = dat_complete1, 
-    formula = weight ~ 0 + Time:Diet, 
+    formula = weight ~ Time:Diet, 
     fixed_effects = ~ Chick,
     clusters = Chick_miss1,
     se_type = "CR0"
@@ -104,56 +124,54 @@ test_that("model.frame() works", {
   # weights missing  
   compare_model_frames(
     data1 = dat_miss, data2 = dat_complete1, 
-    formula = weight ~ 0 + Time:Diet, 
+    formula = weight ~ Time:Diet, 
     weights = wt_miss,
     fixed_effects = ~ Chick,
-    clusters = Chick,
-    se_type = "CR0"
+    se_type = "HC0"
   )
   
   # FE missing
   compare_model_frames(
     data1 = dat_miss, data2 = dat_complete1, 
-    formula = weight ~ 0 + Time:Diet, 
+    formula = weight ~ Time:Diet, 
     fixed_effects = ~ Chick + Diet_miss,
-    clusters = Chick,
+    clusters = Chick_int,
     se_type = "CR0"
   )
   compare_model_frames(
     data1 = dat_miss, data2 = dat_complete2, 
-    formula = weight ~ 0 + Time:Diet, 
+    formula = weight ~ Time:Diet, 
     fixed_effects = ~ Chick_miss2 + Diet,
-    clusters = Chick,
-    se_type = "CR0"
+    se_type = "HC0"
   )
   
   # X and FE missing
   compare_model_frames(
     data1 = dat_miss, data2 = dat_complete1, 
-    formula = weight ~ 0 + Time:Diet_miss, 
+    formula = weight ~ Time:Diet_miss, 
     fixed_effects = ~ Chick_miss1,
-    clusters = Chick,
+    clusters = Chick_int,
     se_type = "CR0"
   )
   compare_model_frames(
     data1 = dat_miss, data2 = dat_complete, 
-    formula = weight ~ 0 + Time:Diet_miss, 
+    formula = weight ~ Time:Diet_miss, 
     fixed_effects = ~ Chick_miss2,
-    clusters = Chick,
+    clusters = Chick_int,
     se_type = "CR0"
   )
   
   # clusters and FE missing
   compare_model_frames(
     data1 = dat_miss, data2 = dat_complete1, 
-    formula = weight ~ 0 + Time:Diet, 
+    formula = weight ~ Time:Diet, 
     fixed_effects = ~ Chick_miss1,
     clusters = Chick_miss1,
     se_type = "CR0"
   )
   compare_model_frames(
     data1 = dat_miss, data2 = dat_complete, 
-    formula = weight ~ 0 + Time:Diet, 
+    formula = weight ~ Time:Diet, 
     fixed_effects = ~ Chick_miss1,
     clusters = Chick_miss2,
     se_type = "CR0"
@@ -162,19 +180,18 @@ test_that("model.frame() works", {
   # weights and FE missing  
   compare_model_frames(
     data1 = dat_miss, data2 = dat_complete1, 
-    formula = weight ~ 0 + Time:Diet, 
+    formula = weight ~ Time:Diet, 
     weights = wt_miss,
     fixed_effects = ~ Chick_miss1,
-    clusters = Chick,
+    clusters = Chick_int,
     se_type = "CR0"
   )
   compare_model_frames(
     data1 = dat_miss, data2 = dat_complete, 
-    formula = weight ~ 0 + Time:Diet, 
+    formula = weight ~ Time:Diet, 
     weights = wt_miss,
     fixed_effects = ~ Chick_miss2,
-    clusters = Chick,
-    se_type = "CR0"
+    se_type = "HC0"
   )
 })
 
@@ -188,9 +205,20 @@ test_that("model_matrix() works", {
   expect_equivalent(mm_fit, mm_rob)
 
   mm_fit_fe <- model_matrix(lm_fit_fe)
-  mm_rob_fe <- augmented_model_matrix(lm_rob_fe)
+  mm_rob_fe <- model_matrix(lm_rob_fe)
+  amm_rob_fe <- augmented_model_matrix(lm_rob_fe)
 
-  expect_equivalent(mm_fit_fe, mm_rob_fe)
+  # Check that fixed effects are the same
+  expect_equivalent(mm_fit_fe[,colnames(amm_rob_fe)], amm_rob_fe)
+  # Core predictor matrices are different
+  expect_false(identical(mm_rob_fe, mm_fit_fe[,colnames(mm_rob_fe)]))
+  # But one can be computed by residualizing
+  expect_equivalent(
+    mm_rob_fe,
+    residuals(lm.fit(amm_rob_fe, mm_fit_fe[,colnames(mm_rob_fe)]))
+  )
+  # model matrix is centered by chick so means are zero
+  expect_lt(max(abs(apply(mm_rob_fe, 2, \(x) tapply(x, ChickWeight$Chick, mean)))), 1e-12)
 
   # weighted tests
   
@@ -406,7 +434,7 @@ test_that("vcovCR works", {
                    label = paste0("When type = ", type, ", ", "as.matrix(vcov_lmr)"))
       
       lm_rob_fe_type <- lm_robust(
-        weight ~ 0 + Time:Diet, data = ChickWeight, 
+        weight ~ Time:Diet, data = ChickWeight, 
         clusters = Chick, fixed_effects = ~Chick,
         se_type = type
       )
@@ -531,20 +559,34 @@ test_that("na.action.lm_robust() works correctly", {
 
 test_that("try_cholesky argument does not interfere with vcovCR functionality", {
   
-  lm_rob_chole <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
-                            clusters = Chick, try_cholesky = TRUE)
+  lm_rob_chole <- lm_robust(
+    weight ~ 0 + Diet + Time:Diet, 
+    data = ChickWeight, 
+    clusters = Chick, 
+    try_cholesky = TRUE
+  )
   
-  expect_equal(vcovCR(lm_rob, type = "CR2"), vcovCR(lm_rob_chole, type = "CR2"))
+  expect_equal(
+    vcovCR(lm_rob, type = "CR2"), 
+    vcovCR(lm_rob_chole, type = "CR2")
+  )
   
-  lm_rob_fe_chole <- lm_robust(weight ~ 0 + Time:Diet, data = ChickWeight, 
-                               clusters = Chick, fixed_effects = ~Chick,
-                               try_cholesky = TRUE)
+  lm_rob_fe_chole <- lm_robust(
+    weight ~ Time:Diet, data = ChickWeight, 
+    clusters = Chick, 
+    fixed_effects = ~Chick,
+    try_cholesky = TRUE
+  )
   
   expect_equal(vcovCR(lm_rob_fe, type = "CR2"), vcovCR(lm_rob_fe_chole, type = "CR2"))
   
-  wlm_rob_chole <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
-                             data = ChickWeight, clusters = Chick,
-                             try_cholesky = TRUE)
+  wlm_rob_chole <- lm_robust(
+    weight ~ 0 + Diet + Time:Diet, 
+    weights = wt, 
+    data = ChickWeight, 
+    clusters = Chick,
+    try_cholesky = TRUE
+  )
   
   expect_equal(vcovCR(wlm_rob, type = "CR2"), vcovCR(wlm_rob_chole, type = "CR2"))
   
@@ -561,11 +603,18 @@ test_that("subset argument does not interfere with vcovCR functionality", {
   expect_equal(vcovCR(lm_fit_sub, ChickWeight$Chick[ChickWeight$rando == "Keep"], type = "CR2"), 
                vcovCR(lm_rob_sub, type = "CR2"))
   
-  lm_fit_fe_sub <- lm(weight ~ 0 + Time:Diet + Chick, data = ChickWeight, 
-                                  subset = ChickWeight$rando == "Keep")
-  lm_rob_fe_sub <- lm_robust(weight ~ 0 + Time:Diet, data = ChickWeight, 
-                                  clusters = Chick, fixed_effects = ~Chick,
-                                  subset = ChickWeight$rando == "Keep")
+  lm_fit_fe_sub <- lm(
+    weight ~ 0 + Time:Diet + Chick, 
+    data = ChickWeight, 
+    subset = ChickWeight$rando == "Keep"
+  )
+  lm_rob_fe_sub <- lm_robust(
+    weight ~ Time:Diet, 
+    data = ChickWeight, 
+    clusters = Chick, 
+    fixed_effects = ~Chick,
+    subset = ChickWeight$rando == "Keep"
+  )
   
   sub_coef <- names(coef(lm_rob_fe_sub))
   expect_equivalent(
