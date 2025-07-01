@@ -35,8 +35,9 @@
 #' @description This is a generic function, with specific methods defined for 
 #'   \code{\link[stats]{lm}}, \code{\link[plm]{plm}}, \code{\link[stats]{glm}}, 
 #'   \code{\link[nlme]{gls}}, \code{\link[nlme]{lme}},
-#'   \code{\link[robumeta]{robu}}, \code{\link[metafor]{rma.uni}}, and
-#'   \code{\link[metafor]{rma.mv}} objects.
+#'   \code{\link[robumeta]{robu}}, \code{\link[metafor]{rma.uni}},
+#'   \code{\link[metafor]{rma.mv}}, and \code{\link[estimatr]{lm_robust}}
+#'    objects.
 #'   
 #' @details Several different small sample corrections are available, which run 
 #'   parallel with the "HC" corrections for heteroskedasticity-consistent 
@@ -99,7 +100,8 @@
 #' @seealso \code{\link{vcovCR.lm}}, \code{\link{vcovCR.plm}}, 
 #'   \code{\link{vcovCR.glm}}, \code{\link{vcovCR.gls}},
 #'   \code{\link{vcovCR.lme}}, \code{\link{vcovCR.lmerMod}}, \code{\link{vcovCR.robu}},
-#'   \code{\link{vcovCR.rma.uni}}, \code{\link{vcovCR.rma.mv}}
+#'   \code{\link{vcovCR.rma.uni}}, \code{\link{vcovCR.rma.mv}}, 
+#'   \code{\link{vcovCR.lm_robust}}
 #'   
 #' @examples 
 #' 
