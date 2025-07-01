@@ -40,6 +40,7 @@ wlm_rob <- lm_robust(
 )
 
 
+
 test_that("model.frame() works", {
   
   # unweighted tests
@@ -226,6 +227,44 @@ test_that("model_matrix() works", {
   mm_wrob <- model_matrix(wlm_rob)
   
   expect_equivalent(mm_wlm, mm_wrob)
+  
+})
+
+test_that("model_matrix() works without fixest", {
+  
+  local_mocked_bindings(
+    requireNamespace = function(...) FALSE
+  )
+  
+  expect_false(requireNamespace("fixest", quietly = TRUE))
+  
+  # unweighted tests
+  
+  mm_fit <- model_matrix(lm_fit) 
+  mm_rob <- model_matrix(lm_rob)
+  amm_rob_fe <- augmented_model_matrix(lm_rob_fe)
+  
+  expect_equivalent(mm_fit, mm_rob)
+  
+  mm_fit_fe <- model_matrix(lm_fit_fe)
+  mm_rob_fe <- model_matrix(lm_rob_fe)
+  
+  # Check that fixed effects are the same
+  expect_equivalent(mm_fit_fe[,colnames(amm_rob_fe)], amm_rob_fe)
+  # Core predictor matrices are different
+  expect_false(identical(mm_rob_fe, mm_fit_fe[,colnames(mm_rob_fe)]))
+  # But one can be computed by residualizing
+  expect_equivalent(
+    mm_rob_fe,
+    residuals(lm.fit(amm_rob_fe, mm_fit_fe[,colnames(mm_rob_fe)]))
+  )
+  # model matrix is centered by chick so means are zero
+  expect_lt(max(abs(apply(mm_rob_fe, 2, \(x) tapply(x, ChickWeight$Chick, mean)))), 1e-12)
+  
+  expect_message(
+    vcovCR(lm_rob_fe,type = "CR0"),
+    "For improved performance in models with fixed effects, install the package \\{fixest\\}\\."
+  )
   
 })
 

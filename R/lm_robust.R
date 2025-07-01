@@ -68,6 +68,8 @@
 
 vcovCR.lm_robust <- function(obj, cluster, type, target = NULL, inverse_var = NULL, form = "sandwich", ...) {
   
+  if (obj$fes && !requireNamespace("fixest", quietly = TRUE)) message("For improved performance in models with fixed effects, install the package {fixest}.")
+  
   obj$model.frame <- model.frame(obj)
   
   if (missing(cluster)) {
@@ -111,6 +113,7 @@ augmented_model_matrix.lm_robust <- function(obj, cluster, inverse_var, ignore_F
   
 }
 
+requireNamespace <- function(...) base::requireNamespace(...)
 
 #' @export
 
@@ -128,12 +131,18 @@ model_matrix.lm_robust <- function(obj) {
   }
   
   fe_formula <- as.formula(obj$call$fixed_effects)
-  fe_formula <- update(fe_formula, ~ . - 1)
-  F_mat <- model.matrix(fe_formula, data = mf)
   
-  model <- stats::lm.fit(F_mat, X_mat)
+  if (requireNamespace("fixest", quietly = TRUE)) {
+    fe_frame <- mf[attr(terms(fe_formula),"term.labels")]
+    X_demean <- fixest::demean(X = X_mat, f = fe_frame)
+  } else {
+    fe_formula <- update(fe_formula, ~ . - 1)
+    F_mat <- model.matrix(fe_formula, data = mf)
+    X_reg <- stats::lm.fit(F_mat, X_mat)
+    X_demean <- X_reg$residuals
+  }
   
-  model$residuals
+  X_demean
   
 }
 
