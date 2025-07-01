@@ -1,6 +1,6 @@
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/jepusto/clubSandwich/workflows/R-CMD-check/badge.svg)](https://github.com/jepusto/clubSandwich/actions)
-[![Codecov Status](https://codecov.io/gh/jepusto/clubSandwich/branch/main/graph/badge.svg)](https://codecov.io/gh/jepusto/clubSandwich?branch=main)
+[![test coverage](https://codecov.io/gh/jepusto/clubSandwich/graph/badge.svg)](https://app.codecov.io/gh/jepusto/clubSandwich)
 [![CRAN status](https://www.r-pkg.org/badges/version/clubSandwich)](https://CRAN.R-project.org/package=clubSandwich)
 [![](https://cranlogs.r-pkg.org/badges/grand-total/clubSandwich)](https://CRAN.R-project.org/package=clubSandwich)
 [![](https://cranlogs.r-pkg.org/badges/last-month/clubSandwich)](https://CRAN.R-project.org/package=clubSandwich)
