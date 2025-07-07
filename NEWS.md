@@ -1,5 +1,6 @@
-# clubSandwich 0.5.11.9999
+# clubSandwich 0.6.0
 
+* Added option to Wald_test() and linear_contrast() to correct hypothesis tests for multiple comparisons.
 * Added option to coef_test() to specify one- or two-sided alternative hypotheses.
 * Added options to Wald_test() and coef_test() to specify non-zero values for null hypotheses.
 * Fixed a bug in methods for `geepack::geeglm()` models that occurred for models with nonlinear link functions.

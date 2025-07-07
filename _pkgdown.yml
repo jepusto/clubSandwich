@@ -2,6 +2,10 @@ url: http://jepusto.github.io/clubSandwich/
 template:
   bootstrap: 5
   bootswatch: spacelab
+
+authors:
+  James E. Pustejovsky:
+    href: "https://www.jepusto.com/"
   
 news:
   one_page: true
