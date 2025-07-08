@@ -119,6 +119,12 @@ requireNamespace <- function(...) base::requireNamespace(...)
 
 model_matrix.lm_robust <- function(obj) {
   
+  type <- as.character(obj$call[[1]])
+  
+  if (type == "lm_lin") {
+    return(NULL) # NOT COMPLETE
+  }
+  
   if (!obj$fes) return(model.matrix(obj))
   
   mf <- model.frame(obj)
@@ -146,10 +152,56 @@ model_matrix.lm_robust <- function(obj) {
   
 }
 
-
 #' @export
 
 model.frame.lm_robust <- function (formula, ...) {
+  
+  if (class(formula) == "lm_robust" & as.character(formula$call[[1]]) == "lm_lin") {
+    
+    data <- eval(formula$call$data, envir = environment(formula(formula)))
+    
+    # Extract the original formula and covariates from the call
+    frm <- as.formula(formula$call$formula)
+    covariates <- as.formula(formula$call$covariates)
+    
+    if (is.null(covariates)) {
+      frm <- update(frm, ~ . - 1)
+    } else {
+      # Extract response and treatment
+      lhs <- deparse(frm[[2]])
+      treatment <- all.vars(frm[[3]])  # Should just be 'group'
+      covars <- all.vars(covariates)   # Extract covariate names
+      
+      # Main effects: treatment + covariates
+      main_effects <- c(treatment, covars)
+      
+      # Interactions: treatment:covariate for each covariate
+      interactions <- paste0(treatment, ":", covars)
+      
+      # Rebuild the RHS
+      rhs_terms <- c(main_effects, interactions)
+      rhs_string <- paste(rhs_terms, collapse = " + ")
+      
+      # Construct full formula
+      frm <- as.formula(paste(lhs, "~", rhs_string))
+    }
+    
+    mf <- model.frame(frm, data)
+    
+    # Apply centering to covariate columns in model frame
+    if (!is.null(formula$scaled_center)) {
+      # Get the names of covariates to center
+      covar_names <- names(formula$scaled_center)
+      
+      for (v in covar_names) {
+        if (v %in% names(mf)) {
+          mf[[v]] <- mf[[v]] - formula$scaled_center[[v]]
+        }
+      }
+    }
+    
+    return(mf)
+  }
   
   # check if model.frame is already stored in the object
   mf <- formula$model.frame
