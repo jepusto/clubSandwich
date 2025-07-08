@@ -122,7 +122,40 @@ model_matrix.lm_robust <- function(obj) {
   type <- as.character(obj$call[[1]])
   
   if (type == "lm_lin") {
-    return(NULL) # NOT COMPLETE
+    
+    # Reconstruct the data and formulas
+    data <- eval(obj$call$data, envir = environment(formula(obj)))
+    
+    frm <- as.formula(obj$call$formula)
+    covariates <- as.formula(obj$call$covariates)
+    
+    if (is.null(covariates)) {
+      frm <- update(frm, ~ . - 1)
+    } else {
+      lhs <- deparse(frm[[2]])
+      treatment <- all.vars(frm[[3]])
+      covars <- all.vars(covariates)
+      
+      main_effects <- c(treatment, covars)
+      interactions <- paste0(treatment, ":", covars)
+      rhs_string <- paste(c(main_effects, interactions), collapse = " + ")
+      frm <- as.formula(paste(lhs, "~", rhs_string))
+    }
+    
+    mf <- model.frame(frm, data)
+    
+    # Apply centering if needed
+    if (!is.null(obj$scaled_center)) {
+      covar_names <- names(obj$scaled_center)
+      for (v in covar_names) {
+        if (v %in% names(mf)) {
+          mf[[v]] <- mf[[v]] - obj$scaled_center[[v]]
+        }
+      }
+    }
+    
+    return(model.matrix(frm, mf))
+    
   }
   
   if (!obj$fes) return(model.matrix(obj))
