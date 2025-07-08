@@ -1,4 +1,4 @@
-context("lm_lin lm_robust objects")
+context("lm_lin robust objects")
 
 skip_if_not_installed("estimatr")
 
@@ -21,6 +21,29 @@ rob <- lm_robust(
   data = Baumann
 )
 
+
+data("ChickWeight", package = "datasets")
+N <- nrow(ChickWeight)
+ChickWeight$wt <- 1 + rpois(N, 3)
+ChickWeight$Chick_ordered <- ChickWeight$Chick # James' suggestion 4/16
+ChickWeight$Chick <- factor(ChickWeight$Chick, ordered = FALSE)
+ChickWeight$Chick_int <- as.integer(ChickWeight$Chick)
+ChickWeight$rando <- "Drop"
+ChickWeight$rando[sample(1:N, size = round(0.8 * N))] <- "Keep"
+table(ChickWeight$rando)
+
+lin_chick <- lm_lin(
+  weight ~ Diet,
+  covariates = ~ Time,
+  data = ChickWeight,
+  clusters = Chick
+)
+
+rob_chick <- lm_robust(
+  weight ~ Diet + Time + Diet:Time,
+  data = ChickWeight,
+  clusters = Chick
+)
 
 test_that("model.frame() works", {
   
@@ -54,12 +77,12 @@ test_that("model_matrix() works without fixest", {
   
   mm_lin <- model_matrix(lin)
   mm_rob <- model_matrix(rob)
-  # amm_rob_fe <- augmented_model_matrix(lm_rob_fe)
+  # amm_rob_fe <- augmented_model_matrix(rob_fe)
   
   expect_equivalent(mm_lin, mm_rob)
   
-  # mm_fit_fe <- model_matrix(lm_fit_fe)
-  # mm_rob_fe <- model_matrix(lm_rob_fe)
+  # mm_fit_fe <- model_matrix(lin_fe)
+  # mm_rob_fe <- model_matrix(rob_fe)
 
   # Check that fixed effects are the same
   # expect_equivalent(mm_fit_fe[,colnames(amm_rob_fe)], amm_rob_fe)
@@ -74,256 +97,231 @@ test_that("model_matrix() works without fixest", {
   # expect_lt(max(abs(apply(mm_rob_fe, 2, \(x) tapply(x, ChickWeight$Chick, mean)))), 1e-12)
   
   # expect_message(
-    # vcovCR(lm_rob_fe,type = "CR0"),
+    # vcovCR(rob_fe,type = "CR0"),
     # "For improved performance in models with fixed effects, install the package \\{fixest\\}\\."
   # )
   
 })
 
-# test_that("targetVariance() works", {
+test_that("targetVariance() works", {
+
+  # unweighted tests
+
+  tV_fit <- targetVariance(lin_chick, ChickWeight$Chick)
+  tV_rob <- targetVariance(rob_chick, ChickWeight$Chick)
+
+  expect_equal(tV_fit, tV_rob)
 #   
-#   # unweighted tests
-#   
-#   tV_fit <- targetVariance(lm_fit, ChickWeight$Chick)
-#   tV_rob <- targetVariance(lm_rob, ChickWeight$Chick)
-#   
-#   expect_equal(tV_fit, tV_rob)
-#   
-#   tV_rob_fe <- targetVariance(lm_rob_fe, ChickWeight$Chick)
+#   tV_rob_fe <- targetVariance(rob_fe, ChickWeight$Chick)
 #   
 #   expect_equal(tV_fit, tV_rob_fe)
 #   
 #   # weighted tests
 #   
-#   tV_wlm <- targetVariance(wlm_fit, ChickWeight$Chick)
-#   tV_wrob <- targetVariance(wlm_rob, ChickWeight$Chick)
+#   tV_wlm <- targetVariance(wlin, ChickWeight$Chick)
+#   tV_wrob <- targetVariance(wrob, ChickWeight$Chick)
 #   
 #   expect_equal(tV_wlm, tV_wrob)
 #   
-# })
+})
 
 
-# test_that("weightMatrix() works", {
+test_that("weightMatrix() works", {
+
+  # unweighted tests
+
+  wM_fit <- weightMatrix(lin_chick, ChickWeight$Chick)
+  wM_rob <- weightMatrix(rob_chick, ChickWeight$Chick)
+
+  expect_equal(wM_fit, wM_rob)
+
+  # weighted tests
 #   
-#   # unweighted tests
-#   
-#   wM_fit <- weightMatrix(lm_fit, ChickWeight$Chick)
-#   wM_rob <- weightMatrix(lm_rob, ChickWeight$Chick)
-#   
-#   expect_equal(wM_fit, wM_rob)
-#   
-#   wM_rob_fe <- weightMatrix(lm_rob_fe, ChickWeight$Chick)
-#   
-#   expect_equal(wM_fit, wM_rob_fe)
-#   
-#   # weighted tests
-#   
-#   wM_wlm <- weightMatrix(wlm_fit, ChickWeight$Chick)
-#   wM_wrob <- weightMatrix(wlm_rob, ChickWeight$Chick)
+#   wM_wlm <- weightMatrix(wlin, ChickWeight$Chick)
+#   wM_wrob <- weightMatrix(wrob, ChickWeight$Chick)
 #   
 #   expect_equal(wM_wlm, wM_wrob)
 #   
-# })
+})
 
-# test_that("sandwich::bread works", {
-#   
-#   # unweighted tests
-#   
-#   bread_lm <- bread(lm_fit)
-#   bread_rob <- bread(lm_rob)
-#   bread_lm_fe <- bread(lm_fit_fe)
-#   bread_rob_fe <- bread(lm_rob_fe)
-#   
-#   expect_equal(bread_lm, bread_rob)
-#   focal_coefs <- names(coef(lm_rob_fe))
-#   expect_equal(bread_lm_fe[focal_coefs,focal_coefs], as.matrix(bread_rob_fe))
-#   
+test_that("sandwich::bread works", {
+
+  # unweighted tests
+
+  bread_lin <- bread(lin)
+  bread_rob <- bread(rob)
+  
+  expect_equivalent(bread_lin, bread_rob) # changed from expect_equal
+    
 #   # weighted tests
 #   
-#   bread_wlm <- bread(wlm_fit)
-#   bread_wrob <- bread(wlm_rob)
+#   bread_wlm <- bread(wlin)
+#   bread_wrob <- bread(wrob)
 #   expect_equal(bread_wlm, bread_wrob)
 #   
-# })
+})
 
 
-# test_that("residuals_CS() works", {
-#   
-#   # unweighted tests
-#   
-#   rcs_fit <- residuals_CS(lm_fit)
-#   rcs_rob <- residuals_CS(lm_rob)
-#   
-#   expect_equal(rcs_fit, rcs_rob)
-#   
-#   rcs_fit_fe <- residuals_CS(lm_fit_fe)
-#   rcs_rob_fe <- residuals_CS(lm_rob_fe)
+test_that("residuals_CS() works", {
+
+  # unweighted tests
+
+  rcs_fit <- residuals_CS(lin)
+  rcs_rob <- residuals_CS(rob)
+
+  expect_equal(rcs_fit, rcs_rob)
+
+#   rcs_fit_fe <- residuals_CS(lin_fe)
+#   rcs_rob_fe <- residuals_CS(rob_fe)
 #   
 #   expect_equal(rcs_fit_fe, rcs_rob_fe)
 #   
 #   # weighted tests
 #   
-#   rcs_wlm <- residuals_CS(wlm_fit)
-#   rcs_wrob <- residuals_CS(wlm_rob)
+#   rcs_wlm <- residuals_CS(wlin)
+#   rcs_wrob <- residuals_CS(wrob)
 #   
 #   expect_equal(rcs_wlm, rcs_wrob)
-# })
+})
 
 
-# test_that("coef() works", {
+test_that("coef() works", {
+
+  # unweighted tests
+
+  coef_fit <- coef(lin)
+  coef_rob <- coef(rob)
+
+  expect_equal(coef_fit, coef_rob)
 #   
-#   # unweighted tests
-#   
-#   coef_fit <- coef(lm_fit)
-#   coef_rob <- coef(lm_rob)
-#   
-#   expect_equal(coef_fit, coef_rob)
-#   
-#   coef_fit_fe <- coef(lm_fit_fe)
-#   coef_rob_fe <- coef(lm_rob_fe)
+#   coef_fit_fe <- coef(lin_fe)
+#   coef_rob_fe <- coef(rob_fe)
 #   
 #   expect_equal(coef_fit_fe[names(coef_rob_fe)], coef_rob_fe)
 #   
 #   # weighted tests
 #   
-#   coef_wlm <- coef(wlm_fit)
-#   coef_wrob <- coef(wlm_rob)
+#   coef_wlm <- coef(wlin)
+#   coef_wrob <- coef(wrob)
 #   
 #   expect_equal(coef_wlm, coef_wrob)
 #   
-# })
+})
 
 
-# test_that("nobs() works", {
-#   
-#   # unweighted tests
-#   
-#   nobs_fit <- nobs(lm_fit)
-#   nobs_rob <- nobs(lm_rob)
-#   
-#   expect_equal(nobs_fit, nobs_rob)
-#   
-#   nobs_rob_fe <- nobs(lm_rob_fe)
-#   
-#   expect_equal(nobs_fit, nobs_rob_fe)
-#   
+test_that("nobs() works", {
+
+  # unweighted tests
+
+  nobs_fit <- nobs(lin)
+  nobs_rob <- nobs(rob)
+
+  expect_equal(nobs_fit, nobs_rob)
+
 #   # weighted tests
 #   
-#   nobs_wlm <- nobs(wlm_fit)
-#   nobs_wrob <- nobs(wlm_rob)
+#   nobs_wlm <- nobs(wlin)
+#   nobs_wrob <- nobs(wrob)
 #   
 #   expect_equal(nobs_wlm, nobs_wrob)
 #   
-# })
+})
 
 
 
-# test_that("v_scale() works", {
+test_that("v_scale() works", {
+
+  # unweighted tests
+
+  vs_fit <- v_scale(lin)
+  vs_rob <- v_scale(rob)
+  
+  expect_equal(vs_fit, vs_rob)
+    
+  # weighted tests
 #   
-#   # unweighted tests
-#   
-#   vs_fit <- v_scale(lm_fit)
-#   vs_rob <- v_scale(lm_rob)
-#   vs_rob_fe <- v_scale(lm_rob_fe)
-#   
-#   expect_equal(vs_fit, vs_rob)
-#   expect_equal(vs_fit, vs_rob_fe)
-#   
-#   # weighted tests
-#   
-#   vs_wlm <- v_scale(wlm_fit)
-#   vs_wrob <- v_scale(wlm_rob)
+#   vs_wlm <- v_scale(wlin)
+#   vs_wrob <- v_scale(wrob)
 #   
 #   expect_equal(vs_wlm, vs_wrob)
 #   
-# })
+})
 
 
-# test_that("vcovCR works", {
-#   
-#   types <- c("CR0", "CR1", "CR1p", "CR1S", "CR2", "CR3")
-#   
-#   # unweighted tests
-#   
-#   focal_coefs <- names(coef(lm_rob_fe))
-#   
-#   for (type in types) {
-#     
-#     vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, type = type)
-#     vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, type = type)
-#     
-#     expect_equal(vcov_lm, vcov_lmr, 
-#                  label = paste0("When type = ", type, ", ", "vcov_lm"))
-#     
-#     if (type %in% c("CR0", "CR1", "CR2")) {
-#       
-#       vcov_lm_fe <- vcovCR(lm_fit_fe, ChickWeight$Chick, type = type)
-#       vcov_lmr_fe <- vcovCR(lm_rob_fe, ChickWeight$Chick, type = type)
-#       
-#       expect_equal(vcov_lm_fe[focal_coefs,focal_coefs], as.matrix(vcov_lmr_fe), 
-#                    label = paste0("When type = ", type, ", ", "vcov_lm_fe[focal_coefs,focal_coefs]"))
-#       
-#     }
+test_that("vcovCR works", {
+
+  types <- c("CR0", "CR1", "CR1p", "CR1S", "CR2", "CR3")
+
+  # unweighted tests
+
+  for (type in types) {
+
+    vcov_lin <- vcovCR(lin_chick, ChickWeight$Chick, type = type)
+    vcov_rob <- vcovCR(rob_chick, ChickWeight$Chick, type = type)
+
+    expect_equal(vcov_lin, vcov_rob,
+                 label = paste0("When type = ", type, ", ", "vcov_lin"))
+
 #     
 #     # weighted tests
 #     
-#     vcov_wlm <- vcovCR(wlm_fit, ChickWeight$Chick, type = type)
-#     vcov_wlmr <- vcovCR(wlm_rob, ChickWeight$Chick, type = type)
+#     vcov_wlm <- vcovCR(wlin, ChickWeight$Chick, type = type)
+#     vcov_wlmr <- vcovCR(wrob, ChickWeight$Chick, type = type)
 #     
 #     expect_equal(vcov_wlm, vcov_wlmr)
 #     
 #     
 #     if (type %in% c("CR0","CR2")) {
 #       
-#       lm_rob_type <- lm_robust(
+#       rob_type <- robust(
 #         weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
 #         clusters = Chick, 
 #         se_type = type
 #       )
 #       
-#       expect_equal(as.matrix(vcov_lmr), vcov(lm_rob_type), 
+#       expect_equal(as.matrix(vcov_lmr), vcov(rob_type), 
 #                    label = paste0("When type = ", type, ", ", "as.matrix(vcov_lmr)"))
 #       
-#       lm_rob_fe_type <- lm_robust(
+#       rob_fe_type <- robust(
 #         weight ~ Time:Diet, data = ChickWeight, 
 #         clusters = Chick, fixed_effects = ~Chick,
 #         se_type = type
 #       )
 #       
-#       expect_equal(as.matrix(vcov_lmr_fe), vcov(lm_rob_fe_type), 
+#       expect_equal(as.matrix(vcov_lmr_fe), vcov(rob_fe_type), 
 #                    label = paste0("When type = ", type, ", ", "as.matrix(vcov_lmr_fe)"))
 #       
-#       wlm_rob_type <- lm_robust(
+#       wrob_type <- robust(
 #         weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
 #         clusters = Chick, weights = wt,
 #         se_type = type
 #       )
 #       
-#       expect_equal(as.matrix(vcov_wlmr), vcov(wlm_rob_type), 
+#       expect_equal(as.matrix(vcov_wlmr), vcov(wrob_type), 
 #                    label = paste0("When type = ", type, ", ", "as.matrix(vcov_wlmr)"))
 #       
 #     }
-#   }
-#   
-# })
+  }
+
+})
 
 
-# test_that("vovCR properly pulls cluster specified for lm_robust", {
+# test_that("vovCR properly pulls cluster specified for robust", {
 #   
 #   # unweighted tests
 #   
-#   uw_clust <- vcovCR(lm_rob, ChickWeight$Chick, "CR2")
-#   uw_no_clust <- vcovCR(lm_rob, type = "CR2")
-#   uw_lm <- vcovCR(lm_fit, ChickWeight$Chick, "CR2")
+#   uw_clust <- vcovCR(rob, ChickWeight$Chick, "CR2")
+#   uw_no_clust <- vcovCR(rob, type = "CR2")
+#   uw_lm <- vcovCR(lin, ChickWeight$Chick, "CR2")
 #   
 #   expect_equal(uw_clust, uw_no_clust)
 #   expect_equal(uw_no_clust, uw_lm)
 #   
-#   # create an lm_robust that draws in data differently
-#   lm_rob_fact <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
+#   # create an robust that draws in data differently
+#   rob_fact <- robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
 #                            clusters = factor(ChickWeight$Chick_ordered, ordered = FALSE))
 #   # perform vcovCR
-#   uw_fact_cr <- vcovCR(lm_rob_fact, type = "CR2")
+#   uw_fact_cr <- vcovCR(rob_fact, type = "CR2")
 #   
 #   # check they are the same
 #   expect_equivalent(uw_clust, uw_fact_cr)
@@ -332,40 +330,40 @@ test_that("model_matrix() works without fixest", {
 #   # fact <- factor(ChickWeight$Chick_ordered, ordered = FALSE)
 #   fact <- ChickWeight$Chick
 #   
-#   # pass variable to lm_robust
-#   lm_rob_var <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
+#   # pass variable to robust
+#   rob_var <- robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
 #                           clusters = fact)
 #   
 #   # perform vcovCR
-#   uw_fact_var <- vcovCR(lm_rob_var, type = "CR2")
+#   uw_fact_var <- vcovCR(rob_var, type = "CR2")
 #   
 #   # check they are the same
 #   expect_equivalent(uw_clust, uw_fact_var)
 #   
 #   # weighted tests
 #   
-#   w_clust <- vcovCR(wlm_rob, ChickWeight$Chick, "CR2")
-#   w_no_clust <- vcovCR(wlm_rob, type = "CR2")
-#   w_lm <- vcovCR(wlm_fit, ChickWeight$Chick, "CR2")
+#   w_clust <- vcovCR(wrob, ChickWeight$Chick, "CR2")
+#   w_no_clust <- vcovCR(wrob, type = "CR2")
+#   w_lm <- vcovCR(wlin, ChickWeight$Chick, "CR2")
 #   
 #   expect_equal(w_clust, w_no_clust)
 #   expect_equal(w_no_clust, w_lm)
 #   
-#   # create an lm_robust that draws in data differently
-#   lm_rob_fact_w <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
+#   # create an robust that draws in data differently
+#   rob_fact_w <- robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
 #                              data = ChickWeight, 
 #                              clusters = factor(ChickWeight$Chick_ordered, ordered = FALSE))
 #   # perform vcovCR
-#   w_fact_cr <- vcovCR(lm_rob_fact_w, type = "CR2")
+#   w_fact_cr <- vcovCR(rob_fact_w, type = "CR2")
 #   
 #   expect_equal(w_clust, w_fact_cr)
 #   
-#   # pass variable to lm_robust
-#   lm_rob_var_w <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt,
+#   # pass variable to robust
+#   rob_var_w <- robust(weight ~ 0 + Diet + Time:Diet, weights = wt,
 #                             data = ChickWeight, clusters = fact)
 #   
 #   # perform vcovCR
-#   w_fact_var <- vcovCR(lm_rob_var_w, type = "CR2")
+#   w_fact_var <- vcovCR(rob_var_w, type = "CR2")
 #   
 #   # check they are the same
 #   expect_equal(w_clust, w_fact_var)
@@ -373,7 +371,7 @@ test_that("model_matrix() works without fixest", {
 # })
 # 
 # 
-# test_that("na.action.lm_robust() works correctly", {
+# test_that("na.action.robust() works correctly", {
 #   
 #   compare_na_actions <- function(i) {
 #     
@@ -392,7 +390,7 @@ test_that("model_matrix() works without fixest", {
 #     
 #     # fit models
 #     linear <- lm(y ~ x1 + x2 + x1:x2, data = df)
-#     robust <- lm_robust(y ~ x1 + x2 + x1:x2, data = df)
+#     robust <- robust(y ~ x1 + x2 + x1:x2, data = df)
 #     
 #     # get na.action() of models
 #     na_lm <- na.action(linear)
@@ -410,7 +408,7 @@ test_that("model_matrix() works without fixest", {
 # 
 # test_that("try_cholesky argument does not interfere with vcovCR functionality", {
 #   
-#   lm_rob_chole <- lm_robust(
+#   rob_chole <- robust(
 #     weight ~ 0 + Diet + Time:Diet, 
 #     data = ChickWeight, 
 #     clusters = Chick, 
@@ -418,20 +416,20 @@ test_that("model_matrix() works without fixest", {
 #   )
 #   
 #   expect_equal(
-#     vcovCR(lm_rob, type = "CR2"), 
-#     vcovCR(lm_rob_chole, type = "CR2")
+#     vcovCR(rob, type = "CR2"), 
+#     vcovCR(rob_chole, type = "CR2")
 #   )
 #   
-#   lm_rob_fe_chole <- lm_robust(
+#   rob_fe_chole <- robust(
 #     weight ~ Time:Diet, data = ChickWeight, 
 #     clusters = Chick, 
 #     fixed_effects = ~Chick,
 #     try_cholesky = TRUE
 #   )
 #   
-#   expect_equal(vcovCR(lm_rob_fe, type = "CR2"), vcovCR(lm_rob_fe_chole, type = "CR2"))
+#   expect_equal(vcovCR(rob_fe, type = "CR2"), vcovCR(rob_fe_chole, type = "CR2"))
 #   
-#   wlm_rob_chole <- lm_robust(
+#   wrob_chole <- robust(
 #     weight ~ 0 + Diet + Time:Diet, 
 #     weights = wt, 
 #     data = ChickWeight, 
@@ -439,27 +437,27 @@ test_that("model_matrix() works without fixest", {
 #     try_cholesky = TRUE
 #   )
 #   
-#   expect_equal(vcovCR(wlm_rob, type = "CR2"), vcovCR(wlm_rob_chole, type = "CR2"))
+#   expect_equal(vcovCR(wrob, type = "CR2"), vcovCR(wrob_chole, type = "CR2"))
 #   
 # })
 
 
 # test_that("subset argument does not interfere with vcovCR functionality", {
 #   
-#   lm_fit_sub <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
+#   lin_sub <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
 #                    subset = ChickWeight$rando == "Keep")
-#   lm_rob_sub <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
+#   rob_sub <- robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
 #                           clusters = Chick, subset = ChickWeight$rando == "Keep")
 #   
-#   expect_equal(vcovCR(lm_fit_sub, ChickWeight$Chick[ChickWeight$rando == "Keep"], type = "CR2"), 
-#                vcovCR(lm_rob_sub, type = "CR2"))
+#   expect_equal(vcovCR(lin_sub, ChickWeight$Chick[ChickWeight$rando == "Keep"], type = "CR2"), 
+#                vcovCR(rob_sub, type = "CR2"))
 #   
-#   lm_fit_fe_sub <- lm(
+#   lin_fe_sub <- lm(
 #     weight ~ 0 + Time:Diet + Chick, 
 #     data = ChickWeight, 
 #     subset = ChickWeight$rando == "Keep"
 #   )
-#   lm_rob_fe_sub <- lm_robust(
+#   rob_fe_sub <- robust(
 #     weight ~ Time:Diet, 
 #     data = ChickWeight, 
 #     clusters = Chick, 
@@ -467,20 +465,20 @@ test_that("model_matrix() works without fixest", {
 #     subset = ChickWeight$rando == "Keep"
 #   )
 #   
-#   sub_coef <- names(coef(lm_rob_fe_sub))
+#   sub_coef <- names(coef(rob_fe_sub))
 #   expect_equivalent(
-#     vcovCR(lm_fit_fe_sub, ChickWeight$Chick[ChickWeight$rando == "Keep"], type = "CR2")[sub_coef, sub_coef],
-#     as.matrix(vcovCR(lm_rob_fe_sub, type = "CR2"))
+#     vcovCR(lin_fe_sub, ChickWeight$Chick[ChickWeight$rando == "Keep"], type = "CR2")[sub_coef, sub_coef],
+#     as.matrix(vcovCR(rob_fe_sub, type = "CR2"))
 #   )
 #   
-#   wlm_fit_sub <- lm(weight ~ 0 + Diet + Time:Diet, weights = wt, 
+#   wlin_sub <- lm(weight ~ 0 + Diet + Time:Diet, weights = wt, 
 #                     data = ChickWeight, subset = ChickWeight$rando == "Keep")
-#   wlm_rob_sub <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
+#   wrob_sub <- robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
 #                            data = ChickWeight, clusters = Chick, 
 #                            subset = ChickWeight$rando == "Keep")
 #   
-#   expect_equal(vcovCR(wlm_fit_sub, ChickWeight$Chick[ChickWeight$rando == "Keep"], type = "CR2"),
-#                vcovCR(wlm_rob_sub, type = "CR2"))
+#   expect_equal(vcovCR(wlin_sub, ChickWeight$Chick[ChickWeight$rando == "Keep"], type = "CR2"),
+#                vcovCR(wrob_sub, type = "CR2"))
 #   
 # })
 
@@ -503,12 +501,12 @@ belts$kms <- belts$kms - mean(belts$kms)
 belts$year <- year - mean(year)
 belts$month <- month
 
-# Create identical lm and lm_robust models
+# Create identical lm and robust models
 belts_fit <- lm(DriversKilled ~ kms + PetrolPrice + law + year, data = belts)
 belts_rob <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = belts)
 
 
-test_that("Wald_test() works with lm_robust", {
+test_that("Wald_test() works with robust", {
   
   Wald_FIT <- Wald_test(
     belts_fit,
@@ -529,7 +527,7 @@ test_that("Wald_test() works with lm_robust", {
 })
 
 
-test_that("conf_int() works with lm_robust", {
+test_that("conf_int() works with robust", {
   
   conf_FIT <- conf_int(belts_fit, vcov = "CR2", cluster = belts$month)
   conf_ROB <- conf_int(belts_rob, vcov = "CR2", cluster = belts$month)
@@ -539,7 +537,7 @@ test_that("conf_int() works with lm_robust", {
 })
 
 
-test_that("coef_test() works with lm_robust", {
+test_that("coef_test() works with robust", {
   
   coef_FIT <- coef_test(belts_fit, vcov = "CR2", cluster = belts$month)
   coef_ROB <- coef_test(belts_rob, vcov = "CR2", cluster = belts$month)
@@ -567,7 +565,7 @@ test_that("clubSandwich works with dropped observations", {
   
   rob_dropped <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = belts_miss, cluster = month)
   belts_complete <- subset(belts_miss, !is.na(law))
-  rob_complete <- lm_robust(DriversKilled ~ kms + PetrolPrice + law + year, data = belts_complete, cluster = month)
+  rob_complete <- robust(DriversKilled ~ kms + PetrolPrice + law + year, data = belts_complete, cluster = month)
   
   CR_types <- paste0("CR",0:4)
   
