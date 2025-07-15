@@ -116,12 +116,9 @@ augmented_model_matrix.lm_robust <- function(obj, cluster, inverse_var, ignore_F
 requireNamespace <- function(...) base::requireNamespace(...)
 
 #' @export
-
 model_matrix.lm_robust <- function(obj) {
   
-  type <- as.character(obj$call[[1]])
-  
-  if (type == "lm_lin") {
+  if (as.character(obj$call[[1]]) == "lm_lin") {
     
     # Reconstruct the data and formulas
     data <- eval(obj$call$data, envir = environment(formula(obj)))
@@ -130,8 +127,11 @@ model_matrix.lm_robust <- function(obj) {
     covariates <- as.formula(obj$call$covariates)
     
     if (is.null(covariates)) {
-      frm <- update(frm, ~ . - 1)
+      # No covariates case - keep original formula as is
+      # (it already has ~ 0 if that's what was specified)
+      frm <- frm
     } else {
+      # With covariates - preserve the intercept specification from original formula
       lhs <- deparse(frm[[2]])
       treatment <- all.vars(frm[[3]])
       covars <- all.vars(covariates)
@@ -139,7 +139,16 @@ model_matrix.lm_robust <- function(obj) {
       main_effects <- c(treatment, covars)
       interactions <- paste0(treatment, ":", covars)
       rhs_string <- paste(c(main_effects, interactions), collapse = " + ")
-      frm <- as.formula(paste(lhs, "~", rhs_string))
+      
+      # Check if original formula had no intercept (~ 0 or ~ -1)
+      original_terms <- terms(frm)
+      has_intercept <- attr(original_terms, "intercept") == 1
+      
+      if (has_intercept) {
+        frm <- as.formula(paste(lhs, "~", rhs_string))
+      } else {
+        frm <- as.formula(paste(lhs, "~ 0 +", rhs_string))
+      }
     }
     
     mf <- model.frame(frm, data)
@@ -158,8 +167,55 @@ model_matrix.lm_robust <- function(obj) {
     
   }
   
-  if (!obj$fes) return(model.matrix(obj))
+  if (!obj$fes) {
+    X_mat <- model.matrix(obj)
+    
+    # Check for redundant dummy variables when using ~ 0 + factor
+    terms_obj <- terms(formula(obj))
+    has_intercept <- attr(terms_obj, "intercept") == 1
+    
+    if (!has_intercept) {
+      # Check for perfect collinearity in factor variables
+      # Look for sets of binary columns that sum to a constant
+      binary_cols <- apply(X_mat, 2, function(x) all(x %in% c(0, 1)))
+      
+      if (sum(binary_cols) > 1) {
+        binary_matrix <- X_mat[, binary_cols, drop = FALSE]
+        
+        # Group columns by their base variable name (e.g., "Treatment")
+        col_names <- colnames(binary_matrix)
+        base_names <- gsub("^([^0-9]+).*", "\\1", col_names)
+        
+        # For each base variable, check if we have redundant dummies
+        unique_bases <- unique(base_names)
+        cols_to_remove <- c()
+        
+        for (base in unique_bases) {
+          base_cols <- which(base_names == base)
+          if (length(base_cols) > 1) {
+            # Check if these columns are mutually exclusive and exhaustive
+            base_matrix <- binary_matrix[, base_cols, drop = FALSE]
+            row_sums <- rowSums(base_matrix)
+            
+            # If all rows sum to 1, we have a complete set of dummies
+            if (all(row_sums == 1)) {
+              # Remove the first column to avoid perfect collinearity
+              global_col_idx <- which(binary_cols)[base_cols[1]]
+              cols_to_remove <- c(cols_to_remove, global_col_idx)
+            }
+          }
+        }
+        
+        if (length(cols_to_remove) > 0) {
+          X_mat <- X_mat[, -cols_to_remove, drop = FALSE]
+        }
+      }
+    }
+    
+    return(X_mat)
+  }
   
+  # Fixed effects case (unchanged)
   mf <- model.frame(obj)
   
   frm <- as.formula(obj$call$formula)
@@ -184,13 +240,84 @@ model_matrix.lm_robust <- function(obj) {
   X_demean
   
 }
+# model_matrix.lm_robust <- function(obj) {
+#   
+#   if (as.character(obj$call[[1]]) == "lm_lin") {
+#     
+#     # Reconstruct the data and formulas
+#     data <- eval(obj$call$data, envir = environment(formula(obj)))
+#     
+#     frm <- as.formula(obj$call$formula)
+#     covariates <- as.formula(obj$call$covariates)
+#     
+#     if (is.null(covariates)) {
+#       frm <- update(frm, ~ . - 1)
+#     } else {
+#       lhs <- deparse(frm[[2]])
+#       treatment <- all.vars(frm[[3]])
+#       covars <- all.vars(covariates)
+#       
+#       main_effects <- c(treatment, covars)
+#       interactions <- paste0(treatment, ":", covars)
+#       rhs_string <- paste(c(main_effects, interactions), collapse = " + ")
+#       frm <- as.formula(paste(lhs, "~", rhs_string))
+#     }
+#     
+#     mf <- model.frame(frm, data)
+#     
+#     # Apply centering if needed
+#     if (!is.null(obj$scaled_center)) {
+#       covar_names <- names(obj$scaled_center)
+#       for (v in covar_names) {
+#         if (v %in% names(mf)) {
+#           mf[[v]] <- mf[[v]] - obj$scaled_center[[v]]
+#         }
+#       }
+#     }
+#     
+#     return(model.matrix(frm, mf))
+#     
+#   }
+#   
+#   if (!obj$fes) return(model.matrix(obj))
+#   
+#   mf <- model.frame(obj)
+#   
+#   frm <- as.formula(obj$call$formula)
+#   X_mat <- model.matrix(frm, data = mf)
+#   intercept_col <- colnames(X_mat) == "(Intercept)"
+#   if (any(intercept_col)) {
+#     X_mat <- X_mat[,!intercept_col,drop=FALSE]
+#   }
+#   
+#   fe_formula <- as.formula(obj$call$fixed_effects)
+#   
+#   if (requireNamespace("fixest", quietly = TRUE)) {
+#     fe_frame <- mf[attr(terms(fe_formula),"term.labels")]
+#     X_demean <- fixest::demean(X = X_mat, f = fe_frame)
+#   } else {
+#     fe_formula <- update(fe_formula, ~ . - 1)
+#     F_mat <- model.matrix(fe_formula, data = mf)
+#     X_reg <- stats::lm.fit(F_mat, X_mat)
+#     X_demean <- X_reg$residuals
+#   }
+#   
+#   X_demean
+#   
+# }
 
 #' @export
 
 model.frame.lm_robust <- function (formula, ...) {
   
-  if (class(formula) == "lm_robust" & as.character(formula$call[[1]]) == "lm_lin") {
+  # Check if model.frame is already stored in the object
+  mf <- formula$model.frame
+  if (!is.null(mf)) return(mf)
+  
+  # Check if model was made using lm_lin
+  if (as.character(formula$call[[1]]) == "lm_lin") {
     
+    # Get original data
     data <- eval(formula$call$data, envir = environment(formula(formula)))
     
     # Extract the original formula and covariates from the call
@@ -202,18 +329,13 @@ model.frame.lm_robust <- function (formula, ...) {
     } else {
       # Extract response and treatment
       lhs <- deparse(frm[[2]])
-      treatment <- all.vars(frm[[3]])  # Should just be 'group'
-      covars <- all.vars(covariates)   # Extract covariate names
+      treatment <- all.vars(frm[[3]])  # Assumes single treatment variable
+      covars <- all.vars(covariates)
       
-      # Main effects: treatment + covariates
+      # Main effects and interactions
       main_effects <- c(treatment, covars)
-      
-      # Interactions: treatment:covariate for each covariate
       interactions <- paste0(treatment, ":", covars)
-      
-      # Rebuild the RHS
-      rhs_terms <- c(main_effects, interactions)
-      rhs_string <- paste(rhs_terms, collapse = " + ")
+      rhs_string <- paste(c(main_effects, interactions), collapse = " + ")
       
       # Construct full formula
       frm <- as.formula(paste(lhs, "~", rhs_string))
@@ -221,11 +343,23 @@ model.frame.lm_robust <- function (formula, ...) {
     
     mf <- model.frame(frm, data)
     
-    # Apply centering to covariate columns in model frame
+    # Add (weights) column if weighted
+    if (formula$weighted) {
+      weights_expr <- formula$call$weights
+      weights_val <- eval(weights_expr, envir = data, enclos = environment(formula(formula)))
+      mf[["(weights)"]] <- weights_val
+    }
+    
+    # Add (clusters) column if clustered
+    if (formula$clustered) {
+      cluster_expr <- formula$call$clusters
+      cluster_val <- eval(cluster_expr, envir = data, enclos = environment(formula(formula)))
+      mf[["(clusters)"]] <- cluster_val
+    }
+    
+    # Center covariates if needed
     if (!is.null(formula$scaled_center)) {
-      # Get the names of covariates to center
       covar_names <- names(formula$scaled_center)
-      
       for (v in covar_names) {
         if (v %in% names(mf)) {
           mf[[v]] <- mf[[v]] - formula$scaled_center[[v]]
@@ -236,9 +370,6 @@ model.frame.lm_robust <- function (formula, ...) {
     return(mf)
   }
   
-  # check if model.frame is already stored in the object
-  mf <- formula$model.frame
-  if (!is.null(mf)) return(mf)
   
   # environment where initial call was evaluated
   fit_env <- environment(formula$terms) 
