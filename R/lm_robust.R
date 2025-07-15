@@ -113,7 +113,9 @@ augmented_model_matrix.lm_robust <- function(obj, cluster, inverse_var, ignore_F
   
 }
 
+
 requireNamespace <- function(...) base::requireNamespace(...)
+
 
 #' @export
 model_matrix.lm_robust <- function(obj) {
@@ -240,71 +242,7 @@ model_matrix.lm_robust <- function(obj) {
   X_demean
   
 }
-# model_matrix.lm_robust <- function(obj) {
-#   
-#   if (as.character(obj$call[[1]]) == "lm_lin") {
-#     
-#     # Reconstruct the data and formulas
-#     data <- eval(obj$call$data, envir = environment(formula(obj)))
-#     
-#     frm <- as.formula(obj$call$formula)
-#     covariates <- as.formula(obj$call$covariates)
-#     
-#     if (is.null(covariates)) {
-#       frm <- update(frm, ~ . - 1)
-#     } else {
-#       lhs <- deparse(frm[[2]])
-#       treatment <- all.vars(frm[[3]])
-#       covars <- all.vars(covariates)
-#       
-#       main_effects <- c(treatment, covars)
-#       interactions <- paste0(treatment, ":", covars)
-#       rhs_string <- paste(c(main_effects, interactions), collapse = " + ")
-#       frm <- as.formula(paste(lhs, "~", rhs_string))
-#     }
-#     
-#     mf <- model.frame(frm, data)
-#     
-#     # Apply centering if needed
-#     if (!is.null(obj$scaled_center)) {
-#       covar_names <- names(obj$scaled_center)
-#       for (v in covar_names) {
-#         if (v %in% names(mf)) {
-#           mf[[v]] <- mf[[v]] - obj$scaled_center[[v]]
-#         }
-#       }
-#     }
-#     
-#     return(model.matrix(frm, mf))
-#     
-#   }
-#   
-#   if (!obj$fes) return(model.matrix(obj))
-#   
-#   mf <- model.frame(obj)
-#   
-#   frm <- as.formula(obj$call$formula)
-#   X_mat <- model.matrix(frm, data = mf)
-#   intercept_col <- colnames(X_mat) == "(Intercept)"
-#   if (any(intercept_col)) {
-#     X_mat <- X_mat[,!intercept_col,drop=FALSE]
-#   }
-#   
-#   fe_formula <- as.formula(obj$call$fixed_effects)
-#   
-#   if (requireNamespace("fixest", quietly = TRUE)) {
-#     fe_frame <- mf[attr(terms(fe_formula),"term.labels")]
-#     X_demean <- fixest::demean(X = X_mat, f = fe_frame)
-#   } else {
-#     fe_formula <- update(fe_formula, ~ . - 1)
-#     F_mat <- model.matrix(fe_formula, data = mf)
-#     X_reg <- stats::lm.fit(F_mat, X_mat)
-#     X_demean <- X_reg$residuals
-#   }
-#   
-#   X_demean
-#   
-# }
+
 
 #' @export
 
@@ -414,7 +352,6 @@ model.frame.lm_robust <- function (formula, ...) {
   
   return(mf_combined)
 }
-
 
 
 #' @export
