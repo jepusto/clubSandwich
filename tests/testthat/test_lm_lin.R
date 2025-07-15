@@ -21,19 +21,19 @@ wcCO2 <- CO2
 CO2$conc_c <- CO2$conc - mean(CO2$conc)
 
 lin <- lm_lin(
-  uptake ~ 0 + Treatment,
+  uptake ~ Treatment,
   covariates = ~ conc,
   data = CO2
 )
 rob <- lm_robust(
-  uptake ~ 0 + Treatment + 
+  uptake ~ Treatment + 
     conc_c + Treatment:conc_c,
   data = CO2
 )
 
 # weighted and clustered
 wclin <- lm_lin(
-  uptake ~ 0 + Treatment,
+  uptake ~ Treatment,
   covariates = ~ conc,
   data = wcCO2,
   weights = wt,
@@ -43,7 +43,7 @@ wclin <- lm_lin(
 wcCO2$conc_c <- wcCO2$conc - wclin$scaled_center[["conc"]]
 
 wcrob <- lm_robust(
-  uptake ~ 0 + Treatment +
+  uptake ~ Treatment +
     conc_c + Treatment:conc_c,
   data = wcCO2,
   weights = wt,
@@ -327,7 +327,7 @@ test_that("na.action.robust() works correctly", {
     n <- 100
     df <- data.frame(
       y = rnorm(n),
-      x1 = rnorm(n),
+      x1 = sample(letters[1:2], size = n, replace = TRUE),
       x2 = rnorm(n)
     )
 
@@ -388,24 +388,24 @@ test_that("try_cholesky argument does not interfere with vcovCR functionality", 
 
 test_that("subset argument does not interfere with vcovCR functionality", {
 
-  lin_sub <- lm_lin(uptake ~ 0 + Treatment,
+  lin_sub <- lm_lin(uptake ~ Treatment,
                     covariates = ~ conc,
                     data = CO2,
                     subset = CO2$rando == "Keep")
-  rob_sub <- lm_robust(uptake ~ 0 + Treatment + conc_c + Treatment:conc_c,
+  rob_sub <- lm_robust(uptake ~ Treatment + conc_c + Treatment:conc_c,
                        data = CO2,
                        subset = CO2$rando == "Keep")
 
   expect_equal(vcovCR(lin_sub, CO2$Plant[CO2$rando == "Keep"], type = "CR2"),
                vcovCR(rob_sub, CO2$Plant[CO2$rando == "Keep"], type = "CR2"))
 
-  wclin_sub <- lm_lin(uptake ~ 0 + Treatment,
+  wclin_sub <- lm_lin(uptake ~ Treatment,
                       covariates = ~ conc,
                       data = wcCO2,
                       weights = wt,
                       clusters = Plant,
                       subset = wcCO2$rando == "Keep")
-  wcrob_sub <- robust(uptake ~ 0 + Treatment + conc_c + Treatment:conc_c,
+  wcrob_sub <- robust(uptake ~ Treatment + conc_c + Treatment:conc_c,
                       data = wcCO2,
                       weights = wt,
                       clusters = Plant,
