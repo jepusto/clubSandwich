@@ -8,7 +8,7 @@ set.seed(20250630)
 data("CO2")
 N <- nrow(CO2)
 CO2$wt <- 1 + rpois(N, 3)
-CO2$Plant_ordered <- CO2$Plant
+CO2$Plant_[!is.na(CO2$uptake), ] # remove rows with NA in uptakeordered <- CO2$Plant
 CO2$Plant <- factor(CO2$Plant, ordered = FALSE)
 CO2$Plant_int <- as.integer(CO2$Plant)
 CO2$rando <- "Drop"
@@ -21,8 +21,7 @@ wcCO2 <- CO2
 CO2$conc_c <- CO2$conc - mean(CO2$conc)
 
 lin <- lm_lin(
-  uptake ~ 0 + 
-    Treatment,
+  uptake ~ 0 + Treatment,
   covariates = ~ conc,
   data = CO2
 )
@@ -125,8 +124,8 @@ test_that("targetVariance() works", {
   
   # weighted tests
   
-  tV_wclin <- targetVariance(wclin, CO2$Plant)
-  tV_wcrob <- targetVariance(wcrob, CO2$Plant)
+  tV_wclin <- targetVariance(wclin, wcCO2$Plant)
+  tV_wcrob <- targetVariance(wcrob, wcCO2$Plant)
   
   expect_equal(tV_wclin, tV_wcrob)
   
@@ -144,8 +143,8 @@ test_that("weightMatrix() works", {
 
   # weighted tests
 
-  wM_wcfit <- weightMatrix(wclin, CO2$Plant)
-  wM_wcrob <- weightMatrix(wcrob, CO2$Plant)
+  wM_wcfit <- weightMatrix(wclin, wcCO2$Plant)
+  wM_wcrob <- weightMatrix(wcrob, wcCO2$Plant)
   
   expect_equal(wM_wcfit, wM_wcrob)
   
@@ -251,10 +250,10 @@ test_that("vcovCR works", {
 
   types <- c("CR0", "CR1", "CR1p", "CR1S", "CR2", "CR3")
 
-  # unweighted tests
-
   for (type in types) {
 
+    # unweighted tests
+    
     vcov_lin <- vcovCR(lin, CO2$Plant, type = type)
     vcov_rob <- vcovCR(rob, CO2$Plant, type = type)
 
@@ -262,216 +261,160 @@ test_that("vcovCR works", {
     expect_equivalent(vcov_lin, vcov_rob,
                  label = paste0("When type = ", type, ", ", "vcov_lin"))
 
-
     # weighted tests
 
-    vcov_wclin <- vcovCR(wclin, CO2$Plant, type = type)
-    vcov_wcrob <- vcovCR(wcrob, CO2$Plant, type = type)
+    vcov_wclin <- vcovCR(wclin, wcCO2$Plant, type = type)
+    vcov_wcrob <- vcovCR(wcrob, wcCO2$Plant, type = type)
 
-    expect_equal(vcov_wclin, vcov_wcrob)
+    expect_equal(vcov_wclin, vcov_wcrob,
+                 label = paste0("When type = ", type, ", ", "vcov_wclin"))
 
-    # Both unweighted and weighted tests
-    # if (type %in% c("CR0","CR2")) {
-
-      # rob_type <- robust(
-      #   weight ~ 0 + Diet + Time:Diet, data = ChickWeight,
-      #   clusters = Chick,
-      #   se_type = type
-      # )
-
-      # expect_equal(as.matrix(vcov_lmr), vcov(rob_type),
-      #              label = paste0("When type = ", type, ", ", "as.matrix(vcov_lmr)"))
-      
-      # wrob_type <- robust(
-      #   weight ~ 0 + Diet + Time:Diet, data = ChickWeight,
-      #   clusters = Chick, weights = wt,
-      #   se_type = type
-      # )
-
-      # expect_equal(as.matrix(vcov_wlmr), vcov(wrob_type),
-      #              label = paste0("When type = ", type, ", ", "as.matrix(vcov_wlmr)"))
-
-    # }
   }
 
 })
 
 
-# test_that("vovCR properly pulls cluster specified for robust", {
-#   
-#   # unweighted tests
-#   
-#   uw_clust <- vcovCR(rob, ChickWeight$Chick, "CR2")
-#   uw_no_clust <- vcovCR(rob, type = "CR2")
-#   uw_lm <- vcovCR(lin, ChickWeight$Chick, "CR2")
-#   
-#   expect_equal(uw_clust, uw_no_clust)
-#   expect_equal(uw_no_clust, uw_lm)
-#   
-#   # create an robust that draws in data differently
-#   rob_fact <- robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
-#                            clusters = factor(ChickWeight$Chick_ordered, ordered = FALSE))
-#   # perform vcovCR
-#   uw_fact_cr <- vcovCR(rob_fact, type = "CR2")
-#   
-#   # check they are the same
-#   expect_equivalent(uw_clust, uw_fact_cr)
-#   
-#   # put cluster data in a variable
-#   # fact <- factor(ChickWeight$Chick_ordered, ordered = FALSE)
-#   fact <- ChickWeight$Chick
-#   
-#   # pass variable to robust
-#   rob_var <- robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
-#                           clusters = fact)
-#   
-#   # perform vcovCR
-#   uw_fact_var <- vcovCR(rob_var, type = "CR2")
-#   
-#   # check they are the same
-#   expect_equivalent(uw_clust, uw_fact_var)
-#   
-#   # weighted tests
-#   
-#   w_clust <- vcovCR(wrob, ChickWeight$Chick, "CR2")
-#   w_no_clust <- vcovCR(wrob, type = "CR2")
-#   w_lm <- vcovCR(wlin, ChickWeight$Chick, "CR2")
-#   
-#   expect_equal(w_clust, w_no_clust)
-#   expect_equal(w_no_clust, w_lm)
-#   
-#   # create an robust that draws in data differently
-#   rob_fact_w <- robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
-#                              data = ChickWeight, 
-#                              clusters = factor(ChickWeight$Chick_ordered, ordered = FALSE))
-#   # perform vcovCR
-#   w_fact_cr <- vcovCR(rob_fact_w, type = "CR2")
-#   
-#   expect_equal(w_clust, w_fact_cr)
-#   
-#   # pass variable to robust
-#   rob_var_w <- robust(weight ~ 0 + Diet + Time:Diet, weights = wt,
-#                             data = ChickWeight, clusters = fact)
-#   
-#   # perform vcovCR
-#   w_fact_var <- vcovCR(rob_var_w, type = "CR2")
-#   
-#   # check they are the same
-#   expect_equal(w_clust, w_fact_var)
-#   
-# })
-# 
-# 
-# test_that("na.action.robust() works correctly", {
-#   
-#   compare_na_actions <- function(i) {
-#     
-#     # generate random data
-#     n <- 100
-#     df <- data.frame(
-#       y = rnorm(n),
-#       x1 = rnorm(n),
-#       x2 = rnorm(n)
-#     )
-#     
-#     # add random NA values to y and x2
-#     miss_rows <- sample.int(n, size = n/10)
-#     df$y[miss_rows] <- NA
-#     df$x2[miss_rows] <- NA
-#     
-#     # fit models
-#     linear <- lm(y ~ x1 + x2 + x1:x2, data = df)
-#     robust <- robust(y ~ x1 + x2 + x1:x2, data = df)
-#     
-#     # get na.action() of models
-#     na_lm <- na.action(linear)
-#     na_rob <- na.action(robust)
-#     
-#     # compare
-#     expect_equal(na_lm, na_rob)
-#   }
-#   
-#   # compare 10 times with different random data
-#   lapply(1:10, compare_na_actions)
-#   
-# })
-# 
-# 
-# test_that("try_cholesky argument does not interfere with vcovCR functionality", {
-#   
-#   rob_chole <- robust(
-#     weight ~ 0 + Diet + Time:Diet, 
-#     data = ChickWeight, 
-#     clusters = Chick, 
-#     try_cholesky = TRUE
-#   )
-#   
-#   expect_equal(
-#     vcovCR(rob, type = "CR2"), 
-#     vcovCR(rob_chole, type = "CR2")
-#   )
-#   
-#   rob_fe_chole <- robust(
-#     weight ~ Time:Diet, data = ChickWeight, 
-#     clusters = Chick, 
-#     fixed_effects = ~Chick,
-#     try_cholesky = TRUE
-#   )
-#   
-#   expect_equal(vcovCR(rob_fe, type = "CR2"), vcovCR(rob_fe_chole, type = "CR2"))
-#   
-#   wrob_chole <- robust(
-#     weight ~ 0 + Diet + Time:Diet, 
-#     weights = wt, 
-#     data = ChickWeight, 
-#     clusters = Chick,
-#     try_cholesky = TRUE
-#   )
-#   
-#   expect_equal(vcovCR(wrob, type = "CR2"), vcovCR(wrob_chole, type = "CR2"))
-#   
-# })
+test_that("vovCR properly pulls cluster specified for lm_lin generated 
+          lm_robust objects", {
+
+  # weighted tests
+
+  w_clust <- vcovCR(wclin, wcCO2$Plant, "CR2")
+  w_no_clust <- vcovCR(wclin, type = "CR2")
+  w_lin <- vcovCR(wclin, wcCO2$Plant, "CR2")
+
+  expect_equal(w_clust, w_no_clust)
+  expect_equal(w_no_clust, w_lin)
+
+  # create an robust that draws in data differently
+  lin_fact <- lm_lin(uptake ~ 0 + Treatment,
+                     covariates = ~ conc,
+                     data = CO2,
+                     weights = wt,
+                     clusters = factor(CO2$Plant_ordered, ordered = FALSE))
+  
+  # perform vcovCR
+  w_fact_cr <- vcovCR(lin_fact, type = "CR2")
+
+  # check they are the same
+  expect_equivalent(w_clust, w_fact_cr)
+
+  # put cluster data in a variable
+  # fact <- factor(ChickWeight$Chick_ordered, ordered = FALSE)
+  fact <- CO2$Plant
+
+  # pass variable to robust
+  lin_var <- lm_lin(uptake ~ 0 + Treatment,
+                    covariates = ~ conc,
+                    data = CO2,
+                    weights = wt,
+                    clusters = fact)
+
+  # perform vcovCR
+  w_fact_var <- vcovCR(lin_var, type = "CR2")
+
+  # check they are the same
+  expect_equivalent(w_clust, w_fact_var)
+
+})
 
 
-# test_that("subset argument does not interfere with vcovCR functionality", {
-#   
-#   lin_sub <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
-#                    subset = ChickWeight$rando == "Keep")
-#   rob_sub <- robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
-#                           clusters = Chick, subset = ChickWeight$rando == "Keep")
-#   
-#   expect_equal(vcovCR(lin_sub, ChickWeight$Chick[ChickWeight$rando == "Keep"], type = "CR2"), 
-#                vcovCR(rob_sub, type = "CR2"))
-#   
-#   lin_fe_sub <- lm(
-#     weight ~ 0 + Time:Diet + Chick, 
-#     data = ChickWeight, 
-#     subset = ChickWeight$rando == "Keep"
-#   )
-#   rob_fe_sub <- robust(
-#     weight ~ Time:Diet, 
-#     data = ChickWeight, 
-#     clusters = Chick, 
-#     fixed_effects = ~Chick,
-#     subset = ChickWeight$rando == "Keep"
-#   )
-#   
-#   sub_coef <- names(coef(rob_fe_sub))
-#   expect_equivalent(
-#     vcovCR(lin_fe_sub, ChickWeight$Chick[ChickWeight$rando == "Keep"], type = "CR2")[sub_coef, sub_coef],
-#     as.matrix(vcovCR(rob_fe_sub, type = "CR2"))
-#   )
-#   
-#   wlin_sub <- lm(weight ~ 0 + Diet + Time:Diet, weights = wt, 
-#                     data = ChickWeight, subset = ChickWeight$rando == "Keep")
-#   wrob_sub <- robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
-#                            data = ChickWeight, clusters = Chick, 
-#                            subset = ChickWeight$rando == "Keep")
-#   
-#   expect_equal(vcovCR(wlin_sub, ChickWeight$Chick[ChickWeight$rando == "Keep"], type = "CR2"),
-#                vcovCR(wrob_sub, type = "CR2"))
-#   
-# })
+test_that("na.action.robust() works correctly", {
+
+  compare_na_actions <- function(i) {
+
+    # generate random data
+    n <- 100
+    df <- data.frame(
+      y = rnorm(n),
+      x1 = rnorm(n),
+      x2 = rnorm(n)
+    )
+
+    # add random NA values to y and x2
+    miss_rows <- sample.int(n, size = n/10)
+    df$y[miss_rows] <- NA
+    df$x2[miss_rows] <- NA
+
+    # fit models
+    lin_fit <- lm_lin(y ~ x1,
+                  covariates = ~ x2,
+                  data = df)
+    rob_fit <- lm_robust(y ~ x1 + x2 + x1:x2,
+                     data = df)
+
+    # get na.action() of models
+    na_lin <- na.action(lin_fit)
+    na_rob <- na.action(rob_fit)
+
+    # compare
+    expect_equal(na_lin, na_rob)
+  }
+
+  # compare 10 times with different random data
+  lapply(1:10, compare_na_actions)
+
+})
+
+
+test_that("try_cholesky argument does not interfere with vcovCR functionality", {
+
+  lin_chole <- lm_lin(
+    uptake ~ 0 + 
+      Treatment,
+    covariates = ~ conc,
+    data = CO2,
+    try_cholesky = TRUE
+  )
+
+  expect_equal(
+    vcovCR(lin, cluster = CO2$Plant, type = "CR2"),
+    vcovCR(lin_chole, cluster = CO2$Plant, type = "CR2")
+  )
+
+  wclin_chole <- wclin <- lm_lin(
+    uptake ~ 0 + Treatment,
+    covariates = ~ conc,
+    data = wcCO2,
+    weights = wt,
+    clusters = Plant,
+    try_cholesky = TRUE
+  )
+
+  expect_equal(vcovCR(wclin, type = "CR2"), vcovCR(wclin_chole, type = "CR2"))
+
+})
+
+
+test_that("subset argument does not interfere with vcovCR functionality", {
+
+  lin_sub <- lm_lin(uptake ~ 0 + Treatment,
+                    covariates = ~ conc,
+                    data = CO2,
+                    subset = CO2$rando == "Keep")
+  rob_sub <- lm_robust(uptake ~ 0 + Treatment + conc_c + Treatment:conc_c,
+                       data = CO2,
+                       subset = CO2$rando == "Keep")
+
+  expect_equal(vcovCR(lin_sub, CO2$Plant[CO2$rando == "Keep"], type = "CR2"),
+               vcovCR(rob_sub, CO2$Plant[CO2$rando == "Keep"], type = "CR2"))
+
+  wclin_sub <- lm_lin(uptake ~ 0 + Treatment,
+                      covariates = ~ conc,
+                      data = wcCO2,
+                      weights = wt,
+                      clusters = Plant,
+                      subset = wcCO2$rando == "Keep")
+  wcrob_sub <- robust(uptake ~ 0 + Treatment + conc_c + Treatment:conc_c,
+                      data = wcCO2,
+                      weights = wt,
+                      clusters = Plant,
+                      subset = wcCO2$rando == "Keep")
+
+  expect_equal(vcovCR(wclin_sub, type = "CR2"),
+               vcovCR(wcrob_sub, type = "CR2"))
+
+})
 
 
 # =============== Higher level Tests ===============
