@@ -102,7 +102,7 @@ test_that("model_matrix() works without fixest", {
   mm_lin <- model_matrix(lin)
   mm_rob <- model_matrix(rob)
   
-  expect_equivalent(lin, rob)
+  expect_equivalent(mm_lin, mm_rob)
   
   # weighted tests
   

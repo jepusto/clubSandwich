@@ -120,7 +120,7 @@ requireNamespace <- function(...) base::requireNamespace(...)
 #' @export
 model_matrix.lm_robust <- function(obj) {
   
-  if (as.character(obj$call[[1]]) == "lm_lin") {
+  if ("lm_lin" %in% as.character(obj$call[[1]])) {
     
     # Reconstruct the data and formulas
     data <- eval(obj$call$data, envir = environment(formula(obj)))
@@ -172,47 +172,47 @@ model_matrix.lm_robust <- function(obj) {
   if (!obj$fes) {
     X_mat <- model.matrix(obj)
     
-    # Check for redundant dummy variables when using ~ 0 + factor
-    terms_obj <- terms(formula(obj))
-    has_intercept <- attr(terms_obj, "intercept") == 1
-    
-    if (!has_intercept) {
-      # Check for perfect collinearity in factor variables
-      # Look for sets of binary columns that sum to a constant
-      binary_cols <- apply(X_mat, 2, function(x) all(x %in% c(0, 1)))
-      
-      if (sum(binary_cols) > 1) {
-        binary_matrix <- X_mat[, binary_cols, drop = FALSE]
-        
-        # Group columns by their base variable name (e.g., "Treatment")
-        col_names <- colnames(binary_matrix)
-        base_names <- gsub("^([^0-9]+).*", "\\1", col_names)
-        
-        # For each base variable, check if we have redundant dummies
-        unique_bases <- unique(base_names)
-        cols_to_remove <- c()
-        
-        for (base in unique_bases) {
-          base_cols <- which(base_names == base)
-          if (length(base_cols) > 1) {
-            # Check if these columns are mutually exclusive and exhaustive
-            base_matrix <- binary_matrix[, base_cols, drop = FALSE]
-            row_sums <- rowSums(base_matrix)
-            
-            # If all rows sum to 1, we have a complete set of dummies
-            if (all(row_sums == 1)) {
-              # Remove the first column to avoid perfect collinearity
-              global_col_idx <- which(binary_cols)[base_cols[1]]
-              cols_to_remove <- c(cols_to_remove, global_col_idx)
-            }
-          }
-        }
-        
-        if (length(cols_to_remove) > 0) {
-          X_mat <- X_mat[, -cols_to_remove, drop = FALSE]
-        }
-      }
-    }
+    # # Check for redundant dummy variables when using ~ 0 + factor
+    # terms_obj <- terms(formula(obj))
+    # has_intercept <- attr(terms_obj, "intercept") == 1
+    # 
+    # if (!has_intercept) {
+    #   # Check for perfect collinearity in factor variables
+    #   # Look for sets of binary columns that sum to a constant
+    #   binary_cols <- apply(X_mat, 2, function(x) all(x %in% c(0, 1)))
+    #   
+    #   if (sum(binary_cols) > 1) {
+    #     binary_matrix <- X_mat[, binary_cols, drop = FALSE]
+    #     
+    #     # Group columns by their base variable name (e.g., "Treatment")
+    #     col_names <- colnames(binary_matrix)
+    #     base_names <- gsub("^([^0-9]+).*", "\\1", col_names)
+    #     
+    #     # For each base variable, check if we have redundant dummies
+    #     unique_bases <- unique(base_names)
+    #     cols_to_remove <- c()
+    #     
+    #     for (base in unique_bases) {
+    #       base_cols <- which(base_names == base)
+    #       if (length(base_cols) > 1) {
+    #         # Check if these columns are mutually exclusive and exhaustive
+    #         base_matrix <- binary_matrix[, base_cols, drop = FALSE]
+    #         row_sums <- rowSums(base_matrix)
+    #         
+    #         # If all rows sum to 1, we have a complete set of dummies
+    #         if (all(row_sums == 1)) {
+    #           # Remove the first column to avoid perfect collinearity
+    #           global_col_idx <- which(binary_cols)[base_cols[1]]
+    #           cols_to_remove <- c(cols_to_remove, global_col_idx)
+    #         }
+    #       }
+    #     }
+    #     
+    #     if (length(cols_to_remove) > 0) {
+    #       X_mat <- X_mat[, -cols_to_remove, drop = FALSE]
+    #     }
+    #   }
+    # }
     
     return(X_mat)
   }
@@ -253,7 +253,7 @@ model.frame.lm_robust <- function (formula, ...) {
   if (!is.null(mf)) return(mf)
   
   # Check if model was made using lm_lin
-  if (as.character(formula$call[[1]]) == "lm_lin") {
+  if ("lm_lin" %in% as.character(formula$call[[1]])) {
     
     # Get original data
     data <- eval(formula$call$data, envir = environment(formula(formula)))
