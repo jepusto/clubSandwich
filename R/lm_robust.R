@@ -163,9 +163,23 @@ model_matrix.lm_robust <- function(obj) {
           mf[[v]] <- mf[[v]] - obj$scaled_center[[v]]
         }
       }
+      
+      Xmat <- model.matrix(frm, mf)
+      
+      # modify column names
+      old_names <- colnames(Xmat)
+      for (v in covar_names) {
+        v_pattern <- paste0("(^",v,"$|:",v,")")
+        i <- grepl(v_pattern, old_names)
+        new_names <- gsub(v,paste0(v,"_c"), old_names[i])
+        colnames(Xmat)[i] <- new_names
+      }
+
+    } else {
+      Xmat <- model.matrix(frm, mf)
     }
     
-    return(model.matrix(frm, mf))
+    return(Xmat)
     
   }
   
