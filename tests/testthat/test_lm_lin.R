@@ -286,7 +286,7 @@ test_that("vovCR properly pulls cluster specified for lm_lin generated
   expect_equal(w_clust, w_no_clust)
   expect_equal(w_no_clust, w_lin)
 
-  # create an robust that draws in data differently
+  # create an lm_robust object that draws in data differently
   lin_fact <- lm_lin(uptake ~ 0 + Treatment,
                      covariates = ~ conc,
                      data = CO2,
@@ -360,8 +360,7 @@ test_that("na.action.robust() works correctly", {
 test_that("try_cholesky argument does not interfere with vcovCR functionality", {
 
   lin_chole <- lm_lin(
-    uptake ~ 0 + 
-      Treatment,
+    uptake ~ Treatment,
     covariates = ~ conc,
     data = CO2,
     try_cholesky = TRUE
@@ -373,7 +372,7 @@ test_that("try_cholesky argument does not interfere with vcovCR functionality", 
   )
 
   wclin_chole <- wclin <- lm_lin(
-    uptake ~ 0 + Treatment,
+    uptake ~ Treatment,
     covariates = ~ conc,
     data = wcCO2,
     weights = wt,
