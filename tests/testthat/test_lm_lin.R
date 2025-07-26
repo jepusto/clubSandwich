@@ -287,11 +287,11 @@ test_that("vovCR properly pulls cluster specified for lm_lin generated
   expect_equal(w_no_clust, w_lin)
 
   # create an lm_robust object that draws in data differently
-  lin_fact <- lm_lin(uptake ~ 0 + Treatment,
+  lin_fact <- lm_lin(uptake ~ Treatment,
                      covariates = ~ conc,
                      data = CO2,
                      weights = wt,
-                     clusters = factor(CO2$Plant_ordered, ordered = FALSE))
+                     clusters = factor(CO2$Plant, ordered = FALSE))
   
   # perform vcovCR
   w_fact_cr <- vcovCR(lin_fact, type = "CR2")
@@ -304,7 +304,7 @@ test_that("vovCR properly pulls cluster specified for lm_lin generated
   fact <- CO2$Plant
 
   # pass variable to robust
-  lin_var <- lm_lin(uptake ~ 0 + Treatment,
+  lin_var <- lm_lin(uptake ~ Treatment,
                     covariates = ~ conc,
                     data = CO2,
                     weights = wt,
@@ -390,11 +390,15 @@ test_that("subset argument does not interfere with vcovCR functionality", {
   lin_sub <- lm_lin(uptake ~ Treatment,
                     covariates = ~ conc,
                     data = CO2,
-                    subset = CO2$rando == "Keep")
+                    subset = rando == "Keep")
+  
   rob_sub <- lm_robust(uptake ~ Treatment + conc_c + Treatment:conc_c,
                        data = CO2,
                        subset = CO2$rando == "Keep")
 
+  vcovCR(lin_sub, CO2$Plant[CO2$rando == "Keep"], type = "CR2")
+  vcovCR(rob_sub, CO2$Plant[CO2$rando == "Keep"], type = "CR2")
+  
   expect_equal(vcovCR(lin_sub, CO2$Plant[CO2$rando == "Keep"], type = "CR2"),
                vcovCR(rob_sub, CO2$Plant[CO2$rando == "Keep"], type = "CR2"))
 
