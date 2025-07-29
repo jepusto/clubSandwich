@@ -244,7 +244,9 @@ model.frame.lm_robust <- function (formula, ...) {
   
   # compare omitted rows across model and covariates/fixed effects
   mf_omit <- na.action(mf)
+  if (!is.null(names(mf_omit))) mf_omit <- names(mf_omit)
   word_omit <- na.action(mf_word)
+  if (!is.null(names(word_omit))) word_omit <- names(word_omit)
   
   # combine model.frames for model and for covariates/fixed effects  
   if (identical(mf_omit, word_omit)) {

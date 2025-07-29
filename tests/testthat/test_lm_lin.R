@@ -386,7 +386,7 @@ test_that("na.action.robust() works correctly", {
 
     # get na.action() of models
     na_lin <- na.action(lin_fit)
-    na_rob <- na.action(rob_fit)
+    na_rob <- names(na.action(rob_fit))
 
     # compare
     expect_equal(na_lin, na_rob)
