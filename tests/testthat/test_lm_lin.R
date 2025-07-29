@@ -63,7 +63,12 @@ test_that("model.frame() works", {
   mf_wclin <- model.frame(wclin)
   mf_wcrob <- model.frame(wcrob)
   
-  expect_equivalent(mf_wclin, mf_wcrob)
+  cols <- names(mf_wclin)[1:4]
+  for (column in cols) {
+    expect_equivalent(mf_wclin[column], mf_wcrob[column])
+  }
+  
+  expect_equivalent(mf_wclin["conc"], mf_wcrob["conc_c"])
   
 })
 
@@ -257,7 +262,7 @@ test_that("vcovCR works", {
     vcov_lin <- vcovCR(lin, CO2$Plant, type = type)
     vcov_rob <- vcovCR(rob, CO2$Plant, type = type)
 
-    # changed from expect_equal()
+    # changed from equal b/c of attributes
     expect_equivalent(vcov_lin, vcov_rob,
                  label = paste0("When type = ", type, ", ", "vcov_lin"))
 
@@ -266,7 +271,8 @@ test_that("vcovCR works", {
     vcov_wclin <- vcovCR(wclin, wcCO2$Plant, type = type)
     vcov_wcrob <- vcovCR(wcrob, wcCO2$Plant, type = type)
 
-    expect_equal(vcov_wclin, vcov_wcrob,
+    # changed from equal b/c of attributes
+    expect_equivalent(vcov_wclin, vcov_wcrob,
                  label = paste0("When type = ", type, ", ", "vcov_wclin"))
 
   }
@@ -392,14 +398,15 @@ test_that("subset argument does not interfere with vcovCR functionality", {
                     data = CO2,
                     subset = rando == "Keep")
   
+  # CO2$conc_c_no_subset <- CO2$conc_c
+  CO2$conc_c <- CO2$conc - lin_sub$scaled_center
+  
   rob_sub <- lm_robust(uptake ~ Treatment + conc_c + Treatment:conc_c,
                        data = CO2,
                        subset = CO2$rando == "Keep")
 
-  vcovCR(lin_sub, CO2$Plant[CO2$rando == "Keep"], type = "CR2")
-  vcovCR(rob_sub, CO2$Plant[CO2$rando == "Keep"], type = "CR2")
-  
-  expect_equal(vcovCR(lin_sub, CO2$Plant[CO2$rando == "Keep"], type = "CR2"),
+  # changed from equal b/c of attributes
+  expect_equivalent(vcovCR(lin_sub, CO2$Plant[CO2$rando == "Keep"], type = "CR2"),
                vcovCR(rob_sub, CO2$Plant[CO2$rando == "Keep"], type = "CR2"))
 
   wclin_sub <- lm_lin(uptake ~ Treatment,
@@ -408,13 +415,18 @@ test_that("subset argument does not interfere with vcovCR functionality", {
                       weights = wt,
                       clusters = Plant,
                       subset = wcCO2$rando == "Keep")
-  wcrob_sub <- robust(uptake ~ Treatment + conc_c + Treatment:conc_c,
+  
+  # wcCO2$conc_c_no_subset <- wcCO2$conc_c
+  wcCO2$conc_c <- wcCO2$conc - wclin_sub$scaled_center
+  
+  wcrob_sub <- lm_robust(uptake ~ Treatment + conc_c + Treatment:conc_c,
                       data = wcCO2,
                       weights = wt,
                       clusters = Plant,
                       subset = wcCO2$rando == "Keep")
 
-  expect_equal(vcovCR(wclin_sub, type = "CR2"),
+  # changed from equal b/c of attributes
+  expect_equivalent(vcovCR(wclin_sub, type = "CR2"),
                vcovCR(wcrob_sub, type = "CR2"))
 
 })
