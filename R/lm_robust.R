@@ -187,66 +187,6 @@ model_matrix.lm_robust <- function(obj) {
     }
   }
 }
-  
-  # if ("lm_lin" %in% as.character(obj$call[[1]])) {
-  #   
-  #   if (is.null(covariates)) {
-  #     # No covariates case - keep original formula as is
-  #     # (it already has ~ 0 if that's what was specified)
-  #     frm <- frm
-  #   } else {
-  #     # With covariates - preserve the intercept specification from original formula
-  #     lhs <- deparse(frm[[2]])
-  #     treatment <- all.vars(frm[[3]])
-  #     covars <- all.vars(covariates)
-  #     
-  #     main_effects <- c(treatment, covars)
-  #     interactions <- paste0(treatment, ":", covars)
-  #     rhs_string <- paste(c(main_effects, interactions), collapse = " + ")
-  #     
-  #     # Check if original formula had no intercept (~ 0 or ~ -1)
-  #     original_terms <- terms(frm)
-  #     has_intercept <- attr(original_terms, "intercept") == 1
-  #     
-  #     if (has_intercept) {
-  #       frm <- as.formula(paste(lhs, "~", rhs_string))
-  #     } else {
-  #       frm <- as.formula(paste(lhs, "~ 0 +", rhs_string))
-  #     }
-  #   }
-  #   
-  #   mf <- model.frame(frm, data)
-  #   
-  #   # Apply centering if needed
-  #   if (!is.null(obj$scaled_center)) {
-  #     covar_names <- names(obj$scaled_center)
-  #     for (v in covar_names) {
-  #       if (v %in% names(mf)) {
-  #         mf[[v]] <- mf[[v]] - obj$scaled_center[[v]]
-  #       }
-  #     }
-  #     
-  #     Xmat <- model.matrix(frm, mf)
-  #     
-  #     # modify column names
-  #     old_names <- colnames(Xmat)
-  #     for (v in covar_names) {
-  #       v_pattern <- paste0("(^",v,"$|:",v,")")
-  #       i <- grepl(v_pattern, old_names)
-  #       new_names <- gsub(v,paste0(v,"_c"), old_names[i])
-  #       colnames(Xmat)[i] <- new_names
-  #     }
-  # 
-  #   } else {
-  #     Xmat <- model.matrix(frm, mf)
-  #   }
-  #   
-  #   return(Xmat)
-  #   
-  # }
-  # 
-  
-# }
 
 
 #' @export
@@ -313,17 +253,6 @@ model.frame.lm_robust <- function (formula, ...) {
         mf_combined[[v]] <- mf_combined[[v]] - formula$scaled_center[[v]]
       }
     }
-    
-    # Xmat <- model.matrix(frm, mf)
-    # 
-    # # modify column names
-    # old_names <- colnames(Xmat)
-    # for (v in covar_names) {
-    #   v_pattern <- paste0("(^",v,"$|:",v,")")
-    #   i <- grepl(v_pattern, old_names)
-    #   new_names <- gsub(v,paste0(v,"_c"), old_names[i])
-    #   colnames(Xmat)[i] <- new_names
-    # }
     
   }
   
