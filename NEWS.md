@@ -1,3 +1,7 @@
+# clubSandwich 0.6.1
+
+* Added support for `estimatr::lm_robust()` and `estimatr::lm_lin()` models.
+
 # clubSandwich 0.6.0
 
 * Added option to Wald_test() and linear_contrast() to correct hypothesis tests for multiple comparisons.
