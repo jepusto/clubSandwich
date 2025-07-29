@@ -496,6 +496,54 @@ test_that("vcovCR works", {
 })
 
 
+test_that("vcovCR works with se_type inherited from lm_robust().", {
+  
+  types <- c("CR0", "CR2", "stata")
+  
+  data("OrchardSprays", package = "datasets")
+  OrchardSprays$wt <- 1 + rpois(nrow(OrchardSprays), lambda = 3)
+
+  for (type in types) {
+    
+    # unweighted
+    rob_fit <- lm_robust(
+      decrease ~ 0 + factor(rowpos) + treatment, 
+      data = OrchardSprays, 
+      cluster = colpos,
+      se_type = type
+    )
+    
+    expect_equal(as.matrix(vcovCR(rob_fit)), vcov(rob_fit))
+
+    # weighted
+    wt_fit <- lm_robust(
+      decrease ~ 0 + factor(rowpos) + treatment, 
+      weights = wt,
+      data = OrchardSprays, 
+      cluster = colpos,
+      se_type = type
+    )
+    
+    expect_equal(as.matrix(vcovCR(wt_fit)), vcov(wt_fit))
+    
+    # fixed effects
+    if (type != "stata") {
+      fe_fit <- lm_robust(
+        decrease ~ treatment, 
+        fixed_effects = ~ rowpos,
+        data = OrchardSprays, 
+        cluster = colpos,
+        se_type = type
+      )
+      expect_equal(as.matrix(vcovCR(fe_fit)), vcov(fe_fit))
+    }
+    
+    
+  }
+  
+})
+
+
 test_that("vovCR properly pulls cluster specified for lm_robust", {
   
   # unweighted tests
