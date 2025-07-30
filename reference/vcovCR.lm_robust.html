@@ -73,14 +73,16 @@ of a set of regression coefficient estimates from an
 
 <dt id="arg-cluster">cluster<a class="anchor" aria-label="anchor" href="#arg-cluster"></a></dt>
 <dd><p>Expression or vector indicating which observations belong to
-the same cluster. Required for <code><a href="https://declaredesign.org/r/estimatr/reference/lm_robust.html" class="external-link">estimatr::lm_robust</a></code> objects.</p></dd>
+the same cluster. If not specified, will be detected from the
+<code>clusters</code> argument of <code>obj</code>.</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
 <dd><p>Character string specifying which small-sample adjustment should
 be used, with available options <code>"CR0"</code>, <code>"CR1"</code>, <code>"CR1p"</code>,
-<code>"CR1S"</code>, <code>"CR2"</code>, or <code>"CR3"</code>. See "Details" section of
-<code><a href="vcovCR.html">vcovCR</a></code> for further information.</p></dd>
+<code>"CR1S"</code>, <code>"CR2"</code>, or <code>"CR3"</code>. If not specified, will be
+detected from the <code>se_type</code> argument of <code>obj</code>. See "Details"
+section of <code><a href="vcovCR.html">vcovCR</a></code> for further information.</p></dd>
 
 
 <dt id="arg-target">target<a class="anchor" aria-label="anchor" href="#arg-target"></a></dt>
@@ -132,20 +134,20 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 <span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://declaredesign.org/r/estimatr/" class="external-link">estimatr</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="va">lm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://declaredesign.org/r/estimatr/reference/lm_robust.html" class="external-link">lm_robust</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="va">weight</span> <span class="op">~</span> <span class="va">Time</span> <span class="op">+</span> <span class="va">Diet</span><span class="op">:</span><span class="va">Time</span>, </span></span>
+<span class="r-in"><span>    <span class="va">weight</span> <span class="op">~</span> <span class="va">Time</span> <span class="op">+</span> <span class="va">Diet</span><span class="op">:</span><span class="va">Time</span>,</span></span>
 <span class="r-in"><span>    data <span class="op">=</span> <span class="va">ChickWeight</span></span></span>
 <span class="r-in"><span>   <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_fit</span>, cluster <span class="op">=</span> <span class="va">ChickWeight</span><span class="op">$</span><span class="va">Chick</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="va">lm_fit_clust</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://declaredesign.org/r/estimatr/reference/lm_robust.html" class="external-link">lm_robust</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="va">weight</span> <span class="op">~</span> <span class="va">Time</span> <span class="op">+</span> <span class="va">Diet</span><span class="op">:</span><span class="va">Time</span>, data <span class="op">=</span> <span class="va">ChickWeight</span>,</span></span>
 <span class="r-in"><span>    clusters <span class="op">=</span> <span class="va">Chick</span></span></span>
 <span class="r-in"><span>   <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_fit_clust</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="va">lm_fit_fe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://declaredesign.org/r/estimatr/reference/lm_robust.html" class="external-link">lm_robust</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    <span class="va">weight</span> <span class="op">~</span> <span class="va">Time</span><span class="op">:</span><span class="va">Diet</span>, data <span class="op">=</span> <span class="va">ChickWeight</span>, </span></span>
-<span class="r-in"><span>    clusters <span class="op">=</span> <span class="va">Chick</span>, </span></span>
+<span class="r-in"><span>    <span class="va">weight</span> <span class="op">~</span> <span class="va">Time</span><span class="op">:</span><span class="va">Diet</span>, data <span class="op">=</span> <span class="va">ChickWeight</span>,</span></span>
+<span class="r-in"><span>    clusters <span class="op">=</span> <span class="va">Chick</span>,</span></span>
 <span class="r-in"><span>    fixed_effects <span class="op">=</span> <span class="op">~</span> <span class="va">Chick</span></span></span>
 <span class="r-in"><span>   <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_fit_fe</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></span>
@@ -154,15 +156,15 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Produc"</span>, package <span class="op">=</span> <span class="st">"plm"</span><span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="va">lm_individual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://declaredesign.org/r/estimatr/reference/lm_robust.html" class="external-link">lm_robust</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">gsp</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pcap</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pc</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">emp</span><span class="op">)</span> <span class="op">+</span> <span class="va">unemp</span>, </span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">gsp</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pcap</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">pc</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">emp</span><span class="op">)</span> <span class="op">+</span> <span class="va">unemp</span>,</span></span>
 <span class="r-in"><span>      data <span class="op">=</span> <span class="va">Produc</span>,</span></span>
 <span class="r-in"><span>      fixed_effects <span class="op">=</span> <span class="op">~</span> <span class="va">state</span>,</span></span>
 <span class="r-in"><span>      cluster <span class="op">=</span> <span class="va">state</span></span></span>
 <span class="r-in"><span>     <span class="op">)</span></span></span>
 <span class="r-in"><span>    <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_individual</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="op">}</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; library(estimatr)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; lm_fit &lt;- lm_robust(weight ~ Time + Diet:Time, data = ChickWeight)</span>
