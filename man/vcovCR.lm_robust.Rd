@@ -76,14 +76,36 @@ if (requireNamespace("estimatr", quietly = TRUE)) withAutoprint({
     weight ~ Time + Diet:Time, data = ChickWeight,
     clusters = Chick
    )
-  vcovCR(lm_fit_clust, type = "CR2")
+  conf_int(lm_fit_clust, vcov = "CR2")
 
+  # similar model via lm_lin()
+  lin_fit_clust <- lm_lin(
+    weight ~ Diet, 
+    covariates = ~ Time,
+    data = ChickWeight,
+    clusters = Chick
+  )
+  conf_int(lin_fit_clust, vcov = "CR2")
+  
   lm_fit_fe <- lm_robust(
     weight ~ Time:Diet, data = ChickWeight,
     clusters = Chick,
     fixed_effects = ~ Chick
    )
-  vcovCR(lm_fit_fe, type = "CR2")
+  vcovCR(lm_fit_fe)
+  
+  # two-way fixed effects model
+  data("MortalityRates")
+  MortalityRates <- subset(MortalityRates, cause == "Motor Vehicle")
+  MortalityRates$state <- factor(MortalityRates$state)
+  MortalityRates$year <- factor(MortalityRates$year)
+  MLDA_fit <- lm_robust(
+    mrate ~ legal + beertaxa + beerpercap + winepercap + spiritpercap,
+    fixed_effects = ~ year + state,
+    data = MortalityRates,
+    cluster = state
+  )
+  conf_int(MLDA_fit, vcov = "CR2")
 
   if (requireNamespace("plm", quietly = TRUE)) withAutoprint({
 
