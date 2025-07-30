@@ -1,7 +1,7 @@
 Package: clubSandwich
 Title: Cluster-Robust (Sandwich) Variance Estimators with Small-Sample
     Corrections
-Version: 0.6.0
+Version: 0.6.1
 Authors@R: c(
   person(c("James","E."), "Pustejovsky", email = "jepusto@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-0591-9465")),
   person("Samuel", "Pekofsky", email = "sampekofsky@gmail.com", role = "ctb"),
@@ -19,7 +19,8 @@ Description: Provides several cluster-robust variance estimators (i.e.,
     coefficients use Satterthwaite or saddle-point corrections. Tests of multiple-
     contrast hypotheses use an approximation to Hotelling's T-squared distribution.
     Methods are provided for a variety of fitted models, including lm() and mlm
-    objects, glm(), geeglm() (from package 'geepack'), ivreg() (from package 'AER'), ivreg() (from package 'ivreg' when 
+    objects, glm(), geeglm() (from package 'geepack'), lm_robust() and lm_lin() 
+    (from package 'estimatr'), ivreg() (from package 'AER'), ivreg() (from package 'ivreg' when 
     estimated by ordinary least squares), plm() (from package 'plm'), gls() and 
     lme() (from 'nlme'), lmer() (from `lme4`), robu() (from 'robumeta'), and rma.uni() 
     and rma.mv() (from 'metafor').
