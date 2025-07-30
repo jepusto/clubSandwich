@@ -11,7 +11,7 @@ lm_robust object."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">clubSandwich</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.6.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -143,14 +143,36 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 <span class="r-in"><span>    <span class="va">weight</span> <span class="op">~</span> <span class="va">Time</span> <span class="op">+</span> <span class="va">Diet</span><span class="op">:</span><span class="va">Time</span>, data <span class="op">=</span> <span class="va">ChickWeight</span>,</span></span>
 <span class="r-in"><span>    clusters <span class="op">=</span> <span class="va">Chick</span></span></span>
 <span class="r-in"><span>   <span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_fit_clust</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="conf_int.html">conf_int</a></span><span class="op">(</span><span class="va">lm_fit_clust</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="co"># similar model via lm_lin()</span></span></span>
+<span class="r-in"><span>  <span class="va">lin_fit_clust</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://declaredesign.org/r/estimatr/reference/lm_lin.html" class="external-link">lm_lin</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">weight</span> <span class="op">~</span> <span class="va">Diet</span>, </span></span>
+<span class="r-in"><span>    covariates <span class="op">=</span> <span class="op">~</span> <span class="va">Time</span>,</span></span>
+<span class="r-in"><span>    data <span class="op">=</span> <span class="va">ChickWeight</span>,</span></span>
+<span class="r-in"><span>    clusters <span class="op">=</span> <span class="va">Chick</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="conf_int.html">conf_int</a></span><span class="op">(</span><span class="va">lin_fit_clust</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  </span></span>
 <span class="r-in"><span>  <span class="va">lm_fit_fe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://declaredesign.org/r/estimatr/reference/lm_robust.html" class="external-link">lm_robust</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    <span class="va">weight</span> <span class="op">~</span> <span class="va">Time</span><span class="op">:</span><span class="va">Diet</span>, data <span class="op">=</span> <span class="va">ChickWeight</span>,</span></span>
 <span class="r-in"><span>    clusters <span class="op">=</span> <span class="va">Chick</span>,</span></span>
 <span class="r-in"><span>    fixed_effects <span class="op">=</span> <span class="op">~</span> <span class="va">Chick</span></span></span>
 <span class="r-in"><span>   <span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_fit_fe</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">lm_fit_fe</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  </span></span>
+<span class="r-in"><span>  <span class="co"># two-way fixed effects model</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"MortalityRates"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">MortalityRates</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">MortalityRates</span>, <span class="va">cause</span> <span class="op">==</span> <span class="st">"Motor Vehicle"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">MortalityRates</span><span class="op">$</span><span class="va">state</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">MortalityRates</span><span class="op">$</span><span class="va">state</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">MortalityRates</span><span class="op">$</span><span class="va">year</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">MortalityRates</span><span class="op">$</span><span class="va">year</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="va">MLDA_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://declaredesign.org/r/estimatr/reference/lm_robust.html" class="external-link">lm_robust</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    <span class="va">mrate</span> <span class="op">~</span> <span class="va">legal</span> <span class="op">+</span> <span class="va">beertaxa</span> <span class="op">+</span> <span class="va">beerpercap</span> <span class="op">+</span> <span class="va">winepercap</span> <span class="op">+</span> <span class="va">spiritpercap</span>,</span></span>
+<span class="r-in"><span>    fixed_effects <span class="op">=</span> <span class="op">~</span> <span class="va">year</span> <span class="op">+</span> <span class="va">state</span>,</span></span>
+<span class="r-in"><span>    data <span class="op">=</span> <span class="va">MortalityRates</span>,</span></span>
+<span class="r-in"><span>    cluster <span class="op">=</span> <span class="va">state</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="conf_int.html">conf_int</a></span><span class="op">(</span><span class="va">MLDA_fit</span>, vcov <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"plm"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/source.html" class="external-link">withAutoprint</a></span><span class="op">(</span><span class="op">{</span></span></span>
 <span class="r-in"><span></span></span>
@@ -177,21 +199,46 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Time:Diet4    0.2695861 -0.3665016  0.3482061  0.3483146  0.5416587</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; lm_fit_clust &lt;- lm_robust(weight ~ Time + Diet:Time, data = ChickWeight, </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> +     clusters = Chick)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; vcovCR(lm_fit_clust, type = "CR2")</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>             (Intercept)       Time Time:Diet2 Time:Diet3 Time:Diet4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)   3.9317840 -0.7851508 -0.2560762 -0.0750498  0.2695861</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Time         -0.7851508  0.4360726 -0.3314209 -0.3436398 -0.3665016</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Time:Diet2   -0.2560762 -0.3314209  1.3680862  0.3475327  0.3482061</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Time:Diet3   -0.0750498 -0.3436398  0.3475327  1.1195632  0.3483146</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Time:Diet4    0.2695861 -0.3665016  0.3482061  0.3483146  0.5416587</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; conf_int(lm_fit_clust, vcov = "CR2")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        Coef. Estimate    SE d.f. Lower 95% CI Upper 95% CI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  (Intercept)    27.86 1.983 48.7       23.874        31.84</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Time     7.05 0.660 31.4        5.703         8.40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Time:Diet2     1.61 1.170 19.0       -0.837         4.06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Time:Diet3     3.74 1.058 19.0        1.524         5.95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Time:Diet4     2.86 0.736 18.4        1.317         4.41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; lin_fit_clust &lt;- lm_lin(weight ~ Diet, covariates = ~Time, data = ChickWeight, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     clusters = Chick)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; conf_int(lin_fit_clust, vcov = "CR2")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Coef. Estimate     SE d.f. Lower 95% CI Upper 95% CI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   (Intercept)   104.26  5.727 18.0       92.227       116.30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Diet2    16.64 11.257 18.7       -6.940        40.23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Diet3    36.42 10.177 18.7       15.095        57.74</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Diet4    30.65  6.957 18.5       16.064        45.23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        Time_c     6.84  0.759 18.0        5.247         8.44</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Diet2:Time_c     1.77  1.488 18.8       -1.349         4.88</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Diet3:Time_c     4.58  1.351 18.8        1.751         7.41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Diet4:Time_c     2.87  1.008 18.3        0.757         4.99</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; lm_fit_fe &lt;- lm_robust(weight ~ Time:Diet, data = ChickWeight, clusters = Chick, </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> +     fixed_effects = ~Chick)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; vcovCR(lm_fit_fe, type = "CR2")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; vcovCR(lm_fit_fe)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            Time:Diet1 Time:Diet2 Time:Diet3 Time:Diet4</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Time:Diet1  0.5644892   0.000000   0.000000  0.0000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Time:Diet2  0.0000000   1.638116   0.000000  0.0000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Time:Diet3  0.0000000   0.000000   1.249162  0.0000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Time:Diet4  0.0000000   0.000000   0.000000  0.4523152</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; data("MortalityRates")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; MortalityRates &lt;- subset(MortalityRates, cause == "Motor Vehicle")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; MortalityRates$state &lt;- factor(MortalityRates$state)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; MortalityRates$year &lt;- factor(MortalityRates$year)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; MLDA_fit &lt;- lm_robust(mrate ~ legal + beertaxa + beerpercap + winepercap + </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> +     spiritpercap, fixed_effects = ~year + state, data = MortalityRates, cluster = state)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &gt; conf_int(MLDA_fit, vcov = "CR2")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         Coef. Estimate    SE  d.f. Lower 95% CI Upper 95% CI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         legal    0.224  2.59 40.57        -5.00         5.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      beertaxa   -1.433  5.15  8.35       -13.22        10.35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    beerpercap   32.387 12.83 28.57         6.12        58.65</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    winepercap   11.000 11.75 19.12       -13.58        35.59</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  spiritpercap   -1.353 11.88  3.95       -34.51        31.80</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &gt; if (requireNamespace("plm", quietly = TRUE)) withAutoprint({</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> +     data("Produc", package = "plm")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> +     lm_individual &lt;- lm_robust(log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, </span>
