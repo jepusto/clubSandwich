@@ -39,26 +39,44 @@ wlm_rob <- lm_robust(
   clusters = Chick
 )
 
+# Two-way fixed effects models
+data("MortalityRates")
+MortalityRates <- subset(MortalityRates, cause == "Motor Vehicle")
+MortalityRates$state <- factor(MortalityRates$state)
+MortalityRates$year <- factor(MortalityRates$year)
 
+lm_fit_fe2 <- lm(
+  mrate ~ 0 + year + state + legal + beertaxa + beerpercap + winepercap + spiritpercap,
+  data = MortalityRates
+)
+lm_rob_fe2 <- lm_robust(
+  mrate ~ legal + beertaxa + beerpercap + winepercap + spiritpercap,
+  fixed_effects = ~ year + state,
+  data = MortalityRates,
+  cluster = state
+)
 
 test_that("model.frame() works", {
   
-  # unweighted tests
-  
+  # unweighted models
   mf_fit <- model.frame(lm_fit)
   mf_rob <- model.frame(lm_rob)
   mf_rob$`(clusters)` <- NULL
-
   expect_equal(mf_fit, mf_rob)
 
+  # fixed effects models
   mf_fit_fe <- model.frame(lm_fit_fe)
   mf_rob_fe <- model.frame(lm_rob_fe)
   mf_rob_fe$`(clusters)` <- NULL
-
   expect_equivalent(mf_fit_fe, mf_rob_fe)
 
-  # weighted tests
+  # two-way fixed effects models
+  mf_fit_fe2 <- model.frame(lm_fit_fe2)
+  mf_rob_fe2 <- model.frame(lm_rob_fe2)
+  mf_rob_fe2$`(clusters)` <- NULL
+  expect_equivalent(mf_fit_fe2[names(mf_rob_fe2)], mf_rob_fe2)
   
+  # weighted models
   mf_wlm <- model.frame(wlm_fit)
   mf_wrob <- model.frame(wlm_rob)
   mf_wrob$`(clusters)` <- NULL
@@ -198,13 +216,15 @@ test_that("model.frame() works", {
 
 test_that("model_matrix() works", {
   
-  # unweighted tests
+  # basic models
   
   mm_fit <- model_matrix(lm_fit) 
   mm_rob <- model_matrix(lm_rob)
-
   expect_equivalent(mm_fit, mm_rob)
 
+  
+  # fixed effects models
+  
   mm_fit_fe <- model_matrix(lm_fit_fe)
   mm_rob_fe <- model_matrix(lm_rob_fe)
   amm_rob_fe <- augmented_model_matrix(lm_rob_fe)
@@ -220,12 +240,34 @@ test_that("model_matrix() works", {
   )
   # model matrix is centered by chick so means are zero
   expect_lt(max(abs(apply(mm_rob_fe, 2, \(x) tapply(x, ChickWeight$Chick, mean)))), 1e-12)
+  
+  
+  # two-way fixed effects models
+  
+  mm_fit_fe2 <- model_matrix(lm_fit_fe2)
+  mm_rob_fe2 <- model_matrix(lm_rob_fe2)
+  amm_rob_fe2 <- augmented_model_matrix(lm_rob_fe2)
+  
+  # Check that fixed effects are the same
+  expect_equivalent(mm_fit_fe2[,colnames(amm_rob_fe2)], amm_rob_fe2)
+  
+  # Core predictor matrices are different
+  expect_false(identical(mm_rob_fe, mm_fit_fe[,colnames(mm_rob_fe)]))
+  # But one can be computed by residualizing
+  expect_equivalent(
+    mm_rob_fe2,
+    residuals(lm.fit(amm_rob_fe2, mm_fit_fe2[,colnames(mm_rob_fe2)]))
+  )
+  # model matrix is centered by state and year
+  MortalityRates_full <- subset(MortalityRates, !is.na(beertaxa))
+  expect_lt(max(abs(apply(mm_rob_fe2, 2, \(x) tapply(x, MortalityRates_full$state, mean)))), 1e-12)
+  expect_lt(max(abs(apply(mm_rob_fe2, 2, \(x) tapply(x, MortalityRates_full$year, mean)))), 1e-12)
 
-  # weighted tests
+    
+  # weighted models
   
   mm_wlm <- model_matrix(wlm_fit)
   mm_wrob <- model_matrix(wlm_rob)
-  
   expect_equivalent(mm_wlm, mm_wrob)
   
 })
@@ -238,13 +280,15 @@ test_that("model_matrix() works without fixest", {
   
   expect_false(requireNamespace("fixest", quietly = TRUE))
   
-  # unweighted tests
+  # basic models
   
   mm_fit <- model_matrix(lm_fit) 
   mm_rob <- model_matrix(lm_rob)
   amm_rob_fe <- augmented_model_matrix(lm_rob_fe)
-  
   expect_equivalent(mm_fit, mm_rob)
+  
+  
+  # fixed effects models
   
   mm_fit_fe <- model_matrix(lm_fit_fe)
   mm_rob_fe <- model_matrix(lm_rob_fe)
@@ -315,19 +359,24 @@ test_that("weightMatrix() works", {
 
 test_that("sandwich::bread works", {
   
-  # unweighted tests
-  
+  # basic models
   bread_lm <- bread(lm_fit)
   bread_rob <- bread(lm_rob)
+  expect_equal(bread_lm, bread_rob)
+  
+  # fixed effects models
   bread_lm_fe <- bread(lm_fit_fe)
   bread_rob_fe <- bread(lm_rob_fe)
-  
-  expect_equal(bread_lm, bread_rob)
   focal_coefs <- names(coef(lm_rob_fe))
   expect_equal(bread_lm_fe[focal_coefs,focal_coefs], as.matrix(bread_rob_fe))
   
-  # weighted tests
+  # two-way fixed effects models
+  bread_lm_fe2 <- bread(lm_fit_fe2)
+  bread_rob_fe2 <- bread(lm_rob_fe2)
+  focal_coefs <- names(coef(lm_rob_fe2))
+  expect_equal(bread_lm_fe2[focal_coefs,focal_coefs], as.matrix(bread_rob_fe2))
   
+  # weighted models
   bread_wlm <- bread(wlm_fit)
   bread_wrob <- bread(wlm_rob)
   expect_equal(bread_wlm, bread_wrob)
@@ -337,46 +386,49 @@ test_that("sandwich::bread works", {
 
 test_that("residuals_CS() works", {
   
-  # unweighted tests
-  
+  # basic models
   rcs_fit <- residuals_CS(lm_fit)
   rcs_rob <- residuals_CS(lm_rob)
-  
   expect_equal(rcs_fit, rcs_rob)
   
+  # fixed effects models
   rcs_fit_fe <- residuals_CS(lm_fit_fe)
   rcs_rob_fe <- residuals_CS(lm_rob_fe)
-  
   expect_equal(rcs_fit_fe, rcs_rob_fe)
-
-  # weighted tests
   
+  # two-way fixed effects models
+  rcs_fit_fe2 <- residuals_CS(lm_fit_fe2)
+  rcs_rob_fe2 <- residuals_CS(lm_rob_fe2)
+  expect_equal(rcs_fit_fe2, rcs_rob_fe2)
+
+  # weighted models
   rcs_wlm <- residuals_CS(wlm_fit)
   rcs_wrob <- residuals_CS(wlm_rob)
-
   expect_equal(rcs_wlm, rcs_wrob)
+  
 })
 
 
 test_that("coef() works", {
   
-  # unweighted tests
-  
+  # basic models
   coef_fit <- coef(lm_fit)
   coef_rob <- coef(lm_rob)
-  
   expect_equal(coef_fit, coef_rob)
   
+  # fixed effects models
   coef_fit_fe <- coef(lm_fit_fe)
   coef_rob_fe <- coef(lm_rob_fe)
-  
   expect_equal(coef_fit_fe[names(coef_rob_fe)], coef_rob_fe)
   
-  # weighted tests
+  # two-way fixed effects models
+  coef_fit_fe2 <- coef(lm_fit_fe2)
+  coef_rob_fe2 <- coef(lm_rob_fe2)
+  expect_equal(coef_fit_fe2[names(coef_rob_fe2)], coef_rob_fe2)
   
+  # weighted models
   coef_wlm <- coef(wlm_fit)
   coef_wrob <- coef(wlm_rob)
-  
   expect_equal(coef_wlm, coef_wrob)
   
 })
@@ -431,17 +483,19 @@ test_that("vcovCR works", {
   
   types <- c("CR0", "CR1", "CR1p", "CR1S", "CR2", "CR3")
   
-  # unweighted tests
   
   focal_coefs <- names(coef(lm_rob_fe))
   
   for (type in types) {
     
+    # basic models
     vcov_lm <- vcovCR(lm_fit, ChickWeight$Chick, type = type)
     vcov_lmr <- vcovCR(lm_rob, ChickWeight$Chick, type = type)
-    
     expect_equal(vcov_lm, vcov_lmr, 
                  label = paste0("When type = ", type, ", ", "vcov_lm"))
+    
+    
+    # fixed effects models
     
     if (type %in% c("CR0", "CR1", "CR2")) {
       
@@ -453,16 +507,15 @@ test_that("vcovCR works", {
       
     }
     
-    # weighted tests
-    
+    # weighted models
     vcov_wlm <- vcovCR(wlm_fit, ChickWeight$Chick, type = type)
     vcov_wlmr <- vcovCR(wlm_rob, ChickWeight$Chick, type = type)
-    
     expect_equal(vcov_wlm, vcov_wlmr)
     
     
     if (type %in% c("CR0","CR2")) {
       
+      # basic models
       lm_rob_type <- lm_robust(
         weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
         clusters = Chick, 
@@ -472,6 +525,7 @@ test_that("vcovCR works", {
       expect_equal(as.matrix(vcov_lmr), vcov(lm_rob_type), 
                    label = paste0("When type = ", type, ", ", "as.matrix(vcov_lmr)"))
       
+      # fixed effects models
       lm_rob_fe_type <- lm_robust(
         weight ~ Time:Diet, data = ChickWeight, 
         clusters = Chick, fixed_effects = ~Chick,
@@ -480,6 +534,9 @@ test_that("vcovCR works", {
       
       expect_equal(as.matrix(vcov_lmr_fe), vcov(lm_rob_fe_type), 
                    label = paste0("When type = ", type, ", ", "as.matrix(vcov_lmr_fe)"))
+      
+
+      # weighted models
       
       wlm_rob_type <- lm_robust(
         weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
@@ -496,10 +553,70 @@ test_that("vcovCR works", {
 })
 
 
+test_that("vcovCR works with se_type inherited from lm_robust().", {
+  
+  types <- c("CR0", "CR2", "stata")
+  
+  data("OrchardSprays", package = "datasets")
+  OrchardSprays$wt <- 1 + rpois(nrow(OrchardSprays), lambda = 3)
+
+  for (type in types) {
+    
+    # unweighted
+    rob_fit <- lm_robust(
+      decrease ~ 0 + factor(rowpos) + treatment, 
+      data = OrchardSprays, 
+      cluster = colpos,
+      se_type = type
+    )
+    
+    expect_equal(as.matrix(vcovCR(rob_fit)), vcov(rob_fit))
+
+    # weighted
+    wt_fit <- lm_robust(
+      decrease ~ 0 + factor(rowpos) + treatment, 
+      weights = wt,
+      data = OrchardSprays, 
+      cluster = colpos,
+      se_type = type
+    )
+    
+    expect_equal(as.matrix(vcovCR(wt_fit)), vcov(wt_fit))
+    
+    
+    if (type != "stata") {
+      
+      # fixed effects
+      fe_fit <- lm_robust(
+        decrease ~ treatment, 
+        fixed_effects = ~ rowpos,
+        data = OrchardSprays, 
+        cluster = colpos,
+        se_type = type
+      )
+      expect_equal(as.matrix(vcovCR(fe_fit)), vcov(fe_fit))
+      
+      # two-way fixed effects
+      fe2_fit <- lm_robust(
+        mrate ~ legal + beertaxa + beerpercap + winepercap + spiritpercap,
+        fixed_effects = ~ year + state,
+        data = MortalityRates,
+        cluster = state,
+        se_type = type
+      )
+      expect_equal(as.matrix(vcovCR(fe2_fit)), vcov(fe2_fit))
+      
+    }
+    
+    
+  }
+  
+})
+
+
 test_that("vovCR properly pulls cluster specified for lm_robust", {
   
-  # unweighted tests
-  
+  # basic models
   uw_clust <- vcovCR(lm_rob, ChickWeight$Chick, "CR2")
   uw_no_clust <- vcovCR(lm_rob, type = "CR2")
   uw_lm <- vcovCR(lm_fit, ChickWeight$Chick, "CR2")
@@ -634,6 +751,7 @@ test_that("try_cholesky argument does not interfere with vcovCR functionality", 
 
 test_that("subset argument does not interfere with vcovCR functionality", {
   
+  # basic models
   lm_fit_sub <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
                             subset = ChickWeight$rando == "Keep")
   lm_rob_sub <- lm_robust(weight ~ 0 + Diet + Time:Diet, data = ChickWeight, 
@@ -642,17 +760,20 @@ test_that("subset argument does not interfere with vcovCR functionality", {
   expect_equal(vcovCR(lm_fit_sub, ChickWeight$Chick[ChickWeight$rando == "Keep"], type = "CR2"), 
                vcovCR(lm_rob_sub, type = "CR2"))
   
+  
+  # fixed effects models
+  
   lm_fit_fe_sub <- lm(
     weight ~ 0 + Time:Diet + Chick, 
     data = ChickWeight, 
-    subset = ChickWeight$rando == "Keep"
+    subset = rando == "Keep"
   )
   lm_rob_fe_sub <- lm_robust(
     weight ~ Time:Diet, 
     data = ChickWeight, 
     clusters = Chick, 
     fixed_effects = ~Chick,
-    subset = ChickWeight$rando == "Keep"
+    subset = rando == "Keep"
   )
   
   sub_coef <- names(coef(lm_rob_fe_sub))
@@ -661,11 +782,13 @@ test_that("subset argument does not interfere with vcovCR functionality", {
     as.matrix(vcovCR(lm_rob_fe_sub, type = "CR2"))
   )
   
+  # weighted models
+  
   wlm_fit_sub <- lm(weight ~ 0 + Diet + Time:Diet, weights = wt, 
-                            data = ChickWeight, subset = ChickWeight$rando == "Keep")
+                            data = ChickWeight, subset = rando == "Keep")
   wlm_rob_sub <- lm_robust(weight ~ 0 + Diet + Time:Diet, weights = wt, 
                             data = ChickWeight, clusters = Chick, 
-                            subset = ChickWeight$rando == "Keep")
+                            subset = rando == "Keep")
   
   expect_equal(vcovCR(wlm_fit_sub, ChickWeight$Chick[ChickWeight$rando == "Keep"], type = "CR2"),
                vcovCR(wlm_rob_sub, type = "CR2"))

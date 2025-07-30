@@ -2,7 +2,8 @@
 % Please edit documentation in R/lm_robust.R
 \name{vcovCR.lm_robust}
 \alias{vcovCR.lm_robust}
-\title{Cluster-robust variance-covariance matrix for an \code{estimatr::lm_robust} object.}
+\title{Cluster-robust variance-covariance matrix for an \code{estimatr::lm_robust}
+object.}
 \usage{
 \method{vcovCR}{lm_robust}(
   obj,
@@ -18,12 +19,14 @@
 \item{obj}{Fitted model for which to calculate the variance-covariance matrix}
 
 \item{cluster}{Expression or vector indicating which observations belong to
-the same cluster. Required for \code{estimatr::lm_robust} objects.}
+the same cluster. If not specified, will be detected from the
+\code{clusters} argument of \code{obj}.}
 
-\item{type}{Character string specifying which small-sample adjustment should 
+\item{type}{Character string specifying which small-sample adjustment should
 be used, with available options \code{"CR0"}, \code{"CR1"}, \code{"CR1p"},
-\code{"CR1S"}, \code{"CR2"}, or \code{"CR3"}. See "Details" section of 
-\code{\link{vcovCR}} for further information.}
+\code{"CR1S"}, \code{"CR2"}, or \code{"CR3"}. If not specified, will be
+detected from the \code{se_type} argument of \code{obj}. See "Details"
+section of \code{\link{vcovCR}} for further information.}
 
 \item{target}{Optional matrix or vector describing the working
 variance-covariance model used to calculate the \code{CR2} and \code{CR4}
@@ -51,8 +54,8 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
   regression coefficient estimates.
 }
 \description{
-\code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
-of a set of regression coefficient estimates from an 
+\code{vcovCR} returns a sandwich estimate of the variance-covariance matrix
+of a set of regression coefficient estimates from an
 \code{\link[estimatr]{lm_robust}} object.
 }
 \examples{
@@ -64,20 +67,20 @@ if (requireNamespace("estimatr", quietly = TRUE)) withAutoprint({
   library(estimatr)
 
   lm_fit <- lm_robust(
-    weight ~ Time + Diet:Time, 
+    weight ~ Time + Diet:Time,
     data = ChickWeight
    )
   vcovCR(lm_fit, cluster = ChickWeight$Chick, type = "CR2")
-  
+
   lm_fit_clust <- lm_robust(
     weight ~ Time + Diet:Time, data = ChickWeight,
     clusters = Chick
    )
   vcovCR(lm_fit_clust, type = "CR2")
-  
+
   lm_fit_fe <- lm_robust(
-    weight ~ Time:Diet, data = ChickWeight, 
-    clusters = Chick, 
+    weight ~ Time:Diet, data = ChickWeight,
+    clusters = Chick,
     fixed_effects = ~ Chick
    )
   vcovCR(lm_fit_fe, type = "CR2")
@@ -86,15 +89,15 @@ if (requireNamespace("estimatr", quietly = TRUE)) withAutoprint({
 
     data("Produc", package = "plm")
     lm_individual <- lm_robust(
-      log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+      log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp,
       data = Produc,
       fixed_effects = ~ state,
       cluster = state
      )
     vcovCR(lm_individual, type = "CR2")
-  
+
   })
-  
+
 })
 
 }

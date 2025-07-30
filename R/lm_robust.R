@@ -2,68 +2,75 @@
 # vcovCR with defaults
 #-------------------------------------
 
-#' Cluster-robust variance-covariance matrix for an \code{estimatr::lm_robust} object.
-#' 
-#' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix 
-#' of a set of regression coefficient estimates from an 
+#' Cluster-robust variance-covariance matrix for an \code{estimatr::lm_robust}
+#' object.
+#'
+#' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix
+#' of a set of regression coefficient estimates from an
 #' \code{\link[estimatr]{lm_robust}} object.
-#' 
+#'
 #' @param cluster Expression or vector indicating which observations belong to
-#'   the same cluster. Required for \code{estimatr::lm_robust} objects.
+#'   the same cluster. If not specified, will be detected from the
+#'   \code{clusters} argument of \code{obj}.
+#' @param type Character string specifying which small-sample adjustment should
+#'   be used, with available options \code{"CR0"}, \code{"CR1"}, \code{"CR1p"},
+#'   \code{"CR1S"}, \code{"CR2"}, or \code{"CR3"}. If not specified, will be
+#'   detected from the \code{se_type} argument of \code{obj}. See "Details"
+#'   section of \code{\link{vcovCR}} for further information.
 #' @param target Optional matrix or vector describing the working
 #'   variance-covariance model used to calculate the \code{CR2} and \code{CR4}
 #'   adjustment matrices. If a vector, the target matrix is assumed to be
 #'   diagonal. If not specified, the target is taken to be an identity matrix.
 #' @inheritParams vcovCR
-#'   
+#'
 #' @return An object of class \code{c("vcovCR","clubSandwich")}, which consists
 #'   of a matrix of the estimated variance of and covariances between the
 #'   regression coefficient estimates.
-#'   
+#'
 #' @seealso \code{\link{vcovCR}}
-#' 
-#' @examples 
-#' 
+#'
+#' @examples
+#'
 #' data("ChickWeight", package = "datasets")
 #' ChickWeight$Chick <- factor(ChickWeight$Chick, ordered = FALSE)
-#' 
+#'
 #' if (requireNamespace("estimatr", quietly = TRUE)) withAutoprint({
 #'   library(estimatr)
-#' 
+#'
 #'   lm_fit <- lm_robust(
-#'     weight ~ Time + Diet:Time, 
+#'     weight ~ Time + Diet:Time,
 #'     data = ChickWeight
 #'    )
 #'   vcovCR(lm_fit, cluster = ChickWeight$Chick, type = "CR2")
-#'   
+#'
 #'   lm_fit_clust <- lm_robust(
 #'     weight ~ Time + Diet:Time, data = ChickWeight,
 #'     clusters = Chick
 #'    )
 #'   vcovCR(lm_fit_clust, type = "CR2")
-#'   
+#'
 #'   lm_fit_fe <- lm_robust(
-#'     weight ~ Time:Diet, data = ChickWeight, 
-#'     clusters = Chick, 
+#'     weight ~ Time:Diet, data = ChickWeight,
+#'     clusters = Chick,
 #'     fixed_effects = ~ Chick
 #'    )
 #'   vcovCR(lm_fit_fe, type = "CR2")
-#' 
+#'
 #'   if (requireNamespace("plm", quietly = TRUE)) withAutoprint({
-#' 
+#'
 #'     data("Produc", package = "plm")
 #'     lm_individual <- lm_robust(
-#'       log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp, 
+#'       log(gsp) ~ log(pcap) + log(pc) + log(emp) + unemp,
 #'       data = Produc,
 #'       fixed_effects = ~ state,
 #'       cluster = state
 #'      )
 #'     vcovCR(lm_individual, type = "CR2")
-#'   
+#'
 #'   })
-#'   
+#'
 #' })
-#' 
+#'
 #' @export
 
 vcovCR.lm_robust <- function(obj, cluster, type, target = NULL, inverse_var = NULL, form = "sandwich", ...) {
@@ -75,6 +82,11 @@ vcovCR.lm_robust <- function(obj, cluster, type, target = NULL, inverse_var = NU
   if (missing(cluster)) {
     cluster <- findCluster.lm_robust(obj)
     if (is.null(cluster)) stop("You must specify a clustering variable or `obj` must include a clustering variable.")
+  }
+  
+  if (missing(type)) {
+    type <- switch(obj$se_type, CR0 = "CR0", CR2 = "CR2", stata = "CR1S", "No valid SE type")
+    if (type == "No valid SE type") stop("You must specify a `type` of sandwich estimator to calculate or `obj` must include an `se_type` of 'CR0','CR2',or 'stata'.")
   }
   
   if (is.null(inverse_var)) inverse_var <- is.null(weights(obj)) & is.null(target)
@@ -106,9 +118,18 @@ augmented_model_matrix.lm_robust <- function(obj, cluster, inverse_var, ignore_F
   
   if(!obj$fes) return(NULL)
   
+  # get formula for the fixed effects
   fe_formula <- as.formula(obj$call$fixed_effects)
   fe_formula <- update(fe_formula, ~ . - 1)
+  
+  # get the model.frame
   mf <- model.frame(obj)
+  
+  # ensure fixed effects are all factors
+  varnames <- all.vars(fe_formula)
+  for (v in varnames) mf[[v]] <- as.factor(mf[[v]])
+  
+  # compute model.matrix of the fixed effects
   model.matrix(fe_formula, data = mf)
   
 }
@@ -125,31 +146,24 @@ model_matrix.lm_robust <- function(obj) {
   
   # If model was made using lm_lin
   if ("lm_lin" %in% as.character(obj$call[[1]])) {
+    
     # get covariate formula, if it exists
     covariates <- as.formula(obj$call$covariates)
     
     if (!is.null(covariates)) { # No covariates case - keep original formula as is
+      
+      # get model frame
+      mf <- model.frame(obj)
+      
       # With covariates - preserve the intercept specification from original formula
-      lhs <- deparse(frm[[2]])
       treatment <- all.vars(frm[[3]])
-      covars <- all.vars(covariates)
+      covar_names <- paste0("`",names(obj$scaled_center), "_c`")
+      interactions <- paste0(treatment, ":", covar_names)
+      update_formula <- reformulate(c(".", covar_names, interactions))
+      frm <- update(old = frm, new = update_formula)
 
-      main_effects <- c(treatment, covars)
-      interactions <- paste0(treatment, ":", covars)
-      rhs_string <- paste(c(main_effects, interactions), collapse = " + ")
-
-      # Check if original formula had no intercept (~ 0 or ~ -1)
-      original_terms <- terms(frm)
-      has_intercept <- attr(original_terms, "intercept") == 1
-
-      if (has_intercept) {
-        frm <- as.formula(paste(lhs, "~", rhs_string))
-      } else {
-        frm <- as.formula(paste(lhs, "~ 0 +", rhs_string))
-      }
     }
-    # get model frame
-    mf <- model.frame(obj)
+    
     # use model frame and formula built above to return model matrix
     return(model.matrix(frm, data = mf))
     
@@ -213,6 +227,7 @@ model.frame.lm_robust <- function (formula, ...) {
   
   # If model was made using lm_lin
   if ("lm_lin" %in% as.character(formula$call[[1]])) {
+    if (!"covariates" %in% names(cl)) return(mf)
     word <- "covariates"
   } else { # If model was made using lm_robust
     if (!formula$fes) return(mf)
@@ -223,12 +238,15 @@ model.frame.lm_robust <- function (formula, ...) {
   word_args <- match(c(word,"data","subset"), names(cl), 0L)
   word_cl <- cl[c(1L, word_args)]
   names(word_cl)[[2]] <- "formula"
+  word_cl[[2]] <- reformulate(all.vars(word_cl[[2]])) # remove any expressions to get basic variables 
   word_cl[[1L]] <- quote(stats::model.frame)
   mf_word <- eval(word_cl, envir = fit_env)
-  # add centering here
+  
   # compare omitted rows across model and covariates/fixed effects
   mf_omit <- na.action(mf)
+  if (!is.null(names(mf_omit))) mf_omit <- names(mf_omit)
   word_omit <- na.action(mf_word)
+  if (!is.null(names(word_omit))) word_omit <- names(word_omit)
   
   # combine model.frames for model and for covariates/fixed effects  
   if (identical(mf_omit, word_omit)) {
@@ -245,15 +263,21 @@ model.frame.lm_robust <- function (formula, ...) {
     class(mf_combined_omit) <- "omit"
   }
   
-  # Apply centering if needed
-  if (!is.null(formula$scaled_center)) {
+  # Take care of centering if needed
+  if (word == "covariates") {
+    
+    # Calculate centered covariatess
+    uncentered_mm <- model.matrix(as.formula(cl$covariates), data = mf_combined)
     covar_names <- names(formula$scaled_center)
     for (v in covar_names) {
-      if (v %in% names(mf_combined)) {
-        mf_combined[[v]] <- mf_combined[[v]] - formula$scaled_center[[v]]
-      }
+      v_c <- paste0(v, "_c")
+      mf_combined[[v_c]] <- uncentered_mm[,v] - formula$scaled_center[v]
     }
-    
+
+    # Remove uncentered covariates
+    covariate_terms <- all.vars(word_cl$formula)
+    for (v in covariate_terms) mf_combined[[v]] <- NULL
+
   }
   
   attr(mf_combined, "terms") <- attr(mf, "terms")

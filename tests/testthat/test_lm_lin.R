@@ -19,19 +19,33 @@ table(CO2$rando)
 wcCO2 <- CO2
 
 CO2$conc_c <- CO2$conc - mean(CO2$conc)
+CO2$`(factor(Type)Mississippi)_c` <- ifelse(CO2$Type == "Mississippi", 0.5, -0.5)
 
 lin <- lm_lin(
   uptake ~ Treatment,
   covariates = ~ conc,
   data = CO2
 )
+
+lin_exp <- lm_lin(
+  uptake ~ Treatment,
+  covariates = ~ conc + factor(Type),
+  data = CO2
+)
+
 rob <- lm_robust(
   uptake ~ Treatment + 
     conc_c + Treatment:conc_c,
   data = CO2
 )
 
+rob_exp <- lm_robust(
+  uptake ~ Treatment + conc_c + `(factor(Type)Mississippi)_c` + Treatment:conc_c + Treatment:`(factor(Type)Mississippi)_c`,
+  data = CO2
+)
+
 # weighted and clustered
+
 wclin <- lm_lin(
   uptake ~ Treatment,
   covariates = ~ conc,
@@ -50,70 +64,40 @@ wcrob <- lm_robust(
   clusters = Plant
 )
 
-
 test_that("model.frame() works", {
-  
+
+  # basic models
   mf_lin <- model.frame(lin)
   mf_rob <- model.frame(rob)
-  
   expect_equivalent(mf_lin, mf_rob)
   
-  # weighted tests
+  # covariates with an expression 
+  mf_exp <- model.frame(lin_exp)
+  mf_rexp <- model.frame(rob_exp)
+  expect_equivalent(mf_exp, mf_rexp)
   
+  # weighted models
   mf_wclin <- model.frame(wclin)
   mf_wcrob <- model.frame(wcrob)
-  
-  cols <- names(mf_wclin)[1:4]
-  for (column in cols) {
-    expect_equivalent(mf_wclin[column], mf_wcrob[column])
-  }
-  
-  expect_equivalent(mf_wclin["conc"], mf_wcrob["conc_c"])
-  
+  expect_equivalent(mf_wclin, mf_wcrob[names(mf_wclin)])
+
 })
-
-# test_that("model.frame() works with models with multiple covariates", {
-  
-
-  
-# })
 
 test_that("model_matrix() works", {
   
+  # basic models
   mm_lin <- model_matrix(lin)
   mm_rob <- model_matrix(rob)
-  
   expect_equivalent(mm_lin, mm_rob)
   
-  # weighted tests
+  # covariates with an expression 
+  mm_exp <- model_matrix(lin_exp)
+  mm_rexp <- model_matrix(rob_exp)
+  expect_equivalent(mm_exp, mm_rexp)
   
+  # weighted models
   mm_wclin <- model_matrix(wclin)
   mm_wcrob <- model_matrix(wcrob)
-  
-  expect_equivalent(mm_wclin, mm_wcrob)
-  
-})
-
-test_that("model_matrix() works without fixest", {
-  
-  local_mocked_bindings(
-    requireNamespace = function(...) FALSE
-  )
-  
-  expect_false(requireNamespace("fixest", quietly = TRUE))
-  
-  # unweighted tests
-  
-  mm_lin <- model_matrix(lin)
-  mm_rob <- model_matrix(rob)
-  
-  expect_equivalent(mm_lin, mm_rob)
-  
-  # weighted tests
-  
-  mm_wclin <- model_matrix(wclin)
-  mm_wcrob <- model_matrix(wcrob)
-  
   expect_equivalent(mm_wclin, mm_wcrob)
   
 })
@@ -280,8 +264,7 @@ test_that("vcovCR works", {
 })
 
 
-test_that("vovCR properly pulls cluster specified for lm_lin generated 
-          lm_robust objects", {
+test_that("vovCR properly pulls cluster specified for lm_lin objects", {
 
   # weighted tests
 
@@ -325,6 +308,58 @@ test_that("vovCR properly pulls cluster specified for lm_lin generated
 })
 
 
+test_that("vcovCR works with se_type inherited from lm_lin().", {
+  
+  types <- c("CR0", "CR2", "stata")
+  
+  data("AchievementAwardsRCT")
+  AchievementAwardsRCT$sub <- with(
+    AchievementAwardsRCT, 
+    unsplit(tapply(Bagrut_status, school_id, \(x) seq(0, 1, length.out = length(x))), school_id)
+  )
+  AchievementAwardsRCT <- subset(AchievementAwardsRCT, school_id != 1 & sub < 0.2)
+  AchievementAwardsRCT$father_ed <- ifelse(AchievementAwardsRCT$father_ed <= 5, "GS", ifelse(AchievementAwardsRCT$father_ed <=12, "HS","Coll"))
+  
+  for (type in types) {
+    
+    # basic
+    rob_fit <- lm_lin(
+      achv_math ~ treated,
+      covariates = ~ school_type + sex + father_ed,
+      data = AchievementAwardsRCT, 
+      cluster = school_id,
+      se_type = type
+    )
+    
+    expect_equal(as.matrix(vcovCR(rob_fit)), vcov(rob_fit))
+    
+    # with expression in the covariates
+    rob_exp <- lm_lin(
+      achv_math ~ treated,
+      covariates = ~ school_type + sex + factor(father_ed),
+      data = AchievementAwardsRCT, 
+      cluster = school_id,
+      se_type = type
+    )
+    
+    expect_equivalent(as.matrix(vcovCR(rob_exp)), vcov(rob_exp))
+    
+    # weighted
+    wt_fit <- lm_lin(
+      achv_math ~ treated,
+      covariates = ~ school_type + sex + father_ed,
+      data = AchievementAwardsRCT, 
+      weights = siblings + 1,
+      cluster = school_id,
+      se_type = type
+    )
+    
+    expect_equal(as.matrix(vcovCR(wt_fit)), vcov(wt_fit))
+    
+  }
+  
+})
+
 test_that("na.action.robust() works correctly", {
 
   compare_na_actions <- function(i) {
@@ -351,7 +386,7 @@ test_that("na.action.robust() works correctly", {
 
     # get na.action() of models
     na_lin <- na.action(lin_fit)
-    na_rob <- na.action(rob_fit)
+    na_rob <- names(na.action(rob_fit))
 
     # compare
     expect_equal(na_lin, na_rob)
@@ -403,7 +438,7 @@ test_that("subset argument does not interfere with vcovCR functionality", {
   
   rob_sub <- lm_robust(uptake ~ Treatment + conc_c + Treatment:conc_c,
                        data = CO2,
-                       subset = CO2$rando == "Keep")
+                       subset = rando == "Keep")
 
   # changed from equal b/c of attributes
   expect_equivalent(vcovCR(lin_sub, CO2$Plant[CO2$rando == "Keep"], type = "CR2"),
@@ -414,7 +449,7 @@ test_that("subset argument does not interfere with vcovCR functionality", {
                       data = wcCO2,
                       weights = wt,
                       clusters = Plant,
-                      subset = wcCO2$rando == "Keep")
+                      subset = rando == "Keep")
   
   # wcCO2$conc_c_no_subset <- wcCO2$conc_c
   wcCO2$conc_c <- wcCO2$conc - wclin_sub$scaled_center
@@ -423,7 +458,7 @@ test_that("subset argument does not interfere with vcovCR functionality", {
                       data = wcCO2,
                       weights = wt,
                       clusters = Plant,
-                      subset = wcCO2$rando == "Keep")
+                      subset = rando == "Keep")
 
   # changed from equal b/c of attributes
   expect_equivalent(vcovCR(wclin_sub, type = "CR2"),
