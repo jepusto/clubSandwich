@@ -1,3 +1,5 @@
+# clubSandwich 0.6.1.9999
+
 # clubSandwich 0.6.1
 
 * Added support for `estimatr::lm_robust()` and `estimatr::lm_lin()` models.
