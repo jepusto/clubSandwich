@@ -607,7 +607,8 @@ bread.rma.mv <- function(x, ...) {
     XWX <- Reduce(`+`, XWX_list)
   } else {
     if (is.null(x$W)) {
-      B <- vcov(x) * nobs(x)
+      s2w <- if (is.null(x$s2w)) 1 else x$s2w
+      B <- nobs(x) * vcov(x) / s2w
       return(B)      
     } else {
       X_mat <- model_matrix(x)

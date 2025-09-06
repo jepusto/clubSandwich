@@ -1,5 +1,7 @@
 # clubSandwich 0.6.1.9999
 
+* Fixed bug in bread.rma.mv() occurring in models with test = 'knha' (an undocumented, experimental option).
+
 # clubSandwich 0.6.1
 
 * Added support for `estimatr::lm_robust()` and `estimatr::lm_lin()` models.

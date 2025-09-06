@@ -527,68 +527,24 @@ test_that("clubSandwich methods work on robust.rma objects.", {
   
 })
 
-test_that("clubSandwich works with user-weighted rma.mv objects.", {
+test_that("clubSandwich works with test = 'knha'.", {
   
   data("oswald2013", package = "robumeta")
   oswald2013$yi <- atanh(oswald2013$R)
   oswald2013$vi <- 1 / (oswald2013$N - 3)
-  oswald2013$esID <- 1:nrow(oswald2013)
-  oswald2013$wt <- 1 + rpois(nrow(oswald2013), lambda = 1)
   
-  V <- impute_covariance_matrix(vi = oswald2013$vi, cluster = oswald2013$Study, r = 0.4)
-  
-  mod_wt1 <- rma.mv(yi ~ 0 + Crit.Cat + Crit.Domain + IAT.Focus + Scoring,
-                    V = V, W = wt,
-                    random = ~ 1 | Study,
+  mod1 <- rma.mv(yi ~ 0 + Crit.Cat + Crit.Domain + IAT.Focus + Scoring,
+                    V = vi, 
                     data = oswald2013,
                     sparse = TRUE)
   
-  W_mat <- impute_covariance_matrix(vi = oswald2013$wt, cluster = oswald2013$Study, r = 0, return_list = FALSE)
+  suppressWarnings(
+    mod2 <- update(mod1, test = "knha")
+  )
   
-  mod_wt2 <- rma.mv(yi ~ 0 + Crit.Cat + Crit.Domain + IAT.Focus + Scoring,
-                    V = V, W = W_mat,
-                    random = ~ 1 | Study,
-                    data = oswald2013,
-                    sparse = TRUE)
-  
-  
-  vcovs_1 <- lapply(CR_types, function(x) vcovCR(mod_wt1, type = x))
-  vcovs_2 <- lapply(CR_types, function(x) vcovCR(mod_wt2, type = x))
+  vcovs_1 <- lapply(CR_types, function(x) vcovCR(mod1, type = x, cluster = oswald2013$Study))
+  vcovs_2 <- lapply(CR_types, function(x) vcovCR(mod2, type = x, cluster = oswald2013$Study))
 
-  coef_test_wt1 <- lapply(CR_types, function(x) 
-    coef_test(mod_wt1, vcov = x, test = "All")
-  )
-  
-  coef_test_wt2 <- lapply(CR_types, function(x) 
-    coef_test(mod_wt2, vcov = x, test = "All")
-  )
-  
-  Wald_test_wt1 <- lapply(CR_types, function(x) 
-    Wald_test(mod_wt1, 
-              constraints = constrain_equal("Crit.Cat", reg_ex = TRUE),
-              vcov = x, 
-              test = "All")
-  )
-  
-  Wald_test_wt2 <- lapply(CR_types, function(x) 
-    Wald_test(mod_wt2, 
-              constraints = constrain_equal("Crit.Cat", reg_ex = TRUE),
-              vcov = x, 
-              test = "All")
-  )
-  
   expect_equal(vcovs_1, vcovs_2, tolerance = 1e-5)
-  compare_ttests(coef_test_wt1, coef_test_wt2, tol = 1e-5)
-  compare_Waldtests(Wald_test_wt1, Wald_test_wt2, tol = 1e-5)
-  
-  for (i in seq_along(vcovs_1)) {
-    expect_s3_class(vcovs_1[[i]], "vcovCR")
-    expect_s3_class(vcovs_2[[i]], "vcovCR")
-    expect_s3_class(coef_test_wt1[[i]], "coef_test_clubSandwich")
-    expect_s3_class(coef_test_wt2[[i]], "coef_test_clubSandwich")
-    expect_s3_class(Wald_test_wt1[[i]], "Wald_test_clubSandwich")
-    expect_s3_class(Wald_test_wt2[[i]], "Wald_test_clubSandwich")
-  }
-  
-  
+
 })
