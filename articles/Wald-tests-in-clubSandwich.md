@@ -1,0 +1,781 @@
+# Wald tests of multiple-constraint null hypotheses
+
+Version 0.5.0 of `clubSandwich` introduced a new syntax for
+[`Wald_test()`](http://jepusto.github.io/clubSandwich/reference/Wald_test.md),
+a function for conducting tests of multiple-constraint hypotheses. In
+previous versions, this function was poorly documented and,
+consequently, probably little used. This vignette will demonstrate the
+new syntax.
+
+For purposes of illustration, I will use the `STAR` data (available in
+the `AER` package), which is drawn from a randomized trial evaluating
+the effects of elementary school class size on student achievement. The
+data consist of individual-level measures for students in each of
+several dozen schools. For purposes of illustration, I will look at
+effects on math performance in first grade. Treatment conditions (the
+variable called `stark`) were assigned at the classroom level, and
+consisted of either a) a regular-size class, b) a small-size class, or
+c) a regular-size class but with the addition of a teacher’s aide. In
+all of what follows, I will cluster standard errors by school in order
+to allow for generalization to a super-population of schools.
+
+``` r
+library(clubSandwich)
+
+data(STAR, package = "AER")
+
+# clean up a few variables
+levels(STAR$stark)[3] <- "aide"
+levels(STAR$schoolk)[1] <- "urban"
+STAR <- subset(STAR, 
+               !is.na(schoolidk),
+               select = c(schoolidk, schoolk, stark, gender, ethnicity, math1, lunchk))
+head(STAR)
+```
+
+    ##      schoolidk  schoolk   stark gender ethnicity math1   lunchk
+    ## 1137        63    rural   small female      cauc   538 non-free
+    ## 1143        20 suburban   small female      afam   592 non-free
+    ## 1183        19    urban    aide   male      afam    NA     free
+    ## 1277        69    rural regular   male      cauc   584 non-free
+    ## 1292        79    rural   small   male      cauc   545     free
+    ## 1308         5    rural regular   male      cauc   553     free
+
+## The Wald test function
+
+The
+[`Wald_test()`](http://jepusto.github.io/clubSandwich/reference/Wald_test.md)
+function can be used to conduct hypothesis tests that involve multiple
+constraints on the regression coefficients. Consider a linear model for
+an outcome $Y_{ij}$ regressed on a $1 \times p$ row vector of predictors
+$\mathbf{x}_{ij}$ (which might include a constant intercept term):
+$$Y_{ij} = \mathbf{x}_{ij}{\mathbf{β}} + \epsilon_{ij}$$ The regression
+coefficient vector is $\mathbf{β}$. In quite general terms, a set of
+constraints on the regression coefficient vector can be expressed in
+terms of a $q \times p$ matrix $\mathbf{C}$, where each row of
+$\mathbf{C}$ corresponds to one constraint. A joint null hypothesis is
+then $H_{0}:\mathbf{C}{\mathbf{β}} = \mathbf{0}$, where $\mathbf{0}$ is
+a $q \times 1$ vector of zeros.[¹](#fn1)
+
+Wald-type test are based on the test statistic
+$$Q = \left( \mathbf{C}\widehat{\mathbf{β}} \right)\prime\left( \mathbf{C}\mathbf{V}^{CR}\mathbf{C}\prime \right)^{- 1}\left( \mathbf{C}\widehat{\mathbf{β}} \right),$$
+where $\widehat{\mathbf{β}}$ is the estimated regression coefficient
+vector and $\mathbf{V}^{CR}$ is a cluster-robust variance matrix. If the
+number of clusters is sufficiently large, then the distribution of $Q$
+under the null hypothesis is approximately $\chi^{2}(q)$. Tipton &
+Pustejovsky (2015) investigated a wide range of other approximations to
+the null distribution of $Q$, many of which are included as options in
+[`Wald_test()`](http://jepusto.github.io/clubSandwich/reference/Wald_test.md).
+Based on a large simulation, they (…er…we…) recommended a method called
+the “approximate Hotelling’s $T^{2}$-Z” test, or “AHZ.” This test
+approximates the distribution of $Q/q$ by a $T^{2}$ distribution, which
+is a multiple of an $F$ distribution, with numerator degrees of freedom
+$q$ and denominator degrees of freedom based on a generalization of the
+Satterthwaite approximation.
+
+The
+[`Wald_test()`](http://jepusto.github.io/clubSandwich/reference/Wald_test.md)
+function has three main arguments:
+
+``` r
+args(Wald_test)
+```
+
+    ## function (obj, constraints, vcov, null_constant = 0, test = "HTZ", 
+    ##     tidy = FALSE, adjustment_method = "none", ...) 
+    ## NULL
+
+- The `obj` argument is used to specify the estimated regression model
+  on which to perform the test,
+- the `constraints` argument is a $\mathbf{C}$ matrix expressing the set
+  of constraints to test, and
+- the `vcov` argument is a cluster-robust variance matrix, which is used
+  to construct the test statistic. (Alternately, `vcov` can be the type
+  of cluster-robust variance matrix to construct, in which case it will
+  be computed internally.)
+
+By default,
+[`Wald_test()`](http://jepusto.github.io/clubSandwich/reference/Wald_test.md)
+will use the HTZ small-sample approximation. Other options are available
+(via the `test` argument) but not recommended for routine use. The
+optional `tidy` argument will be demonstrated below.
+
+### Testing treatment effects
+
+Returning to the STAR data, let’s suppose we want to examine differences
+in math performance across class sizes. This can be done with a simple
+linear regression model, while clustering the standard errors by
+`schoolidk`. The estimating equation is
+$$\left( \text{Math} \right)_{ij} = \beta_{0} + \beta_{1}\left( \text{small} \right)_{ij} + \beta_{2}\left( \text{aide} \right)_{ij} + e_{ij},$$
+which can be estimated in R as follows:
+
+``` r
+lm_trt <- lm(math1 ~ stark, data = STAR)
+V_trt <- vcovCR(lm_trt, cluster = STAR$schoolidk, type = "CR2")
+coef_test(lm_trt, vcov = V_trt)
+```
+
+    ## Alternative hypothesis: two-sided 
+    ##        Coef. Estimate   SE Null value  t-stat d.f. (Satt) p-val (Satt) Sig.
+    ##  (Intercept)  531.727 2.78          0 191.506        59.9       <0.001  ***
+    ##   starksmall    9.469 2.30          0   4.114        65.6       <0.001  ***
+    ##    starkaide   -0.483 1.86          0  -0.259        65.6        0.796
+
+In this estimating equation, the coefficients $\beta_{1}$ and
+$\beta_{2}$ represent treatment effects, or differences in average math
+scores relative to the reference level of `stark`, which in this case is
+a regular-size class. The t-statistics and p-values reported by
+`coef_test` are separate tests of the null hypotheses that each of these
+coefficients are equal to zero, meaning that there is no difference
+between the specified treatment condition and the reference level. We
+might want to instead test the *joint* null hypothesis that there are no
+differences among *any* of the conditions. This null can be expressed by
+a set of multiple constraints on the parameters: $\beta_{1} = 0$ and
+$\beta_{2} = 0$.
+
+To test the null hypothesis that $\beta_{1} = \beta_{2} = 0$ based on
+the treatment effects model specification, we can use:
+
+``` r
+C_trt <- matrix(c(0,0,1,0,0,1), 2, 3)
+C_trt
+```
+
+    ##      [,1] [,2] [,3]
+    ## [1,]    0    1    0
+    ## [2,]    0    0    1
+
+``` r
+Wald_test(lm_trt, constraints = C_trt, vcov = V_trt)
+```
+
+    ##  test Fstat df_num df_denom  p_val sig
+    ##   HTZ  10.2      2     65.3 <0.001 ***
+
+The result includes details about the form of `test` computed, the
+$F$-statistic, the numerator and denominator degrees of freedom used to
+compute the reference distribution, and the $p$-value corresponding to
+the specified null hypothesis. In this example, $p = 0.000141$, so we
+can rule out the null hypothesis that there are no differences in math
+performance across conditions.
+
+The representation of null hypotheses as arbitrary constraint matrices
+is useful for developing theory about how to test such hypotheses, but
+it is not all that helpful for actually running tests—constructing
+constraint matrices “by hand” is just too cumbersome of an exercise.
+Moreover, $\mathbf{C}$ matrices typically follow one of a small number
+of patterns. Two common use cases are a) constraining a set of $q > 1$
+parameters to all be equal to zero and b) constraining a set of $q + 1$
+parameters to be equal to a common value. The `clubSandwich` package now
+includes a set of helper functions to create constraint matrices for
+these common use cases.
+
+### `constrain_zero()`
+
+To constrain a set of $q$ regression coefficients to all be equal to
+zero, the simplest form of the $\mathbf{C}$ matrix would consist of a
+set of $q$ rows, where a single entry in each row would be equal to 1
+and the remaining entries would all be zero. For the `lm_trt` model, the
+C matrix would look like this: $$\mathbf{C} = \begin{bmatrix}
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix},$$ so that $$\mathbf{C}{\mathbf{β}} = \begin{bmatrix}
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix}\begin{bmatrix}
+\beta_{0} \\
+\beta_{1} \\
+\beta_{2}
+\end{bmatrix} = \begin{bmatrix}
+\beta_{1} \\
+\beta_{2}
+\end{bmatrix},$$ which is set equal to $\begin{bmatrix}
+0 \\
+0
+\end{bmatrix}$.
+
+The
+[`constrain_zero()`](http://jepusto.github.io/clubSandwich/reference/constraint_matrices.md)
+function will create matrices like this automatically. The function
+takes two main arguments:
+
+``` r
+args(constrain_zero)
+```
+
+    ## function (constraints, coefs, reg_ex = FALSE) 
+    ## NULL
+
+- The `constraints` argument is used to specify *which* coefficients in
+  a regression model to set equal to zero.
+- The `coefs` argument is the set of estimated regression coefficients,
+  for which to calculate the constraints.
+
+Constraints can be specified by position index, by name, or via a
+regular expression. To test the joint null hypothesis that average math
+performance is equal across the three treatment conditions, we need to
+constrain the second and third coefficients to zero:
+
+``` r
+constrain_zero(2:3, coefs = coef(lm_trt))
+```
+
+    ##      [,1] [,2] [,3]
+    ## [1,]    0    1    0
+    ## [2,]    0    0    1
+
+Or equivalently:
+
+``` r
+constrain_zero(c("starksmall","starkaide"), coefs = coef(lm_trt))
+```
+
+    ##      [,1] [,2] [,3]
+    ## [1,]    0    1    0
+    ## [2,]    0    0    1
+
+or
+
+``` r
+constrain_zero("^stark", coefs = coef(lm_trt), reg_ex = TRUE)
+```
+
+    ##      [,1] [,2] [,3]
+    ## [1,]    0    1    0
+    ## [2,]    0    0    1
+
+Note that if `constraints` is a regular expression, then the `reg_ex`
+argument needs to be set to `TRUE`.
+
+The result of
+[`constrain_zero()`](http://jepusto.github.io/clubSandwich/reference/constraint_matrices.md)
+can then be fed into the
+[`Wald_test()`](http://jepusto.github.io/clubSandwich/reference/Wald_test.md)
+function:
+
+``` r
+C_trt <- constrain_zero(2:3, coefs = coef(lm_trt))
+Wald_test(lm_trt, constraints = C_trt, vcov = V_trt)
+```
+
+    ##  test Fstat df_num df_denom  p_val sig
+    ##   HTZ  10.2      2     65.3 <0.001 ***
+
+To reduce redundancy in the syntax, we can also omit the `coefs`
+argument to `constrain_zero`, so long as we call it inside of
+`Wald_test`[²](#fn2):
+
+``` r
+Wald_test(lm_trt, constraints = constrain_zero(2:3), vcov = V_trt)
+```
+
+    ##  test Fstat df_num df_denom  p_val sig
+    ##   HTZ  10.2      2     65.3 <0.001 ***
+
+### `constrain_equal()`
+
+Another common type of constraints involve setting a set of $q + 1$
+regression coefficients to be all equal to a common (but unknown) value
+($q + 1$ because it takes $q$ constraints to do this). There are many
+equivalent ways to express such a set of constraints in terms of a
+$\mathbf{C}$ matrix. One fairly simple form consists of a set of $q$
+rows, where the entry corresponding to one of the coefficients of
+interest is equal to -1 and the entry corresponding to another
+coefficient of interest is equal to 1.
+
+To see how this works, let’s look at a different way of parameterizing
+our simple model for the STAR data, by using separate intercepts for
+each treatment condition. The estimating equation would then be
+$$\left( \text{Math} \right)_{ij} = \beta_{0}\left( \text{regular} \right)_{ij} + \beta_{1}\left( \text{small} \right)_{ij} + \beta_{2}\left( \text{aide} \right)_{ij} + e_{ij}.$$
+This model can be estimated in R by dropping the intercept term:
+
+``` r
+lm_sep <- lm(math1 ~ 0 + stark, data = STAR)
+V_sep <- vcovCR(lm_sep, cluster = STAR$schoolidk, type = "CR2")
+coef_test(lm_sep, vcov = V_sep)
+```
+
+    ## Alternative hypothesis: two-sided 
+    ##         Coef. Estimate   SE Null value t-stat d.f. (Satt) p-val (Satt) Sig.
+    ##  starkregular      532 2.78          0    192        59.9       <0.001  ***
+    ##    starksmall      541 2.89          0    187        65.0       <0.001  ***
+    ##     starkaide      531 2.72          0    195        64.3       <0.001  ***
+
+In this parameterization, the coefficients $\beta_{0}$, $\beta_{1}$, and
+$\beta_{2}$ represent the average math performance levels of students in
+each of the treatment conditions. The t-tests and p-values now have a
+very different interpretation because they pertain to the null
+hypothesis that the average performance level for a given condition is
+equal to zero. With this separate-intercepts model, the joint null
+hypothesis that performance levels are equal across conditions amounts
+to constraining the intercepts to be equal to each other:
+$\beta_{0} = \beta_{1}$ and $\beta_{0} = \beta_{2}$ (note that we don’t
+need the constraint $\beta_{1} = \beta_{2}$ because it is implied by the
+first two).
+
+For the `lm_sep` model, which has separate intercepts $\beta_{0}$,
+$\beta_{1}$, and $\beta_{2}$, the C matrix would look like this:
+$$\mathbf{C} = \begin{bmatrix}
+{- 1} & 1 & 0 \\
+{- 1} & 0 & 1
+\end{bmatrix},$$ so that $$\mathbf{C}{\mathbf{β}} = \begin{bmatrix}
+{- 1} & 1 & 0 \\
+{- 1} & 0 & 1
+\end{bmatrix}\begin{bmatrix}
+\beta_{0} \\
+\beta_{1} \\
+\beta_{2}
+\end{bmatrix} = \begin{bmatrix}
+{\beta_{1} - \beta_{0}} \\
+{\beta_{2} - \beta_{0}}
+\end{bmatrix},$$ which is set equal to $\begin{bmatrix}
+0 \\
+0
+\end{bmatrix}$.
+
+The
+[`constrain_equal()`](http://jepusto.github.io/clubSandwich/reference/constraint_matrices.md)
+function will create matrices like this automatically, given a set of
+coefficients to constrain. The syntax is identical to
+[`constrain_zero()`](http://jepusto.github.io/clubSandwich/reference/constraint_matrices.md):
+
+``` r
+args(constrain_equal)
+```
+
+    ## function (constraints, coefs, reg_ex = FALSE) 
+    ## NULL
+
+To test the joint null hypothesis that average math performance is equal
+across the three treatment conditions, we can constrain all three
+coefficients of `lm_sep` to be equal:
+
+``` r
+constrain_equal(1:3, coefs = coef(lm_sep))
+```
+
+    ##      [,1] [,2] [,3]
+    ## [1,]   -1    1    0
+    ## [2,]   -1    0    1
+
+Or equivalently:
+
+``` r
+constrain_equal(c("starkregular","starksmall","starkaide"), coefs = coef(lm_sep))
+```
+
+    ##      [,1] [,2] [,3]
+    ## [1,]   -1    1    0
+    ## [2,]   -1    0    1
+
+or
+
+``` r
+constrain_equal("^stark", coefs = coef(lm_sep), reg_ex = TRUE)
+```
+
+    ##      [,1] [,2] [,3]
+    ## [1,]   -1    1    0
+    ## [2,]   -1    0    1
+
+Just as with `constrain_zero`, if `constraints` is a regular expression,
+then the `reg_ex` argument needs to be set to `TRUE`.
+
+This constraint matrix can then be fed into
+[`Wald_test()`](http://jepusto.github.io/clubSandwich/reference/Wald_test.md):
+
+``` r
+C_sep <- constrain_equal("^stark", coefs = coef(lm_sep), reg_ex = TRUE)
+Wald_test(lm_sep, constraints = C_sep, vcov = V_sep)
+```
+
+    ##  test Fstat df_num df_denom  p_val sig
+    ##   HTZ  10.2      2     65.3 <0.001 ***
+
+or equivalently:
+
+``` r
+Wald_test(lm_sep, constraints = constrain_equal(1:3), vcov = V_sep)
+```
+
+    ##  test Fstat df_num df_denom  p_val sig
+    ##   HTZ  10.2      2     65.3 <0.001 ***
+
+Note that these test results are exactly equal to the tests based on
+`lm_trt` with
+[`constrain_zero()`](http://jepusto.github.io/clubSandwich/reference/constraint_matrices.md).
+They’re algebraically equivalent—just different ways of parameterizing
+the same model and constraints.
+
+## Testing an interaction
+
+Let’s now consider how these functions can be applied in a more complex
+model. Suppose that we are interested in understanding whether the
+effect of being in a small class is consistent across schools in
+different areas, where areas are categorized as urban, suburban, or
+rural. To answer this question, we need to test for an interaction
+between urbanicity and treatment condition. One estimating equation that
+would let us examine this question is: $$\begin{aligned}
+\left( \text{Math} \right)_{ij} & {= \beta_{0} + \beta_{1}\left( \text{suburban} \right)_{ij} + \beta_{2}\left( \text{rural} \right)_{ij}} \\
+ & {\quad + \beta_{3}\left( \text{small} \right)_{ij} + \beta_{4}\left( \text{aide} \right)_{ij}} \\
+ & {\quad\quad + \beta_{5}\left( \text{small} \right)\left( \text{suburban} \right)_{ij} + \beta_{6}\left( \text{aide} \right)\left( \text{suburban} \right)_{ij}} \\
+ & {\quad\quad\quad + \beta_{7}\left( \text{small} \right)\left( \text{rural} \right)_{ij} + \beta_{8}\left( \text{aide} \right)\left( \text{rural} \right)_{ij}} \\
+ & {\quad\quad\quad\quad + \mathbf{x}_{ij}{\mathbf{γ}} + e_{ij},}
+\end{aligned}$$ where $\mathbf{x}_{ij}$ is a row vector of student
+characteristics, included just to make the regression look fancier. In
+this specification, $\beta_{3}$ and $\beta_{4}$ represent the effects of
+being in a small class or aide class, compared to being in a regular
+class, but *only for the reference level of urbanicity*—in this case,
+urban schools. The coefficients
+$\beta_{5},\beta_{6},\beta_{7},\beta_{8}$ all represent *interactions*
+between treatment condition and urbanicity. Here’s the model, estimated
+in R:
+
+``` r
+lm_urbanicity <- lm(math1 ~ schoolk * stark + gender + ethnicity + lunchk, data = STAR)
+V_urbanicity <- vcovCR(lm_urbanicity, cluster = STAR$schoolidk, type = "CR2")
+coef_test(lm_urbanicity, vcov = V_urbanicity)
+```
+
+    ## Alternative hypothesis: two-sided 
+    ##                       Coef. Estimate    SE Null value  t-stat d.f. (Satt)
+    ##                 (Intercept)   542.62  5.91          0 91.8599       21.70
+    ##             schoolksuburban     2.77  6.76          0  0.4100       28.35
+    ##                schoolkrural     1.03  6.38          0  0.1616       30.74
+    ##                  starksmall     9.42  4.56          0  2.0649       17.10
+    ##                   starkaide    -4.27  2.17          0 -1.9631       16.73
+    ##                genderfemale     2.14  1.20          0  1.7773       67.14
+    ##               ethnicityafam   -16.79  4.19          0 -4.0026       34.94
+    ##              ethnicityasian    13.19 11.02          0  1.1963        6.23
+    ##           ethnicityhispanic    39.23 20.62          0  1.9028        1.01
+    ##              ethnicityother     8.86 18.78          0  0.4720        3.02
+    ##                  lunchkfree   -19.37  2.04          0 -9.4848       57.38
+    ##  schoolksuburban:starksmall     3.03  6.39          0  0.4746       28.94
+    ##     schoolkrural:starksmall    -0.31  5.58          0 -0.0555       34.04
+    ##   schoolksuburban:starkaide     5.10  3.72          0  1.3711       28.64
+    ##      schoolkrural:starkaide     8.16  3.16          0  2.5857       34.30
+    ##  p-val (Satt) Sig.
+    ##        <0.001  ***
+    ##        0.6849     
+    ##        0.8727     
+    ##        0.0544    .
+    ##        0.0665    .
+    ##        0.0800    .
+    ##        <0.001  ***
+    ##        0.2751     
+    ##        0.3067     
+    ##        0.6690     
+    ##        <0.001  ***
+    ##        0.6386     
+    ##        0.9560     
+    ##        0.1810     
+    ##        0.0141    *
+
+With this specification, there are several different null hypotheses
+that we might want to test. For one, perhaps we want to see if there is
+*any* variation in treatment effects across different levels of
+urbanicity. This can be expressed in the null hypothesis that all four
+interaction terms are zero, or
+$H_{0A}:\beta_{5} = \beta_{6} = \beta_{7} = \beta_{8} = 0$. With Wald
+test:
+
+``` r
+Wald_test(lm_urbanicity, 
+          constraints = constrain_zero("schoolk.+:stark", reg_ex = TRUE),
+          vcov = V_urbanicity)
+```
+
+    ##  test Fstat df_num df_denom p_val sig
+    ##   HTZ  1.96      4     37.5 0.121
+
+Another possibility is that we might want to focus on variation in the
+effect of being in a small class or regular class, while ignoring
+whatever is going on in the aide class condition. Here, the null
+hypothesis would be simply $H_{0B}:\beta_{5} = \beta_{6} = 0$, tested
+as:
+
+``` r
+Wald_test(lm_urbanicity, 
+          constraints = constrain_zero("schoolk.+:starksmall", reg_ex = TRUE),
+          vcov = V_urbanicity)
+```
+
+    ##  test Fstat df_num df_denom p_val sig
+    ##   HTZ 0.189      2     34.5 0.828
+
+### Lists of constraints
+
+In models like the urbanicity-by-treatment interaction specification, we
+may need to run multiple tests on the same estimating equation. This can
+be accomplished with `Wald_test` by providing a *list* of constraints to
+the `constraints` argument. For example, we could test the hypotheses
+described above by creating a list of several constraint matrices and
+then passing it to `Wald_test`:
+
+``` r
+C_list <- list(
+  `Any interaction` = constrain_zero("schoolk.+:stark", 
+                                     coef(lm_urbanicity), reg_ex = TRUE),
+  `Small vs regular` = constrain_zero("schoolk.+:starksmall", 
+                                      coef(lm_urbanicity), reg_ex = TRUE)
+)
+
+Wald_test(lm_urbanicity, 
+          constraints = C_list,
+          vcov = V_urbanicity)
+```
+
+    ## $`Any interaction`
+    ##  test Fstat df_num df_denom p_val sig
+    ##   HTZ  1.96      4     37.5 0.121    
+    ## 
+    ## $`Small vs regular`
+    ##  test Fstat df_num df_denom p_val sig
+    ##   HTZ 0.189      2     34.5 0.828
+
+Setting the option `tidy = TRUE` will arrange the output of all the
+tests into a single data frame:
+
+``` r
+Wald_test(lm_urbanicity, 
+          constraints = C_list,
+          vcov = V_urbanicity, 
+          tidy = TRUE)
+```
+
+    ##        hypothesis test Fstat df_num df_denom p_val sig
+    ##   Any interaction  HTZ 1.960      4     37.5 0.121    
+    ##  Small vs regular  HTZ 0.189      2     34.5 0.828
+
+The list of constraints can also be created inside `Wald_test`, so that
+the `coefs` argument can be omitted from
+[`constrain_zero()`](http://jepusto.github.io/clubSandwich/reference/constraint_matrices.md):
+
+``` r
+Wald_test(
+  lm_urbanicity, 
+  constraints = list(
+    `Any interaction` = constrain_zero("schoolk.+:stark", reg_ex = TRUE),
+    `Small vs regular` = constrain_zero("schoolk.+:starksmall", reg_ex = TRUE)
+  ),
+  vcov = V_urbanicity, 
+  tidy = TRUE
+)
+```
+
+    ##        hypothesis test Fstat df_num df_denom p_val sig
+    ##   Any interaction  HTZ 1.960      4     37.5 0.121    
+    ##  Small vs regular  HTZ 0.189      2     34.5 0.828
+
+## Pairwise t-tests
+
+The `clubSandwich` package also provides a further convenience function,
+[`constrain_pairwise()`](http://jepusto.github.io/clubSandwich/reference/constraint_matrices.md)
+that can be used in combination with
+[`Wald_test()`](http://jepusto.github.io/clubSandwich/reference/Wald_test.md)
+to conduct pairwise comparisons among a set of regression coefficients.
+This function differs from the other two `constrain_*()` functions
+because it returns a *list* of constraint matrices, each of which
+corresponds to a single linear combination of covariates. Specifically,
+the
+[`constrain_pairwise()`](http://jepusto.github.io/clubSandwich/reference/constraint_matrices.md)
+function provides a list of constraints that represent the differences
+between every possible pair among a specified set of coefficients. The
+syntax is very similar to the other `constrain_*()` functions.
+
+To demonstrate, consider the separate-intercepts specification of the
+simpler regression model:
+
+``` r
+coef_test(lm_sep, vcov = V_sep)
+```
+
+    ## Alternative hypothesis: two-sided 
+    ##         Coef. Estimate   SE Null value t-stat d.f. (Satt) p-val (Satt) Sig.
+    ##  starkregular      532 2.78          0    192        59.9       <0.001  ***
+    ##    starksmall      541 2.89          0    187        65.0       <0.001  ***
+    ##     starkaide      531 2.72          0    195        64.3       <0.001  ***
+
+This specification is nice because it lets us simply read off the
+average outcomes for each group. However, we will naturally also want to
+know about whether there are differences between the groups, so we’ll
+want to compare the small-class condition to the regular-size class
+condition, the aide condition to the regular-size class condition, and
+the small-class condition to the aide condition. Thus, we’ll want
+comparisons among all three coefficients:
+
+``` r
+C_pairs <- constrain_pairwise(1:3, coefs = coef(lm_sep))
+C_pairs
+```
+
+    ## $`starksmall - starkregular`
+    ##      [,1] [,2] [,3]
+    ## [1,]   -1    1    0
+    ## 
+    ## $`starkaide - starkregular`
+    ##      [,1] [,2] [,3]
+    ## [1,]   -1    0    1
+    ## 
+    ## $`starkaide - starksmall`
+    ##      [,1] [,2] [,3]
+    ## [1,]    0   -1    1
+
+Feeding these constraints into
+[`Wald_test()`](http://jepusto.github.io/clubSandwich/reference/Wald_test.md)
+gives us significance tests for each pair:
+
+``` r
+Wald_test(lm_sep, constraints = C_pairs, vcov = V_sep, tidy = TRUE)
+```
+
+    ##                 hypothesis test   Fstat df_num df_denom  p_val sig
+    ##  starksmall - starkregular  HTZ 16.9238      1     65.6 <0.001 ***
+    ##   starkaide - starkregular  HTZ  0.0673      1     65.6  0.796    
+    ##     starkaide - starksmall  HTZ 17.8137      1     66.9 <0.001 ***
+
+The first two of these tests are equivalent to the tests of the
+treatment effect coefficients in the other parameterization of the
+model. Indeed, the denominator degrees of freedom are identical to the
+results of `coef_test(lm_trt, vcov = V_trt)`; the `Fstat`s here are
+equal to the squared t-statistics from the first model:
+
+``` r
+t_stats <- coef_test(lm_trt, vcov = V_trt)$tstat[2:3]
+F_stats <- Wald_test(lm_sep, constraints = C_pairs, vcov = V_sep, tidy = TRUE)$Fstat[1:2]
+all.equal(t_stats^2, F_stats)
+```
+
+    ## [1] TRUE
+
+It is important to note that the p-values from the pairwise comparisons
+are *not* corrected for multiplicity.[³](#fn3) For now, please
+correct-your-own using
+[`p.adjust()`](https://rdrr.io/r/stats/p.adjust.html) or your preferred
+method.
+
+Pairwise comparisons might also be of use in the model with
+treatment-by-urbanicity interactions. Here’s the model results again:
+
+``` r
+coef_test(lm_urbanicity, vcov = V_urbanicity)
+```
+
+    ## Alternative hypothesis: two-sided 
+    ##                       Coef. Estimate    SE Null value  t-stat d.f. (Satt)
+    ##                 (Intercept)   542.62  5.91          0 91.8599       21.70
+    ##             schoolksuburban     2.77  6.76          0  0.4100       28.35
+    ##                schoolkrural     1.03  6.38          0  0.1616       30.74
+    ##                  starksmall     9.42  4.56          0  2.0649       17.10
+    ##                   starkaide    -4.27  2.17          0 -1.9631       16.73
+    ##                genderfemale     2.14  1.20          0  1.7773       67.14
+    ##               ethnicityafam   -16.79  4.19          0 -4.0026       34.94
+    ##              ethnicityasian    13.19 11.02          0  1.1963        6.23
+    ##           ethnicityhispanic    39.23 20.62          0  1.9028        1.01
+    ##              ethnicityother     8.86 18.78          0  0.4720        3.02
+    ##                  lunchkfree   -19.37  2.04          0 -9.4848       57.38
+    ##  schoolksuburban:starksmall     3.03  6.39          0  0.4746       28.94
+    ##     schoolkrural:starksmall    -0.31  5.58          0 -0.0555       34.04
+    ##   schoolksuburban:starkaide     5.10  3.72          0  1.3711       28.64
+    ##      schoolkrural:starkaide     8.16  3.16          0  2.5857       34.30
+    ##  p-val (Satt) Sig.
+    ##        <0.001  ***
+    ##        0.6849     
+    ##        0.8727     
+    ##        0.0544    .
+    ##        0.0665    .
+    ##        0.0800    .
+    ##        <0.001  ***
+    ##        0.2751     
+    ##        0.3067     
+    ##        0.6690     
+    ##        <0.001  ***
+    ##        0.6386     
+    ##        0.9560     
+    ##        0.1810     
+    ##        0.0141    *
+
+Suppose that we are interested in the effect of small versus regular
+size classes, and in particular whether this effect varies across
+schools in different areas. The coefficients on
+`schoolksuburban:starksmall` and `schoolkrural:starksmall` already give
+us the differences in treatment effects between suburban schools versus
+urban schools and between rural schools versus urban schools. The
+difference between these coefficients gives us the difference in
+treatment effects between suburban schools and rural schools. We can
+look at all three of these contrasts using
+[`constrain_pairwise()`](http://jepusto.github.io/clubSandwich/reference/constraint_matrices.md)
+by setting the option `with_zero = TRUE`:
+
+``` r
+Wald_test(lm_urbanicity, 
+          constraints = constrain_pairwise(":starksmall", reg_ex = TRUE, with_zero = TRUE),
+          vcov = V_urbanicity,
+          tidy = TRUE)
+```
+
+    ##                                            hypothesis test   Fstat df_num
+    ##                            schoolksuburban:starksmall  HTZ 0.22526      1
+    ##                               schoolkrural:starksmall  HTZ 0.00308      1
+    ##  schoolkrural:starksmall - schoolksuburban:starksmall  HTZ 0.36471      1
+    ##  df_denom p_val sig
+    ##      28.9 0.639    
+    ##      34.0 0.956    
+    ##      24.4 0.551
+
+Again, the results of the first two tests are identical to the t-tests
+reported in
+[`coef_test()`](http://jepusto.github.io/clubSandwich/reference/coef_test.md).
+
+## Remark
+
+All of the preceding examples were based on ordinary linear regression
+models with clustered standard errors. However,
+[`Wald_test()`](http://jepusto.github.io/clubSandwich/reference/Wald_test.md)
+and its helper functions all work identically for all of the other
+models with supporting `clubSandwich` methods, including
+[`nlme::lme()`](https://rdrr.io/pkg/nlme/man/lme.html),
+[`nlme::gls()`](https://rdrr.io/pkg/nlme/man/gls.html),
+[`lme4::lmer()`](https://rdrr.io/pkg/lme4/man/lmer.html),
+[`rma.uni()`](https://wviechtb.github.io/metafor/reference/rma.uni.html),
+[`rma.mv()`](https://wviechtb.github.io/metafor/reference/rma.mv.html),
+and [`robu()`](https://rdrr.io/pkg/robumeta/man/robu.html), among
+others.
+
+## References
+
+Pustejovsky, J. E., & Tipton, E. (2018). Small-Sample Methods for
+Cluster-Robust Variance Estimation and Hypothesis Testing in Fixed
+Effects Models. *Journal of Business & Economic Statistics*, *36*(4),
+672–683. <https://doi.org/10.1080/07350015.2016.1247004>
+
+Tipton, E., & Pustejovsky, J. E. (2015). Small-sample adjustments for
+tests of moderators and model fit using robust variance estimation in
+meta-regression. *Journal of Educational and Behavioral Statistics*,
+*40*(6), 604–634. <https://doi.org/10.3102/1076998615606099>
+
+------------------------------------------------------------------------
+
+1.  In Pustejovsky & Tipton (2018) we used a more general formulation of
+    multiple-constraint null hypotheses, expressed as
+    $H_{0}:\mathbf{C}{\mathbf{β}} = \mathbf{d}$ for some fixed
+    $q \times 1$ vector $\mathbf{d}$. In practice, it’s often possible
+    to modify the $\mathbf{C}$ matrix so that $\mathbf{d}$ can always be
+    set to $\mathbf{0}$.
+
+2.  How does this work? If we omit the `coefs` argument,
+    [`constrain_zero()`](http://jepusto.github.io/clubSandwich/reference/constraint_matrices.md)
+    acts as a functional, by returning a function equivalent to
+    `function(coefs) constrain_zero(constraints, coefs = coefs)`. If
+    this function is fed into the `constraints` argument of
+    [`Wald_test()`](http://jepusto.github.io/clubSandwich/reference/Wald_test.md),
+    [`Wald_test()`](http://jepusto.github.io/clubSandwich/reference/Wald_test.md)
+    recognizes that it is a function and evaluates the function with
+    `coef(obj)`. It’s a kinda-sorta hacky substitute for lazy
+    evaluation. If you have suggestions for how to do this more
+    elegantly, please send them my way.
+
+3.  Options to include multiplicity corrections (Bonferroni, Holm,
+    Benjamini-Hochberg, etc.) might be included in a [future
+    release](https://github.com/jepusto/clubSandwich/issues/33). Reach
+    out if this is of interest to you.

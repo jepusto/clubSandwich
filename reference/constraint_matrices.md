@@ -1,0 +1,175 @@
+# Create constraint matrices
+
+Helper functions to create common types of constraint matrices, for use
+with
+[`Wald_test`](http://jepusto.github.io/clubSandwich/reference/Wald_test.md)
+to conduct Wald-type tests of linear contrasts from a fitted regression
+model.
+
+## Usage
+
+``` r
+constrain_zero(constraints, coefs, reg_ex = FALSE)
+
+constrain_equal(constraints, coefs, reg_ex = FALSE)
+
+constrain_pairwise(constraints, coefs, reg_ex = FALSE, with_zero = FALSE)
+```
+
+## Arguments
+
+- constraints:
+
+  Set of constraints to test. Can be logical (using `TRUE` to specify
+  which coefficients to constrain), integer (specify the index of
+  coefficients to constrain), character (specify the names of the
+  coefficients to constrain), or a regular expression.
+
+- coefs:
+
+  Vector of coefficient estimates, used to determine the column
+  dimension of the constraint matrix. Can be omitted if the function is
+  called inside
+  [`Wald_test()`](http://jepusto.github.io/clubSandwich/reference/Wald_test.md).
+
+- reg_ex:
+
+  Logical indicating whether `constraints` should be interpreted as a
+  regular expression. Defaults to `FALSE`.
+
+- with_zero:
+
+  Logical indicating whether coefficients should also be compared to
+  zero. Defaults to `FALSE`.
+
+## Value
+
+A matrix or list of matrices encoding the specified set of constraints.
+
+## Details
+
+Constraints can be specified as character vectors, regular expressions
+(with `reg_ex = TRUE`), integer vectors, or logical vectors.
+
+`constrain_zero()` Creates a matrix that constrains a specified set of
+coefficients to all be equal to zero.
+
+`constrain_equal()` Creates a matrix that constrains a specified set of
+coefficients to all be equal.
+
+`constrain_pairwise()` Creates a list of constraint matrices consisting
+of all pairwise comparisons between a specified set of coefficients. If
+`with_zero = TRUE`, then the list will also include a set of constraint
+matrices comparing each coefficient to zero.
+
+## See also
+
+[`Wald_test`](http://jepusto.github.io/clubSandwich/reference/Wald_test.md)
+
+## Examples
+
+``` r
+if (requireNamespace("carData", quietly = TRUE)) withAutoprint({
+
+data(Duncan, package = "carData")
+Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
+
+Duncan_fit <- lm(prestige ~ 0 + type + income + type:income + type:education, data=Duncan)
+# Note that type:income terms are interactions because main effect of income is included
+# but type:education terms are separate slopes for each unique level of type
+
+Duncan_coefs <- coef(Duncan_fit)
+
+# The following are all equivalent
+constrain_zero(constraints = c("typeprof:income","typewc:income"), 
+               coefs = Duncan_coefs)
+constrain_zero(constraints = ":income", coefs = Duncan_coefs, 
+               reg_ex = TRUE)
+constrain_zero(constraints = 5:6, coefs = Duncan_coefs)
+constrain_zero(constraints = c(FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE, FALSE), 
+               coefs = Duncan_coefs)
+
+# The following are all equivalent
+constrain_equal(c("typebc:education","typeprof:education","typewc:education"), 
+                Duncan_coefs)
+constrain_equal(":education", Duncan_coefs, reg_ex = TRUE)
+constrain_equal(7:9, Duncan_coefs)
+constrain_equal(c(FALSE,FALSE,FALSE,FALSE,FALSE,FALSE,TRUE,TRUE,TRUE), 
+                Duncan_coefs)
+
+# Test pairwise equality of the education slopes
+constrain_pairwise(":education", Duncan_coefs,
+                   reg_ex = TRUE)
+
+# Test pairwise equality of the income slopes, plus compare against zero
+constrain_pairwise(":income", Duncan_coefs, 
+                   reg_ex = TRUE, with_zero = TRUE)
+                   
+})
+#> > data(Duncan, package = "carData")
+#> > Duncan$cluster <- sample(LETTERS[1:8], size = nrow(Duncan), replace = TRUE)
+#> > Duncan_fit <- lm(prestige ~ 0 + type + income + type:income + type:education, 
+#> +     data = Duncan)
+#> > Duncan_coefs <- coef(Duncan_fit)
+#> > constrain_zero(constraints = c("typeprof:income", "typewc:income"), coefs = Duncan_coefs)
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+#> [1,]    0    0    0    0    1    0    0    0    0
+#> [2,]    0    0    0    0    0    1    0    0    0
+#> > constrain_zero(constraints = ":income", coefs = Duncan_coefs, reg_ex = TRUE)
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+#> [1,]    0    0    0    0    1    0    0    0    0
+#> [2,]    0    0    0    0    0    1    0    0    0
+#> > constrain_zero(constraints = 5:6, coefs = Duncan_coefs)
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+#> [1,]    0    0    0    0    1    0    0    0    0
+#> [2,]    0    0    0    0    0    1    0    0    0
+#> > constrain_zero(constraints = c(FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, 
+#> +     FALSE, FALSE, FALSE), coefs = Duncan_coefs)
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+#> [1,]    0    0    0    0    1    0    0    0    0
+#> [2,]    0    0    0    0    0    1    0    0    0
+#> > constrain_equal(c("typebc:education", "typeprof:education", "typewc:education"), 
+#> +     Duncan_coefs)
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+#> [1,]    0    0    0    0    0    0   -1    1    0
+#> [2,]    0    0    0    0    0    0   -1    0    1
+#> > constrain_equal(":education", Duncan_coefs, reg_ex = TRUE)
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+#> [1,]    0    0    0    0    0    0   -1    1    0
+#> [2,]    0    0    0    0    0    0   -1    0    1
+#> > constrain_equal(7:9, Duncan_coefs)
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+#> [1,]    0    0    0    0    0    0   -1    1    0
+#> [2,]    0    0    0    0    0    0   -1    0    1
+#> > constrain_equal(c(FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, 
+#> +     TRUE), Duncan_coefs)
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+#> [1,]    0    0    0    0    0    0   -1    1    0
+#> [2,]    0    0    0    0    0    0   -1    0    1
+#> > constrain_pairwise(":education", Duncan_coefs, reg_ex = TRUE)
+#> $`typeprof:education - typebc:education`
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+#> [1,]    0    0    0    0    0    0   -1    1    0
+#> 
+#> $`typewc:education - typebc:education`
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+#> [1,]    0    0    0    0    0    0   -1    0    1
+#> 
+#> $`typewc:education - typeprof:education`
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+#> [1,]    0    0    0    0    0    0    0   -1    1
+#> 
+#> > constrain_pairwise(":income", Duncan_coefs, reg_ex = TRUE, with_zero = TRUE)
+#> $`typeprof:income`
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+#> [1,]    0    0    0    0    1    0    0    0    0
+#> 
+#> $`typewc:income`
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+#> [1,]    0    0    0    0    0    1    0    0    0
+#> 
+#> $`typewc:income - typeprof:income`
+#>      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9]
+#> [1,]    0    0    0    0   -1    1    0    0    0
+#> 
+```

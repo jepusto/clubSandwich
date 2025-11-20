@@ -1,0 +1,384 @@
+# Cluster-robust standard errors and hypothesis tests in panel data models
+
+The importance of using cluster-robust variance estimators (i.e.,
+“clustered standard errors”) in panel models is now widely recognized.
+Less widely recognized is the fact that standard methods for
+constructing hypothesis tests and confidence intervals based on CRVE can
+perform quite poorly in when based on a limited number of independent
+clusters. Furthermore, it can be difficult to determine what counts as a
+large-enough sample to trust standard CRVE methods, because the
+finite-sample behavior of the variance estimators and test statistics
+depends on the configuration of the covariates, not just the total
+number of clusters.
+
+One solution to this problem is to use bias-reduced linearization (BRL),
+which was proposed by Bell and McCaffrey (2002) and has recently begun
+to receive attention in the econometrics literature (e.g., Cameron &
+Miller, 2015; Imbens & Kolesar, 2015). The idea of BRL is to correct the
+bias of standard CRVE based on a working model, and then to use a
+degrees-of-freedom correction for Wald tests based on the bias-reduced
+CRVE. That may seem silly (after all, the whole point of CRVE is to
+avoid making distributional assumptions about the errors in your model),
+but it turns out that the correction can help quite a bit, even when the
+working model is wrong. The degrees-of-freedom correction is based on a
+standard Satterthwaite-type approximation, and also relies on the
+working model.
+
+A problem with Bell and McCaffrey’s original formulation of BRL is that
+it does not work in some very common models for panel data, such as
+state-by-year panels that include fixed effects for each state and each
+year (Angrist and Pischke, 2009, point out this issue in their chapter
+on “non-standard standard error issues”; see also Young, 2016). However,
+Pustejovsky and Tipton (2016) proposed a generalization of BRL that
+works even in models with arbitrary sets of fixed effects, and this
+generalization is implemented in `clubSandwich` as CRVE type `CR2`. The
+package also implements small-sample corrections for multiple-constraint
+hypothesis tests based on an approximation proposed by Pustejovsky and
+Tipton (2016). For one-parameter constraints, the test reduces to a
+t-test with Satterthwaite degrees of freedom, and so it is a natural
+extension of BRL.
+
+The following example demonstrates how to use `clubSandwich` to do
+cluster-robust inference for a state-by-year panel model with fixed
+effects in both dimensions, clustering by states.
+
+## Effects of changing the minimum legal drinking age
+
+Carpenter and Dobkin (2011) analyzed the effects of changes in the
+minimum legal drinking age on rates of motor vehicle fatalities among
+18-20 year olds, using state-level panel data from the National Highway
+Traffic Administration’s Fatal Accident Reporting System. In their new
+textbook, Angrist and Pischke (2014) developed a stylized example based
+on Carpenter and Dobkin’s work. The following example uses Angrist and
+Pischke’s data and follows their analysis because their data are [easily
+available](https://www.masteringmetrics.com/resources/).
+
+The outcome is the incidence of deaths in motor vehicle crashes among
+18-20 year-olds (per 100,000 residents), for each state plus the
+District of Columbia, over the period 1970 to 1983. There were several
+changes in the minimum legal drinking age during this time period, with
+variability in the timing of changes across states. Angrist and Pischke
+(following Carpenter and Dobkin) use a difference-in-differences
+strategy to estimate the effects of lowering the minimum legal drinking
+age from 21 to 18. Their specification is
+
+$$y_{it} = \alpha_{i} + \beta_{t} + \gamma b_{it} + \delta d_{it} + \epsilon_{it},$$
+
+for $i$ = 1,…,51 and $t$ = 1970,…,1983. In this model, $\alpha_{i}$ is a
+state-specific fixed effect, $\beta_{t}$ is a year-specific fixed
+effect, $b_{it}$ is the current rate of beer taxation in state $i$ in
+year $t$, $d_{it}$ is the proportion of 18-20 year-olds in state $i$ in
+year $t$ who are legally allowed to drink, and $\delta$ captures the
+effect of shifting the minimum legal drinking age from 21 to 18.
+Following Angrist and Pischke’s analysis, we estimate this model both by
+(unweighted) OLS and by weighted least squares with weights
+corresponding to population size in a given state and year. We also
+demonstrate random effects estimation and implement a cluster-robust
+Hausman specification test.
+
+## Unweighted OLS
+
+The following code does some simple data-munging and the estimates the
+model by OLS:
+
+``` r
+library(clubSandwich)
+data(MortalityRates)
+
+# subset for deaths in motor vehicle accidents, 1970-1983
+MV_deaths <- subset(MortalityRates, cause=="Motor Vehicle" & 
+                      year <= 1983 & !is.na(beertaxa))
+
+# fit by OLS
+lm_unweighted <- lm(mrate ~ 0 + legal + beertaxa + 
+                      factor(state) + factor(year), data = MV_deaths)
+```
+
+The `coef_test` function from `clubSandwich` can then be used to test
+the hypothesis that changing the minimum legal drinking age has no
+effect on motor vehicle deaths in this cohort (i.e.,
+$H_{0}:\delta = 0$). The usual way to test this is to cluster the
+standard errors by state, calculate the robust Wald statistic, and
+compare that to a standard normal reference distribution. The code and
+results are as follows:
+
+``` r
+coef_test(lm_unweighted, vcov = "CR1", 
+          cluster = MV_deaths$state, test = "naive-t")[1:2,]
+```
+
+    ## Alternative hypothesis: two-sided 
+    ##     Coef. Estimate   SE Null value t-stat d.f. (naive-t) p-val (naive-t) Sig.
+    ##     legal     7.59 2.44          0  3.108             49         0.00313   **
+    ##  beertaxa     3.82 5.14          0  0.743             49         0.46128
+
+A better approach would be to use the generalized, bias-reduced
+linearization CRVE, together with Satterthwaite degrees of freedom. In
+the `clubSandwich` package, the BRL adjustment is called “CR2” because
+it is directly analogous to the HC2 correction used in
+heteroskedasticity-robust variance estimation. When applied to an OLS
+model estimated by `lm`, the default working model is an identity
+matrix, which amounts to the “working” assumption that the errors are
+all uncorrelated and homoskedastic. Here’s how to apply this approach in
+the example:
+
+``` r
+coef_test(lm_unweighted, vcov = "CR2", 
+          cluster = MV_deaths$state, test = "Satterthwaite")[1:2,]
+```
+
+    ## Alternative hypothesis: two-sided 
+    ##     Coef. Estimate   SE Null value t-stat d.f. (Satt) p-val (Satt) Sig.
+    ##     legal     7.59 2.51          0  3.019       24.58      0.00583   **
+    ##  beertaxa     3.82 5.27          0  0.725        5.77      0.49663
+
+The Satterthwaite degrees of freedom are different for each coefficient
+in the model, and so the `coef_test` function reports them right
+alongside the standard error. For the effect of legal drinking age, the
+degrees of freedom are about half of what might be expected, given that
+there are 51 clusters. The p-value for the CR2+Satterthwaite test is
+about twice as large as the p-value based on the standard Wald test,
+although the coefficient is still statistically significant at
+conventional levels. Note, however, that the degrees of freedom on the
+beer taxation rate are considerably smaller because there are only a few
+states with substantial variability in taxation rates over time.
+
+## Unweighted “within” estimation
+
+The `plm` package in R provides another way to estimate the same model.
+It is convenient because it absorbs the state and year fixed effects
+before estimating the effect of `legal`. The `clubSandwich` package
+works with fitted `plm` models too:
+
+``` r
+library(plm)
+plm_unweighted <- plm(mrate ~ legal + beertaxa, data = MV_deaths, 
+                      effect = "twoways", index = c("state","year"))
+coef_test(plm_unweighted, vcov = "CR1", cluster = "individual", test = "naive-t")
+```
+
+    ## Alternative hypothesis: two-sided 
+    ##     Coef. Estimate   SE Null value t-stat d.f. (naive-t) p-val (naive-t) Sig.
+    ##     legal     7.59 2.44          0  3.108             49         0.00313   **
+    ##  beertaxa     3.82 5.14          0  0.743             49         0.46128
+
+``` r
+coef_test(plm_unweighted, vcov = "CR2", cluster = "individual", test = "Satterthwaite")
+```
+
+    ## Alternative hypothesis: two-sided 
+    ##     Coef. Estimate   SE Null value t-stat d.f. (Satt) p-val (Satt) Sig.
+    ##     legal     7.59 2.51          0  3.019       24.58      0.00583   **
+    ##  beertaxa     3.82 5.27          0  0.725        5.77      0.49663
+
+## Population-weighted estimation
+
+The difference between the standard method and the new method are not
+terribly exciting in the above example. However, things change quite a
+bit if the model is estimated using population weights. We go back to
+fitting in `lm` with dummies for all the fixed effects because `plm`
+does not handle weighted least squares.
+
+``` r
+lm_weighted <- lm(mrate ~ 0 + legal + beertaxa + factor(state) + factor(year), 
+                  weights = pop, data = MV_deaths)
+coef_test(lm_weighted, vcov = "CR1", 
+          cluster = MV_deaths$state, test = "naive-t")[1:2,]
+```
+
+    ## Alternative hypothesis: two-sided 
+    ##     Coef. Estimate   SE Null value t-stat d.f. (naive-t) p-val (naive-t) Sig.
+    ##     legal     7.78 2.01          0   3.87             49          <0.001  ***
+    ##  beertaxa    11.16 4.20          0   2.66             49          0.0106    *
+
+``` r
+coef_test(lm_weighted, vcov = "CR2", 
+          cluster = MV_deaths$state, test = "Satterthwaite")[1:2,]
+```
+
+    ## Alternative hypothesis: two-sided 
+    ##     Coef. Estimate   SE Null value t-stat d.f. (Satt) p-val (Satt) Sig.
+    ##     legal     7.78 2.13          0   3.64        8.52      0.00588   **
+    ##  beertaxa    11.16 4.37          0   2.55        6.85      0.03854    *
+
+Using population weights slightly reduces the point estimate of the
+effect, while also slightly increasing its precision. If you were
+following the standard approach, you would probably be happy with the
+weighted estimates and wouldn’t think about it any further. However,
+using the CR2 variance estimator and Satterthwaite correction produces a
+p-value that is an order of magnitude larger (though still significant
+at the conventional 5% level). The degrees of freedom are just
+8.5—drastically smaller than would be expected based on the number of
+clusters.
+
+Even with weights, the `coef_test` function uses an “independent,
+homoskedastic” working model as a default for `lm` objects. In the
+present example, the outcome is a standardized rate and so a better
+assumption might be that the error variances are inversely proportional
+to population size. The following code uses this alternate working
+model:
+
+``` r
+coef_test(lm_weighted, vcov = "CR2", 
+          cluster = MV_deaths$state, target = 1 / MV_deaths$pop, 
+          test = "Satterthwaite")[1:2,]
+```
+
+    ## Alternative hypothesis: two-sided 
+    ##     Coef. Estimate   SE Null value t-stat d.f. (Satt) p-val (Satt) Sig.
+    ##     legal     7.78 2.03          0   3.83       12.64      0.00221   **
+    ##  beertaxa    11.16 4.17          0   2.68        5.06      0.04333    *
+
+The new working model leads to slightly smaller standard errors and a
+couple of additional degrees of freedom, though they remain in
+small-sample territory.
+
+## Random effects estimation
+
+If the unobserved effects $\alpha_{1},...,\alpha_{51}$ are uncorrelated
+with the regressors, then a more efficient way to estimate
+$\gamma,\delta$ is by weighted least squares, with weights based on a
+random effects model. We still treat the year effects as fixed.
+
+``` r
+plm_random <- plm(mrate ~ 0 + legal + beertaxa + year, data = MV_deaths, 
+                  effect = "individual", index = c("state","year"),
+                  model = "random")
+coef_test(plm_random, vcov = "CR1", test = "naive-t")[1:2,]
+```
+
+    ## Alternative hypothesis: two-sided 
+    ##     Coef. Estimate   SE Null value t-stat d.f. (naive-t) p-val (naive-t) Sig.
+    ##     legal     7.31 2.39          0  3.054             49         0.00364   **
+    ##  beertaxa     3.37 5.11          0  0.661             49         0.51202
+
+``` r
+coef_test(plm_random, vcov = "CR2", test = "Satterthwaite")[1:2,]
+```
+
+    ## Alternative hypothesis: two-sided 
+    ##     Coef. Estimate   SE Null value t-stat d.f. (Satt) p-val (Satt) Sig.
+    ##     legal     7.31 2.46          0  2.966       25.18      0.00652   **
+    ##  beertaxa     3.37 5.22          0  0.647        5.78      0.54258
+
+With random effects estimation, the effect of legal drinking age is
+smaller by about 1 death per 100,000. As a procedural aside, note that
+`coef_test` infers that `state` is the clustering variable because the
+call to plm includes only one type of effects (random state effects).
+
+## Robust Hausman test
+
+CRVE is also used in specification tests, as in the artificial
+Hausman-type test for endogeneity of unobserved effects (Arellano,
+1993). As noted above, random effects estimation is more efficient than
+fixed effects estimation, but requires the assumption that the
+unobserved effects are uncorrelated with the regressors. However, if the
+unobserved effects covary with $\mathbf{b}_{i},\mathbf{d}_{i}$, then the
+random-effects estimator will be biased.
+
+We can test for whether endogeneity is a problem by including
+group-centered covariates as additional regressors. Let
+${\widetilde{d}}_{it} = d_{it} - \frac{1}{T}\sum_{t}d_{it}$, with
+${\widetilde{b}}_{it}$ defined analogously. Now estimate the regression
+
+$$y_{it} = \beta_{t} + \gamma_{1}b_{it} + \gamma_{2}{\widetilde{b}}_{it} + \delta_{1}d_{it} + \delta_{2}{\widetilde{d}}_{it} + \epsilon_{it},$$
+
+which does not include state fixed effects. The parameters
+$\gamma_{2},\delta_{2}$ represent the differences between the
+within-groups and between-groups estimands of $\gamma_{1},\delta_{1}$.
+If these are both zero, then the random effects estimator is unbiased.
+Thus, the joint test for $H_{0}:\gamma_{2} = \delta_{2} = 0$ amounts to
+a test for exogeneity of the unobserved effects.
+
+For efficiency, we estimate this specification using weighted least
+squares (although OLS would be valid too):
+
+``` r
+MV_deaths <- within(MV_deaths, {
+  legal_cent <- legal - tapply(legal, state, mean)[factor(state)]
+  beer_cent <- beertaxa - tapply(beertaxa, state, mean)[factor(state)]
+})
+
+plm_Hausman <- plm(mrate ~ 0 + legal + beertaxa + legal_cent + beer_cent + factor(year), 
+                   data = MV_deaths,
+                   effect = "individual", index = c("state","year"),
+                   model = "random")
+coef_test(plm_Hausman, vcov = "CR2", test = "Satterthwaite")[1:4,]
+```
+
+    ## Alternative hypothesis: two-sided 
+    ##       Coef. Estimate   SE Null value  t-stat d.f. (Satt) p-val (Satt) Sig.
+    ##       legal   -9.180 7.62          0 -1.2042       24.94       0.2398     
+    ##    beertaxa    3.395 9.40          0  0.3613        6.44       0.7295     
+    ##  legal_cent   16.768 8.53          0  1.9665       25.44       0.0602    .
+    ##   beer_cent    0.424 9.25          0  0.0458        6.42       0.9648
+
+To conduct a joint test on the centered covariates, we can use the
+`Wald_test` function. The usual way to test this hypothesis would be to
+use the `CR1` variance estimator to calculate the robust Wald statistic,
+then use a $\chi_{2}^{2}$ reference distribution (or equivalently,
+compare a re-scaled Wald statistic to an $F(2,\infty)$ distribution).
+The `Wald_test` function reports the latter version:
+
+``` r
+Wald_test(plm_Hausman, 
+          constraints = constrain_zero(c("legal_cent","beer_cent")), 
+          vcov = "CR1", test = "chi-sq")
+```
+
+    ##    test Fstat df_num df_denom  p_val sig
+    ##  chi-sq  2.93      2      Inf 0.0534   .
+
+The test is just shy of significance at the 5% level. If we instead use
+the `CR2` variance estimator and our newly proposed approximate F-test
+(which is the default in `Wald_test`), then we get:
+
+``` r
+Wald_test(plm_Hausman, 
+          constraints = constrain_zero(c("legal_cent","beer_cent")), 
+          vcov = "CR2")
+```
+
+    ##  test Fstat df_num df_denom p_val sig
+    ##   HTZ  2.56      2     11.7  0.12
+
+The low degrees of freedom of the test indicate that we’re definitely in
+small-sample territory and should not trust the asymptotic $\chi^{2}$
+approximation.
+
+## References
+
+Angrist, J. D., & Pischke, J. S. (2009). *Mostly Harmless Econometrics:
+An Empiricist’s Companion*. Princeton, NJ: Princeton University Press.
+
+Angrist, J. D., & Pischke, J. S. (2014). *Mastering ’Metrics: The Path
+from Cause to Effect*. Princeton, NJ: Princeton University Press.
+
+Arellano, M. (1993). On the testing of correlated effects with panel
+data. Journal of Econometrics, 59(1-2), 87-97. doi:
+[10.1016/0304-4076(93)90040-C](https://doi.org/10.1016/0304-4076(93)90040-C)
+
+Bell, R. M., & McCaffrey, D. F. (2002). Bias reduction in standard
+errors for linear regression with multi-stage samples. *Survey
+Methodology, 28*(2), 169-181.
+
+Cameron, A. C., & Miller, D. L. (2015). A practitioner’s guide to
+cluster-robust inference. *Journal of Human Resources, 50*(2), 317-372.
+doi: [10.3368/jhr.50.2.317](https://doi.org/10.3368/jhr.50.2.317)
+
+Carpenter, C., & Dobkin, C. (2011). The minimum legal drinking age and
+public health. *Journal of Economic Perspectives, 25*(2), 133-156. doi:
+[10.1257/jep.25.2.133](https://doi.org/10.1257/jep.25.2.133)
+
+Imbens, G. W., & Kolesar, M. (2015). Robust standard errors in small
+samples: Some practical advice. doi:
+[10.1162/REST_a_00552](https://doi.org/10.1162/REST_a_00552)
+
+Pustejovsky, J. E. & Tipton, E. (2016). Small sample methods for
+cluster-robust variance estimation and hypothesis testing in fixed
+effects models. arXiv: [1601.01981](https://arxiv.org/abs/1601.01981)
+\[stat.ME\]
+
+Young, A. (2016). Improved, nearly exact, statistical inference with
+robust and clustered covariance matrices using effective degrees of
+freedom corrections.

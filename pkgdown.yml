@@ -1,11 +1,11 @@
 pandoc: 3.1.11
-pkgdown: 2.1.3
+pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   meta-analysis-with-CRVE: meta-analysis-with-CRVE.html
   panel-data-CRVE: panel-data-CRVE.html
   Wald-tests-in-clubSandwich: Wald-tests-in-clubSandwich.html
-last_built: 2025-09-06T16:30Z
+last_built: 2025-11-20T21:37Z
 urls:
   reference: http://jepusto.github.io/clubSandwich/reference
   article: http://jepusto.github.io/clubSandwich/articles
