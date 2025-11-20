@@ -101,7 +101,8 @@ get_cor_grouping <- function(obj, levels = NULL) {
     if (is.null(struct)) struct <- obj
     mod_formula <- nlme::getGroupsFormula(struct)
     grps <- stats::model.frame(mod_formula, data = nlme::getData(obj))
-    grps <- apply(grps, 1, paste, collapse = "/")
+    grps <- lapply(grps, as.character)
+    grps <- do.call(paste, args = c(grps, sep = "/"))
     if (is.null(levels)) levels <- unique(grps)
     grps <- factor(grps, levels = levels)
   } else if (!is.null(obj$modelStruct$corStruct)) {

@@ -1,5 +1,6 @@
 # clubSandwich 0.6.1.9999
 
+* Fixed bug in internal function get_cor_grouping(), which identifies the grouping variable in nlme::lme() models with correlation structures.
 * Fixed bug in bread.rma.mv() occurring in models with test = 'knha' (an undocumented, experimental option).
 
 # clubSandwich 0.6.1
