@@ -1,6 +1,6 @@
 ## Resubmission
 
-This release provides methods to support models fitted with lm_robust() and lm_lin() from the estimatr package.
+This is a maintenance release, which corrects a few bugs occurring under esoteric circumstances with nlme::lme() models and metafor::rma.mv() models.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
@@ -19,7 +19,7 @@ There were no ERRORs, no WARNINGs, and no NOTEs.
 
 ## recheck results
 
-We checked 17 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+We checked 21 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
 
  * We saw 0 new problems
  * We failed to check 0 packages
