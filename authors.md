@@ -14,14 +14,14 @@
 Source:
 [`DESCRIPTION`](https://github.com/jepusto/clubSandwich/blob/main/DESCRIPTION)
 
-Pustejovsky JE (2025). *clubSandwich: Cluster-Robust (Sandwich) Variance
+Pustejovsky JE (2026). *clubSandwich: Cluster-Robust (Sandwich) Variance
 Estimators with Small-Sample Corrections*. R package version 0.6.1.9999,
 <http://jepusto.github.io/clubSandwich/>.
 
     @Manual{,
       title = {clubSandwich: Cluster-Robust (Sandwich) Variance Estimators with Small-Sample Corrections},
       author = {James E. Pustejovsky},
-      year = {2025},
+      year = {2026},
       note = {R package version 0.6.1.9999},
       url = {http://jepusto.github.io/clubSandwich/},
     }

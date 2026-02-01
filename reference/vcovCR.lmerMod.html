@@ -144,7 +144,8 @@ which is equal to the sandwich variance-covariance matrix.</p></dd>
 <span class="r-in"><span>                   data <span class="op">=</span> <span class="va">egsingle</span>, subset <span class="op">=</span> <span class="va">schoolid</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">subset_ids</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="vcovCR.html">vcovCR</a></span><span class="op">(</span><span class="va">math_model</span>, type <span class="op">=</span> <span class="st">"CR2"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Some predictor variables are on very different scales: consider rescaling</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Some predictor variables are on very different scales: consider rescaling. </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> You may also use (g)lmerControl(autoscale = TRUE) to improve numerical stability.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               (Intercept)          year          size    femaleMale</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  3.783508e-02  4.761442e-03 -4.339287e-05 -7.507242e-03</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> year         4.761442e-03  1.055863e-02 -2.769454e-06 -3.659318e-03</span>

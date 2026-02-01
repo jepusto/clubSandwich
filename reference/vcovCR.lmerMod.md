@@ -100,7 +100,8 @@ math_model <- lmer(math ~ year * size + female + black + hispanic
                    data = egsingle, subset = schoolid %in% subset_ids)
 vcovCR(math_model, type = "CR2")
 }
-#> Warning: Some predictor variables are on very different scales: consider rescaling
+#> Warning: Some predictor variables are on very different scales: consider rescaling. 
+#> You may also use (g)lmerControl(autoscale = TRUE) to improve numerical stability.
 #>               (Intercept)          year          size    femaleMale
 #> (Intercept)  3.783508e-02  4.761442e-03 -4.339287e-05 -7.507242e-03
 #> year         4.761442e-03  1.055863e-02 -2.769454e-06 -3.659318e-03
