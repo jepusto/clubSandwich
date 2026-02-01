@@ -218,3 +218,43 @@ test_that("linear_contrast() works with scalar (length-1) contrasts in metafor."
   
   
 })
+
+test_that("linear_contrast() works with multiple contrasts in metafor.", {
+  
+  skip_if_not_installed("metafor")
+  suppressPackageStartupMessages(library(metafor))
+  
+  dat <- dat.bangertdrowns2004
+  dat$grade_f <- factor(dat$grade)
+  
+  res_uni <- rma.mv(
+    yi = yi,
+    mods = ~ 0 + grade_f,
+    V = vi, 
+    W = 1, 
+    data=dat,
+    sparse = TRUE
+  )
+  
+  contrast_mat <- constrain_pairwise("grade_f", coefs = coef(res_uni), reg_ex = TRUE)
+  
+  pairwise_contrasts <- linear_contrast(
+      res_uni, 
+      vcov = "CR2", cluster = dat$id, 
+      contrasts = contrast_mat,
+      p_values = TRUE
+    )
+  
+  expect_s3_class(pairwise_contrasts, "conf_int_clubSandwich")
+  
+  pairwise_tests <- Wald_test(
+    res_uni,
+    vcov = "CR2", cluster = dat$id,
+    constraints = contrast_mat,
+    tidy = TRUE
+  )
+  
+  expect_equal(pairwise_contrasts$df, pairwise_tests$df_denom)
+  expect_equal(pairwise_contrasts$p_val, pairwise_tests$p_val)
+  
+})

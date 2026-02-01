@@ -262,7 +262,11 @@ linear_contrast <- function(obj, vcov, contrasts, level = .95, test = "Satterthw
       GH$H <- array_multiply(contrasts, GH$H)
     } else {
       H <- array(NA, dim = c(3, q, dims[3:4]))
-      for (i in 1:dims[1]) H[i,,,] <- array_multiply(contrasts, GH$H[i,,,,drop=FALSE])
+      for (i in 1:dims[1]) {
+        Hi <- GH$H[i,,,]
+        dim(Hi) <- dims[-1L]
+        H[i,,,] <- array_multiply(contrasts, Hi)
+      }
       GH$H <- H
     }
     P_array <- get_P_array(GH = GH)
