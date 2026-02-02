@@ -1,3 +1,5 @@
+# clubSandwich 0.6.2.9999
+
 # clubSandwich 0.6.2
 
 * Fixed bug in internal function `get_cor_grouping()`, which identifies the grouping variable in `nlme::lme()` models with correlation structures.
