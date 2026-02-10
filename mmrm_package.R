@@ -19,4 +19,26 @@ table(fev_data$AVISIT)  # 200 observations/rows per visit (4 Visits)
 # Check if there are some NA's in FEV1 (forced expired volume in one second) is a measure of how quickly the lungs can be emptied
 sum(is.na(fev_data$FEV1))
 
-# Insight: mmrm handles unbalanced data (missing visits) naturally
+# mmrm handles unbalanced data (missing visits) naturally
+
+# ===============================================
+# 2: Fitting a basic model
+# ===============================================
+
+# The mmrm formula has two parts:
+# 1. Fixed effects: FEV1 ~ RACE + SEX + ARMCD * AVISIT
+# 2. Covariance spec: us(AVISIT | USUBJID)
+
+fit = mmrm(
+  FEV1 ~ RACE + SEX + ARMCD * AVISIT + us(AVISIT | USUBJID),
+  data = fev_data
+)
+
+# Check object class
+class(fit)
+# [1] "mmrm"     "mmrm_fit" "mmrm_tmb"
+
+# Whats inside the fitted model
+names(fit)
+
+summary(fit)
