@@ -76,3 +76,38 @@ tryCatch(nobs(fit), error = function(e) message("nobs failed: ", e$message))
 
 # Checking the weights
 weights(fit)  # Why are they all 1's?
+
+# ===============================================
+# 4: Working Covariance (main part of the mmrm)
+# ===============================================
+
+# VarCorr extracts the estimated working covariance matrix
+vc = VarCorr(fit)
+vc
+
+dim(vc)
+
+# Is this per-subject or for the whole dataset?
+# How would you get the covariance for a subject with only 3 out of 4 visits?
+
+# Try it: subject "PT1" — which visits do they have?
+subset(fev_data, USUBJID == "PT1")[, c("USUBJID", "AVISIT", "FEV1")]
+
+# If PT1 has visits 1,2,4 but not 3, their working covariance would be:
+# vc[c(1,2,4), c(1,2,4)]
+
+fit$cov  # same as VarCorr(fit)
+
+# ===============================================
+# 5: Parts of formula: how mmrm parses the covariance spec
+# ===============================================
+
+fit$formula_parts
+
+# What is the subject variable? The visit variable? The covariance type?
+fit$formula_parts$subject_var
+fit$formula_parts$visit_var
+fit$formula_parts$cov_type
+
+# Is there a group variable? (for group-specific covariance)
+fit$formula_parts$group_var
