@@ -46,9 +46,15 @@ class(fit)
 # Whats inside the fitted model
 names(fit)
 # Important:
-# 1. beta_est (coefficients)
-# 2. beta_vcov (variance-covariance of coefficients)
-# 3. cov (the working covariance matrix)
+# 1. beta_est (coefficients) / coef(fit)
+#   - 11 values
+#   - effect of each predictor on FEV1
+# 2. beta_vcov (variance-covariance of coefficients) / vcov(fit)
+#   - 11x11 matrix (121 entries), clubSandwich?
+#   - how uncertain we are about those effects
+# 3. cov (the working covariance matrix) / VarCorr(fit)
+#   - 4x4 matrix which shows the covariance of a subject's repeated measurements
+#   - how a subject's measurements correlate across different visits
 
 summary(fit)
 
@@ -59,32 +65,41 @@ summary(fit)
 # Fixed effects coefficients
 coef(fit)
 
-# Variance-covariance of the coefficients (NOT the working covariance)
+# Variance-covariance of the coefficients (not the working covariance)
 vcov(fit)
+# off-diagonal values = 0 means the two coefficients are independent
+
+diag(vcov(fit))
+# diag shows the variances of each coefficient - bigger diagonal value = more uncertainty for the coefficient
 
 # Design matrix
 X = model.matrix(fit)
 dim(X)  # Has fewer rows than the original fev_data as it drops the rows with NA
+# Each row is one observation, each column is one predictor, and the intercept column is all 1's
 
 # Residuals
 r = residuals(fit)
+# observed FEV1 - predicted FEV1
 length(r)  # Also fewer rows than fev_data as it drops rows with NA
 
 # Fitted values
 head(fitted(fit))
+# Basically the predicted values
 
 # Model frame: the data actually used in fitting
 mf = model.frame(fit)
-dim(mf)  # Why is the dimension different compared to fev_data?
+dim(mf)  # Again, any row with NA is dropped. 
+# Also, only the variables that appear in the formula are kep 
 
 # Formula
 formula(fit)
 
-# nobs() doesnt work yet
+# nobs() doesnt work yet, should return number of observations
 tryCatch(nobs(fit), error = function(e) message("nobs failed: ", e$message))
+# But it can be extracted simply by doing component(fit, "n_obs")
 
 # Checking the weights
-weights(fit)  # Why are they all 1's?
+weights(fit)  # All are 1's meaning every observations contributes equally to the model
 
 # ===============================================
 # 4: Working Covariance (main part of the mmrm)
@@ -92,16 +107,15 @@ weights(fit)  # Why are they all 1's?
 
 # VarCorr extracts the estimated working covariance matrix
 vc = VarCorr(fit)
-vc
-
+# 4x4 matrix
 dim(vc)
 
-# Is this per-subject or for the whole dataset?
-# How would you get the covariance for a subject with only 3 out of 4 visits?
 
-# Try it: subject "PT1" — which visits do they have?
+# To get the covariance for a subject with only 3 out of 4 visits,
+# simple drop the row and columns for the missing visit
+
+# Example: subject "PT1", which visits do they have?
 subset(fev_data, USUBJID == "PT1")[, c("USUBJID", "AVISIT", "FEV1")]
-
 # If PT1 has visits 1,2,4 but not 3, their working covariance would be:
 # vc[c(1,2,4), c(1,2,4)]
 
@@ -113,12 +127,28 @@ fit$cov  # same as VarCorr(fit)
 
 fit$formula_parts
 
-# What is the subject variable? The visit variable? The covariance type?
-fit$formula_parts$subject_var
-fit$formula_parts$visit_var
-fit$formula_parts$cov_type
+fit$formula_parts$formula # basically just the original formula
 
-# Is there a group variable? (for group-specific covariance)
-fit$formula_parts$group_var
+fit$formula_parts$model_formula # fixed effects only formula
+# ARMCD:AVISIT -> ARMCD + AVISIT + ARMCD:AVISIT
+
+fit$formula_parts$full_formula # same as $model_formula, just added USUBJID
+
+fit$formula_parts$cov_type # the covariance structure which in this case is unstructured ("us")
+
+fit$formula_parts$is_spatial
+
+fit$formula_parts$visit_var  # which column identifies the time points
+# Extracted from the left side of AVISIT | USUBJID
+
+fit$formula_parts$subject_var # which column identifies the subjects
+# Extracted from the right side of AVISIT | USUBJID
+
+fit$formula_parts$model_var # predictor variables used in the fixed effects part of the model
+
+fit$formula_parts$response_var # outcome variable
+
+
+
 
 
