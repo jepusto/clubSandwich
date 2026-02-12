@@ -216,4 +216,26 @@ VarCorr(fit_w)
 VarCorr(fit_us)
 
 
+# ===============================================
+# 9: Degrees of freedom methods
+# ===============================================
+
+fit_satt = mmrm(
+  FEV1 ~ ARMCD * AVISIT + us(AVISIT | USUBJID),
+  data = fev_data,
+  method = "Satterthwaite"
+)
+
+fit_kr = mmrm(
+  FEV1 ~ ARMCD * AVISIT + us(AVISIT | USUBJID),
+  data = fev_data,
+  method = "Kenward-Roger"
+)
+
+# Compare the coefficient tables
+summary(fit_satt)$coefficients
+summary(fit_kr)$coefficients
+
+# will need to look into more of both methods in terms of understanding
+
 
