@@ -194,6 +194,26 @@ length(fit_ar1$theta_est)
 length(fit_toep$theta_est)
 
 
+# ===============================================
+# 8: Weighted models
+# ===============================================
+
+# mmrm supports observation level weights
+fev_data$w = runif(nrow(fev_data), 0.5, 2) # just random fake weight numbers
+
+fit_w = mmrm(
+  FEV1 ~ ARMCD * AVISIT + us(AVISIT | USUBJID),
+  data = fev_data,
+  weights = fev_data$w
+)
+
+# weights are no longer all 1's
+weights(fit_w)[1:10]
+
+# The coefficients and VarCorr are different from the unweighted model
+cbind(unweighted = coef(fit_us), weighted = coef(fit_w))
+VarCorr(fit_w)
+VarCorr(fit_us)
 
 
 
