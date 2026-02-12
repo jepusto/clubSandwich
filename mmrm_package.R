@@ -149,6 +149,29 @@ fit$formula_parts$model_var # predictor variables used in the fixed effects part
 fit$formula_parts$response_var # outcome variable
 
 
+# ===============================================
+# 6: component() accessor
+# ===============================================
+
+# mmrm official way to extract internals
+component(fit, "n_obs") # number of total observations
+component(fit, "n_subjects") # number of unique subjects
+component(fit, "n_timepoints") # number of unique visits
+component(fit, "subject_var") # same as fit$formula_parts$subject_va
+
+# The "full_frame" is the data used in fitting with NAs removed
+ff = component(fit, "full_frame")
+dim(ff)
+head(ff)
+names(ff) # includes USUBJID
+
+# The TMB level data has even more detail
+names(fit$tmb_data)
+fit$tmb_data$n_visits # same as component(fit, "n_timepoints")
+fit$tmb_data$n_subjects # same as component(fit, "n_subjects")
+head(fit$tmb_data$subject_n_visits) # visits per subject in the fitted data
+head(fit$tmb_data$coordinates) # 0-based visit indices per observation, 0 = visit 1
+
 
 
 
