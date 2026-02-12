@@ -173,5 +173,27 @@ head(fit$tmb_data$subject_n_visits) # visits per subject in the fitted data
 head(fit$tmb_data$coordinates) # 0-based visit indices per observation, 0 = visit 1
 
 
+# ===============================================
+# 7: Different covariance structures
+# ===============================================
+
+fit_us = mmrm(FEV1 ~ ARMCD * AVISIT + us(AVISIT | USUBJID), data = fev_data) # unstructured
+fit_cs = mmrm(FEV1 ~ ARMCD * AVISIT + cs(AVISIT | USUBJID), data = fev_data) # compound symmetry, one variance + one covariance
+fit_ar1 = mmrm(FEV1 ~ ARMCD * AVISIT + ar1(AVISIT | USUBJID), data = fev_data) # correlation decays with distance
+fit_toep = mmrm(FEV1 ~ ARMCD * AVISIT + toep(AVISIT | USUBJID), data = fev_data) # Toeplitz
+
+VarCorr(fit_us) # all entries free, no restriction
+VarCorr(fit_cs) # constant diagonal and off diagonal
+VarCorr(fit_ar1) # correlation decays with lag
+VarCorr(fit_toep) # each lag gets its own value
+
+# Number of parameters, more parameters = more flexible
+length(fit_us$theta_est)
+length(fit_cs$theta_est)
+length(fit_ar1$theta_est)
+length(fit_toep$theta_est)
+
+
+
 
 
