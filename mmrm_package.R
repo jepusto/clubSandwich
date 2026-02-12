@@ -27,7 +27,9 @@ sum(is.na(fev_data$FEV1))
 
 # The mmrm formula has two parts:
 # 1. Fixed effects: FEV1 ~ RACE + SEX + ARMCD * AVISIT
-# 2. Covariance spec: us(AVISIT | USUBJID)
+# 2. Covariance specification: us(AVISIT | USUBJID) *ask more about this
+#   - mean that it models the within-subject correlation using an unstructured cov matrix
+#     where AVISIT defiens the repeated time points and USUBJID identifies the subjects
 
 fit = mmrm(
   FEV1 ~ RACE + SEX + ARMCD * AVISIT + us(AVISIT | USUBJID),
@@ -37,9 +39,16 @@ fit = mmrm(
 # Check object class
 class(fit)
 # [1] "mmrm"     "mmrm_fit" "mmrm_tmb"
+# mmrm is the top level user facing model
+# mmrm_fit is a mid level class
+# mmrm_tmb shows the model was fit using Template Model Builder (TMB)
 
 # Whats inside the fitted model
 names(fit)
+# Important:
+# 1. beta_est (coefficients)
+# 2. beta_vcov (variance-covariance of coefficients)
+# 3. cov (the working covariance matrix)
 
 summary(fit)
 
@@ -111,3 +120,5 @@ fit$formula_parts$cov_type
 
 # Is there a group variable? (for group-specific covariance)
 fit$formula_parts$group_var
+
+
