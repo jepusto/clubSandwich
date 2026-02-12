@@ -236,6 +236,6 @@ fit_kr = mmrm(
 summary(fit_satt)$coefficients
 summary(fit_kr)$coefficients
 
-# will need to look into more of both methods in terms of understanding
+# will need to look into more of both methods and other methods mentioned in the website
 
 
