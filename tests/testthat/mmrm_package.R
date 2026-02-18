@@ -375,3 +375,79 @@ my_targetVariance = function(obj) {
 }
 
 
+# ===============================================
+# Group specific covariance
+# ===============================================
+
+# mmrm can fit separate covariance matrices per group
+# Syntax: us(AVISIT | ARMCD / USUBJID)
+
+fit_grouped = mmrm(
+  FEV1 ~ RACE + SEX + ARMCD * AVISIT + us(AVISIT | ARMCD / USUBJID),
+  data = fev_data
+)
+
+VarCorr(fit_grouped)
+
+class(VarCorr(fit_grouped)) # list of matrices
+
+fit_grouped$formula_parts$group_var # "ARMCD"
+component(fit_grouped, "n_groups") # 2
+
+# For non group case, building a subjects covariance block was:
+# 
+# 1. Get the full Σ (one matrix)
+# 2. Find the subject's visit indices
+# 3. Subset: Σ[idx, idx]
+# 
+# For grouped case:
+# 
+# 1. Get the list of Σs (one per group)
+# 2. Figure out which group this subject belongs to
+# 3. Pick the correct Σ from the list
+# 4. Find the subject's visit indices
+# 5. Subset: Σ_group[idx, idx]
+
+
+# Figuring out each subject's group:
+ff = component(fit_grouped, "full_frame")
+group_var = fit_grouped$formula_parts$group_var # "ARMCD"
+groups = ff[[group_var]] # factor: (PBO, PBO, PBO, TRT, TRT, etc)
+vc_list = VarCorr(fit_grouped)  # list: $PBO = 4×4, $TRT = 4×4
+
+# obs_by_subject = split(seq_along(subjects), droplevels(subjects))
+#
+# lapply(obs_by_subject, function(rows) {
+#   subj_group  as.character(groups[rows[1]]) # "PBO" or "TRT"
+#   vc_this  vc_list[[subj_group]] # pick the right Σ
+#   idx  match(as.character(visits[rows]), visit_levels)
+#   vc_this[idx, idx] # subset by visits
+# })
+
+# Updated function would be:
+targetVariance.mmrm = function(obj, cluster) {
+  ff = component(obj, "full_frame")
+  visit_var = obj$formula_parts$visit_var
+  group_var = obj$formula_parts$group_var
+  visit_levels = levels(ff[[visit_var]])
+  visits = ff[[visit_var]]
+  vc = VarCorr(obj)
+  
+  obs_by_subject = split(seq_along(cluster), cluster)
+  
+  if (is.null(group_var)) {
+    # Non grouped: one Σ for everyone
+    lapply(obs_by_subject, function(rows) {
+      idx = match(as.character(visits[rows]), visit_levels)
+      vc[idx, idx]
+    })
+  } else {
+    # Grouped: pick the right Σ per subject
+    groups = ff[[group_var]]
+    lapply(obs_by_subject, function(rows) {
+      subj_group = as.character(groups[rows[1]])
+      idx = match(as.character(visits[rows]), visit_levels)
+      vc[[subj_group]][idx, idx]
+    })
+  }
+}
