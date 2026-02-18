@@ -236,6 +236,49 @@ fit_kr = mmrm(
 summary(fit_satt)$coefficients
 summary(fit_kr)$coefficients
 
-# will need to look into more of both methods and other methods mentioned in the website
 
+# ===============================================
+# mmrm 'sandwich' estimators
+# ===============================================
+
+# mmrm has built in empirical (sandwich) variance estimators
+
+fit_cr0 = mmrm(
+  FEV1 ~ ARMCD * AVISIT + us(AVISIT | USUBJID),
+  data = fev_data,
+  control = mmrm_control(vcov = "Empirical")
+)
+# meat = Σ_j X_j 'e_j e_j' X_j
+# problem: biased estimate of true residual covariance as it uses B_hat and not true B
+
+fit_cr2 = mmrm(
+  FEV1 ~ ARMCD * AVISIT + us(AVISIT | USUBJID),
+  data = fev_data,
+  control = mmrm_control(vcov = "Empirical-Bias-Reduced")
+)
+# meat = Σ_j X_j 'A_j e_j e_j' A_j' X_j (adds the A_j correction matrix)
+# approximately unbiased
+
+fit_cr3 = mmrm(
+  FEV1 ~ ARMCD * AVISIT + us(AVISIT | USUBJID),
+  data = fev_data,
+  control = mmrm_control(vcov = "Empirical-Jackknife")
+)
+# meat = Σ_j X_j' (I - H_jj)^(-1) e_j e_j' (I - H_jj)^(-1) X_j (adds H_jj, hat matrix)
+
+
+
+# Compare coefficient standard errors across methods
+se_asymptotic = summary(fit_us)$coefficients[, "Std. Error"]
+se_cr0 = summary(fit_cr0)$coefficients[, "Std. Error"]
+se_cr2 = summary(fit_cr2)$coefficients[, "Std. Error"]
+se_cr3 = summary(fit_cr3)$coefficients[, "Std. Error"]
+
+data.frame(
+  asymptotic = se_asymptotic,
+  CR0 = se_cr0,
+  CR2 = se_cr2,
+  CR3 = se_cr3
+)
+# CR0 < CR2 < CR3
 
