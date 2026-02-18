@@ -65,7 +65,7 @@ summary(fit)
 # Fixed effects coefficients
 coef(fit)
 
-# Variance-covariance of the coefficients (not the working covariance)
+# Variance-covariance of the coefficients 
 vcov(fit)
 # off-diagonal values = 0 means the two coefficients are independent
 
@@ -102,7 +102,7 @@ tryCatch(nobs(fit), error = function(e) message("nobs failed: ", e$message))
 weights(fit)  # All are 1's meaning every observations contributes equally to the model
 
 # ===============================================
-# 4: Working Covariance (main part of the mmrm)
+# 4: Working covariance (main part of the mmrm)
 # ===============================================
 
 # VarCorr extracts the estimated working covariance matrix
@@ -112,7 +112,7 @@ dim(vc)
 
 
 # To get the covariance for a subject with only 3 out of 4 visits,
-# simple drop the row and columns for the missing visit
+# simply drop the row and columns for the missing visit
 
 # Example: subject "PT1", which visits do they have?
 subset(fev_data, USUBJID == "PT1")[, c("USUBJID", "AVISIT", "FEV1")]
