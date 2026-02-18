@@ -282,3 +282,96 @@ data.frame(
 )
 # CR0 < CR2 < CR3
 
+
+# ===============================================
+# Potential clubSandwich integration
+# ===============================================
+
+# clubSandwich needs to construct these for each subject (cluster):
+#   1. X_j: design matrix rows for subject j
+#   2. W_j: weight matrix for subject j (inverse of working covariance)
+#   3. Theta_j: target variance (working covariance block for subject j)
+#   4. e_j: residuals for subject j
+
+
+# Manually building them 
+ff = component(fit_us, "full_frame")
+subj_var = fit_us$formula_parts$subject_var
+visit_var = fit_us$formula_parts$visit_var
+visit_levels = levels(ff[[visit_var]])
+
+subjects = ff[[subj_var]]
+visits = ff[[visit_var]]
+vc_full = VarCorr(fit_us)
+
+# For one subject, build the working covariance sub-matrix:
+subj1 = levels(subjects)[1]
+subj1_visits = visits[subjects == subj1]
+subj1_idx = match(as.character(subj1_visits), visit_levels)
+
+cat("Subject:", subj1, "\n")
+cat("Visits:", as.character(subj1_visits), "\n")
+cat("Visit indices:", subj1_idx, "\n")
+cat("Working covariance sub-matrix:\n")
+print(vc_full[subj1_idx, subj1_idx])
+
+# To get Theta_j: target variance (working covariance block for subject j)
+# Split observation indices by subject
+subjects = droplevels(ff[[subj_var]])
+obs_by_subject = split(seq_along(subjects), subjects)
+
+# For each subject, get their visit indices and extract the sub-matrix
+target_list = lapply(obs_by_subject, function(rows) {
+  subj_visits = visits[rows]
+  idx = match(as.character(subj_visits), visit_levels)
+  vc_full[idx, idx]
+})
+# loop over each subject's rows, looks up their visits, converts to indices, and extracts the sub matrix
+
+target_list[11]
+
+
+# To get X_j — design matrix rows per subject:
+X = model.matrix(fit_us)
+
+# For PT1 
+X[obs_by_subject[["PT1"]], ] # model_matrix.mmrm()
+# A 2×11 matrix: PT1's 2 observations, 8 coefficients
+
+
+# To get W_j - weight matrix per subject (inverse of working covariance):
+weight_list = lapply(target_list, solve) # solve() computes the matrix inverse
+
+# For PT1:
+weight_list[[1]] # weightMatrix.mmrm() 
+# A 3×3 matrix — the inverse of PT1's covariance block
+
+
+# To get e_j — residuals per subject:
+e = residuals(fit_us)
+
+# For PT1:
+e[obs_by_subject[["PT1"]]] # residuals_CS.mmrm()
+
+
+# function that takes a fitted mmrm object and returns a list of per-subject working covariance matrices.
+
+my_targetVariance = function(obj) {
+  ff = component(obj, "full_frame")
+  subj_var = obj$formula_parts$subject_var
+  visit_var = obj$formula_parts$visit_var
+  visit_levels = levels(ff[[visit_var]])
+  
+  subjects = ff[[subj_var]]
+  visits = ff[[visit_var]]
+  vc_full = VarCorr(obj)
+  
+  obs_by_subject = split(seq_along(subjects), subjects)
+  
+  lapply(obs_by_subject, function(rows) {
+    idx = match(as.character(visits[rows]), visit_levels)
+    vc_full[idx, idx]
+  })
+}
+
+
