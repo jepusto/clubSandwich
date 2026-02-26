@@ -41,7 +41,7 @@ targetVariance.mmrm <- function(obj, cluster) {
     # Non-grouped: single covariance matrix for all subjects
     lapply(obs_by_subject, function(rows) {
       idx <- match(as.character(visits[rows]), visit_levels)
-      vc[idx, idx]
+      unname(vc[idx, idx, drop = FALSE])
     })
   } else {
     # Grouped: pick the group-specific covariance matrix per subject
@@ -49,7 +49,7 @@ targetVariance.mmrm <- function(obj, cluster) {
     lapply(obs_by_subject, function(rows) {
       subj_group <- as.character(groups[rows[1]])
       idx <- match(as.character(visits[rows]), visit_levels)
-      vc[[subj_group]][idx, idx]
+      unname(vc[[subj_group]][idx, idx, drop = FALSE])
     })
   }
 }
