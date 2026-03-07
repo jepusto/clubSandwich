@@ -10,10 +10,13 @@ library(mmrm, quietly = TRUE, warn.conflicts = FALSE)
 
 data(fev_data, package = "mmrm")
 
+fev_data$wt <- 1L + rpois(nrow(fev_data), lambda = 3)
+
 # Unstructured covariance
 obj_us <- mmrm(
-  FEV1 ~ RACE + SEX + ARMCD * AVISIT + us(AVISIT | USUBJID),
-  data = fev_data
+  FEV1 ~ RACE + SEX + ARMCD + us(AVISIT | USUBJID),
+  data = fev_data,
+  weights = fev_data$wt
 )
 
 # Toeplitz covariance
