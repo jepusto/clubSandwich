@@ -297,4 +297,3 @@ test_that("Wald_test works", {
 })
 
 # TODO: test dropped observations / missing visits
-# TODO: test weighted mmrm models
