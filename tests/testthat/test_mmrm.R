@@ -298,4 +298,31 @@ test_that("Wald_test works", {
   expect_true(all(sapply(Wald_orth, function(w) all(w$Fstat >= 0))))
 })
 
-# TODO: test dropped observations / missing visits
+CR_types <- paste0("CR", 0:4)
+
+test_that("clubSandwich works with dropped observations", {
+
+  dat_miss <- fev_data
+  dat_miss$FEV1[sample.int(nrow(fev_data), size = round(nrow(fev_data) / 10))] <- NA
+
+  # mmrm auto-drops NA rows (no na.action parameter)
+  obj_dropped <- mmrm(
+    FEV1 ~ RACE + SEX + ARMCD * AVISIT + us(AVISIT | USUBJID),
+    data = dat_miss
+  )
+
+  # mmrm has no subset parameter — manually subset the data
+  dat_complete <- dat_miss[!is.na(dat_miss$FEV1), ]
+  obj_complete <- mmrm(
+    FEV1 ~ RACE + SEX + ARMCD * AVISIT + us(AVISIT | USUBJID),
+    data = dat_complete
+  )
+
+  CR_drop <- lapply(CR_types, function(x) vcovCR(obj_dropped, type = x))
+  CR_complete <- lapply(CR_types, function(x) vcovCR(obj_complete, type = x))
+  expect_equal(CR_drop, CR_complete)
+
+  test_drop <- lapply(CR_types, function(x) coef_test(obj_dropped, vcov = x, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(obj_complete, vcov = x, test = "All", p_values = FALSE))
+  expect_equal(test_drop, test_complete)
+})
