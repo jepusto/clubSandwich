@@ -7,6 +7,60 @@
 # vcovCR with defaults
 #-------------------------------------
 
+#' Cluster-robust variance-covariance matrix for an mmrm object.
+#'
+#' \code{vcovCR} returns a sandwich estimate of the variance-covariance matrix
+#' of a set of regression coefficient estimates from an
+#' \code{\link[mmrm]{mmrm}} object.
+#'
+#' @param cluster Optional expression or vector indicating which observations
+#'   belong to the same cluster. If not specified, will be set to the subject
+#'   variable from the \code{mmrm} model formula.
+#' @param target Optional matrix or vector describing the working
+#'   variance-covariance model used to calculate the \code{CR2} and \code{CR4}
+#'   adjustment matrices. If not specified, the target is taken to be the
+#'   estimated variance-covariance structure of the \code{mmrm} object, with
+#'   weights applied if present.
+#' @inheritParams vcovCR
+#'
+#' @return An object of class \code{c("vcovCR","clubSandwich")}, which consists
+#'   of a matrix of the estimated variance of and covariances between the
+#'   regression coefficient estimates.
+#'
+#' @seealso \code{\link{vcovCR}}
+#'
+#' @examples
+#'
+#' if (requireNamespace("mmrm", quietly = TRUE)) withAutoprint({
+#'
+#'   library(mmrm)
+#'   data(fev_data, package = "mmrm")
+#'
+#'   # Fit an mmrm model with unstructured covariance
+#'   mmrm_fit <- mmrm(
+#'     FEV1 ~ RACE + SEX + ARMCD * AVISIT + us(AVISIT | USUBJID),
+#'     data = fev_data
+#'   )
+#'
+#'   # CR2 cluster-robust variance estimator (cluster auto-detected)
+#'   vcovCR(mmrm_fit, type = "CR2")
+#'
+#'   # Coefficient tests with Satterthwaite degrees of freedom
+#'   coef_test(mmrm_fit, vcov = "CR2", test = "Satterthwaite")
+#'
+#'   # Fit a weighted mmrm model
+#'   fev_data$wt <- 1 + rpois(nrow(fev_data), lambda = 3)
+#'   mmrm_wt <- mmrm(
+#'     FEV1 ~ RACE + SEX + ARMCD + us(AVISIT | USUBJID),
+#'     data = fev_data,
+#'     weights = fev_data$wt
+#'   )
+#'
+#'   # CR2 works with weighted models
+#'   vcovCR(mmrm_wt, type = "CR2")
+#'
+#' })
+#'
 #' @export
 
 vcovCR.mmrm <- function(obj, cluster, type, target, inverse_var, form = "sandwich", ...) {
@@ -25,6 +79,30 @@ vcovCR.mmrm <- function(obj, cluster, type, target, inverse_var, form = "sandwic
 # targetVariance()
 #-------------------------------------
 
+#' @title Target variance-covariance matrix for mmrm objects
+#'
+#' @description Constructs the list of working variance-covariance matrices
+#'   for each cluster (subject) in an \code{\link[mmrm]{mmrm}} model. Extracts
+#'   the estimated covariance structure from the fitted model, subsets it to
+#'   the observed visits for each subject, and applies weight adjustments
+#'   when weights are present.
+#'
+#' @details
+#'   For weighted models, the target variance is scaled following the mmrm
+#'   algorithm: \eqn{\Sigma_i = G_i^{-1/2} S_i' \Sigma S_i G_i^{-1/2}},
+#'   where \eqn{G_i} is the diagonal weight matrix for subject \eqn{i}.
+#'   This effectively scales the covariance element-wise by
+#'   \eqn{1 / \sqrt{w_{ij} \cdot w_{ik}}} for visits \eqn{j} and \eqn{k}.
+#'
+#'   For grouped models (where different groups have distinct covariance
+#'   structures), the group-specific covariance matrix is used for each subject.
+#'
+#' @param obj A fitted \code{\link[mmrm]{mmrm}} model object.
+#' @param cluster Factor indicating which observations belong to the same
+#'   cluster.
+#'
+#' @return A list of variance-covariance matrices, one per cluster (subject).
+#'
 #' @export
 
 targetVariance.mmrm <- function(obj, cluster) {
@@ -52,15 +130,15 @@ targetVariance.mmrm <- function(obj, cluster) {
       unname(vc[[subj_group]][idx, idx, drop = FALSE])
     })
   }
-  
+
   # Multiply by weights if non-unit
   wts <- ff[["(weights)"]]
-  
+
   if (all(wts == 1)) {
     return(V_list)
   } else {
     wt_inv_sqrt_j <- split(1 / sqrt(wts), cluster)
-    V_weighted <- mapply(\(iw, V) tcrossprod(iw) * V, iw = wt_inv_sqrt_j, V = V_list)
+    V_weighted <- Map(\(iw, V) tcrossprod(iw) * V, iw = wt_inv_sqrt_j, V = V_list)
     return(V_weighted)
   }
 }
@@ -69,6 +147,19 @@ targetVariance.mmrm <- function(obj, cluster) {
 # weightMatrix()
 #-------------------------------------
 
+#' @title Weight matrix for mmrm objects
+#'
+#' @description Computes the weight matrices used in the sandwich estimator
+#'   for each cluster. Returns the inverse of the target variance-covariance
+#'   matrices.
+#'
+#' @param obj A fitted \code{\link[mmrm]{mmrm}} model object.
+#' @param cluster Factor indicating which observations belong to the same
+#'   cluster.
+#'
+#' @return A list of weight matrices (inverse of target variance matrices),
+#'   one per cluster.
+#'
 #' @export
 
 weightMatrix.mmrm <- function(obj, cluster) {
@@ -80,12 +171,34 @@ weightMatrix.mmrm <- function(obj, cluster) {
 # bread and scaling constant
 #---------------------------------------
 
+#' @title Bread matrix for mmrm objects
+#'
+#' @description Returns the bread matrix of the sandwich estimator for an
+#'   \code{\link[mmrm]{mmrm}} model. Computed as the model-based
+#'   variance-covariance matrix multiplied by the number of subjects.
+#'
+#' @param x A fitted \code{\link[mmrm]{mmrm}} model object.
+#' @param ... Additional arguments (ignored).
+#'
+#' @return A \eqn{p \times p}{p x p} matrix, where \eqn{p} is the number of
+#'   fixed-effect coefficients.
+#'
 #' @export
 
 bread.mmrm <- function(x, ...) {
   vcov(x) * v_scale(x)
 }
 
+#' @title Scaling constant for mmrm objects
+#'
+#' @description Returns the scaling constant for the sandwich estimator,
+#'   which for \code{\link[mmrm]{mmrm}} models is the number of subjects
+#'   (clusters).
+#'
+#' @param obj A fitted \code{\link[mmrm]{mmrm}} model object.
+#'
+#' @return A scalar equal to the number of subjects.
+#'
 #' @export
 
 v_scale.mmrm <- function(obj) {
