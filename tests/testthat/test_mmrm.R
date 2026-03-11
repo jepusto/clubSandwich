@@ -62,19 +62,21 @@ cluster_bw <- droplevels(as.factor(ff_bw[[obj_bw$formula_parts$subject_var]]))
 data(Orthodont, package = "nlme")
 orth_data <- as.data.frame(Orthodont)
 orth_data$age_f <- factor(orth_data$age)
-orth_data$Subject <- factor(as.character(orth_data$Subject))
+orth_data$Subject <- factor(as.character(orth_data$Subject)) # Orthodont$Subject is an ordered factor
 
 # AR(1) covariance (interaction breaks perfect orthogonality in design)
 obj_orth <- mmrm(
   distance ~ Sex * age_f + ar1(age_f | Subject),
   data = orth_data
 )
+# Use the Sex * age f interaction (rather than just Sex + age f) to break perfect
+# orthogonality in the design matrix, which avoids numerical issues in the bread check
 
 ff_orth <- component(obj_orth, "full_frame")
 cluster_orth <- droplevels(as.factor(ff_orth[[obj_orth$formula_parts$subject_var]]))
 
 
-# Tests
+### Tests
 
 test_that("bread works", {
   # fev_data models
