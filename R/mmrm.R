@@ -39,18 +39,29 @@ targetVariance.mmrm <- function(obj, cluster) {
 
   if (is.null(group_var)) {
     # Non-grouped: single covariance matrix for all subjects
-    lapply(obs_by_subject, function(rows) {
+    V_list <- lapply(obs_by_subject, function(rows) {
       idx <- match(as.character(visits[rows]), visit_levels)
       unname(vc[idx, idx, drop = FALSE])
     })
   } else {
     # Grouped: pick the group-specific covariance matrix per subject
     groups <- ff[[group_var]]
-    lapply(obs_by_subject, function(rows) {
+    V_list <- lapply(obs_by_subject, function(rows) {
       subj_group <- as.character(groups[rows[1]])
       idx <- match(as.character(visits[rows]), visit_levels)
       unname(vc[[subj_group]][idx, idx, drop = FALSE])
     })
+  }
+  
+  # Multiply by weights if non-unit
+  wts <- ff[["(weights)"]]
+  
+  if (all(wts == 1)) {
+    return(V_list)
+  } else {
+    wt_inv_sqrt_j <- split(1 / sqrt(wts), cluster)
+    V_weighted <- mapply(\(iw, V) tcrossprod(iw) * V, iw = wt_inv_sqrt_j, V = V_list)
+    return(V_weighted)
   }
 }
 
