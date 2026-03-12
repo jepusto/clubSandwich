@@ -332,7 +332,7 @@ test_that("Wald_test works for weighted models", {
 test_that("Order doesn't matter for weighted models", {
   # Manual sort-order check for weighted mmrm models.
   # check_sort_order uses update(obj, data = ...) which replays the original
-  # weights= argument literally, so we refit manually with scrambled data.
+  # weights= argument literally, so we refit manually with scrambled data
 
   # fev_data weighted
   re_order <- sample(nrow(fev_data))
@@ -443,3 +443,8 @@ test_that("clubSandwich works with dropped observations (weighted)", {
   test_complete <- lapply(CR_types, function(x) coef_test(obj_complete, vcov = x, test = "All", p_values = FALSE))
   expect_equal(test_drop, test_complete)
 })
+
+
+# TODO: Test grouped covariance model works
+# TODO: Simply change the order of tests to match test_mmrm.R + additional unique weighted tests
+# TODO: Incorporate obj_toep and obj_grouped
