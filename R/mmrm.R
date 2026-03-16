@@ -111,7 +111,7 @@ targetVariance.mmrm <- function(obj, cluster) {
   group_var <- obj$formula_parts$group_var
   visit_levels <- levels(ff[[visit_var]])
   visits <- ff[[visit_var]]
-  vc <- VarCorr(obj)
+  vc <- mmrm::VarCorr(obj)
 
   obs_by_subject <- split(seq_along(cluster), cluster)
 
@@ -138,7 +138,7 @@ targetVariance.mmrm <- function(obj, cluster) {
     return(V_list)
   } else {
     wt_inv_sqrt_j <- split(1 / sqrt(wts), cluster)
-    V_weighted <- Map(\(iw, V) tcrossprod(iw) * V, iw = wt_inv_sqrt_j, V = V_list)
+    V_weighted <- Map(function(iw, V) tcrossprod(iw) * V, iw = wt_inv_sqrt_j, V = V_list)
     return(V_weighted)
   }
 }

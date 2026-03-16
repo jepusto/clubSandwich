@@ -19,16 +19,18 @@ obj_us <- mmrm(
   weights = fev_data$wt
 )
 
-# Toeplitz covariance
+# Toeplitz covariance with weights
 obj_toep <- mmrm(
   FEV1 ~ RACE + SEX + ARMCD * AVISIT + toep(AVISIT | USUBJID),
-  data = fev_data
+  data = fev_data,
+  weights = fev_data$wt
 )
 
-# Grouped covariance (separate covariance per treatment arm)
+# Grouped covariance (separate covariance per treatment arm) with weights
 obj_grouped <- mmrm(
   FEV1 ~ RACE + SEX + ARMCD * AVISIT + us(AVISIT | ARMCD / USUBJID),
-  data = fev_data
+  data = fev_data,
+  weights = fev_data$wt
 )
 
 # Extract cluster variables for fev_data models
@@ -48,11 +50,13 @@ cluster_grouped <- droplevels(as.factor(ff_grouped[[obj_grouped$formula_parts$su
 data(BodyWeight, package = "nlme")
 bw_data <- as.data.frame(BodyWeight)
 bw_data$Time_f <- factor(bw_data$Time)
+bw_data$wt <- 1L + rpois(nrow(bw_data), lambda = 2)
 
-# Compound symmetry covariance
+# Compound symmetry covariance with weights
 obj_bw <- mmrm(
   weight ~ Diet + cs(Time_f | Rat),
-  data = bw_data
+  data = bw_data,
+  weights = bw_data$wt
 )
 
 ff_bw <- component(obj_bw, "full_frame")
@@ -66,54 +70,37 @@ data(Orthodont, package = "nlme")
 orth_data <- as.data.frame(Orthodont)
 orth_data$age_f <- factor(orth_data$age)
 orth_data$Subject <- factor(as.character(orth_data$Subject))
+orth_data$wt <- 1L + rpois(nrow(orth_data), lambda = 2)
 
-# AR(1) covariance (interaction breaks perfect orthogonality in design)
+# AR(1) covariance (interaction breaks perfect orthogonality in design) with weights
 obj_orth <- mmrm(
   distance ~ Sex * age_f + ar1(age_f | Subject),
-  data = orth_data
+  data = orth_data,
+  weights = orth_data$wt
 )
 
 ff_orth <- component(obj_orth, "full_frame")
 cluster_orth <- droplevels(as.factor(ff_orth[[obj_orth$formula_parts$subject_var]]))
 
 
-# Additional weighted models for Datasets 2 and 3
-
-bw_data$wt <- 1L + rpois(nrow(bw_data), lambda = 2)
-obj_bw_wt <- mmrm(
-  weight ~ Diet + cs(Time_f | Rat),
-  data = bw_data,
-  weights = bw_data$wt
-)
-ff_bw_wt <- component(obj_bw_wt, "full_frame")
-cluster_bw_wt <- droplevels(as.factor(ff_bw_wt[[obj_bw_wt$formula_parts$subject_var]]))
-
-orth_data$wt <- 1L + rpois(nrow(orth_data), lambda = 2)
-obj_orth_wt <- mmrm(
-  distance ~ Sex * age_f + ar1(age_f | Subject),
-  data = orth_data,
-  weights = orth_data$wt
-)
-ff_orth_wt <- component(obj_orth_wt, "full_frame")
-cluster_orth_wt <- droplevels(as.factor(ff_orth_wt[[obj_orth_wt$formula_parts$subject_var]]))
-
-
 ### Tests
 
 test_that("bread works for weighted models", {
-  # fev_data weighted model
+  # fev_data weighted models
   expect_true(check_bread(obj_us, cluster = cluster_us, y = ff_us$FEV1))
+  expect_true(check_bread(obj_toep, cluster = cluster_toep, y = ff_toep$FEV1))
 
   # BodyWeight weighted model
-  expect_true(check_bread(obj_bw_wt, cluster = cluster_bw_wt, y = ff_bw_wt$weight))
+  expect_true(check_bread(obj_bw, cluster = cluster_bw, y = ff_bw$weight))
 
   # Orthodont weighted model
-  expect_true(check_bread(obj_orth_wt, cluster = cluster_orth_wt, y = ff_orth_wt$distance))
+  expect_true(check_bread(obj_orth, cluster = cluster_orth, y = ff_orth$distance))
 
   # Verify bread formula: vcov(obj) = bread(obj) / v_scale(obj)
   expect_equal(vcov(obj_us), bread(obj_us) / v_scale(obj_us))
-  expect_equal(vcov(obj_bw_wt), bread(obj_bw_wt) / v_scale(obj_bw_wt))
-  expect_equal(vcov(obj_orth_wt), bread(obj_orth_wt) / v_scale(obj_orth_wt))
+  expect_equal(vcov(obj_toep), bread(obj_toep) / v_scale(obj_toep))
+  expect_equal(vcov(obj_bw), bread(obj_bw) / v_scale(obj_bw))
+  expect_equal(vcov(obj_orth), bread(obj_orth) / v_scale(obj_orth))
 })
 
 
@@ -139,12 +126,19 @@ test_that("targetVariance incorporates weights correctly", {
     expect_equal(tv_us[[subj]], expected, tolerance = 1e-10)
   }
 
-  # For unweighted model, targetVariance should equal VarCorr subsets directly
-  tv_bw <- targetVariance(obj_bw, cluster_bw)
-  vc_bw <- VarCorr(obj_bw)
-  visits_bw <- ff_bw[[obj_bw$formula_parts$visit_var]]
+  # For an unweighted model, targetVariance should equal VarCorr subsets directly
+  obj_bw_unwt <- mmrm(
+    weight ~ Diet + cs(Time_f | Rat),
+    data = bw_data
+  )
+  ff_bw_unwt <- component(obj_bw_unwt, "full_frame")
+  cluster_bw_unwt <- droplevels(as.factor(ff_bw_unwt[[obj_bw_unwt$formula_parts$subject_var]]))
+
+  tv_bw <- targetVariance(obj_bw_unwt, cluster_bw_unwt)
+  vc_bw <- VarCorr(obj_bw_unwt)
+  visits_bw <- ff_bw_unwt[[obj_bw_unwt$formula_parts$visit_var]]
   visit_levels_bw <- levels(visits_bw)
-  obs_by_subject_bw <- split(seq_along(cluster_bw), cluster_bw)
+  obs_by_subject_bw <- split(seq_along(cluster_bw_unwt), cluster_bw_unwt)
 
   for (subj in names(obs_by_subject_bw)) {
     rows <- obs_by_subject_bw[[subj]]
@@ -168,26 +162,26 @@ test_that("vcovCR options work for CR2 with weighted models", {
   expect_equal(vcovCR(obj_us, type = "CR2", target = target, inverse_var = FALSE), CR2_us)
 
   # BodyWeight weighted
-  CR2_bw <- vcovCR(obj_bw_wt, type = "CR2")
-  expect_equal(vcovCR(obj_bw_wt, cluster = cluster_bw_wt, type = "CR2"), CR2_bw)
-  expect_equal(vcovCR(obj_bw_wt, type = "CR2", inverse_var = TRUE), CR2_bw)
-  expect_false(identical(vcovCR(obj_bw_wt, type = "CR2", inverse_var = FALSE), CR2_bw))
+  CR2_bw <- vcovCR(obj_bw, type = "CR2")
+  expect_equal(vcovCR(obj_bw, cluster = cluster_bw, type = "CR2"), CR2_bw)
+  expect_equal(vcovCR(obj_bw, type = "CR2", inverse_var = TRUE), CR2_bw)
+  expect_false(identical(vcovCR(obj_bw, type = "CR2", inverse_var = FALSE), CR2_bw))
 
-  target_bw <- targetVariance(obj_bw_wt, cluster_bw_wt)
-  expect_equal(vcovCR(obj_bw_wt, type = "CR2", target = target_bw, inverse_var = TRUE), CR2_bw)
+  target_bw <- targetVariance(obj_bw, cluster_bw)
+  expect_equal(vcovCR(obj_bw, type = "CR2", target = target_bw, inverse_var = TRUE), CR2_bw)
   attr(CR2_bw, "inverse_var") <- FALSE
-  expect_equal(vcovCR(obj_bw_wt, type = "CR2", target = target_bw, inverse_var = FALSE), CR2_bw)
+  expect_equal(vcovCR(obj_bw, type = "CR2", target = target_bw, inverse_var = FALSE), CR2_bw)
 
   # Orthodont weighted
-  CR2_orth <- vcovCR(obj_orth_wt, type = "CR2")
-  expect_equal(vcovCR(obj_orth_wt, cluster = cluster_orth_wt, type = "CR2"), CR2_orth)
-  expect_equal(vcovCR(obj_orth_wt, type = "CR2", inverse_var = TRUE), CR2_orth)
-  expect_false(identical(vcovCR(obj_orth_wt, type = "CR2", inverse_var = FALSE), CR2_orth))
+  CR2_orth <- vcovCR(obj_orth, type = "CR2")
+  expect_equal(vcovCR(obj_orth, cluster = cluster_orth, type = "CR2"), CR2_orth)
+  expect_equal(vcovCR(obj_orth, type = "CR2", inverse_var = TRUE), CR2_orth)
+  expect_false(identical(vcovCR(obj_orth, type = "CR2", inverse_var = FALSE), CR2_orth))
 
-  target_orth <- targetVariance(obj_orth_wt, cluster_orth_wt)
-  expect_equal(vcovCR(obj_orth_wt, type = "CR2", target = target_orth, inverse_var = TRUE), CR2_orth)
+  target_orth <- targetVariance(obj_orth, cluster_orth)
+  expect_equal(vcovCR(obj_orth, type = "CR2", target = target_orth, inverse_var = TRUE), CR2_orth)
   attr(CR2_orth, "inverse_var") <- FALSE
-  expect_equal(vcovCR(obj_orth_wt, type = "CR2", target = target_orth, inverse_var = FALSE), CR2_orth)
+  expect_equal(vcovCR(obj_orth, type = "CR2", target = target_orth, inverse_var = FALSE), CR2_orth)
 })
 
 
@@ -204,26 +198,26 @@ test_that("vcovCR options work for CR4 with weighted models", {
   expect_equal(vcovCR(obj_us, type = "CR4", target = target, inverse_var = FALSE), CR4_us)
 
   # BodyWeight weighted
-  CR4_bw <- vcovCR(obj_bw_wt, type = "CR4")
-  expect_equal(vcovCR(obj_bw_wt, cluster = cluster_bw_wt, type = "CR4"), CR4_bw)
-  expect_equal(vcovCR(obj_bw_wt, type = "CR4", inverse_var = TRUE), CR4_bw)
-  expect_false(identical(vcovCR(obj_bw_wt, type = "CR4", inverse_var = FALSE), CR4_bw))
+  CR4_bw <- vcovCR(obj_bw, type = "CR4")
+  expect_equal(vcovCR(obj_bw, cluster = cluster_bw, type = "CR4"), CR4_bw)
+  expect_equal(vcovCR(obj_bw, type = "CR4", inverse_var = TRUE), CR4_bw)
+  expect_false(identical(vcovCR(obj_bw, type = "CR4", inverse_var = FALSE), CR4_bw))
 
-  target_bw <- targetVariance(obj_bw_wt, cluster_bw_wt)
-  expect_equal(vcovCR(obj_bw_wt, type = "CR4", target = target_bw, inverse_var = TRUE), CR4_bw)
+  target_bw <- targetVariance(obj_bw, cluster_bw)
+  expect_equal(vcovCR(obj_bw, type = "CR4", target = target_bw, inverse_var = TRUE), CR4_bw)
   attr(CR4_bw, "inverse_var") <- FALSE
-  expect_equal(vcovCR(obj_bw_wt, type = "CR4", target = target_bw, inverse_var = FALSE), CR4_bw)
+  expect_equal(vcovCR(obj_bw, type = "CR4", target = target_bw, inverse_var = FALSE), CR4_bw)
 
   # Orthodont weighted
-  CR4_orth <- vcovCR(obj_orth_wt, type = "CR4")
-  expect_equal(vcovCR(obj_orth_wt, cluster = cluster_orth_wt, type = "CR4"), CR4_orth)
-  expect_equal(vcovCR(obj_orth_wt, type = "CR4", inverse_var = TRUE), CR4_orth)
-  expect_false(identical(vcovCR(obj_orth_wt, type = "CR4", inverse_var = FALSE), CR4_orth))
+  CR4_orth <- vcovCR(obj_orth, type = "CR4")
+  expect_equal(vcovCR(obj_orth, cluster = cluster_orth, type = "CR4"), CR4_orth)
+  expect_equal(vcovCR(obj_orth, type = "CR4", inverse_var = TRUE), CR4_orth)
+  expect_false(identical(vcovCR(obj_orth, type = "CR4", inverse_var = FALSE), CR4_orth))
 
-  target_orth <- targetVariance(obj_orth_wt, cluster_orth_wt)
-  expect_equal(vcovCR(obj_orth_wt, type = "CR4", target = target_orth, inverse_var = TRUE), CR4_orth)
+  target_orth <- targetVariance(obj_orth, cluster_orth)
+  expect_equal(vcovCR(obj_orth, type = "CR4", target = target_orth, inverse_var = TRUE), CR4_orth)
   attr(CR4_orth, "inverse_var") <- FALSE
-  expect_equal(vcovCR(obj_orth_wt, type = "CR4", target = target_orth, inverse_var = FALSE), CR4_orth)
+  expect_equal(vcovCR(obj_orth, type = "CR4", target = target_orth, inverse_var = FALSE), CR4_orth)
 })
 
 
@@ -231,101 +225,37 @@ test_that("CR2 and CR4 are target-unbiased for weighted models", {
   # fev_data weighted
   expect_true(check_CR(obj_us, vcov = "CR2"))
   expect_true(check_CR(obj_us, vcov = "CR4"))
+  expect_true(check_CR(obj_toep, vcov = "CR2"))
+  expect_true(check_CR(obj_toep, vcov = "CR4"))
 
   # BodyWeight weighted
-  expect_true(check_CR(obj_bw_wt, vcov = "CR2"))
-  expect_true(check_CR(obj_bw_wt, vcov = "CR4"))
+  expect_true(check_CR(obj_bw, vcov = "CR2"))
+  expect_true(check_CR(obj_bw, vcov = "CR4"))
 
   # Orthodont weighted
-  expect_true(check_CR(obj_orth_wt, vcov = "CR2"))
-  expect_true(check_CR(obj_orth_wt, vcov = "CR4"))
+  expect_true(check_CR(obj_orth, vcov = "CR2"))
+  expect_true(check_CR(obj_orth, vcov = "CR4"))
 })
 
 
-test_that("all CR types work for weighted models", {
-  CR_types <- paste0("CR", 0:4)
+test_that("grouped covariance model works for weighted models", {
+  # bread works for weighted grouped model
+  expect_true(check_bread(obj_grouped, cluster = cluster_grouped, y = ff_grouped$FEV1))
+  expect_equal(vcov(obj_grouped), bread(obj_grouped) / v_scale(obj_grouped))
 
-  # fev_data weighted
-  CR_us <- lapply(CR_types, function(x) vcovCR(obj_us, type = x))
-  expect_true(all(sapply(CR_us, inherits, "vcovCR")))
+  # CR2 produces a valid vcovCR object
+  CR2_grouped <- vcovCR(obj_grouped, type = "CR2")
+  expect_s3_class(CR2_grouped, "vcovCR")
+  expect_equal(vcovCR(obj_grouped, cluster = cluster_grouped, type = "CR2"), CR2_grouped)
 
-  # BodyWeight weighted
-  CR_bw <- lapply(CR_types, function(x) vcovCR(obj_bw_wt, type = x))
-  expect_true(all(sapply(CR_bw, inherits, "vcovCR")))
+  # CR2 and CR4 are target-unbiased for weighted grouped model
+  expect_true(check_CR(obj_grouped, vcov = "CR2"))
+  expect_true(check_CR(obj_grouped, vcov = "CR4"))
 
-  # Orthodont weighted
-  CR_orth <- lapply(CR_types, function(x) vcovCR(obj_orth_wt, type = x))
-  expect_true(all(sapply(CR_orth, inherits, "vcovCR")))
-})
-
-
-test_that("coef_test and conf_int work for weighted models", {
-  # fev_data weighted
-  test_us <- coef_test(obj_us, vcov = "CR2", test = "All")
-  expect_s3_class(test_us, "data.frame")
-  expect_true(all(test_us$SE > 0))
-  expect_true(all(test_us$df_Satt > 0))
-
-  ci_us <- conf_int(obj_us, vcov = "CR2")
-  expect_s3_class(ci_us, "data.frame")
-  expect_true(all(ci_us$CI_L < ci_us$CI_U))
-  expect_true(all(ci_us$SE > 0))
-
-  # BodyWeight weighted
-  test_bw <- coef_test(obj_bw_wt, vcov = "CR2", test = "All")
-  expect_s3_class(test_bw, "data.frame")
-  expect_true(all(test_bw$SE > 0))
-
-  ci_bw <- conf_int(obj_bw_wt, vcov = "CR2")
-  expect_s3_class(ci_bw, "data.frame")
-  expect_true(all(ci_bw$CI_L < ci_bw$CI_U))
-
-  # Orthodont weighted
-  test_orth <- coef_test(obj_orth_wt, vcov = "CR2", test = "All")
-  expect_s3_class(test_orth, "data.frame")
-  expect_true(all(test_orth$SE > 0))
-
-  ci_orth <- conf_int(obj_orth_wt, vcov = "CR2")
-  expect_s3_class(ci_orth, "data.frame")
-  expect_true(all(ci_orth$CI_L < ci_orth$CI_U))
-
-  # Multiple CR types all produce valid coef_test / conf_int results
-  for (cr_type in c("CR0", "CR1", "CR2")) {
-    test_cr <- coef_test(obj_us, vcov = cr_type)
-    expect_s3_class(test_cr, "data.frame")
-    ci_cr <- conf_int(obj_us, vcov = cr_type)
-    expect_s3_class(ci_cr, "data.frame")
-  }
-})
-
-
-test_that("Wald_test works for weighted models", {
-  # fev_data weighted
-  coefs_us <- coef_CS(obj_us)
-  pairs_us <- utils::combn(length(coefs_us), 2, simplify = FALSE)[1:3]
-  constraints_us <- lapply(pairs_us, constrain_zero, coefs = coefs_us)
-
-  Wald_us <- Wald_test(obj_us, constraints = constraints_us, vcov = "CR2", test = "All")
-  expect_true(is.list(Wald_us))
-  expect_true(all(sapply(Wald_us, function(w) all(w$Fstat >= 0))))
-
-  # BodyWeight weighted
-  coefs_bw <- coef_CS(obj_bw_wt)
-  pairs_bw <- utils::combn(length(coefs_bw), 2, simplify = FALSE)
-  constraints_bw <- lapply(pairs_bw, constrain_zero, coefs = coefs_bw)
-
-  Wald_bw <- Wald_test(obj_bw_wt, constraints = constraints_bw, vcov = "CR2", test = "All")
-  expect_true(is.list(Wald_bw))
-  expect_true(all(sapply(Wald_bw, function(w) all(w$Fstat >= 0))))
-
-  # Orthodont weighted
-  coefs_orth <- coef_CS(obj_orth_wt)
-  pairs_orth <- utils::combn(length(coefs_orth), 2, simplify = FALSE)[1:3]
-  constraints_orth <- lapply(pairs_orth, constrain_zero, coefs = coefs_orth)
-
-  Wald_orth <- Wald_test(obj_orth_wt, constraints = constraints_orth, vcov = "CR2", test = "All")
-  expect_true(is.list(Wald_orth))
-  expect_true(all(sapply(Wald_orth, function(w) all(w$Fstat >= 0))))
+  # coef_test works on weighted grouped model
+  test_grouped <- coef_test(obj_grouped, vcov = "CR2")
+  expect_s3_class(test_grouped, "data.frame")
+  expect_true(all(test_grouped$SE > 0))
 })
 
 
@@ -354,7 +284,7 @@ test_that("Order doesn't matter for weighted models", {
     data = bw_scramble,
     weights = bw_scramble$wt
   )
-  CR2_bw_orig <- vcovCR(obj_bw_wt, type = "CR2")
+  CR2_bw_orig <- vcovCR(obj_bw, type = "CR2")
   CR2_bw_scramble <- vcovCR(obj_bw_scramble, type = "CR2")
   expect_equivalent(as.matrix(CR2_bw_orig), as.matrix(CR2_bw_scramble), tolerance = 1e-6)
 
@@ -366,9 +296,100 @@ test_that("Order doesn't matter for weighted models", {
     data = orth_scramble,
     weights = orth_scramble$wt
   )
-  CR2_orth_orig <- vcovCR(obj_orth_wt, type = "CR2")
+  CR2_orth_orig <- vcovCR(obj_orth, type = "CR2")
   CR2_orth_scramble <- vcovCR(obj_orth_scramble, type = "CR2")
   expect_equivalent(as.matrix(CR2_orth_orig), as.matrix(CR2_orth_scramble), tolerance = 1e-6)
+})
+
+
+test_that("different covariance structures all work for weighted models", {
+  CR_types <- paste0("CR", 0:4)
+
+  # us weighted (fev_data)
+  CR_us <- lapply(CR_types, function(x) vcovCR(obj_us, type = x))
+  expect_true(all(sapply(CR_us, inherits, "vcovCR")))
+
+  # toep weighted (fev_data)
+  CR_toep <- lapply(CR_types, function(x) vcovCR(obj_toep, type = x))
+  expect_true(all(sapply(CR_toep, inherits, "vcovCR")))
+
+  # cs weighted (BodyWeight)
+  CR_bw <- lapply(CR_types, function(x) vcovCR(obj_bw, type = x))
+  expect_true(all(sapply(CR_bw, inherits, "vcovCR")))
+
+  # ar1 weighted (Orthodont)
+  CR_orth <- lapply(CR_types, function(x) vcovCR(obj_orth, type = x))
+  expect_true(all(sapply(CR_orth, inherits, "vcovCR")))
+})
+
+
+test_that("coef_test and conf_int work for weighted models", {
+  # fev_data weighted
+  test_us <- coef_test(obj_us, vcov = "CR2", test = "All")
+  expect_s3_class(test_us, "data.frame")
+  expect_true(all(test_us$SE > 0))
+  expect_true(all(test_us$df_Satt > 0))
+
+  ci_us <- conf_int(obj_us, vcov = "CR2")
+  expect_s3_class(ci_us, "data.frame")
+  expect_true(all(ci_us$CI_L < ci_us$CI_U))
+  expect_true(all(ci_us$SE > 0))
+
+  # BodyWeight weighted
+  test_bw <- coef_test(obj_bw, vcov = "CR2", test = "All")
+  expect_s3_class(test_bw, "data.frame")
+  expect_true(all(test_bw$SE > 0))
+
+  ci_bw <- conf_int(obj_bw, vcov = "CR2")
+  expect_s3_class(ci_bw, "data.frame")
+  expect_true(all(ci_bw$CI_L < ci_bw$CI_U))
+
+  # Orthodont weighted
+  test_orth <- coef_test(obj_orth, vcov = "CR2", test = "All")
+  expect_s3_class(test_orth, "data.frame")
+  expect_true(all(test_orth$SE > 0))
+
+  ci_orth <- conf_int(obj_orth, vcov = "CR2")
+  expect_s3_class(ci_orth, "data.frame")
+  expect_true(all(ci_orth$CI_L < ci_orth$CI_U))
+
+  # Multiple CR types all produce valid coef_test / conf_int results
+  for (cr_type in c("CR0", "CR1", "CR2")) {
+    test_cr <- coef_test(obj_us, vcov = cr_type)
+    expect_s3_class(test_cr, "data.frame")
+    ci_cr <- conf_int(obj_us, vcov = cr_type)
+    expect_s3_class(ci_cr, "data.frame")
+  }
+})
+
+
+test_that("Wald_test works for weighted models", {
+  # fev_data weighted
+  coefs_us <- coef_CS(obj_us)
+  pairs_us <- utils::combn(length(coefs_us), 2, simplify = FALSE)[1:3]
+  constraints_us <- lapply(pairs_us, constrain_zero, coefs = coefs_us)
+
+  Wald_us <- Wald_test(obj_us, constraints = constraints_us, vcov = "CR2", test = "All")
+  expect_true(is.list(Wald_us))
+  expect_true(all(sapply(Wald_us, function(w) all(w$Fstat >= 0))))
+
+  # BodyWeight weighted
+  coefs_bw <- coef_CS(obj_bw)
+  pairs_bw <- utils::combn(length(coefs_bw), 2, simplify = FALSE)
+  constraints_bw <- lapply(pairs_bw, constrain_zero, coefs = coefs_bw)
+
+  Wald_bw <- Wald_test(obj_bw, constraints = constraints_bw, vcov = "CR2", test = "All")
+  expect_true(is.list(Wald_bw))
+  expect_true(all(sapply(Wald_bw, function(w) all(w$Fstat >= 0))))
+
+  # Orthodont weighted
+  coefs_orth <- coef_CS(obj_orth)
+  pairs_orth <- utils::combn(length(coefs_orth), 2, simplify = FALSE)[1:3]
+  constraints_orth <- lapply(pairs_orth, constrain_zero, coefs = coefs_orth)
+
+  Wald_orth <- Wald_test(obj_orth, constraints = constraints_orth, vcov = "CR2", test = "All")
+  expect_true(is.list(Wald_orth))
+  expect_true(all(sapply(Wald_orth, function(w) all(w$Fstat >= 0))))
 })
 
 
@@ -413,6 +434,7 @@ test_that("weight scale does not matter for weighted models", {
   )
 })
 
+
 test_that("clubSandwich works with dropped observations (weighted)", {
 
   dat_miss <- fev_data
@@ -443,8 +465,3 @@ test_that("clubSandwich works with dropped observations (weighted)", {
   test_complete <- lapply(CR_types, function(x) coef_test(obj_complete, vcov = x, test = "All", p_values = FALSE))
   expect_equal(test_drop, test_complete)
 })
-
-
-# TODO: Test grouped covariance model works
-# TODO: Simply change the order of tests to match test_mmrm.R + additional unique weighted tests
-# TODO: Incorporate obj_toep and obj_grouped

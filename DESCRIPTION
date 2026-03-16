@@ -24,7 +24,7 @@ Description: Provides several cluster-robust variance estimators (i.e.,
     (from package 'estimatr'), ivreg() (from package 'AER'), ivreg() (from package 'ivreg' when 
     estimated by ordinary least squares), plm() (from package 'plm'), gls() and 
     lme() (from 'nlme'), lmer() (from `lme4`), robu() (from 'robumeta'), and rma.uni() 
-    and rma.mv() (from 'metafor').
+    rma.mv() (from 'metafor'), and mmrm() (from 'mmrm').
 URL: http://jepusto.github.io/clubSandwich/
 BugReports: https://github.com/jepusto/clubSandwich/issues
 Depends:
@@ -56,7 +56,8 @@ Suggests:
     covr,
     ivreg,
     estimatr,
-    fixest
+    fixest,
+    mmrm
 RoxygenNote: 7.3.3
 Encoding: UTF-8
 Language: en-US
