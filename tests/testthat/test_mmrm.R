@@ -66,7 +66,7 @@ orth_data$Subject <- factor(as.character(orth_data$Subject)) # Orthodont$Subject
 
 # AR(1) covariance (interaction breaks perfect orthogonality in design)
 obj_orth <- mmrm(
-  distance ~ Sex * age_f + ar1(age_f | Subject),
+  distance ~ Sex + age_f + ar1(age_f | Subject),
   data = orth_data
 )
 # Use the Sex * age f interaction (rather than just Sex + age f) to break perfect

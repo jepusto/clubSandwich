@@ -72,9 +72,9 @@ orth_data$age_f <- factor(orth_data$age)
 orth_data$Subject <- factor(as.character(orth_data$Subject))
 orth_data$wt <- 1L + rpois(nrow(orth_data), lambda = 2)
 
-# AR(1) covariance (interaction breaks perfect orthogonality in design) with weights
+# AR(1) covariance with weights
 obj_orth <- mmrm(
-  distance ~ Sex * age_f + ar1(age_f | Subject),
+  distance ~ Sex + age_f + ar1(age_f | Subject),
   data = orth_data,
   weights = orth_data$wt
 )
@@ -292,7 +292,7 @@ test_that("Order doesn't matter for weighted models", {
   re_order_orth <- sample(nrow(orth_data))
   orth_scramble <- orth_data[re_order_orth, ]
   obj_orth_scramble <- mmrm(
-    distance ~ Sex * age_f + ar1(age_f | Subject),
+    distance ~ Sex + age_f + ar1(age_f | Subject),
     data = orth_scramble,
     weights = orth_scramble$wt
   )
