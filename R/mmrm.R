@@ -79,30 +79,6 @@ vcovCR.mmrm <- function(obj, cluster, type, target, inverse_var, form = "sandwic
 # targetVariance()
 #-------------------------------------
 
-#' @title Target variance-covariance matrix for mmrm objects
-#'
-#' @description Constructs the list of working variance-covariance matrices
-#'   for each cluster (subject) in an \code{\link[mmrm]{mmrm}} model. Extracts
-#'   the estimated covariance structure from the fitted model, subsets it to
-#'   the observed visits for each subject, and applies weight adjustments
-#'   when weights are present.
-#'
-#' @details
-#'   For weighted models, the target variance is scaled following the mmrm
-#'   algorithm: \eqn{\Sigma_i = G_i^{-1/2} S_i' \Sigma S_i G_i^{-1/2}},
-#'   where \eqn{G_i} is the diagonal weight matrix for subject \eqn{i}.
-#'   This effectively scales the covariance element-wise by
-#'   \eqn{1 / \sqrt{w_{ij} \cdot w_{ik}}} for visits \eqn{j} and \eqn{k}.
-#'
-#'   For grouped models (where different groups have distinct covariance
-#'   structures), the group-specific covariance matrix is used for each subject.
-#'
-#' @param obj A fitted \code{\link[mmrm]{mmrm}} model object.
-#' @param cluster Factor indicating which observations belong to the same
-#'   cluster.
-#'
-#' @return A list of variance-covariance matrices, one per cluster (subject).
-#'
 #' @export
 
 targetVariance.mmrm <- function(obj, cluster) {
@@ -147,19 +123,6 @@ targetVariance.mmrm <- function(obj, cluster) {
 # weightMatrix()
 #-------------------------------------
 
-#' @title Weight matrix for mmrm objects
-#'
-#' @description Computes the weight matrices used in the sandwich estimator
-#'   for each cluster. Returns the inverse of the target variance-covariance
-#'   matrices.
-#'
-#' @param obj A fitted \code{\link[mmrm]{mmrm}} model object.
-#' @param cluster Factor indicating which observations belong to the same
-#'   cluster.
-#'
-#' @return A list of weight matrices (inverse of target variance matrices),
-#'   one per cluster.
-#'
 #' @export
 
 weightMatrix.mmrm <- function(obj, cluster) {
@@ -171,34 +134,12 @@ weightMatrix.mmrm <- function(obj, cluster) {
 # bread and scaling constant
 #---------------------------------------
 
-#' @title Bread matrix for mmrm objects
-#'
-#' @description Returns the bread matrix of the sandwich estimator for an
-#'   \code{\link[mmrm]{mmrm}} model. Computed as the model-based
-#'   variance-covariance matrix multiplied by the number of subjects.
-#'
-#' @param x A fitted \code{\link[mmrm]{mmrm}} model object.
-#' @param ... Additional arguments (ignored).
-#'
-#' @return A \eqn{p \times p}{p x p} matrix, where \eqn{p} is the number of
-#'   fixed-effect coefficients.
-#'
 #' @export
 
 bread.mmrm <- function(x, ...) {
   vcov(x) * v_scale(x)
 }
 
-#' @title Scaling constant for mmrm objects
-#'
-#' @description Returns the scaling constant for the sandwich estimator,
-#'   which for \code{\link[mmrm]{mmrm}} models is the number of subjects
-#'   (clusters).
-#'
-#' @param obj A fitted \code{\link[mmrm]{mmrm}} model object.
-#'
-#' @return A scalar equal to the number of subjects.
-#'
 #' @export
 
 v_scale.mmrm <- function(obj) {

@@ -23,7 +23,7 @@ Description: Provides several cluster-robust variance estimators (i.e.,
     objects, glm(), geeglm() (from package 'geepack'), lm_robust() and lm_lin() 
     (from package 'estimatr'), ivreg() (from package 'AER'), ivreg() (from package 'ivreg' when 
     estimated by ordinary least squares), plm() (from package 'plm'), gls() and 
-    lme() (from 'nlme'), lmer() (from `lme4`), robu() (from 'robumeta'), 
+    lme() (from 'nlme'), lmer() (from `lme4`), robu() (from 'robumeta'),
     rma.uni() and rma.mv() (from 'metafor'), and mmrm() (from 'mmrm').
 URL: http://jepusto.github.io/clubSandwich/
 BugReports: https://github.com/jepusto/clubSandwich/issues

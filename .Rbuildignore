@@ -15,4 +15,5 @@ vignettes/Robust-Variance-Estimation-with-clubSandwich.Rmd
 ^pkgdown$
 ^revdep$
 ^CRAN-SUBMISSION$
+\.DS_Store$
 
