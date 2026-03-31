@@ -66,7 +66,7 @@
 vcovCR.mmrm <- function(obj, cluster, type, target, inverse_var, form = "sandwich", ...) {
   if (missing(cluster)) {
     ff <- mmrm::component(obj, "full_frame")
-    subject_var <- obj$formula_parts$subject_var
+    subject_var <- mmrm::component(obj, "subject_var")
     cluster <- droplevels(as.factor(ff[[subject_var]]))
   }
   if (missing(target)) target <- NULL
