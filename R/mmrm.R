@@ -146,36 +146,3 @@ v_scale.mmrm <- function(obj) {
   mmrm::component(obj, "n_subjects")
 }
 
-#---------------------------------------
-# Testing utility
-#---------------------------------------
-
-compare_mmrm_vcov <- function(obj) {
-  
-  # CR0
-  vcov_CR0 <- vcov(update(obj, control = mmrm::mmrm_control(vcov = "Empirical")))
-  CR0 <- vcovCR(obj, type = "CR0")
-
-  # CR2  
-  mod_CR2 <- update(obj, control = mmrm::mmrm_control(vcov = "Empirical-Bias-Reduced"))
-  vcov_CR2 <- vcov(mod_CR2)
-  CR2 <- vcovCR(obj, type = "CR2")
-  summary_Satt <- summary(mod_CR2)$coefficients
-  coef_test_Satt <- coef_test(obj, vcov = CR2)
-  
-  # CR3
-  vcov_CR3 <- vcov(update(obj, control = mmrm::mmrm_control(vcov = "Empirical-Jackknife")))
-  CR3 <- vcovCR(obj, type = "CR3")
-  
-  # Compile
-  list(
-    mmrm_CR0 = vcov_CR0,
-    club_CR0 = CR0,
-    mmrm_CR2 = vcov_CR2,
-    club_CR2 = CR2,
-    mmrm_CR3 = vcov_CR3,
-    club_CR3 = CR3,
-    mmrm_coef = summary_Satt,
-    club_coef = coef_test_Satt
-  )
-}

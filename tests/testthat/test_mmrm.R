@@ -16,6 +16,7 @@ obj_us <- mmrm(
   data = fev_data
 )
 
+
 # Toeplitz covariance
 obj_toep <- mmrm(
   FEV1 ~ RACE + SEX + ARMCD * AVISIT + toep(AVISIT | USUBJID),
@@ -56,6 +57,7 @@ ff_bw <- component(obj_bw, "full_frame")
 cluster_bw <- droplevels(as.factor(ff_bw[[obj_bw$formula_parts$subject_var]]))
 
 
+
 # Dataset 3: Orthodont (from nlme) — orthodontic growth data
 # 27 subjects (16 Male, 11 Female), ages 8/10/12/14
 
@@ -75,6 +77,8 @@ obj_orth <- mmrm(
 ff_orth <- component(obj_orth, "full_frame")
 cluster_orth <- droplevels(as.factor(ff_orth[[obj_orth$formula_parts$subject_var]]))
 
+
+CR_types <- paste0("CR", 0:4)
 
 ### Tests
 
@@ -209,8 +213,7 @@ test_that("Order doesn't matter", {
 
 
 test_that("different covariance structures all work", {
-  CR_types <- paste0("CR", 0:4)
-
+  
   # us (fev_data)
   CR_us <- lapply(CR_types, function(x) vcovCR(obj_us, type = x))
   expect_true(all(sapply(CR_us, inherits, "vcovCR")))
@@ -298,7 +301,6 @@ test_that("Wald_test works", {
   expect_true(all(sapply(Wald_orth, function(w) all(w$Fstat >= 0))))
 })
 
-CR_types <- paste0("CR", 0:4)
 
 test_that("clubSandwich works with dropped observations", {
 
@@ -325,4 +327,15 @@ test_that("clubSandwich works with dropped observations", {
   test_drop <- lapply(CR_types, function(x) coef_test(obj_dropped, vcov = x, test = "All", p_values = FALSE))
   test_complete <- lapply(CR_types, function(x) coef_test(obj_complete, vcov = x, test = "All", p_values = FALSE))
   expect_equal(test_drop, test_complete)
+})
+
+test_that("clubSandwich agrees with mmrm internal calculations.", {
+  
+  compare_mmrm_vcov(obj_us, tol = 5e-4)
+  compare_mmrm_vcov(obj_toep, tol = 5e-4)
+  compare_mmrm_vcov(obj_grouped, tol = 5e-4)
+  
+  compare_mmrm_vcov(obj_bw, tol = 5e-4)
+  compare_mmrm_vcov(obj_orth, tol = 7e-4)
+  
 })

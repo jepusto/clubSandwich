@@ -465,3 +465,4 @@ test_that("clubSandwich works with dropped observations (weighted)", {
   test_complete <- lapply(CR_types, function(x) coef_test(obj_complete, vcov = x, test = "All", p_values = FALSE))
   expect_equal(test_drop, test_complete)
 })
+
