@@ -147,8 +147,8 @@ compare_mmrm_vcov <- function(obj, tol = 1e-5) {
   XWe <- do.call(rbind, args = Map(\(Xj, Wj, ej) t(ej) %*% Wj %*% Xj, Xj = X, Wj = W, ej = e))
   
   # CR0
-  
-  mod_CR0 <- update(obj, control = mmrm::mmrm_control(vcov = "Empirical"))
+  dat <- obj$data
+  mod_CR0 <- update(obj, data = dat, control = mmrm::mmrm_control(vcov = "Empirical"))
   CR0_scores <- component(mod_CR0, "score_per_subject")
   vcov_CR0 <- vcov(mod_CR0)
   CR0 <- vcovCR(obj, type = "CR0")
@@ -157,7 +157,7 @@ compare_mmrm_vcov <- function(obj, tol = 1e-5) {
   testthat::expect_equal(vcov_CR0, as.matrix(CR0), tol = tol)
   
   # CR2  
-  mod_CR2 <- update(obj, control = mmrm::mmrm_control(vcov = "Empirical-Bias-Reduced"))
+  mod_CR2 <- update(obj, data = dat, control = mmrm::mmrm_control(vcov = "Empirical-Bias-Reduced"))
   vcov_CR2 <- vcov(mod_CR2)
   CR4 <- vcovCR(obj, type = "CR4")
   summary_Satt <- summary(mod_CR2)$coefficients
@@ -168,7 +168,7 @@ compare_mmrm_vcov <- function(obj, tol = 1e-5) {
   testthat::expect_equivalent(summary_Satt[,"df"], coef_test_Satt$df, tol = tol)
   
   # CR3
-  mod_CR3 <- update(obj, control = mmrm::mmrm_control(vcov = "Empirical-Jackknife"))
+  mod_CR3 <- update(obj, data = dat, control = mmrm::mmrm_control(vcov = "Empirical-Jackknife"))
   vcov_CR3 <- vcov(mod_CR3)
   CR3 <- vcovCR(obj, type = "CR3")
   

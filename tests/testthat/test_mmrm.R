@@ -66,13 +66,11 @@ orth_data <- as.data.frame(Orthodont)
 orth_data$age_f <- factor(orth_data$age)
 orth_data$Subject <- factor(as.character(orth_data$Subject)) # Orthodont$Subject is an ordered factor
 
-# AR(1) covariance (interaction breaks perfect orthogonality in design)
+# AR(1) covariance
 obj_orth <- mmrm(
   distance ~ Sex + age_f + ar1(age_f | Subject),
   data = orth_data
 )
-# Use the Sex * age f interaction (rather than just Sex + age f) to break perfect
-# orthogonality in the design matrix, which avoids numerical issues in the bread check
 
 ff_orth <- component(obj_orth, "full_frame")
 cluster_orth <- droplevels(as.factor(ff_orth[[obj_orth$formula_parts$subject_var]]))
@@ -80,7 +78,7 @@ cluster_orth <- droplevels(as.factor(ff_orth[[obj_orth$formula_parts$subject_var
 
 CR_types <- paste0("CR", 0:4)
 
-### Tests
+
 
 test_that("bread works", {
   # fev_data models
@@ -201,6 +199,7 @@ test_that("grouped covariance model works", {
 
 
 test_that("Order doesn't matter", {
+  
   # fev_data
   check_sort_order(obj_us, fev_data)
 
@@ -337,5 +336,5 @@ test_that("clubSandwich agrees with mmrm internal calculations.", {
   
   compare_mmrm_vcov(obj_bw, tol = 5e-4)
   compare_mmrm_vcov(obj_orth, tol = 7e-4)
-  
 })
+
