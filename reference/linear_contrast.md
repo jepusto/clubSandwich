@@ -145,27 +145,27 @@ if (requireNamespace("carData", quietly = TRUE)) withAutoprint({
 #> > linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster, contrasts = constrain_pairwise(":education", 
 #> +     reg_ex = TRUE), test = "Satterthwaite")
 #>                                  Coef. Estimate    SE d.f. Lower 95% CI
-#>  typeprof:education - typebc:education   0.0186 0.323 3.26       -0.966
-#>    typewc:education - typebc:education   0.1068 0.260 3.54       -0.653
-#>  typewc:education - typeprof:education   0.0882 0.268 3.24       -0.729
+#>  typeprof:education - typebc:education   0.0186 0.390 4.42       -1.025
+#>    typewc:education - typebc:education   0.1068 0.319 3.44       -0.838
+#>  typewc:education - typeprof:education   0.0882 0.365 2.15       -1.382
 #>  Upper 95% CI
-#>         1.003
-#>         0.867
-#>         0.906
+#>          1.06
+#>          1.05
+#>          1.56
 #> > linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster, contrasts = constrain_pairwise(":education", 
 #> +     reg_ex = TRUE), test = "Satterthwaite", p_values = TRUE, adjustment_method = "hochberg")
 #>                                  Coef. Estimate    SE d.f. Lower 95% CI
-#>  typeprof:education - typebc:education   0.0186 0.323 3.26       -0.966
-#>    typewc:education - typebc:education   0.1068 0.260 3.54       -0.653
-#>  typewc:education - typeprof:education   0.0882 0.268 3.24       -0.729
+#>  typeprof:education - typebc:education   0.0186 0.390 4.42       -1.025
+#>    typewc:education - typebc:education   0.1068 0.319 3.44       -0.838
+#>  typewc:education - typeprof:education   0.0882 0.365 2.15       -1.382
 #>  Upper 95% CI p-value Sig.
-#>         1.003   0.958     
-#>         0.867   0.958     
-#>         0.906   0.958     
+#>          1.06   0.964     
+#>          1.05   0.964     
+#>          1.56   0.964     
 #> > linear_contrast(Duncan_fit, vcov = "CR2", cluster = Duncan$cluster, contrasts = constrain_pairwise(":income", 
 #> +     reg_ex = TRUE, with_zero = TRUE), test = "Satterthwaite")
 #>                            Coef. Estimate    SE d.f. Lower 95% CI Upper 95% CI
-#>                  typeprof:income -0.36914 0.379 3.80       -1.442        0.703
-#>                    typewc:income -0.36031 0.200 3.11       -0.984        0.263
-#>  typewc:income - typeprof:income  0.00883 0.514 2.53       -1.809        1.827
+#>                  typeprof:income -0.36914 0.367 3.56        -1.44        0.703
+#>                    typewc:income -0.36031 0.296 2.23        -1.52        0.797
+#>  typewc:income - typeprof:income  0.00883 0.363 2.64        -1.24        1.257
 ```

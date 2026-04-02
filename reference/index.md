@@ -39,6 +39,9 @@ for various fitted model objects.
 - [`vcovCR(`*`<mlm>`*`)`](http://jepusto.github.io/clubSandwich/reference/vcovCR.mlm.md)
   : Cluster-robust variance-covariance matrix for an mlm object.
 
+- [`vcovCR(`*`<mmrm>`*`)`](http://jepusto.github.io/clubSandwich/reference/vcovCR.mmrm.md)
+  : Cluster-robust variance-covariance matrix for an mmrm object.
+
 - [`vcovCR(`*`<plm>`*`)`](http://jepusto.github.io/clubSandwich/reference/vcovCR.plm.md)
   : Cluster-robust variance-covariance matrix for a plm object.
 

@@ -1,6 +1,14 @@
 # Changelog
 
-## clubSandwich 0.6.1.9999
+## clubSandwich 0.6.2.9999
+
+- Added support for
+  [`mmrm::mmrm()`](https://openpharma.github.io/mmrm/latest-tag/reference/mmrm.html)
+  models.
+
+## clubSandwich 0.6.2
+
+CRAN release: 2026-02-02
 
 - Fixed bug in internal function `get_cor_grouping()`, which identifies
   the grouping variable in

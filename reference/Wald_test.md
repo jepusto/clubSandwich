@@ -153,58 +153,58 @@ Wald_test(Duncan_fit,
 #> > Wald_test(Duncan_fit, constraints = constrain_equal(1:3), vcov = "CR2", 
 #> +     cluster = Duncan$cluster)
 #>  test Fstat df_num df_denom p_val sig
-#>   HTZ   3.1      2     1.92 0.251    
+#>   HTZ  1.47      2      1.7 0.426    
 #> > Wald_test(Duncan_fit, constraints = constrain_equal(":education", reg_ex = TRUE), 
 #> +     vcov = "CR2", cluster = Duncan$cluster)
-#>  test Fstat df_num df_denom p_val sig
-#>   HTZ 0.119      2     2.36 0.893    
+#>  test  Fstat df_num df_denom p_val sig
+#>   HTZ 0.0648      2     2.72 0.939    
 #> > Wald_test(Duncan_fit, constraints = constrain_pairwise(":education", reg_ex = TRUE), 
 #> +     vcov = "CR2", cluster = Duncan$cluster)
 #> $`typeprof:education - typebc:education`
 #>  test   Fstat df_num df_denom p_val sig
-#>   HTZ 0.00236      1     3.53 0.964    
+#>   HTZ 0.00289      1      4.3  0.96    
 #> 
 #> $`typewc:education - typebc:education`
 #>  test Fstat df_num df_denom p_val sig
-#>   HTZ 0.303      1     3.93 0.612    
+#>   HTZ 0.136      1      4.2 0.731    
 #> 
 #> $`typewc:education - typeprof:education`
 #>  test  Fstat df_num df_denom p_val sig
-#>   HTZ 0.0624      1     2.32 0.823    
+#>   HTZ 0.0918      1     2.63 0.784    
 #> 
 #> > Wald_test(Duncan_fit, constraints = constrain_zero(":income", reg_ex = TRUE), 
 #> +     vcov = "CR2", cluster = Duncan$cluster)
 #>  test Fstat df_num df_denom p_val sig
-#>   HTZ 0.733      2     1.67 0.591    
+#>   HTZ  1.07      2     1.93 0.486    
 #> > Wald_test(Duncan_fit, constraints = constrain_pairwise(":income", reg_ex = TRUE, 
 #> +     with_zero = TRUE), vcov = "CR2", cluster = Duncan$cluster)
 #> $`typeprof:income`
 #>  test Fstat df_num df_denom p_val sig
-#>   HTZ  1.23      1     3.42 0.338    
+#>   HTZ   1.5      1     2.77 0.314    
 #> 
 #> $`typewc:income`
 #>  test Fstat df_num df_denom p_val sig
-#>   HTZ  1.68      1     1.69 0.343    
+#>   HTZ  2.15      1     2.28 0.265    
 #> 
 #> $`typewc:income - typeprof:income`
 #>  test    Fstat df_num df_denom p_val sig
-#>   HTZ 0.000552      1     1.95 0.983    
+#>   HTZ 0.000588      1     2.41 0.983    
 #> 
 #> > Wald_test(Duncan_fit, constraints = constrain_pairwise(":education", reg_ex = TRUE), 
 #> +     vcov = "CR2", cluster = Duncan$cluster, test = c("HTZ", "chi-sq"), adjustment_method = "holm")
 #> $`typeprof:education - typebc:education`
 #>    test   Fstat df_num df_denom p_val sig
-#>  chi-sq 0.00236      1      Inf     1    
-#>     HTZ 0.00236      1     3.53     1    
+#>  chi-sq 0.00289      1      Inf     1    
+#>     HTZ 0.00289      1      4.3     1    
 #> 
 #> $`typewc:education - typebc:education`
 #>    test Fstat df_num df_denom p_val sig
-#>  chi-sq 0.303      1      Inf     1    
-#>     HTZ 0.303      1     3.93     1    
+#>  chi-sq 0.136      1      Inf     1    
+#>     HTZ 0.136      1      4.2     1    
 #> 
 #> $`typewc:education - typeprof:education`
 #>    test  Fstat df_num df_denom p_val sig
-#>  chi-sq 0.0624      1      Inf     1    
-#>     HTZ 0.0624      1     2.32     1    
+#>  chi-sq 0.0918      1      Inf     1    
+#>     HTZ 0.0918      1     2.63     1    
 #> 
 ```
