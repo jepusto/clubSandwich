@@ -29,14 +29,38 @@
 
 vcovCR.iv_robust <- function(obj, cluster, type, target = NULL, inverse_var = FALSE, form = "sandwich", ...) {
 
-  if (missing(cluster)) stop("You must specify a clustering variable.")
-  if (missing(type)) stop("You must specify a type of sandwich estimator.")
   if (inverse_var != FALSE) stop("The inverse_var option is not available for iv_robust models.")
 
   obj$model.frame <- model.frame(obj)
 
+  if (missing(cluster)) {
+    cluster <- findCluster.iv_robust(obj)
+    if (is.null(cluster)) stop("You must specify a clustering variable or `obj` must include a clustering variable.")
+  }
+
+  if (missing(type)) {
+    type <- switch(obj$se_type, CR0 = "CR0", CR2 = "CR2", stata = "CR1S", "No valid SE type")
+    if (type == "No valid SE type") stop("You must specify a `type` of sandwich estimator to calculate or `obj` must include an `se_type` of 'CR0', 'CR2', or 'stata'.")
+  }
+
   vcov_CR(obj, cluster = cluster, type = type,
           target = target, inverse_var = inverse_var, form = form)
+}
+
+
+#' Pulls clustering variable from iv_robust objects, if they have one.
+#'
+#' @param obj an iv_robust object
+#'
+#' @return The data within the clustering variable
+#' @keywords internal
+#' @noRd
+
+findCluster.iv_robust <- function(obj) {
+
+  if (!obj$clustered) return(NULL)
+
+  model.frame(obj)[["(clusters)"]]
 }
 
 
@@ -141,6 +165,16 @@ residuals_CS.iv_robust <- function(obj) {
   }
 
   r
+}
+
+#----------------------------------------------
+# na.action
+#----------------------------------------------
+
+#' @export
+
+na.action.iv_robust <- function(object, ...) {
+  na.action(model.frame(object))
 }
 
 # coef_CS() - use default
