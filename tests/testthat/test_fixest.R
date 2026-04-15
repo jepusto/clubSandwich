@@ -21,18 +21,52 @@ dat <- data.frame(y, X1, X2, cluster, w, row = 1:n)
 # feols models
 fit_nfe <- feols(y ~ X1 + X2, data = dat)
 fit_fe <- feols(y ~ X1 + X2 | cluster, data = dat)
+fit_fe_char <- feols(y ~ X1 + X2, data = dat, fixef = "cluster")
 fit_wt <- feols(y ~ X1 + X2, data = dat, weights = ~w)
 fit_wt_fe <- feols(y ~ X1 + X2 | cluster, data = dat, weights = ~w)
+
+data(trade, package = "fixest")
+
+# feols model with Origin and Destination fixed effects
+fit_fe2 <- feols(
+  log(Euros) ~ log(dist_km) | Origin + Destination,
+  data = trade
+)
+fit_fe2_char <- feols(
+  log(Euros) ~ log(dist_km), 
+  data = trade,
+  fixef = c("Origin","Destination")
+)
+
+# feols model with Origin-by-Destination fixed effects
+fit_fe_cross <- feols(
+  log(Euros) ~ Year | Origin^Destination,
+  data = trade
+)
+
+# feols model with destination and year-by-destination FEs
+fit_fe_slope <- feols(
+  log(Euros) ~ log(dist_km) + Origin | Destination[Year],
+  data = trade
+)
+
+# feols model with year-by-destination FEs
+fit_slope_only <- feols(
+  log(Euros) ~ log(dist_km) + Origin | Destination[[Year]],
+  data = trade
+)
 
 # equivalent lm models for comparison
 lm_nfe <- lm(y ~ X1 + X2, data = dat)
 lm_fe <- lm(y ~ X1 + X2 + cluster, data = dat)
 lm_wt <- lm(y ~ X1 + X2, data = dat, weights = w)
 lm_wt_fe <- lm(y ~ X1 + X2 + cluster, data = dat, weights = w)
+lm_fe2 <- lm(log(Euros) ~ log(dist_km) + Origin + Destination, data = trade)
+lm_fe_slope <- lm(log(Euros) ~ log(dist_km) + Origin + Destination + Year:Destination, data = trade)
+lm_slope_only <- lm(log(Euros) ~ log(dist_km) + Origin + Year:Destination, data = trade)
 
 CR_types <- paste0("CR", 0:4)
 focal <- c("X1", "X2")
-
 
 test_that("bread works", {
 
@@ -132,6 +166,22 @@ test_that("weighted feols with FE matches weighted lm with dummies", {
 
 test_that("cluster auto-detection works", {
 
+  # single FE
+  expect_identical(dat$cluster, findCluster.fixest(fit_fe))
+  expect_identical(dat$cluster, findCluster.fixest(fit_fe_char))
+  
+  # fully interacted FEs
+  expect_identical(
+    paste(trade$Origin, trade$Destination, sep = "_"), 
+    findCluster.fixest(fit_fe_cross)
+  )
+  
+  # fixed intercepts and slopes
+  expect_identical(trade$Destination, findCluster.fixest(fit_fe_slope))
+  
+  # two-way FE
+  expect_error(findCluster.fixest(fit_fe2))
+  
   # Auto-detects first FE variable as cluster
   cr2_auto <- vcovCR(fit_fe, type = "CR2")
   cr2_manual <- vcovCR(fit_fe, cluster = dat$cluster, type = "CR2")
