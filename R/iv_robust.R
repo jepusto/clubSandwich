@@ -48,7 +48,7 @@ vcovCR.iv_robust <- function(obj, cluster, type, target = NULL, inverse_var = FA
 }
 
 
-#' Pulls clustering variable from iv_robust objects, if they have one.
+#' Pulls the clustering variable from an iv_robust object, if it has one.
 #'
 #' @param obj an iv_robust object
 #'
