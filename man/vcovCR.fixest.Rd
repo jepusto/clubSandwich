@@ -18,8 +18,10 @@
 \item{obj}{Fitted model for which to calculate the variance-covariance matrix}
 
 \item{cluster}{Optional expression or vector indicating which observations
-belong to the same cluster. If not specified, will be set to the first
-fixed effect variable from the model formula if available.}
+belong to the same cluster. If not specified, will be set to the fixed
+effect variable when the model has exactly one fixed effect; for models
+with multiple fixed effects, the clustering variable must be specified
+explicitly.}
 
 \item{type}{Character string specifying which small-sample adjustment should 
 be used, with available options \code{"CR0"}, \code{"CR1"}, \code{"CR1p"},
@@ -61,20 +63,17 @@ of a set of regression coefficient estimates from a
 if (requireNamespace("fixest", quietly = TRUE)) withAutoprint({
 
   library(fixest)
-  data(trade, package = "fixest")
+  data("ChickWeight", package = "datasets")
+  ChickWeight$Chick <- factor(ChickWeight$Chick, ordered = FALSE)
 
-  # feols model with Origin and Destination fixed effects
-  fit <- feols(log(Euros) ~ log(dist_km) | Origin + Destination,
-               data = trade)
+  # Single fixed effect: cluster auto-detected from the FE
+  fit_one <- feols(weight ~ Time | Chick, data = ChickWeight)
+  vcovCR(fit_one, type = "CR2")
+  coef_test(fit_one, vcov = "CR2", test = "Satterthwaite")
 
-  # CR2 cluster-robust variance estimator (cluster auto-detected from FE)
-  vcovCR(fit, type = "CR2")
-
-  # Coefficient tests with Satterthwaite degrees of freedom
-  coef_test(fit, vcov = "CR2", test = "Satterthwaite")
-
-  # Explicitly specify clustering variable
-  vcovCR(fit, cluster = trade$Origin, type = "CR2")
+  # Two-way fixed effects: cluster must be specified explicitly
+  fit_two <- feols(weight ~ Time | Chick + Diet, data = ChickWeight)
+  vcovCR(fit_two, cluster = ChickWeight$Chick, type = "CR2")
 
 })
 
