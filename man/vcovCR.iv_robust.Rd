@@ -55,6 +55,38 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
 of a set of regression coefficient estimates from an
 \code{\link[estimatr]{iv_robust}} object.
 }
+\examples{
+
+if (requireNamespace("estimatr", quietly = TRUE)) withAutoprint({
+  library(estimatr)
+
+  set.seed(20261201)
+  N <- 200
+  cluster <- factor(rep(1:20, each = 10))
+  z1 <- rnorm(N); z2 <- rnorm(N); x_exog <- rnorm(N)
+  x_endog <- 0.5 * z1 + 0.3 * z2 + rnorm(N)
+  y <- 1 + 2 * x_endog + 0.5 * x_exog + rnorm(N)
+  dat <- data.frame(y, x_endog, x_exog, z1, z2, cluster)
+
+  # Basic 2SLS with clusters and CR2
+  iv_fit <- iv_robust(
+    y ~ x_endog + x_exog | x_exog + z1 + z2,
+    data = dat, clusters = cluster, se_type = "CR2"
+  )
+  vcovCR(iv_fit)
+  conf_int(iv_fit, vcov = "CR2")
+
+  # 2SLS with fixed effects
+  iv_fe <- iv_robust(
+    y ~ x_endog + x_exog | x_exog + z1 + z2,
+    data = dat, clusters = cluster,
+    fixed_effects = ~ cluster, se_type = "CR2"
+  )
+  vcovCR(iv_fe)
+
+})
+
+}
 \seealso{
 \code{\link{vcovCR}}
 }

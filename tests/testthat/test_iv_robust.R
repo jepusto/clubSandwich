@@ -541,3 +541,65 @@ test_that("vcovCR matches iv_robust$vcov for FE model with se_type='CR0'", {
   V_cr0 <- vcovCR(iv_fe_cr0, type = "CR0")
   expect_equal(as.matrix(V_cr0), vcov(iv_fe_cr0), check.attributes = FALSE)
 })
+
+
+# -------------------------------------------------
+# Tests: missing cluster
+# -------------------------------------------------
+
+test_that("clubSandwich requires no missing values on the clustering variable", {
+
+  dat_miss <- dat
+  miss_indicator <- sample.int(N, size = round(N / 10))
+  dat_miss$cluster[miss_indicator] <- NA
+
+  iv_dropped <- iv_robust(y ~ x_endog + x_exog | x_exog + z1 + z2, data = dat_miss)
+  expect_error(vcovCR(iv_dropped, cluster = dat_miss$cluster, type = "CR0"),
+               "Clustering variable cannot have missing values.")
+  expect_error(coef_test(iv_dropped, vcov = "CR0", cluster = dat_miss$cluster, test = "All"),
+               "Clustering variable cannot have missing values.")
+})
+
+
+# -------------------------------------------------
+# Higher-level inference tests: compare against ivreg::ivreg
+# -------------------------------------------------
+
+skip_if_not_installed("ivreg")
+
+iv_reg <- ivreg::ivreg(
+  y ~ x_endog + x_exog | x_exog + z1 + z2,
+  data = dat
+)
+iv_est <- iv_robust(
+  y ~ x_endog + x_exog | x_exog + z1 + z2,
+  data = dat
+)
+
+test_that("Wald_test() agrees between iv_robust and ivreg", {
+
+  W_reg <- Wald_test(iv_reg, constraints = constrain_zero("x_endog"),
+                     vcov = "CR2", cluster = dat$cluster)
+  W_est <- Wald_test(iv_est, constraints = constrain_zero("x_endog"),
+                     vcov = "CR2", cluster = dat$cluster)
+  expect_equal(W_reg, W_est)
+
+})
+
+
+test_that("conf_int() agrees between iv_robust and ivreg", {
+
+  ci_reg <- conf_int(iv_reg, vcov = "CR2", cluster = dat$cluster)
+  ci_est <- conf_int(iv_est, vcov = "CR2", cluster = dat$cluster)
+  expect_equal(ci_reg, ci_est)
+
+})
+
+
+test_that("coef_test() agrees between iv_robust and ivreg", {
+
+  ct_reg <- coef_test(iv_reg, vcov = "CR2", cluster = dat$cluster)
+  ct_est <- coef_test(iv_est, vcov = "CR2", cluster = dat$cluster)
+  expect_equal(ct_reg, ct_est)
+
+})
