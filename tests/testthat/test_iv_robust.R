@@ -349,3 +349,195 @@ test_that("CR2 is target-unbiased", {
   expect_true(check_CR(iv_un, vcov = "CR2", cluster = dat$cluster))
   expect_true(check_CR(iv_wt, vcov = "CR2", cluster = dat$cluster))
 })
+
+test_that("CR4 is target-unbiased", {
+  skip("Need to understand target-unbiasedness for iv_robust objects.")
+  expect_true(check_CR(iv_un, vcov = "CR4", cluster = dat$cluster))
+  expect_true(check_CR(iv_wt, vcov = "CR4", cluster = dat$cluster))
+})
+
+
+# -------------------------------------------------
+# Tests: equivalence to vcovHC with size-1 clusters
+# -------------------------------------------------
+
+test_that("vcovCR is equivalent to vcovHC (with HC0 or HC1) when clusters are all of size 1", {
+  suppressMessages(library(sandwich, quietly = TRUE))
+  iv_fit <- iv_robust(
+    y ~ x_endog + x_exog | x_exog + z1 + z2,
+    data = dat, se_type = "HC0"
+  )
+  CR0 <- vcovCR(iv_fit, cluster = 1:nobs(iv_fit), type = "CR0")
+  expect_equal(as.matrix(CR0), vcov(iv_fit), check.attributes = FALSE)
+})
+
+
+# -------------------------------------------------
+# Tests: sort-order invariance
+# -------------------------------------------------
+
+test_that("Order doesn't matter.", {
+
+  check_sort_order(iv_wt, dat, "cluster")
+
+})
+
+
+# -------------------------------------------------
+# Tests: dropped observations
+# -------------------------------------------------
+
+test_that("clubSandwich works with dropped observations", {
+  dat_miss <- dat
+  dat_miss$x_exog[sample.int(N, size = round(N / 10))] <- NA
+  iv_dropped <- update(iv_un, data = dat_miss)
+  dat_complete <- subset(dat_miss, !is.na(x_exog))
+  iv_complete <- update(iv_un, data = dat_complete)
+
+  CR_drop <- lapply(CR_types, function(x) vcovCR(iv_dropped, cluster = dat_miss$cluster, type = x))
+  CR_complete <- lapply(CR_types, function(x) vcovCR(iv_complete, cluster = dat_complete$cluster, type = x))
+  expect_equal(CR_drop, CR_complete)
+
+  test_drop <- lapply(CR_types, function(x) coef_test(iv_dropped, vcov = x, cluster = dat_miss$cluster, test = "All", p_values = FALSE))
+  test_complete <- lapply(CR_types, function(x) coef_test(iv_complete, vcov = x, cluster = dat_complete$cluster, test = "All", p_values = FALSE))
+  expect_equal(test_drop, test_complete)
+})
+
+
+# -------------------------------------------------
+# Tests: weight scale invariance
+# -------------------------------------------------
+
+test_that("weight scale doesn't matter", {
+
+  iv_fit_w <- update(iv_un, weights = rep(4, nobs(iv_un)))
+
+  unweighted_fit <- lapply(CR_types, function(x) vcovCR(iv_un, cluster = dat$cluster, type = x))
+  weighted_fit <- lapply(CR_types, function(x) vcovCR(iv_fit_w, cluster = dat$cluster, type = x))
+
+  expect_equal(lapply(unweighted_fit, as.matrix),
+               lapply(weighted_fit, as.matrix),
+               tol = 5 * 10^-7)
+
+  target <- 1 + rpois(N, lambda = 8)
+  unweighted_fit <- lapply(CR_types, function(x) vcovCR(iv_un, cluster = dat$cluster, type = x, target = target))
+  weighted_fit <- lapply(CR_types, function(x) vcovCR(iv_fit_w, cluster = dat$cluster, type = x, target = target * 15))
+
+  expect_equal(lapply(unweighted_fit, as.matrix),
+               lapply(weighted_fit, as.matrix),
+               tol = 5 * 10^-7)
+
+})
+
+
+# -------------------------------------------------
+# Tests: weights of zero
+# -------------------------------------------------
+
+test_that("clubSandwich works with weights of zero.", {
+
+  dat$awt <- rpois(N, lambda = 1.4)
+
+  iv_full <- update(iv_un, weights = awt)
+  dat_sub <- subset(dat, awt > 0)
+  iv_sub <- update(iv_full, data = dat_sub)
+
+  CR_full <- lapply(CR_types, function(x) vcovCR(iv_full, cluster = dat$cluster, type = x))
+  CR_sub <- lapply(CR_types, function(x) vcovCR(iv_sub, cluster = dat_sub$cluster, type = x))
+  expect_equal(CR_full, CR_sub, check.attributes = FALSE)
+
+  test_full <- lapply(CR_types, function(x) coef_test(iv_full, vcov = x, cluster = dat$cluster, test = c("z", "naive-t", "Satterthwaite"), p_values = TRUE))
+  test_sub <- lapply(CR_types, function(x) coef_test(iv_sub, vcov = x, cluster = dat_sub$cluster, test = c("z", "naive-t", "Satterthwaite"), p_values = TRUE))
+  expect_equal(test_full, test_sub, check.attributes = FALSE)
+
+})
+
+
+# -------------------------------------------------
+# Tests: fixed_effects
+# -------------------------------------------------
+
+iv_fe <- iv_robust(
+  y ~ x_endog + x_exog | x_exog + z1 + z2,
+  data = dat, clusters = cluster,
+  fixed_effects = ~ cluster, se_type = "CR2"
+)
+
+test_that("model.frame() includes fixed-effects variables", {
+  mf_fe <- model.frame(iv_fe)
+  expect_true("cluster" %in% names(mf_fe))
+})
+
+test_that("augmented_model_matrix() returns the FE design matrix", {
+  amm <- augmented_model_matrix(iv_fe, cluster = dat$cluster,
+                                inverse_var = FALSE, ignore_FE = FALSE)
+  expect_equal(nrow(amm), N)
+  expect_equal(ncol(amm), J)
+  expect_equal(colnames(amm), paste0("cluster", levels(as.factor(dat$cluster))))
+
+  # For a non-FE model, augmented_model_matrix() returns NULL
+  expect_null(augmented_model_matrix(iv_un, cluster = dat$cluster,
+                                     inverse_var = FALSE, ignore_FE = FALSE))
+})
+
+test_that("model_matrix() returns FE-residualized projected matrix", {
+  XP <- model_matrix(iv_fe)
+  expect_equal(nrow(XP), N)
+  expect_equal(ncol(XP), length(coef(iv_fe)))
+
+  # Coefficients should be recoverable from X_proj and FE-residualized outcome
+  F_mat <- model.matrix(~ 0 + cluster, data = dat)
+  y_demean <- lm.fit(F_mat, dat$y)$residuals
+  expect_equal(lm.fit(XP, y_demean)$coefficients, coef(iv_fe),
+               check.attributes = FALSE)
+
+  # Projected columns should be centered within each cluster
+  within_means <- apply(XP, 2, function(x) tapply(x, dat$cluster, mean))
+  expect_lt(max(abs(within_means)), 1e-12)
+})
+
+test_that("model_matrix() FE path agrees without fixest", {
+  local_mocked_bindings(
+    requireNamespace = function(...) FALSE
+  )
+  expect_false(requireNamespace("fixest", quietly = TRUE))
+
+  XP <- model_matrix(iv_fe)
+  F_mat <- model.matrix(~ 0 + cluster, data = dat)
+  y_demean <- lm.fit(F_mat, dat$y)$residuals
+  expect_equal(lm.fit(XP, y_demean)$coefficients, coef(iv_fe),
+               check.attributes = FALSE)
+
+  expect_message(
+    vcovCR(iv_fe, type = "CR0"),
+    "For improved performance in models with fixed effects, install the package \\{fixest\\}\\."
+  )
+})
+
+test_that("vcovCR works with fixed effects", {
+
+  for (cr in CR_types) {
+    V <- vcovCR(iv_fe, cluster = dat$cluster, type = cr)
+    expect_s3_class(V, "clubSandwich")
+    expect_equal(nrow(V), length(coef(iv_fe)))
+    expect_equal(ncol(V), length(coef(iv_fe)))
+  }
+})
+
+test_that("bread() works with fixed effects", {
+  expect_true(check_bread(iv_fe, cluster = dat$cluster, y = dat$y))
+})
+
+test_that("CR2 is target-unbiased with fixed effects", {
+  expect_true(check_CR(iv_fe, vcov = "CR2"))
+})
+
+test_that("vcovCR matches iv_robust$vcov for FE model with se_type='CR0'", {
+  iv_fe_cr0 <- iv_robust(
+    y ~ x_endog + x_exog | x_exog + z1 + z2,
+    data = dat, clusters = cluster,
+    fixed_effects = ~ cluster, se_type = "CR0"
+  )
+  V_cr0 <- vcovCR(iv_fe_cr0, type = "CR0")
+  expect_equal(as.matrix(V_cr0), vcov(iv_fe_cr0), check.attributes = FALSE)
+})

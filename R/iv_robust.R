@@ -31,6 +31,8 @@ vcovCR.iv_robust <- function(obj, cluster, type, target = NULL, inverse_var = FA
 
   if (inverse_var != FALSE) stop("The inverse_var option is not available for iv_robust models.")
 
+  if (isTRUE(obj$fes) && !requireNamespace("fixest", quietly = TRUE)) message("For improved performance in models with fixed effects, install the package {fixest}.")
+
   obj$model.frame <- model.frame(obj)
 
   if (missing(cluster)) {
@@ -84,7 +86,43 @@ model.frame.iv_robust <- function(formula, ...) {
   mf_cl <- cl[c(1L, mf_args)]
   mf_cl$formula <- formula$terms
   mf_cl[[1L]] <- quote(stats::model.frame)
-  eval(mf_cl, envir = fit_env)
+  mf <- eval(mf_cl, envir = fit_env)
+
+  # If no fixed effects, we're done
+  if (!isTRUE(formula$fes)) return(mf)
+
+  # Build a second model.frame for the fixed-effects variables
+  fe_args <- match(c("fixed_effects", "data", "subset"), names(cl), 0L)
+  fe_cl <- cl[c(1L, fe_args)]
+  names(fe_cl)[[2]] <- "formula"
+  fe_cl[[2]] <- reformulate(all.vars(fe_cl[[2]]))
+  fe_cl[[1L]] <- quote(stats::model.frame)
+  mf_fe <- eval(fe_cl, envir = fit_env)
+
+  # Reconcile any differences in omitted rows between the two model frames
+  mf_omit <- na.action(mf)
+  if (!is.null(names(mf_omit))) mf_omit <- names(mf_omit)
+  fe_omit <- na.action(mf_fe)
+  if (!is.null(names(fe_omit))) fe_omit <- names(fe_omit)
+
+  if (identical(mf_omit, fe_omit)) {
+    mf_combined <- cbind(mf, mf_fe)
+    mf_combined_omit <- mf_omit
+  } else {
+    mf_combined <- cbind(
+      mf[!(rownames(mf) %in% fe_omit), , drop = FALSE],
+      mf_fe[!(rownames(mf_fe) %in% mf_omit), , drop = FALSE]
+    )
+    mf_combined_omit <- sort(c(mf_omit, fe_omit))
+    i_unique <- !duplicated(mf_combined_omit)
+    mf_combined_omit <- mf_combined_omit[i_unique]
+    class(mf_combined_omit) <- "omit"
+  }
+
+  attr(mf_combined, "terms") <- attr(mf, "terms")
+  attr(mf_combined, "na.action") <- mf_combined_omit
+
+  return(mf_combined)
 }
 
 
@@ -105,12 +143,43 @@ model_matrix.iv_robust <- function(obj) {
   inst_formula <- as.formula(paste("~", deparse(obj$formula[[3]][[3]])))
   Z <- model.matrix(inst_formula, data = mf)
 
-  # Compute projected X: P_Z * X where P_Z = Z(Z'WZ)^{-1}Z'W
   w <- weights(obj)
+
+  # With fixed effects, residualize X and Z on the FE design matrix
+  # (Frisch-Waugh-Lovell); the intercept is absorbed by the FEs.
+  if (isTRUE(obj$fes)) {
+
+    intercept_X <- colnames(X) == "(Intercept)"
+    if (any(intercept_X)) X <- X[, !intercept_X, drop = FALSE]
+    intercept_Z <- colnames(Z) == "(Intercept)"
+    if (any(intercept_Z)) Z <- Z[, !intercept_Z, drop = FALSE]
+
+    fe_formula <- as.formula(obj$call$fixed_effects)
+
+    if (requireNamespace("fixest", quietly = TRUE)) {
+      frame <- mf[attr(terms(fe_formula), "term.labels")]
+      X <- fixest::demean(X = X, f = frame, weights = w)
+      Z <- fixest::demean(X = Z, f = frame, weights = w)
+    } else {
+      fe_formula <- update(fe_formula, ~ . - 1)
+      varnames <- all.vars(fe_formula)
+      for (v in varnames) mf[[v]] <- as.factor(mf[[v]])
+      F_mat <- model.matrix(fe_formula, data = mf)
+      if (is.null(w)) {
+        X <- stats::lm.fit(F_mat, X)$residuals
+        Z <- stats::lm.fit(F_mat, Z)$residuals
+      } else {
+        X <- stats::lm.wfit(F_mat, X, w)$residuals
+        Z <- stats::lm.wfit(F_mat, Z, w)$residuals
+      }
+    }
+  }
+
+  # Compute projected X: X_proj = Z (Z'WZ)^{-1} Z'W X
   if (is.null(w)) {
-    X_proj <- Z %*% solve(crossprod(Z)) %*% crossprod(Z, X)
+    X_proj <- Z %*% solve(crossprod(Z), crossprod(Z, X))
   } else {
-    X_proj <- Z %*% solve(crossprod(Z, w * Z)) %*% crossprod(Z, w * X)
+    X_proj <- Z %*% solve(crossprod(Z, w * Z), crossprod(Z, w * X))
     pos_wts <- w > 0
     if (!all(pos_wts)) {
       X_proj <- X_proj[pos_wts, , drop = FALSE]
@@ -118,6 +187,28 @@ model_matrix.iv_robust <- function(obj) {
   }
 
   X_proj
+}
+
+
+#----------------------------------------------
+# augmented model matrix (fixed effects)
+#----------------------------------------------
+
+#' @export
+
+augmented_model_matrix.iv_robust <- function(obj, cluster, inverse_var, ignore_FE) {
+
+  if (!isTRUE(obj$fes)) return(NULL)
+
+  fe_formula <- as.formula(obj$call$fixed_effects)
+  fe_formula <- update(fe_formula, ~ . - 1)
+
+  mf <- model.frame(obj)
+
+  varnames <- all.vars(fe_formula)
+  for (v in varnames) mf[[v]] <- as.factor(mf[[v]])
+
+  model.matrix(fe_formula, data = mf)
 }
 
 
