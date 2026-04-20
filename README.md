@@ -28,6 +28,7 @@ Methods are provided for a variety of fitted models, including:
 - `plm()` (from package `plm`), 
 - `gls()` and `lme()` (from package `nlme`)
 - `lmer()` (from package `lme4`)
+- `mmrm()` (from package `mmrm`)
 - `robu()` (from package `robumeta`)
 - `rma.uni()` and `rma.mv()` (from package `metafor`) 
 

@@ -5,7 +5,8 @@ Version: 0.6.2.9999
 Authors@R: c(
   person(c("James","E."), "Pustejovsky", email = "jepusto@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-0591-9465")),
   person("Samuel", "Pekofsky", email = "sampekofsky@gmail.com", role = "ctb"),
-  person("Jingru", "Zhang", email = "jz26372022@hotmail.com", role = "ctb")
+  person("Jingru", "Zhang", email = "jz26372022@hotmail.com", role = "ctb"),
+  person("Hazim", "Izani", email = "hazimizani@gmail.com", role = "ctb")
   )
 Description: Provides several cluster-robust variance estimators (i.e.,
     sandwich estimators) for ordinary and weighted least squares linear regression
@@ -22,8 +23,8 @@ Description: Provides several cluster-robust variance estimators (i.e.,
     objects, glm(), geeglm() (from package 'geepack'), lm_robust() and lm_lin() 
     (from package 'estimatr'), ivreg() (from package 'AER'), ivreg() (from package 'ivreg' when 
     estimated by ordinary least squares), plm() (from package 'plm'), gls() and 
-    lme() (from 'nlme'), lmer() (from `lme4`), robu() (from 'robumeta'), and rma.uni() 
-    and rma.mv() (from 'metafor').
+    lme() (from 'nlme'), lmer() (from `lme4`), robu() (from 'robumeta'),
+    rma.uni() and rma.mv() (from 'metafor'), and mmrm() (from 'mmrm').
 URL: http://jepusto.github.io/clubSandwich/
 BugReports: https://github.com/jepusto/clubSandwich/issues
 Depends:
@@ -55,7 +56,8 @@ Suggests:
     covr,
     ivreg,
     estimatr,
-    fixest
+    fixest,
+    mmrm
 RoxygenNote: 7.3.3
 Encoding: UTF-8
 Language: en-US
