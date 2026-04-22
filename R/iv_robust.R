@@ -9,7 +9,7 @@
 #' of a set of regression coefficient estimates from an
 #' \code{\link[estimatr]{iv_robust}} object.
 #'
-#' @param cluster Expression or vector indicating which observations belong to
+#' @param cluster Vector indicating which observations belong to
 #'   the same cluster. Required for \code{iv_robust} objects unless the model
 #'   was fitted with a \code{clusters} argument.
 #' @param target Optional matrix or vector describing the working
@@ -33,7 +33,9 @@
 #'   set.seed(20261201)
 #'   N <- 200
 #'   cluster <- factor(rep(1:20, each = 10))
-#'   z1 <- rnorm(N); z2 <- rnorm(N); x_exog <- rnorm(N)
+#'   z1 <- rnorm(N)
+#'   z2 <- rnorm(N)
+#'   x_exog <- rnorm(N)
 #'   x_endog <- 0.5 * z1 + 0.3 * z2 + rnorm(N)
 #'   y <- 1 + 2 * x_endog + 0.5 * x_exog + rnorm(N)
 #'   dat <- data.frame(y, x_endog, x_exog, z1, z2, cluster)
@@ -41,7 +43,8 @@
 #'   # Basic 2SLS with clusters and CR2
 #'   iv_fit <- iv_robust(
 #'     y ~ x_endog + x_exog | x_exog + z1 + z2,
-#'     data = dat, clusters = cluster, se_type = "CR2"
+#'     data = dat, 
+#'     clusters = cluster, se_type = "CR2"
 #'   )
 #'   vcovCR(iv_fit)
 #'   conf_int(iv_fit, vcov = "CR2")
@@ -49,11 +52,13 @@
 #'   # 2SLS with fixed effects
 #'   iv_fe <- iv_robust(
 #'     y ~ x_endog + x_exog | x_exog + z1 + z2,
-#'     data = dat, clusters = cluster,
-#'     fixed_effects = ~ cluster, se_type = "CR2"
+#'     fixed_effects = ~ cluster, 
+#'     data = dat, 
+#'     clusters = cluster,
+#'     se_type = "CR2"
 #'   )
 #'   vcovCR(iv_fe)
-#'
+#'   conf_int(iv_fe, vcov = "CR2")
 #' })
 #'
 #' @export
@@ -62,7 +67,9 @@ vcovCR.iv_robust <- function(obj, cluster, type, target = NULL, inverse_var = FA
 
   if (inverse_var != FALSE) stop("The inverse_var option is not available for iv_robust models.")
 
-  if (isTRUE(obj$fes) && !requireNamespace("fixest", quietly = TRUE)) message("For improved performance in models with fixed effects, install the package {fixest}.")
+  if (isTRUE(obj$fes) && !requireNamespace("fixest", quietly = TRUE)) {
+    message("For improved performance in models with fixed effects, install the {fixest} package.")
+  } 
 
   obj$model.frame <- model.frame(obj)
 
@@ -210,7 +217,8 @@ model_matrix.iv_robust <- function(obj) {
   if (is.null(w)) {
     X_proj <- Z %*% solve(crossprod(Z), crossprod(Z, X))
   } else {
-    X_proj <- Z %*% solve(crossprod(Z, w * Z), crossprod(Z, w * X))
+    wZ <- w * Z
+    X_proj <- Z %*% solve(crossprod(wZ, Z), crossprod(wZ, X))
     pos_wts <- w > 0
     if (!all(pos_wts)) {
       X_proj <- X_proj[pos_wts, , drop = FALSE]
@@ -232,7 +240,7 @@ augmented_model_matrix.iv_robust <- function(obj, cluster, inverse_var, ignore_F
   if (!isTRUE(obj$fes)) return(NULL)
 
   fe_formula <- as.formula(obj$call$fixed_effects)
-  fe_formula <- update(fe_formula, ~ . - 1)
+  fe_formula <- update(fe_formula, ~ . + 0)
 
   mf <- model.frame(obj)
 

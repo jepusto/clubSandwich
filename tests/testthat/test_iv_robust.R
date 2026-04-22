@@ -10,8 +10,8 @@ set.seed(20190513)
 # Set up test data with IV structure
 # -------------------------------------------------
 
-N <- 200
-J <- 20
+N <- 200L
+J <- 20L
 cluster <- rep(1:J, each = N / J)
 
 # Instruments
@@ -71,6 +71,15 @@ iv_cl_stata <- iv_robust(
   data = dat, clusters = cluster, se_type = "stata"
 )
 
+# Weighted, no clusters in call
+iv_cl_wt <- iv_robust(
+  y ~ x_endog + x_exog | x_exog + z1 + z2,
+  data = dat, 
+  weights = w,
+  clusters = cluster
+)
+
+
 # Build manual matrices for verification
 mf <- model.frame(iv_un$terms, data = dat)
 X <- model.matrix(iv_un$terms_regressors, data = mf)
@@ -83,7 +92,7 @@ y_vec <- mf$y
 # Tests: model.frame
 # -------------------------------------------------
 
-test_that("model.frame() works for iv_robust", {
+test_that("model.frame() works for iv_robust.", {
 
   mf_un <- model.frame(iv_un)
   expect_equal(ncol(mf_un), 5L)  # y, x_endog, x_exog, z1, z2
@@ -98,6 +107,13 @@ test_that("model.frame() works for iv_robust", {
   # Weighted model has (weights) column
   mf_wt <- model.frame(iv_wt)
   expect_true("(weights)" %in% names(mf_wt))
+
+  # Clustered and weighted model has (clusters) and (weights) columns
+  mf_cl_wt <- model.frame(iv_cl_wt)
+  expect_true("(weights)" %in% names(mf_cl_wt))
+  expect_true("(clusters)" %in% names(mf_cl_wt))
+  expect_equal(mf_cl[["(clusters)"]], dat$cluster)
+  
 })
 
 
@@ -105,45 +121,43 @@ test_that("model.frame() works for iv_robust", {
 # Tests: model_matrix (projected X)
 # -------------------------------------------------
 
-test_that("model_matrix() returns projected matrix with correct dimensions", {
+test_that("model_matrix() returns projected matrix with correct dimensions.", {
 
   mm <- model_matrix(iv_un)
-  expect_equal(nrow(mm), N)
-  expect_equal(ncol(mm), ncol(X))  # same number of columns as regressors
+  expect_identical(dim(mm), c(N,ncol(X)))
   expect_equal(colnames(mm), colnames(X))
 })
 
-test_that("model_matrix() agrees with manual projection for unweighted model", {
+test_that("model_matrix() agrees with manual projection.", {
 
+  # Unweighted model
   XZ <- model_matrix(iv_un)
   ZtZ_inv <- chol2inv(chol(crossprod(Z)))
   XZ_check <- Z %*% ZtZ_inv %*% crossprod(Z, X)
 
   expect_equal(XZ, XZ_check, check.attributes = FALSE)
-})
-
-test_that("model_matrix() agrees with manual projection for weighted model", {
-
+  
+  # Weighted model
   XZ_wt <- model_matrix(iv_wt)
   ZwZ_inv <- chol2inv(chol(crossprod(Z, w * Z)))
   XZ_check <- Z %*% ZwZ_inv %*% crossprod(Z, w * X)
-
+  
   expect_equal(XZ_wt, XZ_check, check.attributes = FALSE)
+  
 })
-
 
 # -------------------------------------------------
 # Tests: residuals
 # -------------------------------------------------
 
-test_that("residuals_CS() matches y - X * beta", {
+test_that("residuals_CS() matches y - X * beta.", {
 
   r_un <- residuals_CS(iv_un)
-  r_check <- as.vector(y_vec - X %*% coef(iv_un))
+  r_check <- as.vector(y_vec - X %*% coef_CS(iv_un))
   expect_equal(as.vector(r_un), r_check)
 
   r_wt <- residuals_CS(iv_wt)
-  r_check_wt <- as.vector(y_vec - X %*% coef(iv_wt))
+  r_check_wt <- as.vector(y_vec - X %*% coef_CS(iv_wt))
   expect_equal(as.vector(r_wt), r_check_wt)
 })
 
@@ -152,42 +166,35 @@ test_that("residuals_CS() matches y - X * beta", {
 # Tests: bread
 # -------------------------------------------------
 
-test_that("bread() agrees with manual computation for unweighted model", {
+test_that("bread() agrees with manual computation.", {
 
+  # Unweighted model
   XZ <- model_matrix(iv_un)
   bread_check <- chol2inv(chol(crossprod(XZ))) * nobs(iv_un)
   expect_equal(bread(iv_un), bread_check, check.attributes = FALSE)
-})
-
-test_that("bread() agrees with manual computation for weighted model", {
-
+  expect_true(check_bread(iv_un, cluster = dat$cluster, y = dat$y))
+  
+  # Weighted model
   XZ <- model_matrix(iv_wt)
   bread_check <- chol2inv(chol(crossprod(XZ, w * XZ))) * nobs(iv_wt)
   expect_equal(bread(iv_wt), bread_check, check.attributes = FALSE)
-})
-
-test_that("bread works with check_bread()", {
-
-  expect_true(check_bread(iv_un, cluster = dat$cluster, y = dat$y))
   expect_true(check_bread(iv_wt, cluster = dat$cluster, y = dat$y))
 })
-
 
 # -------------------------------------------------
 # Tests: vcovCR runs with explicit args
 # -------------------------------------------------
 
-test_that("vcovCR works with explicit cluster and type", {
+test_that("vcovCR works with explicit cluster and type.", {
 
   for (cr in CR_types) {
     V <- vcovCR(iv_un, cluster = dat$cluster, type = cr)
     expect_s3_class(V, "clubSandwich")
-    expect_equal(nrow(V), length(coef(iv_un)))
-    expect_equal(ncol(V), length(coef(iv_un)))
+    expect_identical(dim(V), rep(length(coef(iv_un)), 2L))
   }
 })
 
-test_that("vcovCR works for weighted model", {
+test_that("vcovCR works for weighted model.", {
 
   for (cr in CR_types) {
     V <- vcovCR(iv_wt, cluster = dat$cluster, type = cr)
@@ -200,14 +207,14 @@ test_that("vcovCR works for weighted model", {
 # Tests: cluster auto-detection
 # -------------------------------------------------
 
-test_that("vcovCR auto-detects cluster from iv_robust object", {
+test_that("vcovCR auto-detects cluster from iv_robust object.", {
 
   V_auto <- vcovCR(iv_cl)
   V_explicit <- vcovCR(iv_cl, cluster = dat$cluster, type = "CR2")
   expect_equal(V_auto, V_explicit, check.attributes = FALSE)
 })
 
-test_that("vcovCR errors when cluster is missing on unclustered model", {
+test_that("vcovCR errors when cluster is missing on unclustered model.", {
 
   expect_error(
     vcovCR(iv_un, type = "CR2"),
@@ -220,13 +227,17 @@ test_that("vcovCR errors when cluster is missing on unclustered model", {
 # Tests: SE type inference
 # -------------------------------------------------
 
-test_that("vcovCR inherits se_type from iv_robust object", {
+test_that("vcovCR inherits se_type from iv_robust object.", {
 
   # CR2
   V_auto_cr2 <- vcovCR(iv_cl)
   V_explicit_cr2 <- vcovCR(iv_cl, cluster = dat$cluster, type = "CR2")
   expect_equal(V_auto_cr2, V_explicit_cr2, check.attributes = FALSE)
 
+  V_auto_wt_cr2 <- vcovCR(iv_cl_wt)
+  V_explicit_wt_cr2 <- vcovCR(iv_cl_wt, cluster = dat$cluster, type = "CR2")
+  expect_equal(V_auto_wt_cr2, V_explicit_wt_cr2, check.attributes = FALSE)
+  
   # CR0
   V_auto_cr0 <- vcovCR(iv_cl_cr0)
   V_explicit_cr0 <- vcovCR(iv_cl_cr0, cluster = dat$cluster, type = "CR0")
@@ -238,7 +249,7 @@ test_that("vcovCR inherits se_type from iv_robust object", {
   expect_equal(V_auto_stata, V_explicit_stata, check.attributes = FALSE)
 })
 
-test_that("vcovCR errors when se_type cannot be mapped", {
+test_that("vcovCR errors when se_type cannot be mapped.", {
 
   expect_error(
     vcovCR(iv_un, cluster = dat$cluster),
@@ -251,7 +262,7 @@ test_that("vcovCR errors when se_type cannot be mapped", {
 # Tests: inverse_var rejection
 # -------------------------------------------------
 
-test_that("vcovCR rejects inverse_var = TRUE", {
+test_that("vcovCR rejects inverse_var = TRUE.", {
 
   expect_error(
     vcovCR(iv_un, cluster = dat$cluster, type = "CR2", inverse_var = TRUE),
@@ -264,7 +275,7 @@ test_that("vcovCR rejects inverse_var = TRUE", {
 # Tests: na.action
 # -------------------------------------------------
 
-test_that("na.action() works correctly", {
+test_that("na.action() works correctly.", {
 
   dat_na <- dat
   dat_na$y[c(5, 15, 25)] <- NA
@@ -284,7 +295,7 @@ test_that("na.action() works correctly", {
 # Tests: vcovCR options
 # -------------------------------------------------
 
-test_that("vcovCR options don't matter for CR0", {
+test_that("vcovCR options don't matter for CR0.", {
 
   CR0 <- vcovCR(iv_un, cluster = dat$cluster, type = "CR0")
   expect_output(print(CR0))
@@ -309,7 +320,7 @@ test_that("vcovCR options don't matter for CR0", {
   )
 })
 
-test_that("vcovCR options work for CR2", {
+test_that("vcovCR options work for CR2.", {
 
   CR2 <- vcovCR(iv_un, cluster = dat$cluster, type = "CR2")
   expect_equal(
@@ -324,7 +335,7 @@ test_that("vcovCR options work for CR2", {
   ))
 })
 
-test_that("vcovCR options work for CR4", {
+test_that("vcovCR options work for CR4.", {
 
   CR4 <- vcovCR(iv_un, cluster = dat$cluster, type = "CR4")
   expect_identical(
@@ -344,13 +355,13 @@ test_that("vcovCR options work for CR4", {
 # Tests: CR2 target-unbiasedness
 # -------------------------------------------------
 
-test_that("CR2 is target-unbiased", {
+test_that("CR2 is target-unbiased.", {
 
   expect_true(check_CR(iv_un, vcov = "CR2", cluster = dat$cluster))
   expect_true(check_CR(iv_wt, vcov = "CR2", cluster = dat$cluster))
 })
 
-test_that("CR4 is target-unbiased", {
+test_that("CR4 is target-unbiased.", {
   skip("Need to understand target-unbiasedness for iv_robust objects.")
   expect_true(check_CR(iv_un, vcov = "CR4", cluster = dat$cluster))
   expect_true(check_CR(iv_wt, vcov = "CR4", cluster = dat$cluster))
@@ -361,7 +372,7 @@ test_that("CR4 is target-unbiased", {
 # Tests: equivalence to vcovHC with size-1 clusters
 # -------------------------------------------------
 
-test_that("vcovCR is equivalent to vcovHC (with HC0 or HC1) when clusters are all of size 1", {
+test_that("vcovCR is equivalent to vcovHC (with HC0-HC3) when clusters are all of size 1.", {
   suppressMessages(library(sandwich, quietly = TRUE))
   iv_fit <- iv_robust(
     y ~ x_endog + x_exog | x_exog + z1 + z2,
@@ -369,6 +380,16 @@ test_that("vcovCR is equivalent to vcovHC (with HC0 or HC1) when clusters are al
   )
   CR0 <- vcovCR(iv_fit, cluster = 1:nobs(iv_fit), type = "CR0")
   expect_equal(as.matrix(CR0), vcov(iv_fit), check.attributes = FALSE)
+  
+  CR1 <- vcovCR(iv_fit, cluster = 1:nobs(iv_fit), type = "CR1p")
+  expect_equal(as.matrix(CR1), vcov(update(iv_fit, se_type = "HC1")), check.attributes = FALSE)
+  
+  CR2 <- vcovCR(iv_fit, cluster = 1:nobs(iv_fit), type = "CR2")
+  expect_equal(as.matrix(CR2), vcov(update(iv_fit, se_type = "HC2")), check.attributes = FALSE)
+
+  CR3 <- vcovCR(iv_fit, cluster = 1:nobs(iv_fit), type = "CR3")
+  expect_equal(as.matrix(CR3), vcov(update(iv_fit, se_type = "HC3")), check.attributes = FALSE)
+  
 })
 
 
@@ -378,8 +399,11 @@ test_that("vcovCR is equivalent to vcovHC (with HC0 or HC1) when clusters are al
 
 test_that("Order doesn't matter.", {
 
+  check_sort_order(iv_un, dat, "cluster")
   check_sort_order(iv_wt, dat, "cluster")
-
+  check_sort_order(iv_cl, dat, "cluster")
+  check_sort_order(iv_cl_wt, dat, "cluster")
+  
 })
 
 
@@ -510,7 +534,7 @@ test_that("model_matrix() FE path agrees without fixest", {
 
   expect_message(
     vcovCR(iv_fe, type = "CR0"),
-    "For improved performance in models with fixed effects, install the package \\{fixest\\}\\."
+    "For improved performance in models with fixed effects, install the \\{fixest\\} package."
   )
 })
 
