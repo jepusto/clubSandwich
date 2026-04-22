@@ -1,6 +1,7 @@
 # clubSandwich 0.6.2.9999
 
 * Added support for `mmrm::mmrm()` models.
+* Added support for `estimatr::iv_robust()` models.
 
 # clubSandwich 0.6.2
 
