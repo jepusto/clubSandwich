@@ -161,7 +161,7 @@ conf_int(MVFE, vcov = "CR2")
 #>           Crit.CatMicrobehavior   0.1308 3.43e-02 3.64      0.03178
 #>       Crit.CatPerson Perception   0.1544 1.94e-02 8.08      0.10963
 #>       Crit.CatPolicy Preference   0.0864 5.10e-02 1.98     -0.13561
-#>           Crit.CatResponse Time   0.2988 1.42e-13 1.00      0.29882
+#>           Crit.CatResponse Time   0.2988 1.32e-13 1.00      0.29882
 #>  Upper 95% CI
 #>        1.6193
 #>        0.0364
