@@ -62,13 +62,13 @@ get_data <- function (object) {
     envir_names <- sys.frames()
     data <- simpleError("start")
     i <- 1L
-    while (inherits(data, "simpleError") & i <= length(envir_names)) {
+    while (inherits(data, "error") & i <= length(envir_names)) {
       data <- tryCatch(eval(dat_call, envir = envir_names[[i]]), error = function(e) e)
       i <- i + 1L
     }
   }
   
-  if (inherits(data, "simpleError")) return(NULL)
+  if (inherits(data, "error")) return(NULL)
   
   naAct <- object[["na.action"]]
   if (!is.null(naAct)) {
