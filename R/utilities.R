@@ -149,7 +149,7 @@ compare_mmrm_vcov <- function(obj, tol = 1e-5) {
   # CR0
   dat <- obj$data
   mod_CR0 <- update(obj, data = dat, control = mmrm::mmrm_control(vcov = "Empirical"))
-  CR0_scores <- component(mod_CR0, "score_per_subject")
+  CR0_scores <- mmrm::component(mod_CR0, "score_per_subject")
   vcov_CR0 <- vcov(mod_CR0)
   CR0 <- vcovCR(obj, type = "CR0")
   
