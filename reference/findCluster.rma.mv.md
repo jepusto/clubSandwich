@@ -38,7 +38,7 @@ findCluster.rma.mv(mfor_fit)
 #> Loading required package: metadat
 #> Loading required package: numDeriv
 #> 
-#> Loading the 'metafor' package (version 4.8-0). For an
+#> Loading the 'metafor' package (version 5.0-1). For an
 #> introduction to the package please type: help(metafor)
 #>   [1] 1  1  1  1  1  1  2  2  2  3  3  3  3  3  3  3  3  3  3  4  5  6  6  6  6 
 #>  [26] 6  7  7  7  7  7  7  8  9  9  10 10 10 10 10 11 11 11 11 11 11 11 11 11 11
