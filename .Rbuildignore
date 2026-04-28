@@ -17,3 +17,4 @@ vignettes/Robust-Variance-Estimation-with-clubSandwich.Rmd
 ^CRAN-SUBMISSION$
 ^\.positai$
 ^\.claude$
+\.DS_Store$

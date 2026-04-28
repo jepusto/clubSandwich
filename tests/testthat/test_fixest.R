@@ -166,23 +166,23 @@ test_that("weighted feols with FE matches weighted lm with dummies", {
 
 test_that("cluster auto-detection works", {
 
-  # single FE
+  # Single FE: auto-detected cluster is identical to the original variable
   expect_identical(dat$cluster, findCluster.fixest(fit_fe))
   expect_identical(dat$cluster, findCluster.fixest(fit_fe_char))
-  
-  # fully interacted FEs
+
+  # Fixed intercepts and slopes: single FE variable still auto-detects
+  expect_identical(trade$Destination, findCluster.fixest(fit_fe_slope))
+
+  # Interaction FEs are treated as a single FE and returned as combined character
   expect_identical(
-    paste(trade$Origin, trade$Destination, sep = "_"), 
+    paste(trade$Origin, trade$Destination, sep = "_"),
     findCluster.fixest(fit_fe_cross)
   )
-  
-  # fixed intercepts and slopes
-  expect_identical(trade$Destination, findCluster.fixest(fit_fe_slope))
-  
-  # two-way FE
-  expect_error(findCluster.fixest(fit_fe2))
-  
-  # Auto-detects first FE variable as cluster
+
+  # Multiple FEs require explicit cluster specification
+  expect_null(findCluster.fixest(fit_fe2))
+
+  # Auto-detected cluster matches manually specified
   cr2_auto <- vcovCR(fit_fe, type = "CR2")
   cr2_manual <- vcovCR(fit_fe, cluster = dat$cluster, type = "CR2")
   expect_equal(cr2_auto, cr2_manual)
@@ -192,6 +192,39 @@ test_that("cluster auto-detection works", {
     vcovCR(fit_nfe, type = "CR2"),
     "You must specify a clustering variable."
   )
+
+  # Multi-FE: must specify cluster
+  expect_error(
+    vcovCR(fit_fe2, type = "CR2"),
+    "You must specify a clustering variable."
+  )
+
+})
+
+
+# -------------------------------------------------
+# Tests: demeaned = TRUE path
+# -------------------------------------------------
+
+test_that("model_matrix uses X_demeaned when feols was fit with demeaned = TRUE", {
+
+  fit_dem <- feols(y ~ X1 + X2 | cluster, data = dat, demeaned = TRUE)
+  fit_nodem <- feols(y ~ X1 + X2 | cluster, data = dat, demeaned = FALSE)
+
+  # model_matrix should return the stored X_demeaned matrix
+  expect_equal(unname(as.matrix(fit_dem$X_demeaned)),
+               unname(as.matrix(model_matrix(fit_dem))))
+
+  # And it should equal the on-the-fly demeaning used when demeaned = FALSE
+  expect_equal(unname(as.matrix(model_matrix(fit_dem))),
+               unname(as.matrix(model_matrix(fit_nodem))))
+
+  # vcovCR should produce the same result in both cases
+  for (cr_type in paste0("CR", 0:2)) {
+    V_dem <- vcovCR(fit_dem, type = cr_type)
+    V_nodem <- vcovCR(fit_nodem, type = cr_type)
+    expect_equal(as.matrix(V_dem), as.matrix(V_nodem))
+  }
 
 })
 

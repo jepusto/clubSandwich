@@ -11,7 +11,7 @@ check_bread <- function(obj, cluster, y, check_coef = TRUE, tol = 10^-6) {
   M <- chol2inv(chol(XWX))
   attr(M, "dimnames") <- attr(B, "dimnames")
   
-  eq_bread <- diff(range((B / M)[XWX != 0])) < tol
+  eq_bread <- diff(range((B / M)[abs(B) > 1e-12])) < tol
   
   if (check_coef) {
     coef <- coef_CS(obj)
@@ -128,5 +128,50 @@ compare_Waldtests <- function(a, b, tol = 10^-4) {
   
   testthat::expect_equal(a$Fstat, b$Fstat, tolerance = tol)
   testthat::expect_equal(a$df, b$df, tolerance = tol)
+  
+}
+
+#---------------------------------------
+# Testing utility for mmrm objects
+#---------------------------------------
+
+compare_mmrm_vcov <- function(obj, tol = 1e-5) {
+  
+  ff <- mmrm::component(obj, "full_frame")
+  subject_var <- mmrm::component(obj, "subject_var")
+  cluster <- droplevels(as.factor(ff[[subject_var]]))
+  
+  X <- matrix_list(model_matrix(obj), fac = cluster, dim = "row")
+  W <- weightMatrix(obj, cluster = cluster)
+  e <- split(residuals_CS(obj), cluster)
+  XWe <- do.call(rbind, args = Map(\(Xj, Wj, ej) t(ej) %*% Wj %*% Xj, Xj = X, Wj = W, ej = e))
+  
+  # CR0
+  dat <- obj$data
+  mod_CR0 <- update(obj, data = dat, control = mmrm::mmrm_control(vcov = "Empirical"))
+  CR0_scores <- component(mod_CR0, "score_per_subject")
+  vcov_CR0 <- vcov(mod_CR0)
+  CR0 <- vcovCR(obj, type = "CR0")
+  
+  testthat::expect_equivalent(XWe, CR0_scores)
+  testthat::expect_equal(vcov_CR0, as.matrix(CR0), tol = tol)
+  
+  # CR2  
+  mod_CR2 <- update(obj, data = dat, control = mmrm::mmrm_control(vcov = "Empirical-Bias-Reduced"))
+  vcov_CR2 <- vcov(mod_CR2)
+  CR4 <- vcovCR(obj, type = "CR4")
+  summary_Satt <- summary(mod_CR2)$coefficients
+  coef_test_Satt <- coef_test(obj, vcov = CR4)
+  
+  testthat::expect_equal(vcov_CR2, as.matrix(CR4), tol = tol)
+  testthat::expect_equivalent(summary_Satt[,"Std. Error"], coef_test_Satt$SE, tol = tol)
+  testthat::expect_equivalent(summary_Satt[,"df"], coef_test_Satt$df, tol = tol)
+  
+  # CR3
+  mod_CR3 <- update(obj, data = dat, control = mmrm::mmrm_control(vcov = "Empirical-Jackknife"))
+  vcov_CR3 <- vcov(mod_CR3)
+  CR3 <- vcovCR(obj, type = "CR3")
+  
+  testthat::expect_equal(vcov_CR3, as.matrix(CR3), tol = tol)
   
 }

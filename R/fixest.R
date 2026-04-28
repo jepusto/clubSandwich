@@ -16,8 +16,10 @@
 #' \code{\link[fixest]{feols}} object.
 #'
 #' @param cluster Optional expression or vector indicating which observations
-#'   belong to the same cluster. If not specified, will be set to the first
-#'   fixed effect variable from the model formula if available.
+#'   belong to the same cluster. If not specified, will be set to the fixed
+#'   effect variable when the model has exactly one fixed effect; for models
+#'   with multiple fixed effects, the clustering variable must be specified
+#'   explicitly.
 #' @param target Optional matrix or vector describing the working
 #'   variance-covariance model used to calculate the \code{CR2} and \code{CR4}
 #'   adjustment matrices. If a vector, the target matrix is assumed to be
@@ -35,20 +37,17 @@
 #' if (requireNamespace("fixest", quietly = TRUE)) withAutoprint({
 #'
 #'   library(fixest)
-#'   data(trade, package = "fixest")
+#'   data("ChickWeight", package = "datasets")
+#'   ChickWeight$Chick <- factor(ChickWeight$Chick, ordered = FALSE)
 #'
-#'   # feols model with Origin and Destination fixed effects
-#'   fit <- feols(log(Euros) ~ log(dist_km) | Origin + Destination,
-#'                data = trade)
+#'   # Single fixed effect: cluster auto-detected from the FE
+#'   fit_one <- feols(weight ~ Time | Chick, data = ChickWeight)
+#'   vcovCR(fit_one, type = "CR2")
+#'   coef_test(fit_one, vcov = "CR2", test = "Satterthwaite")
 #'
-#'   # CR2 cluster-robust variance estimator (cluster auto-detected from FE)
-#'   vcovCR(fit, type = "CR2")
-#'
-#'   # Coefficient tests with Satterthwaite degrees of freedom
-#'   coef_test(fit, vcov = "CR2", test = "Satterthwaite")
-#'
-#'   # Explicitly specify clustering variable
-#'   vcovCR(fit, cluster = trade$Origin, type = "CR2")
+#'   # Two-way fixed effects: cluster must be specified explicitly
+#'   fit_two <- feols(weight ~ Time | Chick + Diet, data = ChickWeight)
+#'   vcovCR(fit_two, cluster = ChickWeight$Chick, type = "CR2")
 #'
 #' })
 #'
@@ -74,11 +73,15 @@ vcovCR.fixest <- function(obj, cluster, type, target = NULL, inverse_var = NULL,
 #' @noRd
 
 findCluster.fixest <- function(obj) {
-  if (length(obj$fixef_vars) == 0L) return(NULL)
-  fe_var <- obj$fixef_vars[1]
-  fe_id <- obj$fixef_id[[fe_var]]
-  fe_levels <- names(fixest::fixef(obj)[[fe_var]])
-  factor(fe_levels[fe_id], levels = fe_levels)
+  if (length(obj$fixef_vars) != 1L) return(NULL)
+
+  fe_var <- obj$fixef_vars
+
+  fe_mf <- tryCatch(model.matrix(obj, type = "fixef"),
+                    error = function(e) NULL)
+  if (is.null(fe_mf) || is.null(fe_mf[[fe_var]])) return(NULL)
+
+  fe_mf[[fe_var]]
 }
 
 
@@ -89,16 +92,20 @@ findCluster.fixest <- function(obj) {
 #' @export
 
 model_matrix.fixest <- function(obj) {
-  X <- model.matrix(obj)
 
-  # For models with fixed effects, demean X to match the bread
-  if (length(obj$fixef_vars) > 0L) {
-    fe_df <- data.frame(lapply(obj$fixef_id, factor))
-    wts <- weights(obj)
-    if (is.null(wts)) {
-      X <- fixest::demean(X, f = fe_df)
-    } else {
-      X <- fixest::demean(X, f = fe_df, weights = wts)
+  # If feols() was called with demeaned = TRUE, use the stored demeaned matrix
+  if (length(obj$fixef_vars) > 0L && !is.null(obj$X_demeaned)) {
+    X <- obj$X_demeaned
+  } else {
+    X <- model.matrix(obj)
+    if (length(obj$fixef_vars) > 0L) {
+      fe_df <- data.frame(lapply(obj$fixef_id, factor))
+      wts <- weights(obj)
+      if (is.null(wts)) {
+        X <- fixest::demean(X, f = fe_df)
+      } else {
+        X <- fixest::demean(X, f = fe_df, weights = wts)
+      }
     }
   }
 
