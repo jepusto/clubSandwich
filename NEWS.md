@@ -1,6 +1,7 @@
 # clubSandwich 0.6.2.9999
 
 * Added support for `mmrm::mmrm()` models.
+* Fixed bug in internal function `get_data()` introduced by changes in error message structure in R-devel.
 
 # clubSandwich 0.6.2
 
