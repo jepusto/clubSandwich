@@ -15,7 +15,7 @@ corr_robu <- robu(effectsize ~ males + college + binge, data = corrdat,
                    var.eff.size = var)
 corrdat$wt <- corr_robu$data.full$r.weights
 corr_meta <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
-                    V = var, W = wt, method = "FE")
+                    V = var, W = wt, method = "FE", sparse = TRUE)
 
 test_that("CR2 t-tests agree with robumeta for correlated effects", {
   
@@ -35,7 +35,7 @@ test_that("CR2 t-tests agree with robumeta for correlated effects", {
 data(hierdat)
 hier_meta <- rma.mv(effectsize ~ binge + followup + sreport + age, data = hierdat, 
                     random = list(~ 1 | esid, ~ 1 | studyid),
-                    V = var, method = "REML")
+                    V = var, method = "REML", sparse = TRUE)
 hier_robu <- robu(effectsize ~ binge + followup + sreport + age,
                    data = hierdat, studynum = studyid,
                    var.eff.size = var, modelweights = "HIER")
@@ -64,8 +64,8 @@ levels(dat_long$group) <- c("exp", "con")
 dat_long$group <- relevel(dat_long$group, ref="con")
 dat_long$esid <- factor(1:nrow(dat_long))
 dat_long <- escalc(measure="PLO", xi=out1, mi=out2, data=dat_long)
-rma_G <- rma.mv(yi, vi, mods = ~ group, random = ~ group | study, struct="CS", data=dat_long)
-rma_S <- rma.mv(yi, vi, mods = ~ group, random = list(~ 1 | esid, ~ 1 | study), data=dat_long)
+rma_G <- rma.mv(yi, vi, mods = ~ group, random = ~ group | study, struct="CS", data=dat_long, sparse = TRUE)
+rma_S <- rma.mv(yi, vi, mods = ~ group, random = list(~ 1 | esid, ~ 1 | study), data=dat_long, sparse = TRUE)
 
 test_that("withS and withG model specifications agree.", {
   CR_G <- lapply(CR_types, function(x) vcovCR(rma_G, type = x))
@@ -83,6 +83,7 @@ test_that("bread works", {
   W <- corr_meta$W
   V <- corr_meta$vi
   vcov_corr <- bread(corr_meta) %*% t(X) %*% W %*% (V * W) %*% X %*% bread(corr_meta) / nobs(corr_meta)^2
+  vcov_corr <- as.matrix(vcov_corr)
   attr(vcov_corr, "dimnames") <- attr(vcov(corr_meta), "dimnames")
   expect_equal(vcov(corr_meta), vcov_corr)
   
@@ -110,12 +111,12 @@ test_that("clubSandwich works with dropped covariates", {
   dat_miss$followup[sample.int(nrow(hierdat), size = round(nrow(hierdat) / 20))] <- NA
   expect_warning(hier_drop <- rma.mv(effectsize ~ binge + followup + sreport + age, 
                                      random = list(~ 1 | esid, ~ 1 | studyid),
-                                     data = dat_miss, V = var, method = "REML"))
+                                     data = dat_miss, V = var, method = "REML", sparse = TRUE))
   
   hier_complete <- rma.mv(effectsize ~ binge + followup + sreport + age, 
                           random = list(~ 1 | esid, ~ 1 | studyid),
                           subset = !is.na(binge) & !is.na(followup),
-                          data = dat_miss, V = var, method = "REML")
+                          data = dat_miss, V = var, method = "REML", sparse = TRUE)
   
   expect_error(vcovCR(hier_complete, type = "CR0", cluster = dat_miss$studyid))
   
@@ -139,12 +140,12 @@ test_that("clubSandwich works with missing diagonal variances", {
   dat_miss$var[sample.int(nrow(hierdat), size = round(nrow(hierdat) / 10))] <- NA
   expect_warning(hier_drop <- rma.mv(effectsize ~ binge + followup + sreport + age, 
                                      random = list(~ 1 | esid, ~ 1 | studyid),
-                                     data = dat_miss, V = var, method = "REML"))
+                                     data = dat_miss, V = var, method = "REML", sparse = TRUE))
   
   hier_complete <- rma.mv(effectsize ~ binge + followup + sreport + age, 
                           random = list(~ 1 | esid, ~ 1 | studyid),
                           subset = !is.na(var),
-                          data = dat_miss, V = var, method = "REML")
+                          data = dat_miss, V = var, method = "REML", sparse = TRUE)
   
   expect_error(vcovCR(hier_complete, type = "CR0", cluster = dat_miss$studyid))
   
@@ -163,7 +164,9 @@ test_that("clubSandwich works with missing vcov matrix", {
   dat_miss <- corrdat
   dat_miss$var[sample.int(nrow(corrdat), size = round(nrow(corrdat) / 10))] <- NA
   
-  V_missing <- impute_covariance_matrix(dat_miss$var, cluster = dat_miss$studyid, r = 0.8)
+  suppressWarnings(
+    V_missing <- impute_covariance_matrix(dat_miss$var, cluster = dat_miss$studyid, r = 0.8)
+  )
   
   expect_warning(corr_drop <- rma.mv(effectsize ~ males + college + binge, 
                                      random = ~ 1 | studyid, 
@@ -433,7 +436,7 @@ test_that("clubSandwich works when random effects variable has missing levels.",
 
 Vmat <- with(corrdat, impute_covariance_matrix(vi = var, cluster = studyid, r = 0.8))
 corr_meta <- rma.mv(effectsize ~ males + college + binge, data = corrdat, 
-                    V = Vmat, random = ~ 1 | studyid)
+                    V = Vmat, random = ~ 1 | studyid, sparse = TRUE)
 
 test_that("clubSandwich agrees with metafor::robust() for CR0.", {
   
