@@ -5,6 +5,11 @@
 - Added support for
   [`mmrm::mmrm()`](https://openpharma.github.io/mmrm/latest-tag/reference/mmrm.html)
   models.
+- Added support for
+  [`estimatr::iv_robust()`](https://declaredesign.org/r/estimatr/reference/iv_robust.html)
+  models.
+- Fixed bug in internal function `get_data()` introduced by changes in
+  error message structure in R-devel.
 
 ## clubSandwich 0.6.2
 

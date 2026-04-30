@@ -17,6 +17,13 @@ for various fitted model objects.
 - [`vcovCR(`*`<gls>`*`)`](http://jepusto.github.io/clubSandwich/reference/vcovCR.gls.md)
   : Cluster-robust variance-covariance matrix for a gls object.
 
+- [`vcovCR(`*`<iv_robust>`*`)`](http://jepusto.github.io/clubSandwich/reference/vcovCR.iv_robust.md)
+  :
+
+  Cluster-robust variance-covariance matrix for an
+  [`estimatr::iv_robust`](https://declaredesign.org/r/estimatr/reference/iv_robust.html)
+  object.
+
 - [`vcovCR(`*`<ivreg>`*`)`](http://jepusto.github.io/clubSandwich/reference/vcovCR.ivreg.md)
   : Cluster-robust variance-covariance matrix for an ivreg object.
 

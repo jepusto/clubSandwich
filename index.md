@@ -16,6 +16,7 @@ variety of fitted models, including:
 - `mlm()`
 - [`glm()`](https://rdrr.io/r/stats/glm.html)
 - `lm_robust()` and `lm_lin()` (from package `estimatr`)
+- `iv_robust()` (from package `estimatr`)
 - `geeglm()` (from package `geepack`)
 - `ivreg()` (from package `ivreg`, when estimated using
   `method = "OLS"`)

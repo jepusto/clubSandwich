@@ -199,15 +199,15 @@ if (requireNamespace("mmrm", quietly = TRUE)) withAutoprint({
 #> +     weights = fev_data$wt)
 #> > vcovCR(mmrm_wt, type = "CR2")
 #>                               (Intercept) RACEBlack or African American
-#> (Intercept)                     0.4280773                   -0.29394827
-#> RACEBlack or African American  -0.2939483                    0.50963863
-#> RACEWhite                      -0.2703860                    0.24747987
-#> SEXFemale                      -0.2040653                    0.02679204
-#> ARMCDTRT                       -0.1428009                    0.06503542
+#> (Intercept)                     0.4424656                   -0.32820994
+#> RACEBlack or African American  -0.3282099                    0.50526108
+#> RACEWhite                      -0.2531961                    0.24881133
+#> SEXFemale                      -0.1923434                    0.03443858
+#> ARMCDTRT                       -0.1497975                    0.09614576
 #>                                 RACEWhite   SEXFemale    ARMCDTRT
-#> (Intercept)                   -0.27038600 -0.20406529 -0.14280092
-#> RACEBlack or African American  0.24747987  0.02679204  0.06503542
-#> RACEWhite                      0.57879567  0.08783448 -0.07998619
-#> SEXFemale                      0.08783448  0.35577426 -0.02560111
-#> ARMCDTRT                      -0.07998619 -0.02560111  0.39340382
+#> (Intercept)                   -0.25319609 -0.19234338 -0.14979751
+#> RACEBlack or African American  0.24881133  0.03443858  0.09614576
+#> RACEWhite                      0.59731629  0.07381837 -0.11183217
+#> SEXFemale                      0.07381837  0.35376385 -0.04832810
+#> ARMCDTRT                      -0.11183217 -0.04832810  0.40969279
 ```
