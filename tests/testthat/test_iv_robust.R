@@ -566,6 +566,59 @@ test_that("vcovCR matches iv_robust$vcov for FE model with se_type='CR0'", {
   expect_equal(as.matrix(V_cr0), vcov(iv_fe_cr0), check.attributes = FALSE)
 })
 
+test_that("model_matrix() weighted FE path agrees without fixest", {
+  iv_fe_wt <- iv_robust(
+    y ~ x_endog + x_exog | x_exog + z1 + z2,
+    data = dat, weights = w, clusters = cluster,
+    fixed_effects = ~ cluster, se_type = "CR0"
+  )
+
+  local_mocked_bindings(
+    requireNamespace = function(...) FALSE
+  )
+  expect_false(requireNamespace("fixest", quietly = TRUE))
+
+  XP <- model_matrix(iv_fe_wt)
+  F_mat <- model.matrix(~ 0 + cluster, data = dat)
+  y_demean <- stats::lm.wfit(F_mat, dat$y, w)$residuals
+  expect_equal(stats::lm.wfit(XP, y_demean, w)$coefficients,
+               coef(iv_fe_wt), check.attributes = FALSE)
+
+  # Projected columns should be weighted-centered within each cluster
+  within_means <- apply(XP, 2, function(x)
+    tapply(x * w, dat$cluster, sum) / tapply(w, dat$cluster, sum)
+  )
+  expect_lt(max(abs(within_means)), 1e-12)
+})
+
+test_that("model.frame() handles misaligned NAs between regressor frame and FE frame", {
+  dat_mis <- dat
+  dat_mis$fe_var <- factor(rep(1:10, each = N / 10))
+  # NAs in regressor on rows {5, 15, 25}; NAs in FE on rows {7, 17, 27}.
+  # The two model frames drop different rows, exercising the reconciliation else-branch.
+  dat_mis$x_exog[c(5, 15, 25)] <- NA
+  dat_mis$fe_var[c(7, 17, 27)]  <- NA
+
+  iv_mis <- suppressWarnings(iv_robust(
+    y ~ x_endog + x_exog | x_exog + z1 + z2,
+    data = dat_mis, clusters = cluster,
+    fixed_effects = ~ fe_var, se_type = "CR0"
+  ))
+
+  mf <- model.frame(iv_mis)
+
+  expect_equal(nrow(mf), N - 6L)
+  expect_true(all(c("x_endog", "x_exog", "fe_var") %in% names(mf)))
+
+  na_act <- attr(mf, "na.action")
+  expect_s3_class(na_act, "omit")
+  expect_equal(length(na_act), 6L)
+  dropped <- as.integer(as.character(na_act))
+  expect_setequal(dropped, c(5L, 7L, 15L, 17L, 25L, 27L))
+
+  expect_s3_class(vcovCR(iv_mis, type = "CR0"), "clubSandwich")
+})
+
 
 # -------------------------------------------------
 # Tests: missing cluster
