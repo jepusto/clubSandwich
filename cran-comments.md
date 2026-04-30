@@ -1,6 +1,7 @@
 ## Resubmission
 
-This is a maintenance release, which corrects a bug in an internal function introduced by changes to error message structure in R-devel. This fixes all CRAN checks that are currently failing.
+This release adds support for two more classes of model objects, including iv_robust() models from the estimatr package and mmrm() models from the mmrm package. 
+It also fixes a bug in an internal function introduced by changes to error message structure in R-devel, which corrects all CRAN checks that are currently failing.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 
