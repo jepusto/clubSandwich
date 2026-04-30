@@ -1,6 +1,6 @@
 ## Resubmission
 
-This is a maintenance release, which corrects a few bugs occurring under esoteric circumstances with nlme::lme() models and metafor::rma.mv() models.
+This is a maintenance release, which corrects a bug in an internal function introduced by changes to error message structure in R-devel. This fixes all CRAN checks that are currently failing.
 
 Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey (2002), but unfortunately that article does not have a DOI; I have included a URL instead.
 

@@ -3,6 +3,7 @@
 #-----------------------------------------------------
 
 check_bread <- function(obj, cluster, y, check_coef = TRUE, tol = 10^-6) {
+  
   cluster <- droplevels(as.factor(cluster))
   B <- sandwich::bread(obj) / v_scale(obj)
   X_list <- matrix_list(model_matrix(obj), cluster, "row")
@@ -144,12 +145,12 @@ compare_mmrm_vcov <- function(obj, tol = 1e-5) {
   X <- matrix_list(model_matrix(obj), fac = cluster, dim = "row")
   W <- weightMatrix(obj, cluster = cluster)
   e <- split(residuals_CS(obj), cluster)
-  XWe <- do.call(rbind, args = Map(\(Xj, Wj, ej) t(ej) %*% Wj %*% Xj, Xj = X, Wj = W, ej = e))
+  XWe <- do.call(rbind, args = Map(function(Xj, Wj, ej) t(ej) %*% Wj %*% Xj, Xj = X, Wj = W, ej = e))
   
   # CR0
   dat <- obj$data
   mod_CR0 <- update(obj, data = dat, control = mmrm::mmrm_control(vcov = "Empirical"))
-  CR0_scores <- component(mod_CR0, "score_per_subject")
+  CR0_scores <- mmrm::component(mod_CR0, "score_per_subject")
   vcov_CR0 <- vcov(mod_CR0)
   CR0 <- vcovCR(obj, type = "CR0")
   
