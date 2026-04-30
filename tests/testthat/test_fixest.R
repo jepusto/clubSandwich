@@ -202,6 +202,48 @@ test_that("cluster auto-detection works", {
 })
 
 
+test_that("findCluster.fixest preserves the original class and labels", {
+
+  set.seed(42)
+  N <- 60
+  y_v <- rnorm(N); x_v <- rnorm(N)
+
+  # Character cluster
+  d_chr <- data.frame(y = y_v, x = x_v,
+                      clu = sample(c("A", "B", "C", "D"), N, replace = TRUE))
+  fit_chr <- feols(y ~ x | clu, data = d_chr)
+  expect_identical(d_chr$clu, findCluster.fixest(fit_chr))
+
+  # Integer cluster
+  d_int <- data.frame(y = y_v, x = x_v,
+                      clu = sample(101:105, N, replace = TRUE))
+  fit_int <- feols(y ~ x | clu, data = d_int)
+  expect_identical(d_int$clu, findCluster.fixest(fit_int))
+
+  # Numeric (double) cluster
+  d_num <- data.frame(y = y_v, x = x_v,
+                      clu = sample(c(1.5, 2.5, 3.5), N, replace = TRUE))
+  fit_num <- feols(y ~ x | clu, data = d_num)
+  expect_identical(d_num$clu, findCluster.fixest(fit_num))
+
+  # Factor cluster with non-alphabetical level order
+  d_fac <- data.frame(y = y_v, x = x_v,
+                      clu = factor(sample(c("A", "B", "C"), N, replace = TRUE),
+                                   levels = c("C", "B", "A")))
+  fit_fac <- feols(y ~ x | clu, data = d_fac)
+  expect_identical(d_fac$clu, findCluster.fixest(fit_fac))
+  expect_identical(levels(d_fac$clu), levels(findCluster.fixest(fit_fac)))
+
+  # NA-dropped rows: cluster vector should align with the rows feols actually used
+  d_na <- d_fac
+  d_na$y[c(5, 15, 25)] <- NA
+  fit_na <- suppressMessages(feols(y ~ x | clu, data = d_na))
+  fc_na <- findCluster.fixest(fit_na)
+  expect_equal(length(fc_na), nobs(fit_na))
+  expect_identical(d_na$clu[!is.na(d_na$y)], fc_na)
+})
+
+
 # -------------------------------------------------
 # Tests: demeaned = TRUE path
 # -------------------------------------------------
@@ -282,4 +324,81 @@ test_that("dropped observations are handled", {
     expect_equal(as.matrix(v_drop), as.matrix(v_complete), tolerance = 1e-6)
   }
 
+})
+
+
+# -------------------------------------------------
+# Tests: feols vs lm equivalence across advanced FE structures
+# -------------------------------------------------
+# Synthetic data: small enough that CR2 verification stays fast even with
+# the lm-with-dummies comparator. Covers four cases jepusto's fixtures hit:
+# two-way intercept FE, interaction FE (^), intercept+slope FE (D[Y]),
+# slope-only FE (D[[Y]]).
+
+setup_multiFE <- function() {
+  set.seed(20190513)
+  d <- expand.grid(Org = factor(LETTERS[1:4]),
+                   Dst = factor(letters[1:6]),
+                   Yr  = 1:5)
+  d <- d[rep(seq_len(nrow(d)), 2), ]
+  d$x <- rnorm(nrow(d))
+  d$y <- 0.5 * d$x +
+         as.numeric(d$Org) * 0.2 +
+         as.numeric(d$Dst) * 0.3 +
+         as.numeric(d$Dst) * d$Yr * 0.05 +
+         rnorm(nrow(d))
+  d$OD <- interaction(d$Org, d$Dst, drop = TRUE)
+  d
+}
+
+test_that("two-way FE feols matches lm with dummies", {
+  d <- setup_multiFE()
+  ff      <- feols(y ~ x | Org + Dst, data = d)
+  ff_char <- feols(y ~ x, data = d, fixef = c("Org", "Dst"))
+  lm_fit  <- lm(y ~ x + Org + Dst, data = d)
+
+  for (cr in paste0("CR", 0:2)) {
+    sub <- as.matrix(vcovCR(lm_fit, cluster = d$Dst, type = cr))["x", "x", drop = FALSE]
+    expect_equal(as.matrix(vcovCR(ff,      cluster = d$Dst, type = cr)),
+                 sub, tolerance = 1e-6, ignore_attr = TRUE)
+    expect_equal(as.matrix(vcovCR(ff_char, cluster = d$Dst, type = cr)),
+                 sub, tolerance = 1e-6, ignore_attr = TRUE)
+  }
+})
+
+test_that("interaction FE feols (Org^Dst) matches lm with interaction()", {
+  d <- setup_multiFE()
+  ff     <- feols(y ~ Yr | Org^Dst, data = d)
+  lm_fit <- lm(y ~ Yr + OD, data = d)
+
+  for (cr in paste0("CR", 0:2)) {
+    expect_equal(as.matrix(vcovCR(ff,     cluster = d$Dst, type = cr)),
+                 as.matrix(vcovCR(lm_fit, cluster = d$Dst, type = cr))["Yr", "Yr", drop = FALSE],
+                 tolerance = 1e-6, ignore_attr = TRUE)
+  }
+})
+
+test_that("intercept+slope FE feols (Dst[Yr]) matches lm with dummies + interaction", {
+  d <- setup_multiFE()
+  ff     <- feols(y ~ x | Dst[Yr], data = d)
+  lm_fit <- lm(y ~ x + Dst + Dst:Yr, data = d)
+
+  for (cr in paste0("CR", 0:2)) {
+    expect_equal(as.matrix(vcovCR(ff,     cluster = d$Dst, type = cr)),
+                 as.matrix(vcovCR(lm_fit, cluster = d$Dst, type = cr))["x", "x", drop = FALSE],
+                 tolerance = 1e-6, ignore_attr = TRUE)
+  }
+})
+
+test_that("slope-only FE feols (Dst[[Yr]]) matches lm with interaction-only", {
+  d <- setup_multiFE()
+  ff     <- feols(y ~ x | Dst[[Yr]], data = d)
+  lm_fit <- lm(y ~ x + Dst:Yr, data = d)
+
+  focal <- c("(Intercept)", "x")
+  for (cr in paste0("CR", 0:2)) {
+    expect_equal(as.matrix(vcovCR(ff,     cluster = d$Dst, type = cr))[focal, focal],
+                 as.matrix(vcovCR(lm_fit, cluster = d$Dst, type = cr))[focal, focal],
+                 tolerance = 1e-6, ignore_attr = TRUE)
+  }
 })

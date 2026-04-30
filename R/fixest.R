@@ -96,17 +96,30 @@ model_matrix.fixest <- function(obj) {
   # If feols() was called with demeaned = TRUE, use the stored demeaned matrix
   if (length(obj$fixef_vars) > 0L && !is.null(obj$X_demeaned)) {
     X <- obj$X_demeaned
+  } else if (length(obj$fixef_vars) > 0L) {
+    X <- model.matrix(obj)
+    fe_df <- data.frame(lapply(obj$fixef_id, factor), check.names = FALSE)
+    wts <- weights(obj)
+    # Slope FEs (Destination[Year], Destination[[Year]]) need slope.vars and
+    # slope.flag passed through, otherwise fixest::demean residualizes on the
+    # intercept FE only and X is wrong.
+    has_slopes <- !is.null(obj$slope_flag) && any(obj$slope_flag != 0)
+    if (has_slopes && !is.null(wts)) {
+      X <- fixest::demean(X = X, f = fe_df,
+                          slope.vars = obj$slope_variables_reordered,
+                          slope.flag = obj$slope_flag,
+                          weights = wts)
+    } else if (has_slopes) {
+      X <- fixest::demean(X = X, f = fe_df,
+                          slope.vars = obj$slope_variables_reordered,
+                          slope.flag = obj$slope_flag)
+    } else if (!is.null(wts)) {
+      X <- fixest::demean(X = X, f = fe_df, weights = wts)
+    } else {
+      X <- fixest::demean(X = X, f = fe_df)
+    }
   } else {
     X <- model.matrix(obj)
-    if (length(obj$fixef_vars) > 0L) {
-      fe_df <- data.frame(lapply(obj$fixef_id, factor))
-      wts <- weights(obj)
-      if (is.null(wts)) {
-        X <- fixest::demean(X, f = fe_df)
-      } else {
-        X <- fixest::demean(X, f = fe_df, weights = wts)
-      }
-    }
   }
 
   # Handle zero weights
@@ -130,10 +143,39 @@ model_matrix.fixest <- function(obj) {
 augmented_model_matrix.fixest <- function(obj, cluster, inverse_var, ignore_FE) {
   if (ignore_FE || length(obj$fixef_vars) == 0L) return(NULL)
 
-  # Build FE dummy matrix
-  fe_df <- data.frame(lapply(obj$fixef_id, factor))
-  fe_formula <- as.formula(paste("~", paste(obj$fixef_vars, collapse = " + "), "- 1"))
-  model.matrix(fe_formula, data = fe_df)
+  # slope_flag entries: 0 = intercept-only FE, 1 = intercept + slope (D[Y]),
+  # -1 = slope-only (D[[Y]]). For each FE we emit intercept dummies if the
+  # flag is >= 0 and slope columns (dummy * slope_var) if the flag is non-zero.
+  flags <- if (is.null(obj$slope_flag)) {
+    rep(0L, length(obj$fixef_vars))
+  } else {
+    obj$slope_flag
+  }
+  # slope_variables_reordered is indexed positionally over FE terms with slopes
+  # (those where flags != 0), in the same order as fixef_vars.
+  slope_vars <- obj$slope_variables_reordered
+  slope_idx <- 0L
+
+  blocks <- list()
+  for (i in seq_along(obj$fixef_vars)) {
+    fe_name <- obj$fixef_vars[i]
+    f <- factor(obj$fixef_id[[i]])
+    dum <- model.matrix(~ 0 + f)
+
+    if (flags[i] >= 0) {
+      colnames(dum) <- paste0(fe_name, levels(f))
+      blocks[[length(blocks) + 1L]] <- dum
+    }
+    if (flags[i] != 0) {
+      slope_idx <- slope_idx + 1L
+      sv <- slope_vars[[slope_idx]]
+      slope_block <- dum * sv
+      colnames(slope_block) <- paste0(fe_name, ":", levels(f))
+      blocks[[length(blocks) + 1L]] <- slope_block
+    }
+  }
+
+  do.call(cbind, blocks)
 }
 
 #---------------------------------------
