@@ -20,11 +20,11 @@ Description: Provides several cluster-robust variance estimators (i.e.,
     coefficients use Satterthwaite or saddle-point corrections. Tests of multiple-
     contrast hypotheses use an approximation to Hotelling's T-squared distribution.
     Methods are provided for a variety of fitted models, including lm() and mlm
-    objects, glm(), geeglm() (from package 'geepack'), lm_robust() and lm_lin() 
-    (from package 'estimatr'), ivreg() (from package 'AER'), ivreg() (from package 'ivreg' when 
-    estimated by ordinary least squares), plm() (from package 'plm'), gls() and 
-    lme() (from 'nlme'), lmer() (from `lme4`), robu() (from 'robumeta'),
-    rma.uni() and rma.mv() (from 'metafor'), and mmrm() (from 'mmrm').
+    objects; glm(); geeglm() (from package 'geepack'); lm_robust(), lm_lin(), and 
+    iv_robust() (from package 'estimatr'); ivreg() (from package 'AER'); ivreg() 
+    (from package 'ivreg' when estimated by ordinary least squares); plm() (from 
+    package 'plm'); gls() and lme() (from 'nlme'); lmer() (from `lme4`); robu() (from 
+    'robumeta'); rma.uni() and rma.mv() (from 'metafor'); and mmrm() (from 'mmrm').
 URL: http://jepusto.github.io/clubSandwich/
 BugReports: https://github.com/jepusto/clubSandwich/issues
 Depends:

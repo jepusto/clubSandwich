@@ -97,7 +97,9 @@
 
 vcovCR.lm_robust <- function(obj, cluster, type, target = NULL, inverse_var = NULL, form = "sandwich", ...) {
   
-  if (obj$fes && !requireNamespace("fixest", quietly = TRUE)) message("For improved performance in models with fixed effects, install the package {fixest}.")
+  if (obj$fes && !requireNamespace("fixest", quietly = TRUE)) {
+    message("For improved performance in models with fixed effects, install the package {fixest}.")
+  }
   
   obj$model.frame <- model.frame(obj)
   
