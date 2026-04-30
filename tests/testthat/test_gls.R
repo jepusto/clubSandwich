@@ -82,6 +82,7 @@ test_that("CR2 and CR4 are target-unbiased", {
 })
 
 test_that("get_data works.", {
+  
   re_order <- sample(nrow(Ovary))
   egg_scramble <- Ovary[re_order,]
   gls_scramble <- gls(follicles ~ sin(2*pi*Time) + cos(2*pi*Time), 

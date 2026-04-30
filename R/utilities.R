@@ -145,7 +145,7 @@ compare_mmrm_vcov <- function(obj, tol = 1e-5) {
   X <- matrix_list(model_matrix(obj), fac = cluster, dim = "row")
   W <- weightMatrix(obj, cluster = cluster)
   e <- split(residuals_CS(obj), cluster)
-  XWe <- do.call(rbind, args = Map(\(Xj, Wj, ej) t(ej) %*% Wj %*% Xj, Xj = X, Wj = W, ej = e))
+  XWe <- do.call(rbind, args = Map(function(Xj, Wj, ej) t(ej) %*% Wj %*% Xj, Xj = X, Wj = W, ej = e))
   
   # CR0
   dat <- obj$data

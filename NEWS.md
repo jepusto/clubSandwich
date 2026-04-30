@@ -2,6 +2,7 @@
 
 * Added support for `mmrm::mmrm()` models.
 * Added support for `estimatr::iv_robust()` models.
+* Fixed bug in internal function `get_data()` introduced by changes in error message structure in R-devel.
 
 # clubSandwich 0.6.2
 
