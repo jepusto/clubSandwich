@@ -79,6 +79,7 @@ regression coefficient estimates.
 ## Examples
 
 ``` r
+
 data("ChickWeight", package = "datasets")
 lm_fit <- lm(weight ~ Time + Diet:Time, data = ChickWeight)
 vcovCR(lm_fit, cluster = ChickWeight$Chick, type = "CR2")

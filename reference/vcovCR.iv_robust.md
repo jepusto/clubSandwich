@@ -79,6 +79,7 @@ regression coefficient estimates.
 ## Examples
 
 ``` r
+
 if (requireNamespace("estimatr", quietly = TRUE)) withAutoprint({
   library(estimatr)
 

@@ -82,6 +82,7 @@ regression coefficient estimates.
 ## Examples
 
 ``` r
+
 data("ChickWeight", package = "datasets")
 ChickWeight$Chick <- factor(ChickWeight$Chick, ordered = FALSE)
 

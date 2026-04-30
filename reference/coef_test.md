@@ -88,6 +88,7 @@ p-value are reported.
 ## Examples
 
 ``` r
+
 data("ChickWeight", package = "datasets")
 lm_fit <- lm(weight ~ Diet  * Time, data = ChickWeight)
 diet_index <- grepl("Diet.:Time", names(coef(lm_fit)))

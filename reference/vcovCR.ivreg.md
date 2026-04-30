@@ -87,6 +87,7 @@ M-estimation (method = "M") or MM-estimation (method = "MM").
 ## Examples
 
 ``` r
+
 if (requireNamespace("AER", quietly = TRUE)) withAutoprint({
 
   library(AER)

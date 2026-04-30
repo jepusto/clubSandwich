@@ -102,6 +102,7 @@ be specified using the `null_constant` argument.
 
 ``` r
 
+
 if (requireNamespace("carData", quietly = TRUE)) withAutoprint({
 
 data(Duncan, package = "carData")

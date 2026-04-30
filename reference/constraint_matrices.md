@@ -69,6 +69,7 @@ matrices comparing each coefficient to zero.
 ## Examples
 
 ``` r
+
 if (requireNamespace("carData", quietly = TRUE)) withAutoprint({
 
 data(Duncan, package = "carData")

@@ -74,6 +74,7 @@ regression coefficient estimates.
 ## Examples
 
 ``` r
+
 if (requireNamespace("robumeta", quietly = TRUE)) withAutoprint({
 library(robumeta)
 data(hierdat)

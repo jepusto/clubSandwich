@@ -98,6 +98,7 @@ or
 ## Examples
 
 ``` r
+
 data("ChickWeight", package = "datasets")
 lm_fit <- lm(weight ~ 0 + Diet + Time:Diet, data = ChickWeight)
 

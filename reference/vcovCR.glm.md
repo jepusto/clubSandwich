@@ -79,6 +79,7 @@ regression coefficient estimates.
 ## Examples
 
 ``` r
+
 if (requireNamespace("geepack", quietly = TRUE)) {
 
   data(dietox, package = "geepack")

@@ -71,6 +71,7 @@ regression coefficient estimates.
 ## Examples
 
 ``` r
+
 if (requireNamespace("lme4", quietly = TRUE)) {
 
 library(lme4)

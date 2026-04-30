@@ -205,6 +205,7 @@ effects models. *Journal of Business and Economic Statistics, 36*(4),
 ## Examples
 
 ``` r
+
 # simulate design with cluster-dependence
 m <- 8
 cluster <- factor(rep(LETTERS[1:m], 3 + rpois(m, 5)))

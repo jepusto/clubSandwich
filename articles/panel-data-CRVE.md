@@ -62,16 +62,18 @@ variability in the timing of changes across states. Angrist and Pischke
 strategy to estimate the effects of lowering the minimum legal drinking
 age from 21 to 18. Their specification is
 
-$$y_{it} = \alpha_{i} + \beta_{t} + \gamma b_{it} + \delta d_{it} + \epsilon_{it},$$
+``` math
+y_{it} = \alpha_i + \beta_t + \gamma b_{it} + \delta d_{it} + \epsilon_{it},
+```
 
-for $i$ = 1,…,51 and $t$ = 1970,…,1983. In this model, $\alpha_{i}$ is a
-state-specific fixed effect, $\beta_{t}$ is a year-specific fixed
-effect, $b_{it}$ is the current rate of beer taxation in state $i$ in
-year $t$, $d_{it}$ is the proportion of 18-20 year-olds in state $i$ in
-year $t$ who are legally allowed to drink, and $\delta$ captures the
-effect of shifting the minimum legal drinking age from 21 to 18.
-Following Angrist and Pischke’s analysis, we estimate this model both by
-(unweighted) OLS and by weighted least squares with weights
+for $`i`$ = 1,…,51 and $`t`$ = 1970,…,1983. In this model, $`\alpha_i`$
+is a state-specific fixed effect, $`\beta_t`$ is a year-specific fixed
+effect, $`b_{it}`$ is the current rate of beer taxation in state $`i`$
+in year $`t`$, $`d_{it}`$ is the proportion of 18-20 year-olds in state
+$`i`$ in year $`t`$ who are legally allowed to drink, and $`\delta`$
+captures the effect of shifting the minimum legal drinking age from 21
+to 18. Following Angrist and Pischke’s analysis, we estimate this model
+both by (unweighted) OLS and by weighted least squares with weights
 corresponding to population size in a given state and year. We also
 demonstrate random effects estimation and implement a cluster-robust
 Hausman specification test.
@@ -82,6 +84,7 @@ The following code does some simple data-munging and the estimates the
 model by OLS:
 
 ``` r
+
 library(clubSandwich)
 data(MortalityRates)
 
@@ -97,12 +100,13 @@ lm_unweighted <- lm(mrate ~ 0 + legal + beertaxa +
 The `coef_test` function from `clubSandwich` can then be used to test
 the hypothesis that changing the minimum legal drinking age has no
 effect on motor vehicle deaths in this cohort (i.e.,
-$H_{0}:\delta = 0$). The usual way to test this is to cluster the
+$`H_0: \delta = 0`$). The usual way to test this is to cluster the
 standard errors by state, calculate the robust Wald statistic, and
 compare that to a standard normal reference distribution. The code and
 results are as follows:
 
 ``` r
+
 coef_test(lm_unweighted, vcov = "CR1", 
           cluster = MV_deaths$state, test = "naive-t")[1:2,]
 ```
@@ -123,6 +127,7 @@ all uncorrelated and homoskedastic. Here’s how to apply this approach in
 the example:
 
 ``` r
+
 coef_test(lm_unweighted, vcov = "CR2", 
           cluster = MV_deaths$state, test = "Satterthwaite")[1:2,]
 ```
@@ -151,6 +156,7 @@ before estimating the effect of `legal`. The `clubSandwich` package
 works with fitted `plm` models too:
 
 ``` r
+
 library(plm)
 plm_unweighted <- plm(mrate ~ legal + beertaxa, data = MV_deaths, 
                       effect = "twoways", index = c("state","year"))
@@ -163,6 +169,7 @@ coef_test(plm_unweighted, vcov = "CR1", cluster = "individual", test = "naive-t"
     ##  beertaxa     3.82 5.14          0  0.743             49         0.46128
 
 ``` r
+
 coef_test(plm_unweighted, vcov = "CR2", cluster = "individual", test = "Satterthwaite")
 ```
 
@@ -180,6 +187,7 @@ fitting in `lm` with dummies for all the fixed effects because `plm`
 does not handle weighted least squares.
 
 ``` r
+
 lm_weighted <- lm(mrate ~ 0 + legal + beertaxa + factor(state) + factor(year), 
                   weights = pop, data = MV_deaths)
 coef_test(lm_weighted, vcov = "CR1", 
@@ -192,6 +200,7 @@ coef_test(lm_weighted, vcov = "CR1",
     ##  beertaxa    11.16 4.20          0   2.66             49          0.0106    *
 
 ``` r
+
 coef_test(lm_weighted, vcov = "CR2", 
           cluster = MV_deaths$state, test = "Satterthwaite")[1:2,]
 ```
@@ -219,6 +228,7 @@ to population size. The following code uses this alternate working
 model:
 
 ``` r
+
 coef_test(lm_weighted, vcov = "CR2", 
           cluster = MV_deaths$state, target = 1 / MV_deaths$pop, 
           test = "Satterthwaite")[1:2,]
@@ -235,12 +245,13 @@ small-sample territory.
 
 ## Random effects estimation
 
-If the unobserved effects $\alpha_{1},...,\alpha_{51}$ are uncorrelated
+If the unobserved effects $`\alpha_1,...,\alpha_{51}`$ are uncorrelated
 with the regressors, then a more efficient way to estimate
-$\gamma,\delta$ is by weighted least squares, with weights based on a
+$`\gamma,\delta`$ is by weighted least squares, with weights based on a
 random effects model. We still treat the year effects as fixed.
 
 ``` r
+
 plm_random <- plm(mrate ~ 0 + legal + beertaxa + year, data = MV_deaths, 
                   effect = "individual", index = c("state","year"),
                   model = "random")
@@ -253,6 +264,7 @@ coef_test(plm_random, vcov = "CR1", test = "naive-t")[1:2,]
     ##  beertaxa     3.37 5.11          0  0.661             49         0.51202
 
 ``` r
+
 coef_test(plm_random, vcov = "CR2", test = "Satterthwaite")[1:2,]
 ```
 
@@ -273,27 +285,30 @@ Hausman-type test for endogeneity of unobserved effects (Arellano,
 1993). As noted above, random effects estimation is more efficient than
 fixed effects estimation, but requires the assumption that the
 unobserved effects are uncorrelated with the regressors. However, if the
-unobserved effects covary with $\mathbf{b}_{i},\mathbf{d}_{i}$, then the
+unobserved effects covary with $`\mathbf{b}_i, \mathbf{d}_i`$, then the
 random-effects estimator will be biased.
 
 We can test for whether endogeneity is a problem by including
 group-centered covariates as additional regressors. Let
-${\widetilde{d}}_{it} = d_{it} - \frac{1}{T}\sum_{t}d_{it}$, with
-${\widetilde{b}}_{it}$ defined analogously. Now estimate the regression
+$`\tilde{d}_{it} = d_{it} - \frac{1}{T}\sum_t d_{it}`$, with
+$`\tilde{b}_{it}`$ defined analogously. Now estimate the regression
 
-$$y_{it} = \beta_{t} + \gamma_{1}b_{it} + \gamma_{2}{\widetilde{b}}_{it} + \delta_{1}d_{it} + \delta_{2}{\widetilde{d}}_{it} + \epsilon_{it},$$
+``` math
+y_{it} = \beta_t + \gamma_1 b_{it} + \gamma_2 \tilde{b}_{it} + \delta_1 d_{it} + \delta_2 \tilde{d}_{it} + \epsilon_{it},
+```
 
 which does not include state fixed effects. The parameters
-$\gamma_{2},\delta_{2}$ represent the differences between the
-within-groups and between-groups estimands of $\gamma_{1},\delta_{1}$.
-If these are both zero, then the random effects estimator is unbiased.
-Thus, the joint test for $H_{0}:\gamma_{2} = \delta_{2} = 0$ amounts to
-a test for exogeneity of the unobserved effects.
+$`\gamma_2,\delta_2`$ represent the differences between the
+within-groups and between-groups estimands of $`\gamma_1, \delta_1`$. If
+these are both zero, then the random effects estimator is unbiased.
+Thus, the joint test for $`H_0: \gamma_2 = \delta_2 = 0`$ amounts to a
+test for exogeneity of the unobserved effects.
 
 For efficiency, we estimate this specification using weighted least
 squares (although OLS would be valid too):
 
 ``` r
+
 MV_deaths <- within(MV_deaths, {
   legal_cent <- legal - tapply(legal, state, mean)[factor(state)]
   beer_cent <- beertaxa - tapply(beertaxa, state, mean)[factor(state)]
@@ -316,11 +331,12 @@ coef_test(plm_Hausman, vcov = "CR2", test = "Satterthwaite")[1:4,]
 To conduct a joint test on the centered covariates, we can use the
 `Wald_test` function. The usual way to test this hypothesis would be to
 use the `CR1` variance estimator to calculate the robust Wald statistic,
-then use a $\chi_{2}^{2}$ reference distribution (or equivalently,
-compare a re-scaled Wald statistic to an $F(2,\infty)$ distribution).
-The `Wald_test` function reports the latter version:
+then use a $`\chi^2_2`$ reference distribution (or equivalently, compare
+a re-scaled Wald statistic to an $`F(2,\infty)`$ distribution). The
+`Wald_test` function reports the latter version:
 
 ``` r
+
 Wald_test(plm_Hausman, 
           constraints = constrain_zero(c("legal_cent","beer_cent")), 
           vcov = "CR1", test = "chi-sq")
@@ -334,6 +350,7 @@ the `CR2` variance estimator and our newly proposed approximate F-test
 (which is the default in `Wald_test`), then we get:
 
 ``` r
+
 Wald_test(plm_Hausman, 
           constraints = constrain_zero(c("legal_cent","beer_cent")), 
           vcov = "CR2")
@@ -343,7 +360,7 @@ Wald_test(plm_Hausman,
     ##   HTZ  2.56      2     11.7  0.12
 
 The low degrees of freedom of the test indicate that we’re definitely in
-small-sample territory and should not trust the asymptotic $\chi^{2}$
+small-sample territory and should not trust the asymptotic $`\chi^2`$
 approximation.
 
 ## References

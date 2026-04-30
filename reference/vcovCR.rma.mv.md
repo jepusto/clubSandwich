@@ -75,6 +75,7 @@ regression coefficient estimates.
 ## Examples
 
 ``` r
+
 pkgs_available <- 
   requireNamespace("metafor", quietly = TRUE) & 
   requireNamespace("metadat", quietly = TRUE)

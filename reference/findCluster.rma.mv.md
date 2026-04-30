@@ -22,6 +22,7 @@ A a vector of ID variables for the highest level of clustering in `obj`.
 ## Examples
 
 ``` r
+
 if (requireNamespace("metafor", quietly = TRUE)) {
 
 library(metafor)

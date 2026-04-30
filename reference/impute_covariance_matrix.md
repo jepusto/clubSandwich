@@ -134,6 +134,7 @@ will be set equal to the average variance of cluster \\j\\, i.e.,
 ## Examples
 
 ``` r
+
 if (requireNamespace("metafor", quietly = TRUE)) {
 
 library(metafor)

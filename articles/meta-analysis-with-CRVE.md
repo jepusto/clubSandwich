@@ -24,6 +24,7 @@ package (Fisher & Tipton, 2015) and then using the `metafor` package
 ## robumeta model
 
 ``` r
+
 library(clubSandwich)
 library(robumeta)
 data(dropoutPrevention)
@@ -93,6 +94,7 @@ will be corrected using the bias-reduced linearization estimator
 described in Tipton and Pustejovsky (2015).
 
 ``` r
+
 Wald_test(m3_robu, constraints = constrain_zero(10:12), vcov = "CR2")
 ```
 
@@ -100,14 +102,15 @@ Wald_test(m3_robu, constraints = constrain_zero(10:12), vcov = "CR2")
     ##   HTZ  2.78      3     16.8 0.0732   .
 
 By default, the `Wald_test` function provides an F-type test with
-degrees of freedom estimated using the approximate Hotelling’s
-$T_{Z}^{2}$ method. The test has less than 17 degrees of freedom, even
-though there are 152 independent studies in the data, and has a p-value
-that is not quite significant at conventional levels. The low degrees of
-freedom are a consequence of the fact that one of the levels of
+degrees of freedom estimated using the approximate Hotelling’s $`T^2_Z`$
+method. The test has less than 17 degrees of freedom, even though there
+are 152 independent studies in the data, and has a p-value that is not
+quite significant at conventional levels. The low degrees of freedom are
+a consequence of the fact that one of the levels of
 `evaluator independence` has only a few effect sizes in it:
 
 ``` r
+
 table(dropoutPrevention$eval)
 ```
 
@@ -124,6 +127,7 @@ estimator), as well as a somewhat different weighting scheme than that
 used in `robumeta`.
 
 ``` r
+
 library(metafor)
 m3_metafor <- rma.mv(LOR1 ~ study_design + attrition + group_equivalence + adjusted
                       + outcome + eval
@@ -186,6 +190,7 @@ intervals. The `coef_test` function from `clubSandwich` will calculate
 robust standard errors and robust t-tests for each of the coefficients:
 
 ``` r
+
 coef_test(m3_metafor, vcov = "CR2")
 ```
 
@@ -223,6 +228,7 @@ The F-test for degree of evaluator independence uses the same syntax as
 before:
 
 ``` r
+
 Wald_test(m3_metafor, constraints = constrain_zero(10:12), vcov = "CR2")
 ```
 

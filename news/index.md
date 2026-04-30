@@ -1,6 +1,6 @@
 # Changelog
 
-## clubSandwich 0.6.2.9999
+## clubSandwich 0.6.3
 
 - Added support for
   [`mmrm::mmrm()`](https://openpharma.github.io/mmrm/latest-tag/reference/mmrm.html)
