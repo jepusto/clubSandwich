@@ -1,12 +1,12 @@
 Package: clubSandwich
 Title: Cluster-Robust (Sandwich) Variance Estimators with Small-Sample
     Corrections
-Version: 0.6.3
+Version: 0.7.0
 Authors@R: c(
   person(c("James","E."), "Pustejovsky", email = "jepusto@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0003-0591-9465")),
+  person("Hazim", "Izani", email = "hazimizani@gmail.com", role = "ctb"),
   person("Samuel", "Pekofsky", email = "sampekofsky@gmail.com", role = "ctb"),
-  person("Jingru", "Zhang", email = "jz26372022@hotmail.com", role = "ctb"),
-  person("Hazim", "Izani", email = "hazimizani@gmail.com", role = "ctb")
+  person("Jingru", "Zhang", email = "jz26372022@hotmail.com", role = "ctb")
   )
 Description: Provides several cluster-robust variance estimators (i.e.,
     sandwich estimators) for ordinary and weighted least squares linear regression
@@ -39,25 +39,25 @@ Imports:
 Suggests:
     Formula,
     knitr,
-    carData,
-    geepack,
-    metafor,
-    metadat,
-    robumeta,
-    nlme,
-    mlmRev,
-    AER,
-    plm (>= 1.6-4),
-    Matrix,
-    lme4,
-    zoo,
     testthat,
     rmarkdown,
     covr,
-    ivreg,
+    AER,
+    carData,
     estimatr,
     fixest,
-    mmrm
+    geepack,
+    ivreg,
+    Matrix,
+    lme4,
+    metafor,
+    metadat,
+    mlmRev,
+    mmrm,
+    nlme,
+    plm (>= 1.6-4),
+    robumeta,
+    zoo
 RoxygenNote: 7.3.3
 Encoding: UTF-8
 Language: en-US

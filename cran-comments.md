@@ -7,7 +7,7 @@ Please note that the DESCRIPTION file includes a citation to Bell and McCaffrey 
 
 ## Test environments
 
-* local Windows 11 Pro, R 4.4.3
+* local Windows 11 Pro, R 4.4.3, R devel
 * ubuntu 20.04.3 LTS (on Github), R devel, release, oldrelease
 * macOS-latest (on Github), R release
 * windows-latest (on Github), R release
@@ -20,8 +20,7 @@ There were no ERRORs, no WARNINGs, and no NOTEs.
 
 ## recheck results
 
-We checked 21 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+We checked 23 reverse dependencies, comparing R CMD check results across CRAN and dev versions of clubSandwich.
 
- * We saw 0 new problems
- * We failed to check 0 packages
+ * We saw no changes between old and new version
 
