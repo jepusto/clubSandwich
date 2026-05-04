@@ -1,6 +1,10 @@
 # Changelog
 
+## clubSandwich (development version)
+
 ## clubSandwich 0.7.0
+
+CRAN release: 2026-05-04
 
 - Added support for
   [`mmrm::mmrm()`](https://openpharma.github.io/mmrm/latest-tag/reference/mmrm.html)

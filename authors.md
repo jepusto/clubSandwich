@@ -17,13 +17,13 @@ Source:
 [`DESCRIPTION`](https://github.com/jepusto/clubSandwich/blob/main/DESCRIPTION)
 
 Pustejovsky JE (2026). *clubSandwich: Cluster-Robust (Sandwich) Variance
-Estimators with Small-Sample Corrections*. R package version 0.7.0,
+Estimators with Small-Sample Corrections*. R package version 0.7.0.9000,
 <http://jepusto.github.io/clubSandwich/>.
 
     @Manual{,
       title = {clubSandwich: Cluster-Robust (Sandwich) Variance Estimators with Small-Sample Corrections},
       author = {James E. Pustejovsky},
       year = {2026},
-      note = {R package version 0.7.0},
+      note = {R package version 0.7.0.9000},
       url = {http://jepusto.github.io/clubSandwich/},
     }
