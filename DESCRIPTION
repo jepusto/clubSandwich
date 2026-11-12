@@ -58,6 +58,6 @@ Suggests:
     plm (>= 1.6-4),
     robumeta,
     zoo
-RoxygenNote: 7.3.3
 Encoding: UTF-8
 Language: en-US
+Config/roxygen2/version: 8.1.0
