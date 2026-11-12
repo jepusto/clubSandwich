@@ -157,8 +157,8 @@ bread.mlm <- function(x, ...) {
   cf <- coef(x)
   rval <- summary.lm(x)
   rval <- kronecker(
-    structure(diag(ncol(cf)), .Dimnames = rep.int(list(colnames(cf)), 2L)),
-    structure(rval$cov.unscaled,  .Dimnames = rep.int(list(rownames(cf)), 2L)) * as.vector(sum(rval$df[1:2])),
+    structure(diag(ncol(cf)), dimnames = rep.int(list(colnames(cf)), 2L)),
+    structure(rval$cov.unscaled,  dimnames = rep.int(list(rownames(cf)), 2L)) * as.vector(sum(rval$df[1:2])),
     make.dimnames = TRUE
   )
   return(rval)
