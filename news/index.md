@@ -406,12 +406,12 @@ CRAN release: 2016-12-01
 ### New features
 
 - Added
-  [`bread()`](https://sandwich.R-Forge.R-project.org/reference/bread.html)
+  [`bread()`](https://zeileis.codeberg.page/sandwich/reference/bread.html)
   methods for all supported model classes.
 
 - [`vcovCR()`](http://jepusto.github.io/clubSandwich/reference/vcovCR.md)
   is now calculated using
-  [`bread()`](https://sandwich.R-Forge.R-project.org/reference/bread.html),
+  [`bread()`](https://zeileis.codeberg.page/sandwich/reference/bread.html),
   and carries attributes for `bread`, `est_mat`, and adjustment
   matrices.
 

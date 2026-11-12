@@ -126,7 +126,7 @@ of a set of regression coefficient estimates.
 Several different small sample corrections are available, which run
 parallel with the "HC" corrections for heteroskedasticity-consistent
 variance estimators, as implemented in
-[`vcovHC`](https://sandwich.R-Forge.R-project.org/reference/vcovHC.html).
+[`vcovHC`](https://zeileis.codeberg.page/sandwich/reference/vcovHC.html).
 The "CR2" adjustment is recommended (Pustejovsky & Tipton, 2017; Imbens
 & Kolesar, 2016). See Pustejovsky and Tipton (2017) and Cameron and
 Miller (2015) for further technical details. Available options include:

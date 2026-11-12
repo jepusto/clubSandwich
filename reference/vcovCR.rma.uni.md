@@ -95,6 +95,8 @@ Wald_test(mfor_fit, constraints = constrain_zero(2:4), vcov = mfor_CR2)
 #> > library(metafor)
 #> > data(dat.assink2016, package = "metadat")
 #> > mfor_fit <- rma.uni(yi ~ year + deltype, vi = vi, data = dat.assink2016)
+#> Warning: One or more SMD values are unusually large (i.e., abs(yi) > 2).
+#> Maybe SEs were used in place of SDs to compute them?
 #> > mfor_fit
 #> 
 #> Mixed-Effects Model (k = 100; tau^2 estimator: REML)

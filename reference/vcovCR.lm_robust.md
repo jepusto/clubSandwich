@@ -176,12 +176,16 @@ if (requireNamespace("estimatr", quietly = TRUE)) withAutoprint({
 #>  Diet4:Time_c     2.87  1.008 18.3        0.757         4.99
 #> > lm_fit_fe <- lm_robust(weight ~ Time:Diet, data = ChickWeight, clusters = Chick, 
 #> +     fixed_effects = ~Chick)
+#> Warning: With `fixed_effects` and `clusters`, `se_type` defaults to "CR0"; estimatr 1.0.6 defaulted to "CR2" here.
+#> CR2 is available by asking for it, `se_type = "CR2"`, at the cost of expanding the fixed effects into dummies.
+#> Write `se_type = "CR0"` to accept this default and remove this warning.
+#> This warning is displayed once per session.
 #> > vcovCR(lm_fit_fe)
 #>            Time:Diet1 Time:Diet2 Time:Diet3 Time:Diet4
-#> Time:Diet1  0.5644892   0.000000   0.000000  0.0000000
-#> Time:Diet2  0.0000000   1.638116   0.000000  0.0000000
-#> Time:Diet3  0.0000000   0.000000   1.249162  0.0000000
-#> Time:Diet4  0.0000000   0.000000   0.000000  0.4523152
+#> Time:Diet1  0.5324653   0.000000   0.000000  0.0000000
+#> Time:Diet2  0.0000000   1.474305   0.000000  0.0000000
+#> Time:Diet3  0.0000000   0.000000   1.124246  0.0000000
+#> Time:Diet4  0.0000000   0.000000   0.000000  0.4070852
 #> > data("MortalityRates")
 #> > MortalityRates <- subset(MortalityRates, cause == "Motor Vehicle")
 #> > MortalityRates$state <- factor(MortalityRates$state)
