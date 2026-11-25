@@ -67,6 +67,7 @@ An object of class \code{c("vcovCR","clubSandwich")}, which consists
 This is a generic function, with specific methods defined for 
   \code{\link[stats]{lm}}, \code{\link[plm]{plm}}, \code{\link[stats]{glm}}, 
   \code{\link[nlme]{gls}}, \code{\link[nlme]{lme}},
+  \code{\link[glmmTMB]{glmmTMB}},
   \code{\link[robumeta]{robu}}, \code{\link[metafor]{rma.uni}},
   \code{\link[metafor]{rma.mv}}, and \code{\link[estimatr]{lm_robust}}
    objects.
@@ -152,7 +153,7 @@ models. \emph{Journal of Business and Economic Statistics, 36}(4), 672-683.
 \seealso{
 \code{\link{vcovCR.lm}}, \code{\link{vcovCR.plm}}, 
   \code{\link{vcovCR.glm}}, \code{\link{vcovCR.gls}},
-  \code{\link{vcovCR.lme}}, \code{\link{vcovCR.lmerMod}}, \code{\link{vcovCR.robu}},
+  \code{\link{vcovCR.lme}}, \code{\link{vcovCR.lmerMod}}, \code{\link{vcovCR.glmmTMB}}, \code{\link{vcovCR.robu}},
   \code{\link{vcovCR.rma.uni}}, \code{\link{vcovCR.rma.mv}}, 
   \code{\link{vcovCR.lm_robust}}
 }

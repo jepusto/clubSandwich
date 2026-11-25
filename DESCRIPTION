@@ -24,7 +24,8 @@ Description: Provides several cluster-robust variance estimators (i.e.,
     iv_robust() (from package 'estimatr'); ivreg() (from package 'AER'); ivreg() 
     (from package 'ivreg' when estimated by ordinary least squares); plm() (from 
     package 'plm'); gls() and lme() (from 'nlme'); lmer() (from `lme4`); robu() (from 
-    'robumeta'); rma.uni() and rma.mv() (from 'metafor'); and mmrm() (from 'mmrm').
+    'robumeta'); rma.uni() and rma.mv() (from 'metafor'); mmrm() (from 'mmrm');
+    and Gaussian identity-link glmmTMB() models (from 'glmmTMB').
 URL: http://jepusto.github.io/clubSandwich/
 BugReports: https://github.com/jepusto/clubSandwich/issues
 Depends:
@@ -48,6 +49,7 @@ Suggests:
     estimatr (>= 2.0),
     fixest,
     geepack,
+    glmmTMB (>= 1.1.8),
     ivreg,
     Matrix,
     lme4,
