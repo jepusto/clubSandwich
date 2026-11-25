@@ -42,9 +42,10 @@ Suggests:
     testthat,
     rmarkdown,
     covr,
+    mockery,
     AER,
     carData,
-    estimatr,
+    estimatr (>= 2.0),
     fixest,
     geepack,
     ivreg,
@@ -60,4 +61,4 @@ Suggests:
     zoo
 Encoding: UTF-8
 Language: en-US
-Config/roxygen2/version: 8.1.0
+Config/roxygen2/version: 8.1.1

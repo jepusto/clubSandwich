@@ -94,22 +94,22 @@ y_vec <- mf$y
 
 test_that("model.frame() works for iv_robust.", {
 
-  mf_un <- model.frame(iv_un)
+  mf_un <- clubSandwich:::model.frame.iv_robust(iv_un)
   expect_equal(ncol(mf_un), 5L)  # y, x_endog, x_exog, z1, z2
   expect_true(all(c("y", "x_endog", "x_exog", "z1", "z2") %in% names(mf_un)))
   expect_equal(nrow(mf_un), N)
 
   # Clustered model has (clusters) column
-  mf_cl <- model.frame(iv_cl)
+  mf_cl <- clubSandwich:::model.frame.iv_robust(iv_cl)
   expect_true("(clusters)" %in% names(mf_cl))
   expect_equal(mf_cl[["(clusters)"]], dat$cluster)
 
   # Weighted model has (weights) column
-  mf_wt <- model.frame(iv_wt)
+  mf_wt <- clubSandwich:::model.frame.iv_robust(iv_wt)
   expect_true("(weights)" %in% names(mf_wt))
 
   # Clustered and weighted model has (clusters) and (weights) columns
-  mf_cl_wt <- model.frame(iv_cl_wt)
+  mf_cl_wt <- clubSandwich:::model.frame.iv_robust(iv_cl_wt)
   expect_true("(weights)" %in% names(mf_cl_wt))
   expect_true("(clusters)" %in% names(mf_cl_wt))
   expect_equal(mf_cl[["(clusters)"]], dat$cluster)
@@ -488,7 +488,7 @@ iv_fe <- iv_robust(
 )
 
 test_that("model.frame() includes fixed-effects variables", {
-  mf_fe <- model.frame(iv_fe)
+  mf_fe <- clubSandwich:::model.frame.iv_robust(iv_fe)
   expect_true("cluster" %in% names(mf_fe))
 })
 
@@ -521,11 +521,14 @@ test_that("model_matrix() returns FE-residualized projected matrix", {
 })
 
 test_that("model_matrix() FE path agrees without fixest", {
+  skip_if_not_installed("mockery")
+  
   local_mocked_bindings(
-    requireNamespace = function(...) FALSE
+    fixest_is_available = \(x) FALSE
   )
-  expect_false(requireNamespace("fixest", quietly = TRUE))
-
+  
+  expect_false(fixest_is_available())
+  
   XP <- model_matrix(iv_fe)
   F_mat <- model.matrix(~ 0 + cluster, data = dat)
   y_demean <- lm.fit(F_mat, dat$y)$residuals
@@ -567,6 +570,8 @@ test_that("vcovCR matches iv_robust$vcov for FE model with se_type='CR0'", {
 })
 
 test_that("model_matrix() weighted FE path agrees without fixest", {
+  skip_if_not_installed("mockery")
+  
   iv_fe_wt <- iv_robust(
     y ~ x_endog + x_exog | x_exog + z1 + z2,
     data = dat, weights = w, clusters = cluster,
@@ -574,10 +579,11 @@ test_that("model_matrix() weighted FE path agrees without fixest", {
   )
 
   local_mocked_bindings(
-    requireNamespace = function(...) FALSE
+    fixest_is_available = \(x) FALSE
   )
-  expect_false(requireNamespace("fixest", quietly = TRUE))
-
+  
+  expect_false(fixest_is_available())
+  
   XP <- model_matrix(iv_fe_wt)
   F_mat <- model.matrix(~ 0 + cluster, data = dat)
   y_demean <- stats::lm.wfit(F_mat, dat$y, w)$residuals
@@ -605,7 +611,7 @@ test_that("model.frame() handles misaligned NAs between regressor frame and FE f
     fixed_effects = ~ fe_var, se_type = "CR0"
   ))
 
-  mf <- model.frame(iv_mis)
+  mf <- clubSandwich:::model.frame.iv_robust(iv_mis)
 
   expect_equal(nrow(mf), N - 6L)
   expect_true(all(c("x_endog", "x_exog", "fe_var") %in% names(mf)))

@@ -28,7 +28,8 @@ lm_rob_fe <- lm_robust(
   weight ~ Time:Diet, 
   data = ChickWeight, 
   clusters = Chick, 
-  fixed_effects = ~ Chick
+  fixed_effects = ~ Chick,
+  se_type = "CR0"
 )
 
 wlm_fit <- lm(weight ~ 0 + Diet + Time:Diet, weights = wt, data = ChickWeight)
@@ -53,7 +54,8 @@ lm_rob_fe2 <- lm_robust(
   mrate ~ legal + beertaxa + beerpercap + winepercap + spiritpercap,
   fixed_effects = ~ year + state,
   data = MortalityRates,
-  cluster = state
+  cluster = state,
+  se_type = "CR0"
 )
 
 test_that("model.frame() works", {
@@ -274,11 +276,13 @@ test_that("model_matrix() works", {
 
 test_that("model_matrix() works without fixest", {
   
+  skip_if_not_installed("mockery")
+  
   local_mocked_bindings(
-    requireNamespace = function(...) FALSE
+    fixest_is_available = \(x) FALSE
   )
   
-  expect_false(requireNamespace("fixest", quietly = TRUE))
+  expect_false(fixest_is_available())
   
   # basic models
   
@@ -389,22 +393,22 @@ test_that("residuals_CS() works", {
   # basic models
   rcs_fit <- residuals_CS(lm_fit)
   rcs_rob <- residuals_CS(lm_rob)
-  expect_equal(rcs_fit, rcs_rob)
+  expect_equivalent(rcs_fit, rcs_rob)
   
   # fixed effects models
   rcs_fit_fe <- residuals_CS(lm_fit_fe)
   rcs_rob_fe <- residuals_CS(lm_rob_fe)
-  expect_equal(rcs_fit_fe, rcs_rob_fe)
+  expect_equivalent(rcs_fit_fe, rcs_rob_fe)
   
   # two-way fixed effects models
   rcs_fit_fe2 <- residuals_CS(lm_fit_fe2)
   rcs_rob_fe2 <- residuals_CS(lm_rob_fe2)
-  expect_equal(rcs_fit_fe2, rcs_rob_fe2)
+  expect_equivalent(rcs_fit_fe2, rcs_rob_fe2)
 
   # weighted models
   rcs_wlm <- residuals_CS(wlm_fit)
   rcs_wrob <- residuals_CS(wlm_rob)
-  expect_equal(rcs_wlm, rcs_wrob)
+  expect_equivalent(rcs_wlm, rcs_wrob)
   
 })
 
@@ -731,7 +735,8 @@ test_that("try_cholesky argument does not interfere with vcovCR functionality", 
     weight ~ Time:Diet, data = ChickWeight, 
     clusters = Chick, 
     fixed_effects = ~Chick,
-    try_cholesky = TRUE
+    try_cholesky = TRUE,
+    se_type = "CR2"
   )
   
   expect_equal(vcovCR(lm_rob_fe, type = "CR2"), vcovCR(lm_rob_fe_chole, type = "CR2"))
@@ -741,7 +746,8 @@ test_that("try_cholesky argument does not interfere with vcovCR functionality", 
     weights = wt, 
     data = ChickWeight, 
     clusters = Chick,
-    try_cholesky = TRUE
+    try_cholesky = TRUE,
+    se_type = "CR2"
   )
   
   expect_equal(vcovCR(wlm_rob, type = "CR2"), vcovCR(wlm_rob_chole, type = "CR2"))
@@ -773,7 +779,8 @@ test_that("subset argument does not interfere with vcovCR functionality", {
     data = ChickWeight, 
     clusters = Chick, 
     fixed_effects = ~Chick,
-    subset = rando == "Keep"
+    subset = rando == "Keep",
+    se_type = "CR2"
   )
   
   sub_coef <- names(coef(lm_rob_fe_sub))

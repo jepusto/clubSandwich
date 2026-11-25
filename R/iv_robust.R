@@ -67,7 +67,7 @@ vcovCR.iv_robust <- function(obj, cluster, type, target = NULL, inverse_var = FA
 
   if (inverse_var != FALSE) stop("The inverse_var option is not available for iv_robust models.")
 
-  if (isTRUE(obj$fes) && !requireNamespace("fixest", quietly = TRUE)) {
+  if (isTRUE(obj$fes) && !fixest_is_available()) {
     message("For improved performance in models with fixed effects, install the {fixest} package.")
   } 
 
@@ -194,7 +194,7 @@ model_matrix.iv_robust <- function(obj) {
 
     fe_formula <- as.formula(obj$call$fixed_effects)
 
-    if (requireNamespace("fixest", quietly = TRUE)) {
+    if (fixest_is_available()) {
       frame <- mf[attr(terms(fe_formula), "term.labels")]
       X <- fixest::demean(X = X, f = frame, weights = w)
       Z <- fixest::demean(X = Z, f = frame, weights = w)
@@ -277,25 +277,6 @@ bread.iv_robust <- function(x, ...) {
   N * solve(XtWX)
 }
 
-#----------------------------------------------
-# get residuals
-#----------------------------------------------
-
-#' @export
-
-residuals_CS.iv_robust <- function(obj) {
-
-  mf <- model.frame(obj)
-  r <- mf[[obj$outcome]] - obj$fitted.values
-
-  w <- weights(obj)
-  if (!is.null(w)) {
-    pos_wts <- w > 0
-    if (!all(pos_wts)) r <- r[pos_wts]
-  }
-
-  r
-}
 
 #----------------------------------------------
 # na.action
