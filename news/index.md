@@ -2,6 +2,16 @@
 
 ## clubSandwich (development version)
 
+- clubSandwich now suggests estimatr version 2.0 or higher due to
+  changes in the structure of objects returned by
+  [`estimatr::lm_robust()`](https://declaredesign.org/r/estimatr/reference/lm_robust.html),
+  [`estimatr::lm_lin()`](https://declaredesign.org/r/estimatr/reference/lm_lin.html),
+  and
+  [`estimatr::iv_robust()`](https://declaredesign.org/r/estimatr/reference/iv_robust.html)
+  models.
+- [`linear_contrast()`](http://jepusto.github.io/clubSandwich/reference/linear_contrast.md)
+  now works with unnamed lists.
+
 ## clubSandwich 0.7.0
 
 CRAN release: 2026-05-04

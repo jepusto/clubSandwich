@@ -11,7 +11,7 @@ AchievementAwardsRCT
 
 ## Format
 
-A data frame with 16526 rows and 21 variables:
+A data frame with 16526 rows and 20 variables:
 
 - school_id:
 
