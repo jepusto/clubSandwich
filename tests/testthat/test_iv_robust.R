@@ -1,6 +1,7 @@
 context("estimatr::iv_robust objects")
 
 skip_if_not_installed("estimatr")
+skip_if_not_installed("mockery")
 
 suppressMessages(library(estimatr, quietly = TRUE))
 
@@ -14,6 +15,9 @@ N <- 200L
 J <- 20L
 cluster <- rep(1:J, each = N / J)
 
+# Fixed effects
+fe <- rnorm(J)[cluster]
+
 # Instruments
 z1 <- rnorm(N)
 z2 <- rnorm(N)
@@ -25,7 +29,7 @@ x_exog <- rnorm(N)
 x_endog <- 0.5 * z1 + 0.3 * z2 + rnorm(N)
 
 # Outcome
-y <- 1 + 2 * x_endog + 0.5 * x_exog + rnorm(N)
+y <- fe + 2 * x_endog + 0.5 * x_exog + rnorm(N)
 
 # Weights
 w <- 1 + rpois(N, lambda = 3)
@@ -101,8 +105,8 @@ test_that("model.frame() works for iv_robust.", {
 
   # Clustered model has (clusters) column
   mf_cl <- model.frame(iv_cl)
-  expect_true("(clusters)" %in% names(mf_cl))
-  expect_equal(mf_cl[["(clusters)"]], dat$cluster)
+  expect_true("(cluster)" %in% names(mf_cl))
+  expect_equal(mf_cl[["(cluster)"]], dat$cluster)
 
   # Weighted model has (weights) column
   mf_wt <- model.frame(iv_wt)
@@ -111,8 +115,8 @@ test_that("model.frame() works for iv_robust.", {
   # Clustered and weighted model has (clusters) and (weights) columns
   mf_cl_wt <- model.frame(iv_cl_wt)
   expect_true("(weights)" %in% names(mf_cl_wt))
-  expect_true("(clusters)" %in% names(mf_cl_wt))
-  expect_equal(mf_cl[["(clusters)"]], dat$cluster)
+  expect_true("(cluster)" %in% names(mf_cl_wt))
+  expect_equal(mf_cl[["(cluster)"]], dat$cluster)
   
 })
 
@@ -522,9 +526,9 @@ test_that("model_matrix() returns FE-residualized projected matrix", {
 
 test_that("model_matrix() FE path agrees without fixest", {
   local_mocked_bindings(
-    requireNamespace = function(...) FALSE
+    fixest_is_available = \(x) FALSE
   )
-  expect_false(requireNamespace("fixest", quietly = TRUE))
+  expect_false(fixest_is_available())
 
   XP <- model_matrix(iv_fe)
   F_mat <- model.matrix(~ 0 + cluster, data = dat)
@@ -567,6 +571,7 @@ test_that("vcovCR matches iv_robust$vcov for FE model with se_type='CR0'", {
 })
 
 test_that("model_matrix() weighted FE path agrees without fixest", {
+  
   iv_fe_wt <- iv_robust(
     y ~ x_endog + x_exog | x_exog + z1 + z2,
     data = dat, weights = w, clusters = cluster,
@@ -574,10 +579,11 @@ test_that("model_matrix() weighted FE path agrees without fixest", {
   )
 
   local_mocked_bindings(
-    requireNamespace = function(...) FALSE
+    fixest_is_available = \(x) FALSE
   )
-  expect_false(requireNamespace("fixest", quietly = TRUE))
-
+  
+  expect_false(fixest_is_available())
+  
   XP <- model_matrix(iv_fe_wt)
   F_mat <- model.matrix(~ 0 + cluster, data = dat)
   y_demean <- stats::lm.wfit(F_mat, dat$y, w)$residuals
@@ -680,3 +686,4 @@ test_that("coef_test() agrees between iv_robust and ivreg", {
   expect_equal(ct_reg, ct_est)
 
 })
+

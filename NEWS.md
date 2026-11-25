@@ -1,5 +1,7 @@
 # clubSandwich (development version)
 
+* clubSandwich now suggests estimatr version 2.1 or higher, which provides supporting methods for `lm_robust()`, `lm_lin()`, and `iv_robust()` models that clubSandwich previously provided.
+
 # clubSandwich 0.7.0
 
 * Added support for `mmrm::mmrm()` models.

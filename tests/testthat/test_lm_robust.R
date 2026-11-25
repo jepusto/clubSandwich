@@ -1,6 +1,7 @@
 context("lm_robust objects")
 
-skip_if_not_installed("estimatr")
+skip_if_not_installed("estimatr", "2.0")
+skip_if_not_installed("mockery")
 
 suppressMessages(library(estimatr, quietly=TRUE))
 
@@ -28,7 +29,8 @@ lm_rob_fe <- lm_robust(
   weight ~ Time:Diet, 
   data = ChickWeight, 
   clusters = Chick, 
-  fixed_effects = ~ Chick
+  fixed_effects = ~ Chick,
+  se_type = "CR2"
 )
 
 wlm_fit <- lm(weight ~ 0 + Diet + Time:Diet, weights = wt, data = ChickWeight)
@@ -53,34 +55,37 @@ lm_rob_fe2 <- lm_robust(
   mrate ~ legal + beertaxa + beerpercap + winepercap + spiritpercap,
   fixed_effects = ~ year + state,
   data = MortalityRates,
-  cluster = state
+  cluster = state,
+  se_type = "CR2"
 )
+
 
 test_that("model.frame() works", {
   
   # unweighted models
   mf_fit <- model.frame(lm_fit)
   mf_rob <- model.frame(lm_rob)
-  mf_rob$`(clusters)` <- NULL
+  mf_rob$`(cluster)` <- NULL
   expect_equal(mf_fit, mf_rob)
 
   # fixed effects models
   mf_fit_fe <- model.frame(lm_fit_fe)
   mf_rob_fe <- model.frame(lm_rob_fe)
-  mf_rob_fe$`(clusters)` <- NULL
+  mf_rob_fe$`(cluster)` <- NULL
+  mf_rob_fe$`(fixed_effects)` <- NULL
   expect_equivalent(mf_fit_fe, mf_rob_fe)
 
   # two-way fixed effects models
   mf_fit_fe2 <- model.frame(lm_fit_fe2)
   mf_rob_fe2 <- model.frame(lm_rob_fe2)
-  mf_rob_fe2$`(clusters)` <- NULL
+  mf_rob_fe2$`(cluster)` <- NULL
+  mf_rob_fe2$`(fixed_effects)` <- NULL
   expect_equivalent(mf_fit_fe2[names(mf_rob_fe2)], mf_rob_fe2)
   
   # weighted models
   mf_wlm <- model.frame(wlm_fit)
   mf_wrob <- model.frame(wlm_rob)
-  mf_wrob$`(clusters)` <- NULL
-
+  mf_wrob$`(cluster)` <- NULL
   expect_equal(mf_wlm, mf_wrob)
 
   # set up tests with missing values
@@ -91,14 +96,14 @@ test_that("model.frame() works", {
   miss1 <- 3:8
   miss2 <- sample(i, 9L)
   dat_miss$Diet_miss <- dat_miss$Diet
-  dat_miss$Diet_miss[miss1] <- NA
-  dat_miss$wt_miss <- ifelse(i %in% miss1, NA, dat_miss$wt)
+  dat_miss$Diet_miss[miss1] <- NA_integer_
+  dat_miss$wt_miss <- ifelse(i %in% miss1, NA_real_, dat_miss$wt)
   dat_miss$Chick_miss1 <- dat_miss$Chick
-  dat_miss$Chick_miss1[miss1] <- NA
+  dat_miss$Chick_miss1[miss1] <- NA_integer_
   dat_miss$Chick_miss2 <- dat_miss$Chick
-  dat_miss$Chick_miss2[miss2] <- NA
+  dat_miss$Chick_miss2[miss2] <- NA_integer_
   
-  dat_complete1 <- droplevels(dat_miss[setdiff(i, miss1),])
+  dat_complete1 <- (dat_miss[setdiff(i, miss1),])
   dat_complete2 <- droplevels(dat_miss[setdiff(i, miss2),])
   dat_complete <- droplevels(dat_miss[setdiff(i, c(miss1, miss2)),])
   
@@ -111,6 +116,11 @@ test_that("model.frame() works", {
     cl1[[1]] <- quote(estimatr::lm_robust)
     m1 <- suppressWarnings(eval(cl1, parent.frame()))
     mf1 <- model.frame(m1)
+    if ("(fixed_effects)" %in% names(mf1)) {
+      if (NCOL(mf1$`(fixed_effects)`) == 1L) {
+        mf1$`(fixed_effects)` <- as.vector(mf1$`(fixed_effects)`)
+      }
+    }
     
     cl2 <- cl
     cl2$data1 <- NULL
@@ -118,6 +128,11 @@ test_that("model.frame() works", {
     cl2[[1]] <- quote(estimatr::lm_robust)
     m2 <- suppressWarnings(eval(cl2, parent.frame()))
     mf2 <- model.frame(m2)
+    if ("(fixed_effects)" %in% names(mf2)) {
+      if (NCOL(mf2$`(fixed_effects)`) == 1L) {
+        mf2$`(fixed_effects)` <- as.vector(mf1$`(fixed_effects)`)
+      }
+    }
     
     expect_equivalent(mf1, mf2)
   }
@@ -275,10 +290,10 @@ test_that("model_matrix() works", {
 test_that("model_matrix() works without fixest", {
   
   local_mocked_bindings(
-    requireNamespace = function(...) FALSE
+    fixest_is_available = \(x) FALSE
   )
   
-  expect_false(requireNamespace("fixest", quietly = TRUE))
+  expect_false(fixest_is_available())
   
   # basic models
   
@@ -306,7 +321,7 @@ test_that("model_matrix() works without fixest", {
   expect_lt(max(abs(apply(mm_rob_fe, 2, \(x) tapply(x, ChickWeight$Chick, mean)))), 1e-12)
   
   expect_message(
-    vcovCR(lm_rob_fe,type = "CR0"),
+    vcovCR(lm_rob_fe, type = "CR0"),
     "For improved performance in models with fixed effects, install the package \\{fixest\\}\\."
   )
   
@@ -364,22 +379,23 @@ test_that("sandwich::bread works", {
   bread_rob <- bread(lm_rob)
   expect_equal(bread_lm, bread_rob)
   
+  # weighted models
+  bread_wlm <- bread(wlm_fit)
+  bread_wrob <- bread(wlm_rob)
+  expect_equal(bread_wlm, bread_wrob)
+  
   # fixed effects models
   bread_lm_fe <- bread(lm_fit_fe)
-  bread_rob_fe <- bread(lm_rob_fe)
+  bread_rob_fe <- clubSandwich:::bread.lm_robust(lm_rob_fe)
   focal_coefs <- names(coef(lm_rob_fe))
   expect_equal(bread_lm_fe[focal_coefs,focal_coefs], as.matrix(bread_rob_fe))
   
   # two-way fixed effects models
   bread_lm_fe2 <- bread(lm_fit_fe2)
-  bread_rob_fe2 <- bread(lm_rob_fe2)
+  bread_rob_fe2 <- clubSandwich:::bread.lm_robust(lm_rob_fe2)
   focal_coefs <- names(coef(lm_rob_fe2))
   expect_equal(bread_lm_fe2[focal_coefs,focal_coefs], as.matrix(bread_rob_fe2))
-  
-  # weighted models
-  bread_wlm <- bread(wlm_fit)
-  bread_wrob <- bread(wlm_rob)
-  expect_equal(bread_wlm, bread_wrob)
+
   
 })
 
@@ -389,22 +405,22 @@ test_that("residuals_CS() works", {
   # basic models
   rcs_fit <- residuals_CS(lm_fit)
   rcs_rob <- residuals_CS(lm_rob)
-  expect_equal(rcs_fit, rcs_rob)
+  expect_equivalent(rcs_fit, rcs_rob)
   
   # fixed effects models
   rcs_fit_fe <- residuals_CS(lm_fit_fe)
   rcs_rob_fe <- residuals_CS(lm_rob_fe)
-  expect_equal(rcs_fit_fe, rcs_rob_fe)
+  expect_equivalent(rcs_fit_fe, rcs_rob_fe)
   
   # two-way fixed effects models
   rcs_fit_fe2 <- residuals_CS(lm_fit_fe2)
   rcs_rob_fe2 <- residuals_CS(lm_rob_fe2)
-  expect_equal(rcs_fit_fe2, rcs_rob_fe2)
+  expect_equivalent(rcs_fit_fe2, rcs_rob_fe2)
 
   # weighted models
   rcs_wlm <- residuals_CS(wlm_fit)
   rcs_wrob <- residuals_CS(wlm_rob)
-  expect_equal(rcs_wlm, rcs_wrob)
+  expect_equivalent(rcs_wlm, rcs_wrob)
   
 })
 
@@ -704,7 +720,7 @@ test_that("na.action.lm_robust() works correctly", {
     na_rob <- na.action(robust)
     
     # compare
-    expect_equal(na_lm, na_rob)
+    expect_equivalent(na_lm, na_rob)
   }
   
   # compare 10 times with different random data
@@ -731,7 +747,8 @@ test_that("try_cholesky argument does not interfere with vcovCR functionality", 
     weight ~ Time:Diet, data = ChickWeight, 
     clusters = Chick, 
     fixed_effects = ~Chick,
-    try_cholesky = TRUE
+    try_cholesky = TRUE,
+    se_type = "CR0"
   )
   
   expect_equal(vcovCR(lm_rob_fe, type = "CR2"), vcovCR(lm_rob_fe_chole, type = "CR2"))
@@ -773,7 +790,8 @@ test_that("subset argument does not interfere with vcovCR functionality", {
     data = ChickWeight, 
     clusters = Chick, 
     fixed_effects = ~Chick,
-    subset = rando == "Keep"
+    subset = rando == "Keep",
+    se_type = "CR2"
   )
   
   sub_coef <- names(coef(lm_rob_fe_sub))

@@ -67,7 +67,7 @@ vcovCR.iv_robust <- function(obj, cluster, type, target = NULL, inverse_var = FA
 
   if (inverse_var != FALSE) stop("The inverse_var option is not available for iv_robust models.")
 
-  if (isTRUE(obj$fes) && !requireNamespace("fixest", quietly = TRUE)) {
+  if (isTRUE(obj$fes) && !fixest_is_available()) {
     message("For improved performance in models with fixed effects, install the {fixest} package.")
   } 
 
@@ -100,69 +100,8 @@ findCluster.iv_robust <- function(obj) {
 
   if (!obj$clustered) return(NULL)
 
-  model.frame(obj)[["(clusters)"]]
+  model.frame(obj)[["(cluster)"]]
 }
-
-
-#----------------------------------------------
-# model.frame
-#----------------------------------------------
-
-#' @export
-
-model.frame.iv_robust <- function(formula, ...) {
-
-  mf <- formula$model.frame
-  if (!is.null(mf)) return(mf)
-
-  fit_env <- environment(formula$terms)
-
-  cl <- formula$call
-
-  mf_args <- match(c("formula", "data", "weights", "subset", "clusters"), names(cl), 0L)
-
-  mf_cl <- cl[c(1L, mf_args)]
-  mf_cl$formula <- formula$terms
-  mf_cl[[1L]] <- quote(stats::model.frame)
-  mf <- eval(mf_cl, envir = fit_env)
-
-  # If no fixed effects, we're done
-  if (!isTRUE(formula$fes)) return(mf)
-
-  # Build a second model.frame for the fixed-effects variables
-  fe_args <- match(c("fixed_effects", "data", "subset"), names(cl), 0L)
-  fe_cl <- cl[c(1L, fe_args)]
-  names(fe_cl)[[2]] <- "formula"
-  fe_cl[[2]] <- reformulate(all.vars(fe_cl[[2]]))
-  fe_cl[[1L]] <- quote(stats::model.frame)
-  mf_fe <- eval(fe_cl, envir = fit_env)
-
-  # Reconcile any differences in omitted rows between the two model frames
-  mf_omit <- na.action(mf)
-  if (!is.null(names(mf_omit))) mf_omit <- names(mf_omit)
-  fe_omit <- na.action(mf_fe)
-  if (!is.null(names(fe_omit))) fe_omit <- names(fe_omit)
-
-  if (identical(mf_omit, fe_omit)) {
-    mf_combined <- cbind(mf, mf_fe)
-    mf_combined_omit <- mf_omit
-  } else {
-    mf_combined <- cbind(
-      mf[!(rownames(mf) %in% fe_omit), , drop = FALSE],
-      mf_fe[!(rownames(mf_fe) %in% mf_omit), , drop = FALSE]
-    )
-    mf_combined_omit <- sort(c(mf_omit, fe_omit))
-    i_unique <- !duplicated(mf_combined_omit)
-    mf_combined_omit <- mf_combined_omit[i_unique]
-    class(mf_combined_omit) <- "omit"
-  }
-
-  attr(mf_combined, "terms") <- attr(mf, "terms")
-  attr(mf_combined, "na.action") <- mf_combined_omit
-
-  return(mf_combined)
-}
-
 
 #----------------------------------------------
 # get X matrix (projected)
@@ -194,7 +133,7 @@ model_matrix.iv_robust <- function(obj) {
 
     fe_formula <- as.formula(obj$call$fixed_effects)
 
-    if (requireNamespace("fixest", quietly = TRUE)) {
+    if (fixest_is_available()) {
       frame <- mf[attr(terms(fe_formula), "term.labels")]
       X <- fixest::demean(X = X, f = frame, weights = w)
       Z <- fixest::demean(X = Z, f = frame, weights = w)

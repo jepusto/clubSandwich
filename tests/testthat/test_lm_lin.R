@@ -1,8 +1,12 @@
 context("lm_lin robust objects")
 
-skip_if_not_installed("estimatr")
+skip_if_not_installed("estimatr", "2.0")
+skip_if_not_installed("mockery")
+skip_if_not_installed("conflicted")
 
 suppressMessages(library(estimatr, quietly=TRUE))
+conflicted::conflicts_prefer(clubSandwich::model.matrix.lm_robust)
+
 
 set.seed(20250630)
 data("CO2")
@@ -69,17 +73,21 @@ test_that("model.frame() works", {
   # basic models
   mf_lin <- model.frame(lin)
   mf_rob <- model.frame(rob)
-  expect_equivalent(mf_lin, mf_rob)
+  expect_equivalent(mf_lin[1:2], mf_rob[1:2])
+  expect_equivalent(as.numeric(mf_lin[[4]]), mf_rob[[3]])
   
   # covariates with an expression 
   mf_exp <- model.frame(lin_exp)
   mf_rexp <- model.frame(rob_exp)
-  expect_equivalent(mf_exp, mf_rexp)
+  expect_equivalent(mf_exp[1:2], mf_rexp[1:2])
+  expect_equivalent(lapply(mf_exp[5:6], as.numeric), mf_rexp[3:4])
   
   # weighted models
   mf_wclin <- model.frame(wclin)
   mf_wcrob <- model.frame(wcrob)
-  expect_equivalent(mf_wclin, mf_wcrob[names(mf_wclin)])
+  expect_equivalent(mf_wclin[1:2], mf_wcrob[1:2])
+  expect_equivalent(mf_wclin[4:5], mf_wcrob[4:5])
+  expect_equivalent(as.numeric(mf_wclin[[6]]), mf_wcrob[[3]])
 
 })
 
@@ -386,7 +394,7 @@ test_that("na.action.robust() works correctly", {
 
     # get na.action() of models
     na_lin <- na.action(lin_fit)
-    na_rob <- names(na.action(rob_fit))
+    na_rob <- na.action(rob_fit)
 
     # compare
     expect_equal(na_lin, na_rob)

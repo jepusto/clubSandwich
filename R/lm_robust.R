@@ -97,7 +97,7 @@
 
 vcovCR.lm_robust <- function(obj, cluster, type, target = NULL, inverse_var = NULL, form = "sandwich", ...) {
   
-  if (obj$fes && !requireNamespace("fixest", quietly = TRUE)) {
+  if (obj$fes && !fixest_is_available()) {
     message("For improved performance in models with fixed effects, install the package {fixest}.")
   }
   
@@ -132,7 +132,7 @@ findCluster.lm_robust <- function(obj) {
   
   if (!obj$clustered) return(NULL)
   
-  model.frame(obj)[["(clusters)"]]
+  model.frame(obj)[["(cluster)"]]
 }
 
 
@@ -159,173 +159,57 @@ augmented_model_matrix.lm_robust <- function(obj, cluster, inverse_var, ignore_F
 }
 
 
-requireNamespace <- function(...) base::requireNamespace(...)
-
-
 #' @export
+
 model_matrix.lm_robust <- function(obj) {
   
   # get formula
   frm <- as.formula(obj$call$formula)
   
-  # If model was made using lm_lin
-  if ("lm_lin" %in% as.character(obj$call[[1]])) {
+  # If no fixed effects, just return default mm
+  if (!obj$fes) {
     
-    # get covariate formula, if it exists
-    covariates <- as.formula(obj$call$covariates)
+    return(model.matrix(obj))
     
-    if (!is.null(covariates)) { # No covariates case - keep original formula as is
-      
-      # get model frame
-      mf <- model.frame(obj)
-      
-      # With covariates - preserve the intercept specification from original formula
-      treatment <- all.vars(frm[[3]])
-      covar_names <- paste0("`",names(obj$scaled_center), "_c`")
-      interactions <- paste0(treatment, ":", covar_names)
-      update_formula <- reformulate(c(".", covar_names, interactions))
-      frm <- update(old = frm, new = update_formula)
-
+  } else { # If fixed effects
+    
+    # get model frame
+    mf <- model.frame(obj)
+    
+    # get base model matrix
+    X_mat <- model.matrix(frm, data = mf)
+    intercept_col <- colnames(X_mat) == "(Intercept)"
+    if (any(intercept_col)) {
+      X_mat <- X_mat[,!intercept_col,drop=FALSE]
     }
     
-    # use model frame and formula built above to return model matrix
-    return(model.matrix(frm, data = mf))
+    # get fixed effects formula
+    fe_formula <- as.formula(obj$call$fixed_effects)
     
-  } else { # If model was made using lm_robust
-    # If no fixed effects, just return default mm
-    if (!obj$fes) {
-      return(model.matrix(obj))
-    } else { # If fixed effects
-      # get model frame
-      mf <- model.frame(obj)
-      
-      # get base model matrix
-      X_mat <- model.matrix(frm, data = mf)
-      intercept_col <- colnames(X_mat) == "(Intercept)"
-      if (any(intercept_col)) {
-        X_mat <- X_mat[,!intercept_col,drop=FALSE]
-      }
-      
-      # get fixed effects formula
-      fe_formula <- as.formula(obj$call$fixed_effects)
-      
-      # use fixed effects formula to get model matrix for fixed effects,
-      # then connect it to the base model matrix
-      if (requireNamespace("fixest", quietly = TRUE)) {
-        frame <- mf[attr(terms(fe_formula),"term.labels")]
-        X_demean <- fixest::demean(X = X_mat, f = frame)
-      } else {
-        fe_formula <- update(fe_formula, ~ . - 1)
-        F_mat <- model.matrix(fe_formula, data = mf)
-        X_reg <- stats::lm.fit(F_mat, X_mat)
-        X_demean <- X_reg$residuals
-      }
-      
-      return(X_demean)
+    # use fixed effects formula to get model matrix for fixed effects,
+    # then connect it to the base model matrix
+    if (fixest_is_available()) {
+      frame <- mf[attr(terms(fe_formula),"term.labels")]
+      X_demean <- fixest::demean(X = X_mat, f = frame)
+    } else {
+      fe_formula <- update(fe_formula, ~ . - 1)
+      F_mat <- model.matrix(fe_formula, data = mf)
+      X_reg <- stats::lm.fit(F_mat, X_mat)
+      X_demean <- X_reg$residuals
     }
+    
+    return(X_demean)
   }
 }
 
 
-#' @export
-
-model.frame.lm_robust <- function (formula, ...) {
-  
-  # Check if model.frame is already stored in the object
-  mf <- formula$model.frame
-  if (!is.null(mf)) return(mf)
-  
-  # environment where initial call was evaluated
-  fit_env <- environment(formula$terms) 
-  
-  # Extract relevant arguments from call
-  cl <- formula$call
-  
-  # Extract relevant arguments from call
-  mf_args <- match(c("formula","data","weights","subset","clusters"), names(cl), 0L)
-  
-  # Construct the model.frame for outcome and core predictors
-  mf_cl <- cl[c(1L, mf_args)]
-  mf_cl[[1L]] <- quote(stats::model.frame)
-  mf <- eval(mf_cl, envir = fit_env)
-  
-  # If model was made using lm_lin
-  if ("lm_lin" %in% as.character(formula$call[[1]])) {
-    if (!"covariates" %in% names(cl)) return(mf)
-    word <- "covariates"
-  } else { # If model was made using lm_robust
-    if (!formula$fes) return(mf)
-    word <- "fixed_effects"
-  }
-  
-  # Construct a model.frame for covariates or fixed effects
-  word_args <- match(c(word,"data","subset"), names(cl), 0L)
-  word_cl <- cl[c(1L, word_args)]
-  names(word_cl)[[2]] <- "formula"
-  word_cl[[2]] <- reformulate(all.vars(word_cl[[2]])) # remove any expressions to get basic variables 
-  word_cl[[1L]] <- quote(stats::model.frame)
-  mf_word <- eval(word_cl, envir = fit_env)
-  
-  # compare omitted rows across model and covariates/fixed effects
-  mf_omit <- na.action(mf)
-  if (!is.null(names(mf_omit))) mf_omit <- names(mf_omit)
-  word_omit <- na.action(mf_word)
-  if (!is.null(names(word_omit))) word_omit <- names(word_omit)
-  
-  # combine model.frames for model and for covariates/fixed effects  
-  if (identical(mf_omit, word_omit)) {
-    mf_combined <- cbind(mf, mf_word)
-    mf_combined_omit <- mf_omit
-  } else {
-    mf_combined <- cbind(
-      mf[!(rownames(mf) %in% word_omit),,drop=FALSE],
-      mf_word[!(rownames(mf_word) %in% mf_omit),,drop=FALSE]
-    )
-    mf_combined_omit <- sort(c(mf_omit, word_omit))
-    i_unique <- !duplicated(mf_combined_omit)
-    mf_combined_omit <- mf_combined_omit[i_unique]
-    class(mf_combined_omit) <- "omit"
-  }
-  
-  # Take care of centering if needed
-  if (word == "covariates") {
-    
-    # Calculate centered covariatess
-    uncentered_mm <- model.matrix(as.formula(cl$covariates), data = mf_combined)
-    covar_names <- names(formula$scaled_center)
-    for (v in covar_names) {
-      v_c <- paste0(v, "_c")
-      mf_combined[[v_c]] <- uncentered_mm[,v] - formula$scaled_center[v]
-    }
-
-    # Remove uncentered covariates
-    covariate_terms <- all.vars(word_cl$formula)
-    for (v in covariate_terms) mf_combined[[v]] <- NULL
-
-  }
-  
-  attr(mf_combined, "terms") <- attr(mf, "terms")
-  attr(mf_combined, "na.action") <- mf_combined_omit
-  
-  return(mf_combined)
-}
-
-
-#' @export
-
-residuals.lm_robust <- function(object, ...) {
-  
-  mf <- model.frame(object)
-  
-  mf[[object$outcome]] - object$fitted.values
-  
-}
+fixest_is_available <- function() requireNamespace("fixest", quietly = TRUE)
 
 
 #' @export
 
 bread.lm_robust <- function(x, ...) {
-  
+
   N <- nobs(x)
   
   X_mat <- model_matrix(x)
@@ -335,14 +219,14 @@ bread.lm_robust <- function(x, ...) {
   } else {
     XtWX <- crossprod(X_mat)
   }
-  
-  N * solve(XtWX)
-}
 
+  N * solve(XtWX)
+
+}
 
 #' @export
 
 na.action.lm_robust <- function(object, ...)  {
-  na.action(model.frame(object))
+  na.action(model.frame(object)) 
 }
 
