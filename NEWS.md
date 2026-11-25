@@ -1,6 +1,7 @@
 # clubSandwich (development version)
 
 * clubSandwich now suggests estimatr version 2.0 or higher due to changes in the structure of objects returned by  `estimatr::lm_robust()`, `estimatr::lm_lin()`, and `estimatr::iv_robust()` models.
+* `linear_contrast()` now works with unnamed lists. 
 
 # clubSandwich 0.7.0
 

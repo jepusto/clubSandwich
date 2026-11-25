@@ -88,6 +88,55 @@ test_that("linear_contrast() works with lists.", {
   
 })
 
+test_that("linear_contrast() works with unnamed lists.", {
+  
+  noname_contrasts <- list(
+    constrain_zero(2:3),
+    constrain_pairwise(2:3, with_zero = TRUE),
+    constrain_equal("ethnicity", reg_ex = TRUE),
+    constrain_pairwise("ethnicity", reg_ex = TRUE)
+  )
+  
+  CIs <- linear_contrast(lm_urbanicity, 
+                         vcov = "CR2", cluster = STAR$schoolidk,
+                         contrast = noname_contrasts)
+  
+  CI_A <- as.data.frame(subset(CIs, grepl("1\\.", Coef), select = -Coef))
+  CI_B <- as.data.frame(subset(CIs, grepl("2\\.[a-z]+$", Coef), select = -Coef))
+  expect_equal(CI_A, CI_B, check.attributes = FALSE)
+  
+  CI_C <- as.data.frame(subset(CIs, grepl("3\\.", Coef), select = -Coef))
+  CI_D <- as.data.frame(subset(CIs, grepl("4\\..+ethnicityafam$", Coef), select = -Coef))
+  expect_equal(CI_C, CI_D, check.attributes = FALSE)
+  
+  # From Github issue #115
+  # Minimal data and model
+  set.seed(12443)
+  n <- 200
+  x <- factor(sample(5, n, TRUE))
+  y <- abs(rnorm(n)) * as.numeric(x) + rnorm(n)
+  cl <- factor(sample(20, n, TRUE))
+  df <- data.frame(x, y, cl)
+  model <- lm(y ~ x - 1, data = df)
+  vce <- vcovCR(model, cluster = cl, type = "CR2")
+  
+  # Arbitrary seat of linear contrasts, unnamed
+  contrasts_list <- list(
+    matrix(c(-1, 1, 0, 0, 0), nrow = 1),
+    matrix(c(-1, 0, 0, 1, 0), nrow = 1),
+    matrix(c(-1, 0, 1, 0, 0), nrow = 1)
+  )
+  
+  unnamed_res <- linear_contrast(model, vce, contrasts_list)
+  rownames(unnamed_res) <- NULL
+  
+  names(contrasts_list) <- c("a", "b", "c")
+  named_res <- linear_contrast(model, vce, contrasts_list)
+  rownames(named_res) <- NULL
+
+  expect_identical(unnamed_res[-1], named_res[-1])
+})
+
 test_that("printing works", {
   CIs <- linear_contrast(Duncan_sep, vcov = "CR0", cluster = Duncan$cluster,
                          constrain_pairwise(":education", reg_ex = TRUE))
