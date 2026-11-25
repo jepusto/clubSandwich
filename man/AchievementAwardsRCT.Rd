@@ -5,7 +5,7 @@
 \alias{AchievementAwardsRCT}
 \title{Achievement Awards Demonstration program}
 \format{
-A data frame with 16526 rows and 21 variables: \describe{ 
+A data frame with 16526 rows and 20 variables: \describe{ 
   \item{school_id}{Fictitious school identification number}
   \item{school_type}{Factor identifying the school type (Arab religious, Jewish religious, Jewish secular)}
   \item{pair}{Number of treatment pair. Note that 7 is a triple.} 

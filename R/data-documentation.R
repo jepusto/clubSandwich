@@ -3,7 +3,7 @@
 #' Data from a randomized trial of the Achievement Awards
 #' Demonstration program, reported in Angrist & Lavy (2009).
 #' 
-#' @format A data frame with 16526 rows and 21 variables: \describe{ 
+#' @format A data frame with 16526 rows and 20 variables: \describe{ 
 #'   \item{school_id}{Fictitious school identification number}
 #'   \item{school_type}{Factor identifying the school type (Arab religious, Jewish religious, Jewish secular)}
 #'   \item{pair}{Number of treatment pair. Note that 7 is a triple.} 
